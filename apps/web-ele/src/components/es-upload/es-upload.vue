@@ -147,7 +147,7 @@ async function customRequest(options: UploadRequestOptions) {
     scene,
     ...options.data,
   };
-  const { success, error } = await useUpload(
+  const res = await useUpload(
     // 将当前文件传入后端上传逻辑
     options.file as any,
     params,
@@ -158,7 +158,7 @@ async function customRequest(options: UploadRequestOptions) {
     },
   );
 
-  if (error?.length) {
+  if (!res) {
     options.onError?.(new Error(error[0]?.message ?? 'upload error') as any);
     return;
   }
