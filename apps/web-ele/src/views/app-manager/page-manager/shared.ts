@@ -1,7 +1,8 @@
-import type { ClientPagePageResponseDto } from '#/apis/types/clientPage';
+import type { BaseClientPageDto } from '#/apis/types/clientPage';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
+import { enablePlatform } from '#/views/app-manager/notice/shared';
 
 // 页面权限级别配置
 export const accessLevel = [
@@ -106,6 +107,17 @@ export const formSchema: EsFormSchema = [
     },
   },
   {
+    label: '启用平台',
+    fieldName: 'enablePlatform',
+    component: 'CheckboxGroup',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请选择发布平台',
+      options: enablePlatform,
+      valueType: 'bitMask',
+    },
+  },
+  {
     label: '页面描述',
     fieldName: 'description',
     component: 'Input',
@@ -120,7 +132,7 @@ export const formSchema: EsFormSchema = [
 
 // 表格列配置
 export const pageColumns =
-  formSchemaTransform.toTableColumns<ClientPagePageResponseDto>(formSchema, {
+  formSchemaTransform.toTableColumns<BaseClientPageDto>(formSchema, {
     description: {
       hide: true,
     },
@@ -146,6 +158,17 @@ export const pageColumns =
       slots: { default: 'isEnabled' },
       width: 100,
     },
+
+    enablePlatform: {
+      title: '启用平台',
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          bitMaskOptions: enablePlatform,
+        },
+      },
+      minWidth: 200,
+    },
   });
 
 // 搜索表单配置
@@ -155,6 +178,9 @@ export const pageFilter = formSchemaTransform
       show: true,
     },
     name: {
+      show: true,
+    },
+    enablePlatform: {
       show: true,
     },
     isEnabled: {

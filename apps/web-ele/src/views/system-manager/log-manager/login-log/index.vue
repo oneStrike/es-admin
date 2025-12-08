@@ -8,7 +8,7 @@ import type {
 import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { requestLogPageApi } from '#/apis/requestLog';
+import { auditPageApi } from '#/apis';
 import { createSearchFormOptions } from '#/utils';
 
 import { loginLogColumns, searchFormSchema } from './shared';
@@ -36,7 +36,7 @@ const gridOptions: VxeGridProps<RequestLogDto> = {
           path: '/api/admin/auth/login',
         };
 
-        return await requestLogPageApi(params);
+        return await auditPageApi(params);
       },
     },
     sort: true,

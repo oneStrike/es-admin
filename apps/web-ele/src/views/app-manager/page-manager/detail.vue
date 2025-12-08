@@ -18,6 +18,9 @@ const [Modal, modalApi] = useVbenModal({
       getDetail();
     }
   },
+  onConfirm() {
+    modalApi.close();
+  },
 });
 
 const detail = ref<BaseClientPageDto>();

@@ -159,12 +159,11 @@ async function customRequest(options: UploadRequestOptions) {
   );
 
   if (!res) {
-    options.onError?.(new Error(error[0]?.message ?? 'upload error') as any);
     return;
   }
 
   // 通知 Element Plus 上传成功，自动写入 file.response/status
-  options.onSuccess?.(success[0] as any);
+  options.onSuccess?.(res);
   skipModalValueWatch = true;
   handlerModalValue();
 }

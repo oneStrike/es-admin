@@ -2,7 +2,6 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseClientPageDto,
-  ClientPagePageResponseDto,
   UpdateClientPageDto,
 } from '#/apis/types/clientPage';
 
@@ -23,7 +22,7 @@ import PageDetail from '#/views/app-manager/page-manager/detail.vue';
 
 import { accessLevelObj, formSchema, pageColumns, pageFilter } from './shared';
 
-const gridOptions: VxeGridProps<ClientPagePageResponseDto> = {
+const gridOptions: VxeGridProps<BaseClientPageDto> = {
   columns: pageColumns,
   height: 'auto',
   proxyConfig: {
@@ -49,12 +48,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-async function openFormModal(row?: ClientPagePageResponseDto) {
+async function openFormModal(row?: BaseClientPageDto) {
   let record;
   if (row) {
     record = await clientPageDetailByIdApi({ id: row.id });
   }
-  formApi.setData({ title: '页面配置', record }).open();
+  formApi
+    .setData({ title: '页面配置', record, bitMaskField: ['enablePlatform'] })
+    .open();
 }
 
 async function handleSubmit(values: BaseClientPageDto | UpdateClientPageDto) {
@@ -66,7 +67,7 @@ async function handleSubmit(values: BaseClientPageDto | UpdateClientPageDto) {
   gridApi.reload();
 }
 
-async function deletePage(record: ClientPagePageResponseDto) {
+async function deletePage(record: BaseClientPageDto) {
   await clientPageBatchDeleteApi({ ids: [record.id] });
   useMessage.success('操作成功');
   gridApi.reload();
@@ -76,7 +77,7 @@ const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: PageDetail,
 });
 
-async function toggleEnableStatus(record: ClientPagePageResponseDto) {
+async function toggleEnableStatus(record: BaseClientPageDto) {
   record.loading = true;
   await clientPageUpdateApi({
     id: record.id,

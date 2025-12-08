@@ -23,6 +23,9 @@ const [Modal, modalApi] = useVbenModal({
       getDetail();
     }
   },
+  onConfirm() {
+    modalApi.close();
+  },
 });
 
 const detail = ref<NoticeDetailResponse>();
@@ -197,7 +200,7 @@ const detailCards = computed(() => [
 </script>
 
 <template>
-  <Modal title="通知详情" class="!w-[800px]" v-if="detail">
+  <Modal title="通知详情" class="!w-[1000px]" v-if="detail">
     <div v-loading="loading" class="space-y-6">
       <!-- 动态渲染卡片 -->
       <template v-for="card in detailCards" :key="card.title">

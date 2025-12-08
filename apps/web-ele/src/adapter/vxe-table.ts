@@ -7,6 +7,7 @@ import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 import { ElButton, ElImage, ElTag, ElText } from 'element-plus';
 
 import { ImageLine } from '#/components/es-icons';
+import { useBitMask } from '#/hooks/useBitmask';
 import { formatUTC } from '#/utils';
 
 import { useVbenForm } from './form';
@@ -109,7 +110,10 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellTag', {
       renderTableDefault({ props }, params) {
         const { column, row } = params;
-        const tags = row[column.field] || '';
+        let tags: string[] = [];
+        tags = Array.isArray(props?.bitMaskOptions)
+          ? useBitMask.getLabels(row[column.field], props.bitMaskOptions)
+          : row[column.field] || '';
 
         // 处理字符串数组或字符串的情况
         if (Array.isArray(tags)) {

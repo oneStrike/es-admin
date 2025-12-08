@@ -32,7 +32,7 @@ export default defineConfig(async () => {
             target: 'http://localhost:8080',
             ws: true,
           },
-          '/uploads': {
+          '/files': {
             changeOrigin: true,
             // mock代理目标地址
             target: 'http://localhost:8080',

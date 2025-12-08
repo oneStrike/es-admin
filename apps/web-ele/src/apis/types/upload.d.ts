@@ -1,41 +1,28 @@
-/**
- *  类型定义 [UploadUploadFileRequest]
- *  @来源 管理端文件上传
- *  @更新时间 2025-12-04 21:43:06
- */
-export type UploadUploadFileRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 上传场景 */
-  scene?: string;
-};
-
-export type UploadUploadFileResponse = UploadResponseDto[];
+export type UploadUploadFileResponse = UploadResponseDto
 
 /**
  *  类型定义 [UploadResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-04 21:43:06
+ *  @更新时间 2025-12-08 23:24:09
  */
 export type UploadResponseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 文件名 */
-  filename: string;
+  filename: string
   /* 文件路径 */
-  filePath: string;
-  /* 文件大小 */
-  fileSize: number;
-  /* 文件类型 */
-  fileType: string;
-  /* 文件类型mimeType */
-  mimeType: string;
-  /* 原始文件名 */
-  originalName: string;
+  filePath: string
   /* 文件场景 */
-  scene: string;
-
+  scene: string
+  /* 文件大小 */
+  fileSize: number
+  /* 文件类型mimeType */
+  mimeType: string
+  /* 文件类型 */
+  fileType: string
+  /* 原始文件名 */
+  originalName: string
   /* 上传时间 */
-  uploadTime: string;
-};
+  uploadTime: string
+
+  /** 任意合法数值 */
+  [property: string]: any
+}
