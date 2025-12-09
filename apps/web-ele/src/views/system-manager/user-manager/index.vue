@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  BaseUserDto,
   UpdateUserDto,
-  UserDto,
   UserRegisterRequest,
 } from '#/apis/types/user';
 
@@ -13,7 +13,6 @@ import { useUserStore } from '@vben/stores';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  userDeleteApi,
   userInfoByIdApi,
   userPageApi,
   userRegisterApi,
@@ -40,7 +39,7 @@ const isSuperAdmin = computed(() => {
   return userStore.userInfo?.role === 1;
 });
 
-const gridOptions: VxeGridProps<UserDto> = {
+const gridOptions: VxeGridProps<BaseUserDto> = {
   columns: userColumns,
   height: 'auto',
   proxyConfig: {
@@ -66,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-async function openFormModal(row?: UserDto) {
+async function openFormModal(row?: BaseUserDto) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -95,18 +94,7 @@ async function handleSubmit(values: UpdateUserDto | UserRegisterRequest) {
   gridApi.reload();
 }
 
-async function deleteUser(record: UserDto) {
-  if (!isSuperAdmin.value) {
-    useMessage.warning('只有超级管理员才能执行此操作');
-    return;
-  }
-
-  await userDeleteApi({ id: record.id });
-  useMessage.success('删除成功');
-  gridApi.reload();
-}
-
-async function toggleUserStatus(record: UserDto) {
+async function toggleUserStatus(record: BaseUserDto) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -194,19 +182,6 @@ async function toggleUserStatus(record: UserDto) {
               <el-button link :type="row.isEnabled ? 'warning' : 'success'">
                 {{ row.isEnabled ? '禁用' : '启用' }}
               </el-button>
-            </template>
-          </el-popconfirm>
-
-          <el-divider v-if="isSuperAdmin" direction="vertical" />
-          <el-popconfirm
-            v-if="isSuperAdmin"
-            title="确认删除当前用户?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteUser(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
             </template>
           </el-popconfirm>
 

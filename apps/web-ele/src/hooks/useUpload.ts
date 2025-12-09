@@ -22,31 +22,28 @@ export async function useUpload(
   }) => void,
 ): Promise<unknown | UploadFileResItem> {
   try {
-    const formData = new FormData();
-
-    // 添加额外参数
-    for (const paramsKey in params) {
-      formData.append(paramsKey, params[paramsKey]);
-    }
-
-    formData.append('file', file);
-    const result = await requestClient.post(api[apiType], formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data;charset=UTF-8',
+    // 使用requestClient.upload方法处理文件上传，它会自动处理FormData和Content-Type
+    const result = await requestClient.upload(
+      api[apiType],
+      {
+        file,
+        ...params,
       },
-      onUploadProgress: (progressEvent) => {
-        if (onProgress && progressEvent.total) {
-          const percent = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total,
-          );
-          onProgress({
-            percent,
-            loaded: progressEvent.loaded,
-            total: progressEvent.total,
-          });
-        }
+      {
+        onUploadProgress: (progressEvent) => {
+          if (onProgress && progressEvent.total) {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total,
+            );
+            onProgress({
+              percent,
+              loaded: progressEvent.loaded,
+              total: progressEvent.total,
+            });
+          }
+        },
       },
-    });
+    );
     useMessage.success('上传成功');
     return result as UploadFileResItem;
   } catch (error) {

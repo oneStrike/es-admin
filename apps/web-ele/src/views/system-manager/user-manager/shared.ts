@@ -1,4 +1,4 @@
-import type { UserDto } from '#/apis/types/user';
+import type { BaseUserDto } from '#/apis/types/user';
 import type { EsFormSchema } from '#/types';
 
 import { z } from '#/adapter/form';
@@ -156,6 +156,7 @@ export const formSchema: EsFormSchema = [
       maxCount: 1,
       returnDataType: 'url',
       accept: 'image/*',
+      scene: 'adminUserAvatar',
     },
   },
 ];
@@ -167,7 +168,7 @@ export const editFormSchema: EsFormSchema = formSchema.filter(
 );
 
 // 表格列配置
-export const userColumns = formSchemaTransform.toTableColumns<UserDto>(
+export const userColumns = formSchemaTransform.toTableColumns<BaseUserDto>(
   formSchema,
   {
     password: {
