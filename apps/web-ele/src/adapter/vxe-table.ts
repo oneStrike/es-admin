@@ -126,7 +126,7 @@ setupVbenVxeTable({
               {
                 type: props?.type || 'primary',
                 size: props?.size || 'small',
-                class: idx + 1 === tags.length ? '' : 'mr-1',
+                class: idx + 1 === (tags as string[]).length ? '' : 'mr-1',
                 ...props,
               },
               { default: () => tag },
