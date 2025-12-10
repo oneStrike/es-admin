@@ -1,3 +1,5 @@
+import type { TagProps } from 'element-plus';
+
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import { h } from 'vue';
@@ -110,11 +112,12 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellTag', {
       renderTableDefault({ props }, params) {
         const { column, row } = params;
-        let tags: string[] = [];
+        let tags: boolean | string | string[] = [];
+        let type: TagProps['type'] = props?.type || 'primary';
+
         tags = Array.isArray(props?.bitMaskOptions)
           ? useBitMask.getLabels(row[column.field], props.bitMaskOptions)
-          : row[column.field] || '';
-
+          : (row[column.field] ?? '');
         // 处理字符串数组或字符串的情况
         if (Array.isArray(tags)) {
           return tags.map((tag, idx) =>
@@ -129,13 +132,18 @@ setupVbenVxeTable({
               { default: () => tag },
             ),
           );
+        } else if (typeof tags === 'string') {
+          tags = [tags];
+        } else {
+          type = tags ? 'danger' : 'primary';
+          tags = [props?.map[String(tags)]];
         }
 
         // 处理字符串情况
         return h(
           ElTag,
           {
-            type: props?.type || 'primary',
+            type,
             size: props?.size || 'small',
             ...props,
           },

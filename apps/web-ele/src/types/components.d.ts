@@ -21,6 +21,7 @@ declare module 'vue' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElText: typeof import('element-plus/es')['ElText']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     EsEditor: typeof import('./../components/es-editor/es-editor.vue')['default']
     EsModalForm: typeof import('./../components/es-modal-form/index.vue')['default']

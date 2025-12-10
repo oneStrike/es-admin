@@ -127,6 +127,7 @@ export const formSchemaTransform: FormSchemaTransform = {
         if (!['createdAt', 'seq'].includes(key)) {
           columnsWithSort.push({
             ...item,
+            field: key,
             originalIndex: item?.sort ?? -1,
           });
         }

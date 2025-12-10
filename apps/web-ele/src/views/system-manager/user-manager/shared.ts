@@ -52,12 +52,12 @@ for (const item of userStatus) {
 // 锁定状态配置
 export const lockStatus = [
   {
-    label: '正常',
+    label: '未锁定',
     value: false,
     color: '#52c41a', // 绿色
   },
   {
-    label: '锁定',
+    label: '已锁定',
     value: true,
     color: '#ff4d4f', // 红色
   },
@@ -187,16 +187,37 @@ export const userColumns = formSchemaTransform.toTableColumns<BaseUserDto>(
     role: {
       slots: { default: 'role' },
     },
+    isLocked: {
+      title: '登录锁定', // 清空原始标题
+      slots: {
+        header: 'isLockedHeader', // 添加表头插槽
+      },
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          map: {
+            false: '未锁定',
+            true: '已锁定',
+          },
+        },
+      },
+      sort: 66,
+    },
     isEnabled: {
       title: '状态',
       slots: { default: 'isEnabled' },
     },
-    createdAt: {
-      title: '创建时间',
-      formatter: ({ cellValue }: any) => formatUTC(cellValue),
+    lastLoginAt: {
+      title: '最近登录时间',
+      formatter: ({ row }: any) => {
+        return row.lastLoginAt ? formatUTC(row.lastLoginAt) : '-';
+      },
       sortable: true,
-      minWidth: 160,
-      sort: 99,
+      sort: 98,
+      minWidth: 100,
+    },
+    createdAt: {
+      show: true,
     },
     actions: {
       show: true,

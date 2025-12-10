@@ -18,6 +18,7 @@ import {
   userRegisterApi,
   userUpdateInfoApi,
 } from '#/apis';
+import { QuestionIcon } from '#/components/es-icons';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
@@ -29,7 +30,6 @@ import {
   userColumns,
   userFilter,
   userRoleObj,
-  userStatusObj,
 } from './shared';
 
 const userStore = useUserStore();
@@ -73,8 +73,7 @@ async function openFormModal(row?: BaseUserDto) {
 
   let record;
   if (row) {
-    const response = await userInfoByIdApi({ id: row.id });
-    record = response;
+    record = await userInfoByIdApi({ id: row.id });
   }
   formApi
     .setData({
@@ -128,6 +127,21 @@ async function toggleUserStatus(record: BaseUserDto) {
         </el-button>
       </template>
 
+      <!-- 添加 isLocked 列的表头插槽 -->
+      <template #isLockedHeader>
+        <div class="flex items-center justify-center">
+          <span>登录锁定</span>
+          <el-tooltip
+            popper-class="w-36"
+            effect="dark"
+            content="处于锁定状态时，账户将无法登录系统！需超级管理员手动解锁或等待系统自动解锁"
+            placement="top"
+          >
+            <QuestionIcon class="ml-2 size-5 text-[#606266]" />
+          </el-tooltip>
+        </div>
+      </template>
+
       <template #avatar="{ row }">
         <el-avatar
           :size="40"
@@ -145,11 +159,14 @@ async function toggleUserStatus(record: BaseUserDto) {
       </template>
 
       <template #isEnabled="{ row }">
-        <el-text
-          :style="{ color: userStatusObj[String(row.isEnabled)]?.color }"
-        >
-          {{ userStatusObj[String(row.isEnabled)]?.label }}
-        </el-text>
+        <el-switch
+          :active-value="true"
+          :inactive-value="row.isEnabled"
+          :loading="row.loading"
+          :model-value="row.isEnabled"
+          :disabled="userStore.userInfo?.id === row.id || !isSuperAdmin"
+          @change="toggleUserStatus(row)"
+        />
       </template>
 
       <template #isLocked="{ row }">
@@ -160,30 +177,25 @@ async function toggleUserStatus(record: BaseUserDto) {
 
       <template #actions="{ row }">
         <div class="my-1">
-          <el-button
-            v-if="isSuperAdmin"
-            link
-            type="primary"
-            @click="openFormModal(row)"
-          >
-            编辑
-          </el-button>
+          <template v-if="isSuperAdmin">
+            <el-button link type="primary" @click="openFormModal(row)">
+              编辑
+            </el-button>
 
-          <el-divider v-if="isSuperAdmin" direction="vertical" />
-          <el-popconfirm
-            v-if="isSuperAdmin"
-            :title="row.isEnabled ? '确认禁用当前用户?' : '确认启用当前用户?'"
-            width="180"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="toggleUserStatus(row)"
-          >
-            <template #reference>
-              <el-button link :type="row.isEnabled ? 'warning' : 'success'">
-                {{ row.isEnabled ? '禁用' : '启用' }}
-              </el-button>
-            </template>
-          </el-popconfirm>
+            <el-divider direction="vertical" />
+            <el-popconfirm
+              title="解除当前账号登录锁定状态，是否解除？"
+              width="180"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              :disabled="!row.isLocked"
+              @confirm="toggleUserStatus(row)"
+            >
+              <template #reference>
+                <el-button link type="warning"> 解除锁定 </el-button>
+              </template>
+            </el-popconfirm>
+          </template>
 
           <div v-if="!isSuperAdmin" class="text-gray-400">无操作权限</div>
         </div>

@@ -20,7 +20,11 @@ export const formatUTC = (
   date: dayjs.ConfigType,
   format = 'YYYY-MM-DD HH:mm:ss',
 ) => {
-  return dayjs(date).utc().format(format);
+  // 处理空值
+  if (!date) {
+    return '';
+  }
+  return dayjs(date).utcOffset(8).format(format);
 };
 
 // 默认导出配置好的 dayjs 实例
