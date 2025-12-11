@@ -9,7 +9,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { queryParams, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   authorBatchUpdateFeaturedApi,
   authorBatchUpdateStatusApi,
@@ -47,7 +47,7 @@ const gridOptions: VxeGridProps<AuthorPageResponseDto> = {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
         const gridData = await authorPageApi(
-          queryParams({ page, formValues, sorts }),
+          formatQuery({ page, formValues, sorts }),
         );
         return gridData;
       },

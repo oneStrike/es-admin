@@ -26,8 +26,8 @@ export async function useUpload(
     const result = await requestClient.upload(
       api[apiType],
       {
-        file,
         ...params,
+        file,
       },
       {
         onUploadProgress: (progressEvent) => {

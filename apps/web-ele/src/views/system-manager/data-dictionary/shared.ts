@@ -1,4 +1,7 @@
-import type { DictionaryDto, DictionaryItemDto } from '#/apis/types/dictionary';
+import type {
+  BaseDictionaryDto,
+  BaseDictionaryItemDto,
+} from '#/apis/types/dictionary';
 import type { EsFormSchema } from '#/types';
 
 import { cloneDeep } from 'lodash-es';
@@ -55,7 +58,7 @@ itemFormSchema.splice(3, 0, {
   label: '排序',
 });
 export const dictionaryColumns =
-  formSchemaTransform.toTableColumns<DictionaryDto>(formSchema, {
+  formSchemaTransform.toTableColumns<BaseDictionaryDto>(formSchema, {
     actions: {
       show: true,
     },
@@ -75,7 +78,7 @@ export const dictionaryColumns =
       show: true,
       width: 100,
       title: '状态',
-      sort: 99,
+      sort: 98,
       slots: { default: 'isEnabled' },
     },
     description: {
@@ -83,10 +86,13 @@ export const dictionaryColumns =
         return cellValue || '-';
       },
     },
+    createdAt: {
+      show: true,
+    },
   });
 
 export const dictionaryItemColumns =
-  formSchemaTransform.toTableColumns<DictionaryItemDto>(itemFormSchema, {
+  formSchemaTransform.toTableColumns<BaseDictionaryItemDto>(itemFormSchema, {
     seq: {
       dragSort: true,
     },

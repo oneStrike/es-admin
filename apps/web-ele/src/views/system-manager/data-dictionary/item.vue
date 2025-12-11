@@ -4,7 +4,7 @@ import type { DictionaryDto, DictionaryItemDto } from '#/apis/types/dictionary';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { queryParams, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   dictionaryCreateItemApi,
   dictionaryDeleteItemApi,
@@ -58,7 +58,7 @@ const gridOptions: VxeGridProps<DictionaryItemDto> = {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
         return await dictionaryItemsApi({
-          ...queryParams({ page, formValues, sorts }),
+          ...formatQuery({ page, formValues, sorts }),
           dictionaryCode: shareData.value?.record.code,
         });
       },

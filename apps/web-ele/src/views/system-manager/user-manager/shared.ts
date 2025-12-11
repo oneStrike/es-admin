@@ -201,6 +201,7 @@ export const userColumns = formSchemaTransform.toTableColumns<BaseUserDto>(
           },
         },
       },
+      minWidth: 100,
       sort: 66,
     },
     isEnabled: {
@@ -221,7 +222,7 @@ export const userColumns = formSchemaTransform.toTableColumns<BaseUserDto>(
     },
     actions: {
       show: true,
-      width: 180,
+      width: 240,
     },
   },
 );
@@ -239,19 +240,5 @@ export const userFilter = formSchemaTransform.toSearchSchema(formSchema, {
   },
   isEnabled: {
     sort: 96,
-  },
-  dateRange: {
-    sort: 95,
-    component: 'DatePicker',
-    fieldName: 'dateRange',
-    label: '创建时间',
-    componentProps: {
-      type: 'datetimerange',
-      startPlaceholder: '开始时间',
-      endPlaceholder: '结束时间',
-      format: 'YYYY-MM-DD HH:mm:ss',
-      valueFormat: 'YYYY-MM-DD HH:mm:ss',
-      clearable: true,
-    },
   },
 });

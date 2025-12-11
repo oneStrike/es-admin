@@ -19,7 +19,8 @@ const sharedData = ref<Partial<EsModalFormProps>>({
 });
 
 const modalTitle = computed(() => {
-  return Object.keys(sharedData.value).length > 0
+  return sharedData.value.record &&
+    Object.keys(sharedData.value.record).length > 0
     ? `编辑${sharedData.value?.title ?? ''}`
     : `新增${sharedData.value?.title ?? ''}`;
 });

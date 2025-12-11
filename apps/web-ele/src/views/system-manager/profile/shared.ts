@@ -45,6 +45,7 @@ export const editFormSchema: EsFormSchema = [
     componentProps: {
       placeholder: '请上传头像',
       maxCount: 1,
+      scene: 'common',
     },
   },
   {

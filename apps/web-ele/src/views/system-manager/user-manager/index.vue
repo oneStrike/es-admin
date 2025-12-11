@@ -11,11 +11,12 @@ import { computed } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   userInfoByIdApi,
   userPageApi,
   userRegisterApi,
+  userResetPasswordApi,
   userUpdateInfoApi,
 } from '#/apis';
 import { QuestionIcon } from '#/components/es-icons';
@@ -44,12 +45,8 @@ const gridOptions: VxeGridProps<BaseUserDto> = {
   height: 'auto',
   proxyConfig: {
     ajax: {
-      query: async ({ page }, formValues) => {
-        return await userPageApi({
-          pageIndex: --page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
+      query: async ({ page, sorts }, formValues) => {
+        return await userPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
@@ -77,7 +74,7 @@ async function openFormModal(row?: BaseUserDto) {
   }
   formApi
     .setData({
-      title: '用户管理',
+      title: '用户',
       record,
       schema: row ? editFormSchema : formSchema,
     })
@@ -109,6 +106,19 @@ async function toggleUserStatus(record: BaseUserDto) {
     isEnabled: newStatus,
   });
   useMessage.success(newStatus ? '启用成功' : '禁用成功');
+  gridApi.reload();
+}
+
+async function resetUserPassword(record: BaseUserDto) {
+  if (!isSuperAdmin.value) {
+    useMessage.warning('只有超级管理员才能执行此操作');
+    return;
+  }
+
+  await userResetPasswordApi({
+    id: record.id,
+  });
+  useMessage.success('密码重置成功');
   gridApi.reload();
 }
 </script>
@@ -184,6 +194,21 @@ async function toggleUserStatus(record: BaseUserDto) {
 
             <el-divider direction="vertical" />
             <el-popconfirm
+              title="是否重置当前账户为默认密码？"
+              width="180"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              @confirm="resetUserPassword(row)"
+            >
+              <template #reference>
+                <el-button link type="warning">
+                  重置密码
+                </el-button>
+              </template>
+            </el-popconfirm>
+
+            <el-divider direction="vertical" />
+            <el-popconfirm
               title="解除当前账号登录锁定状态，是否解除？"
               width="180"
               confirm-button-text="确认"
@@ -192,7 +217,9 @@ async function toggleUserStatus(record: BaseUserDto) {
               @confirm="toggleUserStatus(row)"
             >
               <template #reference>
-                <el-button link type="warning"> 解除锁定 </el-button>
+                <el-button link type="warning" :disabled="!row.isLocked">
+                  解除锁定
+                </el-button>
               </template>
             </el-popconfirm>
           </template>

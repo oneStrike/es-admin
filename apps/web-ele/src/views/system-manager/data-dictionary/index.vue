@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
-import type { DictionaryDto } from '#/apis/types/dictionary';
+import type { BaseDictionaryDto } from '#/apis/types/dictionary';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -25,7 +25,7 @@ import {
   formSchema,
 } from './shared';
 
-const gridOptions: VxeGridProps<DictionaryDto> = {
+const gridOptions: VxeGridProps<BaseDictionaryDto> = {
   columns: dictionaryColumns,
   height: 'auto',
   proxyConfig: {
@@ -49,7 +49,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   }),
 });
 
-async function deleteDictionary(row: DictionaryDto) {
+async function deleteDictionary(row: BaseDictionaryDto) {
   await dictionaryDeleteApi({ ids: [row.id] });
   useMessage.success('操作成功');
   gridApi.reload();
@@ -58,7 +58,7 @@ async function deleteDictionary(row: DictionaryDto) {
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
-async function openFormModal(row?: DictionaryDto) {
+async function openFormModal(row?: BaseDictionaryDto) {
   let record;
   if (row) {
     record = await dictionaryDetailApi({ id: row.id });
@@ -72,7 +72,7 @@ async function openFormModal(row?: DictionaryDto) {
     .open();
 }
 
-async function toggleEnableStatus(row: DictionaryDto) {
+async function toggleEnableStatus(row: BaseDictionaryDto) {
   const newStatus = !row.isEnabled;
   row.loading = true;
   try {

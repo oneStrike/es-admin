@@ -9,7 +9,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { queryParams, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   categoryBatchDeleteApi,
   categoryBatchUpdateStatusApi,
@@ -43,10 +43,6 @@ const contentTypeMap: Record<number, string> = {};
 const gridOptions: VxeGridProps<BaseCategoryDto> = {
   columns: categoryColumns,
   height: 'auto',
-  sortConfig: {
-    remote: true,
-    multiple: true,
-  },
   rowConfig: {
     drag: true,
   },
@@ -67,7 +63,7 @@ const gridOptions: VxeGridProps<BaseCategoryDto> = {
           formValues.contentType = JSON.stringify(formValues.contentType);
         }
         const gridData = await categoryPageApi(
-          queryParams({ page, formValues, sorts }),
+          formatQuery({ page, formValues, sorts }),
         );
         gridData.list?.map((item) => {
           item.contentType = item.categoryContentTypes.map(

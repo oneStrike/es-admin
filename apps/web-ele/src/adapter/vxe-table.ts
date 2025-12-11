@@ -20,9 +20,12 @@ setupVbenVxeTable({
       grid: {
         align: 'center',
         border: false,
-
         columnConfig: {
           resizable: true,
+        },
+        sortConfig: {
+          remote: true,
+          multiple: true,
         },
         rowConfig: {
           isHover: true,
@@ -159,7 +162,7 @@ setupVbenVxeTable({
 });
 
 // 表格查询参数
-const queryParams = ({ page, formValues, sorts }: any) => {
+const formatQuery = ({ page, formValues, sorts }: any) => {
   if (sorts.length > 0) {
     formValues.orderBy = [];
     sorts.forEach((item: any) => {
@@ -176,6 +179,6 @@ const queryParams = ({ page, formValues, sorts }: any) => {
   };
 };
 
-export { queryParams, useVbenVxeGrid };
+export { formatQuery, useVbenVxeGrid };
 
 export type * from '@vben/plugins/vxe-table';
