@@ -281,43 +281,21 @@ const isUploadHidden = computed(() => {
 }
 
 ::v-deep(.el-upload-list--picture-card) {
-  .el-upload-list__item {
+  .el-upload-list__item,
+  .el-progress--circle {
     width: 100px;
     height: 100px;
+  }
 
-    // 调整进度条样式
-    .el-upload-list__item-status-label {
-      width: 100px;
-      height: 100px;
-      line-height: 100px;
-    }
+  .el-progress--circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    // 调整圆形进度条容器
-    .el-progress {
-      width: 100px;
-      height: 100px;
-
-      // 调整圆形进度条大小
-      .el-progress-circle {
-        width: 100px !important;
-        height: 100px !important;
-
-        // 调整进度文本大小和位置
-        .el-progress-text {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          font-size: 14px;
-          transform: translate(-50%, -50%);
-        }
-
-        // 调整进度条 SVG 元素大小
-        svg {
-          width: 100px;
-          height: 100px;
-        }
-      }
-    }
+  .el-progress-circle {
+    width: 80px !important;
+    height: 80px !important;
   }
 }
 

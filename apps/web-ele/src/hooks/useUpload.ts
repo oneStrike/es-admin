@@ -30,6 +30,7 @@ export async function useUpload(
         file,
       },
       {
+        timeout: 60_000,
         onUploadProgress: (progressEvent) => {
           if (onProgress && progressEvent.total) {
             const percent = Math.round(
