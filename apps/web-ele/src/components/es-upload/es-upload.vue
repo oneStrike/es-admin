@@ -7,6 +7,7 @@ import type {
   UploadRequestOptions,
 } from 'element-plus';
 
+import type { UploadResponseDto } from '#/apis/types/upload';
 import type { EsUploadProps } from '#/components/es-upload/types';
 
 import { ElMessage } from 'element-plus';
@@ -50,29 +51,45 @@ function formatFileList(files: EsUploadProps['modelValue']) {
       if (typeof file === 'string') {
         formatFileList(file);
       } else {
+        // 明确指定 file 的类型
+        const uploadFile = file as UploadResponseDto;
         fileList.value.push({
           uid: random(1000, 9999),
-          size: file.fileSize,
-          name: file.originalName,
-          url: file.filePath,
+          size: uploadFile.fileSize,
+          name: uploadFile.originalName,
+          url: uploadFile.filePath,
           status: 'success',
-          response: cloneDeep(file),
+          response: cloneDeep(uploadFile),
         } as UploadFile);
       }
     });
   } else {
-    const json = safeParseJson(files);
-    if (json) {
-      formatFileList(json as any);
-    } else if (typeof files === 'string') {
-      const fileName = files.split('/').pop();
+    // 明确指定 files 为字符串类型
+    if (typeof files === 'string') {
+      const json = safeParseJson(files);
+      if (json) {
+        formatFileList(json as any);
+      } else {
+        const fileName = files.split('/').pop();
+        fileList.value.push({
+          uid: random(1000, 9999),
+          size: 0,
+          name: fileName ?? '',
+          url: files,
+          status: 'success',
+          response: { filePath: files },
+        } as UploadFile);
+      }
+    } else if (files) {
+      // 处理单个 UploadResponseDto 对象
+      const uploadFile = files as UploadResponseDto;
       fileList.value.push({
         uid: random(1000, 9999),
-        size: 0,
-        name: fileName ?? '',
-        url: files,
+        size: uploadFile.fileSize,
+        name: uploadFile.originalName,
+        url: uploadFile.filePath,
         status: 'success',
-        response: { filePath: files },
+        response: cloneDeep(uploadFile),
       } as UploadFile);
     }
   }
@@ -103,7 +120,11 @@ function beforeUpload(raw: UploadRawFile): boolean {
     ElMessage.error(`文件 ${raw.name} 大小超出限制`);
     return false;
   }
-  if (fileList.value.length >= props.maxCount) {
+  // 只计算成功上传的文件数量
+  const successCount = fileList.value.filter(
+    (file) => file.status === 'success',
+  ).length;
+  if (successCount >= props.maxCount) {
     ElMessage.error('文件超出数量限制');
     return false;
   }
@@ -159,13 +180,32 @@ async function customRequest(options: UploadRequestOptions) {
   );
 
   if (!res) {
+    // 根据 Element Plus 类型定义，创建符合 UploadAjaxError 类型的错误对象
+    options.onError?.({
+      message: '上传失败',
+      status: 500,
+      method: 'post',
+      url: '',
+    } as any);
     return;
   }
 
-  // 通知 Element Plus 上传成功，自动写入 file.response/status
-  options.onSuccess?.(res);
-  skipModalValueWatch = true;
-  handlerModalValue();
+  // 判断是否为错误对象
+  if (res instanceof Error || (res as any).code || (res as any).message) {
+    // 根据 Element Plus 类型定义，创建符合 UploadAjaxError 类型的错误对象
+    options.onError?.({
+      message:
+        res instanceof Error ? res.message : (res as any).message || '上传失败',
+      status: (res as any).status || 500,
+      method: 'post',
+      url: '',
+    } as any);
+  } else {
+    // 通知 Element Plus 上传成功，自动写入 file.response/status
+    options.onSuccess?.(res);
+    skipModalValueWatch = true;
+    handlerModalValue();
+  }
 }
 
 // 超出数量时的提示（Element Plus 触发 exceed）
@@ -185,6 +225,14 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   previewIndex.value = fileList.value.indexOf(uploadFile);
   showPreview.value = true;
 };
+
+// 计算属性：判断是否需要隐藏上传按钮
+const isUploadHidden = computed(() => {
+  return (
+    fileList.value.filter((file) => file.status === 'success').length >=
+    props.maxCount
+  );
+});
 </script>
 
 <template>
@@ -204,6 +252,7 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
       @exceed="onExceed"
       @remove="onRemove"
       :on-preview="handlePictureCardPreview"
+      :class="{ 'hide-upload': isUploadHidden }"
     >
       <div
         class="hover:text-primary flex size-full items-center justify-center text-gray-500"
@@ -235,6 +284,45 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   .el-upload-list__item {
     width: 100px;
     height: 100px;
+
+    // 调整进度条样式
+    .el-upload-list__item-status-label {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+    }
+
+    // 调整圆形进度条容器
+    .el-progress {
+      width: 100px;
+      height: 100px;
+
+      // 调整圆形进度条大小
+      .el-progress-circle {
+        width: 100px !important;
+        height: 100px !important;
+
+        // 调整进度文本大小和位置
+        .el-progress-text {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          font-size: 14px;
+          transform: translate(-50%, -50%);
+        }
+
+        // 调整进度条 SVG 元素大小
+        svg {
+          width: 100px;
+          height: 100px;
+        }
+      }
+    }
   }
+}
+
+// 隐藏上传按钮
+::v-deep(.hide-upload .el-upload--picture-card) {
+  display: none;
 }
 </style>
