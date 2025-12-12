@@ -143,9 +143,10 @@ export const categorySearchSchema = formSchemaTransform.toSearchSchema(
       show: true,
     },
     isEnabled: {
-      label: '状态',
+      label: '',
       component: 'Select',
       componentProps: {
+        placeholder: '状态',
         clearable: true,
         options: [
           {
