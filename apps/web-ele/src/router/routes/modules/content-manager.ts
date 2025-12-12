@@ -40,6 +40,16 @@ const routes: RouteRecordRaw[] = [
           icon: 'codex:dot-circle',
         },
       },
+      {
+        name: 'TagManager',
+        path: '/content-manager/tag-manager',
+        component: () =>
+          import('#/views/content-manager/tag-manager/index.vue'),
+        meta: {
+          title: '标签管理',
+          icon: 'codex:dot-circle',
+        },
+      },
     ],
   },
 ];

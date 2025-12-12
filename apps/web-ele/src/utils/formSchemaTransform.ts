@@ -140,7 +140,7 @@ export const formSchemaTransform: FormSchemaTransform = {
     columnsWithSort.unshift({
       title: '序号',
       type: 'seq',
-      width: 50,
+      width: 80,
       fixed: 'left',
       originalIndex: -1,
       ...extra?.seq,

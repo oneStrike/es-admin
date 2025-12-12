@@ -1,17 +1,16 @@
-import type { BaseCategoryDto } from '#/apis/types/category';
 import type { BaseTagDto } from '#/apis/types/tag';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
 
 /**
- * 分类管理模块的表单 Schema
+ * 标签管理模块的表单 Schema
  */
 export const formSchema: EsFormSchema = [
   {
     component: 'Upload',
     componentProps: {
-      placeholder: '请上传分类图标',
+      placeholder: '请上传标签图标',
     },
     fieldName: 'icon',
     label: '图标',
@@ -20,21 +19,11 @@ export const formSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
-      placeholder: '请输入分类名称',
+      placeholder: '请输入标签名称',
     },
     fieldName: 'name',
-    label: '分类名称',
+    label: '标签名称',
     rules: 'required',
-  },
-  {
-    label: '内容类型',
-    fieldName: 'contentType',
-    component: 'CheckboxGroup',
-    rules: 'required',
-    componentProps: {
-      placeholder: '请选择内容类型',
-      options: [],
-    },
   },
   {
     component: 'InputNumber',
@@ -78,10 +67,10 @@ export const formSchema: EsFormSchema = [
 
 /**
  * 列定义：依据 formSchema 自动转换为表格列，并按需覆盖展示细节。
- * 与数据字典模块一致，统一使用 formSchemaTransform.toTableColumns。
  */
-export const categoryColumns =
-  formSchemaTransform.toTableColumns<BaseCategoryDto>(formSchema, {
+export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
+  formSchema,
+  {
     icon: {
       cellRender: {
         name: 'CellImage',
@@ -90,20 +79,14 @@ export const categoryColumns =
     isEnabled: {
       show: true,
       title: '状态',
-      sort: 99,
+      sort: 10,
       minWidth: 100,
       slots: { default: 'isEnabled' },
     },
     order: {
       sortable: true,
     },
-    contentType: {
-      title: '应用类型',
-      cellRender: {
-        name: 'CellTag',
-      },
-      minWidth: 200,
-    },
+
     popularity: {
       title: '热度',
       field: 'popularity',
@@ -131,36 +114,31 @@ export const categoryColumns =
     seq: {
       dragSort: true,
     },
-  });
-
-/**
- * 搜索表单 Schema：从 formSchema 选择常用筛选项，遵循数据字典的搜索构建方式。
- */
-export const categorySearchSchema = formSchemaTransform.toSearchSchema(
-  formSchema,
-  {
-    name: {
-      show: true,
-    },
-    isEnabled: {
-      label: '状态',
-      component: 'Select',
-      componentProps: {
-        clearable: true,
-        options: [
-          {
-            label: '启用',
-            value: true,
-          },
-          {
-            label: '禁用',
-            value: false,
-          },
-        ],
-      },
-    },
-    contentType: {
-      show: true,
-    },
   },
 );
+
+/**
+ * 搜索表单 Schema：从 formSchema 选择常用筛选项
+ */
+export const tagSearchSchema = formSchemaTransform.toSearchSchema(formSchema, {
+  name: {
+    show: true,
+  },
+  isEnabled: {
+    label: '状态',
+    component: 'Select',
+    componentProps: {
+      clearable: true,
+      options: [
+        {
+          label: '启用',
+          value: true,
+        },
+        {
+          label: '禁用',
+          value: false,
+        },
+      ],
+    },
+  },
+});
