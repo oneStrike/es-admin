@@ -1,13 +1,12 @@
-import { requestClient } from '#/utils/request'
-import type {
-  UploadUploadFileResponse,
-  UploadResponseDto
-} from './types/upload.d'
+import type { UploadUploadFileResponse } from './types/upload.d';
 
+import { requestClient } from '#/utils/request';
 
-  /**
-   * 上传文件
-   */
-  export async function uploadUploadFileApi(): Promise<UploadUploadFileResponse> {
-    return requestClient.post<UploadUploadFileResponse>('/api/admin/upload/upload-file');
-  }
+/**
+ * 上传文件
+ */
+export async function uploadUploadFileApi(): Promise<UploadUploadFileResponse> {
+  return requestClient.post<UploadUploadFileResponse>(
+    '/api/admin/upload/upload-file',
+  );
+}

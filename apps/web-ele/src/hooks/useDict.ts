@@ -1,0 +1,33 @@
+/**
+ * 数据字典
+ */
+import { dictionaryItemsApi } from '#/apis';
+
+export interface UseDictItem {
+  labels: Record<string, string>;
+  options: { label: string; value: string }[];
+}
+
+export async function useDict(
+  codes: string,
+): Promise<Record<string, UseDictItem>> {
+  const data = await dictionaryItemsApi({ dictionaryCode: codes });
+  const returnValue: Record<string, UseDictItem> = {};
+  data.list?.forEach((item) => {
+    // 使用中间变量解决TypeScript类型推断问题
+    let dictItem = returnValue[item.dictionaryCode];
+    if (!dictItem) {
+      dictItem = returnValue[item.dictionaryCode] = {
+        labels: {},
+        options: [],
+      };
+    }
+    // 现在TypeScript可以确定dictItem不是undefined
+    dictItem.labels[item.code] = item.name;
+    dictItem.options.push({
+      label: item.name,
+      value: item.code,
+    });
+  });
+  return returnValue;
+}

@@ -20,6 +20,7 @@ setupVbenVxeTable({
       grid: {
         align: 'center',
         border: false,
+        height: 'auto',
         columnConfig: {
           resizable: true,
         },

@@ -11,6 +11,7 @@ export const formSchema: EsFormSchema = [
     component: 'Upload',
     componentProps: {
       placeholder: '请上传作者头像',
+      scene: 'author',
     },
     fieldName: 'avatar',
     label: '头像',
@@ -41,9 +42,10 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入国籍',
+      placeholder: '请选择国籍',
+      options: [],
     },
     fieldName: 'nationality',
     label: '国籍',
@@ -52,14 +54,10 @@ export const formSchema: EsFormSchema = [
     component: 'CheckboxGroup',
     componentProps: {
       placeholder: '请选择作者身份',
-      options: [
-        { label: '作家', value: 1 },
-        { label: '插画家', value: 2 },
-        { label: '漫画家', value: 4 },
-        { label: '模特', value: 8 },
-      ],
     },
-    fieldName: 'roles',
+
+    rules: 'required',
+    fieldName: 'type',
     label: '身份角色',
   },
   {
@@ -70,16 +68,6 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'description',
     label: '作者描述',
-    formItemClass: 'col-span-2',
-  },
-  {
-    component: 'Textarea',
-    componentProps: {
-      placeholder: '请输入社交媒体链接（JSON格式）',
-      rows: 3,
-    },
-    fieldName: 'socialLinks',
-    label: '社交媒体',
     formItemClass: 'col-span-2',
   },
   {

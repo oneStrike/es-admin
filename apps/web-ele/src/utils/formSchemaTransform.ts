@@ -88,6 +88,9 @@ export const formSchemaTransform: FormSchemaTransform = {
           ...itemExtra,
           originalIndex: i,
           sortValue: itemExtra?.sort,
+          formatter: (row) => {
+            return row.cellValue || '-';
+          },
         });
       }
     }

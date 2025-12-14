@@ -6,24 +6,34 @@ import type {
   CreateAuthorDto,
   UpdateAuthorDto,
 } from '#/apis/types/author';
+import type { BaseAuthorRoleTypeDto } from '#/apis/types/authorRoleType';
+import type { UseDictItem } from '#/hooks/useDict';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  authorBatchUpdateFeaturedApi,
-  authorBatchUpdateStatusApi,
   authorCreateApi,
   authorDeleteApi,
   authorDetailApi,
   authorPageApi,
+  authorRoleTypeListApi,
   authorUpdateApi,
+  authorUpdateFeaturedApi,
+  authorUpdateStatusApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
+import { useDict } from '#/hooks/useDict';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
+import AuthorRole from './role.vue';
 import { authorColumns, authorSearchSchema, formSchema } from './shared';
+
+type AuthorRoleType = Record<
+  BaseAuthorRoleTypeDto['code'],
+  BaseAuthorRoleTypeDto['name']
+>;
 
 /**
  * 通用的成功处理：提示 + 刷新（遵循DRY原则封装重复逻辑）
@@ -33,23 +43,32 @@ function handleSuccessReload(gridApi: any, message = '操作成功'): void {
   gridApi.reload();
 }
 
+const nationalityDict = ref<UseDictItem>();
+const authorRole = ref<AuthorRoleType>();
+async function getFormOptions() {
+  const [{ nationality }, roleListData] = await Promise.all([
+    useDict('nationality'),
+    authorRoleTypeListApi(),
+  ]);
+  nationalityDict.value = nationality;
+  authorRole.value =
+    roleListData?.reduce((acc, cur) => {
+      acc[cur.code] = cur.name;
+      return acc;
+    }, {} as AuthorRoleType) || {};
+}
+
+getFormOptions();
+
 /**
  * VxeGrid 的选项配置
  */
 const gridOptions: VxeGridProps<AuthorPageResponseDto> = {
   columns: authorColumns,
-  height: 'auto',
-  sortConfig: {
-    remote: true,
-    multiple: true,
-  },
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        const gridData = await authorPageApi(
-          formatQuery({ page, formValues, sorts }),
-        );
-        return gridData;
+        return await authorPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
@@ -68,6 +87,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
  */
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
+});
+
+/**
+ * 角色管理弹窗
+ */
+const [RoleModal, roleModalApi] = useVbenModal({
+  connectedComponent: AuthorRole,
 });
 
 /**
@@ -107,12 +133,23 @@ async function openFormModal(row?: AuthorPageResponseDto): Promise<void> {
 }
 
 /**
+ * 打开角色管理弹窗
+ */
+function openRoleModal(): void {
+  roleModalApi
+    .setData({
+      title: '作者角色管理',
+    })
+    .open();
+}
+
+/**
  * 切换启用状态
  */
 async function toggleEnableStatus(row: AuthorPageResponseDto): Promise<void> {
   row.loading = true as any;
-  await authorBatchUpdateStatusApi({
-    ids: [row.id],
+  await authorUpdateStatusApi({
+    id: row.id,
     isEnabled: !row.isEnabled,
   });
   handleSuccessReload(gridApi);
@@ -124,8 +161,8 @@ async function toggleEnableStatus(row: AuthorPageResponseDto): Promise<void> {
  */
 async function toggleFeaturedStatus(row: AuthorPageResponseDto): Promise<void> {
   row.loading = true as any;
-  await authorBatchUpdateFeaturedApi({
-    ids: [row.id],
+  await authorUpdateFeaturedApi({
+    id: row.id,
     featured: !row.featured,
   });
   handleSuccessReload(gridApi);
@@ -165,6 +202,9 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
+        <el-button class="ml-2" type="primary" @click="openRoleModal()">
+          角色管理
+        </el-button>
         <el-button class="ml-2" type="primary" @click="openFormModal()">
           添加
         </el-button>
@@ -212,6 +252,9 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
 
     <!-- 复用模块化的表单 schema -->
     <Form :schema="formSchema" :on-submit="addOrUpdateAuthor" />
+
+    <!-- 角色管理弹窗 -->
+    <RoleModal title="作者角色管理" />
   </Page>
 </template>
 
