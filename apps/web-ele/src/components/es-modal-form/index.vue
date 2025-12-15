@@ -71,7 +71,7 @@ const [BaseForm, formApi] = useVbenForm({
       if (Array.isArray(sharedData.value.bitMaskField)) {
         sharedData.value.bitMaskField.forEach((field) => {
           if (values[field]) {
-            values[field] = useBitMask.set(values[field]);
+            values[field] = useBitMask.join(values[field]);
           }
         });
       }

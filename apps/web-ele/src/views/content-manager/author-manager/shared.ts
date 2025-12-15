@@ -1,7 +1,30 @@
 import type { AuthorPageResponseDto } from '#/apis/types/author';
 import type { EsFormSchema } from '#/types';
 
+import { useBitMask } from '#/hooks/useBitmask';
 import { formSchemaTransform } from '#/utils';
+
+export const genderOptions = [
+  { label: '未知', value: 0 },
+  { label: '男性', value: 1 },
+  { label: '女性', value: 2 },
+  { label: '其他', value: 3 },
+];
+
+export const genderMap = Object.fromEntries(
+  genderOptions.map((option) => [option.value, option.label]),
+) as Record<number, string>;
+
+export const typeOptions = [
+  { label: '作家', value: 1 },
+  { label: '插画家', value: 2 },
+  { label: '漫画家', value: 4 },
+  { label: '模特', value: 8 },
+];
+
+export const typeMap = Object.fromEntries(
+  typeOptions.map((option) => [option.value, option.label]),
+) as Record<number, string>;
 
 /**
  * 作者管理模块的表单 Schema
@@ -20,22 +43,17 @@ export const formSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
-      placeholder: '请输入作者姓名',
+      placeholder: '请输入姓名',
     },
     fieldName: 'name',
-    label: '作者姓名',
+    label: '姓名',
     rules: 'required',
   },
   {
     component: 'Select',
     componentProps: {
       placeholder: '请选择性别',
-      options: [
-        { label: '未知', value: 0 },
-        { label: '男性', value: 1 },
-        { label: '女性', value: 2 },
-        { label: '其他', value: 3 },
-      ],
+      options: genderOptions,
     },
     fieldName: 'gender',
     label: '性别',
@@ -54,6 +72,7 @@ export const formSchema: EsFormSchema = [
     component: 'CheckboxGroup',
     componentProps: {
       placeholder: '请选择作者身份',
+      options: typeOptions,
     },
 
     rules: 'required',
@@ -61,8 +80,9 @@ export const formSchema: EsFormSchema = [
     label: '身份角色',
   },
   {
-    component: 'Textarea',
+    component: 'Input',
     componentProps: {
+      type: 'textarea',
       placeholder: '请输入作者描述',
       rows: 3,
     },
@@ -71,43 +91,17 @@ export const formSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
   },
   {
-    component: 'Textarea',
+    component: 'Input',
     componentProps: {
       placeholder: '请输入管理员备注',
       rows: 3,
+      type: 'textarea',
     },
     fieldName: 'remark',
     label: '备注',
     formItemClass: 'col-span-2',
   },
 ];
-
-/**
- * 角色位运算转换为名称数组
- */
-function getRoleNames(roles?: number): string[] {
-  if (!roles) return [];
-  const roleMap = [
-    { bit: 1, name: '作家' },
-    { bit: 2, name: '插画家' },
-    { bit: 4, name: '漫画家' },
-    { bit: 8, name: '模特' },
-  ];
-  return roleMap.filter((role) => roles & role.bit).map((role) => role.name);
-}
-
-/**
- * 性别枚举转换
- */
-function getGenderLabel(gender: 0 | 1 | 2 | 3): string {
-  const genderMap = {
-    0: '未知',
-    1: '男性',
-    2: '女性',
-    3: '其他',
-  };
-  return genderMap[gender];
-}
 
 /**
  * 列定义：依据 formSchema 自动转换为表格列，并按需覆盖展示细节
@@ -120,11 +114,12 @@ export const authorColumns =
       },
     },
     gender: {
-      formatter: ({ cellValue }) => getGenderLabel(cellValue),
+      formatter: ({ cellValue }) => genderMap[cellValue] ?? '-',
     },
-    roles: {
+    type: {
       title: '身份角色',
-      formatter: ({ cellValue }) => getRoleNames(cellValue).join('、'),
+      formatter: ({ cellValue }) =>
+        useBitMask.getLabels(cellValue, typeOptions).join('、'),
       minWidth: 150,
     },
     isEnabled: {
@@ -134,12 +129,12 @@ export const authorColumns =
       minWidth: 100,
       slots: { default: 'isEnabled' },
     },
-    featured: {
+    isRecommended: {
       show: true,
       title: '推荐',
-      sort: 99,
+      sort: 12,
       minWidth: 100,
-      slots: { default: 'featured' },
+      slots: { default: 'isRecommended' },
     },
     worksCount: {
       show: true,
@@ -200,7 +195,7 @@ export const authorSearchSchema = formSchemaTransform.toSearchSchema(
         ],
       },
     },
-    featured: {
+    isRecommended: {
       label: '是否推荐',
       component: 'Select',
       componentProps: {

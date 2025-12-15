@@ -6,7 +6,12 @@ import { cloneDeep } from 'lodash-es';
 type ColumnItemExtra<T> = Partial<
   Record<
     EsFormSchema[number]['fieldName'],
-    Partial<T> & { hide?: boolean; show?: boolean; sort?: number }
+    Partial<T> & {
+      formatter?: VxeGridPropTypes.Columns<T>[number]['formatter'];
+      hide?: boolean;
+      show?: boolean;
+      sort?: number;
+    }
   >
 >;
 
@@ -79,18 +84,18 @@ export const formSchemaTransform: FormSchemaTransform = {
     for (const [i, item] of innerSchema.entries()) {
       const itemExtra = extra?.[item.fieldName];
       delete extra?.[item.fieldName];
-      if (!itemExtra?.hide) {
+      if (!itemExtra || !itemExtra?.hide) {
         columnsWithSort.push({
           title: item.label as string,
           field: item.fieldName,
           align: 'center',
           minWidth: 100,
-          ...itemExtra,
           originalIndex: i,
           sortValue: itemExtra?.sort,
-          formatter: (row) => {
-            return row.cellValue || '-';
+          formatter: ({ cellValue }) => {
+            return cellValue || '-';
           },
+          ...itemExtra,
         });
       }
     }
@@ -216,6 +221,11 @@ export const formSchemaTransform: FormSchemaTransform = {
         const item = extra[key];
         if (item) {
           item.fieldName = item?.fieldName || key;
+          item.componentProps = {
+            ...item.componentProps,
+            // @ts-expect-error ignore
+            placeholder: item.componentProps.placeholder ?? item.label,
+          };
           filterListWithSort.push({
             ...item,
             originalIndex: filterListWithSort.length,
@@ -224,10 +234,8 @@ export const formSchemaTransform: FormSchemaTransform = {
         }
       });
     }
-    typeof (
-      // 根据 sort 属性排序，没有 sort 的保持原有位置
-      sortItemsWithSortValue(filterListWithSort)
-    );
+    // 根据 sort 属性排序，没有 sort 的保持原有位置
+    sortItemsWithSortValue(filterListWithSort);
 
     // 移除辅助属性，返回最终的过滤列表
     return filterListWithSort;

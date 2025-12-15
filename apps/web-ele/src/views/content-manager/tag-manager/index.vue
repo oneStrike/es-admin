@@ -51,10 +51,7 @@ const gridOptions: VxeGridProps<BaseTagDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        const gridData = await tagPageApi(
-          formatQuery({ page, formValues, sorts }),
-        );
-        return gridData;
+        return await tagPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
