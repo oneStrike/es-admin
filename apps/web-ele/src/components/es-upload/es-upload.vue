@@ -65,7 +65,7 @@ function formatFileList(files: EsUploadProps['modelValue']) {
     });
   } else {
     // 明确指定 files 为字符串类型
-    if (typeof files === 'string') {
+    if (typeof files === 'string' && files.trim()) {
       const json = safeParseJson(files);
       if (json) {
         formatFileList(json as any);

@@ -90,7 +90,6 @@ export const formSchemaTransform: FormSchemaTransform = {
           field: item.fieldName,
           align: 'center',
           minWidth: 100,
-          originalIndex: i,
           sortValue: itemExtra?.sort,
           formatter: ({ cellValue }) => {
             return cellValue || '-';

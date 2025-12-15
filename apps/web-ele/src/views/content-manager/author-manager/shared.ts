@@ -1,7 +1,6 @@
 import type { AuthorPageResponseDto } from '#/apis/types/author';
 import type { EsFormSchema } from '#/types';
 
-import { useBitMask } from '#/hooks/useBitmask';
 import { formSchemaTransform } from '#/utils';
 
 export const genderOptions = [
@@ -118,8 +117,12 @@ export const authorColumns =
     },
     type: {
       title: '身份角色',
-      formatter: ({ cellValue }) =>
-        useBitMask.getLabels(cellValue, typeOptions).join('、'),
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          bitMaskOptions: typeOptions,
+        },
+      },
       minWidth: 150,
     },
     isEnabled: {
