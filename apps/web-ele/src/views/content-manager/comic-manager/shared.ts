@@ -30,6 +30,17 @@ export const serialStatusMap = Object.fromEntries(
   serialStatus.map((item) => [item.value, item.label]),
 );
 
+export const canDownload = [
+  { label: '禁止', value: 0 },
+  { label: '允许', value: 1 },
+  { label: '会员', value: 2 },
+  { label: '积分', value: 3 },
+];
+
+export const canDownloadMap = Object.fromEntries(
+  canDownload.map((item) => [item.value, item.label]),
+);
+
 // 表单配置
 const authorOptions = ref<{ label: string; value: number }[]>([]);
 export const formSchema: EsFormSchema = [
@@ -84,13 +95,31 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入阅读消耗积分',
+      min: 0,
+      max: 999_999_999,
+      align: 'left',
+      class: '!w-full',
+      controlsPosition: 'right',
+    },
+    dependencies: {
+      show: (value) => value?.readRule === 3,
+      // 只有指定的字段改变时，才会触发
+      triggerFields: ['readRule'],
+    },
+    fieldName: 'readPoints',
+    label: '消耗积分',
+    rules: 'required',
+  },
+  {
     component: 'Select',
     componentProps: {
       placeholder: '输入作者名称进行搜索',
       remote: true,
       multiple: true,
       filterable: true,
-      collapseTags: true,
       multipleLimit: 4,
       options: authorOptions,
       remoteMethod: async (params: string) => {
@@ -109,35 +138,39 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入出版社',
+      placeholder: '请选择出版社',
+      options: [],
     },
     fieldName: 'publisher',
     label: '出版社',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入地区代码',
+      placeholder: '请选择地区',
+      options: [],
     },
     fieldName: 'region',
     label: '地区',
     rules: 'required',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入语言代码',
+      placeholder: '请选择语言',
+      options: [],
     },
     fieldName: 'language',
     label: '语言',
     rules: 'required',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入年龄分级',
+      placeholder: '请选择年龄分级',
+      options: [],
     },
     fieldName: 'ageRating',
     label: '年龄分级',
@@ -145,11 +178,9 @@ export const formSchema: EsFormSchema = [
   },
 
   {
-    component: 'Input',
+    component: 'RichText',
     componentProps: {
-      type: 'textarea',
       placeholder: '请输入漫画简介',
-      rows: 4,
     },
     fieldName: 'description',
     label: '漫画简介',
@@ -166,12 +197,13 @@ export const formSchema: EsFormSchema = [
     defaultValue: true,
   },
   {
-    component: 'Checkbox',
+    component: 'Select',
     componentProps: {
-      placeholder: '是否允许下载',
+      placeholder: '请选择下载权限',
+      options: canDownload,
     },
     fieldName: 'canDownload',
-    label: '允许下载',
+    label: '下载权限',
     defaultValue: false,
   },
   {
@@ -284,11 +316,6 @@ export const formSchema: EsFormSchema = [
 export const pageColumns = formSchemaTransform.toTableColumns<BaseComicDto>(
   formSchema,
   {
-    name: {
-      title: '漫画名称',
-      width: 300,
-      showOverflow: 'tooltip',
-    },
     cover: {
       title: '封面',
       width: 100,
@@ -301,19 +328,15 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseComicDto>(
         },
       },
     },
+    name: {
+      title: '漫画名称',
+      width: 200,
+      showOverflow: 'tooltip',
+    },
     comicAuthors: {
       title: '作者',
       width: 150,
-      cellRender: {
-        name: 'CellText',
-        props: {
-          formatter: (row: BaseComicDto) => {
-            return (
-              row.comicAuthors?.map((author) => author.name).join(', ') || '-'
-            );
-          },
-        },
-      },
+      sort: 1,
     },
     comicCategories: {
       title: '分类',

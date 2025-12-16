@@ -50,20 +50,22 @@ function sortItemsWithSortValue<
   return items.sort((a, b) => {
     // 如果两个都有 sort 值，按 sort 值排序
     if (a.sortValue !== undefined && b.sortValue !== undefined) {
+      // 当 sort 值相等时，按照原始索引排序
+      if (a.sortValue === b.sortValue) {
+        return a.originalIndex - b.originalIndex;
+      }
       return a.sortValue - b.sortValue;
     }
     // 如果两个都没有 sort 值，按原有位置排序
     if (a.sortValue === undefined && b.sortValue === undefined) {
       return a.originalIndex - b.originalIndex;
     }
-    // 如果只有一个有 sort 值，需要比较 sort 值和原始位置
+    // 如果只有一个有 sort 值，有 sort 值的排在前面
     if (a.sortValue !== undefined && b.sortValue === undefined) {
-      // 如果 a 的 sort 值小于等于 b 的原始位置，a 排在前面
-      return a.sortValue <= b.originalIndex ? -1 : 1;
+      return -1;
     }
     if (a.sortValue === undefined && b.sortValue !== undefined) {
-      // 如果 b 的 sort 值小于等于 a 的原始位置，b 排在前面
-      return b.sortValue <= a.originalIndex ? 1 : -1;
+      return 1;
     }
     // 默认按原有位置排序
     return a.originalIndex - b.originalIndex;
@@ -81,7 +83,7 @@ export const formSchemaTransform: FormSchemaTransform = {
       }
     > = [];
 
-    for (const [i, item] of innerSchema.entries()) {
+    innerSchema.forEach((item, idx) => {
       const itemExtra = extra?.[item.fieldName];
       delete extra?.[item.fieldName];
       if (!itemExtra || !itemExtra?.hide) {
@@ -91,13 +93,15 @@ export const formSchemaTransform: FormSchemaTransform = {
           align: 'center',
           minWidth: 100,
           sortValue: itemExtra?.sort,
+          originalIndex: idx,
           formatter: ({ cellValue }) => {
             return cellValue || '-';
           },
           ...itemExtra,
         });
       }
-    }
+    });
+
     if (extra?.actions && extra.actions.show) {
       columnsWithSort.push({
         title: '操作',
@@ -119,13 +123,13 @@ export const formSchemaTransform: FormSchemaTransform = {
         align: 'center',
         originalIndex: 99,
         width: 150,
-        ...extra?.actions,
+        ...extra?.createdAt, // 修复：原来是 ...extra?.actions
         sortable: true,
         cellRender: {
           name: 'CellDate',
         },
       });
-      delete extra.actions;
+      delete extra.createdAt; // 修复：原来是 delete extra.actions
     }
 
     if (extra && Object.keys(extra).length > 0) {
@@ -135,7 +139,7 @@ export const formSchemaTransform: FormSchemaTransform = {
           columnsWithSort.push({
             ...item,
             field: key,
-            originalIndex: item?.sort ?? -1,
+            originalIndex: item?.sort ?? columnsWithSort.length, // 改进：更合理的默认值
           });
         }
       });
