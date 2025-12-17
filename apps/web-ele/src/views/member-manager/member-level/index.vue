@@ -21,6 +21,7 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 
+import MemberLevelDetail from './detail.vue';
 import { formSchema, pageColumns } from './shared';
 
 const gridOptions: VxeGridProps<BaseMemberLevelDto> = {
@@ -43,6 +44,10 @@ const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
+const [Detail, detailApi] = useVbenModal({
+  connectedComponent: MemberLevelDetail,
+});
+
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
@@ -53,6 +58,10 @@ async function openFormModal(row?: BaseMemberLevelDto) {
     record = await memberLevelDetailApi({ id: row.id });
   }
   formApi.setData({ title: '会员等级', record, schema: formSchema }).open();
+}
+
+function openDetailModal(row: BaseMemberLevelDto) {
+  detailApi.setData({ recordId: row.id, title: '会员等级详情' }).open();
 }
 
 async function handleSubmit(
@@ -120,6 +129,10 @@ async function toggleStatus(record: BaseMemberLevelDto) {
 
       <template #actions="{ row }">
         <div class="my-1">
+          <el-button link type="primary" @click="openDetailModal(row)">
+            详情
+          </el-button>
+          <el-divider direction="vertical" />
           <el-button link type="primary" @click="openFormModal(row)">
             编辑
           </el-button>
@@ -139,6 +152,7 @@ async function toggleStatus(record: BaseMemberLevelDto) {
     </Grid>
 
     <Form :on-submit="handleSubmit" />
+    <Detail />
   </Page>
 </template>
 

@@ -60,9 +60,9 @@ function sortItemsWithSortValue<
     if (a.sortValue === undefined && b.sortValue === undefined) {
       return a.originalIndex - b.originalIndex;
     }
-    // 如果只有一个有 sort 值，有 sort 值的排在前面
+    // 如果只有一个有 sort 值，有 sort 值的排在后面
     if (a.sortValue !== undefined && b.sortValue === undefined) {
-      return -1;
+      return 1;
     }
     if (a.sortValue === undefined && b.sortValue !== undefined) {
       return 1;

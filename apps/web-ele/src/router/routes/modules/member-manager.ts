@@ -7,7 +7,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '会员管理',
       order: 3,
-      icon: 'codex:user-group',
+      icon: 'majesticons:users-line',
     },
     children: [
       {

@@ -58,7 +58,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
   }),
 });
 
+const nationalityMap = ref();
 useDict('nationality').then(({ nationality }) => {
+  nationalityMap.value = nationality?.labels ?? {};
   useForm.setOptions(formSchema, {
     nationality: nationality?.options || [],
   });
@@ -169,6 +171,9 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
         />
       </template>
 
+      <template #nationality="{ row }">
+        <span>{{ nationalityMap?.[row.nationality!] || '-' }}</span>
+      </template>
       <template #isRecommended="{ row }">
         <el-switch
           :active-value="true"

@@ -76,35 +76,30 @@ export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
         name: 'CellImage',
       },
     },
-    isEnabled: {
-      show: true,
-      title: '状态',
-      sort: 10,
-      minWidth: 100,
-      slots: { default: 'isEnabled' },
-    },
+
     order: {
       sortable: true,
     },
-
+    popularityWeight: {
+      sortable: true,
+      formatter: ({ row }: { row: BaseTagDto }) => {
+        return row.popularityWeight || '0';
+      },
+    },
     popularity: {
       title: '热度',
       field: 'popularity',
-      sort: 9,
       minWidth: 100,
       sortable: true,
     },
-    popularityWeight: {
-      sort: 10,
-      sortable: true,
+
+    isEnabled: {
+      show: true,
+      title: '状态',
+      minWidth: 100,
+      slots: { default: 'isEnabled' },
     },
-    description: {
-      minWidth: 200,
-      sort: 20,
-      formatter: ({ row }: { row: BaseTagDto }) => {
-        return row.description || '-';
-      },
-    },
+
     createdAt: {
       show: true,
     },
@@ -113,6 +108,10 @@ export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
     },
     seq: {
       dragSort: true,
+    },
+    description: {
+      sort: 80,
+      minWidth: 200,
     },
   },
 );

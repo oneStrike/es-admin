@@ -107,6 +107,12 @@ export const formSchema: EsFormSchema = [
  */
 export const authorColumns =
   formSchemaTransform.toTableColumns<AuthorPageResponseDto>(formSchema, {
+    description: {
+      hide: true,
+    },
+    remark: {
+      hide: true,
+    },
     avatar: {
       cellRender: {
         name: 'CellImage',
@@ -114,6 +120,9 @@ export const authorColumns =
     },
     gender: {
       formatter: ({ cellValue }) => genderMap[cellValue] ?? '-',
+    },
+    nationality: {
+      slots: { default: 'nationality' },
     },
     type: {
       title: '身份角色',
@@ -181,6 +190,7 @@ export const authorSearchSchema = formSchemaTransform.toSearchSchema(
     nationality: {
       show: true,
     },
+
     isEnabled: {
       label: '状态',
       component: 'Select',

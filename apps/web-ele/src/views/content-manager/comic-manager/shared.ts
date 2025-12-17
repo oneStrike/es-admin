@@ -30,19 +30,7 @@ export const serialStatusMap = Object.fromEntries(
   serialStatus.map((item) => [item.value, item.label]),
 );
 
-export const canDownload = [
-  { label: '禁止', value: 0 },
-  { label: '允许', value: 1 },
-  { label: '会员', value: 2 },
-  { label: '积分', value: 3 },
-];
-
-export const canDownloadMap = Object.fromEntries(
-  canDownload.map((item) => [item.value, item.label]),
-);
-
 // 表单配置
-const authorOptions = ref<{ label: string; value: number }[]>([]);
 export const formSchema: EsFormSchema = [
   {
     component: 'Upload',
@@ -95,42 +83,18 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    component: 'InputNumber',
+    component: 'ApiSelect',
     componentProps: {
-      placeholder: '请输入阅读消耗积分',
-      min: 0,
-      max: 999_999_999,
-      align: 'left',
-      class: '!w-full',
-      controlsPosition: 'right',
-    },
-    dependencies: {
-      show: (value) => value?.readRule === 3,
-      // 只有指定的字段改变时，才会触发
-      triggerFields: ['readRule'],
-    },
-    fieldName: 'readPoints',
-    label: '消耗积分',
-    rules: 'required',
-  },
-  {
-    component: 'Select',
-    componentProps: {
+      api: authorPageApi,
       placeholder: '输入作者名称进行搜索',
-      remote: true,
-      multiple: true,
-      filterable: true,
-      multipleLimit: 4,
-      options: authorOptions,
-      remoteMethod: async (params: string) => {
-        const data = await authorPageApi({
-          name: params,
-        });
-        authorOptions.value =
-          data?.list?.map((item) => ({
-            label: item.name,
-            value: item.id,
-          })) || [];
+      showSearch: true,
+      labelField: 'name',
+      valueField: 'id',
+      afterFetch: (data: any) => {
+        return data.list || [];
+      },
+      params: {
+        pageSize: 50,
       },
     },
     fieldName: 'author',
@@ -138,39 +102,35 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    component: 'Select',
+    component: 'Input',
     componentProps: {
-      placeholder: '请选择出版社',
-      options: [],
+      placeholder: '请输入出版社',
     },
     fieldName: 'publisher',
     label: '出版社',
   },
   {
-    component: 'Select',
+    component: 'Input',
     componentProps: {
-      placeholder: '请选择地区',
-      options: [],
+      placeholder: '请输入地区代码',
     },
     fieldName: 'region',
     label: '地区',
     rules: 'required',
   },
   {
-    component: 'Select',
+    component: 'Input',
     componentProps: {
-      placeholder: '请选择语言',
-      options: [],
+      placeholder: '请输入语言代码',
     },
     fieldName: 'language',
     label: '语言',
     rules: 'required',
   },
   {
-    component: 'Select',
+    component: 'Input',
     componentProps: {
-      placeholder: '请选择年龄分级',
-      options: [],
+      placeholder: '请输入年龄分级',
     },
     fieldName: 'ageRating',
     label: '年龄分级',
@@ -178,9 +138,11 @@ export const formSchema: EsFormSchema = [
   },
 
   {
-    component: 'RichText',
+    component: 'Input',
     componentProps: {
+      type: 'textarea',
       placeholder: '请输入漫画简介',
+      rows: 4,
     },
     fieldName: 'description',
     label: '漫画简介',
@@ -197,13 +159,12 @@ export const formSchema: EsFormSchema = [
     defaultValue: true,
   },
   {
-    component: 'Select',
+    component: 'Checkbox',
     componentProps: {
-      placeholder: '请选择下载权限',
-      options: canDownload,
+      placeholder: '是否允许下载',
     },
     fieldName: 'canDownload',
-    label: '下载权限',
+    label: '允许下载',
     defaultValue: false,
   },
   {
@@ -316,6 +277,11 @@ export const formSchema: EsFormSchema = [
 export const pageColumns = formSchemaTransform.toTableColumns<BaseComicDto>(
   formSchema,
   {
+    name: {
+      title: '漫画名称',
+      width: 300,
+      showOverflow: 'tooltip',
+    },
     cover: {
       title: '封面',
       width: 100,
@@ -328,15 +294,19 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseComicDto>(
         },
       },
     },
-    name: {
-      title: '漫画名称',
-      width: 200,
-      showOverflow: 'tooltip',
-    },
     comicAuthors: {
       title: '作者',
       width: 150,
-      sort: 1,
+      cellRender: {
+        name: 'CellText',
+        props: {
+          formatter: (row: BaseComicDto) => {
+            return (
+              row.comicAuthors?.map((author) => author.name).join(', ') || '-'
+            );
+          },
+        },
+      },
     },
     comicCategories: {
       title: '分类',

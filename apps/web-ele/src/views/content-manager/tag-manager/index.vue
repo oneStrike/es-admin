@@ -34,7 +34,6 @@ function handleSuccessReload(gridApi: any, message = '操作成功'): void {
  */
 const gridOptions: VxeGridProps<BaseTagDto> = {
   columns: tagColumns,
-  height: 'auto',
   rowConfig: {
     drag: true,
   },
