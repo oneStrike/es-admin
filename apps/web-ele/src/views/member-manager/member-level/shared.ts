@@ -48,7 +48,7 @@ export const formSchema: EsFormSchema = [
       placeholder: '请选择会员等级专属标识颜色',
     },
     fieldName: 'color',
-    label: '标识颜色',
+    label: '专属颜色',
     rules: 'selectRequired',
   },
   {
@@ -56,7 +56,7 @@ export const formSchema: EsFormSchema = [
     componentProps: {
       type: 'textarea',
       placeholder: '请输入会员等级描述',
-      rows: 3,
+      rows: 4,
     },
     fieldName: 'description',
     label: '等级描述',
@@ -166,18 +166,16 @@ export const pageColumns =
       },
     },
     color: {
-      title: '标识颜色',
-      minWidth: 100,
+      minWidth: 120,
       slots: { default: 'color' },
     },
-    points: {
-      title: '所需积分',
-      minWidth: 100,
+    description: {
+      hide: true,
     },
-    loginDays: {
-      title: '所需登录天数',
-      minWidth: 120,
+    remark: {
+      hide: true,
     },
+
     discount: {
       title: '积分购买折扣',
       minWidth: 120,
@@ -185,49 +183,13 @@ export const pageColumns =
         return `${(cellValue * 100).toFixed(0)}%`;
       },
     },
-    workCollectionLimit: {
-      title: '作品收藏上限',
-      minWidth: 120,
-    },
-    blacklistLimit: {
-      title: '黑名单上限',
-      minWidth: 120,
-    },
     isEnabled: {
       show: true,
       title: '是否启用',
       minWidth: 100,
       slots: { default: 'isEnabled' },
     },
-    createdAt: {
-      show: true,
-      title: '创建时间',
-      minWidth: 160,
-    },
     actions: {
       show: true,
-      width: 180,
-      slots: { default: 'actions' },
     },
   });
-
-/**
- * 搜索表单 Schema：从 formSchema 选择常用筛选项
- */
-export const pageFilter = formSchemaTransform.toSearchSchema(formSchema, {
-  name: {
-    show: true,
-  },
-  isEnabled: {
-    show: true,
-    label: '状态',
-    component: 'Select',
-    componentProps: {
-      clearable: true,
-      options: [
-        { label: '启用', value: true },
-        { label: '禁用', value: false },
-      ],
-    },
-  },
-});

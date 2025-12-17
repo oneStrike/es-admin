@@ -20,13 +20,11 @@ import {
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
-import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { formSchema, pageColumns, pageFilter } from './shared';
+import { formSchema, pageColumns } from './shared';
 
 const gridOptions: VxeGridProps<BaseMemberLevelDto> = {
   columns: pageColumns,
-  height: 'auto',
   proxyConfig: {
     ajax: {
       query: async () => {
@@ -46,7 +44,6 @@ const [Form, formApi] = useVbenModal({
 });
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(pageFilter),
   gridOptions,
 });
 
@@ -104,7 +101,7 @@ async function toggleStatus(record: BaseMemberLevelDto) {
       <template #color="{ row }">
         <div class="flex items-center justify-center">
           <div
-            class="h-6 w-6 rounded-full"
+            class="h-6 w-6 rounded-md"
             :style="{ backgroundColor: row.color }"
           ></div>
           <span class="ml-2">{{ row.color }}</span>

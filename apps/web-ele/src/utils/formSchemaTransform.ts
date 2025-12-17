@@ -86,7 +86,7 @@ export const formSchemaTransform: FormSchemaTransform = {
     innerSchema.forEach((item, idx) => {
       const itemExtra = extra?.[item.fieldName];
       delete extra?.[item.fieldName];
-      if (!itemExtra || !itemExtra?.hide) {
+      if ((!itemExtra || !itemExtra?.hide) && item.component !== 'Divider') {
         columnsWithSort.push({
           title: item.label as string,
           field: item.fieldName,
