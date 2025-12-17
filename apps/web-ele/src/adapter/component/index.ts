@@ -111,6 +111,14 @@ const ElTreeSelect = defineAsyncComponent(() =>
     import('element-plus/es/components/tree-select/style/css'),
   ]).then(([res]) => res.ElTreeSelect),
 );
+
+const ElColorPicker = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/color-picker/index'),
+    import('element-plus/es/components/color-picker/style/css'),
+  ]).then(([res]) => res.ElColorPicker),
+);
+
 const ElUpload = defineAsyncComponent(() => import('#/components/es-upload'));
 
 const RichText = defineAsyncComponent(() => import('#/components/es-editor'));
@@ -155,6 +163,7 @@ export type ComponentType =
   | 'ApiTreeSelect'
   | 'Checkbox'
   | 'CheckboxGroup'
+  | 'ColorPicker'
   | 'DatePicker'
   | 'Divider'
   | 'IconPicker'
@@ -237,7 +246,11 @@ async function initComponentAdapter() {
       inputComponent: ElInput,
     }),
     Input: withDefaultPlaceholder(ElInput, 'input'),
-    InputNumber: withDefaultPlaceholder(ElInputNumber, 'input'),
+    InputNumber: withDefaultPlaceholder(ElInputNumber, 'input', {
+      align: 'left',
+      style: 'width: 100% !important',
+      controlsPosition: 'right',
+    }),
     RadioGroup: (props, { attrs, slots }) => {
       let defaultSlot;
       if (Reflect.has(slots, 'default')) {
@@ -313,6 +326,7 @@ async function initComponentAdapter() {
     },
     TreeSelect: withDefaultPlaceholder(ElTreeSelect, 'select'),
     Upload: ElUpload,
+    ColorPicker: withDefaultPlaceholder(ElColorPicker, 'select'),
     RichText,
   };
 
