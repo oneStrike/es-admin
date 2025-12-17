@@ -119,7 +119,7 @@ async function toggleEnableStatus(record: BaseClientPageDto) {
             type="primary"
             @click="detailApi.setData({ recordId: row.id }).open()"
           >
-            查看
+            详情
           </el-button>
           <el-divider direction="vertical" />
           <el-button link type="primary" @click="openFormModal(row)">

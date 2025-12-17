@@ -60,10 +60,8 @@ itemFormSchema.splice(3, 0, {
 export const dictionaryColumns =
   formSchemaTransform.toTableColumns<BaseDictionaryDto>(formSchema, {
     actions: {
+      width: 180,
       show: true,
-    },
-    name: {
-      slots: { default: 'name' },
     },
     code: {
       width: 300,
@@ -81,11 +79,7 @@ export const dictionaryColumns =
       sort: 98,
       slots: { default: 'isEnabled' },
     },
-    description: {
-      formatter: ({ cellValue }: any) => {
-        return cellValue || '-';
-      },
-    },
+
     createdAt: {
       show: true,
     },

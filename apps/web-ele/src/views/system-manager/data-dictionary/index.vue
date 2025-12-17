@@ -108,15 +108,6 @@ const [Detail, detailApi] = useVbenModal({
           添加
         </el-button>
       </template>
-      <template #name="{ row }">
-        <el-text
-          class="cursor-pointer hover:opacity-50"
-          type="primary"
-          @click="detailApi.setData({ record: row }).open()"
-        >
-          {{ row.name }}
-        </el-text>
-      </template>
       <template #isEnabled="{ row }">
         <el-switch
           :active-value="true"
@@ -128,6 +119,14 @@ const [Detail, detailApi] = useVbenModal({
       </template>
 
       <template #actions="{ row }">
+        <el-button
+          link
+          type="primary"
+          @click="detailApi.setData({ record: row }).open()"
+        >
+          子项
+        </el-button>
+        <el-divider direction="vertical" />
         <el-button link type="primary" @click="openFormModal(row)">
           编辑
         </el-button>

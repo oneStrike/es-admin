@@ -267,7 +267,7 @@ export const noticeColumns =
     },
     actions: {
       show: true,
-      width: 210,
+      width: 260,
     },
     title: {
       slots: { default: 'title' },

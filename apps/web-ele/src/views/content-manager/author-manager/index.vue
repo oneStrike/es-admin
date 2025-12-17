@@ -7,6 +7,8 @@ import type {
   UpdateAuthorDto,
 } from '#/apis/types/author';
 
+import { ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -26,6 +28,7 @@ import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
+import AuthorDetail from './detail.vue';
 import { authorColumns, authorSearchSchema, formSchema } from './shared';
 
 /**
@@ -75,6 +78,24 @@ useDict('nationality').then(({ nationality }) => {
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
+
+/**
+ * 详情弹窗 - 使用子组件注册的方式
+ */
+const detailModalRef = ref();
+
+/**
+ * 打开详情弹窗
+ */
+function openDetailModal(row: AuthorPageResponseDto): void {
+  detailModalRef.value
+    ?.setData({
+      recordId: row.id,
+      title: '作者详情',
+      nationalityMap: nationalityMap.value,
+    })
+    .open();
+}
 
 /**
  * 打开表单弹窗
@@ -185,6 +206,10 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
       </template>
 
       <template #actions="{ row }">
+        <el-button link type="primary" @click="openDetailModal(row)">
+          详情
+        </el-button>
+        <el-divider direction="vertical" />
         <el-button link type="primary" @click="openFormModal(row)">
           编辑
         </el-button>
@@ -206,6 +231,7 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
 
     <!-- 复用模块化的表单 schema -->
     <Form :schema="formSchema" :on-submit="addOrUpdateAuthor" />
+    <AuthorDetail ref="detailModalRef" />
   </Page>
 </template>
 

@@ -232,6 +232,11 @@ const [DetailModal, detailApi] = useVbenModal({
       <template #actions="{ row }">
         <div class="my-1">
           <el-button link type="primary" @click="openFormModal(row)">
+            详情
+          </el-button>
+
+          <el-divider direction="vertical" />
+          <el-button link type="primary" @click="openFormModal(row)">
             编辑
           </el-button>
 
