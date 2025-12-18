@@ -2,7 +2,27 @@ import type { BaseCategoryDto } from '#/apis/types/category';
 import type { BaseTagDto } from '#/apis/types/tag';
 import type { EsFormSchema } from '#/types';
 
+import { ContentTypeEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
+
+export const contentTypeOptions = [
+  {
+    label: '漫画',
+    value: ContentTypeEnum.COMIC,
+  },
+  {
+    label: '插画',
+    value: ContentTypeEnum.ILLUSTRATION,
+  },
+  {
+    label: '小说',
+    value: ContentTypeEnum.NOVEL,
+  },
+  {
+    label: '写真',
+    value: ContentTypeEnum.PHOTO,
+  },
+];
 
 /**
  * 分类管理模块的表单 Schema
@@ -33,7 +53,7 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
     componentProps: {
       placeholder: '请选择内容类型',
-      options: [],
+      options: contentTypeOptions,
     },
   },
   {
@@ -101,6 +121,9 @@ export const categoryColumns =
       title: '应用类型',
       cellRender: {
         name: 'CellTag',
+        props: {
+          bitMaskOptions: contentTypeOptions,
+        },
       },
       minWidth: 200,
     },

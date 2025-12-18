@@ -1,10 +1,8 @@
 import type {
-  CategoryBatchDeleteRequest,
-  CategoryBatchDeleteResponse,
-  CategoryBatchUpdateStatusRequest,
-  CategoryBatchUpdateStatusResponse,
   CategoryCreateRequest,
   CategoryCreateResponse,
+  CategoryDeleteRequest,
+  CategoryDeleteResponse,
   CategoryDetailRequest,
   CategoryDetailResponse,
   CategoryOrderRequest,
@@ -13,6 +11,8 @@ import type {
   CategoryPageResponse,
   CategoryUpdateRequest,
   CategoryUpdateResponse,
+  CategoryUpdateStatusRequest,
+  CategoryUpdateStatusResponse,
 } from './types/category.d';
 
 import { requestClient } from '#/utils/request';
@@ -66,30 +66,6 @@ export async function categoryUpdateApi(
 }
 
 /**
- * 批量更新分类状态
- */
-export async function categoryBatchUpdateStatusApi(
-  params: CategoryBatchUpdateStatusRequest,
-): Promise<CategoryBatchUpdateStatusResponse> {
-  return requestClient.post<CategoryBatchUpdateStatusResponse>(
-    '/api/admin/work/category/batch-update-status',
-    params,
-  );
-}
-
-/**
- * 批量删除分类
- */
-export async function categoryBatchDeleteApi(
-  params: CategoryBatchDeleteRequest,
-): Promise<CategoryBatchDeleteResponse> {
-  return requestClient.post<CategoryBatchDeleteResponse>(
-    '/api/admin/work/category/batch-delete',
-    params,
-  );
-}
-
-/**
  * 分类拖拽排序
  */
 export async function categoryOrderApi(
@@ -97,6 +73,30 @@ export async function categoryOrderApi(
 ): Promise<CategoryOrderResponse> {
   return requestClient.post<CategoryOrderResponse>(
     '/api/admin/work/category/order',
+    params,
+  );
+}
+
+/**
+ * 更新分类状态
+ */
+export async function categoryUpdateStatusApi(
+  params: CategoryUpdateStatusRequest,
+): Promise<CategoryUpdateStatusResponse> {
+  return requestClient.post<CategoryUpdateStatusResponse>(
+    '/api/admin/work/category/update-status',
+    params,
+  );
+}
+
+/**
+ * 删除分类
+ */
+export async function categoryDeleteApi(
+  params: CategoryDeleteRequest,
+): Promise<CategoryDeleteResponse> {
+  return requestClient.post<CategoryDeleteResponse>(
+    '/api/admin/work/category/delete',
     params,
   );
 }

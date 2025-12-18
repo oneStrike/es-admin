@@ -11,18 +11,16 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  categoryBatchDeleteApi,
-  categoryBatchUpdateStatusApi,
   categoryCreateApi,
+  categoryDeleteApi,
   categoryDetailApi,
   categoryOrderApi,
   categoryPageApi,
   categoryUpdateApi,
-  contentTypeListApi,
+  categoryUpdateStatusApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
-import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
 import { categoryColumns, categorySearchSchema, formSchema } from './shared';
@@ -34,8 +32,6 @@ function handleSuccessReload(gridApi: any, message = '操作成功'): void {
   useMessage.success(message);
   gridApi.reload();
 }
-
-const contentTypeMap: Record<number, string> = {};
 
 /**
  * VxeGrid 的选项配置：
@@ -60,18 +56,9 @@ const gridOptions: VxeGridProps<BaseCategoryDto> = {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
         if (Array.isArray(formValues.contentType)) {
-          formValues.contentType = JSON.stringify(formValues.contentType);
+          formValues.contentType = formValues.contentType.join(',');
         }
-        const gridData = await categoryPageApi(
-          formatQuery({ page, formValues, sorts }),
-        );
-        gridData.list?.map((item) => {
-          item.contentType = item.categoryContentTypes.map(
-            (item) => item.contentType.name,
-          );
-          return item;
-        });
-        return gridData;
+        return await categoryPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
@@ -91,22 +78,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
-contentTypeListApi().then((res) => {
-  const options = res.map((item) => {
-    contentTypeMap[item.id] = item.name;
-    return {
-      label: contentTypeMap[item.id]!,
-      value: item.code,
-    };
-  });
-  useForm.setOptions(formSchema, {
-    contentType: options,
-  });
-  useForm.setOptions(categorySearchSchema, {
-    contentType: options,
-  });
-  gridApi.formApi.updateSchema(categorySearchSchema);
-});
+
 /**
  * 打开表单弹窗
  */
@@ -114,15 +86,13 @@ async function openFormModal(row?: BaseCategoryDto): Promise<void> {
   let record: BaseCategoryDto | undefined;
   if (row) {
     record = await categoryDetailApi({ id: row.id });
-    record.contentType = record.categoryContentTypes.map(
-      (item) => item.contentType.code,
-    );
   }
   formApi
     .setData({
       title: '分类',
       record,
       schema: formSchema,
+      bitMaskField: ['contentType'],
     })
     .open();
 }
@@ -132,8 +102,8 @@ async function openFormModal(row?: BaseCategoryDto): Promise<void> {
  */
 async function toggleEnableStatus(row: BaseCategoryDto): Promise<void> {
   row.loading = true as any;
-  await categoryBatchUpdateStatusApi({
-    ids: [row.id],
+  await categoryUpdateStatusApi({
+    id: row.id,
     isEnabled: !row.isEnabled,
   });
   handleSuccessReload(gridApi);
@@ -157,8 +127,8 @@ async function addOrUpdateCategory(values: CategoryFormValues): Promise<void> {
  * 删除分类
  */
 async function deleteCategory(row: BaseCategoryDto): Promise<void> {
-  await categoryBatchDeleteApi({
-    ids: [row.id],
+  await categoryDeleteApi({
+    id: row.id,
   });
   handleSuccessReload(gridApi);
 }
@@ -181,16 +151,6 @@ async function deleteCategory(row: BaseCategoryDto): Promise<void> {
           :model-value="row.isEnabled"
           @change="toggleEnableStatus(row)"
         />
-      </template>
-
-      <template #contentType="{ row }">
-        <el-text>
-          {{
-            row.categoryContentTypes
-              .map((item) => item.contentType.name)
-              .join('、')
-          }}
-        </el-text>
       </template>
 
       <template #actions="{ row }">

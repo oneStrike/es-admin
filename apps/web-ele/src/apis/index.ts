@@ -6,7 +6,6 @@ export * from './clientPage';
 export * from './comic';
 export * from './comicChapter';
 export * from './comicVersion';
-export * from './contentType';
 export * from './dictionary';
 export * from './memberLevel';
 export * from './notice';
