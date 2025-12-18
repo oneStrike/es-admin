@@ -22,7 +22,6 @@ import {
   authorUpdateStatusApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import { useBitMask } from '#/hooks/useBitmask';
 import { useDict } from '#/hooks/useDict';
 import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
@@ -104,8 +103,6 @@ async function openFormModal(row?: AuthorPageResponseDto): Promise<void> {
   let record: any;
   if (row) {
     record = await authorDetailApi({ id: row.id });
-    // 将位运算值转换为数组供复选框使用
-    record.type = useBitMask.split(record.type);
   }
   formApi
     .setData({
@@ -150,11 +147,6 @@ async function toggleIsRecommendedStatus(
 type AuthorFormValues = CreateAuthorDto | UpdateAuthorDto;
 
 async function addOrUpdateAuthor(values: AuthorFormValues): Promise<void> {
-  // 将角色数组转换为位运算值
-  if (Array.isArray(values.type)) {
-    values.type = useBitMask.join(values.type);
-  }
-
   await (values.id
     ? authorUpdateApi(values as UpdateAuthorDto)
     : authorCreateApi(values as CreateAuthorDto));

@@ -4,8 +4,8 @@ import type { NoticeDetailResponse } from '#/apis/types/notice';
 import { useVbenModal } from '@vben/common-ui';
 
 import { noticeDetailApi } from '#/apis';
-import { useBitMask } from '#/hooks/useBitmask';
 import { formatUTC } from '#/utils';
+import { getOptionLabel } from '#/utils/options';
 
 import {
   enablePlatform,
@@ -52,9 +52,7 @@ const publishStatus = computed(() => {
 
 const enablePlatformLabels = computed(() => {
   if (!detail.value) return '';
-  return useBitMask
-    .getLabels(detail.value.enablePlatform, enablePlatform)
-    .join('、');
+  return getOptionLabel(enablePlatform, detail.value.enablePlatform);
 });
 
 const noticeTypeInfo = computed(() => {

@@ -56,7 +56,7 @@ const gridOptions: VxeGridProps<BaseCategoryDto> = {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
         if (Array.isArray(formValues.contentType)) {
-          formValues.contentType = formValues.contentType.join(',');
+          formValues.contentType = JSON.stringify(formValues.contentType);
         }
         return await categoryPageApi(formatQuery({ page, formValues, sorts }));
       },
@@ -92,7 +92,6 @@ async function openFormModal(row?: BaseCategoryDto): Promise<void> {
       title: '分类',
       record,
       schema: formSchema,
-      bitMaskField: ['contentType'],
     })
     .open();
 }

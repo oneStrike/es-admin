@@ -122,7 +122,7 @@ export const categoryColumns =
       cellRender: {
         name: 'CellTag',
         props: {
-          bitMaskOptions: contentTypeOptions,
+          mapOptions: contentTypeOptions,
         },
       },
       minWidth: 200,

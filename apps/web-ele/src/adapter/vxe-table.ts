@@ -9,8 +9,8 @@ import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 import { ElButton, ElImage, ElTag, ElText } from 'element-plus';
 
 import { ImageLine } from '#/components/es-icons';
-import { useBitMask } from '#/hooks/useBitmask';
 import { formatUTC } from '#/utils';
+import { getOptionLabel } from '#/utils/options';
 
 import { useVbenForm } from './form';
 
@@ -116,16 +116,17 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellTag', {
       renderTableDefault({ props }, params) {
         const { column, row } = params;
-        let tags: boolean | string | string[] = [];
+        let tags: (boolean | string)[] | boolean | string = row[column.field];
         let type: TagProps['type'] = props?.type || 'primary';
 
-        tags = Array.isArray(props?.bitMaskOptions)
-          ? useBitMask.getLabels(row[column.field], props.bitMaskOptions)
-          : (row[column.field] ?? '');
         // 处理字符串数组或字符串的情况
         if (Array.isArray(tags)) {
-          return tags.map((tag, idx) =>
-            h(
+          return tags.map((tag, idx) => {
+            let tagValue = tag;
+            if (Array.isArray(props?.mapOptions)) {
+              tagValue = getOptionLabel(props?.mapOptions, tag);
+            }
+            return h(
               ElTag,
               {
                 type: props?.type || 'primary',
@@ -133,9 +134,9 @@ setupVbenVxeTable({
                 class: idx + 1 === (tags as string[]).length ? '' : 'mr-1',
                 ...props,
               },
-              { default: () => tag },
-            ),
-          );
+              { default: () => tagValue },
+            );
+          });
         } else if (typeof tags === 'string') {
           tags = [tags];
         } else {

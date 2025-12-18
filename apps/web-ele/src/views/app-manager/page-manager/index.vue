@@ -28,6 +28,9 @@ const gridOptions: VxeGridProps<BaseClientPageDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
+        if (formValues.enablePlatform) {
+          formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
+        }
         return await clientPagePageApi({
           pageIndex: --page.currentPage,
           pageSize: page.pageSize,
@@ -53,9 +56,7 @@ async function openFormModal(row?: BaseClientPageDto) {
   if (row) {
     record = await clientPageDetailByIdApi({ id: row.id });
   }
-  formApi
-    .setData({ title: '页面配置', record, bitMaskField: ['enablePlatform'] })
-    .open();
+  formApi.setData({ title: '页面配置', record }).open();
 }
 
 async function handleSubmit(values: BaseClientPageDto | UpdateClientPageDto) {

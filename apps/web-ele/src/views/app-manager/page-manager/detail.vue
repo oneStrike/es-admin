@@ -7,6 +7,8 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { clientPageDetailByIdApi } from '#/apis';
 import { formatUTC } from '#/utils';
+import { getOptionLabel } from '#/utils/options';
+import { enablePlatform } from '#/views/app-manager/notice/shared';
 
 import { accessLevelObj } from './shared';
 
@@ -42,6 +44,11 @@ const accessLevelInfo = computed(() => {
   return accessLevelObj[detail.value.accessLevel];
 });
 
+const enablePlatformLabels = computed(() => {
+  if (!detail.value) return '';
+  return getOptionLabel(enablePlatform, detail.value.enablePlatform);
+});
+
 // 详情卡片配置
 const detailCards = computed(() => [
   {
@@ -68,6 +75,11 @@ const detailCards = computed(() => [
         value: accessLevelInfo.value?.label,
         type: 'colored-text',
         color: accessLevelInfo.value?.color,
+      },
+      {
+        label: '启用平台',
+        value: enablePlatformLabels.value || '-',
+        type: 'text',
       },
       {
         label: '页面状态',

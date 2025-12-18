@@ -19,13 +19,11 @@ import {
   noticeUpdateStatusApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import { useBitMask } from '#/hooks/useBitmask';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import NoticeDetail from '#/views/app-manager/notice/detail.vue';
 
 import {
-  enablePlatform,
   formSchema,
   getPublishStatus,
   noticeColumns,
@@ -70,8 +68,8 @@ const gridOptions: VxeGridProps<NoticePageResponseDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        if (Array.isArray(formValues.enablePlatform)) {
-          formValues.enablePlatform = formValues.enablePlatform.join(',');
+        if (formValues.enablePlatform) {
+          formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
         }
         return await noticePageApi({
           pageIndex: --page.currentPage,
@@ -99,9 +97,7 @@ async function openFormModal(row?: NoticePageResponseDto) {
     record = await noticeDetailApi({ id: row.id });
     record.dateTimeRange = [record.publishStartTime, record.publishEndTime];
   }
-  formApi
-    .setData({ title: '通知公告', record, bitMaskField: ['enablePlatform'] })
-    .open();
+  formApi.setData({ title: '通知公告', record }).open();
 }
 
 async function handleSubmit(values: CreateNoticeDto | UpdateNoticeDto) {
@@ -200,14 +196,6 @@ const [DetailModal, detailApi] = useVbenModal({
             row.pageId && clientPageObj[row.pageId]
               ? clientPageObj[row.pageId]
               : '-'
-          }}
-        </el-text>
-      </template>
-
-      <template #enablePlatform="{ row }">
-        <el-text>
-          {{
-            useBitMask.getLabels(row.enablePlatform, enablePlatform).join('、')
           }}
         </el-text>
       </template>

@@ -164,7 +164,7 @@ export const pageColumns =
       cellRender: {
         name: 'CellTag',
         props: {
-          bitMaskOptions: enablePlatform,
+          mapOptions: enablePlatform,
         },
       },
       minWidth: 200,

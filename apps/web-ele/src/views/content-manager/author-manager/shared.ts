@@ -2,6 +2,7 @@ import type { AuthorPageResponseDto } from '#/apis/types/author';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
+import { optionsToMap } from '#/utils/options';
 
 export const genderOptions = [
   { label: '未知', value: 0 },
@@ -10,9 +11,7 @@ export const genderOptions = [
   { label: '其他', value: 3 },
 ];
 
-export const genderMap = Object.fromEntries(
-  genderOptions.map((option) => [option.value, option.label]),
-) as Record<number, string>;
+export const genderMap = optionsToMap(genderOptions);
 
 export const typeOptions = [
   { label: '作家', value: 1 },
@@ -21,10 +20,7 @@ export const typeOptions = [
   { label: '模特', value: 8 },
 ];
 
-export const typeMap = Object.fromEntries(
-  typeOptions.map((option) => [option.value, option.label]),
-) as Record<number, string>;
-
+export const typeMap = optionsToMap(typeOptions);
 /**
  * 作者管理模块的表单 Schema
  */
@@ -73,7 +69,6 @@ export const formSchema: EsFormSchema = [
       placeholder: '请选择作者身份',
       options: typeOptions,
     },
-
     rules: 'required',
     fieldName: 'type',
     label: '身份角色',
@@ -129,7 +124,7 @@ export const authorColumns =
       cellRender: {
         name: 'CellTag',
         props: {
-          bitMaskOptions: typeOptions,
+          mapOptions: typeOptions,
         },
       },
       minWidth: 150,

@@ -4,7 +4,6 @@ import type { EsModalFormProps } from './types';
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { useBitMask } from '#/hooks/useBitmask';
 
 defineOptions({
   name: 'EsModalForm',
@@ -34,15 +33,6 @@ const [Modal, modalApi] = useVbenModal({
       sharedData.value = modalApi.getData<EsModalFormProps>();
       sharedData.value.width = sharedData.value?.width || 900;
       if (sharedData.value?.record) {
-        if (Array.isArray(sharedData.value?.bitMaskField)) {
-          sharedData.value.bitMaskField.forEach((field) => {
-            if (sharedData.value.record) {
-              sharedData.value.record[field] = sharedData.value.record[field]
-                ? useBitMask.split(sharedData.value.record[field])
-                : [];
-            }
-          });
-        }
         formApi.setValues(sharedData.value.record);
       }
     }
@@ -68,14 +58,6 @@ const [BaseForm, formApi] = useVbenForm({
     modalApi.lock();
 
     try {
-      if (Array.isArray(sharedData.value.bitMaskField)) {
-        sharedData.value.bitMaskField.forEach((field) => {
-          if (values[field]) {
-            values[field] = useBitMask.join(values[field]);
-          }
-        });
-      }
-
       await props.onSubmit?.({
         ...values,
         id: sharedData.value?.record?.id,

@@ -274,7 +274,6 @@ export const noticeColumns =
       showOverflow: 'tooltip',
     },
     dateTimeRange: {
-      sort: 98,
       formatter: ({ row }: any) => {
         return `${formatUTC(row.publishStartTime, 'YYYY-MM-DD')} - ${formatUTC(row.publishEndTime, 'YYYY-MM-DD')}`;
       },
@@ -292,7 +291,12 @@ export const noticeColumns =
       slots: { default: 'priorityLevel' },
     },
     enablePlatform: {
-      slots: { default: 'enablePlatform' },
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          mapOptions: enablePlatform,
+        },
+      },
     },
     pageId: {
       slots: { default: 'pageId' },
