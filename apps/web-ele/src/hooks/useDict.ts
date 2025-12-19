@@ -11,9 +11,12 @@ export interface UseDictItem {
 export async function useDict(
   codes: string,
 ): Promise<Record<string, UseDictItem>> {
-  const data = await dictionaryItemsApi({ dictionaryCode: codes });
+  const data = await dictionaryItemsApi({
+    dictionaryCode: codes,
+    isEnabled: true,
+  });
   const returnValue: Record<string, UseDictItem> = {};
-  data.list?.forEach((item) => {
+  data?.forEach((item) => {
     // 使用中间变量解决TypeScript类型推断问题
     let dictItem = returnValue[item.dictionaryCode];
     if (!dictItem) {

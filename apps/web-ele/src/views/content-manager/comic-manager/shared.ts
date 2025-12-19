@@ -1,6 +1,8 @@
 import type { BaseComicDto } from '#/apis/types/comic';
 import type { EsFormSchema } from '#/types';
 
+import { ref } from 'vue';
+
 import { z } from '#/adapter/form';
 import { authorPageApi } from '#/apis';
 import { formSchemaTransform } from '#/utils';
@@ -31,6 +33,8 @@ export const serialStatusMap = Object.fromEntries(
 );
 
 // 表单配置
+const keyword = ref('');
+const fetching = ref(false);
 export const formSchema: EsFormSchema = [
   {
     component: 'Upload',
@@ -82,55 +86,84 @@ export const formSchema: EsFormSchema = [
     label: '阅读权限',
     rules: 'required',
   },
+  // {
+  //   component: 'Select',
+  //   componentProps: {
+  //     placeholder: '输入作者名称进行搜索',
+  //     remote: true,
+  //     multiple: true,
+  //     filterable: true,
+  //     options: options.value,
+  //     remoteMethod: async (value: string) => {
+  //       const res = await authorPageApi({ name: value || undefined });
+  //       options.value =
+  //         res.list?.map((item) => ({
+  //           label: item.name,
+  //           value: item.id,
+  //         })) || [];
+  //       return options.value;
+  //     },
+  //   },
+  //   fieldName: 'author',
+  //   label: '作者',
+  //   rules: 'required',
+  // },
   {
     component: 'ApiSelect',
-    componentProps: {
-      api: authorPageApi,
-      placeholder: '输入作者名称进行搜索',
-      showSearch: true,
-      labelField: 'name',
-      valueField: 'id',
-      afterFetch: (data: any) => {
-        return data.list || [];
-      },
-      params: {
-        pageSize: 50,
-      },
+    // 对应组件的参数
+    componentProps: () => {
+      return {
+        api: authorPageApi,
+        placeholder: '输入作者名称进行搜索',
+        multiple: true,
+        showSearch: true,
+        labelField: 'name',
+        valueField: 'id',
+        immediate: false,
+        afterFetch: (data: any) => {
+          return data.list || [];
+        },
+        params: {
+          keyword: keyword.value || undefined,
+        },
+      };
     },
+    // 字段名
     fieldName: 'author',
+    // 界面显示的label
     label: '作者',
-    rules: 'required',
+    rules: 'selectRequired',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入出版社',
+      placeholder: '请选择出版社',
     },
     fieldName: 'publisher',
     label: '出版社',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入地区代码',
+      placeholder: '请选择地区代码',
     },
     fieldName: 'region',
     label: '地区',
     rules: 'required',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入语言代码',
+      placeholder: '请选择语言代码',
     },
     fieldName: 'language',
     label: '语言',
     rules: 'required',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      placeholder: '请输入年龄分级',
+      placeholder: '请选择年龄分级',
     },
     fieldName: 'ageRating',
     label: '年龄分级',

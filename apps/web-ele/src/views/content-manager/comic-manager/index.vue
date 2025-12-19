@@ -17,7 +17,9 @@ import {
   comicUpdateApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
+import { useDict } from '#/hooks/useDict';
 import { useMessage } from '#/hooks/useFeedback';
+import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import ComicDetail from './detail.vue';
@@ -39,6 +41,17 @@ const gridOptions: VxeGridProps<BaseComicDto> = {
     sort: true,
   },
 };
+
+useDict('work_age_rating,work_publisher,work_region,work_language').then(
+  ({ work_age_rating, work_publisher, work_region, work_language }) => {
+    useForm.setOptions(formSchema, {
+      publisher: work_publisher?.options || [],
+      region: work_region?.options || [],
+      language: work_language?.options || [],
+      ageRating: work_age_rating?.options || [],
+    });
+  },
+);
 
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,

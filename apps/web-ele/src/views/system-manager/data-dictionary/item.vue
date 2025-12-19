@@ -57,10 +57,11 @@ const gridOptions: VxeGridProps<DictionaryItemDto> = {
     sort: true,
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await dictionaryItemsApi({
+        const data = await dictionaryItemsApi({
           ...formatQuery({ page, formValues, sorts }),
           dictionaryCode: shareData.value?.record.code,
         });
+        return { list: data };
       },
     },
   },

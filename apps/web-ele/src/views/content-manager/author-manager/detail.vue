@@ -6,10 +6,10 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 
 import { authorDetailApi } from '#/apis';
-import { useBitMask } from '#/hooks/useBitmask';
 import { formatUTC } from '#/utils';
+import { getOptionLabel } from '#/utils/options';
 
-import { genderMap, typeMap } from './shared';
+import { genderMap, typeOptions } from './shared';
 
 defineOptions({ name: 'AuthorDetail' });
 
@@ -44,6 +44,7 @@ async function getDetail() {
   try {
     loading.value = true;
     const { recordId, nationalityMap } = modalApi.getData<{
+      nationalityMap: Record<string, any>;
       recordId: number;
     }>();
     detail.value = await authorDetailApi({ id: recordId });
@@ -55,10 +56,7 @@ async function getDetail() {
 
 // 解析作者类型
 const authorTypes = computed(() => {
-  if (!detail.value?.type) return [];
-  return useBitMask
-    .split(detail.value.type)
-    .map((type) => typeMap[type] || type);
+  return getOptionLabel(typeOptions, detail.value!.type);
 });
 
 // 详情卡片配置
@@ -89,7 +87,7 @@ const detailCards = computed(() => [
       },
       {
         label: '身份',
-        value: authorTypes.value.join(', '),
+        value: authorTypes.value,
         type: 'text',
       },
       {

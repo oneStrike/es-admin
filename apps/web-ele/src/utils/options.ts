@@ -57,5 +57,5 @@ export const getOptionLabel = (
       const key = typeof v === 'boolean' ? v.toString() : v;
       return map[key];
     })
-    .join('、');
+    ?.join('、');
 };
