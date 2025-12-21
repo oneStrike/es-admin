@@ -1,28 +1,28 @@
-export type UploadUploadFileResponse = UploadResponseDto
+export type UploadUploadFileResponse = UploadResponseDto;
 
 /**
  *  类型定义 [UploadResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-19 21:59:35
+ *  @更新时间 2025-12-21 22:28:05
  */
 export type UploadResponseDto = {
-  /* 文件名 */
-  filename: string
-  /* 文件路径 */
-  filePath: string
-  /* 文件场景 */
-  scene: string
-  /* 文件大小 */
-  fileSize: number
-  /* 文件类型mimeType */
-  mimeType: string
-  /* 文件类型 */
-  fileType: string
-  /* 原始文件名 */
-  originalName: string
-  /* 上传时间 */
-  uploadTime: string
-
   /** 任意合法数值 */
-  [property: string]: any
-}
+  [property: string]: any;
+  /* 文件名 */
+  filename: string;
+  /* 文件路径 */
+  filePath: string;
+  /* 文件大小 */
+  fileSize: number;
+  /* 文件类型 */
+  fileType: string;
+  /* 文件类型mimeType */
+  mimeType: string;
+  /* 原始文件名 */
+  originalName: string;
+  /* 文件场景 */
+  scene: string;
+
+  /* 上传时间 */
+  uploadTime: string;
+};

@@ -116,7 +116,7 @@ export const formSchemaTransform: FormSchemaTransform = {
       delete extra.actions;
     }
 
-    if (extra?.createdAt && extra.createdAt.show) {
+    if (extra?.createdAt && extra.createdAt.hide !== true) {
       columnsWithSort.push({
         title: '创建时间',
         field: 'createdAt',

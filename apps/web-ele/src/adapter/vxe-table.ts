@@ -2,11 +2,13 @@ import type { TagProps } from 'element-plus';
 
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
+import type { Options } from '#/utils/options';
+
 import { h } from 'vue';
 
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
-import { ElButton, ElImage, ElTag, ElText } from 'element-plus';
+import { ElButton, ElImage, ElSwitch, ElTag, ElText } from 'element-plus';
 
 import { ImageLine } from '#/components/es-icons';
 import { formatUTC } from '#/utils';
@@ -119,41 +121,114 @@ setupVbenVxeTable({
         let tags: (boolean | string)[] | boolean | string = row[column.field];
         let type: TagProps['type'] = props?.type || 'primary';
 
-        // 处理字符串数组或字符串的情况
+        // 处理格式化函数
+        if (props?.formatter) {
+          tags = props.formatter(row[column.field]);
+        }
+
+        // 处理数组情况
         if (Array.isArray(tags)) {
+          if (tags.length === 0) {
+            return '-';
+          }
+
           return tags.map((tag, idx) => {
             let tagValue = tag;
             if (Array.isArray(props?.mapOptions)) {
               tagValue = getOptionLabel(props?.mapOptions, tag);
             }
+
             return h(
               ElTag,
               {
                 type: props?.type || 'primary',
                 size: props?.size || 'small',
-                class: idx + 1 === (tags as string[]).length ? '' : 'mr-1',
+                class: idx + 1 === (tags as any[]).length ? '' : 'mr-1',
                 ...props,
               },
               { default: () => tagValue },
             );
           });
-        } else if (typeof tags === 'string') {
-          tags = [tags];
-        } else {
-          type = tags ? 'danger' : 'primary';
-          tags = [props?.map[String(tags)]];
         }
+        // 处理 mapOptions 映射情况
+        else if (props?.mapOptions) {
+          const option = props.mapOptions.find(
+            (item: Options) => item.value === tags,
+          );
+          const label = option?.label || '';
+          const color = option?.color || props?.type || 'primary';
 
-        // 处理字符串情况
-        return h(
-          ElTag,
-          {
-            type,
-            size: props?.size || 'small',
-            ...props,
-          },
-          { default: () => tags },
-        );
+          return h(
+            ElTag,
+            {
+              type: color,
+              size: props?.size || 'small',
+              ...props,
+            },
+            { default: () => label },
+          );
+        }
+        // 处理布尔值情况
+        else if (typeof tags === 'boolean') {
+          type = tags ? 'primary' : 'danger';
+          const booleanMap = props?.map || {};
+          tags = booleanMap[String(tags)] || (tags ? '是' : '否');
+
+          return h(
+            ElTag,
+            {
+              type,
+              size: props?.size || 'small',
+              ...props,
+            },
+            { default: () => tags },
+          );
+        }
+        // 处理字符串和其他单一值情况
+        else {
+          // 确保 tags 是字符串形式
+          const displayValue =
+            tags !== null && tags !== undefined ? String(tags) : '-';
+
+          return h(
+            ElTag,
+            {
+              type,
+              size: props?.size || 'small',
+              ...props,
+            },
+            { default: () => displayValue },
+          );
+        }
+      },
+    });
+
+    // 表格配置项可以用 cellRender: { name: 'CellSwitch' },
+    vxeUI.renderer.add('CellSwitch', {
+      renderTableDefault(renderOpts, params) {
+        const { column, row } = params;
+        const value = row[column.field];
+        const { props } = renderOpts;
+
+        // 获取接口方法
+        const apiMethod = props?.apiMethod;
+
+        // 处理 change 事件
+        const onChange = async (val: boolean) => {
+          if (apiMethod && typeof apiMethod === 'function') {
+            try {
+              await apiMethod(val, row);
+            } catch (error) {
+              console.error('CellSwitch apiMethod error:', error);
+            }
+          }
+        };
+
+        return h(ElSwitch, {
+          modelValue: value,
+          onChange,
+          ...props,
+        });
       },
     });
 
