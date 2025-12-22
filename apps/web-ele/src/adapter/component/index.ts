@@ -123,6 +123,10 @@ const ElUpload = defineAsyncComponent(() => import('#/components/es-upload'));
 
 const RichText = defineAsyncComponent(() => import('#/components/es-editor'));
 
+const TableSelect = defineAsyncComponent(
+  () => import('#/components/es-table-select'),
+);
+
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
   type: 'input' | 'select',
@@ -174,6 +178,7 @@ export type ComponentType =
   | 'Select'
   | 'Space'
   | 'Switch'
+  | 'TableSelect'
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
@@ -327,6 +332,7 @@ async function initComponentAdapter() {
     TreeSelect: withDefaultPlaceholder(ElTreeSelect, 'select'),
     Upload: ElUpload,
     ColorPicker: withDefaultPlaceholder(ElColorPicker, 'select'),
+    TableSelect: withDefaultPlaceholder(TableSelect, 'select'),
     RichText,
   };
 

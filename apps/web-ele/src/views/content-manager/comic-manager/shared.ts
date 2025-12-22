@@ -7,6 +7,7 @@ import { z } from '#/adapter/form';
 import { authorPageApi, categoryPageApi, tagPageApi } from '#/apis';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
+import { authorColumns } from '#/views/content-manager/author-manager/shared';
 
 // 阅读权限配置
 export const readRule = [
@@ -31,7 +32,6 @@ export const serialStatus = [
 export const serialStatusMap = optionsToMap(serialStatus);
 
 // 表单配置
-const options = ref<Options[]>([]);
 const categoryOptions = ref<Options[]>([]);
 const tagOptions = ref<Options[]>([]);
 export const formSchema: EsFormSchema = [
@@ -65,23 +65,23 @@ export const formSchema: EsFormSchema = [
   },
 
   {
-    component: 'ApiSelect',
+    component: 'TableSelect',
     // 对应组件的参数
     componentProps: () => {
       return {
-        placeholder: '输入作者名称进行搜索',
+        placeholder: '请选择漫画作者',
         multiple: true,
-        remote: true,
-        filterable: true,
-        immediate: false,
-        options: options.value,
-        remoteMethod: async (value: string) => {
-          const res = await authorPageApi({ name: value || undefined });
-          options.value =
-            res.list?.map((item) => ({
-              label: item.name,
-              value: item.id,
-            })) || [];
+        columns: authorColumns.filter((item) =>
+          ['gender', 'name'].includes(
+            typeof item?.field === 'string' ? item?.field : '',
+          ),
+        ),
+        api: async (value: Record<string, any>) => {
+          return authorPageApi({
+            ...value,
+            isEnabled: true,
+            type: JSON.stringify([4]),
+          });
         },
       };
     },

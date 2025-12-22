@@ -8,7 +8,7 @@ import { h } from 'vue';
 
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
-import { ElButton, ElImage, ElSwitch, ElTag, ElText } from 'element-plus';
+import { ElButton, ElImage, ElTag, ElText } from 'element-plus';
 
 import { ImageLine } from '#/components/es-icons';
 import { formatUTC } from '#/utils';
@@ -200,35 +200,6 @@ setupVbenVxeTable({
             { default: () => displayValue },
           );
         }
-      },
-    });
-
-    // 表格配置项可以用 cellRender: { name: 'CellSwitch' },
-    vxeUI.renderer.add('CellSwitch', {
-      renderTableDefault(renderOpts, params) {
-        const { column, row } = params;
-        const value = row[column.field];
-        const { props } = renderOpts;
-
-        // 获取接口方法
-        const apiMethod = props?.apiMethod;
-
-        // 处理 change 事件
-        const onChange = async (val: boolean) => {
-          if (apiMethod && typeof apiMethod === 'function') {
-            try {
-              await apiMethod(val, row);
-            } catch (error) {
-              console.error('CellSwitch apiMethod error:', error);
-            }
-          }
-        };
-
-        return h(ElSwitch, {
-          modelValue: value,
-          onChange,
-          ...props,
-        });
       },
     });
 

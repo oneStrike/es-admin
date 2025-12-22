@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { DictionaryDto, DictionaryItemDto } from '#/apis/types/dictionary';
+import type {
+  BaseDictionaryDto,
+  BaseDictionaryItemDto,
+} from '#/apis/types/dictionary';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -24,7 +27,7 @@ import {
 } from './shared';
 
 type ShareData = {
-  record: DictionaryDto;
+  record: BaseDictionaryDto;
 };
 
 defineOptions({
@@ -33,7 +36,7 @@ defineOptions({
 
 const shareData = ref<ShareData>();
 
-const gridOptions: VxeGridProps<DictionaryItemDto> = {
+const gridOptions: VxeGridProps<BaseDictionaryItemDto> = {
   columns: dictionaryItemColumns,
   height: 'auto',
   rowConfig: {
@@ -103,12 +106,12 @@ async function addDictionaryItem(values: any) {
   gridApi.reload();
 }
 
-async function toggleEnableStatus(row: DictionaryDto) {
+async function toggleEnableStatus(row: BaseDictionaryDto) {
   const newStatus = !row.isEnabled;
   row.loading = true;
   try {
     await dictionaryUpdateItemStatusApi({
-      ids: [row.id],
+      id: row.id,
       isEnabled: newStatus,
     });
     useMessage.success('操作成功');
@@ -118,7 +121,7 @@ async function toggleEnableStatus(row: DictionaryDto) {
   }
 }
 
-async function openFormModal(row?: DictionaryDto) {
+async function openFormModal(row?: BaseDictionaryDto) {
   formApi
     .setData({
       title: '数据字典子项',
@@ -128,7 +131,7 @@ async function openFormModal(row?: DictionaryDto) {
     .open();
 }
 
-async function deleteDictionary(row: DictionaryDto) {
+async function deleteDictionary(row: BaseDictionaryDto) {
   await dictionaryDeleteItemApi({ ids: [row.id] });
   useMessage.success('操作成功');
   gridApi.reload();
