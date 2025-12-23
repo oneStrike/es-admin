@@ -74,6 +74,10 @@ export interface EsTableSelectProps {
    * 搜索字段配置
    */
   searchSchema?: EsFormSchema;
+  /**
+   * 用户选中数据回显的字段
+   */
+  displayField?: string;
 }
 
 /**
@@ -91,4 +95,15 @@ export interface EsTableSelectEmits {
     e: 'selectChange',
     options: TableSelectOption | TableSelectOption[] | undefined,
   ): void;
+}
+
+/**
+ * 表格选择组件暴露的方法
+ */
+export interface EsTableSelectExpose {
+  /**
+   * 获取当前所有选中的数据
+   * @returns 选中的数据数组
+   */
+  getSelectedData: () => any[];
 }

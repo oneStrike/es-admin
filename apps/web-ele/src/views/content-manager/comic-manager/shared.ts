@@ -71,8 +71,9 @@ export const formSchema: EsFormSchema = [
       return {
         placeholder: '请选择漫画作者',
         multiple: true,
+        selectionMode: 'multiple',
         columns: authorColumns.filter((item) =>
-          ['gender', 'name'].includes(
+          ['createdAt', 'gender', 'name'].includes(
             typeof item?.field === 'string' ? item?.field : '',
           ),
         ),

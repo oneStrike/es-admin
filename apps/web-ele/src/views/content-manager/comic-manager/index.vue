@@ -28,7 +28,6 @@ import { formSchema, pageFilter, serialStatus } from './shared';
 
 const gridOptions: VxeGridProps<BaseComicDto> = {
   columns: [],
-  height: 'auto',
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
@@ -56,7 +55,7 @@ async function openFormModal(row?: BaseComicDto) {
   let record;
   if (row) {
     record = await comicDetailApi({ id: row.id });
-    record.authorIds = record?.comicAuthors
+    record.authorIds = record?.comicAuthors;
     record.categoryIds = record?.comicCategories.map(
       (item) => item.category.id,
     );

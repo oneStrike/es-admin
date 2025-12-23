@@ -45,9 +45,8 @@ const gridOptions: VxeGridProps<AuthorPageResponseDto> = {
   columns: authorColumns,
   proxyConfig: {
     ajax: {
-      query: async ({ page, sorts }, formValues) => {
-        return await authorPageApi(formatQuery({ page, formValues, sorts }));
-      },
+      query: ({ page, sorts }, formValues) =>
+        authorPageApi(formatQuery({ page, formValues, sorts })),
     },
     sort: true,
   },
