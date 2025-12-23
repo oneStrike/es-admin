@@ -8,3 +8,4 @@ export const UsersLine = createIconifyIcon('majesticons:users-line');
 export const QuestionIcon = createIconifyIcon(
   'majesticons:question-circle-line',
 );
+export const DeleteBinIcon = createIconifyIcon('majesticons:delete-bin-line');

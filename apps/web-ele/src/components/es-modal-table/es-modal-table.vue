@@ -9,6 +9,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
 import { formatQuery } from '#/adapter/vxe-table';
+import { DeleteBinIcon } from '#/components/es-icons';
 import { useMessage } from '#/hooks/useFeedback';
 
 defineOptions({
@@ -18,7 +19,7 @@ defineOptions({
 const props = withDefaults(defineProps<EsModalTableProps>(), {
   title: '选择数据',
   width: 800,
-  height: 500,
+  height: 700,
 });
 
 const emit = defineEmits<{
@@ -236,15 +237,13 @@ function restoreGridSelection() {
       <!-- 右侧回显面板 -->
       <el-col :span="8" class="h-full">
         <div
-          class="selected-panel h-full rounded-md border border-gray-200 p-4"
+          class="selected-panel h-full rounded-lg border border-gray-200 p-4"
         >
           <!-- 面板标题 -->
-          <div class="panel-header mb-4 flex items-center justify-between">
+          <div class="panel-header my-3 flex items-center justify-between">
             <h3 class="text-lg font-semibold">已选择数据</h3>
             <div class="flex items-center space-x-2">
-              <span class="text-sm text-gray-500">
-                {{ selectedRows.length }} 项
-              </span>
+              <span class="text-gray-500"> {{ selectedRows.length }} 项 </span>
               <!-- 批量取消选择按钮 -->
               <el-button
                 v-if="
@@ -252,7 +251,6 @@ function restoreGridSelection() {
                   sharedData.selectionMode === 'multiple'
                 "
                 type="text"
-                size="small"
                 @click="handleBatchRemove"
                 icon="el-icon-delete"
               >
@@ -278,11 +276,9 @@ function restoreGridSelection() {
                   }}
                 </div>
                 <!-- 取消选择按钮 -->
-                <el-button
-                  type="text"
-                  size="small"
+                <DeleteBinIcon
+                  class="cursor-pointer transition-colors duration-300 hover:text-red-600"
                   @click="handleRemoveItem(item)"
-                  icon="el-icon-close"
                 />
               </div>
             </div>

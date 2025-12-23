@@ -3,6 +3,8 @@ import type { Options } from '#/utils/options';
 
 import { ref } from 'vue';
 
+import { cloneDeep } from 'lodash-es';
+
 import { z } from '#/adapter/form';
 import { authorPageApi, categoryPageApi, tagPageApi } from '#/apis';
 import { formSchemaTransform } from '#/utils';
@@ -72,7 +74,7 @@ export const formSchema: EsFormSchema = [
         placeholder: '请选择漫画作者',
         multiple: true,
         selectionMode: 'multiple',
-        columns: authorColumns.filter((item) =>
+        columns: cloneDeep(authorColumns).filter((item) =>
           ['createdAt', 'gender', 'name'].includes(
             typeof item?.field === 'string' ? item?.field : '',
           ),
