@@ -29,6 +29,7 @@ const sharedData = ref<EsModalTableProps>();
 const selectedRows = ref<any[]>([]);
 // 初始化表格，使用gridEvents配置
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: props.searchSchema,
   gridEvents: {
     radioChange(params: any) {
       handleRadioChange(params);
@@ -165,6 +166,10 @@ const [Modal, modalApi] = useVbenModal({
       // 如果调用方传入了初始已选数据，则优先使用
       selectedRows.value = (sharedData.value as any)?.selectedRows || [];
       gridApi.setGridOptions(getGridOptions(sharedData.value));
+
+      // if (sharedData.value?.searchSchema) {
+      //   gridApi.formApi.updateSchema(sharedData.value.searchSchema);
+      // }
       nextTick(() => {
         gridApi.reload().then(() => {
           // 表格数据刷新后恢复选中回显

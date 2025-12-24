@@ -110,7 +110,7 @@ defineExpose({
     />
 
     <!-- 使用表格模态框组件 -->
-    <ModalTable @confirm="confirmSelection" />
+    <ModalTable :search-schema="searchSchema" @confirm="confirmSelection" />
   </div>
 </template>
 

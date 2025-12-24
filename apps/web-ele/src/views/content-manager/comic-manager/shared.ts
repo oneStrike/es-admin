@@ -7,9 +7,12 @@ import { cloneDeep } from 'lodash-es';
 
 import { z } from '#/adapter/form';
 import { authorPageApi, categoryPageApi, tagPageApi } from '#/apis';
-import { formSchemaTransform } from '#/utils';
+import { createSearchFormOptions, formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
-import { authorColumns } from '#/views/content-manager/author-manager/shared';
+import {
+  authorColumns,
+  authorSearchSchema,
+} from '#/views/content-manager/author-manager/shared';
 
 // 阅读权限配置
 export const readRule = [
@@ -77,6 +80,13 @@ export const formSchema: EsFormSchema = [
         columns: cloneDeep(authorColumns).filter((item) =>
           ['createdAt', 'gender', 'name'].includes(
             typeof item?.field === 'string' ? item?.field : '',
+          ),
+        ),
+        searchSchema: createSearchFormOptions(
+          cloneDeep(authorSearchSchema).filter((item) =>
+            ['gender', 'isRecommended', 'name'].includes(
+              typeof item?.fieldName === 'string' ? item?.fieldName : '',
+            ),
           ),
         ),
         api: async (value: Record<string, any>) => {
