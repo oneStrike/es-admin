@@ -1,7 +1,6 @@
+import type { VbenFormProps } from '@vben/common-ui';
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 import type { Recordable } from '@vben/types';
-
-import type { EsFormSchema } from '#/types';
 
 /**
  * 表格模态框组件属性
@@ -10,7 +9,7 @@ export interface EsModalTableProps {
   /**
    * 弹窗标题
    */
-  title: string;
+  title?: string;
   /**
    * 弹窗宽度
    */
@@ -22,11 +21,11 @@ export interface EsModalTableProps {
   /**
    * 表格列配置
    */
-  columns: VxeGridProps['columns'];
+  columns?: VxeGridProps['columns'];
   /**
    * 表格数据获取方法
    */
-  api: (params: Recordable<any>) => Promise<any>;
+  api?: (params: Recordable<any>) => Promise<any>;
   /**
    * 表格属性配置
    */
@@ -34,7 +33,7 @@ export interface EsModalTableProps {
   /**
    * 搜索字段配置
    */
-  searchSchema?: EsFormSchema;
+  searchSchema?: VbenFormProps;
   /**
    * 表格选择模式
    */

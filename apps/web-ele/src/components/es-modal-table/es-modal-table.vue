@@ -47,10 +47,15 @@ function getGridOptions(data: EsModalTableProps) {
   const options: VxeGridProps<any> = {
     height: typeof data.height === 'number' ? `${data.height}px` : data.height,
     columns: data.columns,
-    proxyConfig: {
+    ...data.gridProps,
+  };
+
+  if (data.api) {
+    const api = data.api;
+    options.proxyConfig = {
       ajax: {
         query: ({ page, sorts }, formValues) => {
-          return sharedData.value!.api(
+          return api(
             formatQuery({
               page,
               sorts,
@@ -60,9 +65,8 @@ function getGridOptions(data: EsModalTableProps) {
         },
       },
       sort: true,
-    },
-    ...data.gridProps,
-  };
+    };
+  }
 
   const labelField = data.columns![0]!.field;
 

@@ -7,7 +7,7 @@ import { cloneDeep } from 'lodash-es';
 
 import { z } from '#/adapter/form';
 import { authorPageApi, categoryPageApi, tagPageApi } from '#/apis';
-import { createSearchFormOptions, formSchemaTransform } from '#/utils';
+import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
 import {
   authorColumns,
@@ -82,11 +82,9 @@ export const formSchema: EsFormSchema = [
             typeof item?.field === 'string' ? item?.field : '',
           ),
         ),
-        searchSchema: createSearchFormOptions(
-          cloneDeep(authorSearchSchema).filter((item) =>
-            ['gender', 'isRecommended', 'name'].includes(
-              typeof item?.fieldName === 'string' ? item?.fieldName : '',
-            ),
+        searchSchema: cloneDeep(authorSearchSchema).filter((item) =>
+          ['gender', 'isRecommended', 'name'].includes(
+            typeof item?.fieldName === 'string' ? item?.fieldName : '',
           ),
         ),
         api: async (value: Record<string, any>) => {
@@ -310,9 +308,6 @@ export const formSchema: EsFormSchema = [
 export const pageFilter = formSchemaTransform
   .toSearchSchema(formSchema, {
     name: {
-      show: true,
-    },
-    authorIds: {
       show: true,
     },
     publisher: {

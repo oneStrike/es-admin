@@ -33,7 +33,7 @@ export interface EsTableSelectProps {
   /**
    * 绑定值
    */
-  modelValue: number[];
+  modelValue?: Recordable<any>[];
   /**
    * 是否多选
    */

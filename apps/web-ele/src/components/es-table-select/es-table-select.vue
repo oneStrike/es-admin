@@ -5,6 +5,8 @@ import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { createSearchFormOptions } from '#/utils';
+
 // 导入自定义组件
 import EsModalTable from '../es-modal-table';
 
@@ -36,10 +38,10 @@ const selectedRows = ref<any[]>([]);
 // 监听绑定值变化（非深度监听，性能更好）
 watch(
   () => props.modelValue,
-  (newValue: any[]) => {
+  (newValue) => {
     if (Array.isArray(newValue)) {
       if (newValue.length > 0) {
-        if (newValue[0][props.keyField]) {
+        if (newValue[0]![props.keyField]) {
           confirmSelection(newValue);
         }
       } else {
@@ -71,7 +73,9 @@ function openTableModal() {
         columns: props.columns,
         api: props.api,
         gridProps: props.gridProps,
-        searchSchema: props.searchSchema,
+        searchSchema: createSearchFormOptions(props.searchSchema!, {
+          wrapperClass: 'grid-cols-1',
+        }),
         selectionMode: props.multiple ? 'multiple' : 'single',
         selectedRows: selectedRows.value,
         multipleLimit: props.multipleLimit,

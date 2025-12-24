@@ -17,6 +17,8 @@ const sharedData = ref<Partial<EsModalFormProps>>({
   title: '',
 });
 
+const showForm = ref(false);
+
 const modalTitle = computed(() => {
   return sharedData.value.record &&
     Object.keys(sharedData.value.record).length > 0
@@ -30,12 +32,16 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      showForm.value = isOpen;
       sharedData.value = modalApi.getData<EsModalFormProps>();
       sharedData.value.width = sharedData.value?.width || 900;
       if (sharedData.value?.record) {
         formApi.setValues(sharedData.value.record);
       }
     }
+  },
+  onClosed() {
+    showForm.value = false;
   },
 });
 
@@ -77,6 +83,6 @@ const [BaseForm, formApi] = useVbenForm({
     <template #prepend-footer>
       <el-button @click="formApi.resetForm()">重置</el-button>
     </template>
-    <BaseForm :schema="normalizedSchema" />
+    <BaseForm v-if="showForm" :schema="normalizedSchema" />
   </Modal>
 </template>
