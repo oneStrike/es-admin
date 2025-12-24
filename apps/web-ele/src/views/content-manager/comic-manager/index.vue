@@ -55,7 +55,7 @@ async function openFormModal(row?: BaseComicDto) {
   let record;
   if (row) {
     record = await comicDetailApi({ id: row.id });
-    record.authorIds = record?.comicAuthors;
+    record.authorIds = record?.comicAuthors.map((item) => item.author);
     record.categoryIds = record?.comicCategories.map(
       (item) => item.category.id,
     );

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
-import type { EsModalTableProps } from './types';
+import type { EsModalTableEmits, EsModalTableProps } from './types';
 
 import { nextTick, ref } from 'vue';
 
@@ -22,9 +22,7 @@ const props = withDefaults(defineProps<EsModalTableProps>(), {
   height: 700,
 });
 
-const emit = defineEmits<{
-  (e: 'select', selectedRows: any[]): void;
-}>();
+const emit = defineEmits<EsModalTableEmits>();
 
 const sharedData = ref<EsModalTableProps>();
 // 存储当前选中的行数据
@@ -175,6 +173,10 @@ const [Modal, modalApi] = useVbenModal({
       });
     }
   },
+  onConfirm() {
+    emit('confirm', selectedRows.value);
+    modalApi.close();
+  },
 });
 
 // 将组件内的 selectedRows 同步到表格，用于打开时回显
@@ -183,34 +185,15 @@ function restoreGridSelection() {
   const table = gridApi.grid;
   if (!data || !table) return;
 
-  // 优先通过行 id 恢复（如果表格实现了 getRowById）以提高回显准确性
-  const findRow = (row: any) => {
-    if (row === null || row === undefined) return null;
-    if (
-      row.id !== null &&
-      row.id !== undefined &&
-      typeof table.getRowById === 'function'
-    ) {
-      try {
-        return table.getRowById(row.id) || null;
-      } catch {
-        // 忽略，回退到原始 row
-      }
-    }
-    return row;
-  };
-
   if (data.selectionMode === 'multiple') {
     table.clearCheckboxRow?.();
     selectedRows.value.forEach((row) => {
-      const target = findRow(row) || row;
-      table.setCheckboxRow?.(target, true);
+      table.setCheckboxRow?.(row, true);
     });
   } else if (data.selectionMode === 'single') {
     table.clearRadioRow?.();
     if (selectedRows.value && selectedRows.value.length > 0) {
-      const target = findRow(selectedRows.value[0]) || selectedRows.value[0];
-      table.setRadioRow?.(target);
+      table.setRadioRow?.(selectedRows.value[0]);
     }
   }
 }

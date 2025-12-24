@@ -50,7 +50,7 @@ export interface EsModalTableProps {
  */
 export interface EsModalTableEmits {
   /**
-   * 选择数据事件
+   * 选择数据事件 | 确认选中数据事件
    */
-  (e: 'select', selectedRows: any[]): void;
+  (e: 'confirm' | 'select', selectedRows: any[]): void;
 }

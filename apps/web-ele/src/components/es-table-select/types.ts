@@ -78,6 +78,14 @@ export interface EsTableSelectProps {
    * 用户选中数据回显的字段
    */
   displayField?: string;
+  /**
+   * 唯一标识字段
+   */
+  keyField?: string;
+  /**
+   * 是否只需要keyField字段，反之则返回整个选中项
+   */
+  onlyKey?: boolean;
 }
 
 /**

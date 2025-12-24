@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { EsTableSelectProps } from './types';
 
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -19,42 +19,46 @@ const props = withDefaults(defineProps<EsTableSelectProps>(), {
   disabled: false,
   title: '选择数据',
   width: 1000,
+  onlyKey: true,
   multiple: true,
+  keyField: 'id',
   displayField: 'name',
 });
-
 // 定义事件
 const emit = defineEmits<{
   (e: 'update:modelValue', value: number[]): void;
   (e: 'selectChange', options: any[]): void;
 }>();
 
-// 选中值
-const selectedValues = ref<number[]>(props.modelValue || []);
 // 选中的完整数据记录
 const selectedRows = ref<any[]>([]);
 
-// 监听绑定值变化
+// 监听绑定值变化（非深度监听，性能更好）
 watch(
   () => props.modelValue,
-  (newValue) => {
-    selectedValues.value = newValue || [];
+  (newValue: any[]) => {
+    if (Array.isArray(newValue)) {
+      if (newValue.length > 0) {
+        if (newValue[0][props.keyField]) {
+          confirmSelection(newValue);
+        }
+      } else {
+        selectedRows.value = [];
+      }
+    }
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 );
 
-const displayValue = ref<string[]>([]);
+// 使用 computed 计算显示值，避免手动管理响应式
+const displayValue = computed<string[]>(() => {
+  if (!selectedRows.value?.length) return [];
+  return selectedRows.value.map((item) => item?.[props.displayField] ?? '');
+});
+
 const [ModalTable, modalTableApi] = useVbenModal({
   connectedComponent: EsModalTable,
   title: props.title,
-  onConfirm() {
-    // 触发事件
-    emit('update:modelValue', selectedValues.value);
-    displayValue.value = selectedRows.value.map(
-      (row) => row[props.displayField],
-    );
-    modalTableApi.close();
-  },
 });
 
 // 打开表格模态框
@@ -76,26 +80,21 @@ function openTableModal() {
   }
 }
 
-// 处理选择结果
-function handleSelect(selectedRowsData: any[]) {
-  if (selectedRowsData.length === 0) return;
-
-  // 提取选中值
-  const values = selectedRowsData.map((row) => row.id || row.value);
-  selectedValues.value = props.multiple ? values : values.slice(0, 1);
-  // 更新选中的完整数据记录
+// 确认选择
+function confirmSelection(selectedRowsData: any[] = []) {
   selectedRows.value = selectedRowsData;
+  const values = selectedRows.value.map((item: any) => item[props.keyField]);
 
   // 触发事件
-  emit('selectChange', selectedRowsData);
+  emit('update:modelValue', props.onlyKey ? values : selectedRows.value);
 }
 
-// 暴露获取选中数据的方法
+function handleRemoveTag(_value: string, idx: number) {
+  selectedRows.value.splice(idx, 1);
+  confirmSelection(selectedRows.value);
+}
+
 defineExpose({
-  /**
-   * 获取当前所有选中的数据
-   * @returns 选中的数据数组
-   */
   getSelectedData: () => selectedRows.value,
 });
 </script>
@@ -107,10 +106,11 @@ defineExpose({
       class="!cursor-pointer"
       :placeholder="props.placeholder"
       @click="openTableModal"
+      @remove-tag="handleRemoveTag"
     />
 
     <!-- 使用表格模态框组件 -->
-    <ModalTable @select="handleSelect" />
+    <ModalTable @confirm="confirmSelection" />
   </div>
 </template>
 

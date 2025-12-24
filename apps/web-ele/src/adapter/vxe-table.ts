@@ -32,6 +32,7 @@ setupVbenVxeTable({
         },
         rowConfig: {
           isHover: true,
+          keyField: 'id',
         },
         minHeight: 180,
         formConfig: {
