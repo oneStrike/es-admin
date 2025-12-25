@@ -5,7 +5,6 @@ import { ref } from 'vue';
 
 import { cloneDeep } from 'lodash-es';
 
-import { z } from '#/adapter/form';
 import { authorPageApi, categoryPageApi, tagPageApi } from '#/apis';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
@@ -49,7 +48,7 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'cover',
     label: '封面',
-    rules: z.string({ message: '请上传漫画封面' }),
+    rules: 'uploadRequired',
   },
   {
     component: 'Input',
@@ -83,7 +82,7 @@ export const formSchema: EsFormSchema = [
           ),
         ),
         searchSchema: cloneDeep(authorSearchSchema).filter((item) =>
-          ['gender', 'isRecommended', 'name'].includes(
+          ['name'].includes(
             typeof item?.fieldName === 'string' ? item?.fieldName : '',
           ),
         ),
@@ -98,7 +97,7 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'authorIds',
     label: '作者',
-    rules: 'selectRequired',
+    rules: 'arrayRequired',
   },
   {
     component: 'Select',
@@ -134,7 +133,7 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'categoryIds',
     label: '分类',
-    rules: 'selectRequired',
+    rules: 'arrayRequired',
   },
   {
     component: 'ApiSelect',

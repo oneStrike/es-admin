@@ -31,7 +31,6 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: number[]): void;
   (e: 'selectChange', options: any[]): void;
 }>();
-
 // 选中的完整数据记录
 const selectedRows = ref<any[]>([]);
 
@@ -73,9 +72,6 @@ function openTableModal() {
         columns: props.columns,
         api: props.api,
         gridProps: props.gridProps,
-        searchSchema: createSearchFormOptions(props.searchSchema!, {
-          wrapperClass: 'grid-cols-1',
-        }),
         selectionMode: props.multiple ? 'multiple' : 'single',
         selectedRows: selectedRows.value,
         multipleLimit: props.multipleLimit,
@@ -114,7 +110,14 @@ defineExpose({
     />
 
     <!-- 使用表格模态框组件 -->
-    <ModalTable :search-schema="searchSchema" @confirm="confirmSelection" />
+    <ModalTable
+      :search-schema="
+        createSearchFormOptions(props.searchSchema!, {
+          wrapperClass: 'grid-cols-2',
+        })
+      "
+      @confirm="confirmSelection"
+    />
   </div>
 </template>
 

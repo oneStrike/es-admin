@@ -68,8 +68,10 @@ export type FormActions = FormContext<GenericObject>;
 export type CustomRenderType = (() => Component | string) | string;
 
 export type FormSchemaRuleType =
+  | 'arrayRequired'
   | 'required'
   | 'selectRequired'
+  | 'uploadRequired'
   | null
   | (Record<never, never> & string)
   | ZodTypeAny;
@@ -434,12 +436,22 @@ export interface VbenFormAdapterOptions<
     modelPropNameMap?: Partial<Record<T, string>>;
   };
   defineRules?: {
+    arrayRequired?: (
+      value: any,
+      params: any,
+      ctx: Record<string, any>,
+    ) => boolean | string;
     required?: (
       value: any,
       params: any,
       ctx: Record<string, any>,
     ) => boolean | string;
     selectRequired?: (
+      value: any,
+      params: any,
+      ctx: Record<string, any>,
+    ) => boolean | string;
+    uploadRequired?: (
       value: any,
       params: any,
       ctx: Record<string, any>,
