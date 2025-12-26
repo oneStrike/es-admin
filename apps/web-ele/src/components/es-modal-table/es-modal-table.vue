@@ -3,7 +3,7 @@ import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type { EsModalTableEmits, EsModalTableProps } from './types';
 
-import { nextTick, ref } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
@@ -19,7 +19,6 @@ defineOptions({
 const props = withDefaults(defineProps<EsModalTableProps>(), {
   title: '选择数据',
   width: 800,
-  height: 700,
 });
 
 const emit = defineEmits<EsModalTableEmits>();
@@ -27,7 +26,7 @@ const emit = defineEmits<EsModalTableEmits>();
 const sharedData = ref<EsModalTableProps>();
 // 存储当前选中的行数据
 const selectedRows = ref<any[]>([]);
-// 初始化表格，使用gridEvents配置
+// 表格容器引用
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: props.searchSchema,
   gridEvents: {
@@ -45,7 +44,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 function getGridOptions(data: EsModalTableProps) {
   const options: VxeGridProps<any> = {
-    height: typeof data.height === 'number' ? `${data.height}px` : data.height,
     columns: data.columns,
     ...data.gridProps,
   };
@@ -188,6 +186,16 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
+const tableHeight = ref('70vh');
+const state = modalApi.useStore();
+watch(
+  () => state.value.fullscreen, // 注意要访问 .value
+  (isFullscreen) => {
+    // 全屏状态变化时重新计算表格高度
+    tableHeight.value = isFullscreen ? '90vh' : '70vh';
+  },
+);
+
 // 将组件内的 selectedRows 同步到表格，用于打开时回显
 function restoreGridSelection() {
   const data = sharedData.value;
@@ -209,32 +217,24 @@ function restoreGridSelection() {
 </script>
 
 <template>
-  <Modal
-    v-if="sharedData?.columns"
-    class="w-[1080px]"
-    :height="
-      sharedData.height && typeof sharedData.height === 'number'
-        ? sharedData.height + 100
-        : 600
-    "
-  >
+  <Modal v-if="sharedData?.columns" class="w-[1200px]">
     <el-row :gutter="20" class="h-full">
       <!-- 左侧表格区域 -->
-      <el-col :span="16" class="h-full">
-        <Grid
-          @checkbox-change="handleCheckboxChange"
-          @radio-change="handleRadioChange"
-        />
+      <el-col :span="16" class="flex h-full flex-col">
+        <div :style="{ height: tableHeight }">
+          <Grid
+            @checkbox-change="handleCheckboxChange"
+            @radio-change="handleRadioChange"
+          />
+        </div>
       </el-col>
       <!-- 右侧回显面板 -->
-      <el-col :span="8" class="h-full">
-        <div
-          class="selected-panel h-full rounded-lg border border-gray-200 p-4"
-        >
+      <el-col :span="8" :style="{ height: tableHeight }">
+        <el-card class="h-full" shadow="never">
           <!-- 面板标题 -->
-          <div class="panel-header my-3 flex items-center justify-between">
+          <div class="mb-3 flex justify-between">
             <h3 class="text-lg font-semibold">已选择数据</h3>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-3">
               <span class="text-gray-500"> {{ selectedRows.length }} 项 </span>
               <!-- 批量取消选择按钮 -->
               <el-button
@@ -244,75 +244,47 @@ function restoreGridSelection() {
                 "
                 type="text"
                 @click="handleBatchRemove"
-                icon="el-icon-delete"
               >
                 清空
               </el-button>
             </div>
           </div>
           <!-- 面板内容 -->
-          <div class="panel-content overflow-y-auto">
+          <div class="flex flex-col overflow-y-auto">
             <!-- 选中项列表 -->
-            <div v-if="selectedRows.length > 0" class="selected-list">
-              <div
+            <template v-if="selectedRows.length > 0">
+              <el-tag
                 v-for="(item, index) in selectedRows"
                 :key="item.id || index"
-                class="selected-item mb-2 flex items-center justify-between rounded-md border border-gray-100 p-3 hover:bg-gray-50"
+                class="mb-3"
+                size="large"
               >
-                <!-- 选中项信息 -->
-                <div class="item-info truncate">
+                <div class="flex w-full items-center justify-between text-sm">
+                  <!-- 选中项信息 -->
                   {{
                     sharedData.columns?.[0]?.field
                       ? item[sharedData.columns[0].field]
                       : ''
                   }}
+                  <!-- 取消选择按钮 -->
+                  <DeleteBinIcon
+                    class="cursor-pointer text-lg transition-colors duration-300 hover:text-red-600"
+                    @click="handleRemoveItem(item)"
+                  />
                 </div>
-                <!-- 取消选择按钮 -->
-                <DeleteBinIcon
-                  class="cursor-pointer transition-colors duration-300 hover:text-red-600"
-                  @click="handleRemoveItem(item)"
-                />
-              </div>
-            </div>
+              </el-tag>
+            </template>
             <!-- 空状态 -->
-            <div v-else class="empty-state py-10 text-center text-gray-400">
-              <el-icon class="mb-2 text-4xl" name="el-icon-document-remove" />
-              <p>暂无选中数据</p>
-            </div>
+            <el-empty v-else />
           </div>
-        </div>
+        </el-card>
       </el-col>
     </el-row>
   </Modal>
 </template>
 
 <style scoped lang="scss">
-.selected-panel {
-  display: flex;
-  flex-direction: column;
-}
-
-.panel-header {
-  flex-shrink: 0;
-}
-
-.panel-content {
-  flex: 1;
-}
-
-.selected-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.selected-item {
-  transition: all 0.3s ease;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+::v-deep(.el-tag__content) {
+  width: 100%;
 }
 </style>

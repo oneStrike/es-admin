@@ -114,6 +114,7 @@ defineExpose({
       :search-schema="
         createSearchFormOptions(props.searchSchema!, {
           wrapperClass: 'grid-cols-2',
+          showCollapseButton: false,
         })
       "
       @confirm="confirmSelection"
