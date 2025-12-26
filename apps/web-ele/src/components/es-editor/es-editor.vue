@@ -52,6 +52,9 @@ const props = withDefaults(defineProps<EsEditorProps>(), {
 const tinymceId = ref(
   `vue-tinymce-${Date.now()}${(Math.random() * 1000).toFixed(0)}`,
 );
+
+const tinymceContainerClassName = ref(tinymceId.value + 1);
+
 const modelValue = defineModel({ type: String, default: '' });
 const { isDark } = usePreferences();
 const editorKey = computed(() => `tinymce-${isDark.value ? 'dark' : 'light'}`);
@@ -170,6 +173,50 @@ const getContent = () => {
   return tinymce.activeEditor!.getContent();
 };
 
+const containerRef = ref<HTMLElement>();
+let observer: MutationObserver | null = null;
+
+onMounted(() => {
+  if (containerRef.value) {
+    observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === 'class'
+        ) {
+          const foo = document
+            .querySelector(`.${tinymceContainerClassName.value}`)
+            ?.querySelector('.tox-tinymce') as HTMLElement;
+          if (foo) {
+            if (containerRef.value?.className.includes('border-destructive')) {
+              foo.style.setProperty(
+                'border',
+                '1.5px solid var(--el-color-danger)',
+                'important',
+              );
+            } else {
+              foo.style.setProperty(
+                'border',
+                '1.5px solid #e3e3e6',
+                'important',
+              );
+            }
+          }
+        }
+      });
+    });
+
+    observer.observe(containerRef.value, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+  }
+});
+
+onUnmounted(() => {
+  observer?.disconnect();
+});
+
 defineExpose({
   setContent,
   getContent,
@@ -177,7 +224,11 @@ defineExpose({
 </script>
 
 <template>
-  <div style="height: 100%; overflow: visible">
+  <div
+    style="height: 100%; overflow: visible"
+    ref="containerRef"
+    :class="tinymceContainerClassName"
+  >
     <Editor
       :id="tinymceId"
       :key="editorKey"
@@ -191,5 +242,9 @@ defineExpose({
 <style>
 .tox-tinymce-aux {
   z-index: 999999 !important;
+}
+
+.tox-tinymce {
+  border: 1.5px solid #e3e3e6 !important;
 }
 </style>
