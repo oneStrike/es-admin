@@ -22,7 +22,7 @@ yarn.lock
 package-lock.json
 .VSCodeCounter
 **/backend-mock/data
-.trae/document
+.trae/documents
 
 # local env files
 .env.local

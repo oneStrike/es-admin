@@ -46,6 +46,8 @@ watch(
       } else {
         selectedRows.value = [];
       }
+    } else if (!newValue) {
+      selectedRows.value = [];
     }
   },
   { immediate: true },
@@ -102,12 +104,13 @@ defineExpose({
 <template>
   <div class="relative w-full">
     <el-input-tag
+      v-if="displayValue.length > 0"
       :model-value="displayValue"
-      class="!cursor-pointer"
       :placeholder="props.placeholder"
       @click="openTableModal"
       @remove-tag="handleRemoveTag"
     />
+    <el-input v-else :placeholder="props.placeholder" @click="openTableModal" />
 
     <!-- 使用表格模态框组件 -->
     <ModalTable
@@ -124,6 +127,10 @@ defineExpose({
 
 <style scoped lang="scss">
 ::v-deep(.el-input-tag__input) {
+  cursor: pointer;
+}
+
+::v-deep(.el-input__inner) {
   cursor: pointer;
 }
 </style>
