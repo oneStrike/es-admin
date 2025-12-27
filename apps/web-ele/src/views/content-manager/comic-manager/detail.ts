@@ -1,11 +1,17 @@
+import type { Recordable } from '@vben/types';
+
 import type { BaseComicDto } from '#/apis/types/comic';
+import type { UseDictItem } from '#/hooks/useDict';
 
 import { formatUTC } from '#/utils';
 
 import { serialStatusMap } from './shared';
 
 // 定义卡片配置函数
-export function getDetailCards(detail: BaseComicDto) {
+export function getDetailCards(
+  detail: BaseComicDto,
+  dataDict: Recordable<undefined | UseDictItem>,
+) {
   return [
     {
       title: '',
@@ -19,20 +25,22 @@ export function getDetailCards(detail: BaseComicDto) {
         {
           label: '作者',
           value:
-            detail.comicAuthors?.map((author) => author.name).join(', ') || '-',
+            detail.comicAuthors
+              ?.map((author) => author.author.name)
+              .join(', ') || '-',
           type: 'text',
         },
         {
           label: '分类',
           value:
             detail.comicCategories
-              ?.map((category) => category.name)
+              ?.map((category) => category.category.name)
               .join(', ') || '-',
           type: 'text',
         },
         {
           label: '标签',
-          value: detail.comicTags?.map((tag) => tag.name).join(', ') || '-',
+          value: detail.comicTags?.map((tag) => tag.tag.name).join(', ') || '-',
           type: 'text',
         },
       ],
@@ -48,22 +56,23 @@ export function getDetailCards(detail: BaseComicDto) {
         },
         {
           label: '出版社',
-          value: detail.publisher || '-',
+          value: dataDict.work_publisher?.labels[detail.publisher || ''] || '-',
           type: 'text',
         },
         {
           label: '地区',
-          value: detail.region || '-',
+          value: dataDict.work_region?.labels[detail.region || ''] || '-',
           type: 'text',
         },
         {
           label: '语言',
-          value: detail.language || '-',
+          value: dataDict.work_language?.labels[detail.language || ''] || '-',
           type: 'text',
         },
         {
           label: '年龄分级',
-          value: detail.ageRating || '-',
+          value:
+            dataDict.work_age_rating?.labels[detail.ageRating || ''] || '-',
           type: 'text',
         },
         {

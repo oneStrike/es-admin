@@ -16,10 +16,11 @@ import {
   clientPageUpdateApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
+import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
-import PageDetail from '#/views/app-manager/page-manager/detail.vue';
 
+import { getDetailCards } from './detail';
 import { accessLevelObj, formSchema, pageColumns, pageFilter } from './shared';
 
 const gridOptions: VxeGridProps<BaseClientPageDto> = {
@@ -75,7 +76,7 @@ async function deletePage(record: BaseClientPageDto) {
 }
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: PageDetail,
+  connectedComponent: EsRecordDetail,
 });
 
 async function toggleEnableStatus(record: BaseClientPageDto) {
@@ -143,7 +144,12 @@ async function toggleEnableStatus(record: BaseClientPageDto) {
 
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
-    <DetailModal />
+    <DetailModal
+      title="页面详情"
+      :api="clientPageDetailByIdApi"
+      :cards="getDetailCards"
+      class="!w-[800px]"
+    />
   </Page>
 </template>
 

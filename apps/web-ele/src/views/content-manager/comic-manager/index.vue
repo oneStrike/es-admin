@@ -101,8 +101,11 @@ async function openFormModal(row?: BaseComicDto) {
   formApi.setData({ title: '漫画', record }).open();
 }
 
+const dataDict = ref<Awaited<ReturnType<typeof useDict>>>();
 useDict('work_age_rating,work_publisher,work_region,work_language').then(
-  ({ work_age_rating, work_publisher, work_region, work_language }) => {
+  (res) => {
+    dataDict.value = res;
+    const { work_age_rating, work_publisher, work_region, work_language } = res;
     useForm.setOptions(formSchema, {
       publisher: work_publisher?.options || [],
       region: work_region?.options || [],
@@ -260,7 +263,7 @@ async function toggleStatus(record: BaseComicDto, field: keyof BaseComicDto) {
     <DetailModal
       title="漫画详情"
       :api="comicDetailApi"
-      :cards="getDetailCards"
+      :cards="(data: BaseComicDto) => getDetailCards(data, dataDict)"
     />
   </Page>
 </template>

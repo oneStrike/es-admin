@@ -19,10 +19,11 @@ import {
   noticeUpdateStatusApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
+import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
-import NoticeDetail from '#/views/app-manager/notice/detail.vue';
 
+import { getDetailCards } from './detail';
 import {
   formSchema,
   getPublishStatus,
@@ -143,7 +144,7 @@ function canPublish(record: NoticePageResponseDto): boolean {
 }
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: NoticeDetail,
+  connectedComponent: EsRecordDetail,
 });
 </script>
 
@@ -219,7 +220,11 @@ const [DetailModal, detailApi] = useVbenModal({
 
       <template #actions="{ row }">
         <div class="my-1">
-          <el-button link type="primary" @click="openFormModal(row)">
+          <el-button
+            link
+            type="primary"
+            @click="detailApi.setData({ recordId: row.id }).open()"
+          >
             详情
           </el-button>
 
@@ -278,6 +283,11 @@ const [DetailModal, detailApi] = useVbenModal({
       :on-submit="handleSubmit"
     />
 
-    <DetailModal />
+    <DetailModal
+      title="通知详情"
+      :api="noticeDetailApi"
+      :cards="getDetailCards"
+      class="!w-[1000px]"
+    />
   </Page>
 </template>
