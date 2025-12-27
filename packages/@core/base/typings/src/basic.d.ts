@@ -1,6 +1,6 @@
 interface BasicOption {
   label: string;
-  value: string;
+  value: number | string;
 }
 
 type SelectOption = BasicOption;

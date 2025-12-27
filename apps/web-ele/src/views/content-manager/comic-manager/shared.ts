@@ -1,11 +1,8 @@
 import type { EsFormSchema } from '#/types';
-import type { Options } from '#/utils/options';
-
-import { ref } from 'vue';
 
 import { cloneDeep } from 'lodash-es';
 
-import { authorPageApi, categoryPageApi, tagPageApi } from '#/apis';
+import { authorPageApi } from '#/apis';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
 import {
@@ -36,8 +33,7 @@ export const serialStatus = [
 export const serialStatusMap = optionsToMap(serialStatus);
 
 // 表单配置
-const categoryOptions = ref<Options[]>([]);
-const tagOptions = ref<Options[]>([]);
+
 export const formSchema: EsFormSchema = [
   {
     component: 'Upload',
@@ -111,49 +107,24 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    component: 'ApiSelect',
-    // 对应组件的参数
-    componentProps: () => {
-      return {
-        placeholder: '输入分类名称进行搜索',
-        multiple: true,
-        remote: true,
-        filterable: true,
-        immediate: false,
-        options: categoryOptions.value,
-        remoteMethod: async (value: string) => {
-          const res = await categoryPageApi({ name: value || undefined });
-          categoryOptions.value =
-            res.list?.map((item) => ({
-              label: item.name,
-              value: item.id,
-            })) || [];
-        },
-      };
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: '输入分类名称进行搜索',
+      multiple: true,
+      filterable: true,
     },
     fieldName: 'categoryIds',
     label: '分类',
     rules: 'arrayRequired',
   },
   {
-    component: 'ApiSelect',
-    componentProps: () => {
-      return {
-        placeholder: '输入标签名称进行搜索',
-        multiple: true,
-        remote: true,
-        filterable: true,
-        immediate: false,
-        options: tagOptions.value,
-        remoteMethod: async (value: string) => {
-          const res = await tagPageApi({ name: value || undefined });
-          tagOptions.value =
-            res.list?.map((item) => ({
-              label: item.name,
-              value: item.id,
-            })) || [];
-        },
-      };
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: '输入标签名称进行搜索',
+      multiple: true,
+      filterable: true,
     },
     fieldName: 'tagIds',
     label: '标签',

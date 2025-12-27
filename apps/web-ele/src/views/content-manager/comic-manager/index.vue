@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { BasicOption } from '@vben/types';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseComicDto,
@@ -10,11 +12,13 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  categoryPageApi,
   comicCreateApi,
   comicDeleteApi,
   comicDetailApi,
   comicPageApi,
   comicUpdateApi,
+  tagPageApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useDict } from '#/hooks/useDict';
@@ -51,6 +55,8 @@ const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: ComicDetail,
 });
 
+const tagOptions: BasicOption[] = [];
+const categoryOptions: BasicOption[] = [];
 async function openFormModal(row?: BaseComicDto) {
   let record;
   if (row) {
@@ -61,6 +67,36 @@ async function openFormModal(row?: BaseComicDto) {
     );
     record.tagIds = record?.comicTags.map((item) => item.tag.id);
   }
+
+  if (tagOptions.length === 0) {
+    const data = await tagPageApi({
+      pageSize: 500,
+    });
+    tagOptions.push(
+      ...(data.list?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })) || []),
+    );
+    useForm.setOptions(formSchema, {
+      tagIds: tagOptions,
+    });
+  }
+  if (categoryOptions.length === 0) {
+    const data = await categoryPageApi({
+      pageSize: 500,
+    });
+    categoryOptions.push(
+      ...(data.list?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })) || []),
+    );
+    useForm.setOptions(formSchema, {
+      categoryIds: categoryOptions,
+    });
+  }
+
   formApi.setData({ title: '漫画', record }).open();
 }
 
