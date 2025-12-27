@@ -1,3 +1,5 @@
+import type { Recordable } from '@vben/types';
+
 /**
  * 数据字典
  */
@@ -8,9 +10,7 @@ export interface UseDictItem {
   options: { label: string; value: string }[];
 }
 
-export async function useDict(
-  codes: string,
-): Promise<Record<string, UseDictItem>> {
+export async function useDict(codes: string): Promise<Recordable<UseDictItem>> {
   const data = await dictionaryItemsApi({
     dictionaryCode: codes,
     isEnabled: true,

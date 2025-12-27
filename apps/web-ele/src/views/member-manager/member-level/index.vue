@@ -19,9 +19,10 @@ import {
   memberLevelUpdateApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
+import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 
-import MemberLevelDetail from './detail.vue';
+import { getDetailCards } from './detail';
 import { formSchema, pageColumns } from './shared';
 
 const gridOptions: VxeGridProps<BaseMemberLevelDto> = {
@@ -44,8 +45,8 @@ const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-const [Detail, detailApi] = useVbenModal({
-  connectedComponent: MemberLevelDetail,
+const [DetailModal, detailApi] = useVbenModal({
+  connectedComponent: EsRecordDetail,
 });
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -60,9 +61,7 @@ async function openFormModal(row?: BaseMemberLevelDto) {
   formApi.setData({ title: '会员等级', record, schema: formSchema }).open();
 }
 
-function openDetailModal(row: BaseMemberLevelDto) {
-  detailApi.setData({ recordId: row.id, title: '会员等级详情' }).open();
-}
+// 详情弹窗已整合到 DetailModal 组件中，无需单独的 openDetailModal 函数
 
 async function handleSubmit(
   values: MemberLevelCreateRequest | MemberLevelUpdateRequest,
@@ -129,7 +128,11 @@ async function toggleStatus(record: BaseMemberLevelDto) {
 
       <template #actions="{ row }">
         <div class="my-1">
-          <el-button link type="primary" @click="openDetailModal(row)">
+          <el-button
+            link
+            type="primary"
+            @click="detailApi.setData({ recordId: row.id }).open()"
+          >
             详情
           </el-button>
           <el-divider direction="vertical" />
@@ -152,7 +155,12 @@ async function toggleStatus(record: BaseMemberLevelDto) {
     </Grid>
 
     <Form :on-submit="handleSubmit" />
-    <Detail />
+    <DetailModal
+      title="会员等级详情"
+      :api="memberLevelDetailApi"
+      :cards="getDetailCards"
+      class="!min-w-[800px]"
+    />
   </Page>
 </template>
 

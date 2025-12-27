@@ -22,12 +22,13 @@ import {
   authorUpdateStatusApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
+import EsRecordDetail from '#/components/es-record-detail';
 import { useDict } from '#/hooks/useDict';
 import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
-import AuthorDetail from './detail.vue';
+import { getDetailCards } from './detail';
 import { authorColumns, authorSearchSchema, formSchema } from './shared';
 
 /**
@@ -78,22 +79,11 @@ const [Form, formApi] = useVbenModal({
 });
 
 /**
- * 详情弹窗 - 使用子组件注册的方式
+ * 详情弹窗
  */
-const detailModalRef = ref();
-
-/**
- * 打开详情弹窗
- */
-function openDetailModal(row: AuthorPageResponseDto): void {
-  detailModalRef.value
-    ?.setData({
-      recordId: row.id,
-      title: '作者详情',
-      nationalityMap: nationalityMap.value,
-    })
-    .open();
-}
+const [DetailModal, detailApi] = useVbenModal({
+  connectedComponent: EsRecordDetail,
+});
 
 /**
  * 打开表单弹窗
@@ -197,7 +187,18 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
       </template>
 
       <template #actions="{ row }">
-        <el-button link type="primary" @click="openDetailModal(row)">
+        <el-button
+          link
+          type="primary"
+          @click="
+            detailApi
+              .setData({
+                recordId: row.id,
+                extraData: { nationalityMap: nationalityMap.value },
+              })
+              .open()
+          "
+        >
           详情
         </el-button>
         <el-divider direction="vertical" />
@@ -222,7 +223,12 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
 
     <!-- 复用模块化的表单 schema -->
     <Form :schema="formSchema" :on-submit="addOrUpdateAuthor" />
-    <AuthorDetail ref="detailModalRef" />
+    <DetailModal
+      title="作者详情"
+      :api="authorDetailApi"
+      :cards="getDetailCards"
+      class="!min-w-[800px]"
+    />
   </Page>
 </template>
 
