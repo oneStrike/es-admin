@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BasicOption } from '@vben/types';
+import type { BasicOption, Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
@@ -7,6 +7,7 @@ import type {
   ComicCreateRequest,
   ComicUpdateRequest,
 } from '#/apis/types/comic';
+import type { UseDictItem } from '#/hooks/useDict';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -101,7 +102,7 @@ async function openFormModal(row?: BaseComicDto) {
   formApi.setData({ title: '漫画', record }).open();
 }
 
-const dataDict = ref<Awaited<ReturnType<typeof useDict>>>();
+const dataDict = ref<Required<Recordable<undefined | UseDictItem>>>();
 useDict('work_age_rating,work_publisher,work_region,work_language').then(
   (res) => {
     dataDict.value = res;
@@ -241,7 +242,7 @@ async function toggleStatus(record: BaseComicDto, field: keyof BaseComicDto) {
           </el-button>
           <el-divider direction="vertical" />
           <el-button link type="primary" @click="openFormModal(row)">
-            版本
+            章节
           </el-button>
           <el-divider direction="vertical" />
           <el-popconfirm
@@ -263,7 +264,7 @@ async function toggleStatus(record: BaseComicDto, field: keyof BaseComicDto) {
     <DetailModal
       title="漫画详情"
       :api="comicDetailApi"
-      :cards="(data: BaseComicDto) => getDetailCards(data, dataDict)"
+      :cards="(data: BaseComicDto) => getDetailCards(data, dataDict || {})"
     />
   </Page>
 </template>

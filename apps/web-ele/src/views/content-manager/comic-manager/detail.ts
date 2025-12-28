@@ -126,8 +126,8 @@ export function getDetailCards(
       show: true,
       fields: [
         {
-          label: '总阅读量',
-          value: detail.totalViews || 0,
+          label: '浏览量',
+          value: detail.viewCount || 0,
           type: 'text',
         },
         {
@@ -142,7 +142,9 @@ export function getDetailCards(
         },
         {
           label: '评分',
-          value: detail.rating || 0,
+          value: detail.rating
+            ? `${detail.rating} (${detail.ratingCount}人)`
+            : '0 (0人)',
           type: 'text',
         },
         {
@@ -214,11 +216,6 @@ export function getDetailCards(
         {
           label: '热度权重',
           value: detail.popularityWeight || 0,
-          type: 'text',
-        },
-        {
-          label: '热度值',
-          value: detail.popularity || 0,
           type: 'text',
         },
         {
