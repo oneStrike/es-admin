@@ -135,5 +135,15 @@ export async function generateAPI(
 
 // 如果直接运行此脚本
 if (process.argv[1] && process.argv[1].endsWith('index.ts')) {
-  generateAPI().catch(console.error);
+  // 使用立即执行函数确保异步操作正确处理
+  (async () => {
+    try {
+      await generateAPI();
+      console.log('🎉 所有任务已完成');
+      // 任务完成后，让Node.js事件循环自然结束
+    } catch (error) {
+      console.error('❌ 任务执行失败:', error);
+      process.exit(1); // 只有在失败时才退出
+    }
+  })();
 }

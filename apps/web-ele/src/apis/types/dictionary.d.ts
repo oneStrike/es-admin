@@ -1,7 +1,7 @@
 /**
  *  类型定义 [DictionaryPageRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryPageRequest = {
   /** 任意合法数值 */
@@ -11,7 +11,7 @@ export type DictionaryPageRequest = {
   code?: string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: any;
 
   /* 状态 true启用 false禁用 */
   isEnabled?: boolean;
@@ -20,16 +20,16 @@ export type DictionaryPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: any;
 
   /* 当前页码 */
-  pageIndex?: number;
+  pageIndex?: any;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: any;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: any;
 };
 
 export type DictionaryPageResponse = {
@@ -52,7 +52,7 @@ export type DictionaryPageResponse = {
 /**
  *  类型定义 [DictionaryDetailRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryDetailRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type DictionaryDetailResponse = BaseDictionaryDto;
 /**
  *  类型定义 [DictionaryCreateRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryCreateRequest = CreateDictionaryDto;
 
@@ -76,7 +76,7 @@ export type DictionaryCreateResponse = IdDto;
 /**
  *  类型定义 [DictionaryUpdateRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryUpdateRequest = UpdateDictionaryDto;
 
@@ -85,7 +85,7 @@ export type DictionaryUpdateResponse = IdDto;
 /**
  *  类型定义 [DictionaryDeleteRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryDeleteRequest = IdsDto;
 
@@ -94,7 +94,7 @@ export type DictionaryDeleteResponse = IdsDto;
 /**
  *  类型定义 [DictionaryBatchUpdateStatusRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryBatchUpdateStatusRequest = BatchUpdateEnabledStatusDto;
 
@@ -103,7 +103,7 @@ export type DictionaryBatchUpdateStatusResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [DictionaryItemsRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryItemsRequest = {
   /** 任意合法数值 */
@@ -127,7 +127,7 @@ export type DictionaryItemsResponse = BaseDictionaryItemDto[];
 /**
  *  类型定义 [DictionaryCreateItemRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryCreateItemRequest = CreateDictionaryItemDto;
 
@@ -136,7 +136,7 @@ export type DictionaryCreateItemResponse = IdDto;
 /**
  *  类型定义 [DictionaryUpdateItemRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryUpdateItemRequest = UpdateDictionaryItemDto;
 
@@ -145,7 +145,7 @@ export type DictionaryUpdateItemResponse = IdDto;
 /**
  *  类型定义 [DictionaryDeleteItemRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryDeleteItemRequest = IdsDto;
 
@@ -154,7 +154,7 @@ export type DictionaryDeleteItemResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [DictionaryUpdateItemStatusRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryUpdateItemStatusRequest = UpdateEnabledStatusDto;
 
@@ -163,7 +163,7 @@ export type DictionaryUpdateItemStatusResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [DictionaryItemOrderRequest]
  *  @来源 字典管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DictionaryItemOrderRequest = DragReorderDto;
 
@@ -172,7 +172,7 @@ export type DictionaryItemOrderResponse = DragReorderDto;
 /**
  *  类型定义 [BaseDictionaryDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BaseDictionaryDto = {
   /** 任意合法数值 */
@@ -180,11 +180,11 @@ export type BaseDictionaryDto = {
   /* 字典编码 */
   code: string;
   /* 字典封面 */
-  cover?: string;
+  cover?: any;
   /* 创建时间 */
   createdAt: string;
   /* 备注信息 */
-  description?: string;
+  description?: any;
   /* 主键id */
   id: number;
   /* 状态 true启用 false禁用 */
@@ -199,7 +199,7 @@ export type BaseDictionaryDto = {
 /**
  *  类型定义 [CreateDictionaryDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type CreateDictionaryDto = {
   /** 任意合法数值 */
@@ -207,9 +207,9 @@ export type CreateDictionaryDto = {
   /* 字典编码 */
   code: string;
   /* 字典封面 */
-  cover?: string;
+  cover?: any;
   /* 备注信息 */
-  description?: string;
+  description?: any;
   /* 状态 true启用 false禁用 */
   isEnabled: boolean;
 
@@ -220,7 +220,7 @@ export type CreateDictionaryDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -233,7 +233,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateDictionaryDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateDictionaryDto = {
   /** 任意合法数值 */
@@ -241,9 +241,9 @@ export type UpdateDictionaryDto = {
   /* 字典编码 */
   code: string;
   /* 字典封面 */
-  cover?: string;
+  cover?: any;
   /* 备注信息 */
-  description?: string;
+  description?: any;
   /* 主键id */
   id: number;
   /* 状态 true启用 false禁用 */
@@ -256,7 +256,7 @@ export type UpdateDictionaryDto = {
 /**
  *  类型定义 [IdsDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type IdsDto = {
   /** 任意合法数值 */
@@ -269,7 +269,7 @@ export type IdsDto = {
 /**
  *  类型定义 [BatchUpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BatchUpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -284,7 +284,7 @@ export type BatchUpdateEnabledStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -297,7 +297,7 @@ export type BatchOperationResponseDto = {
 /**
  *  类型定义 [BaseDictionaryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BaseDictionaryItemDto = {
   /** 任意合法数值 */
@@ -305,11 +305,11 @@ export type BaseDictionaryItemDto = {
   /* 字典编码 */
   code: string;
   /* 字典封面 */
-  cover?: string;
+  cover?: any;
   /* 创建时间 */
   createdAt: string;
   /* 备注信息 */
-  description?: string;
+  description?: any;
   /* 字典编码 */
   dictionaryCode: string;
   /* 主键id */
@@ -326,7 +326,7 @@ export type BaseDictionaryItemDto = {
 /**
  *  类型定义 [CreateDictionaryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type CreateDictionaryItemDto = {
   /** 任意合法数值 */
@@ -334,9 +334,9 @@ export type CreateDictionaryItemDto = {
   /* 字典编码 */
   code: string;
   /* 字典封面 */
-  cover?: string;
+  cover?: any;
   /* 备注信息 */
-  description?: string;
+  description?: any;
   /* 字典编码 */
   dictionaryCode: string;
   /* 状态 true启用 false禁用 */
@@ -349,7 +349,7 @@ export type CreateDictionaryItemDto = {
 /**
  *  类型定义 [UpdateDictionaryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateDictionaryItemDto = {
   /** 任意合法数值 */
@@ -357,9 +357,9 @@ export type UpdateDictionaryItemDto = {
   /* 字典编码 */
   code: string;
   /* 字典封面 */
-  cover?: string;
+  cover?: any;
   /* 备注信息 */
-  description?: string;
+  description?: any;
   /* 字典编码 */
   dictionaryCode: string;
   /* 主键id */
@@ -374,7 +374,7 @@ export type UpdateDictionaryItemDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -389,7 +389,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

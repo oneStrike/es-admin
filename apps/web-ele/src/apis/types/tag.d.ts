@@ -1,7 +1,7 @@
 /**
  *  类型定义 [TagCreateRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type TagCreateRequest = CreateTagDto;
 
@@ -10,32 +10,32 @@ export type TagCreateResponse = IdDto;
 /**
  *  类型定义 [TagPageRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type TagPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: any;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: any;
 
   /* 标签名称 */
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: any;
 
   /* 当前页码 */
-  pageIndex?: number;
+  pageIndex?: any;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: any;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: any;
 };
 
 export type TagPageResponse = {
@@ -58,7 +58,7 @@ export type TagPageResponse = {
 /**
  *  类型定义 [TagDetailRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type TagDetailRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type TagDetailResponse = BaseTagDto;
 /**
  *  类型定义 [TagUpdateRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type TagUpdateRequest = UpdateTagDto;
 
@@ -82,7 +82,7 @@ export type TagUpdateResponse = IdDto;
 /**
  *  类型定义 [TagUpdateStatusRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type TagUpdateStatusRequest = UpdateEnabledStatusDto;
 
@@ -91,7 +91,7 @@ export type TagUpdateStatusResponse = IdDto;
 /**
  *  类型定义 [TagDeleteRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type TagDeleteRequest = IdDto;
 
@@ -100,7 +100,7 @@ export type TagDeleteResponse = IdDto;
 /**
  *  类型定义 [TagOrderRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type TagOrderRequest = DragReorderDto;
 
@@ -109,30 +109,30 @@ export type TagOrderResponse = DragReorderDto;
 /**
  *  类型定义 [CreateTagDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type CreateTagDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 标签描述 */
-  description?: string;
+  description?: any;
   /* 标签图标URL */
-  icon?: string;
+  icon?: any;
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: any;
   /* 标签名称 */
   name: string;
   /* 排序值 */
-  order?: number;
+  order?: any;
 
   /* 辅助人气值 */
-  popularityWeight?: number;
+  popularityWeight?: any;
 };
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -145,7 +145,7 @@ export type IdDto = {
 /**
  *  类型定义 [BaseTagDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BaseTagDto = {
   /** 任意合法数值 */
@@ -153,21 +153,21 @@ export type BaseTagDto = {
   /* 创建时间 */
   createdAt: string;
   /* 标签描述 */
-  description?: string;
+  description?: any;
   /* 标签图标URL */
-  icon?: string;
+  icon?: any;
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: any;
   /* 标签名称 */
   name: string;
   /* 排序值 */
-  order?: number;
+  order?: any;
   /* 人气值 */
-  popularity?: number;
+  popularity?: any;
   /* 辅助人气值 */
-  popularityWeight?: number;
+  popularityWeight?: any;
 
   /* 更新时间 */
   updatedAt: string;
@@ -176,32 +176,32 @@ export type BaseTagDto = {
 /**
  *  类型定义 [UpdateTagDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateTagDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 标签描述 */
-  description?: string;
+  description?: any;
   /* 标签图标URL */
-  icon?: string;
+  icon?: any;
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: any;
   /* 标签名称 */
   name: string;
   /* 排序值 */
-  order?: number;
+  order?: any;
 
   /* 辅助人气值 */
-  popularityWeight?: number;
+  popularityWeight?: any;
 };
 
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -216,7 +216,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

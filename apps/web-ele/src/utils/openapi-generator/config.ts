@@ -1,3 +1,25 @@
+import path from 'node:path';
+import process from 'node:process';
+
+/**
+ * 使用dotenv加载开发环境变量
+ */
+import dotenv from 'dotenv';
+
+// 加载.env.development文件
+const envPath = path.resolve(process.cwd(), '.env.development');
+const result = dotenv.config({
+  path: envPath,
+});
+
+// 检查加载结果
+if (result.error) {
+  console.error(`❌ 无法加载.env.development文件: ${result.error.message}`);
+  console.error(`📁 尝试加载的路径: ${envPath}`);
+  console.error(`💡 当前工作目录: ${process.cwd()}`);
+  throw result.error;
+}
+
 /**
  * 命名配置
  */
@@ -22,8 +44,6 @@ export interface NamingConfig {
  * OpenAPI 生成器配置
  */
 export interface OpenAPIGeneratorConfig {
-  /** API 基础 URL */
-  baseUrl: string;
   /** OpenAPI 规范 URL */
   openApiUrl: string;
   /** 输出目录 */
@@ -40,14 +60,28 @@ export interface OpenAPIGeneratorConfig {
   naming: NamingConfig;
   /** 日期时间格式化选项 */
   dateTimeOptions: Intl.DateTimeFormatOptions;
+  proxyConfig: {
+    data: Record<string, any>;
+    headers: Record<string, string>;
+  };
 }
 
 /**
  * 默认配置
  */
 export const defaultConfig: OpenAPIGeneratorConfig = {
-  baseUrl: 'http://127.0.0.1:4523/export/openapi/2?version=3.0',
-  openApiUrl: 'http://127.0.0.1:4523/export/openapi/2?version=3.0',
+  openApiUrl: `https://api.apifox.com/v1/projects/${process.env.VITE_APIFOX_PROJECT_ID}/export-openapi?locale=zh-CN`,
+  proxyConfig: {
+    headers: {
+      Authorization: `Bearer ${process.env.VITE_APIFOX_API_KEY}`,
+      'X-Apifox-Api-Version': '2024-03-28',
+    },
+    data: {
+      scope: {
+        type: 'ALL',
+      },
+    },
+  },
   outputDir: './src/apis',
   typesOutputDir: './src/apis/types',
   typesDirName: 'types',

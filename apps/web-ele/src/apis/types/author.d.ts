@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AuthorCreateRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthorCreateRequest = CreateAuthorDto;
 
@@ -10,14 +10,14 @@ export type AuthorCreateResponse = IdDto;
 /**
  *  类型定义 [AuthorPageRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthorPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: any;
 
   /* 性别（0: 未知, 1: 男性, 2: 女性, 3: 其他） */
   gender?: number;
@@ -32,22 +32,22 @@ export type AuthorPageRequest = {
   name?: string;
 
   /* 国籍 */
-  nationality?: string;
+  nationality?: any;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: any;
 
   /* 当前页码 */
-  pageIndex?: number;
+  pageIndex?: any;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: any;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: any;
 
   /* 作者角色类型 */
-  type?: string;
+  type?: any;
 };
 
 export type AuthorPageResponse = {
@@ -70,7 +70,7 @@ export type AuthorPageResponse = {
 /**
  *  类型定义 [AuthorDetailRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthorDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type AuthorDetailResponse = BaseAuthorDto;
 /**
  *  类型定义 [AuthorUpdateRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthorUpdateRequest = UpdateAuthorDto;
 
@@ -94,7 +94,7 @@ export type AuthorUpdateResponse = IdDto;
 /**
  *  类型定义 [AuthorUpdateStatusRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthorUpdateStatusRequest = UpdateEnabledStatusDto;
 
@@ -103,7 +103,7 @@ export type AuthorUpdateStatusResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [AuthorUpdateIsRecommendedRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthorUpdateIsRecommendedRequest = UpdateAuthorisRecommendedDto;
 
@@ -112,7 +112,7 @@ export type AuthorUpdateIsRecommendedResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [AuthorDeleteRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthorDeleteRequest = IdDto;
 
@@ -121,23 +121,23 @@ export type AuthorDeleteResponse = IdDto;
 /**
  *  类型定义 [CreateAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type CreateAuthorDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 作者头像URL */
-  avatar?: string;
+  avatar?: any;
   /* 作者描述 */
-  description?: string;
+  description?: any;
   /* 性别（0: 未知, 1: 男性, 2: 女性, 3: 其他） */
   gender: 0 | 1 | 2 | 3 | 4;
   /* 作者姓名 */
   name: string;
   /* 国籍 */
-  nationality?: string;
+  nationality?: any;
   /* 管理员备注 */
-  remark?: string;
+  remark?: any;
 
   /* 作者角色类型 */
   type: number[];
@@ -146,7 +146,7 @@ export type CreateAuthorDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -159,13 +159,13 @@ export type IdDto = {
 /**
  *  类型定义 [AuthorPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthorPageResponseDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 作者头像URL */
-  avatar?: string;
+  avatar?: any;
   /* 创建时间 */
   createdAt: string;
   /* 粉丝数量（冗余字段，用于前台展示） */
@@ -181,7 +181,7 @@ export type AuthorPageResponseDto = {
   /* 作者姓名 */
   name: string;
   /* 国籍 */
-  nationality?: string;
+  nationality?: any;
   /* 作者角色类型 */
   type: number[];
   /* 更新时间 */
@@ -194,17 +194,17 @@ export type AuthorPageResponseDto = {
 /**
  *  类型定义 [BaseAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BaseAuthorDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 作者头像URL */
-  avatar?: string;
+  avatar?: any;
   /* 创建时间 */
   createdAt: string;
   /* 作者描述 */
-  description?: string;
+  description?: any;
   /* 粉丝数量（冗余字段，用于前台展示） */
   followersCount: number;
   /* 性别（0: 未知, 1: 男性, 2: 女性, 3: 其他） */
@@ -218,9 +218,9 @@ export type BaseAuthorDto = {
   /* 作者姓名 */
   name: string;
   /* 国籍 */
-  nationality?: string;
+  nationality?: any;
   /* 管理员备注 */
-  remark?: string;
+  remark?: any;
   /* 作者角色类型 */
   type: number[];
   /* 更新时间 */
@@ -233,15 +233,15 @@ export type BaseAuthorDto = {
 /**
  *  类型定义 [UpdateAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateAuthorDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 作者头像URL */
-  avatar?: string;
+  avatar?: any;
   /* 作者描述 */
-  description?: string;
+  description?: any;
   /* 性别（0: 未知, 1: 男性, 2: 女性, 3: 其他） */
   gender: 0 | 1 | 2 | 3 | 4;
   /* 主键id */
@@ -249,9 +249,9 @@ export type UpdateAuthorDto = {
   /* 作者姓名 */
   name: string;
   /* 国籍 */
-  nationality?: string;
+  nationality?: any;
   /* 管理员备注 */
-  remark?: string;
+  remark?: any;
 
   /* 作者角色类型 */
   type: number[];
@@ -260,7 +260,7 @@ export type UpdateAuthorDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -275,7 +275,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -288,7 +288,7 @@ export type BatchOperationResponseDto = {
 /**
  *  类型定义 [UpdateAuthorisRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateAuthorisRecommendedDto = {
   /** 任意合法数值 */

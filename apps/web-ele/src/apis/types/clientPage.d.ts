@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ClientPageCreateRequest]
  *  @来源 客户端管理/页面管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type ClientPageCreateRequest = BaseClientPageDto;
 
@@ -10,7 +10,7 @@ export type ClientPageCreateResponse = IdDto;
 /**
  *  类型定义 [ClientPagePageRequest]
  *  @来源 客户端管理/页面管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type ClientPagePageRequest = {
   /** 任意合法数值 */
@@ -23,10 +23,10 @@ export type ClientPagePageRequest = {
   code?: string;
 
   /* 所启用的平台 */
-  enablePlatform?: string;
+  enablePlatform?: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: any;
 
   /* 页面启用状态 */
   isEnabled?: boolean;
@@ -35,16 +35,16 @@ export type ClientPagePageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: any;
 
   /* 当前页码 */
-  pageIndex?: number;
+  pageIndex?: any;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: any;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: any;
 };
 
 export type ClientPagePageResponse = {
@@ -67,7 +67,7 @@ export type ClientPagePageResponse = {
 /**
  *  类型定义 [ClientPageDetailByIdRequest]
  *  @来源 客户端管理/页面管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type ClientPageDetailByIdRequest = {
   /** 任意合法数值 */
@@ -81,7 +81,7 @@ export type ClientPageDetailByIdResponse = BaseClientPageDto;
 /**
  *  类型定义 [ClientPageDetailByCodeRequest]
  *  @来源 客户端管理/页面管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type ClientPageDetailByCodeRequest = {
   /** 任意合法数值 */
@@ -95,7 +95,7 @@ export type ClientPageDetailByCodeResponse = BaseClientPageDto;
 /**
  *  类型定义 [ClientPageUpdateRequest]
  *  @来源 客户端管理/页面管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type ClientPageUpdateRequest = UpdateClientPageDto;
 
@@ -104,7 +104,7 @@ export type ClientPageUpdateResponse = IdDto;
 /**
  *  类型定义 [ClientPageBatchDeleteRequest]
  *  @来源 客户端管理/页面管理
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type ClientPageBatchDeleteRequest = IdsDto;
 
@@ -113,7 +113,7 @@ export type ClientPageBatchDeleteResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [BaseClientPageDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BaseClientPageDto = {
   /** 任意合法数值 */
@@ -125,7 +125,7 @@ export type BaseClientPageDto = {
   /* 创建时间 */
   createdAt: string;
   /* 页面描述信息 */
-  description?: string;
+  description?: any;
   /* 启用的平台 */
   enablePlatform: number[];
   /* 主键id */
@@ -146,7 +146,7 @@ export type BaseClientPageDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -159,7 +159,7 @@ export type IdDto = {
 /**
  *  类型定义 [ClientPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type ClientPageResponseDto = {
   /** 任意合法数值 */
@@ -190,7 +190,7 @@ export type ClientPageResponseDto = {
 /**
  *  类型定义 [UpdateClientPageDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UpdateClientPageDto = {
   /** 任意合法数值 */
@@ -200,11 +200,11 @@ export type UpdateClientPageDto = {
   /* 页面编码（唯一标识） */
   code?: string;
   /* 页面描述信息 */
-  description?: string;
+  description?: any;
   /* 启用的平台 */
   enablePlatform?: number[];
   /* 主键id */
-  id?: number;
+  id: number;
   /* 页面启用状态 */
   isEnabled?: boolean;
   /* 页面名称 */
@@ -219,7 +219,7 @@ export type UpdateClientPageDto = {
 /**
  *  类型定义 [IdsDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type IdsDto = {
   /** 任意合法数值 */
@@ -232,7 +232,7 @@ export type IdsDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */

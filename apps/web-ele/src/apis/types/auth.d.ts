@@ -3,7 +3,7 @@ export type AuthCaptchaResponse = CaptchaDto;
 /**
  *  类型定义 [AuthLoginRequest]
  *  @来源 管理端认证模块
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthLoginRequest = UserLoginDto;
 
@@ -12,7 +12,7 @@ export type AuthLoginResponse = LoginResponseDto;
 /**
  *  类型定义 [AuthLogoutRequest]
  *  @来源 管理端认证模块
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthLogoutRequest = TokenDto;
 
@@ -21,7 +21,7 @@ export type AuthLogoutResponse = boolean;
 /**
  *  类型定义 [AuthRefreshTokenRequest]
  *  @来源 管理端认证模块
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type AuthRefreshTokenRequest = RefreshTokenDto;
 
@@ -32,12 +32,12 @@ export type AuthPublicKeyResponse = RsaPublicKeyDto;
 /**
  *  类型定义 [CaptchaDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type CaptchaDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 验证码 */
+  /* 验证码,base64格式 */
   captcha: string;
 
   /* 验证码ID */
@@ -47,12 +47,12 @@ export type CaptchaDto = {
 /**
  *  类型定义 [UserLoginDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type UserLoginDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 验证码 */
+  /* 验证码,base64格式 */
   captcha: string;
   /* 验证码ID */
   captchaId: string;
@@ -66,7 +66,7 @@ export type UserLoginDto = {
 /**
  *  类型定义 [LoginResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type LoginResponseDto = {
   /** 任意合法数值 */
@@ -81,7 +81,7 @@ export type LoginResponseDto = {
 /**
  *  类型定义 [TokenDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type TokenDto = {
   /** 任意合法数值 */
@@ -96,13 +96,13 @@ export type TokenDto = {
 /**
  *  类型定义 [BaseUserDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type BaseUserDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 头像 */
-  avatar?: string;
+  avatar?: any;
   /* 创建时间 */
   createdAt: string;
   /* 主键id */
@@ -129,7 +129,7 @@ export type BaseUserDto = {
 /**
  *  类型定义 [RefreshTokenDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type RefreshTokenDto = {
   /** 任意合法数值 */
@@ -142,7 +142,7 @@ export type RefreshTokenDto = {
 /**
  *  类型定义 [RsaPublicKeyDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type RsaPublicKeyDto = {
   /** 任意合法数值 */

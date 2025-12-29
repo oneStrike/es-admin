@@ -37,7 +37,14 @@ export class OpenAPIGenerator {
     const apiUrl = url || this.config.openApiUrl;
 
     try {
-      const response = await fetch(apiUrl);
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.config.proxyConfig.headers,
+        },
+        body: JSON.stringify(this.config.proxyConfig.data),
+      });
 
       if (!response.ok) {
         const errorText = await response.text();

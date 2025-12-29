@@ -2,8 +2,8 @@ export type ThirdPartyPlatformResponse = PlatformResponseDto[];
 
 /**
  *  类型定义 [ThirdPartySearchRequest]
- *  @来源 漫画管理模块/三方平台内容解析
- *  @更新时间 2025-12-28 14:40:45
+ *  @来源 内容管理/漫画管理模块/三方平台内容解析
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type ThirdPartySearchRequest = {
   /** 任意合法数值 */
@@ -21,7 +21,7 @@ export type ThirdPartySearchResponse = SearchComicItemDto;
 /**
  *  类型定义 [PlatformResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type PlatformResponseDto = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type PlatformResponseDto = {
 /**
  *  类型定义 [SearchComicItemDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-28 14:40:45
+ *  @更新时间 2025-12-29 16:56:58
  */
 export type SearchComicItemDto = {
   /** 任意合法数值 */
