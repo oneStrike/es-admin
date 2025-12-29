@@ -14,7 +14,7 @@ const routes: RouteRecordRaw[] = [
         name: 'ComicManager',
         path: '/content-manager/comic-manager',
         component: () =>
-          import('#/views/content-manager/comic-manager/index.vue'),
+          import('#/views/content-manager/comic-manager/core/index.vue'),
         meta: {
           title: '漫画',
           icon: 'codex:dot-circle',

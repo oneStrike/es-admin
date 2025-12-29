@@ -28,6 +28,7 @@ import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
+import ChapterModal from '../chapter/index.vue';
 import { comicColumns } from './columns';
 import { getDetailCards } from './detail';
 import { formSchema, pageFilter } from './shared';
@@ -158,6 +159,22 @@ async function toggleStatus(record: BaseComicDto, field: keyof BaseComicDto) {
   useMessage.success('操作成功');
   gridApi.reload();
 }
+
+// 章节管理弹窗状态
+const chapterModalVisible = ref(false);
+const currentComic = ref<BaseComicDto | null>(null);
+
+// 打开章节管理弹窗
+function openChapterModal(record: BaseComicDto) {
+  currentComic.value = record;
+  chapterModalVisible.value = true;
+}
+
+// 关闭章节管理弹窗
+function closeChapterModal() {
+  chapterModalVisible.value = false;
+  currentComic.value = null;
+}
 </script>
 
 <template>
@@ -241,7 +258,7 @@ async function toggleStatus(record: BaseComicDto, field: keyof BaseComicDto) {
             编辑
           </el-button>
           <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
+          <el-button link type="primary" @click="openChapterModal(row)">
             章节
           </el-button>
           <el-divider direction="vertical" />
@@ -265,6 +282,14 @@ async function toggleStatus(record: BaseComicDto, field: keyof BaseComicDto) {
       title="漫画详情"
       :api="comicDetailApi"
       :cards="(data: BaseComicDto) => getDetailCards(data, dataDict || {})"
+    />
+
+    <ChapterModal
+      v-if="currentComic"
+      v-model:dialog-visible="chapterModalVisible"
+      :comic-id="currentComic.id"
+      :comic-name="currentComic.name"
+      @close="closeChapterModal"
     />
   </Page>
 </template>
