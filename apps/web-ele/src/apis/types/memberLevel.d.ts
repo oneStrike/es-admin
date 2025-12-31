@@ -3,7 +3,7 @@ export type MemberLevelListResponse = BaseMemberLevelDto;
 /**
  *  类型定义 [MemberLevelDetailRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type MemberLevelDetailRequest = {
   /** 任意合法数值 */
@@ -18,7 +18,7 @@ export type MemberLevelDetailResponse = BaseMemberLevelDto;
 /**
  *  类型定义 [MemberLevelCreateRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type MemberLevelCreateRequest = CreateMemberLevelDto;
 
@@ -27,7 +27,7 @@ export type MemberLevelCreateResponse = IdDto;
 /**
  *  类型定义 [MemberLevelUpdateRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type MemberLevelUpdateRequest = UpdateMemberLevelDto;
 
@@ -36,7 +36,7 @@ export type MemberLevelUpdateResponse = IdDto;
 /**
  *  类型定义 [MemberLevelDeleteRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type MemberLevelDeleteRequest = IdDto;
 
@@ -45,7 +45,7 @@ export type MemberLevelDeleteResponse = IdDto;
 /**
  *  类型定义 [MemberLevelChangeStatusRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type MemberLevelChangeStatusRequest = UpdateEnabledStatusDto;
 
@@ -54,7 +54,7 @@ export type MemberLevelChangeStatusResponse = IdDto;
 /**
  *  类型定义 [BaseMemberLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type BaseMemberLevelDto = {
   /** 任意合法数值 */
@@ -84,7 +84,7 @@ export type BaseMemberLevelDto = {
   /* 会员等级所需要的积分 */
   points: number;
   /* 备注信息 */
-  remark?: any;
+  remark?: null | string;
   /* 更新时间 */
   updatedAt: string;
 
@@ -95,7 +95,7 @@ export type BaseMemberLevelDto = {
 /**
  *  类型定义 [CreateMemberLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type CreateMemberLevelDto = {
   /** 任意合法数值 */
@@ -121,7 +121,7 @@ export type CreateMemberLevelDto = {
   /* 会员等级所需要的积分 */
   points: number;
   /* 备注信息 */
-  remark?: any;
+  remark?: null | string;
 
   /* 作品收藏上限 */
   workCollectionLimit: number;
@@ -130,7 +130,7 @@ export type CreateMemberLevelDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -143,7 +143,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateMemberLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type UpdateMemberLevelDto = {
   /** 任意合法数值 */
@@ -171,7 +171,7 @@ export type UpdateMemberLevelDto = {
   /* 会员等级所需要的积分 */
   points?: number;
   /* 备注信息 */
-  remark?: any;
+  remark?: null | string;
 
   /* 作品收藏上限 */
   workCollectionLimit?: number;
@@ -180,7 +180,7 @@ export type UpdateMemberLevelDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */

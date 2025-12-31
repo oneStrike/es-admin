@@ -20,7 +20,15 @@ export function toPascalCase(str: string): string {
 /**
  * 映射 OpenAPI 类型到 TypeScript 类型
  */
-export function mapOpenAPIType(type: string, format?: string): string {
+export function mapOpenAPIType(
+  type: string | string[],
+  format?: string,
+): string {
+  // 处理数组类型
+  if (Array.isArray(type)) {
+    return type.map((t) => mapOpenAPIType(t, format)).join(' | ');
+  }
+
   // 如果有格式，尝试使用格式化的类型映射
   if (format) {
     const formatKey = `${type}:${format}` as keyof typeof TYPE_MAPPING;
@@ -56,6 +64,12 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
     const schemas = schema.oneOf || schema.anyOf;
     const types = schemas.map((s: any) => mapSchemaToType(s, depth + 1));
     return types.join(' | ');
+  }
+
+  if (Array.isArray(schema.type)) {
+    return schema.type
+      .map((t: string) => mapOpenAPIType(t, schema.format))
+      .join(' | ');
   }
 
   switch (schema.type) {

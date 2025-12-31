@@ -1,23 +1,23 @@
 /**
  *  类型定义 [AuditPageRequest]
  *  @来源 系统管理/审计日志
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type AuditPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
   /* 操作类型 */
-  actionType?: any;
+  actionType?: null | string;
 
   /* 接口类型（admin/client/system等） */
-  apiType?: any;
+  apiType?: null | string;
 
   /* 结束时间 */
-  endDate?: any;
+  endDate?: null | string;
 
   /* IP地址 */
-  ip?: any;
+  ip?: null | string;
 
   /* 操作是否成功 */
   isSuccess?: boolean;
@@ -26,25 +26,25 @@ export type AuditPageRequest = {
   method?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: any;
+  orderBy?: null | string;
 
   /* 当前页码 */
-  pageIndex?: any;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: any;
+  pageSize?: null | number;
 
   /* 请求路径 */
   path?: string;
 
   /* 开始时间 */
-  startDate?: any;
+  startDate?: null | string;
 
   /* 用户ID */
-  userId?: any;
+  userId?: null | number;
 
   /* 用户名 */
-  username?: any;
+  username?: null | string;
 };
 
 export type AuditPageResponse = {
@@ -67,49 +67,40 @@ export type AuditPageResponse = {
 /**
  *  类型定义 [BaseAuditDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type BaseAuditDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 操作类型 */
-  actionType?:
-    | '创建数据'
-    | '删除数据'
-    | '数据导入'
-    | '数据导出'
-    | '文件上传'
-    | '文件下载'
-    | '更新数据'
-    | '用户登出'
-    | '用户登录';
+  actionType?: null | string;
   /* 接口类型（admin/client/system等） */
-  apiType?: 'admin' | 'client' | 'public' | 'system';
+  apiType?: null | string;
   /* 自定义日志内容 */
   content: string;
   /* 创建时间 */
   createdAt: string;
   /* 设备信息解析结果（JSON） */
-  device?: any;
+  device?: null | string;
   /* 主键id */
   id: number;
   /* IP地址 */
-  ip?: any;
+  ip?: null | string;
   /* 操作是否成功 */
   isSuccess: boolean;
   /* 请求方法 */
   method: 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
   /* 请求参数（JSON格式） */
-  params?: any;
+  params?: null | string;
   /* 请求路径 */
   path: string;
   /* 更新时间 */
   updatedAt: string;
   /* 设备信息（User-Agent） */
-  userAgent?: any;
+  userAgent?: null | string;
   /* 用户ID */
-  userId?: any;
+  userId?: null | number;
 
   /* 用户名 */
-  username?: any;
+  username?: null | string;
 };

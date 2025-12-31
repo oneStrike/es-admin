@@ -1,7 +1,7 @@
 /**
  *  类型定义 [NoticeCreateRequest]
  *  @来源 客户端管理/通知公告
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type NoticeCreateRequest = CreateNoticeDto;
 
@@ -10,20 +10,20 @@ export type NoticeCreateResponse = IdDto;
 /**
  *  类型定义 [NoticePageRequest]
  *  @来源 客户端管理/通知公告
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type NoticePageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
   /* 所启用的平台 */
-  enablePlatform?: any;
+  enablePlatform?: null | string;
 
   /* 结束时间 */
-  endDate?: any;
+  endDate?: null | string;
 
   /* 是否置顶 */
-  isPinned?: any;
+  isPinned?: boolean | null;
 
   /* 是否发布 */
   isPublished?: boolean;
@@ -32,31 +32,31 @@ export type NoticePageRequest = {
   noticeType?: number;
 
   /* 排序字段，json格式 */
-  orderBy?: any;
+  orderBy?: null | string;
 
   /* 关联页面id */
-  pageId?: any;
+  pageId?: null | number;
 
   /* 当前页码 */
-  pageIndex?: any;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: any;
+  pageSize?: null | number;
 
   /* 优先级 */
   priorityLevel?: number;
 
   /* 发布结束时间 */
-  publishEndTime?: any;
+  publishEndTime?: null | string;
 
   /* 发布开始时间 */
-  publishStartTime?: any;
+  publishStartTime?: null | string;
 
   /* 是否弹窗显示 */
-  showAsPopup?: any;
+  showAsPopup?: boolean | null;
 
   /* 开始时间 */
-  startDate?: any;
+  startDate?: null | string;
 
   /* 通知标题 */
   title?: string;
@@ -82,7 +82,7 @@ export type NoticePageResponse = {
 /**
  *  类型定义 [NoticeDetailRequest]
  *  @来源 客户端管理/通知公告
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type NoticeDetailRequest = {
   /** 任意合法数值 */
@@ -97,7 +97,7 @@ export type NoticeDetailResponse = BaseNoticeDto;
 /**
  *  类型定义 [NoticeUpdateRequest]
  *  @来源 客户端管理/通知公告
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type NoticeUpdateRequest = UpdateNoticeDto;
 
@@ -106,7 +106,7 @@ export type NoticeUpdateResponse = IdDto;
 /**
  *  类型定义 [NoticeUpdateStatusRequest]
  *  @来源 客户端管理/通知公告
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type NoticeUpdateStatusRequest = UpdateNoticeStatusDto;
 
@@ -115,7 +115,7 @@ export type NoticeUpdateStatusResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [NoticeDeleteRequest]
  *  @来源 客户端管理/通知公告
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type NoticeDeleteRequest = IdDto;
 
@@ -124,7 +124,7 @@ export type NoticeDeleteResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [CreateNoticeDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type CreateNoticeDto = {
   /** 任意合法数值 */
@@ -134,21 +134,21 @@ export type CreateNoticeDto = {
   /* 启用的平台 */
   enablePlatform: number[];
   /* 是否置顶 */
-  isPinned?: any;
+  isPinned?: boolean | null;
   /* 通知类型 */
   noticeType: 0 | 1 | 2 | 3;
   /* 关联页面id */
-  pageId?: any;
+  pageId?: null | number;
   /* 通知弹窗背景图片URL */
-  popupBackgroundImage?: any;
+  popupBackgroundImage?: null | string;
   /* 优先级 */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
-  publishEndTime?: any;
+  publishEndTime?: null | string;
   /* 发布开始时间 */
-  publishStartTime?: any;
+  publishStartTime?: null | string;
   /* 是否弹窗显示 */
-  showAsPopup?: any;
+  showAsPopup?: boolean | null;
 
   /* 通知标题 */
   title: string;
@@ -157,7 +157,7 @@ export type CreateNoticeDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -170,7 +170,7 @@ export type IdDto = {
 /**
  *  类型定义 [NoticePageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type NoticePageResponseDto = {
   /** 任意合法数值 */
@@ -182,25 +182,25 @@ export type NoticePageResponseDto = {
   /* 主键id */
   id: number;
   /* 是否置顶 */
-  isPinned?: any;
+  isPinned?: boolean | null;
   /* 是否发布 */
   isPublished: boolean;
   /* 通知类型 */
   noticeType: 0 | 1 | 2 | 3;
   /* 关联页面id */
-  pageId?: any;
+  pageId?: null | number;
   /* 通知弹窗背景图片URL */
-  popupBackgroundImage?: any;
+  popupBackgroundImage?: null | string;
   /* 优先级 */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
-  publishEndTime?: any;
+  publishEndTime?: null | string;
   /* 发布开始时间 */
-  publishStartTime?: any;
+  publishStartTime?: null | string;
   /* 阅读次数 */
-  readCount?: any;
+  readCount?: null | number;
   /* 是否弹窗显示 */
-  showAsPopup?: any;
+  showAsPopup?: boolean | null;
   /* 通知标题 */
   title: string;
 
@@ -211,7 +211,7 @@ export type NoticePageResponseDto = {
 /**
  *  类型定义 [BaseNoticeDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type BaseNoticeDto = {
   /** 任意合法数值 */
@@ -225,25 +225,25 @@ export type BaseNoticeDto = {
   /* 主键id */
   id: number;
   /* 是否置顶 */
-  isPinned?: any;
+  isPinned?: boolean | null;
   /* 是否发布 */
   isPublished: boolean;
   /* 通知类型 */
   noticeType: 0 | 1 | 2 | 3;
   /* 关联页面id */
-  pageId?: any;
+  pageId?: null | number;
   /* 通知弹窗背景图片URL */
-  popupBackgroundImage?: any;
+  popupBackgroundImage?: null | string;
   /* 优先级 */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
-  publishEndTime?: any;
+  publishEndTime?: null | string;
   /* 发布开始时间 */
-  publishStartTime?: any;
+  publishStartTime?: null | string;
   /* 阅读次数 */
-  readCount?: any;
+  readCount?: null | number;
   /* 是否弹窗显示 */
-  showAsPopup?: any;
+  showAsPopup?: boolean | null;
   /* 通知标题 */
   title: string;
 
@@ -254,7 +254,7 @@ export type BaseNoticeDto = {
 /**
  *  类型定义 [UpdateNoticeDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type UpdateNoticeDto = {
   /** 任意合法数值 */
@@ -266,21 +266,21 @@ export type UpdateNoticeDto = {
   /* 主键id */
   id: number;
   /* 是否置顶 */
-  isPinned?: any;
+  isPinned?: boolean | null;
   /* 通知类型 */
   noticeType: 0 | 1 | 2 | 3;
   /* 关联页面id */
-  pageId?: any;
+  pageId?: null | number;
   /* 通知弹窗背景图片URL */
-  popupBackgroundImage?: any;
+  popupBackgroundImage?: null | string;
   /* 优先级 */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
-  publishEndTime?: any;
+  publishEndTime?: null | string;
   /* 发布开始时间 */
-  publishStartTime?: any;
+  publishStartTime?: null | string;
   /* 是否弹窗显示 */
-  showAsPopup?: any;
+  showAsPopup?: boolean | null;
 
   /* 通知标题 */
   title: string;
@@ -289,7 +289,7 @@ export type UpdateNoticeDto = {
 /**
  *  类型定义 [UpdateNoticeStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type UpdateNoticeStatusDto = {
   /** 任意合法数值 */
@@ -304,7 +304,7 @@ export type UpdateNoticeStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-29 16:56:58
+ *  @更新时间 2025-12-31 14:19:43
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */

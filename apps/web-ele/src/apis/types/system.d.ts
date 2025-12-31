@@ -4,9 +4,9 @@ export type SystemHealthResponse = {
 
   details?: Record<string, any>;
 
-  error?: Record<string, any>;
+  error?: null | Record<string, any>;
 
-  info?: Record<string, any>;
+  info?: null | Record<string, any>;
 
   status?: string;
 };
@@ -17,9 +17,9 @@ export type SystemReadyResponse = {
 
   details?: Record<string, any>;
 
-  error?: Record<string, any>;
+  error?: null | Record<string, any>;
 
-  info?: Record<string, any>;
+  info?: null | Record<string, any>;
 
   status?: string;
 };
