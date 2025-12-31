@@ -18,10 +18,12 @@ import {
   comicChapterUpdateStatusApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
+import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
 import { chapterColumns } from './columns';
+import { getDetailCards } from './detail';
 import { chapterFormSchema, chapterSearchFormSchema } from './form';
 
 type ShareData = { comicId: number; comicName: string };
@@ -45,12 +47,12 @@ const gridOptions: VxeGridProps<ComicChapterPageResponseDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
+        formValues.comicId = shareData.value?.comicId;
         return await comicChapterPageApi(
           formatQuery({
             page,
             formValues,
             sorts,
-            comicId: shareData.value?.comicId,
           }),
         );
       },
@@ -65,11 +67,26 @@ const [FormModal, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
+// 详情弹窗
+const [DetailModal, detailApi] = useVbenModal({
+  connectedComponent: EsRecordDetail,
+});
+
 // 章节表格
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   formOptions: createSearchFormOptions(chapterSearchFormSchema),
 });
+
+// 打开章节详情
+function openDetailModal(record: ComicChapterPageResponseDto) {
+  detailApi
+    .setData({
+      recordId: record.id,
+      title: record.title,
+    })
+    .open();
+}
 
 // 打开添加章节表单
 async function openFormModal(record?: ComicChapterPageResponseDto) {
@@ -135,8 +152,16 @@ async function toggleStatus(row: ComicChapterPageResponseDto) {
 
       <template #actions="{ row }">
         <div class="my-1">
+          <el-button link type="primary" @click="openDetailModal(row)">
+            详情
+          </el-button>
+          <el-divider direction="vertical" />
           <el-button link type="primary" @click="openFormModal(row)">
             编辑
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button link type="primary" @click="openFormModal(row)">
+            内容
           </el-button>
           <el-divider direction="vertical" />
           <el-popconfirm
@@ -153,5 +178,7 @@ async function toggleStatus(row: ComicChapterPageResponseDto) {
       </template>
     </Grid>
     <FormModal :schema="chapterFormSchema" :on-submit="handleSubmit" />
+
+    <DetailModal :api="comicChapterDetailApi" :cards="getDetailCards" />
   </Modal>
 </template>

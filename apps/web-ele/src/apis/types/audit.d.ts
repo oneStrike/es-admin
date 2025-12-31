@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AuditPageRequest]
  *  @来源 系统管理/审计日志
- *  @更新时间 2025-12-31 14:19:43
+ *  @更新时间 2025-12-31 16:39:16
  */
 export type AuditPageRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type AuditPageResponse = {
 /**
  *  类型定义 [BaseAuditDto]
  *  @来源 components.schemas
- *  @更新时间 2025-12-31 14:19:43
+ *  @更新时间 2025-12-31 16:39:16
  */
 export type BaseAuditDto = {
   /** 任意合法数值 */

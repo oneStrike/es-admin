@@ -5,7 +5,7 @@ import { ContentPermissionEnum, DownloadPermissionEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
 
 export const readRule = [
-  { label: '所有人', value: ContentPermissionEnum.ALL, color: 'default' },
+  { label: '所有人', value: ContentPermissionEnum.ALL, color: '' },
   { label: '登录用户', value: ContentPermissionEnum.LOGIN, color: 'primary' },
   { label: '会员用户', value: ContentPermissionEnum.VIP, color: 'success' },
   {
@@ -23,7 +23,11 @@ export const downloadRule = [
   { label: '禁止', value: DownloadPermissionEnum.DENY, color: 'danger' },
   { label: '允许', value: DownloadPermissionEnum.ALLOW, color: 'success' },
   { label: '会员', value: DownloadPermissionEnum.VIP, color: 'info' },
-  { label: '积分', value: DownloadPermissionEnum.PURCHASE, color: 'warning' },
+  {
+    label: '积分购买',
+    value: DownloadPermissionEnum.PURCHASE,
+    color: 'warning',
+  },
 ];
 
 export const downloadRuleMap = Object.fromEntries(
@@ -119,10 +123,16 @@ export const chapterFormSchema: EsFormSchema = [
     label: '购买所需积分',
     component: 'InputNumber',
     formItemClass: 'col-span-2',
-    defaultValue: 0,
+    rules: 'required',
     componentProps: {
       placeholder: '请输入购买所需积分',
       min: 0,
+    },
+    dependencies: {
+      show: ({ readRule }) => {
+        return readRule === ContentPermissionEnum.PURCHASE;
+      },
+      triggerFields: ['readRule'],
     },
   },
   {
@@ -130,11 +140,28 @@ export const chapterFormSchema: EsFormSchema = [
     label: '下载所需积分',
     formItemClass: 'col-span-2',
     component: 'InputNumber',
-    defaultValue: 0,
+    rules: 'required',
     componentProps: {
       placeholder: '请输入下载所需积分',
       min: 0,
     },
+    dependencies: {
+      show: ({ downloadRule }) => {
+        return downloadRule === DownloadPermissionEnum.PURCHASE;
+      },
+      triggerFields: ['downloadRule'],
+    },
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: '输入标签名称进行搜索',
+      multiple: true,
+      filterable: true,
+    },
+    fieldName: 'tagIds',
+    label: '会员等级限制（下载）',
   },
   {
     fieldName: 'remark',

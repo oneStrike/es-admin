@@ -204,7 +204,9 @@ function openChapterModal(record: BaseComicDto) {
         <el-text
           class="cursor-pointer hover:opacity-50"
           type="primary"
-          @click="detailApi.setData({ recordId: row.id }).open()"
+          @click="
+            detailApi.setData({ recordId: row.id, title: row.name }).open()
+          "
         >
           {{ row.name }}
         </el-text>
@@ -277,7 +279,6 @@ function openChapterModal(record: BaseComicDto) {
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      title="漫画详情"
       :api="comicDetailApi"
       :cards="(data: BaseComicDto) => getDetailCards(data, dataDict || {})"
     />
