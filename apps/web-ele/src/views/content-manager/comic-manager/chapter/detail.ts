@@ -1,7 +1,8 @@
 import type { ComicChapterDetailDto } from '#/apis/types/comicChapter';
 
 import { formatUTC } from '#/utils';
-import { readRuleMap, downloadRuleMap } from './form';
+
+import { downloadRuleMap, readRuleMap } from './form';
 
 // 定义卡片配置函数
 export function getDetailCards(detail: ComicChapterDetailDto) {
