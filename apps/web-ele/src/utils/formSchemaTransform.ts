@@ -168,6 +168,7 @@ export const formSchemaTransform: FormSchemaTransform = {
 
     // 先过滤出需要的项目并添加排序信息
     for (const [i, item] of innerSchema.entries()) {
+      delete item.formItemClass;
       const itemExtra = extra?.[item.fieldName];
       delete extra?.[item.fieldName];
 

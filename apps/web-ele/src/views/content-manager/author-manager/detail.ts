@@ -1,9 +1,10 @@
 import type { BaseAuthorDto } from '#/apis/types/author';
 
+import { GenderEnum } from '#/enum';
 import { formatUTC } from '#/utils';
 import { getOptionLabel } from '#/utils/options';
 
-import { genderMap, typeOptions } from './shared';
+import { typeOptions } from './shared';
 
 /**
  * 获取作者详情卡片配置
@@ -35,7 +36,7 @@ export function getDetailCards(detail: BaseAuthorDto, extraData?: any) {
         },
         {
           label: '性别',
-          value: genderMap[detail.gender || 0],
+          value: GenderEnum[detail.gender || 0],
           type: 'text' as const,
         },
         {

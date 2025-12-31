@@ -7,8 +7,6 @@ import type {
   UpdateAuthorDto,
 } from '#/apis/types/author';
 
-import { ref } from 'vue';
-
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';

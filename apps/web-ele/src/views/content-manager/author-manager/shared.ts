@@ -1,26 +1,24 @@
 import type { AuthorPageResponseDto } from '#/apis/types/author';
 import type { EsFormSchema } from '#/types';
 
+import { AuthorTypeEnum, GenderEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
-import { optionsToMap } from '#/utils/options';
 
 export const genderOptions = [
-  { label: '未知', value: 0 },
-  { label: '男性', value: 1 },
-  { label: '女性', value: 2 },
-  { label: '其他', value: 3 },
+  { label: '未知', value: GenderEnum.UNKNOWN },
+  { label: '男性', value: GenderEnum.MALE },
+  { label: '女性', value: GenderEnum.FEMALE },
+  { label: '其他', value: GenderEnum.OTHER },
+  { label: '保密', value: GenderEnum.SECRET },
 ];
-
-export const genderMap = optionsToMap(genderOptions);
 
 export const typeOptions = [
-  { label: '作家', value: 1 },
-  { label: '插画家', value: 2 },
-  { label: '漫画家', value: 4 },
-  { label: '模特', value: 8 },
+  { label: '作家', value: AuthorTypeEnum.WRITER },
+  { label: '插画家', value: AuthorTypeEnum.ILLUSTRATOR },
+  { label: '漫画家', value: AuthorTypeEnum.COMIC_COVER },
+  { label: '模特', value: AuthorTypeEnum.MODEL },
 ];
 
-export const typeMap = optionsToMap(typeOptions);
 /**
  * 作者管理模块的表单 Schema
  */
@@ -114,7 +112,7 @@ export const authorColumns =
       },
     },
     gender: {
-      formatter: ({ cellValue }) => genderMap[cellValue] ?? '-',
+      formatter: ({ cellValue }) => GenderEnum[cellValue] ?? '-',
     },
     nationality: {
       slots: { default: 'nationality' },

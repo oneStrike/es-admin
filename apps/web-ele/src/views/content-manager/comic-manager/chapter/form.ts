@@ -1,11 +1,42 @@
 import type { EsFormSchema } from '#/types';
 
+// 阅读权限配置
+import { ContentPermissionEnum, DownloadPermissionEnum } from '#/enum';
+import { formSchemaTransform } from '#/utils';
+
+export const readRule = [
+  { label: '所有人', value: ContentPermissionEnum.ALL, color: 'default' },
+  { label: '登录用户', value: ContentPermissionEnum.LOGIN, color: 'primary' },
+  { label: '会员用户', value: ContentPermissionEnum.VIP, color: 'success' },
+  {
+    label: '积分购买',
+    value: ContentPermissionEnum.PURCHASE,
+    color: 'warning',
+  },
+];
+
+export const readRuleMap = Object.fromEntries(
+  readRule.map((item) => [item.value, item.label]),
+);
+
+export const downloadRule = [
+  { label: '禁止', value: DownloadPermissionEnum.DENY, color: 'danger' },
+  { label: '允许', value: DownloadPermissionEnum.ALLOW, color: 'success' },
+  { label: '会员', value: DownloadPermissionEnum.VIP, color: 'info' },
+  { label: '积分', value: DownloadPermissionEnum.PURCHASE, color: 'warning' },
+];
+
+export const downloadRuleMap = Object.fromEntries(
+  downloadRule.map((item) => [item.value, item.label]),
+);
+
 export const chapterFormSchema: EsFormSchema = [
   {
     fieldName: 'title',
     label: '章节标题',
     component: 'Input',
     rules: 'required',
+    formItemClass: 'col-span-2',
     componentProps: {
       placeholder: '请输入章节标题',
     },
@@ -14,88 +45,94 @@ export const chapterFormSchema: EsFormSchema = [
     fieldName: 'subtitle',
     label: '章节副标题',
     component: 'Input',
+    formItemClass: 'col-span-2',
     componentProps: {
       placeholder: '请输入章节副标题',
-    },
-  },
-  {
-    fieldName: 'sortOrder',
-    label: '章节序号',
-    component: 'InputNumber',
-    rules: 'required',
-    defaultValue: 0,
-    componentProps: {
-      placeholder: '请输入章节序号',
-      min: 0,
     },
   },
   {
     fieldName: 'readRule',
     label: '查看规则',
     component: 'Select',
+    formItemClass: 'col-span-2',
     rules: 'required',
     defaultValue: 0,
     componentProps: {
       placeholder: '请选择查看规则',
-      options: [
-        { label: '公开', value: 0 },
-        { label: '登录', value: 1 },
-        { label: '会员', value: 2 },
-        { label: '购买', value: 3 },
-      ],
+      options: readRule,
     },
   },
   {
     fieldName: 'downloadRule',
     label: '下载规则',
     component: 'Select',
+    formItemClass: 'col-span-2',
     rules: 'required',
     defaultValue: 0,
     componentProps: {
       placeholder: '请选择下载规则',
-      options: [
-        { label: '禁止', value: 0 },
-        { label: '允许', value: 1 },
-        { label: 'VIP可下载', value: 2 },
-        { label: '积分可下载', value: 3 },
-      ],
+      options: downloadRule,
     },
   },
   {
     fieldName: 'isPreview',
-    label: '是否为试读章节',
-    component: 'Switch',
+    label: '试读章节',
+    component: 'RadioGroup',
     defaultValue: false,
+    formItemClass: 'col-span-1',
+    help: '试读章节将无视查看规则',
+    componentProps: {
+      options: [
+        { label: '否', value: false },
+        { label: '是', value: true },
+      ],
+    },
   },
   {
     fieldName: 'canComment',
-    label: '是否允许评论',
-    component: 'Switch',
+    label: '允许评论',
+    component: 'RadioGroup',
     defaultValue: true,
+    formItemClass: 'col-span-1',
+    componentProps: {
+      options: [
+        { label: '否', value: false },
+        { label: '是', value: true },
+      ],
+    },
   },
   {
     fieldName: 'isPublished',
-    label: '是否发布',
-    component: 'Switch',
+    label: '发布',
+    component: 'RadioGroup',
     defaultValue: true,
+    formItemClass: 'col-span-1',
+    componentProps: {
+      options: [
+        { label: '否', value: false },
+        { label: '是', value: true },
+      ],
+    },
   },
   {
     fieldName: 'readPoints',
-    label: '购买需要消耗的积分',
+    label: '购买所需积分',
     component: 'InputNumber',
+    formItemClass: 'col-span-2',
     defaultValue: 0,
     componentProps: {
-      placeholder: '请输入购买需要消耗的积分',
+      placeholder: '请输入购买所需积分',
       min: 0,
     },
   },
   {
     fieldName: 'downloadPoints',
-    label: '下载所需要的积分',
+    label: '下载所需积分',
+    formItemClass: 'col-span-2',
     component: 'InputNumber',
     defaultValue: 0,
     componentProps: {
-      placeholder: '请输入下载所需要的积分',
+      placeholder: '请输入下载所需积分',
       min: 0,
     },
   },
@@ -103,6 +140,7 @@ export const chapterFormSchema: EsFormSchema = [
     fieldName: 'remark',
     label: '管理员备注',
     component: 'Input',
+    formItemClass: 'col-span-4',
     componentProps: {
       type: 'textarea',
       placeholder: '请输入管理员备注',
@@ -110,3 +148,19 @@ export const chapterFormSchema: EsFormSchema = [
     },
   },
 ];
+
+export const chapterSearchFormSchema: EsFormSchema =
+  formSchemaTransform.toSearchSchema(chapterFormSchema, {
+    title: {
+      show: true,
+    },
+    isPreview: {
+      show: true,
+    },
+    canComment: {
+      show: true,
+    },
+    isPublished: {
+      show: true,
+    },
+  });

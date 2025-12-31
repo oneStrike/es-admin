@@ -28,7 +28,7 @@ import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import ChapterModal from '../chapter/index.vue';
+import Chapter from '../chapter/index.vue';
 import { comicColumns } from './columns';
 import { getDetailCards } from './detail';
 import { formSchema, pageFilter } from './shared';
@@ -47,6 +47,10 @@ const gridOptions: VxeGridProps<BaseComicDto> = {
 
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
+});
+
+const [ChapterModal, chapterApi] = useVbenModal({
+  connectedComponent: Chapter,
 });
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -160,20 +164,14 @@ async function toggleStatus(record: BaseComicDto, field: keyof BaseComicDto) {
   gridApi.reload();
 }
 
-// 章节管理弹窗状态
-const chapterModalVisible = ref(false);
-const currentComic = ref<BaseComicDto | null>(null);
-
 // 打开章节管理弹窗
 function openChapterModal(record: BaseComicDto) {
-  currentComic.value = record;
-  chapterModalVisible.value = true;
-}
-
-// 关闭章节管理弹窗
-function closeChapterModal() {
-  chapterModalVisible.value = false;
-  currentComic.value = null;
+  chapterApi
+    .setData({
+      comicId: record.id,
+      comicName: record.name,
+    })
+    .open();
 }
 </script>
 
@@ -284,13 +282,7 @@ function closeChapterModal() {
       :cards="(data: BaseComicDto) => getDetailCards(data, dataDict || {})"
     />
 
-    <ChapterModal
-      v-if="currentComic"
-      v-model:dialog-visible="chapterModalVisible"
-      :comic-id="currentComic.id"
-      :comic-name="currentComic.name"
-      @close="closeChapterModal"
-    />
+    <ChapterModal />
   </Page>
 </template>
 

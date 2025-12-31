@@ -10,18 +10,6 @@ import {
   authorSearchSchema,
 } from '#/views/content-manager/author-manager/shared';
 
-// 阅读权限配置
-export const readRule = [
-  { label: '所有人', value: 0, color: 'default' },
-  { label: '登录用户', value: 1, color: 'primary' },
-  { label: '会员用户', value: 2, color: 'success' },
-  { label: '积分购买', value: 3, color: 'warning' },
-];
-
-export const readRuleMap = Object.fromEntries(
-  readRule.map((item) => [item.value, item.label]),
-);
-
 // 连载状态配置
 export const serialStatus = [
   { label: '连载中', value: 0, color: 'primary' },
