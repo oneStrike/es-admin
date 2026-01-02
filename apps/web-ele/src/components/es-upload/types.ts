@@ -31,6 +31,8 @@ export interface EsUploadProps {
   progressProps?: Record<string, any>;
   /** 上传文件的返回数据类型 */
   returnDataType?: 'array' | 'json' | 'url';
+  // 是否显示已经上传的文件列表
+  showList?: boolean;
 }
 
 export interface BatchUploadStatus {

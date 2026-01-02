@@ -78,6 +78,7 @@ export const chapterFormSchema: EsFormSchema = [
       options: downloadRule,
     },
   },
+
   {
     fieldName: 'isPreview',
     label: '试读章节',
@@ -119,6 +120,18 @@ export const chapterFormSchema: EsFormSchema = [
     },
   },
   {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入排序',
+      min: 0,
+      max: 100,
+    },
+    formItemClass: 'col-span-1',
+    fieldName: 'sortOrder',
+    label: '排序',
+    rules: 'required',
+  },
+  {
     fieldName: 'readPoints',
     label: '购买所需积分',
     component: 'InputNumber',
@@ -156,12 +169,47 @@ export const chapterFormSchema: EsFormSchema = [
     component: 'Select',
     componentProps: {
       options: [],
-      placeholder: '输入标签名称进行搜索',
-      multiple: true,
+      placeholder: '请选择会员等级限制',
       filterable: true,
     },
-    fieldName: 'tagIds',
+    formItemClass: 'col-span-2',
+    fieldName: 'requiredReadLevelId',
+    label: '会员等级限制（查看）',
+    dependencies: {
+      show: ({ readRule }) => {
+        return readRule === ContentPermissionEnum.VIP;
+      },
+      triggerFields: ['readRule'],
+    },
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: '请选择会员等级限制',
+      filterable: true,
+    },
+    formItemClass: 'col-span-2',
+    fieldName: 'requiredDownloadLevelId',
     label: '会员等级限制（下载）',
+    dependencies: {
+      show: ({ downloadRule }) => {
+        return downloadRule === DownloadPermissionEnum.VIP;
+      },
+      triggerFields: ['downloadRule'],
+    },
+  },
+
+  {
+    fieldName: 'description',
+    label: '描述',
+    component: 'Input',
+    formItemClass: 'col-span-4',
+    componentProps: {
+      type: 'textarea',
+      placeholder: '请输入描述',
+      rows: 4,
+    },
   },
   {
     fieldName: 'remark',

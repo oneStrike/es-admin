@@ -108,7 +108,7 @@ export const formSchemaTransform: FormSchemaTransform = {
         field: 'actions',
         align: 'center',
         fixed: 'right',
-        originalIndex: -1,
+        originalIndex: 999_999,
         width: 150,
         slots: { default: 'actions' },
         ...extra?.actions,

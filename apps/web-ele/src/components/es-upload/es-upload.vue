@@ -31,6 +31,7 @@ const props = withDefaults(defineProps<EsUploadProps>(), {
   showProgress: true,
   modelValue: () => [],
   returnDataType: 'url',
+  showList: true,
 });
 const emit = defineEmits<{
   (e: 'update:modelValue', val: EsUploadProps['modelValue']): void;
@@ -249,16 +250,19 @@ const isUploadHidden = computed(() => {
       :auto-upload="autoUpload"
       :before-upload="beforeUpload"
       :http-request="customRequest"
+      :show-file-list="showList"
       @exceed="onExceed"
       @remove="onRemove"
       :on-preview="handlePictureCardPreview"
       :class="{ 'hide-upload': isUploadHidden }"
     >
-      <div
-        class="hover:text-primary flex size-full items-center justify-center text-gray-500"
-      >
-        <UploadLoop class="size-7" />
-      </div>
+      <slot>
+        <div
+          class="hover:text-primary flex size-full items-center justify-center text-gray-500"
+        >
+          <UploadLoop class="size-7" />
+        </div>
+      </slot>
     </el-upload>
 
     <el-image-viewer

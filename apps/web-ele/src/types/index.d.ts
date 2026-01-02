@@ -3,6 +3,6 @@ import type { VbenFormSchema as FormSchema } from '@vben/common-ui';
 
 import type { ComponentType } from '#/adapter/component';
 
-export type AsyncFn = <T = any>(...args: any[]) => Promise<T>;
+export type AsyncFn = <T = any>(...args: any[]) => Promise<T> | Promise<void>;
 
 export type EsFormSchema = FormSchema<ComponentType>[];

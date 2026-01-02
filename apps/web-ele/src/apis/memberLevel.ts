@@ -7,6 +7,7 @@ import type {
   MemberLevelDeleteResponse,
   MemberLevelDetailRequest,
   MemberLevelDetailResponse,
+  MemberLevelListRequest,
   MemberLevelListResponse,
   MemberLevelUpdateRequest,
   MemberLevelUpdateResponse,
@@ -17,9 +18,12 @@ import { requestClient } from '#/utils/request';
 /**
  * 获取会员等级列表
  */
-export async function memberLevelListApi(): Promise<MemberLevelListResponse> {
+export async function memberLevelListApi(
+  params?: MemberLevelListRequest,
+): Promise<MemberLevelListResponse> {
   return requestClient.get<MemberLevelListResponse>(
     '/api/admin/member-level/list',
+    { params },
   );
 }
 

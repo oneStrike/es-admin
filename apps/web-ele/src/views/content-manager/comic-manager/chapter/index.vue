@@ -14,21 +14,37 @@ import {
   comicChapterCreateApi,
   comicChapterDetailApi,
   comicChapterPageApi,
+  comicChapterSwapNumbersApi,
   comicChapterUpdateApi,
   comicChapterUpdateStatusApi,
+  memberLevelListApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
+import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
 import { chapterColumns } from './columns';
+import ContentManager from './content-manager.vue';
 import { getDetailCards } from './detail';
 import { chapterFormSchema, chapterSearchFormSchema } from './form';
 
 type ShareData = { comicId: number; comicName: string };
 
 const shareData = ref<ShareData>();
+
+memberLevelListApi({ isEnabled: true }).then((res) => {
+  const options =
+    res?.map((item) => ({
+      label: item.name,
+      value: item.id,
+    })) || [];
+  useForm.setOptions(chapterFormSchema, {
+    requiredReadLevelId: options,
+    requiredDownloadLevelId: options,
+  });
+});
 
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen) {
@@ -40,7 +56,6 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-
 // 章节列表配置
 const gridOptions: VxeGridProps<ComicChapterPageResponseDto> = {
   columns: chapterColumns,
@@ -59,6 +74,19 @@ const gridOptions: VxeGridProps<ComicChapterPageResponseDto> = {
     },
     sort: true,
   },
+  rowConfig: {
+    drag: true,
+  },
+  rowDragConfig: {
+    async dragEndMethod(params) {
+      await comicChapterSwapNumbersApi({
+        dragId: params.dragRow.id,
+        targetId: params.newRow.id,
+      });
+      await gridApi.reload();
+      return true;
+    },
+  },
   // 暂时移除拖拽配置，因为dragConfig的属性不支持
 };
 
@@ -70,6 +98,11 @@ const [FormModal, formApi] = useVbenModal({
 // 详情弹窗
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+});
+
+// 内容管理弹窗
+const [ContentModal, contentApi] = useVbenModal({
+  connectedComponent: ContentManager,
 });
 
 // 章节表格
@@ -84,6 +117,16 @@ function openDetailModal(record: ComicChapterPageResponseDto) {
     .setData({
       recordId: record.id,
       title: record.title,
+    })
+    .open();
+}
+
+// 打开内容管理
+function openContentModal(record: ComicChapterPageResponseDto) {
+  contentApi
+    .setData({
+      chapterId: record.id,
+      chapterTitle: record.title,
     })
     .open();
 }
@@ -103,6 +146,7 @@ async function openFormModal(record?: ComicChapterPageResponseDto) {
 async function handleSubmit(
   values: ComicChapterCreateRequest | ComicChapterUpdateRequest,
 ) {
+  values.comicId = shareData.value!.comicId;
   await (values?.id
     ? comicChapterUpdateApi(values as ComicChapterUpdateRequest)
     : comicChapterCreateApi(values as ComicChapterCreateRequest));
@@ -140,6 +184,16 @@ async function toggleStatus(row: ComicChapterPageResponseDto) {
         </el-button>
       </template>
 
+      <template #title="{ row }">
+        <el-text
+          class="cursor-pointer hover:opacity-50"
+          type="primary"
+          @click="openDetailModal(row)"
+        >
+          {{ row.title }}
+        </el-text>
+      </template>
+
       <template #isPublished="{ row }">
         <el-switch
           :active-value="true"
@@ -152,17 +206,14 @@ async function toggleStatus(row: ComicChapterPageResponseDto) {
 
       <template #actions="{ row }">
         <div class="my-1">
-          <el-button link type="primary" @click="openDetailModal(row)">
-            详情
+          <el-button link type="primary" @click="openContentModal(row)">
+            内容
           </el-button>
           <el-divider direction="vertical" />
           <el-button link type="primary" @click="openFormModal(row)">
             编辑
           </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            内容
-          </el-button>
+
           <el-divider direction="vertical" />
           <el-popconfirm
             title="确认删除当前章节?"
@@ -180,5 +231,7 @@ async function toggleStatus(row: ComicChapterPageResponseDto) {
     <FormModal :schema="chapterFormSchema" :on-submit="handleSubmit" />
 
     <DetailModal :api="comicChapterDetailApi" :cards="getDetailCards" />
+
+    <ContentModal />
   </Modal>
 </template>

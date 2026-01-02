@@ -14,6 +14,11 @@ export const chapterColumns =
       title: {
         width: 200,
         fixed: 'left',
+        showOverflow: 'tooltip',
+        slots: { default: 'title' },
+      },
+      subtitle: {
+        width: 200,
       },
       sortOrder: {
         title: '章节序号',
@@ -58,6 +63,15 @@ export const chapterColumns =
         hide: true,
       },
       downloadPoints: {
+        hide: true,
+      },
+      requiredDownloadLevelId: {
+        hide: true,
+      },
+      requiredReadLevelId: {
+        hide: true,
+      },
+      description: {
         hide: true,
       },
       remark: {
