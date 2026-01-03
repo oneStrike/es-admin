@@ -7,7 +7,6 @@ import { useVbenModal } from '@vben/common-ui';
 import { useSortable } from '@vben/hooks';
 
 import {
-  comicChapterAddContentApi,
   comicChapterClearContentsApi,
   comicChapterContentsApi,
   comicChapterDeleteContentApi,
@@ -15,6 +14,7 @@ import {
 } from '#/apis';
 import { DeleteBinIcon, EyeLineIcon, UploadLoop } from '#/components/es-icons';
 import EsUpload from '#/components/es-upload/es-upload.vue';
+import { UploadSceneEnum, UploadUrlMapEnum } from '#/enum/api';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 
 defineOptions({
@@ -22,6 +22,7 @@ defineOptions({
 });
 
 interface ShareData {
+  comicId: number;
   chapterId: number;
   chapterTitle: string;
 }
@@ -66,32 +67,19 @@ async function loadContents() {
   }
 }
 
-const uploadUrls: string[] = [];
 let timer: null | number = null;
-async function handleUploadSuccess(urls: any | string | string[]) {
+async function handleUploadSuccess() {
   uploading.value = true;
-  let urlArray: string[] = [];
-  if (typeof urls === 'string') {
-    urlArray = urls.split(',').filter((url) => url.trim());
-  } else if (Array.isArray(urls)) {
-    urlArray = urls;
-  }
-  if (urlArray.length === 0) return;
-  uploadUrls.push(...urlArray);
   if (timer) {
     clearTimeout(timer);
   }
   timer = window.setTimeout(async () => {
     try {
-      await comicChapterAddContentApi({
-        id: shareData.value!.chapterId,
-        content: uploadUrls.filter(Boolean),
-      });
       await loadContents();
     } finally {
       uploading.value = false;
     }
-  }, 200);
+  }, 1000);
 }
 
 async function handleDelete(index?: number) {
@@ -192,6 +180,7 @@ async function initializeDrag() {
         <div class="flex items-center gap-4">
           <div>
             <EsUpload
+              :upload-url="UploadUrlMapEnum.COMIC"
               v-model="uploadUrl"
               :disabled="uploading"
               :max-count="50"
@@ -199,7 +188,11 @@ async function initializeDrag() {
               accept="image/*"
               list-type="picture"
               return-data-type="array"
-              scene="common"
+              :scene="UploadSceneEnum.WORK"
+              :data="{
+                comicId: shareData!.comicId,
+                chapterId: shareData!.chapterId,
+              }"
               :show-list="false"
               @update:model-value="handleUploadSuccess"
             >

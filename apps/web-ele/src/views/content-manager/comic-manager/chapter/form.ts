@@ -175,6 +175,7 @@ export const chapterFormSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     fieldName: 'requiredReadLevelId',
     label: '会员等级限制（查看）',
+    rules: 'required',
     dependencies: {
       show: ({ readRule }) => {
         return readRule === ContentPermissionEnum.VIP;
@@ -192,6 +193,7 @@ export const chapterFormSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     fieldName: 'requiredDownloadLevelId',
     label: '会员等级限制（下载）',
+    rules: 'required',
     dependencies: {
       show: ({ downloadRule }) => {
         return downloadRule === DownloadPermissionEnum.VIP;
@@ -232,9 +234,7 @@ export const chapterSearchFormSchema: EsFormSchema =
     isPreview: {
       show: true,
     },
-    canComment: {
-      show: true,
-    },
+
     isPublished: {
       show: true,
     },

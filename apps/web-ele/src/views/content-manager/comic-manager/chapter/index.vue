@@ -125,6 +125,7 @@ function openDetailModal(record: ComicChapterPageResponseDto) {
 function openContentModal(record: ComicChapterPageResponseDto) {
   contentApi
     .setData({
+      comicId: shareData.value!.comicId,
       chapterId: record.id,
       chapterTitle: record.title,
     })
@@ -150,16 +151,16 @@ async function handleSubmit(
   await (values?.id
     ? comicChapterUpdateApi(values as ComicChapterUpdateRequest)
     : comicChapterCreateApi(values as ComicChapterCreateRequest));
-  formApi.close();
+  await formApi.close();
   useMessage.success('操作成功');
-  gridApi.reload();
+  await gridApi.reload();
 }
 
 // 删除章节
 async function deleteChapter(record: ComicChapterPageResponseDto) {
   await comicChapterBatchDeleteApi({ ids: [record.id] });
   useMessage.success('删除成功');
-  gridApi.reload();
+  await gridApi.reload();
 }
 
 // 切换章节状态
@@ -171,7 +172,7 @@ async function toggleStatus(row: ComicChapterPageResponseDto) {
   });
   row.loading = false;
   useMessage.success('操作成功');
-  gridApi.reload();
+  await gridApi.reload();
 }
 </script>
 

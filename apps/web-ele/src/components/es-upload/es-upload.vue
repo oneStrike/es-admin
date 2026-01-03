@@ -14,6 +14,7 @@ import { ElMessage } from 'element-plus';
 import { cloneDeep, random } from 'lodash-es';
 
 import { UploadLoop } from '#/components/es-icons';
+import { UploadUrlMapEnum } from '#/enum/api';
 import { useUpload } from '#/hooks/useUpload';
 import { safeParseJson } from '#/utils/parseJson';
 
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<EsUploadProps>(), {
   modelValue: () => [],
   returnDataType: 'url',
   showList: true,
+  uploadUrl: UploadUrlMapEnum.COMMON,
 });
 const emit = defineEmits<{
   (e: 'update:modelValue', val: EsUploadProps['modelValue']): void;
@@ -164,16 +166,14 @@ async function customRequest(options: UploadRequestOptions) {
   // 初始化进度
   options.onProgress?.({ percent: 0 } as any);
 
-  const scene = props.scene;
-  const params = {
-    scene,
-    ...options.data,
-  };
   const res = await useUpload(
+    props.uploadUrl,
     // 将当前文件传入后端上传逻辑
     options.file as any,
-    params,
-    'common',
+    {
+      scene: props.scene,
+      ...options.data,
+    },
     // 进度回调：转给 Element Plus
     (progressEvent) => {
       options.onProgress?.({ percent: progressEvent.percent } as any);

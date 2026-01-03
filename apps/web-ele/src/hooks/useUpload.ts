@@ -6,15 +6,10 @@ import { useMessage } from './useFeedback';
 
 type UploadFileResItem = UploadUploadFileResponse[number]; // UploadResponseDto
 
-const api = {
-  common: '/api/admin/upload/upload-file',
-  comic: '/admin/comic/chapter/create',
-};
-
 export async function useUpload(
+  uploadUrl: string,
   file: File,
   params: Record<string, any> = {},
-  apiType: keyof typeof api = 'common',
   onProgress?: (progressEvent: {
     loaded: number;
     percent: number;
@@ -22,9 +17,15 @@ export async function useUpload(
   }) => void,
 ): Promise<unknown | UploadFileResItem> {
   try {
+    const requestParams = [];
+    for (const paramKey in params) {
+      requestParams.push(`${paramKey}=${params[paramKey]}`);
+    }
     // 使用requestClient.upload方法处理文件上传，它会自动处理FormData和Content-Type
     const result = await requestClient.upload(
-      api[apiType],
+      uploadUrl.includes('?')
+        ? `${uploadUrl}&${requestParams.join('&')}`
+        : `${uploadUrl}?${requestParams.join('&')}`,
       {
         ...params,
         file,

@@ -1,10 +1,11 @@
 import type { UploadUploadFileResponse } from '#/apis/types/upload';
-
-export type EsUploadScene = 'common';
+import type { UploadSceneEnum } from '#/enum/api';
 
 export interface EsUploadProps {
   /** 上传文件的所属场景 */
-  scene: EsUploadScene;
+  scene: UploadSceneEnum;
+  /** 上传接口地址 */
+  uploadUrl?: string;
   /** 上传地址 */
   modelValue: string | string[] | UploadUploadFileResponse;
   /** 允许上传的文件类型 */

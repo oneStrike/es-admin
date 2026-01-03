@@ -29,6 +29,7 @@ import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import Chapter from '../chapter/index.vue';
+import ThirdPartyPlatform from '../third-party/index.vue';
 import { comicColumns } from './columns';
 import { getDetailCards } from './detail';
 import { formSchema, pageFilter } from './shared';
@@ -60,6 +61,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+});
+const [ThirdPartyModal, ThirdPartyApi] = useVbenModal({
+  connectedComponent: ThirdPartyPlatform,
 });
 
 const tagOptions: BasicOption[] = [];
@@ -182,6 +186,9 @@ function openChapterModal(record: BaseComicDto) {
         <el-button class="ml-2" type="primary" @click="openFormModal()">
           添加漫画
         </el-button>
+        <el-button class="ml-2" type="primary" @click="ThirdPartyApi.open()">
+          资源解析
+        </el-button>
       </template>
 
       <template #name="{ row }">
@@ -284,6 +291,8 @@ function openChapterModal(record: BaseComicDto) {
     />
 
     <ChapterModal />
+
+    <ThirdPartyModal />
   </Page>
 </template>
 
