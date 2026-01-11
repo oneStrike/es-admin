@@ -7,14 +7,14 @@ import type {
   UploadRequestOptions,
 } from 'element-plus';
 
-import type { UploadResponseDto } from '#/apis/types/upload';
+import type { UploadResponseDto } from '#/apis/types/upload/upload';
 import type { EsUploadProps } from '#/components/es-upload/types';
 
 import { ElMessage } from 'element-plus';
 import { cloneDeep, random } from 'lodash-es';
 
 import { UploadLoop } from '#/components/es-icons';
-import { UploadUrlMapEnum } from '#/enum/api';
+import { UploadSceneEnum, UploadUrlMapEnum } from '#/enum/api';
 import { useUpload } from '#/hooks/useUpload';
 import { safeParseJson } from '#/utils/parseJson';
 
@@ -22,7 +22,7 @@ defineOptions({
   name: 'EsUpload',
 });
 const props = withDefaults(defineProps<EsUploadProps>(), {
-  scene: 'common',
+  scene: UploadSceneEnum.SHARED,
   accept: 'image/*',
   maxCount: 10,
   listType: 'picture-card',
@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<EsUploadProps>(), {
   modelValue: () => [],
   returnDataType: 'url',
   showList: true,
-  uploadUrl: UploadUrlMapEnum.COMMON,
+  uploadUrl: UploadUrlMapEnum.SHARED,
 });
 const emit = defineEmits<{
   (e: 'update:modelValue', val: EsUploadProps['modelValue']): void;

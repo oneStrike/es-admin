@@ -1,4 +1,4 @@
-import type { UploadUploadFileResponse } from '#/apis/types/upload';
+import type { UploadUploadFileResponse } from '#/apis/types/upload/upload';
 import type { UploadSceneEnum } from '#/enum/api';
 
 export interface EsUploadProps {

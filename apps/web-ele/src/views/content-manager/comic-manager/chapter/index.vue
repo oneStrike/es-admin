@@ -4,7 +4,7 @@ import type {
   ComicChapterCreateRequest,
   ComicChapterPageResponseDto,
   ComicChapterUpdateRequest,
-} from '#/apis/types/comicChapter';
+} from '#/apis/types/work/comicChapter';
 
 import { useVbenModal } from '@vben/common-ui';
 

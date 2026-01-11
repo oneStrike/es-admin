@@ -5,7 +5,7 @@ import type {
   BaseMemberLevelDto,
   MemberLevelCreateRequest,
   MemberLevelUpdateRequest,
-} from '#/apis/types/memberLevel';
+} from '#/apis/types/member-level/memberLevel';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 

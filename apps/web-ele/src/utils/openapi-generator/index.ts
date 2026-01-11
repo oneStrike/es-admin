@@ -5,7 +5,7 @@ import path from 'node:path';
 import process from 'node:process';
 
 import { defaultConfig } from './config';
-import { ensureDirectory, writeFile } from './file-utils';
+import { clearDirectory, ensureDirectory, writeFile } from './file-utils';
 import { OpenAPIGenerator } from './generator';
 
 /**
@@ -14,10 +14,12 @@ import { OpenAPIGenerator } from './generator';
 export async function generateAPIFromOpenAPI(
   openApiUrl: string,
   outputDir: string,
+  config?: Partial<OpenAPIGeneratorConfig>,
 ): Promise<GeneratedFile[]> {
   const generator = new OpenAPIGenerator({
     openApiUrl,
     outputDir,
+    ...config,
   });
 
   try {
@@ -49,6 +51,13 @@ export async function generateAPI(
   try {
     console.log('开始生成API代码...');
 
+    // 生成前清理文件
+    if (finalConfig.cleanBeforeGenerate) {
+      console.log('正在清理之前的文件...');
+      await clearDirectory(outputDir);
+      await clearDirectory(typesDir);
+    }
+
     // 确保目录存在
     await ensureDirectory(outputDir);
     await ensureDirectory(typesDir);
@@ -70,7 +79,7 @@ export async function generateAPI(
     );
 
     // 处理文件名冲突并重新生成内容
-    const files: GeneratedFile[] = [];
+    const files: (GeneratedFile & { directory: string })[] = [];
     const groupedPaths = generator.groupPathsByModule();
 
     for (const [moduleName, paths] of Object.entries(groupedPaths)) {
@@ -84,41 +93,69 @@ export async function generateAPI(
         );
       }
 
+      // 获取该模块的文件夹路径
+      // 取该模块的第一个路径作为示例来确定文件夹
+      const moduleDirectory =
+        paths.length > 0
+          ? finalConfig.directoryResolver(paths[0]?.path || '')
+          : '';
+
       // 使用正确的最终文件名重新生成内容
       const { apiContent, typesContent } = generator.generateModuleCode(
         moduleName,
         paths,
         finalFileName,
+        moduleDirectory,
       );
 
       files.push({
         fileName: finalFileName,
         content: apiContent,
         types: typesContent,
+        directory: moduleDirectory,
       });
     }
 
     // 写入文件
     for (const file of files) {
+      // 构建API文件路径
+      const apiFileDir = file.directory
+        ? path.join(outputDir, file.directory)
+        : outputDir;
+      const apiFilePath = path.join(apiFileDir, file.fileName);
+
+      // 构建类型文件路径
+      const typeFileDir = file.directory
+        ? path.join(typesDir, file.directory)
+        : typesDir;
+      const typeFileName = file.fileName.replace('.ts', '.d.ts');
+      const typeFilePath = path.join(typeFileDir, typeFileName);
+
+      // 确保目录存在
+      await ensureDirectory(apiFileDir);
+
       // 写入API文件
-      const apiFilePath = path.join(outputDir, file.fileName);
       await writeFile(apiFilePath, file.content);
 
       // 写入类型文件
       if (file.types) {
-        const typeFileName = file.fileName.replace('.ts', '.d.ts');
-        const typeFilePath = path.join(typesDir, typeFileName);
+        await ensureDirectory(typeFileDir);
         await writeFile(typeFilePath, file.types);
       }
     }
 
     // 生成索引文件，排除与索引文件同名的API文件
     const exportFiles = files
-      .map((file) => file.fileName)
-      .filter((fileName) => fileName !== 'index.ts'); // 排除与索引文件同名的文件
+      .filter((file) => file.fileName !== 'index.ts') // 排除与索引文件同名的文件
+      .map((file) => {
+        const filePath = file.directory
+          ? `${file.directory}/${file.fileName.replace('.ts', '')}`
+          : file.fileName.replace('.ts', '');
+        return filePath;
+      });
 
     const indexContent = `${exportFiles
-      .map((fileName) => `export * from './${fileName.replace('.ts', '')}'`)
+      .map((filePath) => `export * from './${filePath}'`)
       .join('\n')}\n`;
 
     {

@@ -95,9 +95,18 @@ export class OpenAPIGenerator {
     const groupedPaths = this.groupPathsByModule();
 
     for (const [moduleName, paths] of Object.entries(groupedPaths)) {
+      // 获取该模块的文件夹路径
+      // 取该模块的第一个路径作为示例来确定文件夹
+      const moduleDirectory =
+        paths.length > 0
+          ? this.config.directoryResolver(paths[0]?.path || '')
+          : '';
+
       const { apiContent, typesContent } = this.generateModuleCode(
         moduleName,
         paths,
+        undefined,
+        moduleDirectory,
       );
 
       files.push({
@@ -117,6 +126,7 @@ export class OpenAPIGenerator {
     moduleName: string,
     paths: PathOperation[],
     finalFileName?: string,
+    directory?: string,
   ): ModuleCodeResult {
     const imports = new Set<string>();
     const apiMethods: string[] = [];
@@ -127,7 +137,7 @@ export class OpenAPIGenerator {
       const { requestType, responseType } = this.generateMethodInfo(path);
 
       // 检查是否需要参数
-      const hasParams = this.hasRequestParams(method, operation);
+      const hasParams = this.hasRequestParams(operation);
 
       // 生成请求类型定义（仅当有参数时）
       if (hasParams) {
@@ -188,9 +198,18 @@ export class OpenAPIGenerator {
       : moduleName;
 
     // 生成导入语句
+    // 如果 API 文件在子文件夹中，需要使用 ../ 回到父目录，然后再进入 types 目录
+    // 例如：src/apis/user/user.ts -> src/apis/types/user/user.d.ts
+    // 导入路径应该是：../types/user/user.d
+    const typeImportPath = directory
+      ? `../${this.config.typesDirName}/${directory}/${typeFileName}.d`
+      : `./${this.config.typesDirName}/${typeFileName}.d`;
+
     const importStatements =
       [...imports].length > 0
-        ? `import type {\n  ${[...imports].join(',\n  ')}\n} from './${this.config.typesDirName}/${typeFileName}.d'\n\n`
+        ? `import type {
+  ${[...imports].join(',\n  ')}
+} from '${typeImportPath}'\n\n`
         : '';
 
     const apiContent = `import { ${this.config.httpHandler} } from '${this.config.httpHandlerImport}'\n${importStatements}${apiMethods.join('\n\n')}\n`;
@@ -672,7 +691,7 @@ ${properties.join('\n')}
   /**
    * 检查接口是否需要参数
    */
-  private hasRequestParams(method: string, operation: any): boolean {
+  private hasRequestParams(operation: any): boolean {
     // 检查是否有请求体
     if (operation.requestBody?.content?.['application/json']?.schema) {
       return true;

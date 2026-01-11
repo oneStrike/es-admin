@@ -64,6 +64,10 @@ export interface OpenAPIGeneratorConfig {
     data: Record<string, any>;
     headers: Record<string, string>;
   };
+  /** 文件夹解析器，根据接口地址返回文件夹名字 */
+  directoryResolver: (path: string) => string;
+  /** 生成前是否清理之前的文件 */
+  cleanBeforeGenerate: boolean;
 }
 
 /**
@@ -104,6 +108,10 @@ export const defaultConfig: OpenAPIGeneratorConfig = {
     second: '2-digit',
     hour12: false,
   },
+  // 默认文件夹解析器，返回空字符串表示直接放在outputDir中
+  directoryResolver: (path) => path.split('/')[3] || '',
+  // 默认不清理之前的文件
+  cleanBeforeGenerate: true,
 };
 
 /**
