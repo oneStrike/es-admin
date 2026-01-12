@@ -1,4 +1,4 @@
-import type { BaseClientPageDto } from '#/apis/types/clientPage';
+import type { BaseClientPageDto } from '#/apis/types';
 
 import { formatUTC } from '#/utils';
 import { getOptionLabel } from '#/utils/options';

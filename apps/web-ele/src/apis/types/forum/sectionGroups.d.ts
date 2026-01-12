@@ -1,9 +1,9 @@
 /**
- *  类型定义 [SectionGroupsListRequest]
+ *  类型定义 [SectionGroupsPageRequest]
  *  @来源 论坛模块/板块组管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
-export type SectionGroupsListRequest = {
+export type SectionGroupsPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -29,12 +29,12 @@ export type SectionGroupsListRequest = {
   startDate?: null | string;
 };
 
-export type SectionGroupsListResponse = {
+export type SectionGroupsPageResponse = {
   /** 任意合法数值 */
   [property: string]: any;
 
   /* 列表数据 */
-  list?: CreateForumSectionGroupDto[];
+  list?: BaseForumSectionGroupDto[];
 
   /* 当前页码 */
   pageIndex?: number;
@@ -49,7 +49,7 @@ export type SectionGroupsListResponse = {
 /**
  *  类型定义 [SectionGroupsDetailRequest]
  *  @来源 论坛模块/板块组管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type SectionGroupsDetailRequest = {
   /** 任意合法数值 */
@@ -59,70 +59,82 @@ export type SectionGroupsDetailRequest = {
   id: number;
 };
 
-export type SectionGroupsDetailResponse = CreateForumSectionGroupDto;
-
-export type SectionGroupsAllEnabledResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 响应状态码 */
-  code?: number;
-
-  /* 响应消息 */
-  message?: string;
-};
+export type SectionGroupsDetailResponse = BaseForumSectionGroupDto;
 
 /**
- *  类型定义 [SectionGroupsAddRequest]
+ *  类型定义 [SectionGroupsCreateRequest]
  *  @来源 论坛模块/板块组管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
-export type SectionGroupsAddRequest = CreateForumSectionGroupDto;
+export type SectionGroupsCreateRequest = CreateForumSectionGroupDto;
 
-export type SectionGroupsAddResponse = CreateForumSectionGroupDto;
+export type SectionGroupsCreateResponse = BaseForumSectionGroupDto;
 
 /**
  *  类型定义 [SectionGroupsUpdateRequest]
  *  @来源 论坛模块/板块组管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type SectionGroupsUpdateRequest = UpdateForumSectionGroupDto;
 
-export type SectionGroupsUpdateResponse = UpdateForumSectionGroupDto;
+export type SectionGroupsUpdateResponse = BaseForumSectionGroupDto;
 
 /**
- *  类型定义 [SectionGroupsRemoveRequest]
+ *  类型定义 [SectionGroupsDeleteRequest]
  *  @来源 论坛模块/板块组管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
-export type SectionGroupsRemoveRequest = IdDto;
+export type SectionGroupsDeleteRequest = IdDto;
 
-export type SectionGroupsRemoveResponse = {
+export type SectionGroupsDeleteResponse = BaseForumSectionGroupDto;
+
+/**
+ *  类型定义 [SectionGroupsUpdateEnabledRequest]
+ *  @来源 论坛模块/板块组管理
+ *  @更新时间 2026-01-13 00:08:17
+ */
+export type SectionGroupsUpdateEnabledRequest = UpdateEnabledStatusDto;
+
+export type SectionGroupsUpdateEnabledResponse = BaseForumSectionGroupDto;
+
+/**
+ *  类型定义 [SectionGroupsSwapSortOrderRequest]
+ *  @来源 论坛模块/板块组管理
+ *  @更新时间 2026-01-13 00:08:17
+ */
+export type SectionGroupsSwapSortOrderRequest = DragReorderDto;
+
+export type SectionGroupsSwapSortOrderResponse = BaseForumSectionGroupDto;
+
+/**
+ *  类型定义 [BaseForumSectionGroupDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-01-13 00:08:17
+ */
+export type BaseForumSectionGroupDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 创建时间 */
+  createdAt: string;
+  /* 分组描述 */
+  description?: null | string;
+  /* 主键id */
+  id: number;
+  /* 是否启用 */
+  isEnabled: boolean;
+  /* 分组名称 */
+  name: string;
+  /* 排序权重 */
+  sortOrder: number;
 
-  /* 响应状态码 */
-  code?: number;
-
-  /* 响应消息 */
-  message?: string;
-};
-
-export type SectionGroupsUpdateEnabledResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 响应状态码 */
-  code?: number;
-
-  /* 响应消息 */
-  message?: string;
+  /* 更新时间 */
+  updatedAt: string;
 };
 
 /**
  *  类型定义 [CreateForumSectionGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type CreateForumSectionGroupDto = {
   /** 任意合法数值 */
@@ -141,7 +153,7 @@ export type CreateForumSectionGroupDto = {
 /**
  *  类型定义 [UpdateForumSectionGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type UpdateForumSectionGroupDto = {
   /** 任意合法数值 */
@@ -162,7 +174,7 @@ export type UpdateForumSectionGroupDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -170,4 +182,34 @@ export type IdDto = {
 
   /* 主键id */
   id: number;
+};
+
+/**
+ *  类型定义 [UpdateEnabledStatusDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-01-13 00:08:17
+ */
+export type UpdateEnabledStatusDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 主键id */
+  id: number;
+
+  /* 状态 true启用 false禁用 */
+  isEnabled: boolean;
+};
+
+/**
+ *  类型定义 [DragReorderDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-01-13 00:08:17
+ */
+export type DragReorderDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 当前拖拽元素的id */
+  dragId: number;
+
+  /* 拖拽的目标位置id */
+  targetId: number;
 };

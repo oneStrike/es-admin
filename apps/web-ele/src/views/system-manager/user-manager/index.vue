@@ -4,7 +4,7 @@ import type {
   BaseUserDto,
   UpdateUserDto,
   UserRegisterRequest,
-} from '#/apis/types/user';
+} from '#/apis/types';
 
 import { computed } from 'vue';
 
@@ -155,7 +155,7 @@ async function resetUserPassword(record: BaseUserDto) {
       <template #avatar="{ row }">
         <el-avatar
           :size="40"
-          :src="row.avatar"
+          :src="row.avatar || ''"
           :icon="row.avatar ? undefined : 'User'"
         >
           {{ row.avatar ? '' : row.username?.charAt(0)?.toUpperCase() }}
@@ -201,9 +201,7 @@ async function resetUserPassword(record: BaseUserDto) {
               @confirm="resetUserPassword(row)"
             >
               <template #reference>
-                <el-button link type="warning">
-                  重置密码
-                </el-button>
+                <el-button link type="warning"> 重置密码 </el-button>
               </template>
             </el-popconfirm>
 

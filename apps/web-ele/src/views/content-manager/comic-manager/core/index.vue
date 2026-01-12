@@ -6,7 +6,7 @@ import type {
   BaseComicDto,
   ComicCreateRequest,
   ComicUpdateRequest,
-} from '#/apis/types/comic';
+} from '#/apis/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { Page, useVbenModal } from '@vben/common-ui';

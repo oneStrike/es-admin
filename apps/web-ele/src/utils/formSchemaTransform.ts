@@ -44,32 +44,10 @@ const filterComponentProps = {
 } as const;
 
 // 通用排序函数
-function sortItemsWithSortValue<
-  T extends { originalIndex: number; sortValue?: number },
->(items: T[]): T[] {
-  return items.sort((a, b) => {
-    // 如果两个都有 sort 值，按 sort 值排序
-    if (a.sortValue !== undefined && b.sortValue !== undefined) {
-      // 当 sort 值相等时，按照原始索引排序
-      if (a.sortValue === b.sortValue) {
-        return a.originalIndex - b.originalIndex;
-      }
-      return a.sortValue - b.sortValue;
-    }
-    // 如果两个都没有 sort 值，按原有位置排序
-    if (a.sortValue === undefined && b.sortValue === undefined) {
-      return a.originalIndex - b.originalIndex;
-    }
-    // 如果只有一个有 sort 值，有 sort 值的排在后面
-    if (a.sortValue !== undefined && b.sortValue === undefined) {
-      return 1;
-    }
-    if (a.sortValue === undefined && b.sortValue !== undefined) {
-      return 1;
-    }
-    // 默认按原有位置排序
-    return a.originalIndex - b.originalIndex;
-  });
+function sortItemsWithSortValue<T extends { sortValue: number }>(
+  items: T[],
+): T[] {
+  return items.sort((a, b) => a.sortValue - b.sortValue);
 }
 
 export const formSchemaTransform: FormSchemaTransform = {
@@ -78,8 +56,7 @@ export const formSchemaTransform: FormSchemaTransform = {
 
     const columnsWithSort: Array<
       VxeGridPropTypes.Columns<any>[number] & {
-        originalIndex: number;
-        sortValue?: number;
+        sortValue: number;
       }
     > = [];
 
@@ -92,8 +69,7 @@ export const formSchemaTransform: FormSchemaTransform = {
           field: item.fieldName,
           align: 'center',
           minWidth: 100,
-          sortValue: itemExtra?.sort,
-          originalIndex: idx,
+          sortValue: itemExtra?.sort ?? idx,
           formatter: ({ cellValue }) => {
             return cellValue || '-';
           },
@@ -108,7 +84,7 @@ export const formSchemaTransform: FormSchemaTransform = {
         field: 'actions',
         align: 'center',
         fixed: 'right',
-        originalIndex: 999_999,
+        sortValue: 999_999,
         width: 150,
         slots: { default: 'actions' },
         ...extra?.actions,
@@ -121,15 +97,31 @@ export const formSchemaTransform: FormSchemaTransform = {
         title: '创建时间',
         field: 'createdAt',
         align: 'center',
-        originalIndex: 99,
+        sortValue: 99,
         width: 150,
-        ...extra?.createdAt, // 修复：原来是 ...extra?.actions
         sortable: true,
         cellRender: {
           name: 'CellDate',
         },
+        ...extra?.createdAt, // 修复：原来是 ...extra?.actions
       });
       delete extra.createdAt; // 修复：原来是 delete extra.actions
+    }
+
+    if (extra?.updatedAt && extra.updatedAt.hide !== true) {
+      columnsWithSort.push({
+        title: '更新时间',
+        field: 'updatedAt',
+        align: 'center',
+        sortValue: 99,
+        width: 150,
+        sortable: true,
+        cellRender: {
+          name: 'CellDate',
+        },
+        ...extra?.updatedAt, // 修复：原来是 ...extra?.actions
+      });
+      delete extra.updatedAt; // 修复：原来是 delete extra.actions
     }
 
     if (extra && Object.keys(extra).length > 0) {
@@ -139,7 +131,7 @@ export const formSchemaTransform: FormSchemaTransform = {
           columnsWithSort.push({
             ...item,
             field: key,
-            originalIndex: item?.sort ?? columnsWithSort.length, // 改进：更合理的默认值
+            sortValue: item?.sort ?? columnsWithSort.length, // 改进：更合理的默认值
           });
         }
       });
@@ -153,7 +145,7 @@ export const formSchemaTransform: FormSchemaTransform = {
       type: 'seq',
       width: 80,
       fixed: 'left',
-      originalIndex: -1,
+      sortValue: -1,
       ...extra?.seq,
     });
 
@@ -163,7 +155,7 @@ export const formSchemaTransform: FormSchemaTransform = {
   toSearchSchema: (schema, extra) => {
     const innerSchema = cloneDeep(schema);
     const filterListWithSort: Array<
-      EsFormSchema[number] & { originalIndex: number; sortValue?: number }
+      EsFormSchema[number] & { sortValue: number }
     > = [];
 
     // 先过滤出需要的项目并添加排序信息
@@ -214,8 +206,7 @@ export const formSchemaTransform: FormSchemaTransform = {
         delete item.defaultValue;
         filterListWithSort.push({
           ...item,
-          originalIndex: i,
-          sortValue: itemExtra?.sort,
+          sortValue: itemExtra?.sort ?? i,
         });
       }
     }
@@ -232,8 +223,7 @@ export const formSchemaTransform: FormSchemaTransform = {
           };
           filterListWithSort.push({
             ...item,
-            originalIndex: filterListWithSort.length,
-            sortValue: item?.sort,
+            sortValue: item?.sort ?? filterListWithSort.length,
           } as (typeof filterListWithSort)[number]);
         }
       });

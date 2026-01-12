@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type {
-  BaseClientPageDto,
-  UpdateClientPageDto,
-} from '#/apis/types/clientPage';
+import type { BaseClientPageDto, UpdateClientPageDto } from '#/apis/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 

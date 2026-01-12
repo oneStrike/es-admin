@@ -1,4 +1,4 @@
-import type { BaseMemberLevelDto } from '#/apis/types/memberLevel';
+import type { BaseMemberLevelDto } from '#/apis/types';
 import type { EsFormSchema } from '#/types';
 
 import { h } from 'vue';

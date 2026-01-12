@@ -4,7 +4,7 @@ import type {
   CreateNoticeDto,
   NoticePageResponseDto,
   UpdateNoticeDto,
-} from '#/apis/types/notice';
+} from '#/apis/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 

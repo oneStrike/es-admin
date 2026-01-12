@@ -1,4 +1,4 @@
-import type { BaseUserDto } from '#/apis/types/user';
+import type { BaseUserDto } from '#/apis/types';
 import type { EsFormSchema } from '#/types';
 
 import { z } from '#/adapter/form';

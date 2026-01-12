@@ -5,7 +5,7 @@ import type {
   BaseCategoryDto,
   CreateCategoryDto,
   UpdateCategoryDto,
-} from '#/apis/types/category';
+} from '#/apis/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -145,9 +145,9 @@ async function deleteCategory(row: BaseCategoryDto): Promise<void> {
       <template #isEnabled="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isEnabled"
+          :inactive-value="row.isEnabled!"
           :loading="row.loading"
-          :model-value="row.isEnabled"
+          :model-value="row.isEnabled!"
           @change="toggleEnableStatus(row)"
         />
       </template>
@@ -164,7 +164,7 @@ async function deleteCategory(row: BaseCategoryDto): Promise<void> {
           @confirm="deleteCategory(row)"
         >
           <template #reference>
-            <el-button link type="danger" :disabled="row.isEnabled">
+            <el-button link type="danger" :disabled="row.isEnabled!">
               删除
             </el-button>
           </template>

@@ -1,5 +1,4 @@
-import type { BaseCategoryDto } from '#/apis/types/category';
-import type { BaseTagDto } from '#/apis/types/tag';
+import type { BaseCategoryDto, BaseTagDto } from '#/apis/types';
 import type { EsFormSchema } from '#/types';
 
 import { ContentTypeEnum } from '#/enum';

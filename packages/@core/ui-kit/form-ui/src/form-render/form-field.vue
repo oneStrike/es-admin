@@ -112,7 +112,12 @@ const shouldRequired = computed(() => {
   }
 
   if (isString(currentRules.value)) {
-    return ['required', 'selectRequired', 'arrayRequired', 'uploadRequired'].includes(currentRules.value);
+    return [
+      'arrayRequired',
+      'required',
+      'selectRequired',
+      'uploadRequired',
+    ].includes(currentRules.value);
   }
 
   let isOptional = currentRules?.value?.isOptional?.();

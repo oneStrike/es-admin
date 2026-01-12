@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type {
-  RequestLogDto,
-  RequestLogPageRequest,
-} from '#/apis/types/requestLog';
+import type { RequestLogDto, RequestLogPageRequest } from '#/apis/types';
 import type {
   BaseUserDto,
   ChangePasswordDto,

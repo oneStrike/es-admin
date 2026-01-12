@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  BaseForumConfigDto,
-  ConfigUpdateRequest,
-} from '#/apis/types/forum/config';
+import type { BaseForumConfigDto, ConfigUpdateRequest } from '#/apis/types';
 import type { EsFormSchema } from '#/types';
 
 import { h, onMounted, ref } from 'vue';

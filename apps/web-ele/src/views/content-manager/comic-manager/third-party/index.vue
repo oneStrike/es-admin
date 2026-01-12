@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ThirdPartySearchResponse } from '#/apis/types/thirdParty';
+import type { ThirdPartySearchResponse } from '#/apis/types';
 
 import { useVbenModal } from '@vben/common-ui';
 

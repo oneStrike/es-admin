@@ -1,4 +1,4 @@
-import type { NoticePageResponseDto } from '#/apis/types/notice';
+import type { NoticePageResponseDto } from '#/apis/types';
 import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';

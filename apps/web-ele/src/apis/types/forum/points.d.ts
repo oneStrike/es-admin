@@ -1,7 +1,7 @@
 /**
  *  类型定义 [PointsRulesPageRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsRulesPageRequest = {
   /** 任意合法数值 */
@@ -52,7 +52,7 @@ export type PointsRulesPageResponse = {
 /**
  *  类型定义 [PointsRulesDetailRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsRulesDetailRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type PointsRulesDetailResponse = BasePointRuleDto;
 /**
  *  类型定义 [PointsRulesCreateRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsRulesCreateRequest = CreatePointRuleDto;
 
@@ -76,7 +76,7 @@ export type PointsRulesCreateResponse = BasePointRuleDto;
 /**
  *  类型定义 [PointsRulesUpdateRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsRulesUpdateRequest = UpdatePointRuleDto;
 
@@ -85,7 +85,7 @@ export type PointsRulesUpdateResponse = BasePointRuleDto;
 /**
  *  类型定义 [PointsAddPointsRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsAddPointsRequest = AddPointsDto;
 
@@ -94,7 +94,7 @@ export type PointsAddPointsResponse = BasePointRuleDto;
 /**
  *  类型定义 [PointsConsumePointsRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsConsumePointsRequest = ConsumePointsDto;
 
@@ -103,7 +103,7 @@ export type PointsConsumePointsResponse = BasePointRuleDto;
 /**
  *  类型定义 [PointsRecordsPageRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsRecordsPageRequest = {
   /** 任意合法数值 */
@@ -151,7 +151,7 @@ export type PointsRecordsPageResponse = {
 /**
  *  类型定义 [PointsRecordsDetailRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsRecordsDetailRequest = {
   /** 任意合法数值 */
@@ -166,7 +166,7 @@ export type PointsRecordsDetailResponse = BasePointRuleDto;
 /**
  *  类型定义 [PointsUserStatsRequest]
  *  @来源 论坛模块/积分管理
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type PointsUserStatsRequest = {
   /** 任意合法数值 */
@@ -182,7 +182,7 @@ export type PointsSyncComicResponse = BasePointRuleDto;
 /**
  *  类型定义 [BasePointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type BasePointRuleDto = {
   /** 任意合法数值 */
@@ -211,7 +211,7 @@ export type BasePointRuleDto = {
 /**
  *  类型定义 [CreatePointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type CreatePointRuleDto = {
   /** 任意合法数值 */
@@ -234,7 +234,7 @@ export type CreatePointRuleDto = {
 /**
  *  类型定义 [UpdatePointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type UpdatePointRuleDto = {
   /** 任意合法数值 */
@@ -259,7 +259,7 @@ export type UpdatePointRuleDto = {
 /**
  *  类型定义 [AddPointsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type AddPointsDto = {
   /** 任意合法数值 */
@@ -276,7 +276,7 @@ export type AddPointsDto = {
 /**
  *  类型定义 [ConsumePointsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type ConsumePointsDto = {
   /** 任意合法数值 */

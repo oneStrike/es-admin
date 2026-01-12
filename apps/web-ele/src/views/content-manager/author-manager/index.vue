@@ -5,7 +5,7 @@ import type {
   AuthorPageResponseDto,
   CreateAuthorDto,
   UpdateAuthorDto,
-} from '#/apis/types/author';
+} from '#/apis/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 

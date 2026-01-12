@@ -1,4 +1,4 @@
-import type { NoticeDetailResponse } from '#/apis/types/notice';
+import type { NoticeDetailResponse } from '#/apis/types';
 
 import { formatUTC } from '#/utils';
 import { getOptionLabel } from '#/utils/options';

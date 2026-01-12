@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ModeratorAddRequest]
  *  @来源 论坛管理/版主管理模块
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type ModeratorAddRequest = CreateModeratorDto;
 
@@ -19,7 +19,7 @@ export type ModeratorAddResponse = {
 /**
  *  类型定义 [ModeratorRemoveRequest]
  *  @来源 论坛管理/版主管理模块
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type ModeratorRemoveRequest = IdDto;
 
@@ -28,7 +28,7 @@ export type ModeratorRemoveResponse = IdDto;
 /**
  *  类型定义 [ModeratorListRequest]
  *  @来源 论坛管理/版主管理模块
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type ModeratorListRequest = {
   /** 任意合法数值 */
@@ -76,7 +76,7 @@ export type ModeratorListResponse = {
 /**
  *  类型定义 [ModeratorUpdateRequest]
  *  @来源 论坛管理/版主管理模块
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type ModeratorUpdateRequest = UpdateModeratorDto;
 
@@ -94,7 +94,7 @@ export type ModeratorUpdateResponse = {
 /**
  *  类型定义 [CreateModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type CreateModeratorDto = {
   /** 任意合法数值 */
@@ -117,7 +117,7 @@ export type CreateModeratorDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -130,7 +130,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-11 21:58:01
+ *  @更新时间 2026-01-13 00:08:17
  */
 export type UpdateModeratorDto = {
   /** 任意合法数值 */

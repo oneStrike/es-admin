@@ -1,6 +1,6 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseComicDto } from '#/apis/types/comic';
+import type { BaseComicDto } from '#/apis/types/work/comic';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formSchemaTransform } from '#/utils';
@@ -147,17 +147,10 @@ export const comicColumns = ({
       },
     },
     createdAt: {
-      width: 160,
-      sortable: true,
       show: true,
     },
     updatedAt: {
-      title: '更新时间',
-      width: 160,
-      sortable: true,
-      cellRender: {
-        name: 'CellDate',
-      },
+      show: true,
     },
     actions: {
       show: true,

@@ -1,4 +1,4 @@
-import type { ComicChapterDetailDto } from '#/apis/types/comicChapter';
+import type { ComicChapterDetailDto } from '#/apis/types';
 
 import { formatUTC } from '#/utils';
 

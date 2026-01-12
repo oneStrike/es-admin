@@ -1,13 +1,16 @@
 import type {
-  SectionsAddRequest,
-  SectionsAddResponse,
+  SectionsCreateRequest,
+  SectionsCreateResponse,
+  SectionsDeleteRequest,
+  SectionsDeleteResponse,
   SectionsDetailRequest,
   SectionsDetailResponse,
-  SectionsListRequest,
-  SectionsListResponse,
-  SectionsRemoveRequest,
-  SectionsRemoveResponse,
+  SectionsPageRequest,
+  SectionsPageResponse,
+  SectionsSwapSortOrderRequest,
+  SectionsSwapSortOrderResponse,
   SectionsTreeResponse,
+  SectionsUpdateEnabledRequest,
   SectionsUpdateEnabledResponse,
   SectionsUpdateRequest,
   SectionsUpdateResponse,
@@ -18,11 +21,11 @@ import { requestClient } from '#/utils/request';
 /**
  * 查看板块列表
  */
-export async function sectionsListApi(
-  params?: SectionsListRequest,
-): Promise<SectionsListResponse> {
-  return requestClient.get<SectionsListResponse>(
-    '/api/admin/forum/sections/list',
+export async function sectionsPageApi(
+  params?: SectionsPageRequest,
+): Promise<SectionsPageResponse> {
+  return requestClient.get<SectionsPageResponse>(
+    '/api/admin/forum/sections/page',
     { params },
   );
 }
@@ -49,18 +52,6 @@ export async function sectionsTreeApi(): Promise<SectionsTreeResponse> {
 }
 
 /**
- * 添加板块
- */
-export async function sectionsAddApi(
-  params: SectionsAddRequest,
-): Promise<SectionsAddResponse> {
-  return requestClient.post<SectionsAddResponse>(
-    '/api/admin/forum/sections/add',
-    params,
-  );
-}
-
-/**
  * 更新板块
  */
 export async function sectionsUpdateApi(
@@ -73,22 +64,49 @@ export async function sectionsUpdateApi(
 }
 
 /**
- * 删除板块
+ * 更新板块启用状态
  */
-export async function sectionsRemoveApi(
-  params: SectionsRemoveRequest,
-): Promise<SectionsRemoveResponse> {
-  return requestClient.post<SectionsRemoveResponse>(
-    '/api/admin/forum/sections/remove',
+export async function sectionsUpdateEnabledApi(
+  params: SectionsUpdateEnabledRequest,
+): Promise<SectionsUpdateEnabledResponse> {
+  return requestClient.post<SectionsUpdateEnabledResponse>(
+    '/api/admin/forum/sections/update-enabled',
     params,
   );
 }
 
 /**
- * 更新板块启用状态
+ * 添加板块
  */
-export async function sectionsUpdateEnabledApi(): Promise<SectionsUpdateEnabledResponse> {
-  return requestClient.post<SectionsUpdateEnabledResponse>(
-    '/api/admin/forum/sections/update-enabled',
+export async function sectionsCreateApi(
+  params: SectionsCreateRequest,
+): Promise<SectionsCreateResponse> {
+  return requestClient.post<SectionsCreateResponse>(
+    '/api/admin/forum/sections/create',
+    params,
+  );
+}
+
+/**
+ * 删除板块
+ */
+export async function sectionsDeleteApi(
+  params: SectionsDeleteRequest,
+): Promise<SectionsDeleteResponse> {
+  return requestClient.post<SectionsDeleteResponse>(
+    '/api/admin/forum/sections/delete',
+    params,
+  );
+}
+
+/**
+ * 交换板块排序顺序
+ */
+export async function sectionsSwapSortOrderApi(
+  params: SectionsSwapSortOrderRequest,
+): Promise<SectionsSwapSortOrderResponse> {
+  return requestClient.post<SectionsSwapSortOrderResponse>(
+    '/api/admin/forum/sections/swap-sort-order',
+    params,
   );
 }

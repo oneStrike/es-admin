@@ -163,6 +163,25 @@ export async function generateAPI(
       await writeFile(indexPath, indexContent);
     }
 
+    // 生成类型索引文件，汇总所有类型导出
+    const typeExportFiles = files
+      .filter((file) => file.types) // 只包含有类型定义的文件
+      .map((file) => {
+        const typeFilePath = file.directory
+          ? `${file.directory}/${file.fileName.replace('.ts', '.d')}`
+          : file.fileName.replace('.ts', '.d');
+        return typeFilePath;
+      });
+
+    const typeIndexContent = `${typeExportFiles
+      .map((filePath) => `export * from './${filePath}'`)
+      .join('\n')}\n`;
+
+    {
+      const typeIndexPath = path.join(typesDir, 'index.d.ts');
+      await writeFile(typeIndexPath, typeIndexContent);
+    }
+
     console.log(`✅ API代码生成完成！共生成 ${files.length} 个模块`);
   } catch (error) {
     console.error('❌ API代码生成失败:', error);

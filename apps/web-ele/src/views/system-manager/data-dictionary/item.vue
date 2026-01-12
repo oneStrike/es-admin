@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type {
-  BaseDictionaryDto,
-  BaseDictionaryItemDto,
-} from '#/apis/types/dictionary';
+import type { BaseDictionaryDto, BaseDictionaryItemDto } from '#/apis/types';
 
 import { useVbenModal } from '@vben/common-ui';
 

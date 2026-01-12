@@ -1,13 +1,15 @@
 import type {
-  SectionGroupsAddRequest,
-  SectionGroupsAddResponse,
-  SectionGroupsAllEnabledResponse,
+  SectionGroupsCreateRequest,
+  SectionGroupsCreateResponse,
+  SectionGroupsDeleteRequest,
+  SectionGroupsDeleteResponse,
   SectionGroupsDetailRequest,
   SectionGroupsDetailResponse,
-  SectionGroupsListRequest,
-  SectionGroupsListResponse,
-  SectionGroupsRemoveRequest,
-  SectionGroupsRemoveResponse,
+  SectionGroupsPageRequest,
+  SectionGroupsPageResponse,
+  SectionGroupsSwapSortOrderRequest,
+  SectionGroupsSwapSortOrderResponse,
+  SectionGroupsUpdateEnabledRequest,
   SectionGroupsUpdateEnabledResponse,
   SectionGroupsUpdateRequest,
   SectionGroupsUpdateResponse,
@@ -18,11 +20,11 @@ import { requestClient } from '#/utils/request';
 /**
  * 查看板块组列表
  */
-export async function sectionGroupsListApi(
-  params?: SectionGroupsListRequest,
-): Promise<SectionGroupsListResponse> {
-  return requestClient.get<SectionGroupsListResponse>(
-    '/api/admin/forum/section-groups/list',
+export async function sectionGroupsPageApi(
+  params?: SectionGroupsPageRequest,
+): Promise<SectionGroupsPageResponse> {
+  return requestClient.get<SectionGroupsPageResponse>(
+    '/api/admin/forum/section-groups/page',
     { params },
   );
 }
@@ -40,22 +42,13 @@ export async function sectionGroupsDetailApi(
 }
 
 /**
- * 获取所有启用的板块组
- */
-export async function sectionGroupsAllEnabledApi(): Promise<SectionGroupsAllEnabledResponse> {
-  return requestClient.get<SectionGroupsAllEnabledResponse>(
-    '/api/admin/forum/section-groups/all-enabled',
-  );
-}
-
-/**
  * 添加板块组
  */
-export async function sectionGroupsAddApi(
-  params: SectionGroupsAddRequest,
-): Promise<SectionGroupsAddResponse> {
-  return requestClient.post<SectionGroupsAddResponse>(
-    '/api/admin/forum/section-groups/add',
+export async function sectionGroupsCreateApi(
+  params: SectionGroupsCreateRequest,
+): Promise<SectionGroupsCreateResponse> {
+  return requestClient.post<SectionGroupsCreateResponse>(
+    '/api/admin/forum/section-groups/create',
     params,
   );
 }
@@ -75,11 +68,11 @@ export async function sectionGroupsUpdateApi(
 /**
  * 删除板块组
  */
-export async function sectionGroupsRemoveApi(
-  params: SectionGroupsRemoveRequest,
-): Promise<SectionGroupsRemoveResponse> {
-  return requestClient.post<SectionGroupsRemoveResponse>(
-    '/api/admin/forum/section-groups/remove',
+export async function sectionGroupsDeleteApi(
+  params: SectionGroupsDeleteRequest,
+): Promise<SectionGroupsDeleteResponse> {
+  return requestClient.post<SectionGroupsDeleteResponse>(
+    '/api/admin/forum/section-groups/delete',
     params,
   );
 }
@@ -87,8 +80,23 @@ export async function sectionGroupsRemoveApi(
 /**
  * 更新板块组启用状态
  */
-export async function sectionGroupsUpdateEnabledApi(): Promise<SectionGroupsUpdateEnabledResponse> {
+export async function sectionGroupsUpdateEnabledApi(
+  params: SectionGroupsUpdateEnabledRequest,
+): Promise<SectionGroupsUpdateEnabledResponse> {
   return requestClient.post<SectionGroupsUpdateEnabledResponse>(
     '/api/admin/forum/section-groups/update-enabled',
+    params,
+  );
+}
+
+/**
+ * 交换板块组排序顺序
+ */
+export async function sectionGroupsSwapSortOrderApi(
+  params: SectionGroupsSwapSortOrderRequest,
+): Promise<SectionGroupsSwapSortOrderResponse> {
+  return requestClient.post<SectionGroupsSwapSortOrderResponse>(
+    '/api/admin/forum/section-groups/swap-sort-order',
+    params,
   );
 }
