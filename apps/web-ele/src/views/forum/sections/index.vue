@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  BaseForumSectionGroupDto,
   CreateForumSectionDto,
   UpdateForumSectionDto,
 } from '#/apis/types';
@@ -9,6 +10,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  sectionGroupsPageApi,
   sectionsCreateApi,
   sectionsDeleteApi,
   sectionsDetailApi,
@@ -16,6 +18,12 @@ import {
   sectionsUpdateApi,
   sectionsUpdateEnabledApi,
 } from '#/apis';
+import {
+  DeleteBinIcon,
+  EditIcon,
+  PlusCircleIcon,
+  PlusIcon,
+} from '#/components/es-icons';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -24,15 +32,22 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 import { getDetailCards } from './detail';
 import { formSchema, sectionColumns, sectionFilter } from './shared';
 
+// 当前板块分组
+const currentSectionGroup = ref<BaseForumSectionGroupDto | null>(null);
+// 板块列表
+const sections = ref<BaseForumSectionGroupDto[]>([]);
+
 const gridOptions: VxeGridProps<CreateForumSectionDto> = {
   columns: sectionColumns,
   height: 'auto',
   proxyConfig: {
+    autoLoad: false,
     ajax: {
       query: async ({ page }, formValues) => {
         return await sectionsPageApi({
           pageIndex: --page.currentPage,
           pageSize: page.pageSize,
+          groupId: currentSectionGroup.value?.id,
           ...formValues,
         });
       },
@@ -40,14 +55,19 @@ const gridOptions: VxeGridProps<CreateForumSectionDto> = {
     sort: true,
   },
 };
-
-const [Form, formApi] = useVbenModal({
-  connectedComponent: EsModalForm,
-});
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(sectionFilter),
   gridOptions,
+});
+
+sectionGroupsPageApi({ pageSize: 500 }).then((res) => {
+  currentSectionGroup.value = res?.list?.[0] || null;
+  sections.value = res?.list || [];
+  gridApi.reload();
+});
+
+const [Form, formApi] = useVbenModal({
+  connectedComponent: EsModalForm,
 });
 
 async function openFormModal(row?: CreateForumSectionDto) {
@@ -89,53 +109,89 @@ async function toggleEnableStatus(record: CreateForumSectionDto) {
   useMessage.success('操作成功');
   gridApi.reload();
 }
+
+function handleNodeClick(node: BaseForumSectionGroupDto) {
+  currentSectionGroup.value = node;
+  gridApi.reload();
+}
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid>
-      <template #toolbar-actions>
-        <el-button class="ml-2" type="primary" @click="openFormModal()">
-          添加
-        </el-button>
-      </template>
-
-      <template #isEnabled="{ row }">
-        <el-switch
-          :active-value="true"
-          :inactive-value="row.isEnabled"
-          :loading="row.loading"
-          :model-value="row.isEnabled"
-          @change="toggleEnableStatus(row)"
-        />
-      </template>
-      <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
+    <div class="flex h-full">
+      <div class="mr-4" style="width: 400px; min-width: 400px">
+        <el-card>
+          <div class="mb-2 flex items-center justify-between">
+            <el-input class="mr-4" placeholder="输入关键词" />
+            <PlusCircleIcon
+              class="hover:text-primary cursor-pointer text-2xl"
+              @click="openFormModal()"
+            />
+          </div>
+          <el-tree
+            :data="sections"
+            node-key="id"
+            highlight-current
+            :props="{ label: 'name' }"
+            @node-click="handleNodeClick"
           >
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前项?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteSection(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
+            <template #default="{ node, data }">
+              <div class="flex w-full items-center justify-between">
+                <span>{{ node.label }}</span>
+                <el-space>
+                  <DeleteBinIcon />
+                  <EditIcon />
+                  <PlusIcon />
+                </el-space>
+              </div>
             </template>
-          </el-popconfirm>
-        </div>
-      </template>
-    </Grid>
+          </el-tree>
+        </el-card>
+      </div>
+      <Grid class="flex-1">
+        <template #toolbar-actions>
+          <el-button class="ml-2" type="primary" @click="openFormModal()">
+            添加
+          </el-button>
+        </template>
+
+        <template #isEnabled="{ row }">
+          <el-switch
+            :active-value="true"
+            :inactive-value="row.isEnabled"
+            :loading="row.loading"
+            :model-value="row.isEnabled"
+            @change="toggleEnableStatus(row)"
+          />
+        </template>
+        <template #actions="{ row }">
+          <div class="my-1">
+            <el-button
+              link
+              type="primary"
+              @click="detailApi.setData({ recordId: row.id }).open()"
+            >
+              详情
+            </el-button>
+            <el-divider direction="vertical" />
+            <el-button link type="primary" @click="openFormModal(row)">
+              编辑
+            </el-button>
+            <el-divider direction="vertical" />
+            <el-popconfirm
+              title="确认删除当前项?"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              @confirm="deleteSection(row)"
+            >
+              <template #reference>
+                <el-button link type="danger">删除</el-button>
+              </template>
+            </el-popconfirm>
+          </div>
+        </template>
+      </Grid>
+    </div>
 
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 

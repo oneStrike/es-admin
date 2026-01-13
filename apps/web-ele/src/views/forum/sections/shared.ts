@@ -104,10 +104,6 @@ export const sectionColumns =
     },
     actions: {
       show: true,
-      width: 200,
-    },
-    name: {
-      width: 300,
     },
     description: {
       showOverflow: 'tooltip',
