@@ -1,7 +1,7 @@
 /**
  *  类型定义 [TagsListRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsListRequest = {
   /** 任意合法数值 */
@@ -49,7 +49,7 @@ export type TagsListResponse = {
 /**
  *  类型定义 [TagsDetailRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsDetailRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type TagsDetailResponse = CreateForumTagDto;
 /**
  *  类型定义 [TagsPopularRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsPopularRequest = {
   /** 任意合法数值 */
@@ -82,7 +82,7 @@ export type TagsUserResponse = CreateForumTagDto;
 /**
  *  类型定义 [TagsTopicTagsRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsTopicTagsRequest = {
   /** 任意合法数值 */
@@ -96,7 +96,7 @@ export type TagsTopicTagsResponse = CreateForumTagDto;
 /**
  *  类型定义 [TagsAddRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsAddRequest = CreateForumTagDto;
 
@@ -105,7 +105,7 @@ export type TagsAddResponse = CreateForumTagDto;
 /**
  *  类型定义 [TagsUpdateRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsUpdateRequest = UpdateForumTagDto;
 
@@ -114,7 +114,7 @@ export type TagsUpdateResponse = UpdateForumTagDto;
 /**
  *  类型定义 [TagsRemoveRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsRemoveRequest = IdDto;
 
@@ -132,7 +132,7 @@ export type TagsRemoveResponse = {
 /**
  *  类型定义 [TagsAssignRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsAssignRequest = AssignTagToTopicDto;
 
@@ -150,7 +150,7 @@ export type TagsAssignResponse = {
 /**
  *  类型定义 [TagsRemoveTagRequest]
  *  @来源 论坛模块/标签管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TagsRemoveTagRequest = RemoveTagFromTopicDto;
 
@@ -168,7 +168,7 @@ export type TagsRemoveTagResponse = {
 /**
  *  类型定义 [CreateForumTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type CreateForumTagDto = {
   /** 任意合法数值 */
@@ -189,7 +189,7 @@ export type CreateForumTagDto = {
 /**
  *  类型定义 [UpdateForumTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateForumTagDto = {
   /** 任意合法数值 */
@@ -212,7 +212,7 @@ export type UpdateForumTagDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -225,7 +225,7 @@ export type IdDto = {
 /**
  *  类型定义 [AssignTagToTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type AssignTagToTopicDto = {
   /** 任意合法数值 */
@@ -240,7 +240,7 @@ export type AssignTagToTopicDto = {
 /**
  *  类型定义 [RemoveTagFromTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type RemoveTagFromTopicDto = {
   /** 任意合法数值 */

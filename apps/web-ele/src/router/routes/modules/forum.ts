@@ -74,15 +74,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'ForumSectionGroups',
-        path: '/section-groups',
-        component: () => import('#/views/forum/section-groups/index.vue'),
-        meta: {
-          icon: 'codex:dot-circle',
-          title: '板块组管理',
-        },
-      },
-      {
         name: 'ForumSections',
         path: '/sections',
         component: () => import('#/views/forum/sections/index.vue'),

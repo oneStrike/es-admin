@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SectionAssignRequest]
  *  @来源 论坛管理/版主管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type SectionAssignRequest = AssignModeratorSectionDto;
 
@@ -19,7 +19,7 @@ export type SectionAssignResponse = {
 /**
  *  类型定义 [AssignModeratorSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type AssignModeratorSectionDto = {
   /** 任意合法数值 */

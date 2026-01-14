@@ -1,7 +1,7 @@
 /**
  *  类型定义 [TopicPageRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicPageRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type TopicPageResponse = {
 /**
  *  类型定义 [TopicDetailRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicDetailRequest = {
   /** 任意合法数值 */
@@ -82,7 +82,7 @@ export type TopicDetailResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicCreateRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicCreateRequest = CreateForumTopicDto;
 
@@ -91,7 +91,7 @@ export type TopicCreateResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicUpdateRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicUpdateRequest = UpdateForumTopicDto;
 
@@ -100,7 +100,7 @@ export type TopicUpdateResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicDeleteRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicDeleteRequest = IdDto;
 
@@ -109,7 +109,7 @@ export type TopicDeleteResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicUpdatePinnedRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicUpdatePinnedRequest = UpdateTopicPinnedDto;
 
@@ -118,7 +118,7 @@ export type TopicUpdatePinnedResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicUpdateFeaturedRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicUpdateFeaturedRequest = UpdateTopicFeaturedDto;
 
@@ -127,7 +127,7 @@ export type TopicUpdateFeaturedResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicUpdateLockedRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicUpdateLockedRequest = UpdateTopicLockedDto;
 
@@ -136,7 +136,7 @@ export type TopicUpdateLockedResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicUpdateHiddenRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicUpdateHiddenRequest = UpdateTopicHiddenDto;
 
@@ -145,7 +145,7 @@ export type TopicUpdateHiddenResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicUpdateAuditStatusRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicUpdateAuditStatusRequest = UpdateTopicAuditStatusDto;
 
@@ -154,7 +154,7 @@ export type TopicUpdateAuditStatusResponse = BaseForumTopicDto;
 /**
  *  类型定义 [TopicIncrementViewCountRequest]
  *  @来源 论坛模块/主题管理模块
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type TopicIncrementViewCountRequest = IdDto;
 
@@ -163,7 +163,7 @@ export type TopicIncrementViewCountResponse = BaseForumTopicDto;
 /**
  *  类型定义 [BaseForumTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type BaseForumTopicDto = {
   /** 任意合法数值 */
@@ -216,7 +216,7 @@ export type BaseForumTopicDto = {
 /**
  *  类型定义 [CreateForumTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type CreateForumTopicDto = {
   /** 任意合法数值 */
@@ -235,7 +235,7 @@ export type CreateForumTopicDto = {
 /**
  *  类型定义 [UpdateForumTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateForumTopicDto = {
   /** 任意合法数值 */
@@ -256,7 +256,7 @@ export type UpdateForumTopicDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -269,7 +269,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateTopicPinnedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateTopicPinnedDto = {
   /** 任意合法数值 */
@@ -284,7 +284,7 @@ export type UpdateTopicPinnedDto = {
 /**
  *  类型定义 [UpdateTopicFeaturedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateTopicFeaturedDto = {
   /** 任意合法数值 */
@@ -299,7 +299,7 @@ export type UpdateTopicFeaturedDto = {
 /**
  *  类型定义 [UpdateTopicLockedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateTopicLockedDto = {
   /** 任意合法数值 */
@@ -314,7 +314,7 @@ export type UpdateTopicLockedDto = {
 /**
  *  类型定义 [UpdateTopicHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateTopicHiddenDto = {
   /** 任意合法数值 */
@@ -329,7 +329,7 @@ export type UpdateTopicHiddenDto = {
 /**
  *  类型定义 [UpdateTopicAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateTopicAuditStatusDto = {
   /** 任意合法数值 */

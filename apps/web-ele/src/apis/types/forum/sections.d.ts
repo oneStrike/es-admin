@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SectionsPageRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type SectionsPageRequest = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type SectionsPageResponse = {
 /**
  *  类型定义 [SectionsDetailRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type SectionsDetailRequest = {
   /** 任意合法数值 */
@@ -79,45 +79,45 @@ export type SectionsTreeResponse = {
 };
 
 /**
- *  类型定义 [SectionsUpdateRequest]
- *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-13 00:08:17
- */
-export type SectionsUpdateRequest = UpdateForumSectionDto;
-
-export type SectionsUpdateResponse = BaseForumSectionDto;
-
-/**
- *  类型定义 [SectionsUpdateEnabledRequest]
- *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-13 00:08:17
- */
-export type SectionsUpdateEnabledRequest = UpdateEnabledStatusDto;
-
-export type SectionsUpdateEnabledResponse = BaseForumSectionDto;
-
-/**
  *  类型定义 [SectionsCreateRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type SectionsCreateRequest = CreateForumSectionDto;
 
 export type SectionsCreateResponse = BaseForumSectionDto;
 
 /**
+ *  类型定义 [SectionsUpdateRequest]
+ *  @来源 论坛模块/板块管理
+ *  @更新时间 2026-01-14 23:00:50
+ */
+export type SectionsUpdateRequest = UpdateForumSectionDto;
+
+export type SectionsUpdateResponse = BaseForumSectionDto;
+
+/**
  *  类型定义 [SectionsDeleteRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type SectionsDeleteRequest = IdDto;
 
 export type SectionsDeleteResponse = BaseForumSectionDto;
 
 /**
+ *  类型定义 [SectionsUpdateEnabledRequest]
+ *  @来源 论坛模块/板块管理
+ *  @更新时间 2026-01-14 23:00:50
+ */
+export type SectionsUpdateEnabledRequest = UpdateEnabledStatusDto;
+
+export type SectionsUpdateEnabledResponse = BaseForumSectionDto;
+
+/**
  *  类型定义 [SectionsSwapSortOrderRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type SectionsSwapSortOrderRequest = DragReorderDto;
 
@@ -126,7 +126,7 @@ export type SectionsSwapSortOrderResponse = BaseForumSectionDto;
 /**
  *  类型定义 [BaseForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type BaseForumSectionDto = {
   /** 任意合法数值 */
@@ -153,13 +153,40 @@ export type BaseForumSectionDto = {
   updatedAt: string;
 
   /* 用户等级规则ID（为空表示所有用户） */
-  userLevelRuleId: number;
+  userLevelRuleId?: null | number;
+};
+
+/**
+ *  类型定义 [CreateForumSectionDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-01-14 23:00:50
+ */
+export type CreateForumSectionDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 板块描述 */
+  description: string;
+  /* 板块分组ID（为空表示未分组） */
+  groupId?: null | number;
+  /* 板块图标 */
+  icon?: null | string;
+  /* 是否启用 */
+  isEnabled: boolean;
+  /* 板块名称 */
+  name: string;
+  /* 排序权重 */
+  sortOrder: number;
+  /* 审核策略 */
+  topicReviewPolicy: 0 | 1 | 2;
+
+  /* 用户等级规则ID（为空表示所有用户） */
+  userLevelRuleId?: null | number;
 };
 
 /**
  *  类型定义 [UpdateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateForumSectionDto = {
   /** 任意合法数值 */
@@ -182,13 +209,26 @@ export type UpdateForumSectionDto = {
   topicReviewPolicy: 0 | 1 | 2;
 
   /* 用户等级规则ID（为空表示所有用户） */
-  userLevelRuleId: number;
+  userLevelRuleId?: null | number;
+};
+
+/**
+ *  类型定义 [IdDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-01-14 23:00:50
+ */
+export type IdDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 主键id */
+  id: number;
 };
 
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -201,49 +241,9 @@ export type UpdateEnabledStatusDto = {
 };
 
 /**
- *  类型定义 [CreateForumSectionDto]
- *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
- */
-export type CreateForumSectionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 板块描述 */
-  description: string;
-  /* 板块分组ID（为空表示未分组） */
-  groupId?: null | number;
-  /* 板块图标 */
-  icon?: null | string;
-  /* 是否启用 */
-  isEnabled: boolean;
-  /* 板块名称 */
-  name: string;
-  /* 排序权重 */
-  sortOrder: number;
-  /* 审核策略 */
-  topicReviewPolicy: 0 | 1 | 2;
-
-  /* 用户等级规则ID（为空表示所有用户） */
-  userLevelRuleId: number;
-};
-
-/**
- *  类型定义 [IdDto]
- *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
- */
-export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 主键id */
-  id: number;
-};
-
-/**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

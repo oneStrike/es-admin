@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ReportsListRequest]
  *  @来源 论坛模块/举报管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type ReportsListRequest = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type ReportsListResponse = {
 /**
  *  类型定义 [ReportsDetailRequest]
  *  @来源 论坛模块/举报管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type ReportsDetailRequest = {
   /** 任意合法数值 */
@@ -81,7 +81,7 @@ export type ReportsStatisticsResponse = {
 /**
  *  类型定义 [ReportsAddRequest]
  *  @来源 论坛模块/举报管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type ReportsAddRequest = CreateForumReportDto;
 
@@ -90,7 +90,7 @@ export type ReportsAddResponse = CreateForumReportDto;
 /**
  *  类型定义 [ReportsHandleRequest]
  *  @来源 论坛模块/举报管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type ReportsHandleRequest = HandleReportDto;
 
@@ -99,7 +99,7 @@ export type ReportsHandleResponse = HandleReportDto;
 /**
  *  类型定义 [ReportsRemoveRequest]
  *  @来源 论坛模块/举报管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type ReportsRemoveRequest = IdDto;
 
@@ -117,7 +117,7 @@ export type ReportsRemoveResponse = {
 /**
  *  类型定义 [CreateForumReportDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type CreateForumReportDto = {
   /** 任意合法数值 */
@@ -145,7 +145,7 @@ export type CreateForumReportDto = {
 /**
  *  类型定义 [HandleReportDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type HandleReportDto = {
   /** 任意合法数值 */
@@ -164,7 +164,7 @@ export type HandleReportDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type IdDto = {
   /** 任意合法数值 */

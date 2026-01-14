@@ -19,7 +19,7 @@ import type {
 import { requestClient } from '#/utils/request';
 
 /**
- * 查看板块列表
+ * 查看板块分页
  */
 export async function sectionsPageApi(
   params?: SectionsPageRequest,
@@ -52,30 +52,6 @@ export async function sectionsTreeApi(): Promise<SectionsTreeResponse> {
 }
 
 /**
- * 更新板块
- */
-export async function sectionsUpdateApi(
-  params: SectionsUpdateRequest,
-): Promise<SectionsUpdateResponse> {
-  return requestClient.post<SectionsUpdateResponse>(
-    '/api/admin/forum/sections/update',
-    params,
-  );
-}
-
-/**
- * 更新板块启用状态
- */
-export async function sectionsUpdateEnabledApi(
-  params: SectionsUpdateEnabledRequest,
-): Promise<SectionsUpdateEnabledResponse> {
-  return requestClient.post<SectionsUpdateEnabledResponse>(
-    '/api/admin/forum/sections/update-enabled',
-    params,
-  );
-}
-
-/**
  * 添加板块
  */
 export async function sectionsCreateApi(
@@ -88,6 +64,18 @@ export async function sectionsCreateApi(
 }
 
 /**
+ * 更新板块
+ */
+export async function sectionsUpdateApi(
+  params: SectionsUpdateRequest,
+): Promise<SectionsUpdateResponse> {
+  return requestClient.post<SectionsUpdateResponse>(
+    '/api/admin/forum/sections/update',
+    params,
+  );
+}
+
+/**
  * 删除板块
  */
 export async function sectionsDeleteApi(
@@ -95,6 +83,18 @@ export async function sectionsDeleteApi(
 ): Promise<SectionsDeleteResponse> {
   return requestClient.post<SectionsDeleteResponse>(
     '/api/admin/forum/sections/delete',
+    params,
+  );
+}
+
+/**
+ * 更新板块启用状态
+ */
+export async function sectionsUpdateEnabledApi(
+  params: SectionsUpdateEnabledRequest,
+): Promise<SectionsUpdateEnabledResponse> {
+  return requestClient.post<SectionsUpdateEnabledResponse>(
+    '/api/admin/forum/sections/update-enabled',
     params,
   );
 }

@@ -1,7 +1,7 @@
 /**
  *  类型定义 [LevelRulesPageRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelRulesPageRequest = {
   /** 任意合法数值 */
@@ -49,7 +49,7 @@ export type LevelRulesPageResponse = {
 /**
  *  类型定义 [LevelRulesDetailRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelRulesDetailRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type LevelRulesDetailResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [LevelRulesCreateRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelRulesCreateRequest = CreateLevelRuleDto;
 
@@ -73,7 +73,7 @@ export type LevelRulesCreateResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [LevelRulesUpdateRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelRulesUpdateRequest = UpdateLevelRuleDto;
 
@@ -82,7 +82,7 @@ export type LevelRulesUpdateResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [LevelRulesDeleteRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelRulesDeleteRequest = IdDto;
 
@@ -91,7 +91,7 @@ export type LevelRulesDeleteResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [LevelRulesUserLevelInfoRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelRulesUserLevelInfoRequest = {
   /** 任意合法数值 */
@@ -106,7 +106,7 @@ export type LevelRulesUserLevelInfoResponse = UserLevelInfoDto;
 /**
  *  类型定义 [LevelRulesCheckPermissionRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelRulesCheckPermissionRequest = CheckLevelPermissionDto;
 
@@ -117,7 +117,7 @@ export type LevelRulesStatisticsResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [BaseLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type BaseLevelRuleDto = {
   /** 任意合法数值 */
@@ -128,14 +128,12 @@ export type BaseLevelRuleDto = {
   color?: null | string;
   /* 创建时间 */
   createdAt: string;
-  /* 每日评论次数上限，0表示无限制 */
-  dailyCommentLimit: number;
   /* 每日收藏次数上限，0表示无限制 */
   dailyFavoriteLimit: number;
   /* 每日点赞次数上限，0表示无限制 */
   dailyLikeLimit: number;
-  /* 每日回复数量上限，0表示无限制 */
-  dailyReplyLimit: number;
+  /* 每日回复和评论数量上限，0表示无限制 */
+  dailyReplyCommentLimit: number;
   /* 每日发帖数量上限，0表示无限制 */
   dailyTopicLimit: number;
   /* 等级描述 */
@@ -146,8 +144,6 @@ export type BaseLevelRuleDto = {
   id: number;
   /* 是否启用 */
   isEnabled: boolean;
-  /* 单个文件最大大小（KB），0表示无限制 */
-  maxFileSize: number;
   /* 等级名称 */
   name: string;
   /* 发帖间隔秒数（防刷屏），0表示无限制 */
@@ -164,7 +160,7 @@ export type BaseLevelRuleDto = {
 /**
  *  类型定义 [CreateLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type CreateLevelRuleDto = {
   /** 任意合法数值 */
@@ -173,14 +169,12 @@ export type CreateLevelRuleDto = {
   badge?: null | string;
   /* 等级专属颜色（十六进制） */
   color?: null | string;
-  /* 每日评论次数上限，0表示无限制 */
-  dailyCommentLimit: number;
   /* 每日收藏次数上限，0表示无限制 */
   dailyFavoriteLimit: number;
   /* 每日点赞次数上限，0表示无限制 */
   dailyLikeLimit: number;
-  /* 每日回复数量上限，0表示无限制 */
-  dailyReplyLimit: number;
+  /* 每日回复和评论数量上限，0表示无限制 */
+  dailyReplyCommentLimit: number;
   /* 每日发帖数量上限，0表示无限制 */
   dailyTopicLimit: number;
   /* 等级描述 */
@@ -189,8 +183,6 @@ export type CreateLevelRuleDto = {
   icon?: null | string;
   /* 是否启用 */
   isEnabled: boolean;
-  /* 单个文件最大大小（KB），0表示无限制 */
-  maxFileSize: number;
   /* 等级名称 */
   name: string;
   /* 发帖间隔秒数（防刷屏），0表示无限制 */
@@ -205,7 +197,7 @@ export type CreateLevelRuleDto = {
 /**
  *  类型定义 [UpdateLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UpdateLevelRuleDto = {
   /** 任意合法数值 */
@@ -214,14 +206,12 @@ export type UpdateLevelRuleDto = {
   badge?: null | string;
   /* 等级专属颜色（十六进制） */
   color?: null | string;
-  /* 每日评论次数上限，0表示无限制 */
-  dailyCommentLimit?: number;
   /* 每日收藏次数上限，0表示无限制 */
   dailyFavoriteLimit?: number;
   /* 每日点赞次数上限，0表示无限制 */
   dailyLikeLimit?: number;
-  /* 每日回复数量上限，0表示无限制 */
-  dailyReplyLimit?: number;
+  /* 每日回复和评论数量上限，0表示无限制 */
+  dailyReplyCommentLimit?: number;
   /* 每日发帖数量上限，0表示无限制 */
   dailyTopicLimit?: number;
   /* 等级描述 */
@@ -232,8 +222,6 @@ export type UpdateLevelRuleDto = {
   id: number;
   /* 是否启用 */
   isEnabled?: boolean;
-  /* 单个文件最大大小（KB），0表示无限制 */
-  maxFileSize?: number;
   /* 等级名称 */
   name?: string;
   /* 发帖间隔秒数（防刷屏），0表示无限制 */
@@ -248,7 +236,7 @@ export type UpdateLevelRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -261,7 +249,7 @@ export type IdDto = {
 /**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type UserLevelInfoDto = {
   /** 任意合法数值 */
@@ -292,23 +280,19 @@ export type UserLevelInfoDto = {
 /**
  *  类型定义 [LevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelPermissionsDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 每日评论次数上限，0表示无限制 */
-  dailyCommentLimit: number;
   /* 每日收藏次数上限，0表示无限制 */
   dailyFavoriteLimit: number;
   /* 每日点赞次数上限，0表示无限制 */
   dailyLikeLimit: number;
-  /* 每日回复数量上限，0表示无限制 */
-  dailyReplyLimit: number;
+  /* 每日回复和评论数量上限，0表示无限制 */
+  dailyReplyCommentLimit: number;
   /* 每日发帖数量上限，0表示无限制 */
   dailyTopicLimit: number;
-  /* 单个文件最大大小（KB），0表示无限制 */
-  maxFileSize: number;
 
   /* 发帖间隔秒数（防刷屏），0表示无限制 */
   postInterval: number;
@@ -317,19 +301,17 @@ export type LevelPermissionsDto = {
 /**
  *  类型定义 [CheckLevelPermissionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type CheckLevelPermissionDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 权限类型 */
   permissionType:
-    | 'dailyCommentLimit'
     | 'dailyFavoriteLimit'
     | 'dailyLikeLimit'
-    | 'dailyReplyLimit'
+    | 'dailyReplyCommentLimit'
     | 'dailyTopicLimit'
-    | 'maxFileSize'
     | 'postInterval';
 
   /* 用户ID */
@@ -339,7 +321,7 @@ export type CheckLevelPermissionDto = {
 /**
  *  类型定义 [LevelPermissionResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-13 00:08:17
+ *  @更新时间 2026-01-14 23:00:50
  */
 export type LevelPermissionResultDto = {
   /** 任意合法数值 */

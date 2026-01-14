@@ -5,14 +5,18 @@ import type {
   CreateForumSectionDto,
   CreateForumSectionGroupDto,
   UpdateForumSectionDto,
+  UpdateForumSectionGroupDto,
 } from '#/apis/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  sectionGroupsCreateApi,
   sectionGroupsDeleteApi,
+  sectionGroupsDetailApi,
   sectionGroupsPageApi,
+  sectionGroupsUpdateApi,
   sectionsCreateApi,
   sectionsDeleteApi,
   sectionsDetailApi,
@@ -33,6 +37,8 @@ import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './detail';
+import { getDetailCards as getSectionGroupDetailCards } from './sectionGroupDetail';
+import { formSchema as sectionGroupFormSchema } from './sectionGroupShared';
 import { formSchema, sectionColumns, sectionFilter } from './shared';
 
 // 当前板块分组
@@ -43,7 +49,6 @@ const sections = ref<BaseForumSectionGroupDto[]>([]);
 const gridOptions: VxeGridProps<CreateForumSectionDto> = {
   columns: sectionColumns,
   height: '100%',
-  width: '100%',
   proxyConfig: {
     autoLoad: false,
     ajax: {
@@ -64,33 +69,63 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-sectionGroupsPageApi({ pageSize: 500 }).then((res) => {
-  currentSectionGroup.value = res?.list?.[0] || null;
-  sections.value = res?.list || [];
+async function loadSectionGroups() {
+  const data = await sectionGroupsPageApi({ pageSize: 500 });
+  if (!currentSectionGroup.value) {
+    currentSectionGroup.value = data?.list?.[0] || null;
+  }
+  sections.value = data?.list || [];
   gridApi.reload();
-});
+}
+loadSectionGroups();
 
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-async function openFormModal(row?: CreateForumSectionDto) {
+const [SectionGroupForm, sectionGroupFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+
+async function openFormModal(row?: CreateForumSectionDto, groupId?: string) {
   let record;
   if (row) {
     record = await sectionsDetailApi({ id: row.id });
+  } else if (groupId) {
+    record = { groupId };
   }
   formApi.setData({ title: '板块配置', record }).open();
+}
+
+async function openSectionGroupFormModal(row?: CreateForumSectionGroupDto) {
+  let record;
+  if (row) {
+    record = await sectionGroupsDetailApi({ id: row.id });
+  }
+  sectionGroupFormApi.setData({ title: '板块组配置', record }).open();
 }
 
 async function handleSubmit(
   values: CreateForumSectionDto | UpdateForumSectionDto,
 ) {
+  values.groupId = currentSectionGroup.value?.id;
   await (values?.id
     ? sectionsUpdateApi(values as UpdateForumSectionDto)
     : sectionsCreateApi(values as CreateForumSectionDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
+}
+
+async function handleSectionGroupSubmit(
+  values: CreateForumSectionGroupDto | UpdateForumSectionGroupDto,
+) {
+  await (values?.id
+    ? sectionGroupsUpdateApi(values as UpdateForumSectionGroupDto)
+    : sectionGroupsCreateApi(values as CreateForumSectionGroupDto));
+  sectionGroupFormApi.close();
+  useMessage.success('操作成功');
+  await loadSectionGroups();
 }
 
 async function deleteSection(record: CreateForumSectionDto) {
@@ -100,6 +135,10 @@ async function deleteSection(record: CreateForumSectionDto) {
 }
 
 const [DetailModal, detailApi] = useVbenModal({
+  connectedComponent: EsRecordDetail,
+});
+
+const [SectionGroupDetailModal, sectionGroupDetailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
 });
 
@@ -122,7 +161,7 @@ function handleNodeClick(node: BaseForumSectionGroupDto) {
 async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
   await sectionGroupsDeleteApi({ id: record.id });
   useMessage.success('操作成功');
-  gridApi.reload();
+  await loadSectionGroups();
 }
 </script>
 
@@ -135,14 +174,16 @@ async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
             <el-input class="mr-4" placeholder="输入关键词" />
             <PlusCircleIcon
               class="hover:text-primary cursor-pointer text-2xl"
-              @click="openFormModal()"
+              @click="openSectionGroupFormModal()"
             />
           </div>
           <el-tree
             :data="sections"
             node-key="id"
             highlight-current
+            check-on-click-node
             :props="{ label: 'name' }"
+            :current-node-key="currentSectionGroup?.id"
             @node-click="handleNodeClick"
           >
             <template #default="{ node, data }">
@@ -151,12 +192,19 @@ async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
                 <el-space>
                   <AlertCircleIcon
                     class="hover:text-primary cursor-pointer text-base"
+                    @click.stop="
+                      sectionGroupDetailApi
+                        .setData({ recordId: data.id })
+                        .open()
+                    "
                   />
                   <EditIcon
                     class="hover:text-primary cursor-pointer text-base"
+                    @click.stop="openSectionGroupFormModal(data)"
                   />
                   <PlusIcon
                     class="hover:text-primary cursor-pointer text-base"
+                    @click.stop="openFormModal(undefined, data.id)"
                   />
                   <el-popconfirm
                     title="确认删除当前项?"
@@ -228,6 +276,18 @@ async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
       title="板块详情"
       :api="sectionsDetailApi"
       :cards="getDetailCards"
+      class="!w-[800px]"
+    />
+
+    <SectionGroupForm
+      :schema="sectionGroupFormSchema"
+      :on-submit="handleSectionGroupSubmit"
+    />
+
+    <SectionGroupDetailModal
+      title="板块组详情"
+      :api="sectionGroupsDetailApi"
+      :cards="getSectionGroupDetailCards"
       class="!w-[800px]"
     />
   </Page>
