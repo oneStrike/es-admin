@@ -12,4 +12,4 @@ export const QuestionIcon = createIconifyIcon(
 );
 export const DeleteBinIcon = createIconifyIcon('majesticons:delete-bin-line');
 export const EyeLineIcon = createIconifyIcon('majesticons:eye-line');
-
+export const AlertCircleIcon = createIconifyIcon('line-md:alert-circle');

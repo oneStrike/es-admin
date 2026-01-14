@@ -3,6 +3,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseForumSectionGroupDto,
   CreateForumSectionDto,
+  CreateForumSectionGroupDto,
   UpdateForumSectionDto,
 } from '#/apis/types';
 
@@ -10,6 +11,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  sectionGroupsDeleteApi,
   sectionGroupsPageApi,
   sectionsCreateApi,
   sectionsDeleteApi,
@@ -19,6 +21,7 @@ import {
   sectionsUpdateEnabledApi,
 } from '#/apis';
 import {
+  AlertCircleIcon,
   DeleteBinIcon,
   EditIcon,
   PlusCircleIcon,
@@ -39,7 +42,8 @@ const sections = ref<BaseForumSectionGroupDto[]>([]);
 
 const gridOptions: VxeGridProps<CreateForumSectionDto> = {
   columns: sectionColumns,
-  height: 'auto',
+  height: '100%',
+  width: '100%',
   proxyConfig: {
     autoLoad: false,
     ajax: {
@@ -114,13 +118,19 @@ function handleNodeClick(node: BaseForumSectionGroupDto) {
   currentSectionGroup.value = node;
   gridApi.reload();
 }
+
+async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
+  await sectionGroupsDeleteApi({ id: record.id });
+  useMessage.success('操作成功');
+  gridApi.reload();
+}
 </script>
 
 <template>
   <Page auto-content-height>
     <div class="flex h-full">
-      <div class="mr-4" style="width: 400px; min-width: 400px">
-        <el-card>
+      <div class="mr-4 h-full w-[260px] min-w-[260px]">
+        <div class="h-full rounded-md bg-white p-3">
           <div class="mb-2 flex items-center justify-between">
             <el-input class="mr-4" placeholder="输入关键词" />
             <PlusCircleIcon
@@ -139,16 +149,35 @@ function handleNodeClick(node: BaseForumSectionGroupDto) {
               <div class="flex w-full items-center justify-between">
                 <span>{{ node.label }}</span>
                 <el-space>
-                  <DeleteBinIcon />
-                  <EditIcon />
-                  <PlusIcon />
+                  <AlertCircleIcon
+                    class="hover:text-primary cursor-pointer text-base"
+                  />
+                  <EditIcon
+                    class="hover:text-primary cursor-pointer text-base"
+                  />
+                  <PlusIcon
+                    class="hover:text-primary cursor-pointer text-base"
+                  />
+                  <el-popconfirm
+                    title="确认删除当前项?"
+                    confirm-button-text="确认"
+                    cancel-button-text="取消"
+                    @confirm="deleteSectionGroup(data)"
+                  >
+                    <template #reference>
+                      <DeleteBinIcon
+                        @click.stop
+                        class="cursor-pointer text-base hover:text-red-600"
+                      />
+                    </template>
+                  </el-popconfirm>
                 </el-space>
               </div>
             </template>
           </el-tree>
-        </el-card>
+        </div>
       </div>
-      <Grid class="flex-1">
+      <Grid class="w-[calc(100%-260px)]">
         <template #toolbar-actions>
           <el-button class="ml-2" type="primary" @click="openFormModal()">
             添加

@@ -114,11 +114,11 @@ export const sectionColumns =
       width: 100,
     },
     sortOrder: {
-      width: 120,
+      width: 100,
       sortable: true,
     },
     topicReviewPolicy: {
-      width: 140,
+      width: 100,
     },
     createdAt: {
       show: true,
