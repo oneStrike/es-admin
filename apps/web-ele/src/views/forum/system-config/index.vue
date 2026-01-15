@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { BaseForumConfigDto, ConfigUpdateRequest } from '#/apis/types';
 
-import { onMounted, ref } from 'vue';
-
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
@@ -14,7 +12,7 @@ import {
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 
 import History from './history-modal.vue';
-import { formSchema } from './shared';
+import { formSchema } from './modules/shared';
 
 // 定义页面组件名称
 defineOptions({

@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ExperienceRulesPageRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceRulesPageRequest = {
   /** 任意合法数值 */
@@ -52,7 +52,7 @@ export type ExperienceRulesPageResponse = {
 /**
  *  类型定义 [ExperienceRulesDetailRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceRulesDetailRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type ExperienceRulesDetailResponse = BaseExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesCreateRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceRulesCreateRequest = CreateExperienceRuleDto;
 
@@ -76,7 +76,7 @@ export type ExperienceRulesCreateResponse = BaseExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesUpdateRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceRulesUpdateRequest = UpdateExperienceRuleDto;
 
@@ -85,7 +85,7 @@ export type ExperienceRulesUpdateResponse = BaseExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesDeleteRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceRulesDeleteRequest = IdDto;
 
@@ -94,7 +94,7 @@ export type ExperienceRulesDeleteResponse = BaseExperienceRuleDto;
 /**
  *  类型定义 [ExperienceAddRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceAddRequest = AddExperienceDto;
 
@@ -103,7 +103,7 @@ export type ExperienceAddResponse = BaseExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRecordsPageRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceRecordsPageRequest = {
   /** 任意合法数值 */
@@ -151,7 +151,7 @@ export type ExperienceRecordsPageResponse = {
 /**
  *  类型定义 [ExperienceRecordsDetailRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceRecordsDetailRequest = {
   /** 任意合法数值 */
@@ -166,7 +166,7 @@ export type ExperienceRecordsDetailResponse = BaseExperienceRuleDto;
 /**
  *  类型定义 [ExperienceUserStatsRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ExperienceUserStatsRequest = {
   /** 任意合法数值 */
@@ -180,7 +180,7 @@ export type ExperienceUserStatsResponse = BaseExperienceRuleDto;
 /**
  *  类型定义 [BaseExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BaseExperienceRuleDto = {
   /** 任意合法数值 */
@@ -209,7 +209,7 @@ export type BaseExperienceRuleDto = {
 /**
  *  类型定义 [CreateExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type CreateExperienceRuleDto = {
   /** 任意合法数值 */
@@ -232,7 +232,7 @@ export type CreateExperienceRuleDto = {
 /**
  *  类型定义 [UpdateExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type UpdateExperienceRuleDto = {
   /** 任意合法数值 */
@@ -257,7 +257,7 @@ export type UpdateExperienceRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -270,7 +270,7 @@ export type IdDto = {
 /**
  *  类型定义 [AddExperienceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type AddExperienceDto = {
   /** 任意合法数值 */

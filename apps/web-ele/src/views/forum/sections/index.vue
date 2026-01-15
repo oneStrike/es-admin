@@ -16,6 +16,7 @@ import {
   sectionGroupsDeleteApi,
   sectionGroupsDetailApi,
   sectionGroupsPageApi,
+  sectionGroupsSwapSortOrderApi,
   sectionGroupsUpdateApi,
   sectionsCreateApi,
   sectionsDeleteApi,
@@ -36,15 +37,27 @@ import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from './detail';
-import { getDetailCards as getSectionGroupDetailCards } from './sectionGroupDetail';
-import { formSchema as sectionGroupFormSchema } from './sectionGroupShared';
-import { formSchema, sectionColumns, sectionFilter } from './shared';
+import { getDetailCards } from './modules/detail';
+import { getDetailCards as getSectionGroupDetailCards } from './modules/sectionGroupDetail';
+import { formSchema as sectionGroupFormSchema } from './modules/sectionGroupShared';
+import { formSchema, sectionColumns, sectionFilter } from './modules/shared';
 
 // 当前板块分组
 const currentSectionGroup = ref<BaseForumSectionGroupDto | null>(null);
 // 板块列表
 const sections = ref<BaseForumSectionGroupDto[]>([]);
+// 搜索关键词
+const searchKeyword = ref('');
+
+// 过滤后的板块组列表
+const filteredSections = computed(() => {
+  if (!searchKeyword.value) {
+    return sections.value;
+  }
+  return sections.value.filter((item) =>
+    item.name?.toLowerCase().includes(searchKeyword.value.toLowerCase()),
+  );
+});
 
 const gridOptions: VxeGridProps<CreateForumSectionDto> = {
   columns: sectionColumns,
@@ -161,6 +174,25 @@ function handleNodeClick(node: BaseForumSectionGroupDto) {
 async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
   await sectionGroupsDeleteApi({ id: record.id });
   useMessage.success('操作成功');
+
+  // 如果删除的是当前选中的板块分组，需要重置当前选中的分组
+  if (currentSectionGroup.value?.id === record.id) {
+    currentSectionGroup.value = null;
+  }
+
+  await loadSectionGroups();
+}
+
+function allowDrop(__dragNode: any, __dropNode: any, type: string) {
+  return type !== 'inner';
+}
+
+async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
+  await sectionGroupsSwapSortOrderApi({
+    dragId: dragNode.data.id,
+    targetId: dropNode.data.id,
+  });
+  useMessage.success('排序成功');
   await loadSectionGroups();
 }
 </script>
@@ -171,41 +203,57 @@ async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
       <div class="mr-4 h-full w-[260px] min-w-[260px]">
         <div class="h-full rounded-md bg-white p-3">
           <div class="mb-2 flex items-center justify-between">
-            <el-input class="mr-4" placeholder="输入关键词" />
-            <PlusCircleIcon
-              class="hover:text-primary cursor-pointer text-2xl"
-              @click="openSectionGroupFormModal()"
+            <el-input
+              v-model="searchKeyword"
+              class="mr-4"
+              placeholder="输入关键词"
+              clearable
             />
+            <el-tooltip content="添加分组" placement="top">
+              <PlusCircleIcon
+                class="hover:text-primary cursor-pointer text-2xl"
+                @click="openSectionGroupFormModal()"
+              />
+            </el-tooltip>
           </div>
           <el-tree
-            :data="sections"
+            :data="filteredSections"
             node-key="id"
             highlight-current
             check-on-click-node
+            draggable
+            :allow-drop="allowDrop"
             :props="{ label: 'name' }"
             :current-node-key="currentSectionGroup?.id"
             @node-click="handleNodeClick"
+            @node-drop="handleSectionGroupDrop"
           >
             <template #default="{ node, data }">
               <div class="flex w-full items-center justify-between">
                 <span>{{ node.label }}</span>
                 <el-space>
-                  <AlertCircleIcon
-                    class="hover:text-primary cursor-pointer text-base"
-                    @click.stop="
-                      sectionGroupDetailApi
-                        .setData({ recordId: data.id })
-                        .open()
-                    "
-                  />
-                  <EditIcon
-                    class="hover:text-primary cursor-pointer text-base"
-                    @click.stop="openSectionGroupFormModal(data)"
-                  />
-                  <PlusIcon
-                    class="hover:text-primary cursor-pointer text-base"
-                    @click.stop="openFormModal(undefined, data.id)"
-                  />
+                  <el-tooltip content="查看详情" placement="top">
+                    <AlertCircleIcon
+                      class="hover:text-primary cursor-pointer text-base"
+                      @click.stop="
+                        sectionGroupDetailApi
+                          .setData({ recordId: data.id })
+                          .open()
+                      "
+                    />
+                  </el-tooltip>
+                  <el-tooltip content="编辑" placement="top">
+                    <EditIcon
+                      class="hover:text-primary cursor-pointer text-base"
+                      @click.stop="openSectionGroupFormModal(data)"
+                    />
+                  </el-tooltip>
+                  <el-tooltip content="添加板块" placement="top">
+                    <PlusIcon
+                      class="hover:text-primary cursor-pointer text-base"
+                      @click.stop="openFormModal(undefined, data.id)"
+                    />
+                  </el-tooltip>
                   <el-popconfirm
                     title="确认删除当前项?"
                     confirm-button-text="确认"
@@ -213,10 +261,12 @@ async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
                     @confirm="deleteSectionGroup(data)"
                   >
                     <template #reference>
-                      <DeleteBinIcon
-                        @click.stop
-                        class="cursor-pointer text-base hover:text-red-600"
-                      />
+                      <el-tooltip content="删除" placement="top">
+                        <DeleteBinIcon
+                          @click.stop
+                          class="cursor-pointer text-base hover:text-red-600"
+                        />
+                      </el-tooltip>
                     </template>
                   </el-popconfirm>
                 </el-space>
@@ -293,4 +343,14 @@ async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
   </Page>
 </template>
 
-<style scoped></style>
+<style scoped>
+:deep(.el-tree-node.is-current > .el-tree-node__content) {
+  background-color: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+  font-weight: 600;
+}
+
+:deep(.el-tree-node.is-current > .el-tree-node__content:hover) {
+  background-color: var(--el-color-primary-light-8);
+}
+</style>

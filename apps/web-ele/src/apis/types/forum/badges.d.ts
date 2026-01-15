@@ -1,7 +1,7 @@
 /**
  *  类型定义 [BadgesPageRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesPageRequest = {
   /** 任意合法数值 */
@@ -52,7 +52,7 @@ export type BadgesPageResponse = {
 /**
  *  类型定义 [BadgesDetailRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesDetailRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type BadgesDetailResponse = BaseForumBadgeDto;
 /**
  *  类型定义 [BadgesCreateRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesCreateRequest = CreateForumBadgeDto;
 
@@ -76,7 +76,7 @@ export type BadgesCreateResponse = BaseForumBadgeDto;
 /**
  *  类型定义 [BadgesUpdateRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesUpdateRequest = UpdateForumBadgeDto;
 
@@ -85,7 +85,7 @@ export type BadgesUpdateResponse = BaseForumBadgeDto;
 /**
  *  类型定义 [BadgesDeleteRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesDeleteRequest = IdDto;
 
@@ -94,7 +94,7 @@ export type BadgesDeleteResponse = BaseForumBadgeDto;
 /**
  *  类型定义 [BadgesUpdateStatusRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesUpdateStatusRequest = UpdateForumBadgeDto;
 
@@ -103,7 +103,7 @@ export type BadgesUpdateStatusResponse = BaseForumBadgeDto;
 /**
  *  类型定义 [BadgesAssignRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesAssignRequest = ProfileBadgeDto;
 
@@ -112,7 +112,7 @@ export type BadgesAssignResponse = BaseForumBadgeDto;
 /**
  *  类型定义 [BadgesRevokeRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesRevokeRequest = ProfileBadgeDto;
 
@@ -121,7 +121,7 @@ export type BadgesRevokeResponse = BaseForumBadgeDto;
 /**
  *  类型定义 [BadgesUsersRequest]
  *  @来源 论坛模块/徽章管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BadgesUsersRequest = {
   /** 任意合法数值 */
@@ -176,7 +176,7 @@ export type BadgesStatisticsResponse = BaseForumBadgeDto;
 /**
  *  类型定义 [BaseForumBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BaseForumBadgeDto = {
   /** 任意合法数值 */
@@ -205,7 +205,7 @@ export type BaseForumBadgeDto = {
 /**
  *  类型定义 [CreateForumBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type CreateForumBadgeDto = {
   /** 任意合法数值 */
@@ -228,7 +228,7 @@ export type CreateForumBadgeDto = {
 /**
  *  类型定义 [UpdateForumBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type UpdateForumBadgeDto = {
   /** 任意合法数值 */
@@ -253,7 +253,7 @@ export type UpdateForumBadgeDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -266,7 +266,7 @@ export type IdDto = {
 /**
  *  类型定义 [ProfileBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type ProfileBadgeDto = {
   /** 任意合法数值 */

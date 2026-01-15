@@ -1,7 +1,7 @@
 /**
  *  类型定义 [LevelRulesPageRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelRulesPageRequest = {
   /** 任意合法数值 */
@@ -49,7 +49,7 @@ export type LevelRulesPageResponse = {
 /**
  *  类型定义 [LevelRulesDetailRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelRulesDetailRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type LevelRulesDetailResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [LevelRulesCreateRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelRulesCreateRequest = CreateLevelRuleDto;
 
@@ -73,7 +73,7 @@ export type LevelRulesCreateResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [LevelRulesUpdateRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelRulesUpdateRequest = UpdateLevelRuleDto;
 
@@ -82,7 +82,7 @@ export type LevelRulesUpdateResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [LevelRulesDeleteRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelRulesDeleteRequest = IdDto;
 
@@ -91,7 +91,7 @@ export type LevelRulesDeleteResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [LevelRulesUserLevelInfoRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelRulesUserLevelInfoRequest = {
   /** 任意合法数值 */
@@ -106,7 +106,7 @@ export type LevelRulesUserLevelInfoResponse = UserLevelInfoDto;
 /**
  *  类型定义 [LevelRulesCheckPermissionRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelRulesCheckPermissionRequest = CheckLevelPermissionDto;
 
@@ -117,7 +117,7 @@ export type LevelRulesStatisticsResponse = BaseLevelRuleDto;
 /**
  *  类型定义 [BaseLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BaseLevelRuleDto = {
   /** 任意合法数值 */
@@ -160,7 +160,7 @@ export type BaseLevelRuleDto = {
 /**
  *  类型定义 [CreateLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type CreateLevelRuleDto = {
   /** 任意合法数值 */
@@ -197,7 +197,7 @@ export type CreateLevelRuleDto = {
 /**
  *  类型定义 [UpdateLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type UpdateLevelRuleDto = {
   /** 任意合法数值 */
@@ -236,7 +236,7 @@ export type UpdateLevelRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -249,7 +249,7 @@ export type IdDto = {
 /**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type UserLevelInfoDto = {
   /** 任意合法数值 */
@@ -280,7 +280,7 @@ export type UserLevelInfoDto = {
 /**
  *  类型定义 [LevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelPermissionsDto = {
   /** 任意合法数值 */
@@ -301,7 +301,7 @@ export type LevelPermissionsDto = {
 /**
  *  类型定义 [CheckLevelPermissionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type CheckLevelPermissionDto = {
   /** 任意合法数值 */
@@ -321,7 +321,7 @@ export type CheckLevelPermissionDto = {
 /**
  *  类型定义 [LevelPermissionResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type LevelPermissionResultDto = {
   /** 任意合法数值 */

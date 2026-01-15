@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SectionsPageRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type SectionsPageRequest = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type SectionsPageResponse = {
 /**
  *  类型定义 [SectionsDetailRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type SectionsDetailRequest = {
   /** 任意合法数值 */
@@ -81,7 +81,7 @@ export type SectionsTreeResponse = {
 /**
  *  类型定义 [SectionsCreateRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type SectionsCreateRequest = CreateForumSectionDto;
 
@@ -90,7 +90,7 @@ export type SectionsCreateResponse = BaseForumSectionDto;
 /**
  *  类型定义 [SectionsUpdateRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type SectionsUpdateRequest = UpdateForumSectionDto;
 
@@ -99,7 +99,7 @@ export type SectionsUpdateResponse = BaseForumSectionDto;
 /**
  *  类型定义 [SectionsDeleteRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type SectionsDeleteRequest = IdDto;
 
@@ -108,7 +108,7 @@ export type SectionsDeleteResponse = BaseForumSectionDto;
 /**
  *  类型定义 [SectionsUpdateEnabledRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type SectionsUpdateEnabledRequest = UpdateEnabledStatusDto;
 
@@ -117,7 +117,7 @@ export type SectionsUpdateEnabledResponse = BaseForumSectionDto;
 /**
  *  类型定义 [SectionsSwapSortOrderRequest]
  *  @来源 论坛模块/板块管理
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type SectionsSwapSortOrderRequest = DragReorderDto;
 
@@ -126,7 +126,7 @@ export type SectionsSwapSortOrderResponse = BaseForumSectionDto;
 /**
  *  类型定义 [BaseForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type BaseForumSectionDto = {
   /** 任意合法数值 */
@@ -148,7 +148,7 @@ export type BaseForumSectionDto = {
   /* 排序权重 */
   sortOrder: number;
   /* 审核策略 */
-  topicReviewPolicy: 0 | 1 | 2;
+  topicReviewPolicy: 0 | 1 | 2 | 3 | 4;
   /* 更新时间 */
   updatedAt: string;
 
@@ -159,7 +159,7 @@ export type BaseForumSectionDto = {
 /**
  *  类型定义 [CreateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type CreateForumSectionDto = {
   /** 任意合法数值 */
@@ -177,7 +177,7 @@ export type CreateForumSectionDto = {
   /* 排序权重 */
   sortOrder: number;
   /* 审核策略 */
-  topicReviewPolicy: 0 | 1 | 2;
+  topicReviewPolicy: 0 | 1 | 2 | 3 | 4;
 
   /* 用户等级规则ID（为空表示所有用户） */
   userLevelRuleId?: null | number;
@@ -186,7 +186,7 @@ export type CreateForumSectionDto = {
 /**
  *  类型定义 [UpdateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type UpdateForumSectionDto = {
   /** 任意合法数值 */
@@ -206,7 +206,7 @@ export type UpdateForumSectionDto = {
   /* 排序权重 */
   sortOrder: number;
   /* 审核策略 */
-  topicReviewPolicy: 0 | 1 | 2;
+  topicReviewPolicy: 0 | 1 | 2 | 3 | 4;
 
   /* 用户等级规则ID（为空表示所有用户） */
   userLevelRuleId?: null | number;
@@ -215,7 +215,7 @@ export type UpdateForumSectionDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -228,7 +228,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -243,7 +243,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-14 23:00:50
+ *  @更新时间 2026-01-15 16:18:29
  */
 export type DragReorderDto = {
   /** 任意合法数值 */
