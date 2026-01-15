@@ -1,5 +1,7 @@
 import type { EsFormSchema } from '#/types';
 
+import { UploadSceneEnum } from '#/enum/api';
+
 import { reviewPolicyOptions } from './constants';
 
 export const formSchema: EsFormSchema = [
@@ -45,6 +47,7 @@ export const formSchema: EsFormSchema = [
     label: '站点Logo',
     componentProps: {
       maxCount: 1,
+      scene: UploadSceneEnum.SHARED,
       placeholder: '请输入站点Logo的URL地址',
     },
   },
@@ -54,6 +57,7 @@ export const formSchema: EsFormSchema = [
     label: '站点Favicon',
     componentProps: {
       maxCount: 1,
+      scene: UploadSceneEnum.SHARED,
       placeholder: '请输入站点Favicon的URL地址',
     },
   },

@@ -5,6 +5,8 @@ import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { formatUTC } from '#/utils';
+
 defineOptions({
   name: 'EsRecordDetail',
 });
@@ -168,21 +170,28 @@ defineExpose({
               >
                 <!-- 普通文本 -->
                 <el-text
-                  v-if="field.type === 'text'"
+                  v-if="field.type === 'text' || field.type === 'date'"
                   class="text-sm text-gray-900 dark:text-gray-100"
                 >
-                  {{ field.value || '-' }}
+                  {{
+                    !field.value
+                      ? '-'
+                      : field.type === 'date'
+                        ? formatUTC(
+                            field.value,
+                            field.dateType || 'YYYY-MM-DD HH:mm:ss',
+                          )
+                        : field.value
+                  }}
                 </el-text>
 
                 <!-- 标签 -->
                 <el-tag
-                  v-else-if="
-                    field.type === 'tag' && 'tagText' in field && field.tagText
-                  "
+                  v-else-if="field.type === 'tag' && 'tagText' in field"
                   :type="('tagType' in field ? field.tagType : 'info') as any"
                   size="small"
                 >
-                  {{ field.tagText }}
+                  {{ field.tagText || '-' }}
                 </el-tag>
 
                 <!-- 图片 -->

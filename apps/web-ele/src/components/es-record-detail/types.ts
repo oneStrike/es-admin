@@ -1,5 +1,5 @@
 // 定义字段类型
-export type FieldType = 'image' | 'tag' | 'text' | 'title';
+export type FieldType = 'date' | 'image' | 'tag' | 'text' | 'title';
 
 // 定义字段配置
 export interface DetailField {
@@ -8,6 +8,7 @@ export interface DetailField {
   type: FieldType;
   tagType?: string;
   tagText?: string;
+  dateType: string;
 }
 
 // 定义卡片配置

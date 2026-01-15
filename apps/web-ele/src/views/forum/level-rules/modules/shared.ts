@@ -1,9 +1,6 @@
 import type { BaseLevelRuleDto } from '#/apis/types';
 import type { EsFormSchema } from '#/types';
 
-import { h } from 'vue';
-
-import { z } from '#/adapter/form';
 import { formSchemaTransform } from '#/utils';
 
 /**
@@ -29,7 +26,7 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'icon',
     label: '等级图标',
-    rules: z.string().nonempty('请上传等级图标'),
+    rules: 'uploadRequired',
   },
   {
     component: 'Input',
@@ -215,28 +212,22 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseLevelRuleDto>(
       hide: true,
     },
     dailyReplyCommentLimit: {
-      title: '每日回复和评论上限',
       minWidth: 150,
     },
     dailyLikeLimit: {
-      title: '每日点赞上限',
       minWidth: 120,
     },
     dailyFavoriteLimit: {
-      title: '每日收藏上限',
       minWidth: 120,
     },
     postInterval: {
-      title: '发帖间隔秒数',
       minWidth: 140,
     },
     requiredExperience: {
-      title: '所需经验值',
       minWidth: 120,
     },
     isEnabled: {
       show: true,
-      title: '是否启用',
       minWidth: 100,
       slots: { default: 'isEnabled' },
     },

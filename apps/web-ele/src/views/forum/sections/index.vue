@@ -10,7 +10,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   sectionGroupsCreateApi,
   sectionGroupsDeleteApi,
@@ -65,13 +65,14 @@ const gridOptions: VxeGridProps<CreateForumSectionDto> = {
   proxyConfig: {
     autoLoad: false,
     ajax: {
-      query: async ({ page }, formValues) => {
-        return await sectionsPageApi({
-          pageIndex: --page.currentPage,
-          pageSize: page.pageSize,
-          groupId: currentSectionGroup.value?.id,
-          ...formValues,
-        });
+      query: async ({ page, sorts }, formValues) => {
+        return await sectionsPageApi(
+          formatQuery({
+            page,
+            sorts,
+            formValues,
+          }),
+        );
       },
     },
     sort: true,
@@ -209,7 +210,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
               placeholder="输入关键词"
               clearable
             />
-            <el-tooltip content="添加分组" placement="top">
+            <el-tooltip content="添加分组" placement="top" :show-after="300">
               <PlusCircleIcon
                 class="hover:text-primary cursor-pointer text-2xl"
                 @click="openSectionGroupFormModal()"
@@ -232,27 +233,40 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
               <div class="flex w-full items-center justify-between">
                 <span>{{ node.label }}</span>
                 <el-space>
-                  <el-tooltip content="查看详情" placement="top">
-                    <AlertCircleIcon
-                      class="hover:text-primary cursor-pointer text-base"
+                  <el-tooltip
+                    content="查看详情"
+                    placement="top"
+                    :show-after="300"
+                  >
+                    <div
                       @click.stop="
                         sectionGroupDetailApi
-                          .setData({ recordId: data.id })
+                          .setData({ title: '板块组详情', recordId: data.id })
                           .open()
                       "
-                    />
+                    >
+                      <AlertCircleIcon
+                        class="hover:text-primary cursor-pointer text-base"
+                      />
+                    </div>
                   </el-tooltip>
-                  <el-tooltip content="编辑" placement="top">
-                    <EditIcon
-                      class="hover:text-primary cursor-pointer text-base"
-                      @click.stop="openSectionGroupFormModal(data)"
-                    />
+                  <el-tooltip content="编辑" placement="top" :show-after="300">
+                    <div @click.stop="openSectionGroupFormModal(data)">
+                      <EditIcon
+                        class="hover:text-primary cursor-pointer text-base"
+                      />
+                    </div>
                   </el-tooltip>
-                  <el-tooltip content="添加板块" placement="top">
-                    <PlusIcon
-                      class="hover:text-primary cursor-pointer text-base"
-                      @click.stop="openFormModal(undefined, data.id)"
-                    />
+                  <el-tooltip
+                    content="添加板块"
+                    placement="top"
+                    :show-after="300"
+                  >
+                    <div @click.stop="openFormModal(undefined, data.id)">
+                      <PlusIcon
+                        class="hover:text-primary cursor-pointer text-base"
+                      />
+                    </div>
                   </el-tooltip>
                   <el-popconfirm
                     title="确认删除当前项?"
@@ -261,12 +275,17 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
                     @confirm="deleteSectionGroup(data)"
                   >
                     <template #reference>
-                      <el-tooltip content="删除" placement="top">
-                        <DeleteBinIcon
-                          @click.stop
-                          class="cursor-pointer text-base hover:text-red-600"
-                        />
-                      </el-tooltip>
+                      <div @click.stop>
+                        <el-tooltip
+                          content="删除"
+                          placement="top"
+                          :show-after="300"
+                        >
+                          <DeleteBinIcon
+                            class="cursor-pointer text-base hover:text-red-600"
+                          />
+                        </el-tooltip>
+                      </div>
                     </template>
                   </el-popconfirm>
                 </el-space>
@@ -296,7 +315,11 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
             <el-button
               link
               type="primary"
-              @click="detailApi.setData({ recordId: row.id }).open()"
+              @click="
+                detailApi
+                  .setData({ title: '板块详情', recordId: row.id })
+                  .open()
+              "
             >
               详情
             </el-button>
@@ -323,7 +346,6 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      title="板块详情"
       :api="sectionsDetailApi"
       :cards="getDetailCards"
       class="!w-[800px]"
@@ -335,7 +357,6 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
     />
 
     <SectionGroupDetailModal
-      title="板块组详情"
       :api="sectionGroupsDetailApi"
       :cards="getSectionGroupDetailCards"
       class="!w-[800px]"

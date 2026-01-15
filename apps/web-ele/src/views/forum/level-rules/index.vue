@@ -21,8 +21,8 @@ import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 
-import { getDetailCards } from './detail';
-import { formSchema, pageColumns } from './shared';
+import { getDetailCards } from './modules/detail';
+import { formSchema, pageColumns } from './modules/shared';
 
 /**
  * VxeGrid 配置选项
@@ -146,7 +146,11 @@ async function deleteLevelRule(record: BaseLevelRuleDto) {
           <el-button
             link
             type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
+            @click="
+              detailApi
+                .setData({ title: '等级规则详情', recordId: row.id })
+                .open()
+            "
           >
             详情
           </el-button>
@@ -171,7 +175,6 @@ async function deleteLevelRule(record: BaseLevelRuleDto) {
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
-      title="等级规则详情"
       :api="levelRulesDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"
