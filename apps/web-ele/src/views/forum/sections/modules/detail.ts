@@ -2,7 +2,7 @@ import type { CreateForumSectionDto } from '#/apis/types';
 
 import { formatUTC } from '#/utils';
 
-import { topicReviewPolicy } from './shared';
+import { topicReviewPolicy } from './constants';
 
 /**
  * 获取板块详情卡片配置
