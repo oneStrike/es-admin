@@ -1,6 +1,4 @@
 import type {
-  ModeratorsActionLogPageRequest,
-  ModeratorsActionLogPageResponse,
   ModeratorsAddRequest,
   ModeratorsAddResponse,
   ModeratorsListRequest,
@@ -72,17 +70,5 @@ export async function moderatorsSectionAssignApi(
   return requestClient.post<ModeratorsSectionAssignResponse>(
     '/api/admin/forum/moderators/section-assign',
     params,
-  );
-}
-
-/**
- * 查看版主操作日志
- */
-export async function moderatorsActionLogPageApi(
-  params?: ModeratorsActionLogPageRequest,
-): Promise<ModeratorsActionLogPageResponse> {
-  return requestClient.get<ModeratorsActionLogPageResponse>(
-    '/api/admin/forum/moderators/action-log-page',
-    { params },
   );
 }

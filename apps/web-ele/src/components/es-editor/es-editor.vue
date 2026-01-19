@@ -123,13 +123,15 @@ const init = reactive({
     : '/libs/tinymce/skins/content/default/content.css', // 以css文件方式自定义可编辑区域的css样式，css文件需自己创建并引入
   images_upload_handler(blobInfo: any) {
     return new Promise((resolve, reject) => {
-      useUpload(blobInfo.blob()).then(({ success }) => {
-        if (success.length > 0) {
-          resolve(success[0]?.filePath);
-        } else {
-          reject(new Error('文件上传失败'));
-        }
-      });
+      useUpload('/api/admin/upload/upload-file', blobInfo.blob()).then(
+        ({ success }) => {
+          if (success.length > 0) {
+            resolve(success[0]?.filePath);
+          } else {
+            reject(new Error('文件上传失败'));
+          }
+        },
+      );
     });
   },
 });

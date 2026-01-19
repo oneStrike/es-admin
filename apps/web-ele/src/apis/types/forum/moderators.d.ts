@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ModeratorsListRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type ModeratorsListRequest = {
   /** 任意合法数值 */
@@ -25,6 +25,9 @@ export type ModeratorsListRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number;
 
+  /* 用户id */
+  profileId?: number;
+
   /* 板块ID */
   sectionId?: null | number;
 
@@ -37,7 +40,7 @@ export type ModeratorsListResponse = {
   [property: string]: any;
 
   /* 列表数据 */
-  list?: ModeratorDto[];
+  list?: ForumModeratorDto[];
 
   /* 当前页码 */
   pageIndex?: number;
@@ -52,96 +55,45 @@ export type ModeratorsListResponse = {
 /**
  *  类型定义 [ModeratorsAddRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type ModeratorsAddRequest = CreateModeratorDto;
+export type ModeratorsAddRequest = CreateForumModeratorDto;
 
-export type ModeratorsAddResponse = ModeratorDto;
+export type ModeratorsAddResponse = ForumModeratorDto;
 
 /**
  *  类型定义 [ModeratorsUpdateRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type ModeratorsUpdateRequest = UpdateModeratorDto;
+export type ModeratorsUpdateRequest = UpdateForumModeratorDto;
 
-export type ModeratorsUpdateResponse = ModeratorDto;
+export type ModeratorsUpdateResponse = ForumModeratorDto;
 
 /**
  *  类型定义 [ModeratorsRemoveRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type ModeratorsRemoveRequest = IdDto;
 
-export type ModeratorsRemoveResponse = ModeratorDto;
+export type ModeratorsRemoveResponse = ForumModeratorDto;
 
 /**
  *  类型定义 [ModeratorsSectionAssignRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type ModeratorsSectionAssignRequest = AssignModeratorSectionDto;
+export type ModeratorsSectionAssignRequest = AssignForumModeratorSectionDto;
 
-export type ModeratorsSectionAssignResponse = ModeratorDto;
+export type ModeratorsSectionAssignResponse = ForumModeratorDto;
 
 /**
- *  类型定义 [ModeratorsActionLogPageRequest]
- *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-15 16:18:29
- */
-export type ModeratorsActionLogPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 操作类型（1=置顶主题, 2=取消置顶, 3=加精主题, 4=取消加精, 5=锁定主题, 6=解锁主题, 7=删除主题, 8=移动主题, 9=审核主题, 10=删除回复） */
-  actionType?: null | number;
-
-  /* 结束时间 */
-  endDate?: null | string;
-
-  /* 版主ID */
-  moderatorId?: number;
-
-  /* 排序字段，json格式 */
-  orderBy?: null | string;
-
-  /* 当前页码 */
-  pageIndex?: null | number;
-
-  /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
-
-  /* 开始时间 */
-  startDate?: null | string;
-
-  /* 目标类型（1=主题, 2=回复） */
-  targetType?: null | number;
-};
-
-export type ModeratorsActionLogPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 列表数据 */
-  list?: ModeratorDto[];
-
-  /* 当前页码 */
-  pageIndex?: number;
-
-  /* 每页条数 */
-  pageSize?: number;
-
-  /* 总条数 */
-  total?: number;
-};
-
-/**
- *  类型定义 [ModeratorDto]
+ *  类型定义 [ForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type ModeratorDto = {
+export type ForumModeratorDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 头像 */
@@ -174,11 +126,11 @@ export type ModeratorDto = {
 };
 
 /**
- *  类型定义 [CreateModeratorDto]
+ *  类型定义 [CreateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type CreateModeratorDto = {
+export type CreateForumModeratorDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 是否启用 */
@@ -197,11 +149,11 @@ export type CreateModeratorDto = {
 };
 
 /**
- *  类型定义 [UpdateModeratorDto]
+ *  类型定义 [UpdateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type UpdateModeratorDto = {
+export type UpdateForumModeratorDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 主键id */
@@ -224,7 +176,7 @@ export type UpdateModeratorDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -235,11 +187,11 @@ export type IdDto = {
 };
 
 /**
- *  类型定义 [AssignModeratorSectionDto]
+ *  类型定义 [AssignForumModeratorSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type AssignModeratorSectionDto = {
+export type AssignForumModeratorSectionDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 版主ID */

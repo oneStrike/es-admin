@@ -2,7 +2,7 @@
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
-  CreateSensitiveWordDto,
+  BaseForumSensitiveWordDto,
   SensitiveWordCreateRequest,
   SensitiveWordUpdateRequest,
 } from '#/apis/types';
@@ -23,7 +23,9 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { formSchema, pageColumns, searchFormSchema } from './modules/shared';
 
-const gridOptions: VxeGridProps<CreateSensitiveWordDto> = {
+const router = useRouter();
+
+const gridOptions: VxeGridProps<BaseForumSensitiveWordDto> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
@@ -48,7 +50,7 @@ const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-async function openFormModal(row?: CreateSensitiveWordDto) {
+async function openFormModal(row?: BaseForumSensitiveWordDto) {
   formApi.setData({ title: '敏感词', record: row }).open();
 }
 
@@ -63,13 +65,13 @@ async function handleSubmit(
   gridApi.reload();
 }
 
-async function deleteSensitiveWord(record: CreateSensitiveWordDto) {
+async function deleteSensitiveWord(record: BaseForumSensitiveWordDto) {
   await sensitiveWordDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
-async function toggleEnableStatus(record: CreateSensitiveWordDto) {
+async function toggleEnableStatus(record: BaseForumSensitiveWordDto) {
   record.loading = true;
   await sensitiveWordUpdateStatusApi({
     id: record.id,
@@ -86,6 +88,12 @@ async function toggleEnableStatus(record: CreateSensitiveWordDto) {
       <template #toolbar-actions>
         <el-button class="ml-2" type="primary" @click="openFormModal()">
           添加敏感词
+        </el-button>
+        <el-button
+          class="ml-2"
+          @click="router.push({ name: 'ForumSensitiveWordStatistics' })"
+        >
+          统计信息
         </el-button>
       </template>
 

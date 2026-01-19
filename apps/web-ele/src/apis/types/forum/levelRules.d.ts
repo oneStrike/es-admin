@@ -1,7 +1,7 @@
 /**
  *  类型定义 [LevelRulesPageRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type LevelRulesPageRequest = {
   /** 任意合法数值 */
@@ -34,7 +34,7 @@ export type LevelRulesPageResponse = {
   [property: string]: any;
 
   /* 列表数据 */
-  list?: BaseLevelRuleDto[];
+  list?: BaseForumLevelRuleDto[];
 
   /* 当前页码 */
   pageIndex?: number;
@@ -49,7 +49,7 @@ export type LevelRulesPageResponse = {
 /**
  *  类型定义 [LevelRulesDetailRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type LevelRulesDetailRequest = {
   /** 任意合法数值 */
@@ -59,39 +59,39 @@ export type LevelRulesDetailRequest = {
   id: number;
 };
 
-export type LevelRulesDetailResponse = BaseLevelRuleDto;
+export type LevelRulesDetailResponse = BaseForumLevelRuleDto;
 
 /**
  *  类型定义 [LevelRulesCreateRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type LevelRulesCreateRequest = CreateLevelRuleDto;
+export type LevelRulesCreateRequest = CreateForumLevelRuleDto;
 
-export type LevelRulesCreateResponse = BaseLevelRuleDto;
+export type LevelRulesCreateResponse = BaseForumLevelRuleDto;
 
 /**
  *  类型定义 [LevelRulesUpdateRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type LevelRulesUpdateRequest = UpdateLevelRuleDto;
+export type LevelRulesUpdateRequest = UpdateForumLevelRuleDto;
 
-export type LevelRulesUpdateResponse = BaseLevelRuleDto;
+export type LevelRulesUpdateResponse = BaseForumLevelRuleDto;
 
 /**
  *  类型定义 [LevelRulesDeleteRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type LevelRulesDeleteRequest = IdDto;
 
-export type LevelRulesDeleteResponse = BaseLevelRuleDto;
+export type LevelRulesDeleteResponse = BaseForumLevelRuleDto;
 
 /**
  *  类型定义 [LevelRulesUserLevelInfoRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type LevelRulesUserLevelInfoRequest = {
   /** 任意合法数值 */
@@ -101,25 +101,25 @@ export type LevelRulesUserLevelInfoRequest = {
   id: number;
 };
 
-export type LevelRulesUserLevelInfoResponse = UserLevelInfoDto;
+export type LevelRulesUserLevelInfoResponse = UserForumLevelInfoDto;
 
 /**
  *  类型定义 [LevelRulesCheckPermissionRequest]
  *  @来源 论坛模块/等级规则管理
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type LevelRulesCheckPermissionRequest = CheckLevelPermissionDto;
+export type LevelRulesCheckPermissionRequest = CheckForumLevelPermissionDto;
 
-export type LevelRulesCheckPermissionResponse = LevelPermissionResultDto;
+export type LevelRulesCheckPermissionResponse = ForumLevelPermissionResultDto;
 
-export type LevelRulesStatisticsResponse = BaseLevelRuleDto;
+export type LevelRulesStatisticsResponse = BaseForumLevelRuleDto;
 
 /**
- *  类型定义 [BaseLevelRuleDto]
+ *  类型定义 [BaseForumLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type BaseLevelRuleDto = {
+export type BaseForumLevelRuleDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 等级徽章URL */
@@ -158,11 +158,11 @@ export type BaseLevelRuleDto = {
 };
 
 /**
- *  类型定义 [CreateLevelRuleDto]
+ *  类型定义 [CreateForumLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type CreateLevelRuleDto = {
+export type CreateForumLevelRuleDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 等级徽章URL */
@@ -195,11 +195,11 @@ export type CreateLevelRuleDto = {
 };
 
 /**
- *  类型定义 [UpdateLevelRuleDto]
+ *  类型定义 [UpdateForumLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type UpdateLevelRuleDto = {
+export type UpdateForumLevelRuleDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 等级徽章URL */
@@ -236,7 +236,7 @@ export type UpdateLevelRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -247,11 +247,11 @@ export type IdDto = {
 };
 
 /**
- *  类型定义 [UserLevelInfoDto]
+ *  类型定义 [UserForumLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type UserLevelInfoDto = {
+export type UserForumLevelInfoDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 当前经验值 */
@@ -271,18 +271,18 @@ export type UserLevelInfoDto = {
   /* 下一等级所需经验值 */
   nextLevelExperience?: number;
   /* 等级权限 */
-  permissions: LevelPermissionsDto;
+  permissions: ForumLevelPermissionsDto;
 
   /* 升级进度百分比 */
   progressPercentage?: number;
 };
 
 /**
- *  类型定义 [LevelPermissionsDto]
+ *  类型定义 [ForumLevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type LevelPermissionsDto = {
+export type ForumLevelPermissionsDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 每日收藏次数上限，0表示无限制 */
@@ -299,11 +299,11 @@ export type LevelPermissionsDto = {
 };
 
 /**
- *  类型定义 [CheckLevelPermissionDto]
+ *  类型定义 [CheckForumLevelPermissionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type CheckLevelPermissionDto = {
+export type CheckForumLevelPermissionDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 权限类型 */
@@ -319,11 +319,11 @@ export type CheckLevelPermissionDto = {
 };
 
 /**
- *  类型定义 [LevelPermissionResultDto]
+ *  类型定义 [ForumLevelPermissionResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
-export type LevelPermissionResultDto = {
+export type ForumLevelPermissionResultDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 当前等级名称 */

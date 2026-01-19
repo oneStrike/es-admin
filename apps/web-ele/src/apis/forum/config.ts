@@ -1,4 +1,6 @@
 import type {
+  ConfigDeleteRequest,
+  ConfigDeleteResponse,
   ConfigGetResponse,
   ConfigHistoryResponse,
   ConfigResetResponse,
@@ -55,6 +57,18 @@ export async function configRestoreApi(
 ): Promise<ConfigRestoreResponse> {
   return requestClient.post<ConfigRestoreResponse>(
     '/api/admin/forum/config/restore',
+    params,
+  );
+}
+
+/**
+ * 删除配置历史记录
+ */
+export async function configDeleteApi(
+  params: ConfigDeleteRequest,
+): Promise<ConfigDeleteResponse> {
+  return requestClient.post<ConfigDeleteResponse>(
+    '/api/admin/forum/config/delete',
     params,
   );
 }

@@ -3,7 +3,7 @@ export type ConfigGetResponse = BaseForumConfigDto;
 /**
  *  类型定义 [ConfigUpdateRequest]
  *  @来源 论坛模块/系统配置
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type ConfigUpdateRequest = UpdateForumConfigDto;
 
@@ -11,21 +11,30 @@ export type ConfigUpdateResponse = BaseForumConfigDto;
 
 export type ConfigResetResponse = BaseForumConfigDto;
 
-export type ConfigHistoryResponse = BaseForumConfigDto[];
+export type ConfigHistoryResponse = ForumConfigHistoryItemDto[];
 
 /**
  *  类型定义 [ConfigRestoreRequest]
  *  @来源 论坛模块/系统配置
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type ConfigRestoreRequest = IdDto;
 
 export type ConfigRestoreResponse = BaseForumConfigDto;
 
 /**
+ *  类型定义 [ConfigDeleteRequest]
+ *  @来源 论坛模块/系统配置
+ *  @更新时间 2026-01-17 23:29:28
+ */
+export type ConfigDeleteRequest = IdDto;
+
+export type ConfigDeleteResponse = BaseForumConfigDto;
+
+/**
  *  类型定义 [BaseForumConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type BaseForumConfigDto = {
   /** 任意合法数值 */
@@ -104,7 +113,7 @@ export type BaseForumConfigDto = {
 /**
  *  类型定义 [UpdateForumConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type UpdateForumConfigDto = {
   /** 任意合法数值 */
@@ -183,9 +192,42 @@ export type UpdateForumConfigDto = {
 };
 
 /**
+ *  类型定义 [ForumConfigHistoryItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-01-17 23:29:28
+ */
+export type ForumConfigHistoryItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 变更内容 */
+  changes: Record<string, any>;
+  /* 变更类型 */
+  changeType: Record<string, any>;
+  /* 配置ID */
+  configId: number;
+  /* 创建时间 */
+  createdAt: string;
+  /* 主键id */
+  id: number;
+  /* 操作人IP地址 */
+  ipAddress?: string;
+  /* 操作时间 */
+  operatedAt: string;
+  /* 操作人ID */
+  operatedById?: number;
+  /* 变更原因 */
+  reason?: string;
+  /* 更新时间 */
+  updatedAt: string;
+
+  /* 操作人User-Agent */
+  userAgent?: string;
+};
+
+/**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-15 16:18:29
+ *  @更新时间 2026-01-17 23:29:28
  */
 export type IdDto = {
   /** 任意合法数值 */

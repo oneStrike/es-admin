@@ -92,6 +92,16 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'ForumSensitiveWordStatistics',
+        path: '/sensitive-word-statistics',
+        component: () =>
+          import('#/views/forum/sensitive-word-statistics/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '敏感词统计',
+        },
+      },
+      {
         name: 'ForumStatistics',
         path: '/statistics',
         component: () => import('#/views/forum/statistics/index.vue'),

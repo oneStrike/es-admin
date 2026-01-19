@@ -1,4 +1,5 @@
 import type {
+  SensitiveWordCountResponse,
   SensitiveWordCreateRequest,
   SensitiveWordCreateResponse,
   SensitiveWordDeleteRequest,
@@ -7,6 +8,9 @@ import type {
   SensitiveWordDetectResponse,
   SensitiveWordPageRequest,
   SensitiveWordPageResponse,
+  SensitiveWordReplaceRequest,
+  SensitiveWordReplaceResponse,
+  SensitiveWordStatisticsRequest,
   SensitiveWordStatisticsResponse,
   SensitiveWordUpdateRequest,
   SensitiveWordUpdateResponse,
@@ -91,8 +95,32 @@ export async function sensitiveWordDetectApi(
 /**
  * 获取统计查询结果
  */
-export async function sensitiveWordStatisticsApi(): Promise<SensitiveWordStatisticsResponse> {
+export async function sensitiveWordStatisticsApi(
+  params?: SensitiveWordStatisticsRequest,
+): Promise<SensitiveWordStatisticsResponse> {
   return requestClient.get<SensitiveWordStatisticsResponse>(
     '/api/admin/forum/sensitive-word/statistics',
+    { params },
+  );
+}
+
+/**
+ * 替换文本中的敏感词
+ */
+export async function sensitiveWordReplaceApi(
+  params: SensitiveWordReplaceRequest,
+): Promise<SensitiveWordReplaceResponse> {
+  return requestClient.post<SensitiveWordReplaceResponse>(
+    '/api/admin/forum/sensitive-word/replace',
+    params,
+  );
+}
+
+/**
+ * 获取当前加载的敏感词数量
+ */
+export async function sensitiveWordCountApi(): Promise<SensitiveWordCountResponse> {
+  return requestClient.get<SensitiveWordCountResponse>(
+    '/api/admin/forum/sensitive-word/count',
   );
 }

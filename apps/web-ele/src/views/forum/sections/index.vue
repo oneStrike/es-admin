@@ -66,6 +66,7 @@ const gridOptions: VxeGridProps<CreateForumSectionDto> = {
     autoLoad: false,
     ajax: {
       query: async ({ page, sorts }, formValues) => {
+        formValues.groupId = currentSectionGroup.value?.id;
         return await sectionsPageApi(
           formatQuery({
             page,

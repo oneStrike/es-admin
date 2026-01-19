@@ -33,12 +33,6 @@ const [HistoryModal, HistoryModalApi] = useVbenModal({
   },
 });
 
-// 处理配置恢复成功
-function handleConfigRestored(config: BaseForumConfigDto) {
-  currentConfig.value = config;
-  formApi.setValues(config);
-}
-
 // 创建表单
 const [Form, formApi] = useVbenForm({
   schema: formSchema,
@@ -77,6 +71,7 @@ async function handleSaveConfig(values: ConfigUpdateRequest) {
     const result = await configUpdateApi(values);
     currentConfig.value = result;
     useMessage.success('配置保存成功');
+    loadConfig();
   } finally {
     loading.value = false;
   }
@@ -128,7 +123,7 @@ onMounted(async () => {
     </div>
 
     <!-- 历史配置弹窗 -->
-    <HistoryModal @config-restored="handleConfigRestored" />
+    <HistoryModal @config-restored="loadConfig" />
   </Page>
 </template>
 

@@ -1,4 +1,4 @@
-import type { UploadUploadFileResponse } from '#/apis/types/upload';
+import type { UploadUploadFileResponse } from '#/apis/types';
 
 import { requestClient } from '#/utils/request';
 
