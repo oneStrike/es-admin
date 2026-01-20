@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SensitiveWordPageRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type SensitiveWordPageRequest = {
   /** 任意合法数值 */
@@ -58,7 +58,7 @@ export type SensitiveWordPageResponse = {
 /**
  *  类型定义 [SensitiveWordCreateRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type SensitiveWordCreateRequest = CreateForumSensitiveWordDto;
 
@@ -67,7 +67,7 @@ export type SensitiveWordCreateResponse = BaseForumSensitiveWordDto;
 /**
  *  类型定义 [SensitiveWordUpdateRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type SensitiveWordUpdateRequest = UpdateForumSensitiveWordDto;
 
@@ -76,7 +76,7 @@ export type SensitiveWordUpdateResponse = BaseForumSensitiveWordDto;
 /**
  *  类型定义 [SensitiveWordDeleteRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type SensitiveWordDeleteRequest = IdDto;
 
@@ -85,7 +85,7 @@ export type SensitiveWordDeleteResponse = BaseForumSensitiveWordDto;
 /**
  *  类型定义 [SensitiveWordUpdateStatusRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type SensitiveWordUpdateStatusRequest = UpdateEnabledStatusDto;
 
@@ -94,7 +94,7 @@ export type SensitiveWordUpdateStatusResponse = BaseForumSensitiveWordDto;
 /**
  *  类型定义 [SensitiveWordDetectRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type SensitiveWordDetectRequest = ForumSensitiveWordDetectDto;
 
@@ -103,7 +103,7 @@ export type SensitiveWordDetectResponse = ForumMatchedWordDto[];
 /**
  *  类型定义 [SensitiveWordStatisticsRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type SensitiveWordStatisticsRequest = {
   /** 任意合法数值 */
@@ -119,7 +119,7 @@ export type SensitiveWordStatisticsResponse =
 /**
  *  类型定义 [SensitiveWordReplaceRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type SensitiveWordReplaceRequest = ForumSensitiveWordReplaceDto;
 
@@ -130,7 +130,7 @@ export type SensitiveWordCountResponse = ForumSensitiveWordCountResponseDto;
 /**
  *  类型定义 [BaseForumSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type BaseForumSensitiveWordDto = {
   /** 任意合法数值 */
@@ -161,7 +161,7 @@ export type BaseForumSensitiveWordDto = {
 /**
  *  类型定义 [CreateForumSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type CreateForumSensitiveWordDto = {
   /** 任意合法数值 */
@@ -186,7 +186,7 @@ export type CreateForumSensitiveWordDto = {
 /**
  *  类型定义 [UpdateForumSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type UpdateForumSensitiveWordDto = {
   /** 任意合法数值 */
@@ -213,7 +213,7 @@ export type UpdateForumSensitiveWordDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -226,7 +226,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -241,7 +241,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [ForumSensitiveWordDetectDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumSensitiveWordDetectDto = {
   /** 任意合法数值 */
@@ -256,7 +256,7 @@ export type ForumSensitiveWordDetectDto = {
 /**
  *  类型定义 [ForumMatchedWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumMatchedWordDto = {
   /** 任意合法数值 */
@@ -279,7 +279,7 @@ export type ForumMatchedWordDto = {
 /**
  *  类型定义 [ForumSensitiveWordStatisticsResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumSensitiveWordStatisticsResponseDto = {
   /** 任意合法数值 */
@@ -298,7 +298,7 @@ export type ForumSensitiveWordStatisticsResponseDto = {
 /**
  *  类型定义 [ForumForumSensitiveWordLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumForumSensitiveWordLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -317,7 +317,7 @@ export type ForumForumSensitiveWordLevelStatisticsDto = {
 /**
  *  类型定义 [ForumForumSensitiveWordTypeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumForumSensitiveWordTypeStatisticsDto = {
   /** 任意合法数值 */
@@ -336,7 +336,7 @@ export type ForumForumSensitiveWordTypeStatisticsDto = {
 /**
  *  类型定义 [ForumSensitiveWordTopHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumSensitiveWordTopHitStatisticsDto = {
   /** 任意合法数值 */
@@ -357,7 +357,7 @@ export type ForumSensitiveWordTopHitStatisticsDto = {
 /**
  *  类型定义 [ForumSensitiveWordRecentHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumSensitiveWordRecentHitStatisticsDto = {
   /** 任意合法数值 */
@@ -378,7 +378,7 @@ export type ForumSensitiveWordRecentHitStatisticsDto = {
 /**
  *  类型定义 [ForumSensitiveWordReplaceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumSensitiveWordReplaceDto = {
   /** 任意合法数值 */
@@ -395,7 +395,7 @@ export type ForumSensitiveWordReplaceDto = {
 /**
  *  类型定义 [ForumSensitiveWordReplaceResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumSensitiveWordReplaceResponseDto = {
   /** 任意合法数值 */
@@ -408,7 +408,7 @@ export type ForumSensitiveWordReplaceResponseDto = {
 /**
  *  类型定义 [ForumSensitiveWordCountResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-17 23:29:28
+ *  @更新时间 2026-01-20 22:44:02
  */
 export type ForumSensitiveWordCountResponseDto = {
   /** 任意合法数值 */

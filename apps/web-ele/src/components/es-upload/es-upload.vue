@@ -73,15 +73,31 @@ function formatFileList(files: EsUploadProps['modelValue']) {
       if (json) {
         formatFileList(json as any);
       } else {
-        const fileName = files.split('/').pop();
-        fileList.value.push({
-          uid: random(1000, 9999),
-          size: 0,
-          name: fileName ?? '',
-          url: files,
-          status: 'success',
-          response: { filePath: files },
-        } as UploadFile);
+        // 如果 returnDataType 是 'url'，检查是否是逗号分隔的多个 URL
+        if (fileListDataType === 'url' && files.includes(',')) {
+          const urls = files.split(',').filter((url) => url.trim());
+          urls.forEach((url) => {
+            const fileName = url.split('/').pop();
+            fileList.value.push({
+              uid: random(1000, 9999),
+              size: 0,
+              name: fileName ?? '',
+              url: url.trim(),
+              status: 'success',
+              response: { filePath: url.trim() },
+            } as UploadFile);
+          });
+        } else {
+          const fileName = files.split('/').pop();
+          fileList.value.push({
+            uid: random(1000, 9999),
+            size: 0,
+            name: fileName ?? '',
+            url: files,
+            status: 'success',
+            response: { filePath: files },
+          } as UploadFile);
+        }
       }
     } else if (files) {
       // 处理单个 UploadResponseDto 对象

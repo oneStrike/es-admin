@@ -1,3 +1,4 @@
+export * from './app-config/appConfig.d';
 export * from './audit/audit.d';
 export * from './auth/auth.d';
 export * from './client-page/clientPage.d';
