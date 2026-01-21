@@ -1,7 +1,7 @@
 /**
  *  类型定义 [MemberLevelListRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type MemberLevelListRequest = {
   /** 任意合法数值 */
@@ -19,7 +19,7 @@ export type MemberLevelListResponse = BaseMemberLevelDto[];
 /**
  *  类型定义 [MemberLevelDetailRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type MemberLevelDetailRequest = {
   /** 任意合法数值 */
@@ -34,7 +34,7 @@ export type MemberLevelDetailResponse = BaseMemberLevelDto;
 /**
  *  类型定义 [MemberLevelCreateRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type MemberLevelCreateRequest = CreateMemberLevelDto;
 
@@ -43,7 +43,7 @@ export type MemberLevelCreateResponse = IdDto;
 /**
  *  类型定义 [MemberLevelUpdateRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type MemberLevelUpdateRequest = UpdateMemberLevelDto;
 
@@ -52,7 +52,7 @@ export type MemberLevelUpdateResponse = IdDto;
 /**
  *  类型定义 [MemberLevelDeleteRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type MemberLevelDeleteRequest = IdDto;
 
@@ -61,7 +61,7 @@ export type MemberLevelDeleteResponse = IdDto;
 /**
  *  类型定义 [MemberLevelChangeStatusRequest]
  *  @来源 会员模块/会员等级
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type MemberLevelChangeStatusRequest = UpdateEnabledStatusDto;
 
@@ -70,7 +70,7 @@ export type MemberLevelChangeStatusResponse = IdDto;
 /**
  *  类型定义 [BaseMemberLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type BaseMemberLevelDto = {
   /** 任意合法数值 */
@@ -111,7 +111,7 @@ export type BaseMemberLevelDto = {
 /**
  *  类型定义 [CreateMemberLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type CreateMemberLevelDto = {
   /** 任意合法数值 */
@@ -146,7 +146,7 @@ export type CreateMemberLevelDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -159,7 +159,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateMemberLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type UpdateMemberLevelDto = {
   /** 任意合法数值 */
@@ -196,7 +196,7 @@ export type UpdateMemberLevelDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */

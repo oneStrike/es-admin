@@ -127,6 +127,10 @@ const TableSelect = defineAsyncComponent(
   () => import('#/components/es-table-select'),
 );
 
+const MultiColorPicker = defineAsyncComponent(
+  () => import('#/components/es-multi-color-picker'),
+);
+
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
   type: 'input' | 'select',
@@ -173,6 +177,7 @@ export type ComponentType =
   | 'IconPicker'
   | 'Input'
   | 'InputNumber'
+  | 'MultiColorPicker'
   | 'RadioGroup'
   | 'RichText'
   | 'Select'
@@ -332,6 +337,7 @@ async function initComponentAdapter() {
     TreeSelect: withDefaultPlaceholder(ElTreeSelect, 'select'),
     Upload: ElUpload,
     ColorPicker: withDefaultPlaceholder(ElColorPicker, 'select'),
+    MultiColorPicker: withDefaultPlaceholder(MultiColorPicker, 'select'),
     TableSelect: withDefaultPlaceholder(TableSelect, 'select'),
     RichText,
   };

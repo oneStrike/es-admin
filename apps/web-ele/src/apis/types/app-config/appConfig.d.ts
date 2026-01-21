@@ -3,7 +3,7 @@ export type AppConfigActiveResponse = BaseAppConfigDto;
 /**
  *  类型定义 [AppConfigUpdateRequest]
  *  @来源 客户端管理/应用配置
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type AppConfigUpdateRequest = UpdateAppConfigDto;
 
@@ -12,7 +12,7 @@ export type AppConfigUpdateResponse = BaseAppConfigDto;
 /**
  *  类型定义 [BaseAppConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type BaseAppConfigDto = {
   /** 任意合法数值 */
@@ -33,6 +33,12 @@ export type BaseAppConfigDto = {
   maintenanceMessage?: null | string;
   /* 引导页图片 URL */
   onboardingImage?: null | string;
+  /* 可选的主题色 */
+  optionalThemeColors?: null | string;
+  /* 第二主题色 */
+  secondaryColor?: null | string;
+  /* 主题色 */
+  themeColor: string;
   /* 更新时间 */
   updatedAt: string;
   /* 最后修改人ID */
@@ -45,7 +51,7 @@ export type BaseAppConfigDto = {
 /**
  *  类型定义 [UpdateAppConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-20 22:44:02
+ *  @更新时间 2026-01-21 10:29:31
  */
 export type UpdateAppConfigDto = {
   /** 任意合法数值 */
@@ -64,6 +70,12 @@ export type UpdateAppConfigDto = {
   maintenanceMessage?: null | string;
   /* 引导页图片 URL */
   onboardingImage?: null | string;
+  /* 可选的主题色 */
+  optionalThemeColors?: null | string;
+  /* 第二主题色 */
+  secondaryColor?: null | string;
+  /* 主题色 */
+  themeColor: string;
 
   /* 配置版本号 */
   version: string;

@@ -70,6 +70,34 @@ export const formSchema: EsFormSchema = [
       placeholder: '请上传引导页图片，最多5张',
     },
   },
+  // 主题色选择器
+  {
+    component: 'ColorPicker',
+    fieldName: 'themeColor',
+    label: '主题色',
+    componentProps: {
+      placeholder: '请选择主题色',
+    },
+    rules: 'selectRequired',
+  },
+  // 第二主题色选择器
+  {
+    component: 'ColorPicker',
+    fieldName: 'secondaryColor',
+    label: '第二主题色',
+    componentProps: {
+      placeholder: '请选择第二主题色',
+    },
+  },
+  // 可选主题色多选器
+  {
+    component: 'MultiColorPicker',
+    fieldName: 'optionalThemeColors',
+    label: '可选主题色',
+    componentProps: {
+      placeholder: '请选择可选主题色',
+    },
+  },
   // 维护模式设置分隔符
   {
     component: 'Divider',
