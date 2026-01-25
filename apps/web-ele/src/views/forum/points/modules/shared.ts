@@ -72,8 +72,9 @@ export const formSchema: EsFormSchema = [
   },
 ];
 
-export const pageColumns =
-  formSchemaTransform.toTableColumns<BasePointRuleDto>(formSchema, {
+export const pageColumns = formSchemaTransform.toTableColumns<BasePointRuleDto>(
+  formSchema,
+  {
     type: {
       minWidth: 120,
       cellRender: {
@@ -127,7 +128,8 @@ export const pageColumns =
     actions: {
       show: true,
     },
-  });
+  },
+);
 
 export const searchFormSchema = formSchemaTransform.toSearchSchema(formSchema, {
   type: {

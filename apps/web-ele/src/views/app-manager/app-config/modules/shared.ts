@@ -95,7 +95,7 @@ export const formSchema: EsFormSchema = [
     fieldName: 'optionalThemeColors',
     label: '可选主题色',
     componentProps: {
-      placeholder: '请选择可选主题色',
+      placeholder: '请选择可选主题色，可自定义颜色名称',
     },
   },
   // 维护模式设置分隔符

@@ -33,7 +33,7 @@ export type BaseAppConfigDto = {
   maintenanceMessage?: null | string;
   /* 引导页图片 URL */
   onboardingImage?: null | string;
-  /* 可选的主题色 */
+  /* 可选的主题色，JSON 格式：[{"name":"颜色名称","color":"#FFFFFF"}] */
   optionalThemeColors?: null | string;
   /* 第二主题色 */
   secondaryColor?: null | string;

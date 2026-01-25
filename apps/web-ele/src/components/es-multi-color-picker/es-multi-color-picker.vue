@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { EsMultiColorPickerProps } from './types';
+import type { ColorItem, EsMultiColorPickerProps } from './types';
 
 import { computed, ref, watch } from 'vue';
 
@@ -19,14 +19,17 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
-const colors = ref<string[]>([]);
+const colorItems = ref<ColorItem[]>([]);
 
-const displayColors = computed(() => {
-  return colors.value.map((color) => color || '#000000');
+const displayColorItems = computed(() => {
+  return colorItems.value.map((item) => ({
+    name: item.name || '未命名',
+    color: item.color || '#000000',
+  }));
 });
 
 const isAddDisabled = computed(() => {
-  return props.disabled || displayColors.value.length >= props.maxCount;
+  return props.disabled || displayColorItems.value.length >= props.maxCount;
 });
 
 watch(
@@ -39,40 +42,55 @@ watch(
 
 function parseValue(value: string | undefined) {
   if (!value) {
-    colors.value = [];
+    colorItems.value = [];
     return;
   }
-  colors.value = value.split(',').filter(Boolean);
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      colorItems.value = parsed;
+    }
+  } catch {
+    colorItems.value = [];
+  }
+}
+
+function handleNameChange(index: number, name: string) {
+  colorItems.value[index]!.name = name;
+  emitValue();
 }
 
 function handleColorChange(index: number, color: null | string) {
-  colors.value[index] = color || '';
+  colorItems.value[index]!.color = color || '';
   emitValue();
 }
 
 function addColor() {
-  colors.value.push('#000000');
+  colorItems.value.push({
+    name: '',
+    color: '#000000',
+  });
   emitValue();
 }
 
 function removeColor(index: number) {
-  colors.value.splice(index, 1);
+  colorItems.value.splice(index, 1);
   emitValue();
 }
 
 function emitValue() {
-  const value = colors.value.filter(Boolean).join(',');
+  const value = JSON.stringify(colorItems.value.filter((item) => item.color));
   emit('update:modelValue', value);
 }
 
 defineExpose({
-  getColors: () => colors.value,
+  getColors: () => colorItems.value,
 });
 </script>
 
 <template>
   <div class="es-multi-color-picker">
-    <div v-if="displayColors.length === 0" class="empty-state">
+    <div v-if="displayColorItems.length === 0" class="empty-state">
       <el-button :disabled="isAddDisabled" type="primary" @click="addColor">
         <PlusIcon class="mr-1" />
         添加颜色
@@ -80,26 +98,34 @@ defineExpose({
     </div>
     <div v-else class="color-tag-list">
       <el-tag
-        v-for="(color, index) in displayColors"
+        v-for="(item, index) in displayColorItems"
         :key="index"
         closable
         :disable-transitions="false"
         @close="removeColor(index)"
       >
         <div class="color-tag-content">
+          <el-input
+            :model-value="item.name"
+            :disabled="props.disabled"
+            size="small"
+            placeholder="颜色名称"
+            class="name-input"
+            @update:model-value="(val: string) => handleNameChange(index, val)"
+          />
           <el-color-picker
-            :model-value="color"
+            :model-value="item.color"
             :disabled="props.disabled"
             size="small"
             @update:model-value="
               (val: string | null) => handleColorChange(index, val)
             "
           />
-          <span class="color-value">{{ color }}</span>
+          <span class="color-value">{{ item.color }}</span>
         </div>
       </el-tag>
       <el-button
-        v-if="displayColors.length < maxCount"
+        v-if="displayColorItems.length < maxCount"
         :disabled="isAddDisabled"
         type="primary"
         size="small"
@@ -136,6 +162,10 @@ defineExpose({
       display: flex;
       align-items: center;
       gap: 8px;
+
+      .name-input {
+        width: 100px;
+      }
 
       .color-value {
         font-family: 'Courier New', monospace;

@@ -1,9 +1,23 @@
 /**
+ * 颜色项
+ */
+export interface ColorItem {
+  /**
+   * 颜色名称
+   */
+  name: string;
+  /**
+   * 颜色值
+   */
+  color: string;
+}
+
+/**
  * 多颜色选择组件属性
  */
 export interface EsMultiColorPickerProps {
   /**
-   * 绑定值，多个颜色以逗号分隔的字符串
+   * 绑定值，JSON 格式的颜色项数组字符串
    */
   modelValue?: string;
   /**
@@ -35,8 +49,8 @@ export interface EsMultiColorPickerEmits {
  */
 export interface EsMultiColorPickerExpose {
   /**
-   * 获取当前所有选中的颜色
-   * @returns 颜色数组
+   * 获取当前所有选中的颜色项
+   * @returns 颜色项数组
    */
-  getColors: () => string[];
+  getColors: () => ColorItem[];
 }
