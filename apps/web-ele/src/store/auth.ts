@@ -1,6 +1,6 @@
 import type { UserInfo } from '@vben/types';
 
-import type { AuthLoginRequest } from '#/apis/types/auth';
+import type { AuthLoginRequest } from '#/apis/types';
 
 import { LOGIN_PATH } from '@vben/constants';
 import { preferences } from '@vben/preferences';
