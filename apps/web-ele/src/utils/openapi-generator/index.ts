@@ -195,7 +195,7 @@ if (process.argv[1] && process.argv[1].endsWith('index.ts')) {
   (async () => {
     try {
       await generateAPI();
-      console.log('🎉 所有任务已完成');
+      console.log('🎉 正在运行eslint和prettier！请稍等...');
       // 任务完成后，让Node.js事件循环自然结束
     } catch (error) {
       console.error('❌ 任务执行失败:', error);

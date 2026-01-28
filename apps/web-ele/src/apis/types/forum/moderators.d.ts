@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ModeratorsListRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type ModeratorsListRequest = {
   /** 任意合法数值 */
@@ -24,9 +24,6 @@ export type ModeratorsListRequest = {
 
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number;
-
-  /* 用户id */
-  profileId?: number;
 
   /* 板块ID */
   sectionId?: null | number;
@@ -55,7 +52,7 @@ export type ModeratorsListResponse = {
 /**
  *  类型定义 [ModeratorsAddRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type ModeratorsAddRequest = CreateForumModeratorDto;
 
@@ -64,7 +61,7 @@ export type ModeratorsAddResponse = ForumModeratorDto;
 /**
  *  类型定义 [ModeratorsUpdateRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type ModeratorsUpdateRequest = UpdateForumModeratorDto;
 
@@ -73,7 +70,7 @@ export type ModeratorsUpdateResponse = ForumModeratorDto;
 /**
  *  类型定义 [ModeratorsRemoveRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type ModeratorsRemoveRequest = IdDto;
 
@@ -82,7 +79,7 @@ export type ModeratorsRemoveResponse = ForumModeratorDto;
 /**
  *  类型定义 [ModeratorsSectionAssignRequest]
  *  @来源 论坛模块/版主管理
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type ModeratorsSectionAssignRequest = AssignForumModeratorSectionDto;
 
@@ -91,7 +88,7 @@ export type ModeratorsSectionAssignResponse = ForumModeratorDto;
 /**
  *  类型定义 [ForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type ForumModeratorDto = {
   /** 任意合法数值 */
@@ -128,7 +125,7 @@ export type ForumModeratorDto = {
 /**
  *  类型定义 [CreateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type CreateForumModeratorDto = {
   /** 任意合法数值 */
@@ -151,7 +148,7 @@ export type CreateForumModeratorDto = {
 /**
  *  类型定义 [UpdateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type UpdateForumModeratorDto = {
   /** 任意合法数值 */
@@ -176,7 +173,7 @@ export type UpdateForumModeratorDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -189,7 +186,7 @@ export type IdDto = {
 /**
  *  类型定义 [AssignForumModeratorSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-27 15:37:13
+ *  @更新时间 2026-01-28 16:45:52
  */
 export type AssignForumModeratorSectionDto = {
   /** 任意合法数值 */

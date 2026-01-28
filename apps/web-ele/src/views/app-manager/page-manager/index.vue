@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { BaseClientPageDto, UpdateClientPageDto } from '#/apis/types';
+import type { BaseAppPageDto, UpdateAppPageDto } from '#/apis/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  clientPageBatchDeleteApi,
-  clientPageCreateApi,
-  clientPageDetailByIdApi,
-  clientPagePageApi,
-  clientPageUpdateApi,
+  appPageBatchDeleteApi,
+  appPageCreateApi,
+  appPageDetailByIdApi,
+  appPagePageApi,
+  appPageUpdateApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -20,7 +20,7 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 import { getDetailCards } from './detail';
 import { accessLevelObj, formSchema, pageColumns, pageFilter } from './shared';
 
-const gridOptions: VxeGridProps<BaseClientPageDto> = {
+const gridOptions: VxeGridProps<BaseAppPageDto> = {
   columns: pageColumns,
   height: 'auto',
   proxyConfig: {
@@ -29,7 +29,7 @@ const gridOptions: VxeGridProps<BaseClientPageDto> = {
         if (formValues.enablePlatform) {
           formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
         }
-        return await clientPagePageApi({
+        return await appPagePageApi({
           pageIndex: --page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
@@ -49,25 +49,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-async function openFormModal(row?: BaseClientPageDto) {
+async function openFormModal(row?: BaseAppPageDto) {
   let record;
   if (row) {
-    record = await clientPageDetailByIdApi({ id: row.id });
+    record = await appPageDetailByIdApi({ id: row.id });
   }
   formApi.setData({ title: '页面配置', record }).open();
 }
 
-async function handleSubmit(values: BaseClientPageDto | UpdateClientPageDto) {
+async function handleSubmit(values: BaseAppPageDto | UpdateAppPageDto) {
   await (values?.id
-    ? clientPageUpdateApi(values as UpdateClientPageDto)
-    : clientPageCreateApi(values as BaseClientPageDto));
+    ? appPageUpdateApi(values as UpdateAppPageDto)
+    : appPageCreateApi(values as BaseAppPageDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function deletePage(record: BaseClientPageDto) {
-  await clientPageBatchDeleteApi({ ids: [record.id] });
+async function deletePage(record: BaseAppPageDto) {
+  await appPageBatchDeleteApi({ ids: [record.id] });
   useMessage.success('操作成功');
   gridApi.reload();
 }
@@ -76,9 +76,9 @@ const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
 });
 
-async function toggleEnableStatus(record: BaseClientPageDto) {
+async function toggleEnableStatus(record: BaseAppPageDto) {
   record.loading = true;
-  await clientPageUpdateApi({
+  await appPageUpdateApi({
     id: record.id,
     isEnabled: !record.isEnabled,
   });
@@ -143,7 +143,7 @@ async function toggleEnableStatus(record: BaseClientPageDto) {
 
     <DetailModal
       title="页面详情"
-      :api="clientPageDetailByIdApi"
+      :api="appPageDetailByIdApi"
       :cards="getDetailCards"
       class="!w-[800px]"
     />
