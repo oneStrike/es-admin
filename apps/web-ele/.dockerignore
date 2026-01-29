@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+*.log
+.git
+.husky
+.vscode
+.idea
+.env*
+!.env.production.example
+*.tsbuildinfo
+logs
