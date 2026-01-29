@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# 检查是否以 root 权限运行
+if [ "$EUID" -ne 0 ]; then
+  echo "请使用 root 权限运行此脚本 (例如: sudo ./update_hosts.sh)"
+  exit 1
+fi
+
 # 配置部分
 HOSTS_URL="https://gitee.com/if-the-wind/github-hosts/raw/main/hosts"
 HOSTS_FILE="/etc/hosts"
