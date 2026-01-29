@@ -39,20 +39,6 @@ export const formSchema: EsFormSchema = [
     label: '排序',
   },
   {
-    component: 'InputNumber',
-    componentProps: {
-      type: 'number',
-      min: 0,
-      max: 999_999_999,
-      align: 'left',
-      class: '!w-full',
-      controlsPosition: 'right',
-      placeholder: '请输入辅助热度',
-    },
-    fieldName: 'popularityWeight',
-    label: '辅助热度',
-  },
-  {
     component: 'Input',
     componentProps: {
       placeholder: '请输入标签描述',
@@ -79,12 +65,6 @@ export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
 
     order: {
       sortable: true,
-    },
-    popularityWeight: {
-      sortable: true,
-      formatter: ({ row }: { row: BaseTagDto }) => {
-        return row.popularityWeight || '0';
-      },
     },
     popularity: {
       title: '热度',

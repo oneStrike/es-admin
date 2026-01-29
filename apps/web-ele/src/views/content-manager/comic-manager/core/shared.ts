@@ -215,16 +215,6 @@ export const formSchema: EsFormSchema = [
   {
     component: 'InputNumber',
     componentProps: {
-      placeholder: '请输入虚拟热度',
-      min: 0,
-      max: 100,
-    },
-    fieldName: 'popularityWeight',
-    label: '虚拟热度',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
       placeholder: '请输入推荐权重',
       min: 0,
       max: 100,

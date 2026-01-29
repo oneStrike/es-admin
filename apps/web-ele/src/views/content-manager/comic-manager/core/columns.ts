@@ -140,12 +140,6 @@ export const comicColumns = ({
       title: '是否推荐',
       slots: { default: 'isRecommended' },
     },
-    popularityWeight: {
-      sortable: true,
-      formatter: ({ cellValue }) => {
-        return cellValue || '0';
-      },
-    },
     createdAt: {
       show: true,
     },

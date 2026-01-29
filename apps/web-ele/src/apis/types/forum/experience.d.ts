@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ExperienceRulesPageRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceRulesPageRequest = {
   /** 任意合法数值 */
@@ -49,7 +49,7 @@ export type ExperienceRulesPageResponse = {
 /**
  *  类型定义 [ExperienceRulesDetailRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceRulesDetailRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type ExperienceRulesDetailResponse = BaseForumExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesCreateRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceRulesCreateRequest = CreateForumExperienceRuleDto;
 
@@ -73,7 +73,7 @@ export type ExperienceRulesCreateResponse = BaseForumExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesUpdateRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceRulesUpdateRequest = UpdateForumExperienceRuleDto;
 
@@ -82,7 +82,7 @@ export type ExperienceRulesUpdateResponse = BaseForumExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesDeleteRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceRulesDeleteRequest = IdDto;
 
@@ -91,7 +91,7 @@ export type ExperienceRulesDeleteResponse = BaseForumExperienceRuleDto;
 /**
  *  类型定义 [ExperienceAddRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceAddRequest = AddForumExperienceDto;
 
@@ -100,7 +100,7 @@ export type ExperienceAddResponse = BaseForumExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRecordsPageRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceRecordsPageRequest = {
   /** 任意合法数值 */
@@ -118,14 +118,14 @@ export type ExperienceRecordsPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number;
 
-  /* 用户论坛资料ID */
-  profileId: number;
-
   /* 关联的规则ID */
   ruleId?: null | number;
 
   /* 开始时间 */
   startDate?: null | string;
+
+  /* 用户ID */
+  userId: number;
 };
 
 export type ExperienceRecordsPageResponse = {
@@ -148,7 +148,7 @@ export type ExperienceRecordsPageResponse = {
 /**
  *  类型定义 [ExperienceRecordsDetailRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceRecordsDetailRequest = {
   /** 任意合法数值 */
@@ -163,13 +163,13 @@ export type ExperienceRecordsDetailResponse = BaseForumExperienceRuleDto;
 /**
  *  类型定义 [ExperienceUserStatsRequest]
  *  @来源 论坛模块/经验管理
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ExperienceUserStatsRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  profileId: number;
+  userId: number;
 };
 
 export type ExperienceUserStatsResponse = BaseForumExperienceRuleDto;
@@ -177,7 +177,7 @@ export type ExperienceUserStatsResponse = BaseForumExperienceRuleDto;
 /**
  *  类型定义 [BaseForumExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type BaseForumExperienceRuleDto = {
   /** 任意合法数值 */
@@ -204,7 +204,7 @@ export type BaseForumExperienceRuleDto = {
 /**
  *  类型定义 [CreateForumExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type CreateForumExperienceRuleDto = {
   /** 任意合法数值 */
@@ -225,7 +225,7 @@ export type CreateForumExperienceRuleDto = {
 /**
  *  类型定义 [UpdateForumExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type UpdateForumExperienceRuleDto = {
   /** 任意合法数值 */
@@ -248,7 +248,7 @@ export type UpdateForumExperienceRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -261,16 +261,16 @@ export type IdDto = {
 /**
  *  类型定义 [AddForumExperienceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-21 10:29:31
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type AddForumExperienceDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 用户ID */
-  profileId: number;
   /* 备注 */
   remark?: null | string;
-
   /* 规则类型 */
   ruleType: number;
+
+  /* 用户ID */
+  userId: number;
 };

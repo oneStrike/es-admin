@@ -1,6 +1,6 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseComicDto } from '#/apis/types/comic';
+import type { BaseComicDto } from '#/apis/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formatUTC } from '#/utils';
@@ -211,11 +211,6 @@ export function getDetailCards(
         {
           label: '推荐权重',
           value: detail.recommendWeight || 0,
-          type: 'text',
-        },
-        {
-          label: '热度权重',
-          value: detail.popularityWeight || 0,
           type: 'text',
         },
         {

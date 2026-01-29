@@ -10,7 +10,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  clientPagePageApi,
+  appPagePageApi,
   noticeCreateApi,
   noticeDeleteApi,
   noticeDetailApi,
@@ -36,7 +36,7 @@ import {
 
 const clientPageObj = ref<Record<string, string>>({});
 
-clientPagePageApi({
+appPagePageApi({
   pageSize: 500,
 }).then((res) => {
   const pageOptions =
