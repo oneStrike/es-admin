@@ -11,6 +11,7 @@ RUN npm i -g corepack
 WORKDIR /app
 
 # copy package.json and pnpm-lock.yaml to workspace
+
 COPY . /app
 
 # 安装依赖
