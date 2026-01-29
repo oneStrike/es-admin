@@ -81,6 +81,34 @@ fi
 log "发现新版本，正在从远程拉取最新代码..."
 if git pull origin "${CURRENT_BRANCH}"; then
     log "代码更新成功。"
+
+    # Check for dependency changes (package.json or pnpm-lock.yaml)
+    NEW_HASH=$(git rev-parse HEAD)
+    CHANGED_FILES=$(git diff --name-only "${LOCAL_HASH}" "${NEW_HASH}")
+
+    # Log changed files (optional, helpful for debugging)
+    # echo "变更的文件列表:"
+    # echo "${CHANGED_FILES}"
+
+    if echo "${CHANGED_FILES}" | grep -qE "package.json|pnpm-lock.yaml"; then
+        log "检测到依赖配置文件 (package.json 或 pnpm-lock.yaml) 发生变更。"
+        log "正在执行 pnpm install..."
+
+        if command -v pnpm &> /dev/null; then
+             if pnpm install; then
+                log "依赖安装成功。"
+             else
+                error "依赖安装失败。"
+                # We don't exit here to allow docker build to try, or you can exit 1 if strict
+                # exit 1
+             fi
+        else
+             warn "未找到 pnpm 命令，无法在本地安装依赖（Docker 构建中通常会自动处理）。"
+        fi
+    else
+        log "依赖配置文件未变更，跳过本地 pnpm install。"
+    fi
+
 else
     error "拉取最新代码失败。请检查网络或 Git 配置。"
     if [ "$STASH_NEEDED" = true ]; then
