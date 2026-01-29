@@ -10,14 +10,13 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  comicChapterBatchDeleteApi,
   comicChapterCreateApi,
+  comicChapterDeleteApi,
   comicChapterDetailApi,
   comicChapterPageApi,
-  comicChapterSwapNumbersApi,
+  comicChapterSwapSortOrderApi,
   comicChapterUpdateApi,
-  comicChapterUpdateStatusApi,
-  memberLevelListApi,
+  levelRulesPageApi,
 } from '#/apis';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -34,9 +33,9 @@ type ShareData = { comicId: number; comicName: string };
 
 const shareData = ref<ShareData>();
 
-memberLevelListApi({ isEnabled: true }).then((res) => {
+levelRulesPageApi({ isEnabled: true }).then((res) => {
   const options =
-    res?.map((item) => ({
+    res?.list?.map((item) => ({
       label: item.name,
       value: item.id,
     })) || [];
@@ -79,7 +78,7 @@ const gridOptions: VxeGridProps<ComicChapterPageResponseDto> = {
   },
   rowDragConfig: {
     async dragEndMethod(params) {
-      await comicChapterSwapNumbersApi({
+      await comicChapterSwapSortOrderApi({
         dragId: params.dragRow.id,
         targetId: params.newRow.id,
       });
@@ -158,7 +157,7 @@ async function handleSubmit(
 
 // 删除章节
 async function deleteChapter(record: ComicChapterPageResponseDto) {
-  await comicChapterBatchDeleteApi({ ids: [record.id] });
+  await comicChapterDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   await gridApi.reload();
 }
@@ -166,8 +165,9 @@ async function deleteChapter(record: ComicChapterPageResponseDto) {
 // 切换章节状态
 async function toggleStatus(row: ComicChapterPageResponseDto) {
   row.loading = true;
-  await comicChapterUpdateStatusApi({
+  await comicChapterUpdateApi({
     ids: [row.id],
+    ...row,
     isPublished: !row.isPublished,
   });
   row.loading = false;

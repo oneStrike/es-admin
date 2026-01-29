@@ -23,19 +23,22 @@ https://dockerhub.timeweb.cloud
 https://noohub.ru
 ```
 
-*(注意：国内镜像源经常变动，如果上述失效，请搜索最新的可用源)*
+_(注意：国内镜像源经常变动，如果上述失效，请搜索最新的可用源)_
 
 ## 方案二：手动修改 Docker 配置文件 (Linux)
 
 如果你没有 1panel 或想手动配置：
 
 1.  **编辑配置文件**：
+
     ```bash
     sudo nano /etc/docker/daemon.json
     ```
-    *(如果文件不存在则新建)*
+
+    _(如果文件不存在则新建)_
 
 2.  **写入以下内容**：
+
     ```json
     {
       "registry-mirrors": [
@@ -48,13 +51,13 @@ https://noohub.ru
     ```
 
 3.  **重载并重启 Docker**：
+
     ```bash
     sudo systemctl daemon-reload
     sudo systemctl restart docker
     ```
 
-4.  **验证配置**：
-    执行 `docker info`，在输出末尾查看 `Registry Mirrors` 字段是否包含你配置的地址。
+4.  **验证配置**：执行 `docker info`，在输出末尾查看 `Registry Mirrors` 字段是否包含你配置的地址。
 
 ## 方案三：针对 Gitea Actions (如果是在 Runner 中报错)
 
