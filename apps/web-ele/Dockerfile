@@ -6,7 +6,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 ENV NODE_OPTIONS=--max-old-space-size=2048
 ENV TZ=Asia/Shanghai
 
-RUN npm i -g corepack && corepack enable && corepack prepare pnpm@10.12.4 --activate
+RUN npm i -g corepack
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ WORKDIR /app
 COPY . /app
 
 # 安装依赖（启用 pnpm 缓存）
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --no-frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # 构建（排除 docs 以加速构建）
 RUN pnpm run build --filter=\!./docs
