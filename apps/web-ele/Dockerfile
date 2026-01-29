@@ -1,4 +1,4 @@
-FROM node:22-slim AS builder
+FROM node:24-slim AS builder
 
 # 配置 pnpm 与 Node 构建环境
 ENV PNPM_HOME="/pnpm"
