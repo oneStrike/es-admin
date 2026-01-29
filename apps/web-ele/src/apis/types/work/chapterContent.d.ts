@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ChapterContentListRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ChapterContentListRequest = {
   /** 任意合法数值 */
@@ -11,27 +11,12 @@ export type ChapterContentListRequest = {
   id: number;
 };
 
-export type ChapterContentListResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 列表数据 */
-  list?: string[];
-
-  /* 当前页码 */
-  pageIndex?: number;
-
-  /* 每页条数 */
-  pageSize?: number;
-
-  /* 总条数 */
-  total?: number;
-};
+export type ChapterContentListResponse = string[];
 
 /**
  *  类型定义 [ChapterContentAddRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ChapterContentAddRequest = {
   /** 任意合法数值 */
@@ -44,21 +29,12 @@ export type ChapterContentAddRequest = {
   comicId: number;
 };
 
-export type ChapterContentAddResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 响应状态码 */
-  code?: number;
-
-  /* 响应消息 */
-  message?: string;
-};
+export type ChapterContentAddResponse = FileUploadResponseDto;
 
 /**
  *  类型定义 [ChapterContentUpdateRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ChapterContentUpdateRequest = UpdateChapterContentDto;
 
@@ -67,25 +43,25 @@ export type ChapterContentUpdateResponse = IdDto;
 /**
  *  类型定义 [ChapterContentDeleteRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ChapterContentDeleteRequest = DeleteChapterContentDto;
 
-export type ChapterContentDeleteResponse = string;
+export type ChapterContentDeleteResponse = string[];
 
 /**
  *  类型定义 [ChapterContentMoveRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ChapterContentMoveRequest = MoveChapterContentDto;
 
-export type ChapterContentMoveResponse = string;
+export type ChapterContentMoveResponse = string[];
 
 /**
  *  类型定义 [ChapterContentBatchUpdateRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ChapterContentBatchUpdateRequest = BatchUpdateChapterContentsDto;
 
@@ -94,16 +70,43 @@ export type ChapterContentBatchUpdateResponse = IdDto;
 /**
  *  类型定义 [ChapterContentClearRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type ChapterContentClearRequest = IdDto;
 
 export type ChapterContentClearResponse = IdDto;
 
 /**
+ *  类型定义 [FileUploadResponseDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-01-29 15:24:37
+ */
+export type FileUploadResponseDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 文件名 */
+  filename: string;
+  /* 文件路径 */
+  filePath: string;
+  /* 文件大小 */
+  fileSize: number;
+  /* 文件类型 */
+  fileType: string;
+  /* MIME 类型 */
+  mimeType: string;
+  /* 原始文件名 */
+  originalName: string;
+  /* 场景 */
+  scene: string;
+
+  /* 上传时间 */
+  uploadTime: string;
+};
+
+/**
  *  类型定义 [UpdateChapterContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type UpdateChapterContentDto = {
   /** 任意合法数值 */
@@ -120,7 +123,7 @@ export type UpdateChapterContentDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -133,7 +136,7 @@ export type IdDto = {
 /**
  *  类型定义 [DeleteChapterContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type DeleteChapterContentDto = {
   /** 任意合法数值 */
@@ -148,7 +151,7 @@ export type DeleteChapterContentDto = {
 /**
  *  类型定义 [MoveChapterContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type MoveChapterContentDto = {
   /** 任意合法数值 */
@@ -165,7 +168,7 @@ export type MoveChapterContentDto = {
 /**
  *  类型定义 [BatchUpdateChapterContentsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-01-28 16:45:52
+ *  @更新时间 2026-01-29 15:24:37
  */
 export type BatchUpdateChapterContentsDto = {
   /** 任意合法数值 */

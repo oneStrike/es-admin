@@ -117,7 +117,7 @@ for (const item of publishStatus) {
 // 获取发布状态的函数
 export function getPublishStatus(
   isPublished: boolean,
-  publishEndTime?: string,
+  publishEndTime?: null | string,
 ): string {
   if (!isPublished) {
     return 'unpublished';
