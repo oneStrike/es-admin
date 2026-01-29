@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   docker:
-    runs-on: es
+    runs-on: node:24
     env:
       IMAGE_NAME: es-admin
       OUTPUT_TAR: web-ele-image.tar
