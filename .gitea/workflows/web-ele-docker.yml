@@ -36,7 +36,7 @@ jobs:
           driver-opts: network=host
           buildkitd-config-inline: |
             [registry."docker.io"]
-              mirrors = ["https://docker.m.daocloud.io", "https://huecker.io", "https://dockerhub.timeweb.cloud", "https://noohub.ru"]
+              mirrors = ["https://mirror.ccs.tencentyun.com","https://docker.m.daocloud.io", "https://huecker.io", "https://dockerhub.timeweb.cloud", "https://noohub.ru"]
 
       - name: Build image locally (no push)
         uses: docker/build-push-action@v5
