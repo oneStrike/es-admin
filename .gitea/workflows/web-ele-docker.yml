@@ -34,6 +34,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver-opts: network=host
+          buildkitd-config-inline: |
+            [registry."docker.io"]
+              mirrors = ["https://docker.m.daocloud.io", "https://huecker.io", "https://dockerhub.timeweb.cloud", "https://noohub.ru"]
 
       - name: Build image locally (no push)
         uses: docker/build-push-action@v5
