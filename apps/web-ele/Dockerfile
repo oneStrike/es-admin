@@ -25,7 +25,7 @@ ENV NODE_OPTIONS=--max-old-space-size=2048
 COPY --from=pruner /app/out/json/ .
 # 安装依赖 (利用 Docker 层缓存 + pnpm store 挂载)
 # 注意：使用 --no-frozen-lockfile 是因为 turbo prune 生成的 lockfile 可能与原始 lockfile 的哈希计算有细微差异，导致严格模式校验失败
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --no-frozen-lockfile
 
 # 复制源码
 COPY --from=pruner /app/out/full/ .
