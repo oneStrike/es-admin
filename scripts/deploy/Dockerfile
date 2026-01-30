@@ -1,20 +1,21 @@
-FROM node:22-slim AS builder
+FROM node:24-slim AS builder
 
 # --max-old-space-size
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ENV NODE_OPTIONS=--max-old-space-size=8192
+ENV NODE_OPTIONS=--max-old-space-size=2048
 ENV TZ=Asia/Shanghai
 
-RUN npm i -g corepack
+RUN npm i -g corepack && corepack enable && corepack prepare pnpm@10.12.4 --activate
 
 WORKDIR /app
 
 # copy package.json and pnpm-lock.yaml to workspace
+
 COPY . /app
 
 # 安装依赖
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --no-frozen-lockfile
 RUN pnpm run build --filter=\!./docs
 
 RUN echo "Builder Success 🎉"

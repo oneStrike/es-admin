@@ -3,7 +3,7 @@ FROM node:24-slim AS builder
 # 配置 pnpm 与 Node 构建环境
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-ENV NODE_OPTIONS=--max-old-space-size=4096
+ENV NODE_OPTIONS=--max-old-space-size=2048
 ENV TZ=Asia/Shanghai
 
 RUN npm i -g corepack
@@ -17,7 +17,7 @@ COPY . /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # 构建（排除 docs 以加速构建）
-RUN pnpm run build:ele --filter=\!./docs
+RUN pnpm run build --filter=\!./docs
 
 # 允许通过参数选择要部署的应用目录，默认部署 Element Plus 应用
 ARG APP_PATH=apps/web-ele
