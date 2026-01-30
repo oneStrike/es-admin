@@ -23,6 +23,7 @@ ENV NODE_OPTIONS=--max-old-space-size=2048
 
 # 优先复制依赖描述文件 (package.json, lockfile)
 COPY --from=pruner /app/out/json/ .
+COPY --from=pruner /app/.npmrc ./
 # 安装依赖 (利用 Docker 层缓存 + pnpm store 挂载)
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
