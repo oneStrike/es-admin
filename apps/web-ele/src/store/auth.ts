@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
     params: AuthLoginRequest,
     onSuccess?: () => Promise<void> | void,
   ) {
-    // 异步处理用户登录操作并获取  accessToken
+    // 异步处理用户登录操作并获取 accessToken
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
