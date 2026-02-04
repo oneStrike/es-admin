@@ -1,6 +1,6 @@
-import type { UploadUploadFileResponse } from '#/apis/types';
+import type { UploadUploadFileResponse } from '#/api/types';
 
-import { requestClient } from '#/utils/request';
+import { requestClient } from '#/api/request';
 
 import { useMessage } from './useFeedback';
 
