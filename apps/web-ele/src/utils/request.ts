@@ -1,7 +1,7 @@
 /**
  * 该文件可自行根据业务逻辑进行调整
  */
-import type { RequestClientOptions } from '@vben/request';
+import type { AxiosResponseHeaders, RequestClientOptions } from '@vben/request';
 
 import { useAppConfig } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
@@ -12,10 +12,14 @@ import {
   RequestClient,
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
+import { cloneDeep } from '@vben/utils';
 
-import { authRefreshTokenApi } from '#/apis';
-import { useMessage } from '#/hooks/useFeedback';
+import { message } from 'ant-design-vue';
+import JSONBigInt from 'json-bigint';
+
 import { useAuthStore } from '#/store';
+
+import { refreshTokenApi } from './core';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
@@ -23,6 +27,18 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   const client = new RequestClient({
     ...options,
     baseURL,
+    transformResponse: (data: any, header: AxiosResponseHeaders) => {
+      // storeAsString指示将BigInt存储为字符串，设为false则会存储为内置的BigInt类型
+      if (
+        header.getContentType()?.toString().includes('application/json') &&
+        typeof data === 'string'
+      ) {
+        return cloneDeep(
+          JSONBigInt({ storeAsString: true, strict: true }).parse(data),
+        );
+      }
+      return data;
+    },
   });
 
   /**
@@ -32,13 +48,13 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     console.warn('Access token or refresh token is invalid or expired. ');
     const accessStore = useAccessStore();
     const authStore = useAuthStore();
-
+    accessStore.setAccessToken(null);
     if (
       preferences.app.loginExpiredMode === 'modal' &&
       accessStore.isAccessChecked
     ) {
       accessStore.setLoginExpired(true);
-    } else if (accessStore.refreshToken && accessStore.accessToken) {
+    } else {
       await authStore.logout();
     }
   }
@@ -48,13 +64,10 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    */
   async function doRefreshToken() {
     const accessStore = useAccessStore();
-    const resp = await authRefreshTokenApi({
-      refreshToken: accessStore.refreshToken as string,
-    });
-    const { accessToken, refreshToken } = resp;
-    accessStore.setAccessToken(accessToken);
-    accessStore.setRefreshToken(refreshToken);
-    return accessToken;
+    const resp = await refreshTokenApi();
+    const newToken = resp.data;
+    accessStore.setAccessToken(newToken);
+    return newToken;
   }
 
   function formatToken(token: null | string) {
@@ -65,12 +78,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
-      let accessToken = '';
-      accessToken = config.url?.includes('logout')
-        ? config.data.accessToken || ''
-        : accessStore.accessToken || '';
 
-      config.headers.Authorization = formatToken(accessToken);
+      config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
       return config;
     },
@@ -81,7 +90,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     defaultResponseInterceptor({
       codeField: 'code',
       dataField: 'data',
-      successCode: 200,
+      successCode: 0,
     }),
   );
 
@@ -104,7 +113,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       const responseData = error?.response?.data ?? {};
       const errorMessage = responseData?.error ?? responseData?.message ?? '';
       // 如果没有错误信息，则会根据状态码进行提示
-      useMessage.error(errorMessage || msg);
+      message.error(errorMessage || msg);
     }),
   );
 
@@ -116,3 +125,9 @@ export const requestClient = createRequestClient(apiURL, {
 });
 
 export const baseRequestClient = new RequestClient({ baseURL: apiURL });
+
+export interface PageFetchParams {
+  [key: string]: any;
+  pageNo?: number;
+  pageSize?: number;
+}

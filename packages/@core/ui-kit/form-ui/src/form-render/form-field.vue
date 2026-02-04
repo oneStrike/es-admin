@@ -41,6 +41,7 @@ const {
   emptyStateValue,
   fieldName,
   formFieldProps,
+  hide,
   label,
   labelClass,
   labelWidth,
@@ -59,7 +60,7 @@ const values = useFormValues();
 const errors = useFieldError(fieldName);
 const fieldComponentRef = useTemplateRef<HTMLInputElement>('fieldComponentRef');
 const formApi = formRenderProps.form;
-const compact = formRenderProps.compact;
+const compact = computed(() => formRenderProps.compact);
 const isInValid = computed(() => errors.value?.length > 0);
 
 const FieldComponent = computed(() => {
@@ -95,7 +96,7 @@ const currentRules = computed(() => {
 });
 
 const visible = computed(() => {
-  return isIf.value && isShow.value;
+  return !hide && isIf.value && isShow.value;
 });
 
 const shouldRequired = computed(() => {
@@ -288,7 +289,7 @@ onUnmounted(() => {
 
 <template>
   <FormField
-    v-if="isIf"
+    v-if="!hide && isIf"
     v-bind="fieldProps"
     v-slot="slotProps"
     :name="fieldName"
@@ -343,7 +344,7 @@ onUnmounted(() => {
                 :is="FieldComponent"
                 ref="fieldComponentRef"
                 :class="{
-                  'border-destructive focus:border-destructive hover:border-destructive/80 focus:shadow-[0_0_0_2px_rgba(255,38,5,0.06)]':
+                  'border-destructive hover:border-destructive/80 focus:border-destructive focus:shadow-[0_0_0_2px_rgba(255,38,5,0.06)]':
                     isInValid,
                 }"
                 v-bind="createComponentProps(slotProps)"
@@ -371,7 +372,7 @@ onUnmounted(() => {
                     <CircleAlert
                       :class="
                         cn(
-                          'text-foreground/80 hover:text-foreground inline-flex size-5 cursor-pointer',
+                          'inline-flex size-5 cursor-pointer text-foreground/80 hover:text-foreground',
                         )
                       "
                     />
