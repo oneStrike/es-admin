@@ -274,7 +274,7 @@ const isUploadHidden = computed(() => {
     >
       <slot>
         <div
-          class="hover:text-primary flex size-full items-center justify-center text-gray-500"
+          class="flex size-full items-center justify-center text-gray-500 hover:text-primary"
         >
           <UploadLoop class="size-7" />
         </div>

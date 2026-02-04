@@ -165,10 +165,10 @@ onMounted(async () => {
       <div class="h-full lg:col-span-2">
         <div
           v-loading="loading"
-          class="border-border bg-background flex h-full flex-col rounded-lg border p-6 shadow-sm"
+          class="flex h-full flex-col rounded-lg border border-border bg-background p-6 shadow-sm"
         >
           <div class="mb-6 flex flex-shrink-0 items-center justify-between">
-            <h2 class="text-foreground text-lg font-semibold">个人信息</h2>
+            <h2 class="text-lg font-semibold text-foreground">个人信息</h2>
             <div class="flex gap-2">
               <el-button type="primary" @click="openEditDialog">
                 编辑信息
@@ -183,7 +183,7 @@ onMounted(async () => {
             <!-- 头像区域 -->
             <div class="mb-4 flex flex-shrink-0 flex-col items-center">
               <el-avatar :size="120" :src="userInfo.avatar" class="mb-4" />
-              <h3 class="text-foreground mb-2 text-xl font-semibold">
+              <h3 class="mb-2 text-xl font-semibold text-foreground">
                 {{ userInfo.username }}
               </h3>
             </div>
@@ -192,7 +192,7 @@ onMounted(async () => {
             <div class="flex-1 overflow-auto">
               <el-descriptions :column="1" border>
                 <el-descriptions-item label="用户ID">
-                  <span class="text-foreground font-mono">{{
+                  <span class="font-mono text-foreground">{{
                     userInfo.id
                   }}</span>
                 </el-descriptions-item>
@@ -238,9 +238,9 @@ onMounted(async () => {
       <!-- 右侧登录历史 -->
       <div class="h-full lg:col-span-3">
         <div
-          class="border-border bg-background h-full rounded-lg border p-6 shadow-sm"
+          class="h-full rounded-lg border border-border bg-background p-6 shadow-sm"
         >
-          <h2 class="text-foreground text-lg font-semibold">登录历史记录</h2>
+          <h2 class="text-lg font-semibold text-foreground">登录历史记录</h2>
           <div class="h-[93%]">
             <Grid>
               <template #isSuccess="{ row }">

@@ -4,11 +4,7 @@ import type { BaseForumConfigDto, ConfigUpdateRequest } from '#/api/types';
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  configGetApi,
-  configResetApi,
-  configUpdateApi,
-} from '#/api';
+import { configGetApi, configResetApi, configUpdateApi } from '#/api';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 
 import History from './history-modal.vue';

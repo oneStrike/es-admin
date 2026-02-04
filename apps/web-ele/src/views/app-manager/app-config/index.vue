@@ -8,10 +8,7 @@ import type { AppConfigUpdateRequest, BaseAppConfigDto } from '#/api/types';
 import { Page } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  appConfigActiveApi,
-  appConfigUpdateApi,
-} from '#/api';
+import { appConfigActiveApi, appConfigUpdateApi } from '#/api';
 import { useMessage } from '#/hooks/useFeedback';
 
 import { formSchema } from './modules/shared';

@@ -4,11 +4,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  configDeleteApi,
-  configHistoryApi,
-  configRestoreApi,
-} from '#/api';
+import { configDeleteApi, configHistoryApi, configRestoreApi } from '#/api';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 
 import ChangesDetailModal from './changes-detail-modal.vue';

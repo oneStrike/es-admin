@@ -213,7 +213,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
             />
             <el-tooltip content="添加分组" placement="top" :show-after="300">
               <PlusCircleIcon
-                class="hover:text-primary cursor-pointer text-2xl"
+                class="cursor-pointer text-2xl hover:text-primary"
                 @click="openSectionGroupFormModal()"
               />
             </el-tooltip>
@@ -247,14 +247,14 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
                       "
                     >
                       <AlertCircleIcon
-                        class="hover:text-primary cursor-pointer text-base"
+                        class="cursor-pointer text-base hover:text-primary"
                       />
                     </div>
                   </el-tooltip>
                   <el-tooltip content="编辑" placement="top" :show-after="300">
                     <div @click.stop="openSectionGroupFormModal(data)">
                       <EditIcon
-                        class="hover:text-primary cursor-pointer text-base"
+                        class="cursor-pointer text-base hover:text-primary"
                       />
                     </div>
                   </el-tooltip>
@@ -265,7 +265,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
                   >
                     <div @click.stop="openFormModal(undefined, data.id)">
                       <PlusIcon
-                        class="hover:text-primary cursor-pointer text-base"
+                        class="cursor-pointer text-base hover:text-primary"
                       />
                     </div>
                   </el-tooltip>
@@ -367,9 +367,9 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
 
 <style scoped>
 :deep(.el-tree-node.is-current > .el-tree-node__content) {
-  background-color: var(--el-color-primary-light-9);
-  color: var(--el-color-primary);
   font-weight: 600;
+  color: var(--el-color-primary);
+  background-color: var(--el-color-primary-light-9);
 }
 
 :deep(.el-tree-node.is-current > .el-tree-node__content:hover) {
