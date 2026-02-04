@@ -13,7 +13,7 @@ import {
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 
-import { authRefreshTokenApi } from '#/apis';
+import { authRefreshTokenApi } from '#/api';
 import { useMessage } from '#/hooks/useFeedback';
 import { useAuthStore } from '#/store';
 

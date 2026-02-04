@@ -14,6 +14,3 @@ export {
 
 // JSON 解析工具
 export { safeParseJson } from './parseJson';
-
-// 请求客户端
-export { baseRequestClient, requestClient } from './request';

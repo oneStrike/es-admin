@@ -1,6 +1,6 @@
 import type { UserInfo } from '@vben/types';
 
-import type { AuthLoginRequest } from '#/apis/types';
+import type { AuthLoginRequest } from '#/api/types';
 
 import { LOGIN_PATH } from '@vben/constants';
 import { preferences } from '@vben/preferences';
@@ -15,7 +15,7 @@ import {
   authLogoutApi,
   authPublicKeyApi,
   userInfoApi,
-} from '#/apis';
+} from '#/api';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
