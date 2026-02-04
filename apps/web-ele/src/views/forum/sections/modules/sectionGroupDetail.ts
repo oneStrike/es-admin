@@ -1,4 +1,4 @@
-import type { BaseForumSectionGroupDto } from '#/apis/types';
+import type { BaseForumSectionGroupDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 

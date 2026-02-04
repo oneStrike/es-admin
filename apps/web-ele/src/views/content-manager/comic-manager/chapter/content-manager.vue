@@ -11,7 +11,7 @@ import {
   chapterContentDeleteApi,
   chapterContentListApi,
   chapterContentMoveApi,
-} from '#/apis';
+} from '#/api';
 import { DeleteBinIcon, EyeLineIcon, UploadLoop } from '#/components/es-icons';
 import EsUpload from '#/components/es-upload/es-upload.vue';
 import { UploadSceneEnum, UploadUrlMapEnum } from '#/enum/api';

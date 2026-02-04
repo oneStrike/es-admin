@@ -1,4 +1,4 @@
-import type { BaseTagDto } from '#/apis/types';
+import type { BaseTagDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';

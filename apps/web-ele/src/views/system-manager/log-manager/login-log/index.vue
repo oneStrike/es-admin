@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { RequestLogDto, RequestLogPageRequest } from '#/apis/types';
+import type { RequestLogDto, RequestLogPageRequest } from '#/api/types';
 
 import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { auditPageApi } from '#/apis';
+import { auditPageApi } from '#/api';
 import { createSearchFormOptions } from '#/utils';
 
 import { loginLogColumns, searchFormSchema } from './shared';

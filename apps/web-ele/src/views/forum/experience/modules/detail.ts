@@ -1,4 +1,4 @@
-import type { BaseExperienceRuleDto } from '#/apis/types';
+import type { BaseExperienceRuleDto } from '#/api/types';
 
 import { experienceTypeMap } from './constants';
 

@@ -3,7 +3,7 @@
  * 应用配置页面组件
  * 用于查看和编辑系统应用配置
  */
-import type { AppConfigUpdateRequest, BaseAppConfigDto } from '#/apis/types';
+import type { AppConfigUpdateRequest, BaseAppConfigDto } from '#/api/types';
 
 import { Page } from '@vben/common-ui';
 
@@ -11,7 +11,7 @@ import { useVbenForm } from '#/adapter/form';
 import {
   appConfigActiveApi,
   appConfigUpdateApi,
-} from '#/apis/app-config/appConfig';
+} from '#/api';
 import { useMessage } from '#/hooks/useFeedback';
 
 import { formSchema } from './modules/shared';

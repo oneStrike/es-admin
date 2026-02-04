@@ -13,11 +13,9 @@ import {
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 
-import { ElMessage } from 'element-plus';
-
+import { authRefreshTokenApi } from '#/apis';
+import { useMessage } from '#/hooks/useFeedback';
 import { useAuthStore } from '#/store';
-
-import { refreshTokenApi } from './core';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
@@ -34,13 +32,13 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     console.warn('Access token or refresh token is invalid or expired. ');
     const accessStore = useAccessStore();
     const authStore = useAuthStore();
-    accessStore.setAccessToken(null);
+
     if (
       preferences.app.loginExpiredMode === 'modal' &&
       accessStore.isAccessChecked
     ) {
       accessStore.setLoginExpired(true);
-    } else {
+    } else if (accessStore.refreshToken && accessStore.accessToken) {
       await authStore.logout();
     }
   }
@@ -50,10 +48,13 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    */
   async function doRefreshToken() {
     const accessStore = useAccessStore();
-    const resp = await refreshTokenApi();
-    const newToken = resp.data;
-    accessStore.setAccessToken(newToken);
-    return newToken;
+    const resp = await authRefreshTokenApi({
+      refreshToken: accessStore.refreshToken as string,
+    });
+    const { accessToken, refreshToken } = resp;
+    accessStore.setAccessToken(accessToken);
+    accessStore.setRefreshToken(refreshToken);
+    return accessToken;
   }
 
   function formatToken(token: null | string) {
@@ -64,8 +65,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
+      let accessToken = '';
+      accessToken = config.url?.includes('logout')
+        ? config.data.accessToken || ''
+        : accessStore.accessToken || '';
 
-      config.headers.Authorization = formatToken(accessStore.accessToken);
+      config.headers.Authorization = formatToken(accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
       return config;
     },
@@ -76,7 +81,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     defaultResponseInterceptor({
       codeField: 'code',
       dataField: 'data',
-      successCode: 0,
+      successCode: 200,
     }),
   );
 
@@ -99,7 +104,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       const responseData = error?.response?.data ?? {};
       const errorMessage = responseData?.error ?? responseData?.message ?? '';
       // 如果没有错误信息，则会根据状态码进行提示
-      ElMessage.error(errorMessage || msg);
+      useMessage.error(errorMessage || msg);
     }),
   );
 

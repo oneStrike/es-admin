@@ -1,7 +1,7 @@
-import type { BaseDictionaryDto, BaseDictionaryItemDto } from '#/apis/types';
+import type { BaseDictionaryDto, BaseDictionaryItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit';
 
 import { formSchemaTransform } from '#/utils';
 

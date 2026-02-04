@@ -1,4 +1,4 @@
-import type { AuthorPageResponseDto } from '#/apis/types';
+import type { AuthorPageResponseDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { AuthorTypeEnum, GenderEnum } from '#/enum';

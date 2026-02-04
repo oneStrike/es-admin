@@ -5,7 +5,7 @@ import type {
   BaseLevelRuleDto,
   LevelRulesCreateRequest,
   LevelRulesUpdateRequest,
-} from '#/apis/types';
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -16,7 +16,7 @@ import {
   levelRulesDetailApi,
   levelRulesPageApi,
   levelRulesUpdateApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';

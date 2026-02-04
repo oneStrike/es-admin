@@ -5,7 +5,7 @@ import type {
   AuthorPageResponseDto,
   CreateAuthorDto,
   UpdateAuthorDto,
-} from '#/apis/types';
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -18,7 +18,7 @@ import {
   authorUpdateApi,
   authorUpdateIsRecommendedApi,
   authorUpdateStatusApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useDict } from '#/hooks/useDict';

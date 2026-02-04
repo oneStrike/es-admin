@@ -1,4 +1,4 @@
-import type { BaseClientPageDto } from '#/apis/types';
+import type { BaseClientPageDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';

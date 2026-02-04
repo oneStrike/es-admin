@@ -4,7 +4,7 @@ import type {
   BaseUserDto,
   UpdateUserDto,
   UserRegisterRequest,
-} from '#/apis/types';
+} from '#/api/types';
 
 import { computed } from 'vue';
 
@@ -18,7 +18,7 @@ import {
   userRegisterApi,
   userResetPasswordApi,
   userUpdateInfoApi,
-} from '#/apis';
+} from '#/api';
 import { QuestionIcon } from '#/components/es-icons';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';

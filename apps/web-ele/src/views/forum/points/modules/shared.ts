@@ -1,4 +1,4 @@
-import type { BasePointRuleDto } from '#/apis/types';
+import type { BasePointRuleDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';

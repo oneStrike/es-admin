@@ -1,4 +1,4 @@
-import type { BasePointRuleDto } from '#/apis/types';
+import type { BasePointRuleDto } from '#/api/types';
 
 import { pointsTypeMap } from './constants';
 

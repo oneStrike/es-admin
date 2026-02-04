@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
-import type { BaseDictionaryDto } from '#/apis/types';
+import type { BaseDictionaryDto } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -13,7 +13,7 @@ import {
   dictionaryDetailApi,
   dictionaryPageApi,
   dictionaryUpdateApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';

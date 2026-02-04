@@ -1,4 +1,4 @@
-import type { ComicChapterPageResponseDto } from '#/apis/types';
+import type { ComicChapterPageResponseDto } from '#/api/types';
 
 import { formSchemaTransform } from '#/utils';
 

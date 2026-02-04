@@ -11,7 +11,7 @@ import type { UploadResponseDto } from '#/apis/types/upload/upload';
 import type { EsUploadProps } from '#/components/es-upload/types';
 
 import { ElMessage } from 'element-plus';
-import { cloneDeep, random } from 'lodash-es';
+import { cloneDeep, random } from 'es-toolkit';
 
 import { UploadLoop } from '#/components/es-icons';
 import { UploadSceneEnum, UploadUrlMapEnum } from '#/enum/api';

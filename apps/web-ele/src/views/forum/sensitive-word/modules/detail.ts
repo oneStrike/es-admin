@@ -1,4 +1,4 @@
-import type { CreateSensitiveWordDto } from '#/apis/types';
+import type { CreateSensitiveWordDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 

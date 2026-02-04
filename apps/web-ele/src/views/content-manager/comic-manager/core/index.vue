@@ -6,7 +6,7 @@ import type {
   BaseComicDto,
   ComicCreateRequest,
   ComicUpdateRequest,
-} from '#/apis/types';
+} from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -20,7 +20,7 @@ import {
   comicPageApi,
   comicUpdateApi,
   tagPageApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useDict } from '#/hooks/useDict';

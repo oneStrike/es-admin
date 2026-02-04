@@ -1,7 +1,7 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { EsFormSchema } from '#/types';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit';
 
 type ColumnItemExtra<T> = Partial<
   Record<
@@ -47,7 +47,7 @@ const filterComponentProps = {
 function sortItemsWithSortValue<T extends { sortValue: number }>(
   items: T[],
 ): T[] {
-  return items.sort((a, b) => a.sortValue - b.sortValue);
+  return items.toSorted((a, b) => a.sortValue - b.sortValue);
 }
 
 export const formSchemaTransform: FormSchemaTransform = {

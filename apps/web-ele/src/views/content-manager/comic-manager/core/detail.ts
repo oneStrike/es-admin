@@ -1,6 +1,6 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseComicDto } from '#/apis/types';
+import type { BaseComicDto } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formatUTC } from '#/utils';

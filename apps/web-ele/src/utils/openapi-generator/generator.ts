@@ -202,7 +202,7 @@ export class OpenAPIGenerator {
     // 例如：src/apis/user/user.ts -> src/apis/types/user/user.d.ts
     // 导入路径应该是：../types/user/user.d
     const typeImportPath = directory
-      ? `../${this.config.typesDirName}/${directory}/${typeFileName}.d`
+      ? `../../${this.config.typesDirName}/${directory}/${typeFileName}.d`
       : `./${this.config.typesDirName}/${typeFileName}.d`;
 
     const importStatements =

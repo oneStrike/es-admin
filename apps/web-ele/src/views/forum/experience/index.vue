@@ -5,7 +5,7 @@ import type {
   BaseExperienceRuleDto,
   ExperienceRulesCreateRequest,
   ExperienceRulesUpdateRequest,
-} from '#/apis/types';
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -16,7 +16,7 @@ import {
   experienceRulesDetailApi,
   experienceRulesPageApi,
   experienceRulesUpdateApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';

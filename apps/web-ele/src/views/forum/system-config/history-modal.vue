@@ -8,7 +8,7 @@ import {
   configDeleteApi,
   configHistoryApi,
   configRestoreApi,
-} from '#/apis/forum/config';
+} from '#/api';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 
 import ChangesDetailModal from './changes-detail-modal.vue';

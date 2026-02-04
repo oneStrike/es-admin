@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BaseForumConfigDto, ConfigUpdateRequest } from '#/apis/types';
+import type { BaseForumConfigDto, ConfigUpdateRequest } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -8,7 +8,7 @@ import {
   configGetApi,
   configResetApi,
   configUpdateApi,
-} from '#/apis/forum/config';
+} from '#/api';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 
 import History from './history-modal.vue';

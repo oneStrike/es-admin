@@ -6,7 +6,7 @@ import type {
   CreateForumSectionGroupDto,
   UpdateForumSectionDto,
   UpdateForumSectionGroupDto,
-} from '#/apis/types';
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -24,7 +24,7 @@ import {
   sectionsPageApi,
   sectionsUpdateApi,
   sectionsUpdateEnabledApi,
-} from '#/apis';
+} from '#/api';
 import {
   AlertCircleIcon,
   DeleteBinIcon,

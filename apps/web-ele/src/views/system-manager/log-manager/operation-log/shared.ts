@@ -1,5 +1,5 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
-import type { RequestLogDto } from '#/apis/types/requestLog';
+import type { RequestLogDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formatUTC } from '#/utils';

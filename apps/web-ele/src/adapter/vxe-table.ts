@@ -12,6 +12,7 @@ import { ElButton, ElImage, ElTag, ElText } from 'element-plus';
 
 import { ImageLine } from '#/components/es-icons';
 import { formatUTC } from '#/utils';
+import { getOptionLabel } from '#/utils/options';
 
 import { useVbenForm } from './form';
 
@@ -68,11 +69,8 @@ setupVbenVxeTable({
 
     // 表格配置项可以用 cellRender: { name: 'CellImage' },
     vxeUI.renderer.add('CellImage', {
-      renderTableDefault(renderOpts, params) {
-        const { props } = renderOpts;
+      renderTableDefault(_renderOpts, params) {
         const { column, row } = params;
-        const src = row[column.field];
-        return h(ElImage, { src, previewSrcList: [src], ...props });
         const src = row[column.field] || '';
         return h(
           ElImage,
@@ -122,25 +120,14 @@ setupVbenVxeTable({
       renderTableDefault({ props }, params) {
         const { column, row } = params;
         let tags: (boolean | string)[] | boolean | string = row[column.field];
-        const originalValue = tags;
+        let type: TagProps['type'] = props?.type || 'primary';
 
-        const getType = (): TagProps['type'] => {
-          if (typeof props?.type === 'function') {
-            return props.type(row[column.field], row);
-          }
-          return props?.type || 'primary';
-        };
-
-        const defaultSize = props?.size || 'small';
-
+        // 处理格式化函数
         if (props?.formatter) {
-          tags = props.formatter(originalValue);
+          tags = props.formatter(row[column.field]);
         }
 
-        const optionsMap = props?.mapOptions
-          ? new Map(props.mapOptions.map((item: Options) => [item.value, item]))
-          : null;
-
+        // 处理数组情况
         if (Array.isArray(tags)) {
           if (tags.length === 0) {
             return '-';
@@ -148,40 +135,43 @@ setupVbenVxeTable({
 
           return tags.map((tag, idx) => {
             let tagValue = tag;
-            let tagType = getType();
-
-            if (optionsMap) {
-              const option = optionsMap.get(tag) as Record<string, any>;
-              tagValue = option?.label || tag;
-              tagType = option?.color || tagType;
+            if (Array.isArray(props?.mapOptions)) {
+              tagValue = getOptionLabel(props?.mapOptions, tag);
             }
 
             return h(
               ElTag,
               {
-                type: tagType,
-                size: defaultSize,
+                type: props?.type || 'primary',
+                size: props?.size || 'small',
                 class: idx + 1 === (tags as any[]).length ? '' : 'mr-1',
-                key: `${idx}-${tag}`,
+                ...props,
               },
               { default: () => tagValue },
             );
           });
-        } else if (optionsMap) {
-          const option = optionsMap.get(tags) as Record<string, any>;
+        }
+        // 处理 mapOptions 映射情况
+        else if (props?.mapOptions) {
+          const option = props.mapOptions.find(
+            (item: Options) => item.value === tags,
+          );
           const label = option?.label || '';
-          const color = option?.color || getType();
+          const color = option?.color || props?.type || 'primary';
 
           return h(
             ElTag,
             {
               type: color,
-              size: defaultSize,
+              size: props?.size || 'small',
+              ...props,
             },
             { default: () => label },
           );
-        } else if (typeof tags === 'boolean') {
-          const type = tags ? 'primary' : 'danger';
+        }
+        // 处理布尔值情况
+        else if (typeof tags === 'boolean') {
+          type = tags ? 'primary' : 'danger';
           const booleanMap = props?.map || {};
           tags = booleanMap[String(tags)] || (tags ? '是' : '否');
 
@@ -189,19 +179,24 @@ setupVbenVxeTable({
             ElTag,
             {
               type,
-              size: defaultSize,
+              size: props?.size || 'small',
+              ...props,
             },
             { default: () => tags },
           );
-        } else {
+        }
+        // 处理字符串和其他单一值情况
+        else {
+          // 确保 tags 是字符串形式
           const displayValue =
             tags !== null && tags !== undefined ? String(tags) : '-';
 
           return h(
             ElTag,
             {
-              type: getType(),
-              size: defaultSize,
+              type,
+              size: props?.size || 'small',
+              ...props,
             },
             { default: () => displayValue },
           );

@@ -5,7 +5,7 @@ import type {
   BaseForumSensitiveWordDto,
   SensitiveWordCreateRequest,
   SensitiveWordUpdateRequest,
-} from '#/apis/types';
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -16,7 +16,7 @@ import {
   sensitiveWordPageApi,
   sensitiveWordUpdateApi,
   sensitiveWordUpdateStatusApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';

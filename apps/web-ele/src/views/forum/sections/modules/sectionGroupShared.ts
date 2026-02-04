@@ -1,4 +1,4 @@
-import type { CreateForumSectionGroupDto } from '#/apis/types';
+import type { CreateForumSectionGroupDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';

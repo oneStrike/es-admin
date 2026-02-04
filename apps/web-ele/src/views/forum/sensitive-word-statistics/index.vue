@@ -7,7 +7,7 @@ import { AnalysisChartCard, AnalysisOverview, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { statisticsFullApi } from '#/apis';
+import { statisticsFullApi } from '#/api';
 import {
   AlertCircleIcon,
   DeleteBinIcon,

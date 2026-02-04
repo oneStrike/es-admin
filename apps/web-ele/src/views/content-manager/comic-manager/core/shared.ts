@@ -1,8 +1,8 @@
 import type { EsFormSchema } from '#/types';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit';
 
-import { authorPageApi } from '#/apis';
+import { authorPageApi } from '#/api';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
 import {

@@ -4,7 +4,7 @@ import type {
   ComicChapterCreateRequest,
   ComicChapterPageResponseDto,
   ComicChapterUpdateRequest,
-} from '#/apis/types';
+} from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -17,7 +17,7 @@ import {
   comicChapterSwapSortOrderApi,
   comicChapterUpdateApi,
   levelRulesPageApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';

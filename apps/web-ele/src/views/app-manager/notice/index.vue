@@ -4,7 +4,7 @@ import type {
   CreateNoticeDto,
   NoticePageResponseDto,
   UpdateNoticeDto,
-} from '#/apis/types';
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -17,7 +17,7 @@ import {
   noticePageApi,
   noticeUpdateApi,
   noticeUpdateStatusApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';

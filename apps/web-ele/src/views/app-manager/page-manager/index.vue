@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { BaseAppPageDto, UpdateAppPageDto } from '#/apis/types';
+import type { BaseAppPageDto, UpdateAppPageDto } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -11,7 +11,7 @@ import {
   appPageDetailByIdApi,
   appPagePageApi,
   appPageUpdateApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';

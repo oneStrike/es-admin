@@ -1,0 +1,73 @@
+import type {
+  AgreementCreateRequest,
+  AgreementCreateResponse,
+  AgreementDeleteRequest,
+  AgreementDeleteResponse,
+  AgreementDetailRequest,
+  AgreementDetailResponse,
+  AgreementPageRequest,
+  AgreementPageResponse,
+  AgreementUpdateRequest,
+  AgreementUpdateResponse,
+} from '../../types/agreement/agreement.d';
+
+import { requestClient } from '#/api/request';
+
+/**
+ * 创建协议
+ */
+export async function agreementCreateApi(
+  params: AgreementCreateRequest,
+): Promise<AgreementCreateResponse> {
+  return requestClient.post<AgreementCreateResponse>(
+    '/api/admin/agreement/create',
+    params,
+  );
+}
+
+/**
+ * 更新协议
+ */
+export async function agreementUpdateApi(
+  params: AgreementUpdateRequest,
+): Promise<AgreementUpdateResponse> {
+  return requestClient.post<AgreementUpdateResponse>(
+    '/api/admin/agreement/update',
+    params,
+  );
+}
+
+/**
+ * 删除协议
+ */
+export async function agreementDeleteApi(
+  params: AgreementDeleteRequest,
+): Promise<AgreementDeleteResponse> {
+  return requestClient.post<AgreementDeleteResponse>(
+    '/api/admin/agreement/delete',
+    params,
+  );
+}
+
+/**
+ * 查询协议分页
+ */
+export async function agreementPageApi(
+  params?: AgreementPageRequest,
+): Promise<AgreementPageResponse> {
+  return requestClient.get<AgreementPageResponse>('/api/admin/agreement/page', {
+    params,
+  });
+}
+
+/**
+ * 获取协议详情
+ */
+export async function agreementDetailApi(
+  params: AgreementDetailRequest,
+): Promise<AgreementDetailResponse> {
+  return requestClient.get<AgreementDetailResponse>(
+    '/api/admin/agreement/detail',
+    { params },
+  );
+}

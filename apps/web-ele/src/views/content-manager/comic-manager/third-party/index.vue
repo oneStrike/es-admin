@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ThirdPartySearchResponse } from '#/apis/types';
+import type { ThirdPartySearchResponse } from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { thirdPartyDetailApi, thirdPartySearchApi } from '#/apis';
+import { thirdPartyDetailApi, thirdPartySearchApi } from '#/api';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 

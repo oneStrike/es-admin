@@ -1,4 +1,4 @@
-import type { BaseAuthorDto } from '#/apis/types';
+import type { BaseAuthorDto } from '#/api/types';
 
 import { GenderEnum } from '#/enum';
 import { formatUTC } from '#/utils';

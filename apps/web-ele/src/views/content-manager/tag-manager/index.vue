@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
-import type { BaseTagDto, CreateTagDto, UpdateTagDto } from '#/apis/types';
+import type { BaseTagDto, CreateTagDto, UpdateTagDto } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -14,7 +14,7 @@ import {
   tagPageApi,
   tagUpdateApi,
   tagUpdateStatusApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';

@@ -1,6 +1,6 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseComicDto } from '#/apis/types/work/comic';
+import type { BaseComicDto } from '#/api';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formSchemaTransform } from '#/utils';

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { RequestLogDto, RequestLogPageRequest } from '#/apis/types';
+import type { RequestLogDto, RequestLogPageRequest } from '#/api/types';
 import type {
   BaseUserDto,
   ChangePasswordDto,
   UpdateUserDto,
-} from '#/apis/types/user';
+} from '#/api/types';
 
 import { onMounted, ref } from 'vue';
 
@@ -18,7 +18,7 @@ import {
   userChangePasswordApi,
   userInfoApi,
   userUpdateInfoApi,
-} from '#/apis';
+} from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 
