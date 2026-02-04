@@ -3,7 +3,7 @@ import type { Recordable } from '@vben/types';
 /**
  * 数据字典
  */
-import { dictionaryItemsApi } from '#/apis';
+import { dictionaryItemsApi } from '#/api';
 
 export interface UseDictItem {
   labels: Record<string, string>;
