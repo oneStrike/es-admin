@@ -3,7 +3,7 @@ export type ThirdPartyPlatformResponse = PlatformResponseDto[];
 /**
  *  类型定义 [ThirdPartySearchRequest]
  *  @来源 内容管理/漫画管理模块/三方平台内容解析
- *  @更新时间 2026-02-04 10:33:56
+ *  @更新时间 2026-02-05 22:56:49
  */
 export type ThirdPartySearchRequest = {
   /** 任意合法数值 */
@@ -51,7 +51,7 @@ export type ThirdPartySearchResponse = {
 /**
  *  类型定义 [ThirdPartyDetailRequest]
  *  @来源 内容管理/漫画管理模块/三方平台内容解析
- *  @更新时间 2026-02-04 10:33:56
+ *  @更新时间 2026-02-05 22:56:49
  */
 export type ThirdPartyDetailRequest = {
   /** 任意合法数值 */
@@ -84,7 +84,7 @@ export type ThirdPartyDetailResponse = {
 /**
  *  类型定义 [ThirdPartyChapterRequest]
  *  @来源 内容管理/漫画管理模块/三方平台内容解析
- *  @更新时间 2026-02-04 10:33:56
+ *  @更新时间 2026-02-05 22:56:49
  */
 export type ThirdPartyChapterRequest = {
   /** 任意合法数值 */
@@ -117,7 +117,7 @@ export type ThirdPartyChapterResponse = {
 /**
  *  类型定义 [ThirdPartyChapterContentRequest]
  *  @来源 内容管理/漫画管理模块/三方平台内容解析
- *  @更新时间 2026-02-04 10:33:56
+ *  @更新时间 2026-02-05 22:56:49
  */
 export type ThirdPartyChapterContentRequest = {
   /** 任意合法数值 */
@@ -150,7 +150,7 @@ export type ThirdPartyChapterContentResponse = {
 /**
  *  类型定义 [PlatformResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-04 10:33:56
+ *  @更新时间 2026-02-05 22:56:49
  */
 export type PlatformResponseDto = {
   /** 任意合法数值 */
@@ -165,7 +165,7 @@ export type PlatformResponseDto = {
 /**
  *  类型定义 [SearchComicItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-04 10:33:56
+ *  @更新时间 2026-02-05 22:56:49
  */
 export type SearchComicItemDto = {
   /** 任意合法数值 */

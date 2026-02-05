@@ -51,7 +51,7 @@ itemFormSchema.splice(3, 0, {
     type: 'number',
     placeholder: '请输入字典项排序',
   },
-  fieldName: 'order',
+  fieldName: 'sortOrder',
   label: '排序',
 });
 export const dictionaryColumns =
@@ -101,7 +101,7 @@ export const dictionaryItemColumns =
         name: 'CellImage',
       },
     },
-    order: {
+    sortOrder: {
       width: 100,
       sortable: true,
     },
