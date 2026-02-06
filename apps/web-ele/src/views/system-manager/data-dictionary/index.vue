@@ -1,19 +1,10 @@
 <script setup lang="ts">
-import type { VxeGridProps } from '@vben/plugins/vxe-table';
-
 import type { BaseDictionaryDto } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  dictionaryBatchUpdateStatusApi,
-  dictionaryCreateApi,
-  dictionaryDeleteApi,
-  dictionaryDetailApi,
-  dictionaryPageApi,
-  dictionaryUpdateApi,
-} from '#/api';
+import { Api } from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
@@ -25,32 +16,29 @@ import {
   formSchema,
 } from './shared';
 
-const gridOptions: VxeGridProps<BaseDictionaryDto> = {
-  columns: dictionaryColumns,
-  height: 'auto',
-  proxyConfig: {
-    ajax: {
-      query: async ({ page }, formValues) => {
-        return await dictionaryPageApi({
-          pageIndex: --page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
+const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
+  gridOptions: {
+    columns: dictionaryColumns,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await Api.dictionaryPageApi({
+            pageIndex: --page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
       },
+      sort: true,
     },
-    sort: true,
   },
-};
-
-const [Grid, gridApi] = useVbenVxeGrid({
-  gridOptions,
   formOptions: createSearchFormOptions(dictionarySearchSchema, {
     showCollapseButton: false,
   }),
 });
 
 async function deleteDictionary(row: BaseDictionaryDto) {
-  await dictionaryDeleteApi({ ids: [row.id] });
+  await Api.dictionaryDeleteApi({ ids: [row.id] });
   useMessage.success('操作成功');
   gridApi.reload();
 }
@@ -61,7 +49,7 @@ const [Form, formApi] = useVbenModal({
 async function openFormModal(row?: BaseDictionaryDto) {
   let record;
   if (row) {
-    record = await dictionaryDetailApi({ id: row.id });
+    record = await Api.dictionaryDetailApi({ id: row.id });
   }
   formApi
     .setData({
@@ -76,7 +64,7 @@ async function toggleEnableStatus(row: BaseDictionaryDto) {
   const newStatus = !row.isEnabled;
   row.loading = true;
   try {
-    await dictionaryBatchUpdateStatusApi({
+    await Api.dictionaryBatchUpdateStatusApi({
       ids: [row.id],
       isEnabled: newStatus,
     });
@@ -89,7 +77,9 @@ async function toggleEnableStatus(row: BaseDictionaryDto) {
 
 // 添加数据字典
 async function addDictionary(values: any) {
-  await (values.id ? dictionaryUpdateApi(values) : dictionaryCreateApi(values));
+  await (values.id
+    ? Api.dictionaryUpdateApi(values)
+    : Api.dictionaryCreateApi(values));
   useMessage.success('操作成功');
   formApi.close();
   gridApi.reload();
