@@ -33,8 +33,11 @@ export async function systemConfigDetailApi(): Promise<SystemConfigDetailRespons
 /**
  * 更新系统配置
  */
-export async function systemConfigUpdateApi(): Promise<SystemConfigUpdateResponse> {
+export async function systemConfigUpdateApi(
+  data: SystemConfigDetailResponse,
+): Promise<SystemConfigUpdateResponse> {
   return requestClient.post<SystemConfigUpdateResponse>(
     '/api/admin/system/config-update',
+    data,
   );
 }

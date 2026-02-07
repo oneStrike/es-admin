@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/system-manager',
     meta: {
       title: '系统管理',
-      order: 4,
+      order: 998,
       icon: 'majesticons:cog-line',
     },
     children: [
@@ -16,6 +16,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/system-manager/profile/index.vue'),
         meta: {
           title: '个人中心',
+          icon: 'codex:dot-circle',
+        },
+      },
+      {
+        name: 'SystemConfig',
+        path: '/system-manager/system-config',
+        component: () =>
+          import('#/views/system-manager/system-config/index.vue'),
+        meta: {
+          title: '系统配置',
           icon: 'codex:dot-circle',
         },
       },
@@ -29,38 +39,6 @@ const routes: RouteRecordRaw[] = [
           title: '数据字典',
           icon: 'codex:dot-circle',
         },
-      },
-      {
-        name: 'LogManager',
-        path: '/log-manager',
-        meta: {
-          title: '日志管理',
-          icon: 'majesticons:list-box-line',
-        },
-        children: [
-          {
-            name: 'LoginLog',
-            path: '/log-manager/login-log',
-            component: () =>
-              import('#/views/system-manager/log-manager/login-log/index.vue'),
-            meta: {
-              title: '登录日志',
-              icon: 'codex:dot-circle',
-            },
-          },
-          {
-            name: 'OperationLog',
-            path: '/log-manager/operation-log',
-            component: () =>
-              import(
-                '#/views/system-manager/log-manager/operation-log/index.vue'
-              ),
-            meta: {
-              title: '操作日志',
-              icon: 'codex:dot-circle',
-            },
-          },
-        ],
       },
 
       {
