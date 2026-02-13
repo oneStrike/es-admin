@@ -3,7 +3,7 @@ export type StatisticsFullResponse = ForumSensitiveWordStatisticsDataDto;
 /**
  *  类型定义 [ForumSensitiveWordStatisticsDataDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ForumSensitiveWordStatisticsDataDto = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type ForumSensitiveWordStatisticsDataDto = {
 /**
  *  类型定义 [ForumForumSensitiveWordLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ForumForumSensitiveWordLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type ForumForumSensitiveWordLevelStatisticsDto = {
 /**
  *  类型定义 [ForumForumSensitiveWordTypeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ForumForumSensitiveWordTypeStatisticsDto = {
   /** 任意合法数值 */
@@ -74,7 +74,7 @@ export type ForumForumSensitiveWordTypeStatisticsDto = {
 /**
  *  类型定义 [ForumSensitiveWordTopHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ForumSensitiveWordTopHitStatisticsDto = {
   /** 任意合法数值 */
@@ -95,7 +95,7 @@ export type ForumSensitiveWordTopHitStatisticsDto = {
 /**
  *  类型定义 [ForumSensitiveWordRecentHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ForumSensitiveWordRecentHitStatisticsDto = {
   /** 任意合法数值 */

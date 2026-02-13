@@ -29,10 +29,12 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   wrapperClass: 'grid-cols-1 md:grid-cols-2 gap-6',
   handleSubmit: async (values) => {
-    await handleSaveConfig({
-      ...values,
-      id: currentConfig.value?.id,
-    } as AppConfigUpdateRequest);
+    const payload = currentConfig.value
+      ? { ...currentConfig.value, ...values }
+      : { ...values };
+    const { id: _id, ...request } = payload as AppConfigUpdateRequest &
+      BaseAppConfigDto;
+    await handleSaveConfig(request);
   },
   handleReset: async () => {
     if (currentConfig.value) {

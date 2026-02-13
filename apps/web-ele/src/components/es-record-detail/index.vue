@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { DetailCard } from './types';
 
 import { computed, ref, watch } from 'vue';
@@ -132,7 +132,7 @@ defineExpose({
           shadow="hover"
           class="rounded-lg border border-gray-200 dark:border-gray-700"
         >
-          <template #header v-if="card.title">
+          <template v-if="card.title" #header>
             <div class="flex items-center">
               <span
                 class="text-lg font-semibold text-gray-800 dark:text-gray-100"
@@ -228,7 +228,7 @@ defineExpose({
           >
             <div
               v-html="card.content"
-              class="prose dark:prose-invert max-w-none"
+              class="prose max-w-none dark:prose-invert"
             ></div>
           </div>
 
@@ -239,7 +239,7 @@ defineExpose({
           >
             <div
               v-html="card.content"
-              class="prose dark:prose-invert max-w-none"
+              class="prose max-w-none dark:prose-invert"
             ></div>
           </div>
         </el-card>

@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
+import type {
+  ForumSensitiveWordRecentHitStatisticsDto,
+  ForumSensitiveWordStatisticsDataDto,
+  ForumSensitiveWordTopHitStatisticsDto,
+} from '#/api/types';
+
 import { onMounted, ref } from 'vue';
 
 import { AnalysisChartCard, AnalysisOverview, Page } from '@vben/common-ui';
@@ -19,7 +25,7 @@ defineOptions({
   name: 'ForumSensitiveWordStatistics',
 });
 
-const statisticsData = ref<any>(null);
+const statisticsData = ref<ForumSensitiveWordStatisticsDataDto | null>(null);
 const loading = ref(false);
 
 const levelChartRef = ref<EchartsUIType>();
@@ -98,14 +104,14 @@ const recentHitWordsColumns = [
 
 const topHitWordsGridOptions = {
   columns: topHitWordsColumns,
-  data: [],
+  data: [] as ForumSensitiveWordTopHitStatisticsDto[],
   height: 400,
   emptyText: '暂无数据',
 };
 
 const recentHitWordsGridOptions = {
   columns: recentHitWordsColumns,
-  data: [],
+  data: [] as ForumSensitiveWordRecentHitStatisticsDto[],
   height: 400,
   emptyText: '暂无数据',
 };
@@ -117,10 +123,6 @@ const [TopHitWordsGrid] = useVbenVxeGrid({
 const [RecentHitWordsGrid] = useVbenVxeGrid({
   gridOptions: recentHitWordsGridOptions,
 });
-
-async function refreshData() {
-  await fetchStatistics();
-}
 
 async function fetchStatistics() {
   loading.value = true;

@@ -1,4 +1,4 @@
-import type { BaseClientPageDto } from '#/api/types';
+import type { BaseAppPageDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -131,8 +131,9 @@ export const formSchema: EsFormSchema = [
 ];
 
 // 表格列配置
-export const pageColumns =
-  formSchemaTransform.toTableColumns<BaseClientPageDto>(formSchema, {
+export const pageColumns = formSchemaTransform.toTableColumns<BaseAppPageDto>(
+  formSchema,
+  {
     description: {
       hide: true,
     },
@@ -169,7 +170,8 @@ export const pageColumns =
       },
       minWidth: 200,
     },
-  });
+  },
+);
 
 // 搜索表单配置
 export const pageFilter = formSchemaTransform
@@ -190,4 +192,4 @@ export const pageFilter = formSchemaTransform
       show: true,
     },
   })
-  .reverse();
+  .toReversed();

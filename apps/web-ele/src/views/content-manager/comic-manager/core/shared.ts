@@ -265,4 +265,4 @@ export const pageFilter = formSchemaTransform
       show: true,
     },
   })
-  .reverse();
+  .toReversed();

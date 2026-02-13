@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  AuditPageRequest,
+  BaseAuditDto,
   BaseUserDto,
   ChangePasswordDto,
-  RequestLogDto,
-  RequestLogPageRequest,
   UpdateUserDto,
 } from '#/api/types';
 
@@ -35,18 +35,18 @@ const userInfo = ref<BaseUserDto | null>(null);
 const loading = ref(false);
 
 // 登录历史表格配置
-const gridOptions: VxeGridProps<RequestLogDto> = {
+const gridOptions: VxeGridProps<BaseAuditDto> = {
   columns: loginHistortColumn,
   height: 'auto',
   proxyConfig: {
     ajax: {
       query: async ({ page }) => {
         if (!userInfo.value) return { list: [], total: 0 };
-        const params: RequestLogPageRequest = {
+        const params: AuditPageRequest = {
           pageIndex: --page.currentPage,
           pageSize: page.pageSize,
           username: userInfo.value.username,
-          requestPath: '/api/admin/user/user-login',
+          path: '/api/admin/user/user-login',
         };
 
         return await auditPageApi(params);
@@ -183,7 +183,11 @@ onMounted(async () => {
           <div v-if="userInfo" class="flex flex-1 flex-col overflow-hidden">
             <!-- 头像区域 -->
             <div class="mb-4 flex flex-shrink-0 flex-col items-center">
-              <el-avatar :size="120" :src="userInfo.avatar" class="mb-4" />
+              <el-avatar
+                :size="120"
+                :src="userInfo.avatar || undefined"
+                class="mb-4"
+              />
               <h3 class="mb-2 text-xl font-semibold text-foreground">
                 {{ userInfo.username }}
               </h3>

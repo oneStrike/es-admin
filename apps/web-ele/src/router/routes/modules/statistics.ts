@@ -7,13 +7,13 @@ const routes: RouteRecordRaw[] = [
       order: 995,
       title: '统计管理',
     },
-    name: 'Dashboard',
-    path: '/dashboard',
+    name: 'StatisticsManager',
+    path: '/statistics',
     children: [
       {
-        name: 'Analytics',
-        path: '/analytics',
-        component: () => import('#/views/dashboard/analytics/index.vue'),
+        name: 'ComicStatistics',
+        path: '/statistics/comic',
+        component: () => import('#/views/statistics/comic/index.vue'),
         meta: {
           affixTab: true,
           icon: 'lucide:area-chart',
@@ -21,9 +21,9 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'Analytics',
-        path: '/analytics',
-        component: () => import('#/views/dashboard/analytics/index.vue'),
+        name: 'NovelStatistics',
+        path: '/statistics/novel',
+        component: () => import('#/views/statistics/novel/index.vue'),
         meta: {
           affixTab: true,
           icon: 'lucide:area-chart',
@@ -31,9 +31,9 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'Analytics',
-        path: '/analytics',
-        component: () => import('#/views/dashboard/analytics/index.vue'),
+        name: 'ForumStatistics',
+        path: '/statistics/forum',
+        component: () => import('#/views/statistics/forum/index.vue'),
         meta: {
           affixTab: true,
           icon: 'lucide:area-chart',

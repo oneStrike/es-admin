@@ -7,12 +7,12 @@ const routes: RouteRecordRaw[] = [
       order: 997,
       title: '综合管理',
     },
-    name: 'Dashboard',
-    path: '/dashboard',
+    name: 'ComprehensiveManager',
+    path: '/comprehensive-manager',
     children: [
       {
         name: 'ForumReports',
-        path: '/reports',
+        path: '/comprehensive-manager/reports',
         component: () => import('#/views/forum/reports/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'ForumSensitiveWord',
-        path: '/sensitive-word',
+        path: '/comprehensive-manager/sensitive-word',
         component: () => import('#/views/forum/sensitive-word/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'ForumSensitiveWordStatistics',
-        path: '/sensitive-word-statistics',
+        path: '/comprehensive-manager/sensitive-word-statistics',
         component: () =>
           import('#/views/forum/sensitive-word-statistics/index.vue'),
         meta: {

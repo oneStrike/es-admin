@@ -11,8 +11,8 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        name: 'Profile',
-        path: '/profile',
+        name: 'UserProfile',
+        path: '/user-manager/profile',
         component: () => import('#/views/system-manager/profile/index.vue'),
         meta: {
           title: '用户信息',
@@ -20,63 +20,63 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'ForumReports',
-        path: '/reports',
-        component: () => import('#/views/forum/reports/index.vue'),
+        name: 'UserMembers',
+        path: '/user-manager/members',
+        component: () => import('#/views/system-manager/members/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '会员管理',
         },
       },
       {
-        name: 'ForumReports',
-        path: '/reports',
-        component: () => import('#/views/forum/reports/index.vue'),
+        name: 'UserCheckIn',
+        path: '/user-manager/check-in',
+        component: () => import('#/views/system-manager/check-in/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '签到管理',
         },
       },
       {
-        name: 'ForumReports',
-        path: '/reports',
-        component: () => import('#/views/forum/reports/index.vue'),
+        name: 'UserTasks',
+        path: '/user-manager/tasks',
+        component: () => import('#/views/system-manager/tasks/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '任务管理',
         },
       },
       {
-        name: 'ForumPoints',
-        path: '/points',
-        component: () => import('#/views/forum/points/index.vue'),
+        name: 'UserGrowthPoints',
+        path: '/user-manager/points',
+        component: () => import('#/views/user-growth/points/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '积分管理',
         },
       },
       {
-        name: 'ForumExperience',
-        path: '/experience',
-        component: () => import('#/views/forum/experience/index.vue'),
+        name: 'UserGrowthExperience',
+        path: '/user-manager/experience',
+        component: () => import('#/views/user-growth/experience/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '经验管理',
         },
       },
       {
-        name: 'ForumLevelRules',
-        path: '/level-rules',
-        component: () => import('#/views/forum/level-rules/index.vue'),
+        name: 'UserGrowthLevelRules',
+        path: '/user-manager/level-rules',
+        component: () => import('#/views/user-growth/level-rules/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '等级管理',
         },
       },
       {
-        name: 'ForumBadges',
-        path: '/badges',
-        component: () => import('#/views/forum/badges/index.vue'),
+        name: 'UserGrowthBadges',
+        path: '/user-manager/badges',
+        component: () => import('#/views/user-growth/badges/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '徽章管理',

@@ -17,7 +17,7 @@ export async function clearDirectory(dirPath: string): Promise<void> {
         await fs.unlink(filePath);
       }
     }
-    console.log(`已清空目录: ${dirPath}`);
+    console.warn(`已清空目录: ${dirPath}`);
   } catch (error: any) {
     if (error.code !== 'ENOENT') {
       console.error('清空目录失败:', error);
@@ -45,7 +45,7 @@ export async function writeFile(
 ): Promise<void> {
   try {
     await fs.writeFile(filePath, content, 'utf8');
-    console.log(`已生成文件: ${filePath}`);
+    console.warn(`已生成文件: ${filePath}`);
   } catch (error) {
     console.error(`写入文件失败 ${filePath}:`, error);
   }

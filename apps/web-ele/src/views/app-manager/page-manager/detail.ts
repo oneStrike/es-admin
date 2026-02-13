@@ -1,4 +1,4 @@
-import type { BaseClientPageDto } from '#/api/types';
+import type { BaseAppPageDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 import { getOptionLabel } from '#/utils/options';
@@ -11,7 +11,7 @@ import { accessLevelObj } from './shared';
  * @param detail 页面配置详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: BaseClientPageDto) {
+export function getDetailCards(detail: BaseAppPageDto) {
   // 计算权限级别信息
   const accessLevelInfo = accessLevelObj[detail.accessLevel];
 
@@ -59,7 +59,7 @@ export function getDetailCards(detail: BaseClientPageDto) {
         },
         {
           label: '页面描述',
-          value: detail?.pageDescription || '-',
+          value: detail?.description || '-',
           type: 'text' as const,
         },
         {

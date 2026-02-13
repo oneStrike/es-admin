@@ -7,7 +7,7 @@ import type {
   UploadRequestOptions,
 } from 'element-plus';
 
-import type { UploadResponseDto } from '#/apis/types/upload/upload';
+import type { UploadResponseDto } from '#/api/types/upload/upload';
 import type { EsUploadProps } from '#/components/es-upload/types';
 
 import { ElMessage } from 'element-plus';

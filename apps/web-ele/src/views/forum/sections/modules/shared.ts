@@ -127,4 +127,4 @@ export const sectionFilter = formSchemaTransform
       show: true,
     },
   })
-  .reverse();
+  .toReversed();

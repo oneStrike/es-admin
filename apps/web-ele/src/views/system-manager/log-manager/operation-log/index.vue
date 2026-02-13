@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { RequestLogDto, RequestLogPageRequest } from '#/api/types';
+import type { AuditPageRequest, BaseAuditDto } from '#/api/types';
 
 import { Page } from '@vben/common-ui';
 
@@ -11,7 +11,7 @@ import { createSearchFormOptions } from '#/utils';
 import { operationLogColumns, searchFormSchema } from './shared';
 
 // 表格配置
-const gridOptions: VxeGridProps<RequestLogDto> = {
+const gridOptions: VxeGridProps<BaseAuditDto> = {
   columns: operationLogColumns,
   height: 'auto',
   proxyConfig: {
@@ -23,7 +23,7 @@ const gridOptions: VxeGridProps<RequestLogDto> = {
           [startDate, endDate] = formValues.dateRange;
         }
 
-        const params: RequestLogPageRequest = {
+        const params: AuditPageRequest = {
           pageIndex: --page.currentPage,
           pageSize: page.pageSize,
           username: formValues.username || undefined,

@@ -3,7 +3,7 @@ export type ConfigGetResponse = BaseForumConfigDto;
 /**
  *  类型定义 [ConfigUpdateRequest]
  *  @来源 论坛模块/系统配置
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ConfigUpdateRequest = UpdateForumConfigDto;
 
@@ -16,7 +16,7 @@ export type ConfigHistoryResponse = ForumConfigHistoryItemDto[];
 /**
  *  类型定义 [ConfigRestoreRequest]
  *  @来源 论坛模块/系统配置
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ConfigRestoreRequest = IdDto;
 
@@ -25,7 +25,7 @@ export type ConfigRestoreResponse = BaseForumConfigDto;
 /**
  *  类型定义 [ConfigDeleteRequest]
  *  @来源 论坛模块/系统配置
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ConfigDeleteRequest = IdDto;
 
@@ -34,7 +34,7 @@ export type ConfigDeleteResponse = BaseForumConfigDto;
 /**
  *  类型定义 [BaseForumConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type BaseForumConfigDto = {
   /** 任意合法数值 */
@@ -113,7 +113,7 @@ export type BaseForumConfigDto = {
 /**
  *  类型定义 [UpdateForumConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type UpdateForumConfigDto = {
   /** 任意合法数值 */
@@ -194,7 +194,7 @@ export type UpdateForumConfigDto = {
 /**
  *  类型定义 [ForumConfigHistoryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type ForumConfigHistoryItemDto = {
   /** 任意合法数值 */
@@ -227,7 +227,7 @@ export type ForumConfigHistoryItemDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-05 22:56:49
+ *  @更新时间 2026-02-13 00:11:45
  */
 export type IdDto = {
   /** 任意合法数值 */

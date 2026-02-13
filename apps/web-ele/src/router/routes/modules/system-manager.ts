@@ -42,8 +42,8 @@ const routes: RouteRecordRaw[] = [
       },
 
       {
-        name: 'UserManager',
-        path: '/user-manager',
+        name: 'SystemUserManager',
+        path: '/system-manager/user-manager',
         component: () =>
           import('#/views/system-manager/user-manager/index.vue'),
         meta: {

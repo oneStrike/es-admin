@@ -103,4 +103,4 @@ export const sectionGroupFilter = formSchemaTransform
       show: true,
     },
   })
-  .reverse();
+  .toReversed();

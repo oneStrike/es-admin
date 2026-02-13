@@ -359,6 +359,8 @@ export interface VbenFormProps<
    * 操作按钮是否反转（提交按钮前置）
    */
   actionButtonsReverse?: boolean;
+  actionLayout?: 'inline' | 'newLine' | 'rowEnd';
+  actionPosition?: 'center' | 'left' | 'right';
   /**
    * 表单操作区域class
    */

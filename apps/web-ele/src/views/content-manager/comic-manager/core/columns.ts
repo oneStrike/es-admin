@@ -1,6 +1,6 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseComicDto } from '#/api';
+import type { BaseComicDto } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formSchemaTransform } from '#/utils';
@@ -60,7 +60,10 @@ export const comicColumns = ({
         name: 'CellTag',
         props: {
           formatter: (row: BaseComicDto['comicAuthors']) => {
-            return row?.map((author) => author.author.name);
+            return row?.map(
+              (author: BaseComicDto['comicAuthors'][number]) =>
+                author.author.name,
+            );
           },
         },
       },
@@ -83,7 +86,10 @@ export const comicColumns = ({
         name: 'CellTag',
         props: {
           formatter: (row: BaseComicDto['comicCategories']) => {
-            return row?.map((category) => category.category.name);
+            return row?.map(
+              (category: BaseComicDto['comicCategories'][number]) =>
+                category.category.name,
+            );
           },
         },
       },
@@ -95,8 +101,10 @@ export const comicColumns = ({
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseComicDto['comicCategories']) => {
-            return row?.map((tag) => tag.tag.name);
+          formatter: (row: BaseComicDto['comicTags']) => {
+            return row?.map(
+              (tag: BaseComicDto['comicTags'][number]) => tag.tag.name,
+            );
           },
         },
       },
@@ -104,26 +112,30 @@ export const comicColumns = ({
 
     publisher: {
       width: 120,
-      formatter: ({ cellValue }) => {
-        return work_publisher?.labels[cellValue] ?? cellValue;
+      formatter: ({ cellValue }: { cellValue?: string }) => {
+        const value = cellValue ?? '';
+        return work_publisher?.labels[value] ?? value;
       },
     },
     region: {
       width: 120,
-      formatter: ({ cellValue }) => {
-        return work_region?.labels[cellValue] ?? cellValue;
+      formatter: ({ cellValue }: { cellValue?: string }) => {
+        const value = cellValue ?? '';
+        return work_region?.labels[value] ?? value;
       },
     },
     language: {
       width: 120,
-      formatter: ({ cellValue }) => {
-        return work_language?.labels[cellValue] ?? cellValue;
+      formatter: ({ cellValue }: { cellValue?: string }) => {
+        const value = cellValue ?? '';
+        return work_language?.labels[value] ?? value;
       },
     },
     ageRating: {
       width: 120,
-      formatter: ({ cellValue }) => {
-        return work_age_rating?.labels[cellValue] ?? cellValue;
+      formatter: ({ cellValue }: { cellValue?: string }) => {
+        const value = cellValue ?? '';
+        return work_age_rating?.labels[value] ?? value;
       },
     },
     isHot: {

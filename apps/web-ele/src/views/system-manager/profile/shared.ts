@@ -1,10 +1,10 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
-import type { RequestLogDto } from '#/api/types';
+import type { BaseAuditDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formatUTC } from '#/utils';
 
-export const loginHistortColumn: VxeGridPropTypes.Columns<RequestLogDto> = [
+export const loginHistortColumn: VxeGridPropTypes.Columns<BaseAuditDto> = [
   {
     title: '序号',
     type: 'seq',

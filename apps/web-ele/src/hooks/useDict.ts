@@ -1,5 +1,7 @@
 import type { Recordable } from '@vben/types';
 
+import type { BaseDictionaryItemDto } from '#/api/types';
+
 /**
  * 数据字典
  */
@@ -11,12 +13,12 @@ export interface UseDictItem {
 }
 
 export async function useDict(codes: string): Promise<Recordable<UseDictItem>> {
-  const data = await dictionaryItemsApi({
+  const { list = [] } = await dictionaryItemsApi({
     dictionaryCode: codes,
     isEnabled: true,
   });
   const returnValue: Record<string, UseDictItem> = {};
-  data?.forEach((item) => {
+  list.forEach((item: BaseDictionaryItemDto) => {
     // 使用中间变量解决TypeScript类型推断问题
     let dictItem = returnValue[item.dictionaryCode];
     if (!dictItem) {

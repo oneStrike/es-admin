@@ -24,11 +24,11 @@ export async function generateAPIFromOpenAPI(
 
   try {
     // 获取OpenAPI文档
-    console.log('正在获取OpenAPI文档...');
+    console.warn('正在获取OpenAPI文档...');
     await generator.fetchOpenAPISpec();
 
     // 生成代码
-    console.log('正在生成API代码...');
+    console.warn('正在生成API代码...');
     const files = generator.generateAPICode();
 
     return files;
@@ -49,11 +49,11 @@ export async function generateAPI(
   const typesDir = finalConfig.typesOutputDir;
 
   try {
-    console.log('开始生成API代码...');
+    console.warn('开始生成API代码...');
 
     // 生成前清理文件
     if (finalConfig.cleanBeforeGenerate) {
-      console.log('正在清理之前的文件...');
+      console.warn('正在清理之前的文件...');
       await clearDirectory(outputDir);
       await clearDirectory(typesDir);
     }
@@ -66,11 +66,11 @@ export async function generateAPI(
     const generator = new OpenAPIGenerator(finalConfig);
 
     // 获取OpenAPI文档
-    console.log('正在获取OpenAPI文档...');
+    console.warn('正在获取OpenAPI文档...');
     await generator.fetchOpenAPISpec();
 
     // 生成代码
-    console.log('正在生成API代码...');
+    console.warn('正在生成API代码...');
     const originalFiles = generator.generateAPICode();
 
     // 检查是否有文件名为 index.ts 的冲突
@@ -88,7 +88,7 @@ export async function generateAPI(
       // 如果存在 index.ts 冲突，将其重命名为 indexApi.ts
       if (hasIndexConflict && finalFileName === 'index.ts') {
         finalFileName = 'indexApi.ts';
-        console.log(
+        console.warn(
           `⚠️  检测到文件名冲突，将 ${finalFileName.replace('Api', '')} 重命名为 ${finalFileName}`,
         );
       }
@@ -182,7 +182,7 @@ export async function generateAPI(
       await writeFile(typeIndexPath, typeIndexContent);
     }
 
-    console.log(`✅ API代码生成完成！共生成 ${files.length} 个模块`);
+    console.warn(`✅ API代码生成完成！共生成 ${files.length} 个模块`);
   } catch (error) {
     console.error('❌ API代码生成失败:', error);
     throw error;
@@ -195,11 +195,12 @@ if (process.argv[1] && process.argv[1].endsWith('index.ts')) {
   (async () => {
     try {
       await generateAPI();
-      console.log('🎉 正在运行eslint和prettier！请稍等...');
+      console.warn('🎉 正在运行eslint和prettier！请稍等...');
       // 任务完成后，让Node.js事件循环自然结束
     } catch (error) {
       console.error('❌ 任务执行失败:', error);
-      process.exit(1); // 只有在失败时才退出
+      process.exitCode = 1;
+      throw error;
     }
   })();
 }

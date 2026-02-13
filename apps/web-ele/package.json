@@ -46,12 +46,12 @@
     "@vueuse/core": "catalog:",
     "dayjs": "catalog:",
     "element-plus": "catalog:",
+    "es-toolkit": "catalog:",
     "node-forge": "catalog:",
     "pinia": "catalog:",
     "tinymce": "catalog:",
     "vue": "catalog:",
-    "vue-router": "catalog:",
-    "es-toolkit": "catalog:"
+    "vue-router": "catalog:"
   },
   "devDependencies": {
     "@types/node-forge": "catalog:",

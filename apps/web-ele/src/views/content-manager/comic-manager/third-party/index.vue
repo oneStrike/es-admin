@@ -87,11 +87,10 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 async function showDetail(item: ThirdPartySearchResponse[0]) {
-  const data = await thirdPartyDetailApi({
+  await thirdPartyDetailApi({
     platform: item.platform,
     comicId: item.id,
   });
-  console.log(data);
 }
 </script>
 

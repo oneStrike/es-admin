@@ -1,4 +1,4 @@
-import type { CreateSensitiveWordDto } from '#/api/types';
+import type { BaseForumSensitiveWordDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
@@ -8,7 +8,7 @@ import {
   sensitiveWordTypeOptions,
 } from './constants';
 
-export function getDetailCards(detail: CreateSensitiveWordDto) {
+export function getDetailCards(detail: BaseForumSensitiveWordDto) {
   return [
     {
       title: '基本信息',

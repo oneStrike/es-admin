@@ -160,8 +160,8 @@ defineExpose({
 
     .color-tag-content {
       display: flex;
-      align-items: center;
       gap: 8px;
+      align-items: center;
 
       .name-input {
         width: 100px;

@@ -135,9 +135,9 @@ async function deleteTag(row: BaseTagDto): Promise<void> {
       <template #isEnabled="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isEnabled"
+          :inactive-value="false"
           :loading="row.loading"
-          :model-value="row.isEnabled"
+          :model-value="!!row.isEnabled"
           @change="toggleEnableStatus(row)"
         />
       </template>
@@ -154,7 +154,7 @@ async function deleteTag(row: BaseTagDto): Promise<void> {
           @confirm="deleteTag(row)"
         >
           <template #reference>
-            <el-button link type="danger" :disabled="row.isEnabled">
+            <el-button link type="danger" :disabled="!!row.isEnabled">
               删除
             </el-button>
           </template>
