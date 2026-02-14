@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useVbenModal } from '@vben/common-ui';
 
-import { formSchema } from './modules/shared';
+import { formSchema } from './modules/model/shared';
 
 defineOptions({
   name: 'ChangesDetailModal',

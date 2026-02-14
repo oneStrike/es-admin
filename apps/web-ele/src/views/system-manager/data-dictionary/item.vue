@@ -21,7 +21,7 @@ import {
   dictionaryItemColumns,
   dictionarySearchSchema,
   itemFormSchema,
-} from './shared';
+} from './model/shared';
 
 type ShareData = {
   record: BaseDictionaryDto;

@@ -8,7 +8,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { auditPageApi } from '#/api';
 import { createSearchFormOptions } from '#/utils';
 
-import { loginLogColumns, searchFormSchema } from './shared';
+import { loginLogColumns, searchFormSchema } from './model/shared';
 
 // 表格配置
 const gridOptions: VxeGridProps<BaseAuditDto> = {

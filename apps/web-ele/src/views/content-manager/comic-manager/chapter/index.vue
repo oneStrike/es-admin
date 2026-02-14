@@ -24,10 +24,10 @@ import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
-import { chapterColumns } from './columns';
 import ContentManager from './content-manager.vue';
-import { getDetailCards } from './detail';
-import { chapterFormSchema, chapterSearchFormSchema } from './form';
+import { chapterColumns } from './model/columns';
+import { getDetailCards } from './model/detail';
+import { chapterFormSchema, chapterSearchFormSchema } from './model/form';
 
 type ShareData = { comicId: number; comicName: string };
 

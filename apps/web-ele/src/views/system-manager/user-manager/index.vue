@@ -31,7 +31,7 @@ import {
   userColumns,
   userFilter,
   userRoleObj,
-} from './shared';
+} from './model/shared';
 
 const userStore = useUserStore();
 

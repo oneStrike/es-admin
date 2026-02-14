@@ -23,7 +23,11 @@ import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
-import { categoryColumns, categorySearchSchema, formSchema } from './shared';
+import {
+  categoryColumns,
+  categorySearchSchema,
+  formSchema,
+} from './model/shared';
 
 /**
  * 通用的成功处理：提示 + 刷新（遵循DRY原则封装重复逻辑）

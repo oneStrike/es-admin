@@ -8,7 +8,14 @@
  * - 可访问性：语义化结构、aria 标签、sr-only 文案
  */
 
+import type { SystemHealthResponse, SystemReadyResponse } from '#/api/types';
+
+import { onMounted, ref } from 'vue';
+
 import { Page } from '@vben/common-ui';
+
+import { systemHealthApi, systemReadyApi } from '#/api';
+import { useMessage } from '#/hooks/useFeedback';
 
 type Disk = {
   mount: string;
@@ -32,6 +39,49 @@ type Alert = {
   time: string; // 已格式化时间
   title: string;
 };
+
+const healthData = ref<null | SystemHealthResponse>(null);
+const readyData = ref<null | SystemReadyResponse>(null);
+const statusLoading = ref(false);
+const healthUpdatedAt = ref('');
+
+function statusBadgeClass(status?: string) {
+  const value = status?.toLowerCase();
+  if (value === 'up' || value === 'healthy' || value === 'ready') {
+    return 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/20';
+  }
+  if (value === 'down' || value === 'unhealthy') {
+    return 'bg-rose-50 text-rose-700 ring-1 ring-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:ring-rose-400/20';
+  }
+  return 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-400/20';
+}
+
+function statusText(status?: string) {
+  return status ? status.toUpperCase() : '-';
+}
+
+function formatJson(data: unknown) {
+  return data ? JSON.stringify(data, null, 2) : '-';
+}
+
+async function loadHealthStatus() {
+  statusLoading.value = true;
+  try {
+    const [health, ready] = await Promise.all([
+      systemHealthApi(),
+      systemReadyApi(),
+    ]);
+    healthData.value = health;
+    readyData.value = ready;
+    healthUpdatedAt.value = new Date().toLocaleString();
+  } catch {
+    useMessage.error('获取系统健康状态失败');
+  } finally {
+    statusLoading.value = false;
+  }
+}
+
+onMounted(loadHealthStatus);
 
 /* -------------------------
    1) 静态演示数据
@@ -220,8 +270,10 @@ function ringProps(pct: number, size = 92, stroke = 10) {
             系统状态
           </h1>
           <p class="text-sm text-neutral-500 dark:text-neutral-400">
-            静态演示数据 · 最后更新于
-            <time :datetime="lastUpdated">{{ lastUpdated }}</time>
+            健康检查数据 · 最后更新于
+            <time :datetime="healthUpdatedAt || lastUpdated">
+              {{ healthUpdatedAt || lastUpdated }}
+            </time>
           </p>
         </div>
 
@@ -229,9 +281,10 @@ function ringProps(pct: number, size = 92, stroke = 10) {
         <div class="flex items-center gap-2">
           <button
             type="button"
-            disabled
+            :disabled="statusLoading"
             class="inline-flex items-center gap-2 rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-900"
-            aria-disabled="true"
+            :aria-disabled="statusLoading"
+            @click="loadHealthStatus"
           >
             <!-- 刷新图标 -->
             <svg
@@ -273,6 +326,99 @@ function ringProps(pct: number, size = 92, stroke = 10) {
           </button>
         </div>
       </header>
+
+      <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div
+          class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-950"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <h2
+              class="text-sm font-semibold text-neutral-900 dark:text-neutral-100"
+            >
+              健康检查
+            </h2>
+            <span
+              class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+              :class="statusBadgeClass(healthData?.status)"
+            >
+              {{ statusText(healthData?.status) }}
+            </span>
+          </div>
+          <div
+            class="mt-3 space-y-3 text-xs text-neutral-600 dark:text-neutral-300"
+          >
+            <div>
+              <div class="mb-1 text-neutral-500 dark:text-neutral-400">
+                信息
+              </div>
+              <pre class="whitespace-pre-wrap break-all">{{
+                formatJson(healthData?.info)
+              }}</pre>
+            </div>
+            <div>
+              <div class="mb-1 text-neutral-500 dark:text-neutral-400">
+                错误
+              </div>
+              <pre class="whitespace-pre-wrap break-all">{{
+                formatJson(healthData?.error)
+              }}</pre>
+            </div>
+            <div>
+              <div class="mb-1 text-neutral-500 dark:text-neutral-400">
+                详情
+              </div>
+              <pre class="whitespace-pre-wrap break-all">{{
+                formatJson(healthData?.details)
+              }}</pre>
+            </div>
+          </div>
+        </div>
+        <div
+          class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-950"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <h2
+              class="text-sm font-semibold text-neutral-900 dark:text-neutral-100"
+            >
+              就绪检查
+            </h2>
+            <span
+              class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+              :class="statusBadgeClass(readyData?.status)"
+            >
+              {{ statusText(readyData?.status) }}
+            </span>
+          </div>
+          <div
+            class="mt-3 space-y-3 text-xs text-neutral-600 dark:text-neutral-300"
+          >
+            <div>
+              <div class="mb-1 text-neutral-500 dark:text-neutral-400">
+                信息
+              </div>
+              <pre class="whitespace-pre-wrap break-all">{{
+                formatJson(readyData?.info)
+              }}</pre>
+            </div>
+            <div>
+              <div class="mb-1 text-neutral-500 dark:text-neutral-400">
+                错误
+              </div>
+              <pre class="whitespace-pre-wrap break-all">{{
+                formatJson(readyData?.error)
+              }}</pre>
+            </div>
+            <div>
+              <div class="mb-1 text-neutral-500 dark:text-neutral-400">
+                详情
+              </div>
+              <pre class="whitespace-pre-wrap break-all">{{
+                formatJson(readyData?.details)
+              }}</pre>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- 核心 KPI 区：4 张卡片 -->
       <section

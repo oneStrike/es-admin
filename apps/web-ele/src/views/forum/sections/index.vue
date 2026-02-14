@@ -37,10 +37,14 @@ import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from './modules/detail';
-import { getDetailCards as getSectionGroupDetailCards } from './modules/sectionGroupDetail';
-import { formSchema as sectionGroupFormSchema } from './modules/sectionGroupShared';
-import { formSchema, sectionColumns, sectionFilter } from './modules/shared';
+import { getDetailCards } from './modules/model/detail';
+import { getDetailCards as getSectionGroupDetailCards } from './modules/model/sectionGroupDetail';
+import { formSchema as sectionGroupFormSchema } from './modules/model/sectionGroupShared';
+import {
+  formSchema,
+  sectionColumns,
+  sectionFilter,
+} from './modules/model/shared';
 
 // 当前板块分组
 const currentSectionGroup = ref<BaseForumSectionGroupDto | null>(null);

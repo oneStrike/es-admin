@@ -1,16 +1,20 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { BaseAppPageDto, UpdateAppPageDto } from '#/api/types';
+import type {
+  CreateAgreementDto,
+  ListOrPageAgreementResponseDto,
+  UpdateAgreementDto,
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  appPageBatchDeleteApi,
-  appPageCreateApi,
-  appPageDetailByIdApi,
-  appPagePageApi,
-  appPageUpdateApi,
+  agreementCreateApi,
+  agreementDeleteApi,
+  agreementDetailApi,
+  agreementPageApi,
+  agreementUpdateApi,
 } from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -19,26 +23,19 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './model/detail';
 import {
-  accessLevelObj,
+  agreementColumns,
+  agreementFilter,
+  booleanTagObj,
   formSchema,
-  pageColumns,
-  pageFilter,
 } from './model/shared';
 
-const gridOptions: VxeGridProps<BaseAppPageDto> = {
-  columns: pageColumns,
+const gridOptions: VxeGridProps<ListOrPageAgreementResponseDto> = {
+  columns: agreementColumns,
   height: 'auto',
   proxyConfig: {
     ajax: {
-      query: async ({ page }, formValues) => {
-        if (formValues.enablePlatform) {
-          formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
-        }
-        return await appPagePageApi({
-          pageIndex: --page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
+      query: async ({ page, sorts }, formValues) => {
+        return await agreementPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
@@ -50,29 +47,33 @@ const [Form, formApi] = useVbenModal({
 });
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(pageFilter),
+  formOptions: createSearchFormOptions(agreementFilter),
   gridOptions,
 });
 
-async function openFormModal(row?: BaseAppPageDto) {
-  let record;
-  if (row) {
-    record = await appPageDetailByIdApi({ id: row.id });
-  }
-  formApi.setData({ title: '页面配置', record }).open();
+function resolveBooleanTag(value?: boolean | null) {
+  return value ? booleanTagObj.true : booleanTagObj.false;
 }
 
-async function handleSubmit(values: BaseAppPageDto | UpdateAppPageDto) {
+async function openFormModal(row?: ListOrPageAgreementResponseDto) {
+  let record;
+  if (row) {
+    record = await agreementDetailApi({ id: row.id });
+  }
+  formApi.setData({ title: '协议管理', record }).open();
+}
+
+async function handleSubmit(values: CreateAgreementDto | UpdateAgreementDto) {
   await (values?.id
-    ? appPageUpdateApi(values as UpdateAppPageDto)
-    : appPageCreateApi(values as BaseAppPageDto));
+    ? agreementUpdateApi(values as UpdateAgreementDto)
+    : agreementCreateApi(values as CreateAgreementDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function deletePage(record: BaseAppPageDto) {
-  await appPageBatchDeleteApi({ ids: [record.id] });
+async function deleteAgreement(record: ListOrPageAgreementResponseDto) {
+  await agreementDeleteApi({ id: record.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
@@ -80,17 +81,6 @@ async function deletePage(record: BaseAppPageDto) {
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
 });
-
-async function toggleEnableStatus(record: BaseAppPageDto) {
-  record.loading = true;
-  await appPageUpdateApi({
-    id: record.id,
-    isEnabled: !record.isEnabled,
-  });
-  record.loading = false;
-  useMessage.success('操作成功');
-  gridApi.reload();
-}
 </script>
 
 <template>
@@ -102,20 +92,24 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
         </el-button>
       </template>
 
-      <template #accessLevel="{ row }">
-        <el-text :style="{ color: accessLevelObj[row.accessLevel]?.color }">
-          {{ accessLevelObj[row.accessLevel]?.label }}
-        </el-text>
+      <template #isPublished="{ row }">
+        <el-tag :type="resolveBooleanTag(row.isPublished).type">
+          {{ resolveBooleanTag(row.isPublished).label }}
+        </el-tag>
       </template>
-      <template #isEnabled="{ row }">
-        <el-switch
-          :active-value="true"
-          :inactive-value="row.isEnabled"
-          :loading="row.loading"
-          :model-value="row.isEnabled"
-          @change="toggleEnableStatus(row)"
-        />
+
+      <template #showInAuth="{ row }">
+        <el-tag :type="resolveBooleanTag(row.showInAuth).type">
+          {{ resolveBooleanTag(row.showInAuth).label }}
+        </el-tag>
       </template>
+
+      <template #isForce="{ row }">
+        <el-tag :type="resolveBooleanTag(row.isForce).type">
+          {{ resolveBooleanTag(row.isForce).label }}
+        </el-tag>
+      </template>
+
       <template #actions="{ row }">
         <div class="my-1">
           <el-button
@@ -134,7 +128,7 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
             title="确认删除当前项?"
             confirm-button-text="确认"
             cancel-button-text="取消"
-            @confirm="deletePage(row)"
+            @confirm="deleteAgreement(row)"
           >
             <template #reference>
               <el-button link type="danger">删除</el-button>
@@ -147,12 +141,10 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      title="页面详情"
-      :api="appPageDetailByIdApi"
+      title="协议详情"
+      :api="agreementDetailApi"
       :cards="getDetailCards"
-      class="!w-[800px]"
+      class="!w-[900px]"
     />
   </Page>
 </template>
-
-<style scoped></style>

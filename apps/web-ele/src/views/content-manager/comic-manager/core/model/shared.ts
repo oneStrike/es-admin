@@ -8,7 +8,7 @@ import { optionsToMap } from '#/utils/options';
 import {
   authorColumns,
   authorSearchSchema,
-} from '#/views/content-manager/author-manager/shared';
+} from '#/views/content-manager/author-manager/model/shared';
 
 // 连载状态配置
 export const serialStatus = [

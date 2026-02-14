@@ -30,9 +30,9 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import Chapter from '../chapter/index.vue';
 import ThirdPartyPlatform from '../third-party/index.vue';
-import { comicColumns } from './columns';
-import { getDetailCards } from './detail';
-import { formSchema, pageFilter } from './shared';
+import { comicColumns } from './model/columns';
+import { getDetailCards } from './model/detail';
+import { formSchema, pageFilter } from './model/shared';
 
 const gridOptions: VxeGridProps<BaseComicDto> = {
   columns: [],

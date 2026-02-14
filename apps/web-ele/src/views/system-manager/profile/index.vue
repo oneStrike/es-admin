@@ -27,7 +27,7 @@ import {
   editFormSchema,
   loginHistortColumn,
   passwordFormSchema,
-} from './shared';
+} from './model/shared';
 
 const userStore = useUserStore();
 // 用户信息

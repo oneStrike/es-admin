@@ -21,8 +21,8 @@ import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 
-import { getDetailCards } from './modules/detail';
-import { formSchema, pageColumns } from './modules/shared';
+import { getDetailCards } from './modules/model/detail';
+import { formSchema, pageColumns } from './modules/model/shared';
 
 const gridOptions: VxeGridProps<BaseUserLevelRuleDto> = {
   columns: pageColumns,

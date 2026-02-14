@@ -8,7 +8,7 @@ import { configGetApi, configResetApi, configUpdateApi } from '#/api';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 
 import History from './history-modal.vue';
-import { formSchema } from './modules/shared';
+import { formSchema } from './modules/model/shared';
 
 // 定义页面组件名称
 defineOptions({

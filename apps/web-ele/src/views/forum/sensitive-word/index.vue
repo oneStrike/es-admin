@@ -21,7 +21,11 @@ import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { formSchema, pageColumns, searchFormSchema } from './modules/shared';
+import {
+  formSchema,
+  pageColumns,
+  searchFormSchema,
+} from './modules/model/shared';
 
 const router = useRouter();
 

@@ -14,7 +14,7 @@ import {
   dictionaryColumns,
   dictionarySearchSchema,
   formSchema,
-} from './shared';
+} from './model/shared';
 
 const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
   gridOptions: {

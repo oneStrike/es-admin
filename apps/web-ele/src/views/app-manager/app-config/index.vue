@@ -11,7 +11,7 @@ import { useVbenForm } from '#/adapter/form';
 import { appConfigActiveApi, appConfigUpdateApi } from '#/api';
 import { useMessage } from '#/hooks/useFeedback';
 
-import { formSchema } from './modules/shared';
+import { formSchema } from './modules/model/shared';
 
 defineOptions({
   name: 'AppConfig',

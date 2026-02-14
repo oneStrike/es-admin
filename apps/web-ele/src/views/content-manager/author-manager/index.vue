@@ -26,8 +26,8 @@ import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
-import { getDetailCards } from './detail';
-import { authorColumns, authorSearchSchema, formSchema } from './shared';
+import { getDetailCards } from './model/detail';
+import { authorColumns, authorSearchSchema, formSchema } from './model/shared';
 
 /**
  * 通用的成功处理：提示 + 刷新（遵循DRY原则封装重复逻辑）

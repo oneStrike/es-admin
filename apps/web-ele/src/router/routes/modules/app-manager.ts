@@ -20,6 +20,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'Agreement',
+        path: '/agreement',
+        component: () => import('#/views/app-manager/agreement/index.vue'),
+        meta: {
+          title: '协议管理',
+          icon: 'codex:dot-circle',
+        },
+      },
+      {
         name: 'PageManager',
         path: '/page-manager',
         component: () => import('#/views/app-manager/page-manager/index.vue'),

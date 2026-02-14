@@ -15,7 +15,7 @@ import {
 import { useMessage } from '#/hooks/useFeedback';
 import { useAuthStore } from '#/store';
 
-import { formSchema } from './modules/shared';
+import { formSchema } from './modules/model/shared';
 
 defineOptions({
   name: 'SystemConfig',

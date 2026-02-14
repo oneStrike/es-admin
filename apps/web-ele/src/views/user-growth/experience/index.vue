@@ -22,8 +22,12 @@ import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
-import { getDetailCards } from './modules/detail';
-import { formSchema, pageColumns, searchFormSchema } from './modules/shared';
+import { getDetailCards } from './modules/model/detail';
+import {
+  formSchema,
+  pageColumns,
+  searchFormSchema,
+} from './modules/model/shared';
 
 const gridOptions: VxeGridProps<BaseUserExperienceRuleDto> = {
   columns: pageColumns,

@@ -23,7 +23,7 @@ import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from './detail';
+import { getDetailCards } from './model/detail';
 import {
   formSchema,
   getPublishStatus,
@@ -32,7 +32,7 @@ import {
   noticePriorityObj,
   noticeTypeObj,
   publishStatusObj,
-} from './shared';
+} from './model/shared';
 
 const clientPageObj = ref<Record<string, string>>({});
 
