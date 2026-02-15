@@ -51,6 +51,9 @@ const fileListDataType: EsUploadProps['returnDataType'] = props.returnDataType;
 function formatFileList(files: EsUploadProps['modelValue']) {
   if (Array.isArray(files)) {
     files.forEach((file) => {
+      if (!file) {
+        return;
+      }
       if (typeof file === 'string') {
         formatFileList(file);
       } else {
@@ -58,9 +61,9 @@ function formatFileList(files: EsUploadProps['modelValue']) {
         const uploadFile = file as UploadResponseDto;
         fileList.value.push({
           uid: random(1000, 9999),
-          size: uploadFile.fileSize,
-          name: uploadFile.originalName,
-          url: uploadFile.filePath,
+          size: uploadFile.fileSize ?? 0,
+          name: uploadFile.originalName ?? uploadFile.filename ?? '',
+          url: uploadFile.filePath ?? '',
           status: 'success',
           response: cloneDeep(uploadFile),
         } as UploadFile);
@@ -99,14 +102,14 @@ function formatFileList(files: EsUploadProps['modelValue']) {
           } as UploadFile);
         }
       }
-    } else if (files) {
+    } else if (files && typeof files === 'object') {
       // 处理单个 UploadResponseDto 对象
       const uploadFile = files as UploadResponseDto;
       fileList.value.push({
         uid: random(1000, 9999),
-        size: uploadFile.fileSize,
-        name: uploadFile.originalName,
-        url: uploadFile.filePath,
+        size: uploadFile.fileSize ?? 0,
+        name: uploadFile.originalName ?? uploadFile.filename ?? '',
+        url: uploadFile.filePath ?? '',
         status: 'success',
         response: cloneDeep(uploadFile),
       } as UploadFile);
