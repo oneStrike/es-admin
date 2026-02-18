@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'UserProfile',
         path: '/user-manager/profile',
-        component: () => import('#/views/system-manager/profile/index.vue'),
+        component: () => import('#/views/user-manager/profile/index.vue'),
         meta: {
           title: '用户信息',
           icon: 'codex:dot-circle',

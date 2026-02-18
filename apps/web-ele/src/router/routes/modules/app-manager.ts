@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'Notice',
-        path: '/notice',
+        path: '/app-manager/notice',
         component: () => import('#/views/app-manager/notice/index.vue'),
         meta: {
           title: '通知公告',
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Agreement',
-        path: '/agreement',
+        path: '/app-manager/agreement',
         component: () => import('#/views/app-manager/agreement/index.vue'),
         meta: {
           title: '协议管理',
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'PageManager',
-        path: '/page-manager',
+        path: '/app-manager/page-manager',
         component: () => import('#/views/app-manager/page-manager/index.vue'),
         meta: {
           title: '页面配置',
@@ -39,7 +39,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'AppConfig',
-        path: '/app-config',
+        path: '/app-manager/app-config',
         component: () => import('#/views/app-manager/app-config/index.vue'),
         meta: {
           title: '系统配置',

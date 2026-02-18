@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'Profile',
-        path: '/profile',
+        path: '/system-manager/profile',
         component: () => import('#/views/system-manager/profile/index.vue'),
         meta: {
           title: '个人中心',
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
 
       {
         name: 'DataDictionary',
-        path: '/data-dictionary',
+        path: '/system-manager/data-dictionary',
         component: () =>
           import('#/views/system-manager/data-dictionary/index.vue'),
         meta: {
@@ -53,7 +53,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'ServerStatus',
-        path: '/server-status',
+        path: '/system-manager/server-status',
         component: () =>
           import('#/views/system-manager/server-status/index.vue'),
         meta: {

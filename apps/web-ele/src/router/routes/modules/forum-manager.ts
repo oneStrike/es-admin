@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'ForumTopic',
-        path: '/topic',
+        path: '/forum/topic',
         component: () => import('#/views/forum/topic/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'ForumModerators',
-        path: '/moderators',
+        path: '/forum/moderators',
         component: () => import('#/views/forum/moderators/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -31,7 +31,7 @@ const routes: RouteRecordRaw[] = [
 
       {
         name: 'ForumSections',
-        path: '/sections',
+        path: '/forum/sections',
         component: () => import('#/views/forum/sections/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -41,7 +41,7 @@ const routes: RouteRecordRaw[] = [
 
       {
         name: 'ForumTags',
-        path: '/tags',
+        path: '/forum/tags',
         component: () => import('#/views/forum/tags/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
 
       {
         name: 'ForumSystemConfig',
-        path: '/system-config',
+        path: '/forum/system-config',
         component: () => import('#/views/forum/system-config/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
