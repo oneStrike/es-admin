@@ -83,11 +83,9 @@ export const formSchema: EsFormSchema = [
     label: '强制重新同意',
   },
   {
-    component: 'Input',
+    component: 'RichText',
     componentProps: {
-      placeholder: '请输入协议内容',
-      rows: 6,
-      type: 'textarea',
+      placeholder: '请输入协议内容...',
     },
     fieldName: 'content',
     label: '协议内容',

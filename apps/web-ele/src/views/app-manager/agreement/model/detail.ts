@@ -51,7 +51,7 @@ export function getDetailCards(detail: BaseAgreementDto) {
     {
       title: '协议内容',
       show: true,
-      type: 'text' as const,
+      type: 'html' as const,
       content: detail.content || '-',
     },
     {
