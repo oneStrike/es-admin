@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Recordable } from '@vben/types';
+
 import type { BaseDictionaryDto } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -21,7 +23,10 @@ const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
     columns: dictionaryColumns,
     proxyConfig: {
       ajax: {
-        query: async ({ page }, formValues) => {
+        query: async (
+          { page }: { page: { currentPage: number; pageSize: number } },
+          formValues: Recordable<any>,
+        ) => {
           return await Api.dictionaryPageApi({
             pageIndex: --page.currentPage,
             pageSize: page.pageSize,
