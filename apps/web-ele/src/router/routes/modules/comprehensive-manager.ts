@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'ForumReports',
-        path: '/comprehensive-manager/reports',
+        path: '/forum/reports',
         component: () => import('#/views/forum/reports/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'ForumSensitiveWord',
-        path: '/comprehensive-manager/sensitive-word',
+        path: '/forum/sensitive-word',
         component: () => import('#/views/forum/sensitive-word/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'ForumSensitiveWordStatistics',
-        path: '/comprehensive-manager/sensitive-word-statistics',
+        path: '/forum/sensitive-word-statistics',
         component: () =>
           import('#/views/forum/sensitive-word-statistics/index.vue'),
         meta: {

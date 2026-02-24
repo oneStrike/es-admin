@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'UserMembers',
-        path: '/user-manager/members',
+        path: '/system-manager/members',
         component: () => import('#/views/system-manager/members/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'UserCheckIn',
-        path: '/user-manager/check-in',
+        path: '/system-manager/check-in',
         component: () => import('#/views/system-manager/check-in/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -39,7 +39,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'UserTasks',
-        path: '/user-manager/tasks',
+        path: '/system-manager/tasks',
         component: () => import('#/views/system-manager/tasks/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'UserGrowthPoints',
-        path: '/user-manager/points',
+        path: '/user-growth/points',
         component: () => import('#/views/user-growth/points/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -57,7 +57,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'UserGrowthExperience',
-        path: '/user-manager/experience',
+        path: '/user-growth/experience',
         component: () => import('#/views/user-growth/experience/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'UserGrowthLevelRules',
-        path: '/user-manager/level-rules',
+        path: '/user-growth/level-rules',
         component: () => import('#/views/user-growth/level-rules/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'UserGrowthBadges',
-        path: '/user-manager/badges',
+        path: '/user-growth/badges',
         component: () => import('#/views/user-growth/badges/index.vue'),
         meta: {
           icon: 'codex:dot-circle',

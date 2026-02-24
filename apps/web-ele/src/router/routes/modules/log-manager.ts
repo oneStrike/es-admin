@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     name: 'LogManager',
-    path: '/log-manager',
+    path: '/system-manager/log-manager',
     meta: {
       order: 999,
       title: '日志管理',
@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'LoginLog',
-        path: '/log-manager/login-log',
+        path: '/system-manager/log-manager/login-log',
         component: () =>
           import('#/views/system-manager/log-manager/login-log/index.vue'),
         meta: {
@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'OperationLog',
-        path: '/log-manager/operation-log',
+        path: '/system-manager/log-manager/operation-log',
         component: () =>
           import('#/views/system-manager/log-manager/operation-log/index.vue'),
         meta: {
