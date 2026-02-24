@@ -1,11 +1,11 @@
-export type StatisticsFullResponse = ForumSensitiveWordStatisticsDataDto;
+export type StatisticsFullResponse = SensitiveWordStatisticsDataDto;
 
 /**
- *  类型定义 [ForumSensitiveWordStatisticsDataDto]
+ *  类型定义 [SensitiveWordStatisticsDataDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ForumSensitiveWordStatisticsDataDto = {
+export type SensitiveWordStatisticsDataDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 禁用的敏感词数量 */
@@ -16,29 +16,29 @@ export type ForumSensitiveWordStatisticsDataDto = {
   lastMonthHits: number;
   /* 最近一周命中次数 */
   lastWeekHits: number;
-  /* 按级别分组的统计信息 */
-  levelStatistics: ForumForumSensitiveWordLevelStatisticsDto[];
-  /* 最近命中的敏感词（Top 20） */
-  recentHitWords: ForumSensitiveWordRecentHitStatisticsDto[];
+  /* 级别统计 */
+  levelStatistics: SensitiveWordLevelStatisticsDto[];
+  /* 最近命中的敏感词 */
+  recentHitWords: SensitiveWordRecentHitStatisticsDto[];
   /* 今日命中次数 */
   todayHits: number;
-  /* 命中次数最多的敏感词（Top 20） */
-  topHitWords: ForumSensitiveWordTopHitStatisticsDto[];
-  /* 敏感词总命中次数 */
+  /* 热门敏感词 */
+  topHitWords: SensitiveWordTopHitStatisticsDto[];
+  /* 总命中次数 */
   totalHits: number;
   /* 敏感词总数 */
   totalWords: number;
 
-  /* 按类型分组的统计信息 */
-  typeStatistics: ForumForumSensitiveWordTypeStatisticsDto[];
+  /* 类型统计 */
+  typeStatistics: SensitiveWordTypeStatisticsDto[];
 };
 
 /**
- *  类型定义 [ForumForumSensitiveWordLevelStatisticsDto]
+ *  类型定义 [SensitiveWordLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ForumForumSensitiveWordLevelStatisticsDto = {
+export type SensitiveWordLevelStatisticsDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 该级别的敏感词数量 */
@@ -53,11 +53,11 @@ export type ForumForumSensitiveWordLevelStatisticsDto = {
 };
 
 /**
- *  类型定义 [ForumForumSensitiveWordTypeStatisticsDto]
+ *  类型定义 [SensitiveWordTypeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ForumForumSensitiveWordTypeStatisticsDto = {
+export type SensitiveWordTypeStatisticsDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 该类型的敏感词数量 */
@@ -72,32 +72,32 @@ export type ForumForumSensitiveWordTypeStatisticsDto = {
 };
 
 /**
- *  类型定义 [ForumSensitiveWordTopHitStatisticsDto]
+ *  类型定义 [SensitiveWordTopHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ForumSensitiveWordTopHitStatisticsDto = {
+export type SensitiveWordTopHitStatisticsDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 命中次数 */
   hitCount: number;
   /* 最后命中时间 */
-  lastHitAt: Record<string, any>;
+  lastHitAt?: string;
   /* 敏感词级别 */
-  level: 1 | 2 | 3;
+  level: number;
   /* 敏感词类型 */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: number;
 
-  /* 敏感词内容 */
+  /* 敏感词 */
   word: string;
 };
 
 /**
- *  类型定义 [ForumSensitiveWordRecentHitStatisticsDto]
+ *  类型定义 [SensitiveWordRecentHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ForumSensitiveWordRecentHitStatisticsDto = {
+export type SensitiveWordRecentHitStatisticsDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 命中次数 */
@@ -105,10 +105,10 @@ export type ForumSensitiveWordRecentHitStatisticsDto = {
   /* 最后命中时间 */
   lastHitAt: string;
   /* 敏感词级别 */
-  level: 1 | 2 | 3;
+  level: number;
   /* 敏感词类型 */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: number;
 
-  /* 敏感词内容 */
+  /* 敏感词 */
   word: string;
 };

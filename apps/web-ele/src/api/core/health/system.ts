@@ -1,5 +1,6 @@
 import type {
   SystemConfigDetailResponse,
+  SystemConfigResponse,
   SystemConfigUpdateRequest,
   SystemConfigUpdateResponse,
   SystemHealthResponse,
@@ -29,6 +30,13 @@ export async function systemConfigDetailApi(): Promise<SystemConfigDetailRespons
   return requestClient.get<SystemConfigDetailResponse>(
     '/api/admin/system/config-detail',
   );
+}
+
+/**
+ * 获取系统配置
+ */
+export async function systemConfigApi(): Promise<SystemConfigResponse> {
+  return requestClient.get<SystemConfigResponse>('/api/admin/system/config');
 }
 
 /**

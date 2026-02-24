@@ -1,36 +1,35 @@
 /**
  *  类型定义 [DetectHighestLevelRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type DetectHighestLevelRequest = ForumSensitiveWordDetectDto;
+export type DetectHighestLevelRequest = SensitiveWordDetectDto;
 
-export type DetectHighestLevelResponse =
-  ForumSensitiveWordHighestLevelResponseDto;
+export type DetectHighestLevelResponse = SensitiveWordHighestLevelResponseDto;
 
-export type DetectStatusResponse = ForumSensitiveWordDetectStatusResponseDto;
+export type DetectStatusResponse = SensitiveWordDetectStatusResponseDto;
 
 /**
- *  类型定义 [ForumSensitiveWordDetectDto]
+ *  类型定义 [SensitiveWordDetectDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ForumSensitiveWordDetectDto = {
+export type SensitiveWordDetectDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 待检测的文本 */
+  /* 检测内容 */
   content: string;
 
   /* 匹配模式 */
-  matchMode?: null | number;
+  matchMode?: 1 | 2 | 3;
 };
 
 /**
- *  类型定义 [ForumSensitiveWordHighestLevelResponseDto]
+ *  类型定义 [SensitiveWordHighestLevelResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ForumSensitiveWordHighestLevelResponseDto = {
+export type SensitiveWordHighestLevelResponseDto = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -39,16 +38,16 @@ export type ForumSensitiveWordHighestLevelResponseDto = {
 };
 
 /**
- *  类型定义 [ForumSensitiveWordDetectStatusResponseDto]
+ *  类型定义 [SensitiveWordDetectStatusResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ForumSensitiveWordDetectStatusResponseDto = {
+export type SensitiveWordDetectStatusResponseDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 检测器是否已初始化 */
+  /* 检测器是否就绪 */
   isReady: boolean;
 
-  /* 当前加载的敏感词数量 */
+  /* 已加载的敏感词数量 */
   wordCount: number;
 };

@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AgreementCreateRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type AgreementCreateRequest = CreateAgreementDto;
 
@@ -10,7 +10,7 @@ export type AgreementCreateResponse = BaseAgreementDto;
 /**
  *  类型定义 [AgreementUpdateRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type AgreementUpdateRequest = UpdateAgreementDto;
 
@@ -19,7 +19,7 @@ export type AgreementUpdateResponse = BaseAgreementDto;
 /**
  *  类型定义 [AgreementDeleteRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type AgreementDeleteRequest = IdDto;
 
@@ -28,7 +28,7 @@ export type AgreementDeleteResponse = BaseAgreementDto;
 /**
  *  类型定义 [AgreementPageRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type AgreementPageRequest = {
   /** 任意合法数值 */
@@ -79,7 +79,7 @@ export type AgreementPageResponse = {
 /**
  *  类型定义 [AgreementDetailRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type AgreementDetailRequest = {
   /** 任意合法数值 */
@@ -94,7 +94,7 @@ export type AgreementDetailResponse = BaseAgreementDto;
 /**
  *  类型定义 [CreateAgreementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type CreateAgreementDto = {
   /** 任意合法数值 */
@@ -117,7 +117,7 @@ export type CreateAgreementDto = {
 /**
  *  类型定义 [BaseAgreementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type BaseAgreementDto = {
   /** 任意合法数值 */
@@ -148,7 +148,7 @@ export type BaseAgreementDto = {
 /**
  *  类型定义 [UpdateAgreementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type UpdateAgreementDto = {
   /** 任意合法数值 */
@@ -173,7 +173,7 @@ export type UpdateAgreementDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -186,7 +186,7 @@ export type IdDto = {
 /**
  *  类型定义 [ListOrPageAgreementResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type ListOrPageAgreementResponseDto = {
   /** 任意合法数值 */

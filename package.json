@@ -50,7 +50,7 @@
     "dev:naive": "pnpm -F @vben/web-naive run dev",
     "dev:tdesign": "pnpm -F @vben/web-tdesign run dev",
     "dev:play": "pnpm -F @vben/playground run dev",
-    "ele:att": "pnpm -F @vben/web-ele run att",
+    "att:ele": "pnpm -F @vben/web-ele run att",
     "format": "vsh lint --format",
     "lint": "vsh lint",
     "postinstall": "pnpm -r run stub --if-present",

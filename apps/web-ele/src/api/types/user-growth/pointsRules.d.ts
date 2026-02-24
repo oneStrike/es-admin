@@ -1,7 +1,7 @@
 /**
  *  类型定义 [PointsRulesRulesPageRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesRulesPageRequest = {
   /** 任意合法数值 */
@@ -58,7 +58,7 @@ export type PointsRulesRulesPageResponse = {
 /**
  *  类型定义 [PointsRulesRulesDetailRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesRulesDetailRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type PointsRulesRulesDetailResponse = BaseUserPointRuleDto;
 /**
  *  类型定义 [PointsRulesRulesCreateRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesRulesCreateRequest = CreateUserPointRuleDto;
 
@@ -82,7 +82,7 @@ export type PointsRulesRulesCreateResponse = BaseUserPointRuleDto;
 /**
  *  类型定义 [PointsRulesRulesUpdateRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesRulesUpdateRequest = UpdateUserPointRuleDto;
 
@@ -91,7 +91,7 @@ export type PointsRulesRulesUpdateResponse = BaseUserPointRuleDto;
 /**
  *  类型定义 [PointsRulesAddPointsRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesAddPointsRequest = AddUserPointsDto;
 
@@ -100,7 +100,7 @@ export type PointsRulesAddPointsResponse = BaseUserPointRuleDto;
 /**
  *  类型定义 [PointsRulesConsumePointsRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesConsumePointsRequest = ConsumeUserPointsDto;
 
@@ -109,7 +109,7 @@ export type PointsRulesConsumePointsResponse = BaseUserPointRuleDto;
 /**
  *  类型定义 [PointsRulesRecordsPageRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesRecordsPageRequest = {
   /** 任意合法数值 */
@@ -157,7 +157,7 @@ export type PointsRulesRecordsPageResponse = {
 /**
  *  类型定义 [PointsRulesRecordsDetailRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesRecordsDetailRequest = {
   /** 任意合法数值 */
@@ -172,7 +172,7 @@ export type PointsRulesRecordsDetailResponse = BaseUserPointRuleDto;
 /**
  *  类型定义 [PointsRulesUserStatsRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type PointsRulesUserStatsRequest = {
   /** 任意合法数值 */
@@ -188,7 +188,7 @@ export type PointsRulesSyncComicResponse = BaseUserPointRuleDto;
 /**
  *  类型定义 [BaseUserPointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type BaseUserPointRuleDto = {
   /** 任意合法数值 */
@@ -241,7 +241,7 @@ export type BaseUserPointRuleDto = {
 /**
  *  类型定义 [CreateUserPointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type CreateUserPointRuleDto = {
   /** 任意合法数值 */
@@ -288,7 +288,7 @@ export type CreateUserPointRuleDto = {
 /**
  *  类型定义 [UpdateUserPointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type UpdateUserPointRuleDto = {
   /** 任意合法数值 */
@@ -337,7 +337,7 @@ export type UpdateUserPointRuleDto = {
 /**
  *  类型定义 [AddUserPointsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type AddUserPointsDto = {
   /** 任意合法数值 */
@@ -370,7 +370,7 @@ export type AddUserPointsDto = {
 /**
  *  类型定义 [ConsumeUserPointsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type ConsumeUserPointsDto = {
   /** 任意合法数值 */

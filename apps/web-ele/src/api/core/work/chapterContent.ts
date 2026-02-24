@@ -1,8 +1,6 @@
 import type {
   ChapterContentAddRequest,
   ChapterContentAddResponse,
-  ChapterContentBatchUpdateRequest,
-  ChapterContentBatchUpdateResponse,
   ChapterContentClearRequest,
   ChapterContentClearResponse,
   ChapterContentDeleteRequest,
@@ -73,18 +71,6 @@ export async function chapterContentMoveApi(
 ): Promise<ChapterContentMoveResponse> {
   return requestClient.post<ChapterContentMoveResponse>(
     '/api/admin/work/chapter-content/move',
-    params,
-  );
-}
-
-/**
- * 批量更新章节内容
- */
-export async function chapterContentBatchUpdateApi(
-  params: ChapterContentBatchUpdateRequest,
-): Promise<ChapterContentBatchUpdateResponse> {
-  return requestClient.post<ChapterContentBatchUpdateResponse>(
-    '/api/admin/work/chapter-content/batch-update',
     params,
   );
 }

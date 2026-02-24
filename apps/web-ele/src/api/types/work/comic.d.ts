@@ -1,23 +1,23 @@
 /**
  *  类型定义 [ComicCreateRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ComicCreateRequest = CreateComicDto;
+export type ComicCreateRequest = CreateWorkDto;
 
 export type ComicCreateResponse = IdDto;
 
 /**
  *  类型定义 [ComicPageRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type ComicPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
   /* 年龄分级 */
-  ageRating?: string;
+  ageRating?: null | string;
 
   /* 作者名称 */
   author?: null | string;
@@ -43,7 +43,7 @@ export type ComicPageRequest = {
   /* 语言代码 */
   language?: string;
 
-  /* 漫画名称 */
+  /* 作品名称 */
   name?: string;
 
   /* 排序字段，json格式 */
@@ -70,8 +70,8 @@ export type ComicPageRequest = {
   /* 关联的标签ID列表 */
   tagIds?: any[];
 
-  /* 浏览量 */
-  viewCount?: number;
+  /* 作品类型（1=漫画, 2=小说） */
+  type?: number;
 };
 
 export type ComicPageResponse = {
@@ -79,7 +79,7 @@ export type ComicPageResponse = {
   [property: string]: any;
 
   /* 列表数据 */
-  list?: BaseComicDto[];
+  list?: BaseWorkDto[];
 
   /* 当前页码 */
   pageIndex?: number;
@@ -94,7 +94,7 @@ export type ComicPageResponse = {
 /**
  *  类型定义 [ComicDetailRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type ComicDetailRequest = {
   /** 任意合法数值 */
@@ -104,73 +104,73 @@ export type ComicDetailRequest = {
   id: number;
 };
 
-export type ComicDetailResponse = BaseComicDto;
+export type ComicDetailResponse = BaseWorkDto;
 
 /**
  *  类型定义 [ComicUpdateRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ComicUpdateRequest = UpdateComicDto;
+export type ComicUpdateRequest = UpdateWorkDto;
 
 export type ComicUpdateResponse = IdDto;
 
 /**
  *  类型定义 [ComicUpdateStatusRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ComicUpdateStatusRequest = UpdateComicStatusDto;
+export type ComicUpdateStatusRequest = UpdateWorkStatusDto;
 
 export type ComicUpdateStatusResponse = BatchOperationResponseDto;
 
 /**
  *  类型定义 [ComicUpdateRecommendedRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ComicUpdateRecommendedRequest = UpdateComicRecommendedDto;
+export type ComicUpdateRecommendedRequest = UpdateWorkRecommendedDto;
 
 export type ComicUpdateRecommendedResponse = BatchOperationResponseDto;
 
 /**
  *  类型定义 [ComicUpdateHotRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ComicUpdateHotRequest = UpdateComicHotDto;
+export type ComicUpdateHotRequest = UpdateWorkHotDto;
 
 export type ComicUpdateHotResponse = BatchOperationResponseDto;
 
 /**
  *  类型定义 [ComicUpdateNewRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ComicUpdateNewRequest = UpdateComicNewDto;
+export type ComicUpdateNewRequest = UpdateWorkNewDto;
 
 export type ComicUpdateNewResponse = BatchOperationResponseDto;
 
 /**
  *  类型定义 [ComicDeleteRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type ComicDeleteRequest = IdDto;
 
 export type ComicDeleteResponse = IdDto;
 
 /**
- *  类型定义 [CreateComicDto]
+ *  类型定义 [CreateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type CreateComicDto = {
+export type CreateWorkDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 年龄分级 */
-  ageRating: string;
-  /* 漫画别名（支持多别名，用逗号分隔） */
+  ageRating?: null | string;
+  /* 作品别名（支持多别名，用逗号分隔） */
   alias?: null | string;
   /* 关联的作者ID列表 */
   authorIds: number[];
@@ -178,9 +178,9 @@ export type CreateComicDto = {
   categoryIds: number[];
   /* 版权信息 */
   copyright?: null | string;
-  /* 漫画封面URL */
+  /* 作品封面URL */
   cover: string;
-  /* 漫画简介 */
+  /* 作品简介 */
   description: string;
   /* 免责声明 */
   disclaimer?: null | string;
@@ -194,7 +194,7 @@ export type CreateComicDto = {
   language: string;
   /* 最后更新时间 */
   lastUpdated?: string;
-  /* 漫画名称 */
+  /* 作品名称 */
   name: string;
   /* 原始来源 */
   originalSource?: null | string;
@@ -204,25 +204,23 @@ export type CreateComicDto = {
   publisher?: null | string;
   /* 评分（1-10分，保留1位小数） */
   rating?: null | number;
-  /* 评分人数 */
-  ratingCount: number;
-  /* 推荐权重（影响推荐排序） */
+  /* 推荐权重 */
   recommendWeight?: null | number;
   /* 地区代码 */
   region: string;
-  /* 管理员备注 */
-  remark?: null | string;
   /* 连载状态 */
-  serialStatus: 0 | 1 | 2 | 3;
-
+  serialStatus: 0 | 1 | 2 | 3 | 4;
   /* 关联的标签ID列表 */
   tagIds: number[];
+
+  /* 作品类型（1=漫画, 2=小说） */
+  type: 1 | 2;
 };
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -233,34 +231,32 @@ export type IdDto = {
 };
 
 /**
- *  类型定义 [BaseComicDto]
+ *  类型定义 [BaseWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type BaseComicDto = {
+export type BaseWorkDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 年龄分级 */
-  ageRating: string;
-  /* 漫画别名（支持多别名，用逗号分隔） */
+  ageRating?: null | string;
+  /* 作品别名（支持多别名，用逗号分隔） */
   alias?: null | string;
-  /* 漫画作者 */
-  comicAuthors: ComicAuthorDto[];
-  /* 漫画分类 */
-  comicCategories: ComicCategoryDto[];
-  /* 漫画标签 */
-  comicTags: ComicTagDto[];
+  /* 作品作者 */
+  authors: WorkAuthorRelationDto[];
+  /* 作品分类 */
+  categories: WorkCategoryRelationDto[];
   /* 版权信息 */
   copyright?: null | string;
-  /* 漫画封面URL */
+  /* 作品封面URL */
   cover: string;
   /* 创建时间 */
   createdAt: string;
-  /* 漫画简介 */
+  /* 作品简介 */
   description: string;
   /* 免责声明 */
   disclaimer?: null | string;
-  /* 收藏数量 */
+  /* 收藏数 */
   favoriteCount: number;
   /* 主键id */
   id: number;
@@ -276,13 +272,13 @@ export type BaseComicDto = {
   language: string;
   /* 最后更新时间 */
   lastUpdated?: string;
-  /* 点赞数量 */
+  /* 点赞数 */
   likeCount: number;
-  /* 漫画名称 */
+  /* 作品名称 */
   name: string;
   /* 原始来源 */
   originalSource?: null | string;
-  /* 热度值（用于排序） */
+  /* 热度值 */
   popularity: number;
   /* 发布日期 */
   publishAt?: null | string;
@@ -292,14 +288,16 @@ export type BaseComicDto = {
   rating?: null | number;
   /* 评分人数 */
   ratingCount: number;
-  /* 推荐权重（影响推荐排序） */
+  /* 推荐权重 */
   recommendWeight?: null | number;
   /* 地区代码 */
   region: string;
-  /* 管理员备注 */
-  remark?: null | string;
   /* 连载状态 */
-  serialStatus: 0 | 1 | 2 | 3;
+  serialStatus: 0 | 1 | 2 | 3 | 4;
+  /* 作品标签 */
+  tags: WorkTagRelationDto[];
+  /* 作品类型（1=漫画, 2=小说） */
+  type: 1 | 2;
   /* 更新时间 */
   updatedAt: string;
 
@@ -308,54 +306,32 @@ export type BaseComicDto = {
 };
 
 /**
- *  类型定义 [ComicCategoryDto]
+ *  类型定义 [WorkAuthorRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ComicCategoryDto = {
+export type WorkAuthorRelationDto = {
   /** 任意合法数值 */
   [property: string]: any;
-
-  /* 分类信息 */
-  category: CategoryInfoDto;
-};
-
-/**
- *  类型定义 [CategoryInfoDto]
- *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
- */
-export type CategoryInfoDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 主键id */
-  id: number;
-
-  /* 分类名称 */
-  name: string;
-};
-
-/**
- *  类型定义 [ComicAuthorDto]
- *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
- */
-export type ComicAuthorDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 作者信息 */
   author: AuthorInfoDto;
+  /* 角色类型 */
+  role?: string;
+
+  /* 排序顺序 */
+  sortOrder?: number;
 };
 
 /**
  *  类型定义 [AuthorInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type AuthorInfoDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 作者头像URL */
+  avatar?: null | string;
   /* 主键id */
   id: number;
 
@@ -364,13 +340,47 @@ export type AuthorInfoDto = {
 };
 
 /**
- *  类型定义 [ComicTagDto]
+ *  类型定义 [WorkCategoryRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type ComicTagDto = {
+export type WorkCategoryRelationDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 分类信息 */
+  category: CategoryInfoDto;
+
+  /* 排序顺序 */
+  sortOrder?: number;
+};
+
+/**
+ *  类型定义 [CategoryInfoDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-02-24 20:28:45
+ */
+export type CategoryInfoDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 分类图标URL */
+  icon?: null | string;
+  /* 主键id */
+  id: number;
+
+  /* 分类名称 */
+  name: string;
+};
+
+/**
+ *  类型定义 [WorkTagRelationDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-02-24 20:28:45
+ */
+export type WorkTagRelationDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 排序顺序 */
+  sortOrder?: number;
 
   /* 标签信息 */
   tag: TagInfoDto;
@@ -379,11 +389,13 @@ export type ComicTagDto = {
 /**
  *  类型定义 [TagInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type TagInfoDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 标签图标URL */
+  icon?: null | string;
   /* 主键id */
   id: number;
 
@@ -392,16 +404,16 @@ export type TagInfoDto = {
 };
 
 /**
- *  类型定义 [UpdateComicDto]
+ *  类型定义 [UpdateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type UpdateComicDto = {
+export type UpdateWorkDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 年龄分级 */
-  ageRating?: string;
-  /* 漫画别名（支持多别名，用逗号分隔） */
+  ageRating?: null | string;
+  /* 作品别名（支持多别名，用逗号分隔） */
   alias?: null | string;
   /* 关联的作者ID列表 */
   authorIds?: number[];
@@ -409,9 +421,9 @@ export type UpdateComicDto = {
   categoryIds?: number[];
   /* 版权信息 */
   copyright?: null | string;
-  /* 漫画封面URL */
+  /* 作品封面URL */
   cover?: string;
-  /* 漫画简介 */
+  /* 作品简介 */
   description?: string;
   /* 免责声明 */
   disclaimer?: null | string;
@@ -427,7 +439,7 @@ export type UpdateComicDto = {
   language?: string;
   /* 最后更新时间 */
   lastUpdated?: string;
-  /* 漫画名称 */
+  /* 作品名称 */
   name?: string;
   /* 原始来源 */
   originalSource?: null | string;
@@ -437,27 +449,25 @@ export type UpdateComicDto = {
   publisher?: null | string;
   /* 评分（1-10分，保留1位小数） */
   rating?: null | number;
-  /* 评分人数 */
-  ratingCount?: number;
-  /* 推荐权重（影响推荐排序） */
+  /* 推荐权重 */
   recommendWeight?: null | number;
   /* 地区代码 */
   region?: string;
-  /* 管理员备注 */
-  remark?: null | string;
   /* 连载状态 */
-  serialStatus?: 0 | 1 | 2 | 3;
-
+  serialStatus?: 0 | 1 | 2 | 3 | 4;
   /* 关联的标签ID列表 */
   tagIds?: number[];
+
+  /* 作品类型（1=漫画, 2=小说） */
+  type?: 1 | 2;
 };
 
 /**
- *  类型定义 [UpdateComicStatusDto]
+ *  类型定义 [UpdateWorkStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type UpdateComicStatusDto = {
+export type UpdateWorkStatusDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 主键id */
@@ -470,7 +480,7 @@ export type UpdateComicStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -481,11 +491,11 @@ export type BatchOperationResponseDto = {
 };
 
 /**
- *  类型定义 [UpdateComicRecommendedDto]
+ *  类型定义 [UpdateWorkRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type UpdateComicRecommendedDto = {
+export type UpdateWorkRecommendedDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 主键id */
@@ -496,11 +506,11 @@ export type UpdateComicRecommendedDto = {
 };
 
 /**
- *  类型定义 [UpdateComicHotDto]
+ *  类型定义 [UpdateWorkHotDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type UpdateComicHotDto = {
+export type UpdateWorkHotDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 主键id */
@@ -511,11 +521,11 @@ export type UpdateComicHotDto = {
 };
 
 /**
- *  类型定义 [UpdateComicNewDto]
+ *  类型定义 [UpdateWorkNewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-13 00:11:45
+ *  @更新时间 2026-02-24 20:28:45
  */
-export type UpdateComicNewDto = {
+export type UpdateWorkNewDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 主键id */
