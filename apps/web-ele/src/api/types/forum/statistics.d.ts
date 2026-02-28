@@ -3,7 +3,7 @@ export type StatisticsFullResponse = SensitiveWordStatisticsDataDto;
 /**
  *  类型定义 [SensitiveWordStatisticsDataDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type SensitiveWordStatisticsDataDto = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type SensitiveWordStatisticsDataDto = {
 /**
  *  类型定义 [SensitiveWordLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type SensitiveWordLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type SensitiveWordLevelStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordTypeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type SensitiveWordTypeStatisticsDto = {
   /** 任意合法数值 */
@@ -74,7 +74,7 @@ export type SensitiveWordTypeStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordTopHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type SensitiveWordTopHitStatisticsDto = {
   /** 任意合法数值 */
@@ -82,7 +82,7 @@ export type SensitiveWordTopHitStatisticsDto = {
   /* 命中次数 */
   hitCount: number;
   /* 最后命中时间 */
-  lastHitAt?: string;
+  lastHitAt?: null | string;
   /* 敏感词级别 */
   level: number;
   /* 敏感词类型 */
@@ -95,7 +95,7 @@ export type SensitiveWordTopHitStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordRecentHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type SensitiveWordRecentHitStatisticsDto = {
   /** 任意合法数值 */

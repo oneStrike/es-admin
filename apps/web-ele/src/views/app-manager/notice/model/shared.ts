@@ -285,14 +285,24 @@ export const noticeColumns =
       slots: { default: 'publishStatus' },
     },
     noticeType: {
-      slots: { default: 'noticeType' },
+      cellRender: {
+        name: 'CellText',
+        props: {
+          mapOptions: noticeType,
+        },
+      },
     },
     priorityLevel: {
-      slots: { default: 'priorityLevel' },
+      cellRender: {
+        name: 'CellText',
+        props: {
+          mapOptions: noticePriority,
+        },
+      },
     },
     enablePlatform: {
       cellRender: {
-        name: 'CellTag',
+        name: 'CellText',
         props: {
           mapOptions: enablePlatform,
         },

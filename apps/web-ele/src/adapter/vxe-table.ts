@@ -204,6 +204,87 @@ setupVbenVxeTable({
       },
     });
 
+    // 表格配置项可以用 cellRender: { name: 'CellText' },
+    // 类似 CellTag，但使用文本显示而不是标签，支持自定义颜色
+    vxeUI.renderer.add('CellText', {
+      renderTableDefault({ props }, params) {
+        const { column, row } = params;
+        let value: any = row[column.field];
+
+        // 处理格式化函数
+        if (props?.formatter) {
+          value = props.formatter(value);
+        }
+
+        // 处理数组情况
+        if (Array.isArray(value)) {
+          if (value.length === 0) {
+            return '-';
+          }
+
+          return value.map((item, idx) => {
+            let displayText = item;
+            let textColor: string | undefined;
+
+            if (Array.isArray(props?.mapOptions)) {
+              const option = props.mapOptions.find(
+                (opt: Options) => opt.value === item,
+              );
+              displayText = option?.label || item;
+              textColor = option?.color;
+            }
+
+            return h(
+              'span',
+              {
+                style: textColor ? { color: textColor } : undefined,
+                class: idx + 1 === value.length ? '' : 'mr-2',
+              },
+              displayText,
+            );
+          });
+        }
+        // 处理 mapOptions 映射情况
+        else if (props?.mapOptions) {
+          const option = props.mapOptions.find(
+            (item: Options) => item.value === value,
+          );
+          const label = option?.label || String(value ?? '-');
+          const color = option?.color;
+
+          return h(
+            ElText,
+            {
+              style: color ? { color } : undefined,
+            },
+            { default: () => label },
+          );
+        }
+        // 处理布尔值情况
+        else if (typeof value === 'boolean') {
+          const booleanMap = props?.map || {};
+          const displayText =
+            booleanMap[String(value)] || (value ? '是' : '否');
+          const textColor = value ? '#52c41a' : '#ff4d4f'; // 成功绿色，失败红色
+
+          return h(
+            ElText,
+            {
+              style: { color: textColor },
+            },
+            { default: () => displayText },
+          );
+        }
+        // 处理字符串和其他单一值情况
+        else {
+          const displayValue =
+            value !== null && value !== undefined ? String(value) : '-';
+
+          return h(ElText, {}, { default: () => displayValue });
+        }
+      },
+    });
+
     // 这里可以自行扩展 vxe-table 的全局配置，比如自定义格式化
     // vxeUI.formats.add
   },

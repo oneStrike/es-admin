@@ -3,7 +3,7 @@ export type ConfigGetResponse = BaseForumConfigDto;
 /**
  *  类型定义 [ConfigUpdateRequest]
  *  @来源 论坛模块/系统配置
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type ConfigUpdateRequest = UpdateForumConfigDto;
 
@@ -16,7 +16,7 @@ export type ConfigHistoryResponse = ForumConfigHistoryItemDto[];
 /**
  *  类型定义 [ConfigRestoreRequest]
  *  @来源 论坛模块/系统配置
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type ConfigRestoreRequest = IdDto;
 
@@ -25,7 +25,7 @@ export type ConfigRestoreResponse = BaseForumConfigDto;
 /**
  *  类型定义 [ConfigDeleteRequest]
  *  @来源 论坛模块/系统配置
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type ConfigDeleteRequest = IdDto;
 
@@ -34,7 +34,7 @@ export type ConfigDeleteResponse = BaseForumConfigDto;
 /**
  *  类型定义 [BaseForumConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type BaseForumConfigDto = {
   /** 任意合法数值 */
@@ -113,7 +113,7 @@ export type BaseForumConfigDto = {
 /**
  *  类型定义 [UpdateForumConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UpdateForumConfigDto = {
   /** 任意合法数值 */
@@ -194,15 +194,15 @@ export type UpdateForumConfigDto = {
 /**
  *  类型定义 [ForumConfigHistoryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type ForumConfigHistoryItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 变更内容 */
-  changes: Record<string, any>;
+  changes: string;
   /* 变更类型 */
-  changeType: Record<string, any>;
+  changeType: 'create' | 'restore' | 'update';
   /* 配置ID */
   configId: number;
   /* 创建时间 */
@@ -210,24 +210,24 @@ export type ForumConfigHistoryItemDto = {
   /* 主键id */
   id: number;
   /* 操作人IP地址 */
-  ipAddress?: string;
+  ipAddress?: null | string;
   /* 操作时间 */
   operatedAt: string;
   /* 操作人ID */
-  operatedById?: number;
+  operatedById?: null | number;
   /* 变更原因 */
-  reason?: string;
+  reason?: null | string;
   /* 更新时间 */
   updatedAt: string;
 
   /* 操作人User-Agent */
-  userAgent?: string;
+  userAgent?: null | string;
 };
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type IdDto = {
   /** 任意合法数值 */

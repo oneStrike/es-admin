@@ -68,11 +68,13 @@ export const formSchemaTransform: FormSchemaTransform = {
           title: item.label as string,
           field: item.fieldName,
           align: 'center',
-          minWidth: 100,
+          minWidth: 100,  
           sortValue: itemExtra?.sort ?? idx,
-          formatter: ({ cellValue }) => {
-            return cellValue || '-';
-          },
+          formatter: itemExtra?.cellRender
+            ? undefined
+            : ({ cellValue }) => {
+                return cellValue || '-';
+              },
           ...itemExtra,
         });
       }

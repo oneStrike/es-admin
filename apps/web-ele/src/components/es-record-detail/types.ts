@@ -8,7 +8,8 @@ export interface DetailField {
   type: FieldType;
   tagType?: string;
   tagText?: string;
-  dateType: string;
+  dateType?: string;
+  color?: string;
 }
 
 // 定义卡片配置

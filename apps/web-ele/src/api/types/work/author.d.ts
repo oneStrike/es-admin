@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AuthorCreateRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type AuthorCreateRequest = CreateAuthorDto;
 
@@ -10,7 +10,7 @@ export type AuthorCreateResponse = IdDto;
 /**
  *  类型定义 [AuthorPageRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type AuthorPageRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type AuthorPageResponse = {
 /**
  *  类型定义 [AuthorDetailRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type AuthorDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type AuthorDetailResponse = BaseAuthorDto;
 /**
  *  类型定义 [AuthorUpdateRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type AuthorUpdateRequest = UpdateAuthorDto;
 
@@ -94,7 +94,7 @@ export type AuthorUpdateResponse = IdDto;
 /**
  *  类型定义 [AuthorUpdateStatusRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type AuthorUpdateStatusRequest = UpdateEnabledStatusDto;
 
@@ -103,7 +103,7 @@ export type AuthorUpdateStatusResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [AuthorUpdateIsRecommendedRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type AuthorUpdateIsRecommendedRequest = UpdateAuthorRecommendedDto;
 
@@ -112,7 +112,7 @@ export type AuthorUpdateIsRecommendedResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [AuthorDeleteRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type AuthorDeleteRequest = IdDto;
 
@@ -121,7 +121,7 @@ export type AuthorDeleteResponse = IdDto;
 /**
  *  类型定义 [CreateAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type CreateAuthorDto = {
   /** 任意合法数值 */
@@ -139,14 +139,14 @@ export type CreateAuthorDto = {
   /* 管理员备注 */
   remark?: null | string;
 
-  /* 作者角色类型 */
+  /* 作者角色类型，1 => 漫画家 2 => 小说家 */
   type: number[];
 };
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -159,7 +159,7 @@ export type IdDto = {
 /**
  *  类型定义 [AuthorPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type AuthorPageResponseDto = {
   /** 任意合法数值 */
@@ -182,7 +182,7 @@ export type AuthorPageResponseDto = {
   name: string;
   /* 国籍 */
   nationality?: null | string;
-  /* 作者角色类型 */
+  /* 作者角色类型，1 => 漫画家 2 => 小说家 */
   type: number[];
   /* 更新时间 */
   updatedAt: string;
@@ -194,7 +194,7 @@ export type AuthorPageResponseDto = {
 /**
  *  类型定义 [BaseAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type BaseAuthorDto = {
   /** 任意合法数值 */
@@ -221,7 +221,7 @@ export type BaseAuthorDto = {
   nationality?: null | string;
   /* 管理员备注 */
   remark?: null | string;
-  /* 作者角色类型 */
+  /* 作者角色类型，1 => 漫画家 2 => 小说家 */
   type: number[];
   /* 更新时间 */
   updatedAt: string;
@@ -233,7 +233,7 @@ export type BaseAuthorDto = {
 /**
  *  类型定义 [UpdateAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UpdateAuthorDto = {
   /** 任意合法数值 */
@@ -253,14 +253,14 @@ export type UpdateAuthorDto = {
   /* 管理员备注 */
   remark?: null | string;
 
-  /* 作者角色类型 */
+  /* 作者角色类型，1 => 漫画家 2 => 小说家 */
   type: number[];
 };
 
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -275,7 +275,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -288,7 +288,7 @@ export type BatchOperationResponseDto = {
 /**
  *  类型定义 [UpdateAuthorRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UpdateAuthorRecommendedDto = {
   /** 任意合法数值 */

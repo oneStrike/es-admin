@@ -29,8 +29,6 @@ import {
   getPublishStatus,
   noticeColumns,
   noticeFilter,
-  noticePriorityObj,
-  noticeTypeObj,
   publishStatusObj,
 } from './model/shared';
 
@@ -178,18 +176,6 @@ const [DetailModal, detailApi] = useVbenModal({
           {{ row.title }}
         </el-text>
       </template>
-      <template #noticeType="{ row }">
-        <el-text :style="{ color: noticeTypeObj[row.noticeType]?.color }">
-          {{ noticeTypeObj[row.noticeType]?.label }}
-        </el-text>
-      </template>
-      <template #priorityLevel="{ row }">
-        <el-text
-          :style="{ color: noticePriorityObj[row.priorityLevel]?.color }"
-        >
-          {{ noticePriorityObj[row.priorityLevel]?.label }}
-        </el-text>
-      </template>
 
       <template #pageId="{ row }">
         <el-text>
@@ -284,7 +270,6 @@ const [DetailModal, detailApi] = useVbenModal({
     />
 
     <DetailModal
-      title="通知详情"
       :api="noticeDetailApi"
       :cards="getDetailCards"
       class="!w-[1000px]"

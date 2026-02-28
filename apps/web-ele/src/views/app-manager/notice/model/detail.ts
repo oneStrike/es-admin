@@ -51,19 +51,19 @@ export function getDetailCards(detail: NoticeDetailResponse) {
         {
           label: '通知类型',
           value: noticeTypeInfo?.label,
-          type: 'colored-text' as const,
+          type: 'text' as const,
           color: noticeTypeInfo?.color,
         },
         {
           label: '优先级',
           value: priorityInfo?.label,
-          type: 'colored-text' as const,
+          type: 'text' as const,
           color: priorityInfo?.color,
         },
         {
           label: '发布状态',
           value: publishStatusInfo?.label,
-          type: 'colored-text' as const,
+          type: 'text' as const,
           color: publishStatusInfo?.color,
         },
         {
@@ -128,25 +128,25 @@ export function getDetailCards(detail: NoticeDetailResponse) {
     },
     {
       title: '关联页面',
-      show: !!(detail?.pageId || detail?.clientPage),
+      show: !!(detail?.pageId || detail?.appPage),
       fields: [
         {
           label: '页面代码',
-          value: detail?.clientPage?.code,
+          value: detail?.appPage?.code,
           type: 'text' as const,
-          show: !!detail?.clientPage?.code,
+          show: !!detail?.appPage?.code,
         },
         {
           label: '页面名称',
-          value: detail?.clientPage?.name,
+          value: detail?.appPage?.name,
           type: 'text' as const,
-          show: !!detail?.clientPage?.name,
+          show: !!detail?.appPage?.name,
         },
         {
           label: '页面路径',
-          value: detail?.clientPage?.path,
+          value: detail?.appPage?.path,
           type: 'text' as const,
-          show: !!detail?.clientPage?.path,
+          show: !!detail?.appPage?.path,
         },
       ].filter((field) => field.show),
     },

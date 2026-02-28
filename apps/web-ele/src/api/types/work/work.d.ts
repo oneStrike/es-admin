@@ -1,18 +1,9 @@
 /**
- *  类型定义 [ComicCreateRequest]
- *  @来源 内容管理/漫画管理模块
+ *  类型定义 [WorkPageRequest]
+ *  @来源 作品管理
  *  @更新时间 2026-02-28 23:02:19
  */
-export type ComicCreateRequest = CreateWorkDto;
-
-export type ComicCreateResponse = IdDto;
-
-/**
- *  类型定义 [ComicPageRequest]
- *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-28 23:02:19
- */
-export type ComicPageRequest = {
+export type WorkPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -74,7 +65,7 @@ export type ComicPageRequest = {
   type: number;
 };
 
-export type ComicPageResponse = {
+export type WorkPageResponse = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -92,11 +83,11 @@ export type ComicPageResponse = {
 };
 
 /**
- *  类型定义 [ComicDetailRequest]
- *  @来源 内容管理/漫画管理模块
+ *  类型定义 [WorkDetailRequest]
+ *  @来源 作品管理
  *  @更新时间 2026-02-28 23:02:19
  */
-export type ComicDetailRequest = {
+export type WorkDetailRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -104,151 +95,76 @@ export type ComicDetailRequest = {
   id: number;
 };
 
-export type ComicDetailResponse = BaseWorkDto;
-
-/**
- *  类型定义 [ComicUpdateRequest]
- *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-28 23:02:19
- */
-export type ComicUpdateRequest = UpdateWorkDto;
-
-export type ComicUpdateResponse = IdDto;
-
-/**
- *  类型定义 [ComicUpdateStatusRequest]
- *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-28 23:02:19
- */
-export type ComicUpdateStatusRequest = UpdateWorkStatusDto;
-
-export type ComicUpdateStatusResponse = BatchOperationResponseDto;
-
-/**
- *  类型定义 [ComicUpdateRecommendedRequest]
- *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-28 23:02:19
- */
-export type ComicUpdateRecommendedRequest = UpdateWorkRecommendedDto;
-
-export type ComicUpdateRecommendedResponse = BatchOperationResponseDto;
-
-/**
- *  类型定义 [ComicUpdateHotRequest]
- *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-28 23:02:19
- */
-export type ComicUpdateHotRequest = UpdateWorkHotDto;
-
-export type ComicUpdateHotResponse = BatchOperationResponseDto;
-
-/**
- *  类型定义 [ComicUpdateNewRequest]
- *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-28 23:02:19
- */
-export type ComicUpdateNewRequest = UpdateWorkNewDto;
-
-export type ComicUpdateNewResponse = BatchOperationResponseDto;
-
-/**
- *  类型定义 [ComicDeleteRequest]
- *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-02-28 23:02:19
- */
-export type ComicDeleteRequest = IdDto;
-
-export type ComicDeleteResponse = IdDto;
-
-/**
- *  类型定义 [CreateWorkDto]
- *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
- */
-export type CreateWorkDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 年龄分级 */
-  ageRating?: null | string;
-  /* 作品别名（支持多别名，用逗号分隔） */
-  alias?: null | string;
-  /* 关联的作者ID列表 */
-  authorIds: number[];
-  /* 是否允许评论 */
-  canComment: boolean;
-  /* 是否允许下载 */
-  canDownload: boolean;
-  /* 是否允许兑换 */
-  canExchange: boolean;
-  /* 关联的分类ID列表 */
-  categoryIds: number[];
-  /* 章节默认兑换积分 */
-  chapterExchangePoints: number;
-  /* 章节默认购买价格（余额） */
-  chapterPrice: number;
-  /* 版权信息 */
-  copyright?: null | string;
-  /* 作品封面URL */
-  cover: string;
-  /* 作品简介 */
-  description: string;
-  /* 免责声明 */
-  disclaimer?: null | string;
-  /* 兑换所需积分 */
-  exchangePoints: number;
-  /* 是否热门 */
-  isHot: boolean;
-  /* 是否新作 */
-  isNew: boolean;
-  /* 是否推荐 */
-  isRecommended: boolean;
-  /* 语言代码 */
-  language: string;
-  /* 最后更新时间 */
-  lastUpdated?: null | string;
-  /* 作品名称 */
-  name: string;
-  /* 原始来源 */
-  originalSource?: null | string;
-  /* 作品购买价格（余额） */
-  price: number;
-  /* 发布日期 */
-  publishAt?: null | string;
-  /* 出版社 */
-  publisher?: null | string;
-  /* 购买数 */
-  purchaseCount: number;
-  /* 评分（1-10分，保留1位小数） */
-  rating?: null | number;
-  /* 推荐权重 */
-  recommendWeight?: null | number;
-  /* 地区代码 */
-  region: string;
-  /* 阅读所需会员等级ID */
-  requiredViewLevelId?: null | number;
-  /* 连载状态 */
-  serialStatus: 0 | 1 | 2 | 3 | 4;
-  /* 关联的标签ID列表 */
-  tagIds: number[];
-  /* 作品类型（1=漫画, 2=小说） */
-  type: 1 | 2;
-
-  /* 查看规则（0=所有人, 1=登录用户, 2=会员, 3=积分购买） */
-  viewRule: -1 | 0 | 1 | 2 | 3;
-};
-
-/**
- *  类型定义 [IdDto]
- *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
- */
-export type IdDto = {
+export type WorkDetailResponse = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  /* 主键id */
-  id: number;
+  /* 列表数据 */
+  list?: BaseWorkDto[];
+
+  /* 当前页码 */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
 };
+
+/**
+ *  类型定义 [WorkUpdateRequest]
+ *  @来源 作品管理
+ *  @更新时间 2026-02-28 23:02:19
+ */
+export type WorkUpdateRequest = UpdateWorkDto;
+
+export type WorkUpdateResponse = IdDto;
+
+/**
+ *  类型定义 [WorkUpdateStatusRequest]
+ *  @来源 作品管理
+ *  @更新时间 2026-02-28 23:02:19
+ */
+export type WorkUpdateStatusRequest = UpdateWorkStatusDto;
+
+export type WorkUpdateStatusResponse = BatchOperationResponseDto;
+
+/**
+ *  类型定义 [WorkUpdateRecommendedRequest]
+ *  @来源 作品管理
+ *  @更新时间 2026-02-28 23:02:19
+ */
+export type WorkUpdateRecommendedRequest = UpdateWorkRecommendedDto;
+
+export type WorkUpdateRecommendedResponse = BatchOperationResponseDto;
+
+/**
+ *  类型定义 [WorkUpdateHotRequest]
+ *  @来源 作品管理
+ *  @更新时间 2026-02-28 23:02:19
+ */
+export type WorkUpdateHotRequest = UpdateWorkHotDto;
+
+export type WorkUpdateHotResponse = BatchOperationResponseDto;
+
+/**
+ *  类型定义 [WorkUpdateNewRequest]
+ *  @来源 作品管理
+ *  @更新时间 2026-02-28 23:02:19
+ */
+export type WorkUpdateNewRequest = UpdateWorkNewDto;
+
+export type WorkUpdateNewResponse = BatchOperationResponseDto;
+
+/**
+ *  类型定义 [WorkDeleteRequest]
+ *  @来源 作品管理
+ *  @更新时间 2026-02-28 23:02:19
+ */
+export type WorkDeleteRequest = IdDto;
+
+export type WorkDeleteResponse = IdDto;
 
 /**
  *  类型定义 [BaseWorkDto]
@@ -522,6 +438,19 @@ export type UpdateWorkDto = {
 
   /* 查看规则（0=所有人, 1=登录用户, 2=会员, 3=积分购买） */
   viewRule: -1 | 0 | 1 | 2 | 3;
+};
+
+/**
+ *  类型定义 [IdDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-02-28 23:02:19
+ */
+export type IdDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 主键id */
+  id: number;
 };
 
 /**

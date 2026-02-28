@@ -34,3 +34,4 @@ export * from './work/comicChapterComment.d';
 export * from './work/report.d';
 export * from './work/tag.d';
 export * from './work/thirdParty.d';
+export * from './work/work.d';

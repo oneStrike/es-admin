@@ -1,7 +1,7 @@
 /**
  *  类型定义 [TagCreateRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type TagCreateRequest = CreateTagDto;
 
@@ -10,7 +10,7 @@ export type TagCreateResponse = IdDto;
 /**
  *  类型定义 [TagPageRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type TagPageRequest = {
   /** 任意合法数值 */
@@ -58,7 +58,7 @@ export type TagPageResponse = {
 /**
  *  类型定义 [TagDetailRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type TagDetailRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type TagDetailResponse = BaseTagDto;
 /**
  *  类型定义 [TagUpdateRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type TagUpdateRequest = UpdateTagDto;
 
@@ -82,7 +82,7 @@ export type TagUpdateResponse = IdDto;
 /**
  *  类型定义 [TagUpdateStatusRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type TagUpdateStatusRequest = UpdateEnabledStatusDto;
 
@@ -91,7 +91,7 @@ export type TagUpdateStatusResponse = IdDto;
 /**
  *  类型定义 [TagDeleteRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type TagDeleteRequest = IdDto;
 
@@ -100,7 +100,7 @@ export type TagDeleteResponse = IdDto;
 /**
  *  类型定义 [TagOrderRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type TagOrderRequest = DragReorderDto;
 
@@ -109,7 +109,7 @@ export type TagOrderResponse = DragReorderDto;
 /**
  *  类型定义 [CreateTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type CreateTagDto = {
   /** 任意合法数值 */
@@ -130,7 +130,7 @@ export type CreateTagDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -143,7 +143,7 @@ export type IdDto = {
 /**
  *  类型定义 [BaseTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type BaseTagDto = {
   /** 任意合法数值 */
@@ -172,7 +172,7 @@ export type BaseTagDto = {
 /**
  *  类型定义 [UpdateTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UpdateTagDto = {
   /** 任意合法数值 */
@@ -195,7 +195,7 @@ export type UpdateTagDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -210,7 +210,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

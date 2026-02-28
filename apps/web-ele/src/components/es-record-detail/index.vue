@@ -171,7 +171,11 @@ defineExpose({
                 <!-- 普通文本 -->
                 <el-text
                   v-if="field.type === 'text' || field.type === 'date'"
-                  class="text-sm text-gray-900 dark:text-gray-100"
+                  :style="field.color ? { color: field.color } : undefined"
+                  :class="[
+                    'text-sm',
+                    !field.color && 'text-gray-900 dark:text-gray-100',
+                  ]"
                 >
                   {{
                     !field.value

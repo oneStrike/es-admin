@@ -1,7 +1,7 @@
 /**
  *  类型定义 [LevelRulesPageRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type LevelRulesPageRequest = {
   /** 任意合法数值 */
@@ -52,7 +52,7 @@ export type LevelRulesPageResponse = {
 /**
  *  类型定义 [LevelRulesDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type LevelRulesDetailRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type LevelRulesDetailResponse = BaseUserLevelRuleDto;
 /**
  *  类型定义 [LevelRulesCreateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type LevelRulesCreateRequest = CreateUserLevelRuleDto;
 
@@ -76,7 +76,7 @@ export type LevelRulesCreateResponse = BaseUserLevelRuleDto;
 /**
  *  类型定义 [LevelRulesUpdateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type LevelRulesUpdateRequest = UpdateUserLevelRuleDto;
 
@@ -85,7 +85,7 @@ export type LevelRulesUpdateResponse = BaseUserLevelRuleDto;
 /**
  *  类型定义 [LevelRulesDeleteRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type LevelRulesDeleteRequest = IdDto;
 
@@ -94,7 +94,7 @@ export type LevelRulesDeleteResponse = BaseUserLevelRuleDto;
 /**
  *  类型定义 [LevelRulesUserLevelInfoRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type LevelRulesUserLevelInfoRequest = {
   /** 任意合法数值 */
@@ -109,7 +109,7 @@ export type LevelRulesUserLevelInfoResponse = UserLevelInfoDto;
 /**
  *  类型定义 [LevelRulesCheckPermissionRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type LevelRulesCheckPermissionRequest = CheckUserLevelPermissionDto;
 
@@ -120,7 +120,7 @@ export type LevelRulesStatisticsResponse = BaseUserLevelRuleDto;
 /**
  *  类型定义 [BaseUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type BaseUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -167,7 +167,7 @@ export type BaseUserLevelRuleDto = {
 /**
  *  类型定义 [CreateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type CreateUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -208,7 +208,7 @@ export type CreateUserLevelRuleDto = {
 /**
  *  类型定义 [UpdateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UpdateUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -251,7 +251,7 @@ export type UpdateUserLevelRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -264,7 +264,7 @@ export type IdDto = {
 /**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserLevelInfoDto = {
   /** 任意合法数值 */
@@ -284,18 +284,18 @@ export type UserLevelInfoDto = {
   /* 等级名称 */
   levelName: string;
   /* 下一等级所需经验值 */
-  nextLevelExperience?: number;
+  nextLevelExperience?: null | number;
   /* 等级权限 */
   permissions: UserLevelPermissionsDto;
 
   /* 升级进度百分比 */
-  progressPercentage?: number;
+  progressPercentage?: null | number;
 };
 
 /**
  *  类型定义 [UserLevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserLevelPermissionsDto = {
   /** 任意合法数值 */
@@ -316,7 +316,7 @@ export type UserLevelPermissionsDto = {
 /**
  *  类型定义 [CheckUserLevelPermissionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type CheckUserLevelPermissionDto = {
   /** 任意合法数值 */
@@ -336,7 +336,7 @@ export type CheckUserLevelPermissionDto = {
 /**
  *  类型定义 [UserLevelPermissionResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserLevelPermissionResultDto = {
   /** 任意合法数值 */
@@ -346,10 +346,10 @@ export type UserLevelPermissionResultDto = {
   /* 是否有权限 */
   hasPermission: boolean;
   /* 限制数量 */
-  limit?: number;
+  limit?: null | number;
   /* 剩余数量 */
-  remaining?: number;
+  remaining?: null | number;
 
   /* 已使用数量 */
-  used?: number;
+  used?: null | number;
 };

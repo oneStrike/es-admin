@@ -1,7 +1,7 @@
 /**
  *  类型定义 [UserGrowthOverviewRequest]
  *  @来源 用户成长/概览
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserGrowthOverviewRequest = {
   /** 任意合法数值 */
@@ -15,7 +15,7 @@ export type UserGrowthOverviewResponse = UserGrowthOverviewDto;
 /**
  *  类型定义 [UserGrowthOverviewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserGrowthOverviewDto = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type UserGrowthOverviewDto = {
 /**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserLevelInfoDto = {
   /** 任意合法数值 */
@@ -56,18 +56,18 @@ export type UserLevelInfoDto = {
   /* 等级名称 */
   levelName: string;
   /* 下一等级所需经验值 */
-  nextLevelExperience?: number;
+  nextLevelExperience?: null | number;
   /* 等级权限 */
   permissions: UserLevelPermissionsDto;
 
   /* 升级进度百分比 */
-  progressPercentage?: number;
+  progressPercentage?: null | number;
 };
 
 /**
  *  类型定义 [UserLevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserLevelPermissionsDto = {
   /** 任意合法数值 */
@@ -88,7 +88,7 @@ export type UserLevelPermissionsDto = {
 /**
  *  类型定义 [UserGrowthOverviewBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserGrowthOverviewBadgeDto = {
   /** 任意合法数值 */
@@ -107,7 +107,7 @@ export type UserGrowthOverviewBadgeDto = {
 /**
  *  类型定义 [UserGrowthOverviewBadgeInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-24 20:28:45
+ *  @更新时间 2026-02-28 23:02:19
  */
 export type UserGrowthOverviewBadgeInfoDto = {
   /** 任意合法数值 */

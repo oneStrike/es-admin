@@ -31,7 +31,7 @@ export async function comicChapterCreateApi(
  * 分页查询漫画章节列表
  */
 export async function comicChapterPageApi(
-  params?: ComicChapterPageRequest,
+  params: ComicChapterPageRequest,
 ): Promise<ComicChapterPageResponse> {
   return requestClient.get<ComicChapterPageResponse>(
     '/api/admin/work/comic-chapter/page',
