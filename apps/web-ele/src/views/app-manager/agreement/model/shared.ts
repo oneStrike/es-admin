@@ -52,17 +52,6 @@ export const formSchema: EsFormSchema = [
   {
     component: 'RadioGroup',
     componentProps: {
-      placeholder: '请选择发布状态',
-      options: booleanOptions,
-      class: 'w-full',
-    },
-    defaultValue: false,
-    fieldName: 'isPublished',
-    label: '已发布',
-  },
-  {
-    component: 'RadioGroup',
-    componentProps: {
       placeholder: '请选择登录注册页展示',
       options: booleanOptions,
       class: 'w-full',

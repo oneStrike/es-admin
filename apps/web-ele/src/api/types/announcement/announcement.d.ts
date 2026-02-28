@@ -1,20 +1,23 @@
 /**
- *  类型定义 [NoticeCreateRequest]
- *  @来源 APP管理/通知公告
- *  @更新时间 2026-02-28 23:02:19
+ *  类型定义 [AnnouncementCreateRequest]
+ *  @来源 APP管理/系统公告
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type NoticeCreateRequest = CreateNoticeDto;
+export type AnnouncementCreateRequest = CreateAnnouncementDto;
 
-export type NoticeCreateResponse = IdDto;
+export type AnnouncementCreateResponse = IdDto;
 
 /**
- *  类型定义 [NoticePageRequest]
- *  @来源 APP管理/通知公告
- *  @更新时间 2026-02-28 23:02:19
+ *  类型定义 [AnnouncementPageRequest]
+ *  @来源 APP管理/系统公告
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type NoticePageRequest = {
+export type AnnouncementPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
+
+  /* 公告类型 */
+  announcementType?: number;
 
   /* 所启用的平台 */
   enablePlatform?: null | string;
@@ -27,9 +30,6 @@ export type NoticePageRequest = {
 
   /* 是否发布 */
   isPublished?: boolean;
-
-  /* 通知类型 */
-  noticeType?: number;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -58,16 +58,16 @@ export type NoticePageRequest = {
   /* 开始时间 */
   startDate?: null | string;
 
-  /* 通知标题 */
+  /* 公告标题 */
   title?: string;
 };
 
-export type NoticePageResponse = {
+export type AnnouncementPageResponse = {
   /** 任意合法数值 */
   [property: string]: any;
 
   /* 列表数据 */
-  list?: NoticePageResponseDto[];
+  list?: AnnouncementPageResponseDto[];
 
   /* 当前页码 */
   pageIndex?: number;
@@ -80,11 +80,11 @@ export type NoticePageResponse = {
 };
 
 /**
- *  类型定义 [NoticeDetailRequest]
- *  @来源 APP管理/通知公告
- *  @更新时间 2026-02-28 23:02:19
+ *  类型定义 [AnnouncementDetailRequest]
+ *  @来源 APP管理/系统公告
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type NoticeDetailRequest = {
+export type AnnouncementDetailRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -92,54 +92,54 @@ export type NoticeDetailRequest = {
   id: number;
 };
 
-export type NoticeDetailResponse = NoticeDetailDto;
+export type AnnouncementDetailResponse = AnnouncementDetailDto;
 
 /**
- *  类型定义 [NoticeUpdateRequest]
- *  @来源 APP管理/通知公告
- *  @更新时间 2026-02-28 23:02:19
+ *  类型定义 [AnnouncementUpdateRequest]
+ *  @来源 APP管理/系统公告
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type NoticeUpdateRequest = UpdateNoticeDto;
+export type AnnouncementUpdateRequest = UpdateAnnouncementDto;
 
-export type NoticeUpdateResponse = IdDto;
+export type AnnouncementUpdateResponse = IdDto;
 
 /**
- *  类型定义 [NoticeUpdateStatusRequest]
- *  @来源 APP管理/通知公告
- *  @更新时间 2026-02-28 23:02:19
+ *  类型定义 [AnnouncementUpdateStatusRequest]
+ *  @来源 APP管理/系统公告
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type NoticeUpdateStatusRequest = UpdateNoticeStatusDto;
+export type AnnouncementUpdateStatusRequest = UpdateAnnouncementStatusDto;
 
-export type NoticeUpdateStatusResponse = BatchOperationResponseDto;
+export type AnnouncementUpdateStatusResponse = BatchOperationResponseDto;
 
 /**
- *  类型定义 [NoticeDeleteRequest]
- *  @来源 APP管理/通知公告
- *  @更新时间 2026-02-28 23:02:19
+ *  类型定义 [AnnouncementDeleteRequest]
+ *  @来源 APP管理/系统公告
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type NoticeDeleteRequest = IdDto;
+export type AnnouncementDeleteRequest = IdDto;
 
-export type NoticeDeleteResponse = BatchOperationResponseDto;
+export type AnnouncementDeleteResponse = BatchOperationResponseDto;
 
 /**
- *  类型定义 [CreateNoticeDto]
+ *  类型定义 [CreateAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type CreateNoticeDto = {
+export type CreateAnnouncementDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 通知内容详情 */
+  /* 公告类型 */
+  announcementType: 0 | 1 | 2 | 3 | 4;
+  /* 公告内容详情 */
   content: string;
   /* 启用的平台 */
   enablePlatform: number[];
   /* 是否置顶 */
   isPinned?: boolean | null;
-  /* 通知类型 */
-  noticeType: 0 | 1 | 2 | 3;
   /* 关联页面id */
   pageId?: null | number;
-  /* 通知弹窗背景图片URL */
+  /* 公告弹窗背景图片URL */
   popupBackgroundImage?: null | string;
   /* 优先级 */
   priorityLevel: 0 | 1 | 2 | 3;
@@ -149,15 +149,17 @@ export type CreateNoticeDto = {
   publishStartTime?: null | string;
   /* 是否弹窗显示 */
   showAsPopup?: boolean | null;
+  /* 公告摘要 */
+  summary?: null | string;
 
-  /* 通知标题 */
+  /* 公告标题 */
   title: string;
 };
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
+ *  @更新时间 2026-03-01 00:17:14
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -168,13 +170,15 @@ export type IdDto = {
 };
 
 /**
- *  类型定义 [NoticePageResponseDto]
+ *  类型定义 [AnnouncementPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type NoticePageResponseDto = {
+export type AnnouncementPageResponseDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 公告类型 */
+  announcementType: 0 | 1 | 2 | 3 | 4;
   /* 创建时间 */
   createdAt: string;
   /* 启用的平台 */
@@ -185,8 +189,6 @@ export type NoticePageResponseDto = {
   isPinned?: boolean | null;
   /* 是否发布 */
   isPublished: boolean;
-  /* 通知类型 */
-  noticeType: 0 | 1 | 2 | 3;
   /* 关联页面id */
   pageId?: null | number;
   /* 优先级 */
@@ -195,28 +197,32 @@ export type NoticePageResponseDto = {
   publishEndTime?: null | string;
   /* 发布开始时间 */
   publishStartTime?: null | string;
-  /* 阅读次数 */
-  readCount?: null | number;
   /* 是否弹窗显示 */
   showAsPopup?: boolean | null;
-  /* 通知标题 */
+  /* 公告摘要 */
+  summary?: null | string;
+  /* 公告标题 */
   title: string;
-
   /* 更新时间 */
   updatedAt: string;
+
+  /* 浏览次数 */
+  viewCount?: null | number;
 };
 
 /**
- *  类型定义 [NoticeDetailDto]
+ *  类型定义 [AnnouncementDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type NoticeDetailDto = {
+export type AnnouncementDetailDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 通知详情 */
+  /* 公告类型 */
+  announcementType: 0 | 1 | 2 | 3 | 4;
+  /* 公告详情 */
   appPage: RelatedPageDto;
-  /* 通知内容详情 */
+  /* 公告内容详情 */
   content: string;
   /* 创建时间 */
   createdAt: string;
@@ -228,11 +234,9 @@ export type NoticeDetailDto = {
   isPinned?: boolean | null;
   /* 是否发布 */
   isPublished: boolean;
-  /* 通知类型 */
-  noticeType: 0 | 1 | 2 | 3;
   /* 关联页面id */
   pageId?: null | number;
-  /* 通知弹窗背景图片URL */
+  /* 公告弹窗背景图片URL */
   popupBackgroundImage?: null | string;
   /* 优先级 */
   priorityLevel: 0 | 1 | 2 | 3;
@@ -240,21 +244,23 @@ export type NoticeDetailDto = {
   publishEndTime?: null | string;
   /* 发布开始时间 */
   publishStartTime?: null | string;
-  /* 阅读次数 */
-  readCount?: null | number;
   /* 是否弹窗显示 */
   showAsPopup?: boolean | null;
-  /* 通知标题 */
+  /* 公告摘要 */
+  summary?: null | string;
+  /* 公告标题 */
   title: string;
-
   /* 更新时间 */
   updatedAt: string;
+
+  /* 浏览次数 */
+  viewCount?: null | number;
 };
 
 /**
  *  类型定义 [RelatedPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
+ *  @更新时间 2026-03-01 00:17:14
  */
 export type RelatedPageDto = {
   /** 任意合法数值 */
@@ -271,14 +277,16 @@ export type RelatedPageDto = {
 };
 
 /**
- *  类型定义 [UpdateNoticeDto]
+ *  类型定义 [UpdateAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type UpdateNoticeDto = {
+export type UpdateAnnouncementDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 通知内容详情 */
+  /* 公告类型 */
+  announcementType: 0 | 1 | 2 | 3 | 4;
+  /* 公告内容详情 */
   content: string;
   /* 启用的平台 */
   enablePlatform: number[];
@@ -286,11 +294,9 @@ export type UpdateNoticeDto = {
   id: number;
   /* 是否置顶 */
   isPinned?: boolean | null;
-  /* 通知类型 */
-  noticeType: 0 | 1 | 2 | 3;
   /* 关联页面id */
   pageId?: null | number;
-  /* 通知弹窗背景图片URL */
+  /* 公告弹窗背景图片URL */
   popupBackgroundImage?: null | string;
   /* 优先级 */
   priorityLevel: 0 | 1 | 2 | 3;
@@ -300,17 +306,19 @@ export type UpdateNoticeDto = {
   publishStartTime?: null | string;
   /* 是否弹窗显示 */
   showAsPopup?: boolean | null;
+  /* 公告摘要 */
+  summary?: null | string;
 
-  /* 通知标题 */
+  /* 公告标题 */
   title: string;
 };
 
 /**
- *  类型定义 [UpdateNoticeStatusDto]
+ *  类型定义 [UpdateAnnouncementStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
+ *  @更新时间 2026-03-01 00:17:14
  */
-export type UpdateNoticeStatusDto = {
+export type UpdateAnnouncementStatusDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 主键id */
@@ -323,7 +331,7 @@ export type UpdateNoticeStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-02-28 23:02:19
+ *  @更新时间 2026-03-01 00:17:14
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */

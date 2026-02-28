@@ -11,11 +11,11 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        name: 'Notice',
-        path: '/app-manager/notice',
-        component: () => import('#/views/app-manager/notice/index.vue'),
+        name: 'Announcement',
+        path: '/app-manager/announcement',
+        component: () => import('#/views/app-manager/announcement/index.vue'),
         meta: {
-          title: '通知公告',
+          title: '公告管理',
           icon: 'codex:dot-circle',
         },
       },

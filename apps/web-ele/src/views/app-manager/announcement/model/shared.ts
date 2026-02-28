@@ -1,40 +1,49 @@
-import type { NoticePageResponseDto } from '#/api/types';
+import type { AnnouncementPageResponseDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';
 
-export const noticeType = [
+// 公告类型配置
+export const announcementType = [
   {
-    label: '系统通知',
+    label: '平台公告',
     value: 0,
-    color: '#1890ff', // 蓝色
+    color: '#1890ff', // 蓝色 - 代表官方、权威
   },
   {
     label: '活动公告',
     value: 1,
-    color: '#52c41a', // 绿色
+    color: '#52c41a', // 绿色 - 代表活力、活动
   },
   {
-    label: '维护通知',
+    label: '维护公告',
     value: 2,
-    color: '#faad14', // 橙色
+    color: '#faad14', // 橙色 - 代表警示、注意
   },
   {
     label: '更新公告',
     value: 3,
-    color: '#722ed1', // 紫色
+    color: '#722ed1', // 紫色 - 代表创新、更新
+  },
+  {
+    label: '政策公告',
+    value: 4,
+    color: '#eb2f96', // 洋红色 - 代表重要、规则
   },
 ];
 
-export const noticeTypeObj: Record<number, { color: string; label: string }> =
-  {};
-for (const item of noticeType) {
-  noticeTypeObj[item.value] = {
+export const announcementTypeObj: Record<
+  number,
+  { color: string; label: string }
+> = {};
+for (const item of announcementType) {
+  announcementTypeObj[item.value] = {
     label: item.label,
     color: item.color,
   };
 }
 
+// 启用平台配置
 export const enablePlatform = [
   {
     label: 'H5',
@@ -50,14 +59,15 @@ export const enablePlatform = [
   },
 ];
 
-export const noticePriority = [
+// 公告优先级配置
+export const announcementPriority = [
   {
     label: '低优先级',
     value: 0,
     color: '#52c41a',
   },
   {
-    label: '中优先级',
+    label: '中等优先级',
     value: 1,
     color: '#1890ff',
   },
@@ -73,12 +83,12 @@ export const noticePriority = [
   },
 ];
 
-export const noticePriorityObj: Record<
+export const announcementPriorityObj: Record<
   number,
   { color: string; label: string }
 > = {};
-for (const item of noticePriority) {
-  noticePriorityObj[item.value] = {
+for (const item of announcementPriority) {
+  announcementPriorityObj[item.value] = {
     label: item.label,
     color: item.color,
   };
@@ -130,24 +140,25 @@ export function getPublishStatus(
   return 'published';
 }
 
+// 表单配置
 export const formSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
-      placeholder: '请输入通知标题',
+      placeholder: '请输入公告标题',
     },
     fieldName: 'title',
-    label: '通知标题',
+    label: '公告标题',
     rules: 'required',
   },
   {
-    label: '通知类型',
-    fieldName: 'noticeType',
+    label: '公告类型',
+    fieldName: 'announcementType',
     component: 'Select',
     rules: 'required',
     componentProps: {
-      placeholder: '请选择通知类型',
-      options: noticeType,
+      placeholder: '请选择公告类型',
+      options: announcementType,
       class: 'w-full',
     },
   },
@@ -163,13 +174,13 @@ export const formSchema: EsFormSchema = [
     },
   },
   {
-    label: '紧急程度',
+    label: '优先级',
     fieldName: 'priorityLevel',
     component: 'Select',
     rules: 'required',
     componentProps: {
-      placeholder: '请选择紧急程度',
-      options: noticePriority,
+      placeholder: '请选择优先级',
+      options: announcementPriority,
       class: 'w-full',
     },
   },
@@ -184,7 +195,7 @@ export const formSchema: EsFormSchema = [
     },
   },
   {
-    label: '通知时间',
+    label: '发布时间',
     fieldName: 'dateTimeRange',
     component: 'DatePicker',
     componentProps: {
@@ -192,7 +203,6 @@ export const formSchema: EsFormSchema = [
       valueFormat: 'YYYY-MM-DD',
     },
   },
-
   {
     label: '是否置顶',
     fieldName: 'isPinned',
@@ -240,6 +250,18 @@ export const formSchema: EsFormSchema = [
     },
   },
   {
+    label: '公告摘要',
+    fieldName: 'summary',
+    component: 'Input',
+    componentProps: {
+      type: 'textarea',
+      placeholder: '请输入公告摘要',
+      rows: 3,
+      maxlength: 200,
+      showWordLimit: true,
+    },
+  },
+  {
     label: '内容',
     fieldName: 'content',
     component: 'RichText',
@@ -251,8 +273,9 @@ export const formSchema: EsFormSchema = [
   },
 ];
 
-export const noticeColumns =
-  formSchemaTransform.toTableColumns<NoticePageResponseDto>(formSchema, {
+// 表格列配置
+export const announcementColumns =
+  formSchemaTransform.toTableColumns<AnnouncementPageResponseDto>(formSchema, {
     content: {
       hide: true,
     },
@@ -265,6 +288,9 @@ export const noticeColumns =
     popupBackgroundImage: {
       hide: true,
     },
+    summary: {
+      hide: true,
+    },
     actions: {
       show: true,
       width: 260,
@@ -274,6 +300,7 @@ export const noticeColumns =
       showOverflow: 'tooltip',
     },
     dateTimeRange: {
+      title: '发布时间',
       formatter: ({ row }: any) => {
         return `${formatUTC(row.publishStartTime, 'YYYY-MM-DD')} - ${formatUTC(row.publishEndTime, 'YYYY-MM-DD')}`;
       },
@@ -284,11 +311,12 @@ export const noticeColumns =
       width: 120,
       slots: { default: 'publishStatus' },
     },
-    noticeType: {
+    announcementType: {
+      title: '公告类型',
       cellRender: {
         name: 'CellText',
         props: {
-          mapOptions: noticeType,
+          mapOptions: announcementType,
         },
       },
     },
@@ -296,13 +324,13 @@ export const noticeColumns =
       cellRender: {
         name: 'CellText',
         props: {
-          mapOptions: noticePriority,
+          mapOptions: announcementPriority,
         },
       },
     },
     enablePlatform: {
       cellRender: {
-        name: 'CellText',
+        name: 'CellTag',
         props: {
           mapOptions: enablePlatform,
         },
@@ -313,26 +341,30 @@ export const noticeColumns =
     },
   });
 
-export const noticeFilter = formSchemaTransform.toSearchSchema(formSchema, {
-  title: {
-    sort: 99,
+// 搜索表单配置
+export const announcementFilter = formSchemaTransform.toSearchSchema(
+  formSchema,
+  {
+    title: {
+      sort: 99,
+    },
+    dateTimeRange: {
+      sort: 98,
+    },
+    announcementType: {
+      sort: 97,
+    },
+    priorityLevel: {
+      sort: 96,
+    },
+    enablePlatform: {
+      sort: 95,
+    },
+    pageId: {
+      sort: 94,
+    },
+    isPinned: {
+      sort: 93,
+    },
   },
-  dateTimeRange: {
-    sort: 98,
-  },
-  noticeType: {
-    sort: 97,
-  },
-  priorityLevel: {
-    sort: 96,
-  },
-  enablePlatform: {
-    sort: 95,
-  },
-  pageId: {
-    sort: 94,
-  },
-  isPinned: {
-    sort: 93,
-  },
-});
+);

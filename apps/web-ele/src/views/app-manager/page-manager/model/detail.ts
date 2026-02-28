@@ -2,7 +2,7 @@ import type { BaseAppPageDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 import { getOptionLabel } from '#/utils/options';
-import { enablePlatform } from '#/views/app-manager/notice/model/shared';
+import { enablePlatform } from '#/views/app-manager/announcement/model/shared';
 
 import { accessLevelObj } from './shared';
 

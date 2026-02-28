@@ -1,22 +1,22 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  CreateNoticeDto,
-  NoticePageResponseDto,
-  UpdateNoticeDto,
+  AnnouncementPageResponseDto,
+  CreateAnnouncementDto,
+  UpdateAnnouncementDto,
 } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  announcementCreateApi,
+  announcementDeleteApi,
+  announcementDetailApi,
+  announcementPageApi,
+  announcementUpdateApi,
+  announcementUpdateStatusApi,
   appPagePageApi,
-  noticeCreateApi,
-  noticeDeleteApi,
-  noticeDetailApi,
-  noticePageApi,
-  noticeUpdateApi,
-  noticeUpdateStatusApi,
 } from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -25,10 +25,10 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './model/detail';
 import {
+  announcementColumns,
+  announcementFilter,
   formSchema,
   getPublishStatus,
-  noticeColumns,
-  noticeFilter,
   publishStatusObj,
 } from './model/shared';
 
@@ -47,7 +47,7 @@ appPagePageApi({
       };
     }) || [];
 
-  noticeFilter.forEach((item) => {
+  announcementFilter.forEach((item) => {
     if (item.fieldName === 'pageId' && item.componentProps) {
       (item.componentProps as any).options = pageOptions;
     }
@@ -58,11 +58,11 @@ appPagePageApi({
     }
   });
 
-  gridApi.formApi.updateSchema(noticeFilter);
+  gridApi.formApi.updateSchema(announcementFilter);
 });
 
-const gridOptions: VxeGridProps<NoticePageResponseDto> = {
-  columns: noticeColumns,
+const gridOptions: VxeGridProps<AnnouncementPageResponseDto> = {
+  columns: announcementColumns,
   height: 'auto',
   proxyConfig: {
     ajax: {
@@ -70,7 +70,7 @@ const gridOptions: VxeGridProps<NoticePageResponseDto> = {
         if (formValues.enablePlatform) {
           formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
         }
-        return await noticePageApi({
+        return await announcementPageApi({
           pageIndex: --page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
@@ -86,37 +86,37 @@ const [Form, formApi] = useVbenModal({
 });
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(noticeFilter),
+  formOptions: createSearchFormOptions(announcementFilter),
   gridOptions,
 });
 
-async function openFormModal(row?: NoticePageResponseDto) {
+async function openFormModal(row?: AnnouncementPageResponseDto) {
   let record;
   if (row) {
-    record = await noticeDetailApi({ id: row.id });
+    record = await announcementDetailApi({ id: row.id });
     record.dateTimeRange = [record.publishStartTime, record.publishEndTime];
   }
-  formApi.setData({ title: '通知公告', record }).open();
+  formApi.setData({ title: '公告管理', record }).open();
 }
 
-async function handleSubmit(values: CreateNoticeDto | UpdateNoticeDto) {
+async function handleSubmit(values: CreateAnnouncementDto | UpdateAnnouncementDto) {
   await (values?.id
-    ? noticeUpdateApi(values as UpdateNoticeDto)
-    : noticeCreateApi(values as CreateNoticeDto));
+    ? announcementUpdateApi(values as UpdateAnnouncementDto)
+    : announcementCreateApi(values as CreateAnnouncementDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function deleteNotice(record: NoticePageResponseDto) {
-  await noticeDeleteApi({ id: record.id });
+async function deleteAnnouncement(record: AnnouncementPageResponseDto) {
+  await announcementDeleteApi({ id: record.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function togglePublishStatus(record: NoticePageResponseDto) {
+async function togglePublishStatus(record: AnnouncementPageResponseDto) {
   const newStatus = !record.isPublished;
-  await noticeUpdateStatusApi({
+  await announcementUpdateStatusApi({
     id: record.id,
     isPublished: newStatus,
   });
@@ -124,7 +124,7 @@ async function togglePublishStatus(record: NoticePageResponseDto) {
   gridApi.reload();
 }
 
-function getPublishButtonText(record: NoticePageResponseDto): string {
+function getPublishButtonText(record: AnnouncementPageResponseDto): string {
   const status = getPublishStatus(record.isPublished, record.publishEndTime);
 
   if (status === 'unpublished') {
@@ -136,7 +136,7 @@ function getPublishButtonText(record: NoticePageResponseDto): string {
   }
 }
 
-function canPublish(record: NoticePageResponseDto): boolean {
+function canPublish(record: AnnouncementPageResponseDto): boolean {
   const status = getPublishStatus(record.isPublished, record.publishEndTime);
   return status !== 'expired';
 }
@@ -223,7 +223,7 @@ const [DetailModal, detailApi] = useVbenModal({
           <el-popconfirm
             v-if="canPublish(row)"
             :title="
-              row.isPublished ? '确认取消发布当前通知?' : '确认发布当前通知?'
+              row.isPublished ? '确认取消发布当前公告?' : '确认发布当前公告?'
             "
             width="180"
             confirm-button-text="确认"
@@ -251,7 +251,7 @@ const [DetailModal, detailApi] = useVbenModal({
             title="确认删除当前项?"
             confirm-button-text="确认"
             cancel-button-text="取消"
-            @confirm="deleteNotice(row)"
+            @confirm="deleteAnnouncement(row)"
           >
             <template #reference>
               <el-button link type="danger">删除</el-button>
@@ -270,7 +270,7 @@ const [DetailModal, detailApi] = useVbenModal({
     />
 
     <DetailModal
-      :api="noticeDetailApi"
+      :api="announcementDetailApi"
       :cards="getDetailCards"
       class="!w-[1000px]"
     />

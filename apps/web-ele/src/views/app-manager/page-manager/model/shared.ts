@@ -2,7 +2,7 @@ import type { BaseAppPageDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
-import { enablePlatform } from '#/views/app-manager/notice/model/shared';
+import { enablePlatform } from '#/views/app-manager/announcement/model/shared';
 
 // 页面权限级别配置
 export const accessLevel = [

@@ -1,22 +1,22 @@
-import type { NoticeDetailResponse } from '#/api/types';
+import type { AnnouncementDetailResponse } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 import { getOptionLabel } from '#/utils/options';
 
 import {
+  announcementPriorityObj,
+  announcementTypeObj,
   enablePlatform,
   getPublishStatus,
-  noticePriorityObj,
-  noticeTypeObj,
   publishStatusObj,
 } from './shared';
 
 /**
- * 获取通知公告详情卡片配置
- * @param detail 通知公告详情数据
+ * 获取公告详情卡片配置
+ * @param detail 公告详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: NoticeDetailResponse) {
+export function getDetailCards(detail: AnnouncementDetailResponse) {
   // 计算发布状态
   const publishStatus = getPublishStatus(
     detail.isPublished,
@@ -29,11 +29,11 @@ export function getDetailCards(detail: NoticeDetailResponse) {
     detail.enablePlatform,
   );
 
-  // 计算通知类型信息
-  const noticeTypeInfo = noticeTypeObj[detail.noticeType];
+  // 计算公告类型信息
+  const announcementTypeInfo = announcementTypeObj[detail.announcementType];
 
   // 计算优先级信息
-  const priorityInfo = noticePriorityObj[detail.priorityLevel];
+  const priorityInfo = announcementPriorityObj[detail.priorityLevel];
 
   // 计算发布状态信息
   const publishStatusInfo = publishStatusObj[publishStatus];
@@ -44,15 +44,15 @@ export function getDetailCards(detail: NoticeDetailResponse) {
       show: true,
       fields: [
         {
-          label: '通知标题',
+          label: '公告标题',
           value: detail?.title,
           type: 'text' as const,
         },
         {
-          label: '通知类型',
-          value: noticeTypeInfo?.label,
+          label: '公告类型',
+          value: announcementTypeInfo?.label,
           type: 'text' as const,
-          color: noticeTypeInfo?.color,
+          color: announcementTypeInfo?.color,
         },
         {
           label: '优先级',
@@ -72,8 +72,8 @@ export function getDetailCards(detail: NoticeDetailResponse) {
           type: 'text' as const,
         },
         {
-          label: '阅读次数',
-          value: detail?.readCount || 0,
+          label: '浏览次数',
+          value: detail?.viewCount || 0,
           type: 'text' as const,
         },
         {
@@ -127,6 +127,17 @@ export function getDetailCards(detail: NoticeDetailResponse) {
       ],
     },
     {
+      title: '公告摘要',
+      show: !!detail?.summary,
+      fields: [
+        {
+          label: '摘要内容',
+          value: detail?.summary || '-',
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
       title: '关联页面',
       show: !!(detail?.pageId || detail?.appPage),
       fields: [
@@ -157,7 +168,7 @@ export function getDetailCards(detail: NoticeDetailResponse) {
       imageUrl: detail?.popupBackgroundImage,
     },
     {
-      title: '通知内容',
+      title: '公告内容',
       show: true,
       type: 'html' as const,
       content: detail?.content,

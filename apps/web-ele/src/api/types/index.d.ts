@@ -1,4 +1,5 @@
 export * from './agreement/agreement.d';
+export * from './announcement/announcement.d';
 export * from './app-config/appConfig.d';
 export * from './app-page/appPage.d';
 export * from './audit/audit.d';
@@ -14,7 +15,6 @@ export * from './forum/statistics.d';
 export * from './forum/tags.d';
 export * from './forum/topic.d';
 export * from './health/system.d';
-export * from './notice/notice.d';
 export * from './task/assignment.d';
 export * from './task/task.d';
 export * from './upload/upload.d';
