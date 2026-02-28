@@ -1,7 +1,7 @@
 import type { AnnouncementPageResponseDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { formatUTC, formSchemaTransform } from '#/utils';
+import { formSchemaTransform } from '#/utils';
 
 // 公告类型配置
 export const announcementType = [
@@ -202,6 +202,7 @@ export const formSchema: EsFormSchema = [
       type: 'daterange',
       valueFormat: 'YYYY-MM-DD',
     },
+    help: '仅对首页展示的公告有效，时效过期后将不会在首页展示',
   },
   {
     label: '是否置顶',
@@ -301,9 +302,7 @@ export const announcementColumns =
     },
     dateTimeRange: {
       title: '发布时间',
-      formatter: ({ row }: any) => {
-        return `${formatUTC(row.publishStartTime, 'YYYY-MM-DD')} - ${formatUTC(row.publishEndTime, 'YYYY-MM-DD')}`;
-      },
+      slots: { default: 'dateTimeRange' },
     },
     publishStatus: {
       title: '发布状态',

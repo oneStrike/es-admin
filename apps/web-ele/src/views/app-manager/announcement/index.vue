@@ -21,6 +21,7 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
+import { formatUTC } from '#/utils';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './model/detail';
@@ -99,7 +100,9 @@ async function openFormModal(row?: AnnouncementPageResponseDto) {
   formApi.setData({ title: '公告管理', record }).open();
 }
 
-async function handleSubmit(values: CreateAnnouncementDto | UpdateAnnouncementDto) {
+async function handleSubmit(
+  values: CreateAnnouncementDto | UpdateAnnouncementDto,
+) {
   await (values?.id
     ? announcementUpdateApi(values as UpdateAnnouncementDto)
     : announcementCreateApi(values as CreateAnnouncementDto));
@@ -174,6 +177,16 @@ const [DetailModal, detailApi] = useVbenModal({
           @click="detailApi.setData({ recordId: row.id }).open()"
         >
           {{ row.title }}
+        </el-text>
+      </template>
+
+      <template #dateTimeRange="{ row }">
+        <el-text>
+          {{
+            row.publishStartTime || row.publishEndTime
+              ? `${formatUTC(row.publishStartTime, 'YYYY-MM-DD')} - ${formatUTC(row.publishEndTime, 'YYYY-MM-DD')}`
+              : '-'
+          }}
         </el-text>
       </template>
 

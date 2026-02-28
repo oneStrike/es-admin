@@ -9,6 +9,8 @@ import type {
   AgreementPageResponse,
   AgreementUpdateRequest,
   AgreementUpdateResponse,
+  AgreementUpdateStatusRequest,
+  AgreementUpdateStatusResponse,
 } from '../../types/agreement/agreement.d';
 
 import { requestClient } from '#/api/request';
@@ -58,6 +60,18 @@ export async function agreementPageApi(
   return requestClient.get<AgreementPageResponse>('/api/admin/agreement/page', {
     params,
   });
+}
+
+/**
+ * 更新协议状态
+ */
+export async function agreementUpdateStatusApi(
+  params: AgreementUpdateStatusRequest,
+): Promise<AgreementUpdateStatusResponse> {
+  return requestClient.post<AgreementUpdateStatusResponse>(
+    '/api/admin/agreement/update-status',
+    params,
+  );
 }
 
 /**

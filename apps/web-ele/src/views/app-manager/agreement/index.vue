@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  BaseAgreementDto,
   CreateAgreementDto,
   ListOrPageAgreementResponseDto,
   UpdateAgreementDto,
@@ -15,6 +16,7 @@ import {
   agreementDetailApi,
   agreementPageApi,
   agreementUpdateApi,
+  agreementUpdateStatusApi,
 } from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -22,12 +24,7 @@ import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './model/detail';
-import {
-  agreementColumns,
-  agreementFilter,
-  booleanTagObj,
-  formSchema,
-} from './model/shared';
+import { agreementColumns, agreementFilter, formSchema } from './model/shared';
 
 const gridOptions: VxeGridProps<ListOrPageAgreementResponseDto> = {
   columns: agreementColumns,
@@ -50,10 +47,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(agreementFilter),
   gridOptions,
 });
-
-function resolveBooleanTag(value?: boolean | null) {
-  return value ? booleanTagObj.true : booleanTagObj.false;
-}
 
 async function openFormModal(row?: ListOrPageAgreementResponseDto) {
   let record;
@@ -81,6 +74,17 @@ async function deleteAgreement(record: ListOrPageAgreementResponseDto) {
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
 });
+
+async function togglePublishedStatus(record: BaseAgreementDto) {
+  record.loading = true;
+  await agreementUpdateStatusApi({
+    id: record.id,
+    isPublished: !record.isPublished,
+  });
+  record.loading = false;
+  useMessage.success('操作成功');
+  gridApi.reload();
+}
 </script>
 
 <template>
@@ -93,21 +97,13 @@ const [DetailModal, detailApi] = useVbenModal({
       </template>
 
       <template #isPublished="{ row }">
-        <el-tag :type="resolveBooleanTag(row.isPublished).type">
-          {{ resolveBooleanTag(row.isPublished).label }}
-        </el-tag>
-      </template>
-
-      <template #showInAuth="{ row }">
-        <el-tag :type="resolveBooleanTag(row.showInAuth).type">
-          {{ resolveBooleanTag(row.showInAuth).label }}
-        </el-tag>
-      </template>
-
-      <template #isForce="{ row }">
-        <el-tag :type="resolveBooleanTag(row.isForce).type">
-          {{ resolveBooleanTag(row.isForce).label }}
-        </el-tag>
+        <el-switch
+          :active-value="true"
+          :inactive-value="row.isPublished"
+          :loading="row.loading"
+          :model-value="row.isPublished"
+          @change="togglePublishedStatus(row)"
+        />
       </template>
 
       <template #actions="{ row }">

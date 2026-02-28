@@ -88,22 +88,23 @@ export const agreementColumns =
     formSchema,
     {
       content: {
-        show: false,
+        hide: true,
       },
       isPublished: {
-        show: true,
         title: '发布状态',
         slots: { default: 'isPublished' },
       },
       showInAuth: {
-        show: true,
         title: '登录注册页',
-        slots: { default: 'showInAuth' },
+        cellRender: {
+          name: 'CellTag',
+        },
       },
       isForce: {
-        show: true,
         title: '强制同意',
-        slots: { default: 'isForce' },
+        cellRender: {
+          name: 'CellTag',
+        },
       },
       createdAt: {
         show: true,

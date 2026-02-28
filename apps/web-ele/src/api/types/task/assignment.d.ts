@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AssignmentPageRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-01 00:17:14
+ *  @更新时间 2026-03-01 01:19:49
  */
 export type AssignmentPageRequest = {
   /** 任意合法数值 */
@@ -52,7 +52,7 @@ export type AssignmentPageResponse = {
 /**
  *  类型定义 [BaseTaskAssignmentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 00:17:14
+ *  @更新时间 2026-03-01 01:19:49
  */
 export type BaseTaskAssignmentDto = {
   /** 任意合法数值 */
