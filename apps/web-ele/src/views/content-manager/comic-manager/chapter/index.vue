@@ -1,21 +1,21 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  ComicChapterCreateRequest,
-  ComicChapterPageResponseDto,
-  ComicChapterUpdateRequest,
+  ChapterCreateRequest,
+  ChapterPageResponse,
+  ChapterUpdateRequest,
 } from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  comicChapterCreateApi,
-  comicChapterDeleteApi,
-  comicChapterDetailApi,
-  comicChapterPageApi,
-  comicChapterSwapSortOrderApi,
-  comicChapterUpdateApi,
+  chapterCreateApi,
+  chapterDeleteApi,
+  chapterDetailApi,
+  chapterPageApi,
+  chapterSwapSortOrderApi,
+  chapterUpdateApi,
   levelRulesPageApi,
 } from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
@@ -29,7 +29,7 @@ import { chapterColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
 import { chapterFormSchema, chapterSearchFormSchema } from './model/form';
 
-type ShareData = { comicId: number; comicName: string };
+type ShareData = { workId: number; workName: string };
 
 const shareData = ref<ShareData>();
 
@@ -40,8 +40,7 @@ levelRulesPageApi({ isEnabled: true }).then((res) => {
       value: item.id,
     })) || [];
   useForm.setOptions(chapterFormSchema, {
-    requiredReadLevelId: options,
-    requiredDownloadLevelId: options,
+    requiredViewLevelId: options,
   });
 });
 
@@ -50,19 +49,19 @@ const [Modal, modalApi] = useVbenModal({
     if (isOpen) {
       shareData.value = modalApi.getData<ShareData>();
       modalApi.setState({
-        title: shareData.value.comicName,
+        title: shareData.value.workName,
       });
     }
   },
 });
 // 章节列表配置
-const gridOptions: VxeGridProps<ComicChapterPageResponseDto> = {
+const gridOptions: VxeGridProps<ChapterPageResponse> = {
   columns: chapterColumns,
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        formValues.comicId = shareData.value?.comicId;
-        return await comicChapterPageApi(
+        formValues.workId = shareData.value?.workId;
+        return await chapterPageApi(
           formatQuery({
             page,
             formValues,
@@ -78,7 +77,7 @@ const gridOptions: VxeGridProps<ComicChapterPageResponseDto> = {
   },
   rowDragConfig: {
     async dragEndMethod(params) {
-      await comicChapterSwapSortOrderApi({
+      await chapterSwapSortOrderApi({
         dragId: params.dragRow.id,
         targetId: params.newRow.id,
       });
@@ -111,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 // 打开章节详情
-function openDetailModal(record: ComicChapterPageResponseDto) {
+function openDetailModal(record: ChapterPageResponse) {
   detailApi
     .setData({
       recordId: record.id,
@@ -121,10 +120,10 @@ function openDetailModal(record: ComicChapterPageResponseDto) {
 }
 
 // 打开内容管理
-function openContentModal(record: ComicChapterPageResponseDto) {
+function openContentModal(record: ChapterPageResponse) {
   contentApi
     .setData({
-      comicId: shareData.value!.comicId,
+      workId: shareData.value!.workId,
       chapterId: record.id,
       chapterTitle: record.title,
     })
@@ -132,44 +131,44 @@ function openContentModal(record: ComicChapterPageResponseDto) {
 }
 
 // 打开添加章节表单
-async function openFormModal(record?: ComicChapterPageResponseDto) {
+async function openFormModal(record?: ChapterPageResponse) {
   formApi
     .setData({
       cols: 4,
       width: 800,
-      record: record ? await comicChapterDetailApi({ id: record.id }) : null,
+      record: record ? await chapterDetailApi({ id: record.id }) : null,
     })
     .open();
 }
 
 // 提交章节表单
 async function handleSubmit(
-  values: ComicChapterCreateRequest | ComicChapterUpdateRequest,
+  values: ChapterCreateRequest | ChapterUpdateRequest,
 ) {
-  values.comicId = shareData.value!.comicId;
+  values.workId = shareData.value!.workId;
+  values.workType = 1; // 漫画固定为1
   await (values?.id
-    ? comicChapterUpdateApi(values as ComicChapterUpdateRequest)
-    : comicChapterCreateApi(values as ComicChapterCreateRequest));
+    ? chapterUpdateApi(values as ChapterUpdateRequest)
+    : chapterCreateApi(values as ChapterCreateRequest));
   await formApi.close();
   useMessage.success('操作成功');
   await gridApi.reload();
 }
 
 // 删除章节
-async function deleteChapter(record: ComicChapterPageResponseDto) {
-  await comicChapterDeleteApi({ id: record.id });
+async function deleteChapter(record: ChapterPageResponse) {
+  await chapterDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   await gridApi.reload();
 }
 
 // 切换章节状态
-async function toggleStatus(row: ComicChapterPageResponseDto) {
+async function toggleStatus(row: ChapterPageResponse) {
   row.loading = true;
-  await comicChapterUpdateApi({
-    ids: [row.id],
-    ...row,
+  await chapterUpdateApi({
+    id: row.id,
     isPublished: !row.isPublished,
-  });
+  } as any);
   row.loading = false;
   useMessage.success('操作成功');
   await gridApi.reload();
@@ -231,7 +230,7 @@ async function toggleStatus(row: ComicChapterPageResponseDto) {
     </Grid>
     <FormModal :schema="chapterFormSchema" :on-submit="handleSubmit" />
 
-    <DetailModal :api="comicChapterDetailApi" :cards="getDetailCards" />
+    <DetailModal :api="chapterDetailApi" :cards="getDetailCards" />
 
     <ContentModal />
   </Modal>

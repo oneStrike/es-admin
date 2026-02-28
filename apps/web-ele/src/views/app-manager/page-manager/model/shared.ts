@@ -149,15 +149,12 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseAppPageDto>(
     },
     title: {
       showOverflow: 'tooltip',
-      width: 150,
     },
     accessLevel: {
       slots: { default: 'accessLevel' },
-      width: 140,
     },
     isEnabled: {
       slots: { default: 'isEnabled' },
-      width: 100,
     },
 
     enablePlatform: {
@@ -168,7 +165,6 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseAppPageDto>(
           mapOptions: enablePlatform,
         },
       },
-      minWidth: 200,
     },
   },
 );

@@ -20,9 +20,18 @@ export const serialStatus = [
 
 export const serialStatusMap = optionsToMap(serialStatus);
 
+// 查看规则配置
+export const viewRuleOptions = [
+  { label: '所有人', value: 0 },
+  { label: '登录用户', value: 1 },
+  { label: '会员用户', value: 2 },
+  { label: '购买', value: 3 },
+];
+
 // 表单配置
 
 export const formSchema: EsFormSchema = [
+  // ========== 基本信息 ==========
   {
     component: 'Upload',
     componentProps: {
@@ -51,7 +60,6 @@ export const formSchema: EsFormSchema = [
     fieldName: 'alias',
     label: '漫画别名',
   },
-
   {
     component: 'TableSelect',
     // 对应组件的参数
@@ -161,6 +169,7 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
 
+  // ========== 作品简介 ==========
   {
     component: 'RichText',
     componentProps: {
@@ -173,11 +182,180 @@ export const formSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     rules: 'required',
   },
+
+  // ========== 权限设置 ==========
+  {
+    component: 'Divider',
+    componentProps: {
+      contentPosition: 'left',
+    },
+    fieldName: 'divider_permission',
+    label: '权限设置',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择查看规则',
+      options: viewRuleOptions,
+      class: 'w-full',
+    },
+    fieldName: 'viewRule',
+    label: '查看规则',
+    rules: 'required',
+    defaultValue: 0,
+  },
+  {
+    component: 'RadioGroup',
+    defaultValue: true,
+    componentProps: {
+      options: [
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ],
+    },
+    fieldName: 'canComment',
+    label: '允许评论',
+  },
   {
     component: 'RadioGroup',
     defaultValue: false,
     componentProps: {
-      placeholder: '请选择是否为热门作品',
+      options: [
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ],
+    },
+    fieldName: 'canDownload',
+    label: '允许下载',
+  },
+  {
+    component: 'RadioGroup',
+    defaultValue: false,
+    componentProps: {
+      options: [
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ],
+    },
+    fieldName: 'canExchange',
+    label: '允许兑换',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择阅读所需会员等级',
+      filterable: true,
+      options: [], // 需要从 levelRulesPageApi 获取
+    },
+    fieldName: 'requiredViewLevelId',
+    label: '阅读会员等级',
+  },
+
+  // ========== 价格设置 ==========
+  {
+    component: 'Divider',
+    componentProps: {
+      contentPosition: 'left',
+    },
+    fieldName: 'divider_price',
+    label: '价格设置',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入作品购买价格',
+      min: 0,
+      precision: 2,
+    },
+    fieldName: 'price',
+    label: '作品价格',
+    defaultValue: 0,
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入章节默认购买价格',
+      min: 0,
+      precision: 2,
+    },
+    fieldName: 'chapterPrice',
+    label: '章节默认价格',
+    defaultValue: 0,
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入兑换所需积分',
+      min: 0,
+    },
+    fieldName: 'exchangePoints',
+    label: '兑换积分',
+    defaultValue: 0,
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入章节默认兑换积分',
+      min: 0,
+    },
+    fieldName: 'chapterExchangePoints',
+    label: '章节默认兑换积分',
+    defaultValue: 0,
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入购买数',
+      min: 0,
+    },
+    fieldName: 'purchaseCount',
+    label: '购买数',
+    defaultValue: 0,
+  },
+
+  // ========== 发布设置 ==========
+  {
+    component: 'Divider',
+    componentProps: {
+      contentPosition: 'left',
+    },
+    fieldName: 'divider_publish',
+    label: '发布设置',
+  },
+  {
+    component: 'DatePicker',
+    componentProps: {
+      placeholder: '请选择发布日期',
+      type: 'date',
+      format: 'YYYY-MM-DD',
+      valueFormat: 'YYYY-MM-DD',
+    },
+    fieldName: 'publishAt',
+    label: '发布日期',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入最后更新时间',
+      type: 'date',
+    },
+    fieldName: 'lastUpdated',
+    label: '最后更新时间',
+  },
+
+  // ========== 推荐设置 ==========
+  {
+    component: 'Divider',
+    componentProps: {
+      contentPosition: 'left',
+    },
+    fieldName: 'divider_recommend',
+    label: '推荐设置',
+  },
+  {
+    component: 'RadioGroup',
+    defaultValue: false,
+    componentProps: {
       options: [
         { label: '是', value: true },
         { label: '否', value: false },
@@ -190,7 +368,6 @@ export const formSchema: EsFormSchema = [
     component: 'RadioGroup',
     defaultValue: false,
     componentProps: {
-      placeholder: '请选择是否为最新作品',
       options: [
         { label: '是', value: true },
         { label: '否', value: false },
@@ -203,7 +380,6 @@ export const formSchema: EsFormSchema = [
     component: 'RadioGroup',
     defaultValue: false,
     componentProps: {
-      placeholder: '请选择是否为推荐作品',
       options: [
         { label: '是', value: true },
         { label: '否', value: false },
@@ -222,7 +398,27 @@ export const formSchema: EsFormSchema = [
     fieldName: 'recommendWeight',
     label: '推荐权重',
   },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入评分（1-10分）',
+      min: 1,
+      max: 10,
+      precision: 1,
+    },
+    fieldName: 'rating',
+    label: '评分',
+  },
 
+  // ========== 版权信息 ==========
+  {
+    component: 'Divider',
+    componentProps: {
+      contentPosition: 'left',
+    },
+    fieldName: 'divider_copyright',
+    label: '版权信息',
+  },
   {
     component: 'Input',
     componentProps: {

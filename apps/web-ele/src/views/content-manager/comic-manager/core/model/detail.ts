@@ -1,15 +1,24 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseComicDto } from '#/api/types';
+import type { BaseWorkDto } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formatUTC } from '#/utils';
 
-import { serialStatusMap } from './shared';
+import { serialStatusMap, viewRuleOptions } from './shared';
+
+// 查看规则映射
+const viewRuleMap: Record<number, string> = {
+  0: '所有人',
+  1: '登录用户',
+  2: '会员用户',
+  3: '积分购买',
+  [-1]: '继承',
+};
 
 // 定义卡片配置函数
 export function getDetailCards(
-  detail: BaseComicDto,
+  detail: BaseWorkDto,
   dataDict: Recordable<undefined | UseDictItem>,
 ) {
   return [
@@ -25,7 +34,7 @@ export function getDetailCards(
         {
           label: '作者',
           value:
-            detail.comicAuthors
+            detail.authors
               ?.map((author) => author.author.name)
               .join(', ') || '-',
           type: 'text',
@@ -33,14 +42,14 @@ export function getDetailCards(
         {
           label: '分类',
           value:
-            detail.comicCategories
+            detail.categories
               ?.map((category) => category.category.name)
               .join(', ') || '-',
           type: 'text',
         },
         {
           label: '标签',
-          value: detail.comicTags?.map((tag) => tag.tag.name).join(', ') || '-',
+          value: detail.tags?.map((tag) => tag.tag.name).join(', ') || '-',
           type: 'text',
         },
       ],
@@ -88,6 +97,74 @@ export function getDetailCards(
       ],
     },
     {
+      title: '权限设置',
+      show: true,
+      fields: [
+        {
+          label: '查看规则',
+          value: viewRuleMap[detail.viewRule] || '-',
+          type: 'text',
+        },
+        {
+          label: '允许评论',
+          value: detail.canComment,
+          type: 'tag',
+          tagType: detail.canComment ? 'success' : 'info',
+          tagText: detail.canComment ? '是' : '否',
+        },
+        {
+          label: '允许下载',
+          value: detail.canDownload,
+          type: 'tag',
+          tagType: detail.canDownload ? 'success' : 'info',
+          tagText: detail.canDownload ? '是' : '否',
+        },
+        {
+          label: '允许兑换',
+          value: detail.canExchange,
+          type: 'tag',
+          tagType: detail.canExchange ? 'success' : 'info',
+          tagText: detail.canExchange ? '是' : '否',
+        },
+        {
+          label: '阅读会员等级ID',
+          value: detail.requiredViewLevelId || '-',
+          type: 'text',
+        },
+      ],
+    },
+    {
+      title: '价格设置',
+      show: true,
+      fields: [
+        {
+          label: '作品价格',
+          value: detail.price || 0,
+          type: 'text',
+        },
+        {
+          label: '章节默认价格',
+          value: detail.chapterPrice || 0,
+          type: 'text',
+        },
+        {
+          label: '兑换积分',
+          value: detail.exchangePoints || 0,
+          type: 'text',
+        },
+        {
+          label: '章节默认兑换积分',
+          value: detail.chapterExchangePoints || 0,
+          type: 'text',
+        },
+        {
+          label: '购买数',
+          value: detail.purchaseCount || 0,
+          type: 'text',
+        },
+      ],
+    },
+    {
       title: '状态信息',
       show: true,
       fields: [
@@ -119,6 +196,11 @@ export function getDetailCards(
           tagType: detail.isNew ? 'success' : 'info',
           tagText: detail.isNew ? '是' : '否',
         },
+        {
+          label: '推荐权重',
+          value: detail.recommendWeight || 0,
+          type: 'text',
+        },
       ],
     },
     {
@@ -138,6 +220,11 @@ export function getDetailCards(
         {
           label: '点赞数',
           value: detail.likeCount || 0,
+          type: 'text',
+        },
+        {
+          label: '下载量',
+          value: detail.downloadCount || 0,
           type: 'text',
         },
         {
@@ -195,7 +282,7 @@ export function getDetailCards(
       content: detail.description || '-',
     },
     {
-      title: '高级信息',
+      title: '版权信息',
       show: true,
       fields: [
         {
@@ -206,11 +293,6 @@ export function getDetailCards(
         {
           label: '免责声明',
           value: detail.disclaimer || '-',
-          type: 'text',
-        },
-        {
-          label: '推荐权重',
-          value: detail.recommendWeight || 0,
           type: 'text',
         },
         {

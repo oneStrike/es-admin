@@ -1,11 +1,13 @@
-import type { ComicChapterDetailDto } from '#/api/types';
+// 章节详情返回 IdDto，但实际后端返回更多数据
+// 使用 any 类型以支持详情展示
+// import type { IdDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
-import { downloadRuleMap, readRuleMap } from './form';
+import { readRuleMap } from './form';
 
 // 定义卡片配置函数
-export function getDetailCards(detail: ComicChapterDetailDto) {
+export function getDetailCards(detail: any) {
   return [
     {
       title: '',
@@ -27,8 +29,8 @@ export function getDetailCards(detail: ComicChapterDetailDto) {
           type: 'text',
         },
         {
-          label: '关联漫画',
-          value: detail.relatedComic?.name || '-',
+          label: '关联作品',
+          value: detail.relatedWork?.name || '-',
           type: 'text',
         },
       ],
@@ -39,12 +41,7 @@ export function getDetailCards(detail: ComicChapterDetailDto) {
       fields: [
         {
           label: '查看规则',
-          value: readRuleMap[detail.readRule] || '-',
-          type: 'text',
-        },
-        {
-          label: '下载规则',
-          value: downloadRuleMap[detail.downloadRule] || '-',
+          value: readRuleMap[detail.viewRule] || '-',
           type: 'text',
         },
         {
@@ -62,29 +59,38 @@ export function getDetailCards(detail: ComicChapterDetailDto) {
           tagText: detail.canComment ? '是' : '否',
         },
         {
-          label: '查看等级',
-          value: detail.requiredReadLevel?.name || '-',
-          type: 'text',
+          label: '允许下载',
+          value: detail.canDownload,
+          type: 'tag',
+          tagType: detail.canDownload ? 'success' : 'info',
+          tagText: detail.canDownload ? '是' : '否',
         },
         {
-          label: '下载等级',
-          value: detail.requiredDownloadLevel?.name || '-',
+          label: '允许兑换',
+          value: detail.canExchange,
+          type: 'tag',
+          tagType: detail.canExchange ? 'success' : 'info',
+          tagText: detail.canExchange ? '是' : '否',
+        },
+        {
+          label: '查看等级',
+          value: detail.requiredViewLevel?.name || '-',
           type: 'text',
         },
       ],
     },
     {
-      title: '积分设置',
+      title: '价格设置',
       show: true,
       fields: [
         {
-          label: '购买所需积分',
-          value: detail.readPoints || 0,
+          label: '章节价格',
+          value: detail.price || 0,
           type: 'text',
         },
         {
-          label: '下载所需积分',
-          value: detail.downloadPoints || 0,
+          label: '兑换所需积分',
+          value: detail.exchangePoints || 0,
           type: 'text',
         },
       ],
@@ -126,6 +132,11 @@ export function getDetailCards(detail: ComicChapterDetailDto) {
           value: detail.purchaseCount || 0,
           type: 'text',
         },
+        {
+          label: '下载量',
+          value: detail.downloadCount || 0,
+          type: 'text',
+        },
       ],
     },
     {
@@ -165,8 +176,13 @@ export function getDetailCards(detail: ComicChapterDetailDto) {
           type: 'text',
         },
         {
-          label: '章节缩略图',
-          value: detail.thumbnail || '-',
+          label: '章节封面',
+          value: detail.cover || '-',
+          type: 'text',
+        },
+        {
+          label: '内容存储路径',
+          value: detail.content || '-',
           type: 'text',
         },
       ],
@@ -186,18 +202,13 @@ export function getDetailCards(detail: ComicChapterDetailDto) {
           type: 'text',
         },
         {
-          label: '漫画ID',
-          value: detail.comicId || '-',
+          label: '作品ID',
+          value: detail.workId || '-',
           type: 'text',
         },
         {
           label: '查看等级ID',
-          value: detail.requiredReadLevelId || '-',
-          type: 'text',
-        },
-        {
-          label: '下载等级ID',
-          value: detail.requiredDownloadLevelId || '-',
+          value: detail.requiredViewLevelId || '-',
           type: 'text',
         },
       ],

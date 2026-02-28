@@ -3,9 +3,9 @@ import type { BasicOption, Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  BaseComicDto,
-  ComicCreateRequest,
-  ComicUpdateRequest,
+  BaseWorkDto,
+  WorkCreateRequest,
+  WorkUpdateRequest,
 } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
@@ -14,12 +14,17 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   categoryPageApi,
-  comicCreateApi,
-  comicDeleteApi,
-  comicDetailApi,
-  comicPageApi,
-  comicUpdateApi,
+  levelRulesPageApi,
   tagPageApi,
+  workCreateApi,
+  workDeleteApi,
+  workDetailApi,
+  workPageApi,
+  workUpdateApi,
+  workUpdateHotApi,
+  workUpdateNewApi,
+  workUpdateRecommendedApi,
+  workUpdateStatusApi,
 } from '#/api';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -34,12 +39,13 @@ import { comicColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
 import { formSchema, pageFilter } from './model/shared';
 
-const gridOptions: VxeGridProps<BaseComicDto> = {
+const gridOptions: VxeGridProps<BaseWorkDto> = {
   columns: [],
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await comicPageApi(formatQuery({ page, formValues, sorts }));
+        formValues.type = 1;
+        return await workPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
@@ -68,15 +74,34 @@ const [ThirdPartyModal, ThirdPartyApi] = useVbenModal({
 
 const tagOptions: BasicOption[] = [];
 const categoryOptions: BasicOption[] = [];
-async function openFormModal(row?: BaseComicDto) {
+const levelOptions: BasicOption[] = [];
+
+// 加载会员等级选项
+levelRulesPageApi({ isEnabled: true }).then((res) => {
+  const options =
+    res?.list?.map((item) => ({
+      label: item.name,
+      value: item.id,
+    })) || [];
+  levelOptions.push(...options);
+  useForm.setOptions(formSchema, {
+    requiredViewLevelId: levelOptions,
+  });
+});
+
+async function openFormModal(row?: BaseWorkDto) {
   let record;
   if (row) {
-    record = await comicDetailApi({ id: row.id });
-    record.authorIds = record?.comicAuthors.map((item) => item.author);
-    record.categoryIds = record?.comicCategories.map(
-      (item) => item.category.id,
+    record = await workDetailApi({ id: row.id });
+    record.authorIds = record?.authors.map(
+      (item: { author: { id: number } }) => item.author,
     );
-    record.tagIds = record?.comicTags.map((item) => item.tag.id);
+    record.categoryIds = record?.categories.map(
+      (item: { category: { id: number } }) => item.category.id,
+    );
+    record.tagIds = record?.tags.map(
+      (item: { tag: { id: number } }) => item.tag.id,
+    );
   }
 
   if (tagOptions.length === 0) {
@@ -141,39 +166,60 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
   },
 );
 
-async function handleSubmit(values: ComicCreateRequest | ComicUpdateRequest) {
+async function handleSubmit(values: WorkCreateRequest | WorkUpdateRequest) {
+  values.type = 1; // 漫画固定 type=1
   await (values?.id
-    ? comicUpdateApi(values as ComicUpdateRequest)
-    : comicCreateApi(values as ComicCreateRequest));
+    ? workUpdateApi(values as WorkUpdateRequest)
+    : workCreateApi(values as WorkCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function deleteComic(record: BaseComicDto) {
-  await comicDeleteApi({ id: record.id });
+async function deleteComic(record: BaseWorkDto) {
+  await workDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
-async function toggleStatus(record: BaseComicDto, field: keyof BaseComicDto) {
+async function toggleStatus(
+  record: BaseWorkDto,
+  field: 'isHot' | 'isNew' | 'isPublished' | 'isRecommended',
+) {
   record.loading = true;
   const newValue = !record[field];
-  await comicUpdateApi({
-    id: record.id,
-    [field]: newValue,
-  });
+  switch (field) {
+    case 'isHot': {
+      await workUpdateHotApi({ id: record.id, isHot: newValue });
+      break;
+    }
+    case 'isNew': {
+      await workUpdateNewApi({ id: record.id, isNew: newValue });
+      break;
+    }
+    case 'isPublished': {
+      await workUpdateStatusApi({ id: record.id, isPublished: newValue });
+      break;
+    }
+    case 'isRecommended': {
+      await workUpdateRecommendedApi({
+        id: record.id,
+        isRecommended: newValue,
+      });
+      break;
+    }
+  }
   record.loading = false;
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
 // 打开章节管理弹窗
-function openChapterModal(record: BaseComicDto) {
+function openChapterModal(record: BaseWorkDto) {
   chapterApi
     .setData({
-      comicId: record.id,
-      comicName: record.name,
+      workId: record.id,
+      workName: record.name,
     })
     .open();
 }
@@ -286,8 +332,8 @@ function openChapterModal(record: BaseComicDto) {
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      :api="comicDetailApi"
-      :cards="(data: BaseComicDto) => getDetailCards(data, dataDict || {})"
+      :api="workDetailApi"
+      :cards="(data: BaseWorkDto) => getDetailCards(data, dataDict || {})"
     />
 
     <ChapterModal />

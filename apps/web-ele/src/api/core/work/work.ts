@@ -1,4 +1,6 @@
 import type {
+  WorkCreateRequest,
+  WorkCreateResponse,
   WorkDeleteRequest,
   WorkDeleteResponse,
   WorkDetailRequest,
@@ -18,6 +20,18 @@ import type {
 } from '../../types/work/work.d';
 
 import { requestClient } from '#/api/request';
+
+/**
+ * 创建漫画
+ */
+export async function workCreateApi(
+  params: WorkCreateRequest,
+): Promise<WorkCreateResponse> {
+  return requestClient.post<WorkCreateResponse>(
+    '/api/admin/work/create',
+    params,
+  );
+}
 
 /**
  * 获取作品分页

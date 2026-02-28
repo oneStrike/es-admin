@@ -40,6 +40,18 @@ export async function agreementUpdateApi(
 }
 
 /**
+ * 更新协议状态
+ */
+export async function agreementUpdateStatusApi(
+  params: AgreementUpdateStatusRequest,
+): Promise<AgreementUpdateStatusResponse> {
+  return requestClient.post<AgreementUpdateStatusResponse>(
+    '/api/admin/agreement/update-status',
+    params,
+  );
+}
+
+/**
  * 删除协议
  */
 export async function agreementDeleteApi(
@@ -60,18 +72,6 @@ export async function agreementPageApi(
   return requestClient.get<AgreementPageResponse>('/api/admin/agreement/page', {
     params,
   });
-}
-
-/**
- * 更新协议状态
- */
-export async function agreementUpdateStatusApi(
-  params: AgreementUpdateStatusRequest,
-): Promise<AgreementUpdateStatusResponse> {
-  return requestClient.post<AgreementUpdateStatusResponse>(
-    '/api/admin/agreement/update-status',
-    params,
-  );
 }
 
 /**

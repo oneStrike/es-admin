@@ -1,11 +1,11 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseComicDto } from '#/api/types';
+import type { BaseWorkDto } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formSchemaTransform } from '#/utils';
 
-import { formSchema, serialStatus } from './shared';
+import { formSchema, serialStatus, viewRuleOptions } from './shared';
 
 export const comicColumns = ({
   work_publisher,
@@ -13,7 +13,7 @@ export const comicColumns = ({
   work_region,
   work_age_rating,
 }: Recordable<undefined | UseDictItem>) => {
-  return formSchemaTransform.toTableColumns<BaseComicDto>(formSchema, {
+  return formSchemaTransform.toTableColumns<BaseWorkDto>(formSchema, {
     name: {
       width: 200,
       fixed: 'left',
@@ -52,17 +52,66 @@ export const comicColumns = ({
     disclaimer: {
       hide: true,
     },
-    comicAuthors: {
+    // ========== 权限设置 ==========
+    viewRule: {
+      width: 100,
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          mapOptions: viewRuleOptions,
+        },
+      },
+    },
+    canComment: {
+      hide: true,
+    },
+    canDownload: {
+      hide: true,
+    },
+    canExchange: {
+      hide: true,
+    },
+    requiredViewLevelId: {
+      hide: true,
+    },
+    // ========== 价格设置 ==========
+    price: {
+      hide: true,
+    },
+    chapterPrice: {
+      hide: true,
+    },
+    exchangePoints: {
+      hide: true,
+    },
+    chapterExchangePoints: {
+      hide: true,
+    },
+    purchaseCount: {
+      hide: true,
+    },
+    // ========== 发布设置 ==========
+    publishAt: {
+      hide: true,
+    },
+    lastUpdated: {
+      hide: true,
+    },
+    // ========== 推荐设置 ==========
+    rating: {
+      hide: true,
+    },
+    // ========== 列表展示字段 ==========
+    authors: {
       title: '作者',
       width: 240,
       sort: 2,
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseComicDto['comicAuthors']) => {
+          formatter: (row: BaseWorkDto['authors']) => {
             return row?.map(
-              (author: BaseComicDto['comicAuthors'][number]) =>
-                author.author.name,
+              (author: BaseWorkDto['authors'][number]) => author.author.name,
             );
           },
         },
@@ -78,32 +127,32 @@ export const comicColumns = ({
         },
       },
     },
-    comicCategories: {
+    categories: {
       title: '分类',
       width: 150,
       sort: 4,
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseComicDto['comicCategories']) => {
+          formatter: (row: BaseWorkDto['categories']) => {
             return row?.map(
-              (category: BaseComicDto['comicCategories'][number]) =>
+              (category: BaseWorkDto['categories'][number]) =>
                 category.category.name,
             );
           },
         },
       },
     },
-    comicTags: {
+    tags: {
       title: '标签',
       width: 150,
       sort: 4,
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseComicDto['comicTags']) => {
+          formatter: (row: BaseWorkDto['tags']) => {
             return row?.map(
-              (tag: BaseComicDto['comicTags'][number]) => tag.tag.name,
+              (tag: BaseWorkDto['tags'][number]) => tag.tag.name,
             );
           },
         },
@@ -138,6 +187,10 @@ export const comicColumns = ({
         return work_age_rating?.labels[value] ?? value;
       },
     },
+    isPublished: {
+      width: 100,
+      slots: { default: 'isPublished' },
+    },
     isHot: {
       slots: { default: 'isHot' },
     },
@@ -161,6 +214,22 @@ export const comicColumns = ({
     actions: {
       show: true,
       width: 160,
+    },
+    // ========== 分割线隐藏 ==========
+    divider_permission: {
+      hide: true,
+    },
+    divider_price: {
+      hide: true,
+    },
+    divider_publish: {
+      hide: true,
+    },
+    divider_recommend: {
+      hide: true,
+    },
+    divider_copyright: {
+      hide: true,
     },
   });
 };

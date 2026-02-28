@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ChapterContentListRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type ChapterContentListRequest = {
   /** 任意合法数值 */
@@ -16,7 +16,7 @@ export type ChapterContentListResponse = string[];
 /**
  *  类型定义 [ChapterContentAddRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type ChapterContentAddRequest = {
   /** 任意合法数值 */
@@ -34,7 +34,7 @@ export type ChapterContentAddResponse = FileUploadResponseDto;
 /**
  *  类型定义 [ChapterContentUpdateRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type ChapterContentUpdateRequest = UpdateChapterContentDto;
 
@@ -43,7 +43,7 @@ export type ChapterContentUpdateResponse = IdDto;
 /**
  *  类型定义 [ChapterContentDeleteRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type ChapterContentDeleteRequest = DeleteChapterContentDto;
 
@@ -52,7 +52,7 @@ export type ChapterContentDeleteResponse = string[];
 /**
  *  类型定义 [ChapterContentMoveRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type ChapterContentMoveRequest = MoveChapterContentDto;
 
@@ -61,7 +61,7 @@ export type ChapterContentMoveResponse = string[];
 /**
  *  类型定义 [ChapterContentClearRequest]
  *  @来源 内容管理/漫画章节内容模块
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type ChapterContentClearRequest = IdDto;
 
@@ -70,7 +70,7 @@ export type ChapterContentClearResponse = IdDto;
 /**
  *  类型定义 [FileUploadResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type FileUploadResponseDto = {
   /** 任意合法数值 */
@@ -97,7 +97,7 @@ export type FileUploadResponseDto = {
 /**
  *  类型定义 [UpdateChapterContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type UpdateChapterContentDto = {
   /** 任意合法数值 */
@@ -114,7 +114,7 @@ export type UpdateChapterContentDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -127,7 +127,7 @@ export type IdDto = {
 /**
  *  类型定义 [DeleteChapterContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type DeleteChapterContentDto = {
   /** 任意合法数值 */
@@ -142,7 +142,7 @@ export type DeleteChapterContentDto = {
 /**
  *  类型定义 [MoveChapterContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:19:49
+ *  @更新时间 2026-03-01 01:57:48
  */
 export type MoveChapterContentDto = {
   /** 任意合法数值 */
