@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<EsModalTableProps>(), {
 const emit = defineEmits<EsModalTableEmits>();
 
 const sharedData = ref<EsModalTableProps>();
-// 存储当前选中的行数据
+// 存储当前选中行数据
 const selectedRows = ref<any[]>([]);
 // 表格容器引用
 const [Grid, gridApi] = useVbenVxeGrid({
