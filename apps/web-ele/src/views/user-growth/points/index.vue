@@ -46,6 +46,7 @@ const gridOptions: VxeGridProps<BaseUserPointRuleDto> = {
   },
 };
 
+// 表格配置
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   formOptions: createSearchFormOptions(searchFormSchema),
