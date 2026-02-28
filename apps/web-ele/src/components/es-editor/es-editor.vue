@@ -100,7 +100,7 @@ const init = reactive({
   editimage_cors_hosts: ['picsum.photos'],
   noneditable_class: 'mceNonEditable',
   toolbar_mode: 'wrap', // 工具栏模式 floating / sliding / scrolling / wrap
-  // 默认样式
+  // 默认的样式
   content_style:
     'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }p {margin:3px; line-height:24px;}',
   image_advtab: true,
