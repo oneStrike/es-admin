@@ -96,7 +96,7 @@ setupVbenVxeTable({
           {
             type,
           },
-          { default: () => formatUTC(text) },
+          { default: () => formatUTC(text) || '-' },
         );
       },
     });

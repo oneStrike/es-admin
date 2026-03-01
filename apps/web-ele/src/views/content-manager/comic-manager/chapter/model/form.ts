@@ -203,6 +203,7 @@ export const chapterFormSchema: EsFormSchema = [
     },
     fieldName: 'publishAt',
     label: '发布日期',
+    help: '作品真实发布日期，非系统关联数据',
   },
   {
     fieldName: 'description',

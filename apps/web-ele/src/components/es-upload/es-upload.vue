@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<EsUploadProps>(), {
 const emit = defineEmits<{
   (e: 'update:modelValue', val: EsUploadProps['modelValue']): void;
 }>();
-console.log('🚀 ~ props:', props);
+// console.log('🚀 ~ props:', props);
 // 绑定到 el-upload 的文件列表（Element Plus UploadFile 类型）
 const fileList = ref<UploadFile[]>([]);
 
@@ -136,22 +136,35 @@ watch(
 /**
  * 上传前校验
  * - 大小限制
- * - 数量限制（结合 limit 与 exceed 提示）
  */
 function beforeUpload(raw: UploadRawFile): boolean {
   if ((raw?.size ?? Number.MAX_VALUE) > props.maxSize) {
     ElMessage.error(`文件 ${raw.name} 大小超出限制`);
     return false;
   }
-  // 只计算成功上传的文件数量
-  const successCount = fileList.value.filter(
-    (file) => file.status === 'success',
-  ).length;
-  if (successCount >= props.maxCount) {
-    ElMessage.error('文件超出数量限制');
-    return false;
-  }
   return true;
+}
+
+/**
+ * 文件状态变化时的处理
+ * - 当文件数量超过 maxCount 时，替换最后一张成功上传的图片
+ */
+function onChange(file: UploadFile, files: UploadFile[]) {
+  // 只在新文件添加时检查（ready 状态表示新添加的文件）
+  if (file.status === 'ready') {
+    // 计算成功上传的文件数量（不包括刚添加的新文件）
+    const successCount = files.filter((f) => f.status === 'success').length;
+
+    if (successCount >= props.maxCount) {
+      // 找到最后一张成功上传的图片并移除
+      const lastSuccessIndex = fileList.value.findLastIndex(
+        (f) => f.status === 'success',
+      );
+      if (lastSuccessIndex !== -1) {
+        fileList.value.splice(lastSuccessIndex, 1);
+      }
+    }
+  }
 }
 
 /**
@@ -161,21 +174,25 @@ function beforeUpload(raw: UploadRawFile): boolean {
  * - json: 完整响应对象数组的 JSON 字符串
  */
 function handlerModalValue() {
-  if (!Array.isArray(fileList.value) || fileList.value.length === 0) {
-    emit('update:modelValue', [] as any);
-    return;
-  }
+  nextTick(() => {
+    if (!Array.isArray(fileList.value) || fileList.value.length === 0) {
+      // 根据原数据类型返回对应的空值：array 类型返回 []，url/json 类型返回 ''
+      emit('update:modelValue', fileListDataType === 'array' ? [] : '');
+      return;
+    }
 
-  let data: any;
-  if (fileListDataType === 'url') {
-    data = fileList.value.map((item: any) => item.response?.filePath).join(',');
-  } else if (fileListDataType === 'array') {
-    data = fileList.value.map((item: any) => item.response?.filePath);
-  } else {
-    data = JSON.stringify(fileList.value.map((item: any) => item.response));
-  }
-
-  emit('update:modelValue', data);
+    let data: any;
+    if (fileListDataType === 'url') {
+      data = fileList.value
+        .map((item: any) => item.response?.filePath)
+        .join(',');
+    } else if (fileListDataType === 'array') {
+      data = fileList.value.map((item: any) => item.response?.filePath);
+    } else {
+      data = JSON.stringify(fileList.value.map((item: any) => item.response));
+    }
+    emit('update:modelValue', data);
+  });
 }
 
 /**
@@ -229,9 +246,16 @@ async function customRequest(options: UploadRequestOptions) {
   }
 }
 
-// 超出数量时的提示（Element Plus 触发 exceed）
-function onExceed() {
-  ElMessage.error(`最多只能上传 ${props.maxCount} 个文件`);
+// 超出数量时的处理（Element Plus 触发 exceed）
+function onExceed(_files: File[]) {
+  // 达到数量限制时，移除最后一张成功的图片，然后添加新文件
+  const lastSuccessIndex = fileList.value.findLastIndex(
+    (f) => f.status === 'success',
+  );
+  if (lastSuccessIndex !== -1) {
+    fileList.value.splice(lastSuccessIndex, 1);
+  }
+  // 注意：onExceed 触发时文件还未添加到 fileList，Element Plus 会自动处理
 }
 
 // 删除文件后同步外部 v-model（保持行为直观，不改变原有成功回写逻辑）
@@ -247,13 +271,13 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   showPreview.value = true;
 };
 
-// 计算属性：判断是否需要隐藏上传按钮
-const isUploadHidden = computed(() => {
-  return (
-    fileList.value.filter((file) => file.status === 'success').length >=
-    props.maxCount
-  );
-});
+// 不再隐藏上传按钮，允许达到 maxCount 后继续上传（替换最后一张）
+// const isUploadHidden = computed(() => {
+//   return (
+//     fileList.value.filter((file) => file.status === 'success').length >=
+//     props.maxCount
+//   );
+// });
 </script>
 
 <template>
@@ -261,7 +285,7 @@ const isUploadHidden = computed(() => {
     <el-upload
       v-model:file-list="fileList"
       :accept="accept"
-      :limit="maxCount"
+      :limit="maxCount + 1"
       :list-type="listType"
       :multiple="multiple"
       :data="data"
@@ -271,10 +295,10 @@ const isUploadHidden = computed(() => {
       :before-upload="beforeUpload"
       :http-request="customRequest"
       :show-file-list="showList"
+      :on-change="onChange"
       @exceed="onExceed"
       @remove="onRemove"
       :on-preview="handlePictureCardPreview"
-      :class="{ 'hide-upload': isUploadHidden }"
     >
       <slot>
         <div

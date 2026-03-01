@@ -14,11 +14,9 @@ const hideField = [
   'price',
   'exchangePoints',
   'requiredViewLevelId',
-  'publishAt',
   'content',
   'description',
   'remark',
-  'subtitle',
 ];
 
 const hideFieldConfig = Object.fromEntries(
