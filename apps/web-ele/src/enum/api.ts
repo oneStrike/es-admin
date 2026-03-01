@@ -7,5 +7,5 @@ export enum UploadSceneEnum {
 // 上传文件接口地址
 export const UploadUrlMapEnum = {
   SHARED: '/api/admin/upload/upload-file',
-  COMIC: '/api/admin/work/comic-chapter/add-content',
+  COMIC: '/api/admin/work/content/comic-content/add',
 };

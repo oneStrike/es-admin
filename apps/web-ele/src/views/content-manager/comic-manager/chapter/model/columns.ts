@@ -4,30 +4,63 @@ import { formSchemaTransform } from '#/utils';
 
 import { chapterFormSchema, readRule } from './form';
 
+/**
+ * 章节表格列配置
+ * 参考作品管理(core)的列配置模式
+ */
+const hideField = [
+  'workId',
+  'cover',
+  'price',
+  'exchangePoints',
+  'requiredViewLevelId',
+  'publishAt',
+  'content',
+  'description',
+  'remark',
+  'subtitle',
+];
+
+const hideFieldConfig = Object.fromEntries(
+  hideField.map((field) => [field, { hide: true }]),
+);
+
 export const chapterColumns =
   formSchemaTransform.toTableColumns<ChapterPageResponse>(chapterFormSchema, {
+    ...hideFieldConfig,
     seq: {
       dragSort: true,
+      sort: 1,
+    },
+    cover: {
+      title: '封面',
+      width: 60,
+      sort: 1,
+      fixed: 'left',
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          fit: 'cover',
+          height: 80,
+          width: 60,
+        },
+      },
     },
     title: {
       width: 200,
+      sort: 2,
       fixed: 'left',
       showOverflow: 'tooltip',
       slots: { default: 'title' },
     },
-    subtitle: {
-      width: 200,
-    },
     sortOrder: {
-      title: '章节序号',
       width: 100,
+      sort: 4,
       sortable: true,
-    },
-    cover: {
-      hide: true,
     },
     viewRule: {
       width: 120,
+      sort: 5,
       cellRender: {
         name: 'CellTag',
         props: {
@@ -37,61 +70,55 @@ export const chapterColumns =
     },
     isPreview: {
       width: 100,
+      sort: 6,
       cellRender: {
         name: 'CellTag',
       },
     },
     canComment: {
       width: 100,
+      sort: 7,
       cellRender: {
         name: 'CellTag',
       },
     },
     canDownload: {
       width: 100,
+      sort: 8,
       cellRender: {
         name: 'CellTag',
       },
     },
     canExchange: {
       width: 100,
+      sort: 9,
       cellRender: {
         name: 'CellTag',
       },
     },
-    price: {
-      hide: true,
-    },
-    exchangePoints: {
-      hide: true,
-    },
-    requiredViewLevelId: {
-      hide: true,
-    },
     isPublished: {
       width: 100,
+      sort: 10,
+      title: '发布状态',
       slots: { default: 'isPublished' },
     },
     publishAt: {
-      hide: true,
-    },
-    content: {
-      hide: true,
-    },
-    description: {
-      hide: true,
-    },
-    remark: {
-      hide: true,
-    },
-    createdAt: {
-      width: 160,
-      sortable: true,
       cellRender: {
         name: 'CellDate',
       },
+      width: 160,
+      sortable: true,
+    },
+
+    updatedAt: {
+      show: true,
+    },
+    createdAt: {
+      show: true,
     },
     actions: {
       show: true,
+      width: 180,
+      fixed: 'right',
     },
   });

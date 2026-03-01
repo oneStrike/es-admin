@@ -1,7 +1,7 @@
 /**
  *  类型定义 [EventsPageRequest]
  *  @来源 用户成长/事件审计
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type EventsPageRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type EventsPageResponse = {
 /**
  *  类型定义 [BaseUserGrowthEventDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type BaseUserGrowthEventDto = {
   /** 任意合法数值 */

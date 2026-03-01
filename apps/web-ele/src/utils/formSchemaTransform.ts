@@ -52,7 +52,7 @@ function sortItemsWithSortValue<T extends { sortValue: number }>(
 
 export const formSchemaTransform: FormSchemaTransform = {
   toTableColumns: (schema, extra) => {
-    const innerSchema = cloneDeep(schema.filter((item) => !item.hide));
+    const innerSchema = cloneDeep(schema);
 
     const columnsWithSort: Array<
       VxeGridPropTypes.Columns<any>[number] & {
@@ -63,7 +63,7 @@ export const formSchemaTransform: FormSchemaTransform = {
     innerSchema.forEach((item, idx) => {
       const itemExtra = extra?.[item.fieldName];
       delete extra?.[item.fieldName];
-      if ((!itemExtra || !itemExtra?.hide) && item.component !== 'Divider') {
+      if (!item.hide && item.component !== 'Divider' && !itemExtra?.hide) {
         columnsWithSort.push({
           title: item.label as string,
           field: item.fieldName,
@@ -94,22 +94,6 @@ export const formSchemaTransform: FormSchemaTransform = {
       delete extra.actions;
     }
 
-    if (extra?.createdAt && extra.createdAt.hide !== true) {
-      columnsWithSort.push({
-        title: '创建时间',
-        field: 'createdAt',
-        align: 'center',
-        sortValue: 99,
-        width: 150,
-        sortable: true,
-        cellRender: {
-          name: 'CellDate',
-        },
-        ...extra?.createdAt, // 修复：原来是 ...extra?.actions
-      });
-      delete extra.createdAt; // 修复：原来是 delete extra.actions
-    }
-
     if (extra?.updatedAt && extra.updatedAt.hide !== true) {
       columnsWithSort.push({
         title: '更新时间',
@@ -125,11 +109,25 @@ export const formSchemaTransform: FormSchemaTransform = {
       });
       delete extra.updatedAt; // 修复：原来是 delete extra.actions
     }
-
+    if (extra?.createdAt && extra.createdAt.hide !== true) {
+      columnsWithSort.push({
+        title: '创建时间',
+        field: 'createdAt',
+        align: 'center',
+        sortValue: 99,
+        width: 150,
+        sortable: true,
+        cellRender: {
+          name: 'CellDate',
+        },
+        ...extra?.createdAt, // 修复：原来是 ...extra?.actions
+      });
+      delete extra.createdAt; // 修复：原来是 delete extra.actions
+    }
     if (extra && Object.keys(extra).length > 0) {
       Object.keys(extra).forEach((key) => {
         const item = extra[key];
-        if (!['createdAt', 'seq'].includes(key)) {
+        if (!['createdAt', 'seq'].includes(key) && item && !item.hide) {
           columnsWithSort.push({
             ...item,
             field: key,

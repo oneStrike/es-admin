@@ -32,6 +32,8 @@ export * from './work/chapterContent';
 export * from './work/comic';
 export * from './work/comicChapter';
 export * from './work/comicChapterComment';
+export * from './work/comicContent';
+export * from './work/novelContent';
 export * from './work/report';
 export * from './work/tag';
 export * from './work/thirdParty';

@@ -29,32 +29,66 @@ import { chapterColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
 import { chapterFormSchema, chapterSearchFormSchema } from './model/form';
 
-type ShareData = { workId: number; workName: string };
-
-const shareData = ref<ShareData>();
-
-levelRulesPageApi({ isEnabled: true }).then((res) => {
-  const options =
-    res?.list?.map((item) => ({
-      label: item.name,
-      value: item.id,
-    })) || [];
-  useForm.setOptions(chapterFormSchema, {
-    requiredViewLevelId: options,
-  });
+defineOptions({
+  name: 'ComicChapterManager',
 });
 
+/**
+ * 共享数据类型 - 从父组件传入的作品信息
+ */
+type ShareData = { workId: number; workName: string };
+
+// ========== 状态定义 ==========
+const shareData = ref<ShareData>();
+
+// ========== 弹窗定义 ==========
+
+/**
+ * 章节管理主弹窗
+ */
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen) {
     if (isOpen) {
       shareData.value = modalApi.getData<ShareData>();
       modalApi.setState({
-        title: shareData.value.workName,
+        title: `${shareData.value?.workName} - 章节管理`,
       });
     }
   },
 });
-// 章节列表配置
+
+/**
+ * 表单弹窗 - 用于新增/编辑章节
+ */
+const [FormModal, formApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+  onOpenChange(isOpen) {
+    if (isOpen) {
+      const data = formApi.getData();
+      formApi.setState({
+        title: data?.record?.id ? '编辑章节' : '新增章节',
+      });
+    }
+  },
+});
+
+/**
+ * 详情弹窗 - 用于查看章节详情
+ */
+const [DetailModal, detailApi] = useVbenModal({
+  connectedComponent: EsRecordDetail,
+});
+
+/**
+ * 内容管理弹窗 - 用于管理章节图片内容
+ */
+const [ContentModal, contentApi] = useVbenModal({
+  connectedComponent: ContentManager,
+});
+
+/**
+ * 表格配置选项
+ */
 const gridOptions: VxeGridProps<ChapterPageResponse> = {
   columns: chapterColumns,
   proxyConfig: {
@@ -82,34 +116,43 @@ const gridOptions: VxeGridProps<ChapterPageResponse> = {
         targetId: params.newRow.id,
       });
       await gridApi.reload();
+      useMessage.success('排序调整成功');
       return true;
     },
   },
-  // 暂时移除拖拽配置，因为dragConfig的属性不支持
 };
 
-// 表单弹窗
-const [FormModal, formApi] = useVbenModal({
-  connectedComponent: EsModalForm,
-});
-
-// 详情弹窗
-const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
-});
-
-// 内容管理弹窗
-const [ContentModal, contentApi] = useVbenModal({
-  connectedComponent: ContentManager,
-});
-
-// 章节表格
+/**
+ * 章节表格组件
+ */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   formOptions: createSearchFormOptions(chapterSearchFormSchema),
 });
 
-// 打开章节详情
+// ========== 数据加载 ==========
+
+/**
+ * 加载会员等级选项
+ * 用于表单中的会员等级选择器
+ */
+levelRulesPageApi({ isEnabled: true }).then((res) => {
+  const options =
+    res?.list?.map((item) => ({
+      label: item.name,
+      value: item.id,
+    })) || [];
+  useForm.setOptions(chapterFormSchema, {
+    requiredViewLevelId: options,
+  });
+});
+
+// ========== 事件处理 ==========
+
+/**
+ * 打开章节详情弹窗
+ * @param record 章节数据
+ */
 function openDetailModal(record: ChapterPageResponse) {
   detailApi
     .setData({
@@ -119,7 +162,10 @@ function openDetailModal(record: ChapterPageResponse) {
     .open();
 }
 
-// 打开内容管理
+/**
+ * 打开内容管理弹窗
+ * @param record 章节数据
+ */
 function openContentModal(record: ChapterPageResponse) {
   contentApi
     .setData({
@@ -130,63 +176,88 @@ function openContentModal(record: ChapterPageResponse) {
     .open();
 }
 
-// 打开添加章节表单
+/**
+ * 打开章节表单弹窗
+ * @param record 章节数据（编辑时传入，新增时不传）
+ */
 async function openFormModal(record?: ChapterPageResponse) {
+  // 编辑模式获取详情数据，新增模式设为 null
+  const recordData = record?.id
+    ? await chapterDetailApi({ id: record.id })
+    : null;
+
   formApi
     .setData({
-      cols: 4,
+      cols: 2,
       width: 800,
-      record: record ? await chapterDetailApi({ id: record.id }) : null,
+      record: recordData,
     })
     .open();
 }
 
-// 提交章节表单
+/**
+ * 提交章节表单
+ * @param values 表单数据
+ */
 async function handleSubmit(
   values: ChapterCreateRequest | ChapterUpdateRequest,
 ) {
+  // 设置作品ID和类型（漫画固定为1）
   values.workId = shareData.value!.workId;
-  values.workType = 1; // 漫画固定为1
+  values.workType = 1;
+
   await (values?.id
     ? chapterUpdateApi(values as ChapterUpdateRequest)
     : chapterCreateApi(values as ChapterCreateRequest));
-  await formApi.close();
-  useMessage.success('操作成功');
-  await gridApi.reload();
+
+  formApi.close();
+  useMessage.success(values?.id ? '章节更新成功' : '章节创建成功');
+  gridApi.reload();
 }
 
-// 删除章节
+/**
+ * 删除章节
+ * @param record 章节数据
+ */
 async function deleteChapter(record: ChapterPageResponse) {
   await chapterDeleteApi({ id: record.id });
-  useMessage.success('删除成功');
-  await gridApi.reload();
+  useMessage.success('章节删除成功');
+  gridApi.reload();
 }
 
-// 切换章节状态
-async function toggleStatus(row: ChapterPageResponse) {
+/**
+ * 切换章节发布状态
+ * @param row 章节数据
+ */
+async function toggleStatus(row: ChapterPageResponse & { loading?: boolean }) {
   row.loading = true;
-  await chapterUpdateApi({
-    id: row.id,
-    isPublished: !row.isPublished,
-  } as any);
-  row.loading = false;
-  useMessage.success('操作成功');
-  await gridApi.reload();
+  try {
+    await chapterUpdateApi({
+      id: row.id,
+      isPublished: !row.isPublished,
+    } as ChapterUpdateRequest);
+    useMessage.success('状态切换成功');
+    gridApi.reload();
+  } finally {
+    row.loading = false;
+  }
 }
 </script>
 
 <template>
-  <Modal class="h-[1000px] w-[1200px]">
+  <Modal class="h-[900px] w-[1200px]">
     <Grid>
+      <!-- 工具栏 - 添加按钮 -->
       <template #toolbar-actions>
-        <el-button class="ml-2" type="primary" @click="openFormModal()">
+        <el-button type="primary" @click="openFormModal()">
           添加章节
         </el-button>
       </template>
 
+      <!-- 标题列 - 可点击打开详情 -->
       <template #title="{ row }">
         <el-text
-          class="cursor-pointer hover:opacity-50"
+          class="cursor-pointer hover:opacity-70"
           type="primary"
           @click="openDetailModal(row)"
         >
@@ -194,6 +265,7 @@ async function toggleStatus(row: ChapterPageResponse) {
         </el-text>
       </template>
 
+      <!-- 发布状态列 - 可切换 -->
       <template #isPublished="{ row }">
         <el-switch
           :active-value="true"
@@ -204,8 +276,9 @@ async function toggleStatus(row: ChapterPageResponse) {
         />
       </template>
 
+      <!-- 操作列 -->
       <template #actions="{ row }">
-        <div class="my-1">
+        <div class="my-1 flex items-center justify-center gap-1">
           <el-button link type="primary" @click="openContentModal(row)">
             内容
           </el-button>
@@ -213,12 +286,12 @@ async function toggleStatus(row: ChapterPageResponse) {
           <el-button link type="primary" @click="openFormModal(row)">
             编辑
           </el-button>
-
           <el-divider direction="vertical" />
           <el-popconfirm
-            title="确认删除当前章节?"
+            title="确认删除该章节？此操作不可恢复"
             confirm-button-text="确认"
             cancel-button-text="取消"
+            type="warning"
             @confirm="deleteChapter(row)"
           >
             <template #reference>
@@ -228,10 +301,16 @@ async function toggleStatus(row: ChapterPageResponse) {
         </div>
       </template>
     </Grid>
+
+    <!-- 表单弹窗 -->
     <FormModal :schema="chapterFormSchema" :on-submit="handleSubmit" />
 
+    <!-- 详情弹窗 -->
     <DetailModal :api="chapterDetailApi" :cards="getDetailCards" />
 
+    <!-- 内容管理弹窗 -->
     <ContentModal />
   </Modal>
 </template>
+
+<style scoped></style>

@@ -114,6 +114,18 @@ export async function dictionaryItemsApi(
 }
 
 /**
+ * 获取所有字典项
+ */
+export async function dictionaryAllItemsApi(
+  params: DictionaryAllItemsRequest,
+): Promise<DictionaryAllItemsResponse> {
+  return requestClient.get<DictionaryAllItemsResponse>(
+    '/api/admin/dictionary/all-items',
+    { params },
+  );
+}
+
+/**
  * 创建字典项
  */
 export async function dictionaryCreateItemApi(
@@ -170,17 +182,5 @@ export async function dictionaryItemOrderApi(
   return requestClient.post<DictionaryItemOrderResponse>(
     '/api/admin/dictionary/item-order',
     params,
-  );
-}
-
-/**
- * 获取所有字典项
- */
-export async function dictionaryAllItemsApi(
-  params: DictionaryAllItemsRequest,
-): Promise<DictionaryAllItemsResponse> {
-  return requestClient.get<DictionaryAllItemsResponse>(
-    '/api/admin/dictionary/all-items',
-    { params },
   );
 }

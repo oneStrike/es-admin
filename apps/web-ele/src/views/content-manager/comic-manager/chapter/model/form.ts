@@ -4,14 +4,14 @@ import type { EsFormSchema } from '#/types';
 import { ContentPermissionEnum, DownloadPermissionEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
 
-// 查看规则配置（-1=继承, 0=所有人, 1=登录用户, 2=会员, 3=积分购买）
+// 查看规则配置（-1=继承, 0=所有人, 1=登录用户, 2=会员, 3=购买）
 export const readRule = [
   { label: '继承', value: -1, color: 'info' },
   { label: '所有人', value: ContentPermissionEnum.ALL, color: '' },
   { label: '登录用户', value: ContentPermissionEnum.LOGIN, color: 'primary' },
   { label: '会员用户', value: ContentPermissionEnum.VIP, color: 'success' },
   {
-    label: '积分购买',
+    label: '购买',
     value: ContentPermissionEnum.PURCHASE,
     color: 'warning',
   },
@@ -26,7 +26,7 @@ export const downloadRule = [
   { label: '允许', value: DownloadPermissionEnum.ALLOW, color: 'success' },
   { label: '会员', value: DownloadPermissionEnum.VIP, color: 'info' },
   {
-    label: '积分购买',
+    label: '购买',
     value: DownloadPermissionEnum.PURCHASE,
     color: 'warning',
   },
@@ -36,14 +36,40 @@ export const downloadRuleMap = Object.fromEntries(
   downloadRule.map((item) => [item.value, item.label]),
 );
 
+/**
+ * 章节表单配置
+ * 严格对应接口 CreateWorkChapterDto / UpdateWorkChapterDto
+ */
 export const chapterFormSchema: EsFormSchema = [
-  // ========== 基本信息 ==========
+  {
+    component: 'Upload',
+    componentProps: {
+      placeholder: '请上传章节封面',
+      accept: 'image/*',
+      scene: 'chapter',
+      maxCount: 1,
+      multiple: false,
+    },
+    fieldName: 'cover',
+    label: '章节封面',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入章节序号',
+      min: 0,
+      max: 9999,
+      class: '!w-full',
+    },
+    fieldName: 'sortOrder',
+    label: '章节序号',
+    rules: 'required',
+  },
   {
     fieldName: 'title',
     label: '章节标题',
     component: 'Input',
     rules: 'required',
-    formItemClass: 'col-span-2',
     componentProps: {
       placeholder: '请输入章节标题',
     },
@@ -52,60 +78,15 @@ export const chapterFormSchema: EsFormSchema = [
     fieldName: 'subtitle',
     label: '章节副标题',
     component: 'Input',
-    formItemClass: 'col-span-2',
     componentProps: {
       placeholder: '请输入章节副标题',
     },
   },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      placeholder: '请输入章节序号',
-      min: 0,
-      max: 9999,
-    },
-    formItemClass: 'col-span-1',
-    fieldName: 'sortOrder',
-    label: '章节序号',
-    rules: 'required',
-  },
-  {
-    component: 'Upload',
-    componentProps: {
-      placeholder: '请上传章节封面',
-      accept: 'image/*',
-      scene: 'chapter',
-    },
-    fieldName: 'cover',
-    label: '章节封面',
-    formItemClass: 'col-span-1',
-  },
-  {
-    fieldName: 'description',
-    label: '章节描述',
-    component: 'Input',
-    formItemClass: 'col-span-4',
-    componentProps: {
-      type: 'textarea',
-      placeholder: '请输入章节描述',
-      rows: 4,
-    },
-  },
 
-  // ========== 权限设置 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_permission',
-    label: '权限设置',
-  },
   {
     fieldName: 'viewRule',
     label: '查看规则',
     component: 'Select',
-    formItemClass: 'col-span-2',
     rules: 'required',
     defaultValue: -1,
     componentProps: {
@@ -118,7 +99,6 @@ export const chapterFormSchema: EsFormSchema = [
     label: '试读章节',
     component: 'RadioGroup',
     defaultValue: false,
-    formItemClass: 'col-span-1',
     help: '试读章节将无视查看规则',
     componentProps: {
       options: [
@@ -132,7 +112,6 @@ export const chapterFormSchema: EsFormSchema = [
     label: '允许评论',
     component: 'RadioGroup',
     defaultValue: true,
-    formItemClass: 'col-span-1',
     componentProps: {
       options: [
         { label: '否', value: false },
@@ -145,7 +124,6 @@ export const chapterFormSchema: EsFormSchema = [
     label: '允许下载',
     component: 'RadioGroup',
     defaultValue: false,
-    formItemClass: 'col-span-1',
     componentProps: {
       options: [
         { label: '否', value: false },
@@ -158,7 +136,6 @@ export const chapterFormSchema: EsFormSchema = [
     label: '允许兑换',
     component: 'RadioGroup',
     defaultValue: false,
-    formItemClass: 'col-span-1',
     componentProps: {
       options: [
         { label: '否', value: false },
@@ -173,7 +150,6 @@ export const chapterFormSchema: EsFormSchema = [
       placeholder: '请选择会员等级限制',
       filterable: true,
     },
-    formItemClass: 'col-span-2',
     fieldName: 'requiredViewLevelId',
     label: '会员等级限制（查看）',
     dependencies: {
@@ -183,21 +159,10 @@ export const chapterFormSchema: EsFormSchema = [
       triggerFields: ['viewRule'],
     },
   },
-
-  // ========== 价格设置 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_price',
-    label: '价格设置',
-  },
   {
     fieldName: 'price',
     label: '章节价格',
     component: 'InputNumber',
-    formItemClass: 'col-span-2',
     defaultValue: 0,
     componentProps: {
       placeholder: '请输入章节价格',
@@ -215,7 +180,6 @@ export const chapterFormSchema: EsFormSchema = [
     fieldName: 'exchangePoints',
     label: '兑换所需积分',
     component: 'InputNumber',
-    formItemClass: 'col-span-2',
     defaultValue: 0,
     componentProps: {
       placeholder: '请输入兑换所需积分',
@@ -228,29 +192,6 @@ export const chapterFormSchema: EsFormSchema = [
       triggerFields: ['canExchange'],
     },
   },
-
-  // ========== 发布设置 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_publish',
-    label: '发布设置',
-  },
-  {
-    fieldName: 'isPublished',
-    label: '发布',
-    component: 'RadioGroup',
-    defaultValue: true,
-    formItemClass: 'col-span-1',
-    componentProps: {
-      options: [
-        { label: '否', value: false },
-        { label: '是', value: true },
-      ],
-    },
-  },
   {
     component: 'DatePicker',
     componentProps: {
@@ -258,35 +199,27 @@ export const chapterFormSchema: EsFormSchema = [
       type: 'date',
       format: 'YYYY-MM-DD',
       valueFormat: 'YYYY-MM-DD',
+      class: '!w-full',
     },
     fieldName: 'publishAt',
     label: '发布日期',
-    formItemClass: 'col-span-2',
-  },
-
-  // ========== 内容管理 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_content',
-    label: '内容管理',
   },
   {
-    fieldName: 'content',
-    label: '内容存储路径',
+    fieldName: 'description',
+    label: '章节描述',
     component: 'Input',
     formItemClass: 'col-span-2',
     componentProps: {
-      placeholder: '请输入内容存储路径',
+      type: 'textarea',
+      placeholder: '请输入章节描述',
+      rows: 4,
     },
   },
   {
     fieldName: 'remark',
     label: '管理员备注',
     component: 'Input',
-    formItemClass: 'col-span-4',
+    formItemClass: 'col-span-2',
     componentProps: {
       type: 'textarea',
       placeholder: '请输入管理员备注',
@@ -303,7 +236,26 @@ export const chapterSearchFormSchema: EsFormSchema =
     isPreview: {
       show: true,
     },
-    isPublished: {
+    canComment: {
       show: true,
+    },
+    canDownload: {
+      show: true,
+    },
+    canExchange: {
+      show: true,
+    },
+    viewRule: {
+      show: true,
+    },
+    isPublished: {
+      component: 'Select',
+      componentProps: {
+        placeholder: '发布状态',
+        options: [
+          { label: '是', value: true },
+          { label: '否', value: false },
+        ],
+      },
     },
   });

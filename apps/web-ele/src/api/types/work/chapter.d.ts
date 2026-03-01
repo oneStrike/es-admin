@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ChapterCreateRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type ChapterCreateRequest = CreateWorkChapterDto;
 
@@ -10,11 +10,20 @@ export type ChapterCreateResponse = IdDto;
 /**
  *  类型定义 [ChapterPageRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type ChapterPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
+
+  /* 是否允许评论 */
+  canComment?: boolean;
+
+  /* 是否允许下载 */
+  canDownload?: boolean;
+
+  /* 是否允许兑换 */
+  canExchange?: boolean;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -67,7 +76,7 @@ export type ChapterPageResponse = {
 /**
  *  类型定义 [ChapterDetailRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type ChapterDetailRequest = {
   /** 任意合法数值 */
@@ -77,12 +86,12 @@ export type ChapterDetailRequest = {
   id: number;
 };
 
-export type ChapterDetailResponse = IdDto;
+export type ChapterDetailResponse = BaseWorkChapterDto;
 
 /**
  *  类型定义 [ChapterUpdateRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type ChapterUpdateRequest = UpdateWorkChapterDto;
 
@@ -91,7 +100,7 @@ export type ChapterUpdateResponse = IdDto;
 /**
  *  类型定义 [ChapterDeleteRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type ChapterDeleteRequest = IdDto;
 
@@ -100,7 +109,7 @@ export type ChapterDeleteResponse = IdDto;
 /**
  *  类型定义 [ChapterSwapSortOrderRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type ChapterSwapSortOrderRequest = DragReorderDto;
 
@@ -109,7 +118,7 @@ export type ChapterSwapSortOrderResponse = DragReorderDto;
 /**
  *  类型定义 [CreateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type CreateWorkChapterDto = {
   /** 任意合法数值 */
@@ -158,7 +167,7 @@ export type CreateWorkChapterDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -169,9 +178,114 @@ export type IdDto = {
 };
 
 /**
+ *  类型定义 [BaseWorkChapterDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-03-01 22:12:30
+ */
+export type BaseWorkChapterDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 是否允许评论 */
+  canComment: boolean;
+  /* 是否允许下载 */
+  canDownload: boolean;
+  /* 是否允许兑换 */
+  canExchange: boolean;
+  /* 评论数 */
+  commentCount: number;
+  /* 内容存储路径 */
+  content?: null | string;
+  /* 章节封面 */
+  cover?: null | string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 章节描述 */
+  description?: null | string;
+  /* 下载次数 */
+  downloadCount: number;
+  /* 章节兑换积分 */
+  exchangePoints: number;
+  /* 主键id */
+  id: number;
+  /* 是否为试读章节 */
+  isPreview: boolean;
+  /* 发布状态 */
+  isPublished: boolean;
+  /* 点赞数 */
+  likeCount: number;
+  /* 章节价格（0=免费） */
+  price: number;
+  /* 发布时间 */
+  publishAt?: null | string;
+  /* 购买次数 */
+  purchaseCount: number;
+  /* 备注 */
+  remark?: null | string;
+  /* 阅读所需会员等级信息 */
+  requiredViewLevel?: UserLevelRuleInfoDto;
+  /* 阅读所需会员等级ID */
+  requiredViewLevelId?: null | number;
+  /* 章节序号 */
+  sortOrder: number;
+  /* 章节副标题 */
+  subtitle?: null | string;
+  /* 章节标题 */
+  title: string;
+  /* 更新时间 */
+  updatedAt: string;
+  /* 阅读次数 */
+  viewCount: number;
+  /* 查看规则（-1=继承, 0=所有人, 1=登录用户, 2=会员, 3=积分购买） */
+  viewRule: -1 | 0 | 1 | 2 | 3;
+  /* 字数（小说章节） */
+  wordCount: number;
+  /* 关联作品信息 */
+  work?: WorkInfoDto;
+  /* 作品ID */
+  workId: number;
+
+  /* 作品类型（1=漫画, 2=小说） */
+  workType: number;
+};
+
+/**
+ *  类型定义 [WorkInfoDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-03-01 22:12:30
+ */
+export type WorkInfoDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 主键id */
+  id: number;
+  /* 作品名称 */
+  name: string;
+
+  /* 作品类型（1=漫画, 2=小说） */
+  type: 1 | 2;
+};
+
+/**
+ *  类型定义 [UserLevelRuleInfoDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-03-01 22:12:30
+ */
+export type UserLevelRuleInfoDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 等级专属颜色（十六进制） */
+  color?: null | string;
+  /* 主键id */
+  id: number;
+
+  /* 等级名称 */
+  name: string;
+};
+
+/**
  *  类型定义 [UpdateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type UpdateWorkChapterDto = {
   /** 任意合法数值 */
@@ -222,7 +336,7 @@ export type UpdateWorkChapterDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:30
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

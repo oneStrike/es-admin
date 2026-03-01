@@ -1,15 +1,11 @@
 import type {
-  ChapterContentAddRequest,
   ChapterContentAddResponse,
   ChapterContentClearRequest,
   ChapterContentClearResponse,
-  ChapterContentDeleteRequest,
   ChapterContentDeleteResponse,
   ChapterContentListRequest,
   ChapterContentListResponse,
-  ChapterContentMoveRequest,
   ChapterContentMoveResponse,
-  ChapterContentUpdateRequest,
   ChapterContentUpdateResponse,
 } from '../../types/work/chapterContent.d';
 
@@ -30,48 +26,36 @@ export async function chapterContentListApi(
 /**
  * 添加章节内容
  */
-export async function chapterContentAddApi(
-  params: ChapterContentAddRequest,
-): Promise<ChapterContentAddResponse> {
+export async function chapterContentAddApi(): Promise<ChapterContentAddResponse> {
   return requestClient.post<ChapterContentAddResponse>(
     '/api/admin/work/chapter-content/add',
-    params,
   );
 }
 
 /**
  * 更新章节内容
  */
-export async function chapterContentUpdateApi(
-  params: ChapterContentUpdateRequest,
-): Promise<ChapterContentUpdateResponse> {
+export async function chapterContentUpdateApi(): Promise<ChapterContentUpdateResponse> {
   return requestClient.post<ChapterContentUpdateResponse>(
     '/api/admin/work/chapter-content/update',
-    params,
   );
 }
 
 /**
  * 删除章节内容
  */
-export async function chapterContentDeleteApi(
-  params: ChapterContentDeleteRequest,
-): Promise<ChapterContentDeleteResponse> {
+export async function chapterContentDeleteApi(): Promise<ChapterContentDeleteResponse> {
   return requestClient.post<ChapterContentDeleteResponse>(
     '/api/admin/work/chapter-content/delete',
-    params,
   );
 }
 
 /**
  * 移动章节内容
  */
-export async function chapterContentMoveApi(
-  params: ChapterContentMoveRequest,
-): Promise<ChapterContentMoveResponse> {
+export async function chapterContentMoveApi(): Promise<ChapterContentMoveResponse> {
   return requestClient.post<ChapterContentMoveResponse>(
     '/api/admin/work/chapter-content/move',
-    params,
   );
 }
 

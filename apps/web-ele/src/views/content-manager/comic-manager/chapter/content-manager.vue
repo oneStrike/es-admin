@@ -7,10 +7,10 @@ import { useVbenModal } from '@vben/common-ui';
 import { useSortable } from '@vben/hooks';
 
 import {
-  chapterContentClearApi,
-  chapterContentDeleteApi,
-  chapterContentListApi,
-  chapterContentMoveApi,
+  comicContentClearApi,
+  comicContentDeleteApi,
+  comicContentListApi,
+  comicContentMoveApi,
 } from '#/api';
 import { DeleteBinIcon, EyeLineIcon, UploadLoop } from '#/components/es-icons';
 import EsUpload from '#/components/es-upload/es-upload.vue';
@@ -22,7 +22,7 @@ defineOptions({
 });
 
 interface ShareData {
-  comicId: number;
+  workId: number;
   chapterId: number;
   chapterTitle: string;
 }
@@ -38,6 +38,7 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen) {
     if (isOpen) {
       shareData.value = modalApi.getData<ShareData>();
+
       modalApi.setState({
         title: `${shareData.value?.chapterTitle} - 内容管理`,
       });
@@ -58,8 +59,8 @@ const gridContainer = ref<HTMLElement>();
 async function loadContents() {
   if (!shareData.value?.chapterId) return;
   try {
-    const res = await chapterContentListApi({
-      id: shareData.value.chapterId,
+    const res = await comicContentListApi({
+      chapterId: shareData.value.chapterId,
     });
     contentList.value = res || [];
   } catch (error) {
@@ -90,7 +91,7 @@ async function handleDelete(index?: number) {
     return;
   }
   useConfirm('delete', async () => {
-    contentList.value = await chapterContentDeleteApi({
+    contentList.value = await comicContentDeleteApi({
       id: shareData.value!.chapterId,
       index: deleteIndex,
     });
@@ -100,7 +101,7 @@ async function handleDelete(index?: number) {
 
 async function handleClearAll() {
   useConfirm('clear', async () => {
-    await chapterContentClearApi({ id: shareData.value!.chapterId });
+    await comicContentClearApi({ id: shareData.value!.chapterId });
     useMessage.success('清空成功');
     await loadContents();
   });
@@ -110,7 +111,7 @@ async function handleMove(fromIndex: number, toIndex: number) {
   if (fromIndex === toIndex) return;
 
   try {
-    contentList.value = await chapterContentMoveApi({
+    contentList.value = await comicContentMoveApi({
       id: shareData.value!.chapterId,
       fromIndex,
       toIndex,
@@ -190,7 +191,7 @@ async function initializeDrag() {
               return-data-type="array"
               :scene="UploadSceneEnum.WORK"
               :data="{
-                comicId: shareData!.comicId,
+                workId: shareData!.workId,
                 chapterId: shareData!.chapterId,
               }"
               :show-list="false"

@@ -39,6 +39,8 @@ import { comicColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
 import { formSchema, pageFilter } from './model/shared';
 
+defineOptions({ name: 'ComicChapterManager' });
+
 const gridOptions: VxeGridProps<BaseWorkDto> = {
   columns: [],
   proxyConfig: {
@@ -215,6 +217,7 @@ async function toggleStatus(
 
 // 打开章节管理弹窗
 function openChapterModal(record: BaseWorkDto) {
+  console.log('🚀 ~ openChapterModal ~ record:', record);
   chapterApi
     .setData({
       workId: record.id,

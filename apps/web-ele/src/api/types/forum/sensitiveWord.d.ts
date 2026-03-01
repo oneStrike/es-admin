@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SensitiveWordPageRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordPageRequest = {
   /** 任意合法数值 */
@@ -58,7 +58,7 @@ export type SensitiveWordPageResponse = {
 /**
  *  类型定义 [SensitiveWordCreateRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordCreateRequest = CreateSensitiveWordDto;
 
@@ -67,7 +67,7 @@ export type SensitiveWordCreateResponse = BaseSensitiveWordDto;
 /**
  *  类型定义 [SensitiveWordUpdateRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordUpdateRequest = UpdateSensitiveWordDto;
 
@@ -76,7 +76,7 @@ export type SensitiveWordUpdateResponse = BaseSensitiveWordDto;
 /**
  *  类型定义 [SensitiveWordDeleteRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordDeleteRequest = IdDto;
 
@@ -85,7 +85,7 @@ export type SensitiveWordDeleteResponse = BaseSensitiveWordDto;
 /**
  *  类型定义 [SensitiveWordUpdateStatusRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordUpdateStatusRequest = UpdateEnabledStatusDto;
 
@@ -94,7 +94,7 @@ export type SensitiveWordUpdateStatusResponse = BaseSensitiveWordDto;
 /**
  *  类型定义 [SensitiveWordDetectRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordDetectRequest = SensitiveWordDetectDto;
 
@@ -103,7 +103,7 @@ export type SensitiveWordDetectResponse = MatchedWordDto[];
 /**
  *  类型定义 [SensitiveWordStatisticsRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordStatisticsRequest = {
   /** 任意合法数值 */
@@ -119,7 +119,7 @@ export type SensitiveWordStatisticsResponse =
 /**
  *  类型定义 [SensitiveWordReplaceRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordReplaceRequest = SensitiveWordReplaceDto;
 
@@ -130,7 +130,7 @@ export type SensitiveWordCountResponse = SensitiveWordCountResponseDto;
 /**
  *  类型定义 [BaseSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type BaseSensitiveWordDto = {
   /** 任意合法数值 */
@@ -161,7 +161,7 @@ export type BaseSensitiveWordDto = {
 /**
  *  类型定义 [CreateSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type CreateSensitiveWordDto = {
   /** 任意合法数值 */
@@ -186,7 +186,7 @@ export type CreateSensitiveWordDto = {
 /**
  *  类型定义 [UpdateSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type UpdateSensitiveWordDto = {
   /** 任意合法数值 */
@@ -213,7 +213,7 @@ export type UpdateSensitiveWordDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -226,7 +226,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -241,7 +241,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [SensitiveWordDetectDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordDetectDto = {
   /** 任意合法数值 */
@@ -256,7 +256,7 @@ export type SensitiveWordDetectDto = {
 /**
  *  类型定义 [MatchedWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type MatchedWordDto = {
   /** 任意合法数值 */
@@ -279,7 +279,7 @@ export type MatchedWordDto = {
 /**
  *  类型定义 [SensitiveWordStatisticsResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordStatisticsResponseDto = {
   /** 任意合法数值 */
@@ -294,7 +294,7 @@ export type SensitiveWordStatisticsResponseDto = {
 /**
  *  类型定义 [SensitiveWordReplaceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordReplaceDto = {
   /** 任意合法数值 */
@@ -311,7 +311,7 @@ export type SensitiveWordReplaceDto = {
 /**
  *  类型定义 [SensitiveWordReplaceResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordReplaceResponseDto = {
   /** 任意合法数值 */
@@ -324,7 +324,7 @@ export type SensitiveWordReplaceResponseDto = {
 /**
  *  类型定义 [SensitiveWordCountResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:50:05
+ *  @更新时间 2026-03-01 22:12:29
  */
 export type SensitiveWordCountResponseDto = {
   /** 任意合法数值 */

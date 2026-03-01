@@ -187,10 +187,18 @@ export const comicColumns = ({
         return work_age_rating?.labels[value] ?? value;
       },
     },
-    createdAt: {
+    publishAt: {
+      cellRender: {
+        name: 'CellDate',
+      },
+      width: 160,
+      sortable: true,
+    },
+
+    updatedAt: {
       show: true,
     },
-    updatedAt: {
+    createdAt: {
       show: true,
     },
     actions: {

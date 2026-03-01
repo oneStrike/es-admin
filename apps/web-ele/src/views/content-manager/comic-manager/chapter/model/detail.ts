@@ -1,16 +1,18 @@
-// 章节详情返回 IdDto，但实际后端返回更多数据
-// 使用 any 类型以支持详情展示
-// import type { IdDto } from '#/api/types';
+import type { BaseWorkChapterDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
 import { readRuleMap } from './form';
 
-// 定义卡片配置函数
-export function getDetailCards(detail: any) {
+/**
+ * 章节详情卡片配置
+ * 参考作品管理的详情配置模式
+ * @param detail 章节详情数据
+ */
+export function getDetailCards(detail: BaseWorkChapterDto) {
   return [
     {
-      title: '',
+      title: '基本信息',
       show: true,
       fields: [
         {
@@ -25,12 +27,24 @@ export function getDetailCards(detail: any) {
         },
         {
           label: '章节序号',
-          value: detail.sortOrder || 0,
+          value: detail.sortOrder ?? 0,
           type: 'text',
         },
         {
+          label: '发布状态',
+          value: detail.isPublished,
+          type: 'tag',
+          tagType: detail.isPublished ? 'success' : 'danger',
+          tagText: detail.isPublished ? '已发布' : '未发布',
+        },
+        {
           label: '关联作品',
-          value: detail.relatedWork?.name || '-',
+          value: detail.work?.name || '-',
+          type: 'text',
+        },
+        {
+          label: '章节描述',
+          value: detail.description || '-',
           type: 'text',
         },
       ],
@@ -42,7 +56,8 @@ export function getDetailCards(detail: any) {
         {
           label: '查看规则',
           value: readRuleMap[detail.viewRule] || '-',
-          type: 'text',
+          type: 'tag',
+          tagType: detail.viewRule === -1 ? 'info' : 'primary',
         },
         {
           label: '试读章节',
@@ -85,26 +100,13 @@ export function getDetailCards(detail: any) {
       fields: [
         {
           label: '章节价格',
-          value: detail.price || 0,
+          value: `${detail.price || 0}`,
           type: 'text',
         },
         {
           label: '兑换所需积分',
           value: detail.exchangePoints || 0,
           type: 'text',
-        },
-      ],
-    },
-    {
-      title: '状态信息',
-      show: true,
-      fields: [
-        {
-          label: '发布状态',
-          value: detail.isPublished,
-          type: 'tag',
-          tagType: detail.isPublished ? 'success' : 'danger',
-          tagText: detail.isPublished ? '已发布' : '未发布',
         },
       ],
     },
@@ -162,27 +164,6 @@ export function getDetailCards(detail: any) {
           value: detail.publishAt
             ? formatUTC(detail.publishAt, 'YYYY-MM-DD')
             : '-',
-          type: 'text',
-        },
-      ],
-    },
-    {
-      title: '章节内容',
-      show: true,
-      fields: [
-        {
-          label: '章节描述',
-          value: detail.description || '-',
-          type: 'text',
-        },
-        {
-          label: '章节封面',
-          value: detail.cover || '-',
-          type: 'text',
-        },
-        {
-          label: '内容存储路径',
-          value: detail.content || '-',
           type: 'text',
         },
       ],
