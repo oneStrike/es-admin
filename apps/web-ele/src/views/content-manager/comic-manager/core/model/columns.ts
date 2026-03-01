@@ -138,7 +138,7 @@ export const comicColumns = ({
       slots: { default: 'isHot' },
     },
     isNew: {
-      title: '新品',
+      title: '新作',
       width: 80,
       sort: 9,
       slots: { default: 'isNew' },

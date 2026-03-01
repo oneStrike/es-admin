@@ -38,6 +38,7 @@ const props = withDefaults(defineProps<EsUploadProps>(), {
 const emit = defineEmits<{
   (e: 'update:modelValue', val: EsUploadProps['modelValue']): void;
 }>();
+console.log('🚀 ~ props:', props);
 // 绑定到 el-upload 的文件列表（Element Plus UploadFile 类型）
 const fileList = ref<UploadFile[]>([]);
 

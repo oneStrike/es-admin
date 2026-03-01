@@ -38,6 +38,8 @@ export const formSchema: EsFormSchema = [
       placeholder: '请上传漫画封面',
       accept: 'image/*',
       scene: 'comic',
+      maxCount: 1,
+      multiple: false,
     },
     fieldName: 'cover',
     label: '封面',
@@ -105,45 +107,6 @@ export const formSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
-      options: [],
-      placeholder: '输入分类名称进行搜索',
-      multiple: true,
-      filterable: true,
-    },
-    fieldName: 'categoryIds',
-    label: '分类',
-    rules: 'arrayRequired',
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      options: [],
-      placeholder: '输入标签名称进行搜索',
-      multiple: true,
-      filterable: true,
-    },
-    fieldName: 'tagIds',
-    label: '标签',
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      placeholder: '请选择出版社',
-    },
-    fieldName: 'publisher',
-    label: '出版社',
-  },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入原始来源（例如：官方授权、漫画网站等）',
-    },
-    fieldName: 'originalSource',
-    label: '原始来源',
-  },
-  {
-    component: 'Select',
-    componentProps: {
       placeholder: '请选择地区代码',
     },
     fieldName: 'region',
@@ -169,6 +132,31 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
 
+  // ========== 内容分类 ==========
+  {
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: '输入分类名称进行搜索',
+      multiple: true,
+      filterable: true,
+    },
+    fieldName: 'categoryIds',
+    label: '分类',
+    rules: 'arrayRequired',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: '输入标签名称进行搜索',
+      multiple: true,
+      filterable: true,
+    },
+    fieldName: 'tagIds',
+    label: '标签',
+  },
+
   // ========== 作品简介 ==========
   {
     component: 'RichText',
@@ -183,6 +171,41 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
 
+  // ========== 来源与版权 ==========
+  {
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择出版社',
+    },
+    fieldName: 'publisher',
+    label: '出版社',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入原始来源（例如：官方授权、漫画网站等）',
+    },
+    fieldName: 'originalSource',
+    label: '原始来源',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入版权信息',
+    },
+    fieldName: 'copyright',
+    label: '版权信息',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入免责声明',
+    },
+    fieldName: 'disclaimer',
+    label: '免责声明',
+  },
+
+  // ========== 阅读权限 ==========
   {
     component: 'Select',
     componentProps: {
@@ -196,42 +219,6 @@ export const formSchema: EsFormSchema = [
     defaultValue: 0,
   },
   {
-    component: 'RadioGroup',
-    defaultValue: true,
-    componentProps: {
-      options: [
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ],
-    },
-    fieldName: 'canComment',
-    label: '允许评论',
-  },
-  {
-    component: 'RadioGroup',
-    defaultValue: false,
-    componentProps: {
-      options: [
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ],
-    },
-    fieldName: 'canDownload',
-    label: '允许下载',
-  },
-  {
-    component: 'RadioGroup',
-    defaultValue: false,
-    componentProps: {
-      options: [
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ],
-    },
-    fieldName: 'canExchange',
-    label: '允许兑换',
-  },
-  {
     component: 'Select',
     componentProps: {
       placeholder: '请选择阅读所需会员等级',
@@ -241,6 +228,8 @@ export const formSchema: EsFormSchema = [
     fieldName: 'requiredViewLevelId',
     label: '阅读会员等级',
   },
+
+  // ========== 价格设置 ==========
   {
     component: 'InputNumber',
     componentProps: {
@@ -283,36 +272,46 @@ export const formSchema: EsFormSchema = [
     label: '章节默认兑换积分',
     defaultValue: 0,
   },
+
+  // ========== 功能开关 ==========
   {
-    component: 'InputNumber',
+    component: 'RadioGroup',
+    defaultValue: true,
     componentProps: {
-      placeholder: '请输入购买数',
-      min: 0,
+      options: [
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ],
     },
-    fieldName: 'purchaseCount',
-    label: '购买数',
-    defaultValue: 0,
+    fieldName: 'canComment',
+    label: '允许评论',
   },
   {
-    component: 'DatePicker',
+    component: 'RadioGroup',
+    defaultValue: false,
     componentProps: {
-      placeholder: '请选择发布日期',
-      type: 'date',
-      format: 'YYYY-MM-DD',
-      valueFormat: 'YYYY-MM-DD',
+      options: [
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ],
     },
-    fieldName: 'publishAt',
-    label: '发布日期',
+    fieldName: 'canDownload',
+    label: '允许下载',
   },
   {
-    component: 'Input',
+    component: 'RadioGroup',
+    defaultValue: false,
     componentProps: {
-      placeholder: '请输入最后更新时间',
-      type: 'date',
+      options: [
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ],
     },
-    fieldName: 'lastUpdated',
-    label: '最后更新时间',
+    fieldName: 'canExchange',
+    label: '允许兑换',
   },
+
+  // ========== 推荐标记 ==========
   {
     component: 'RadioGroup',
     defaultValue: false,
@@ -360,32 +359,19 @@ export const formSchema: EsFormSchema = [
     label: '推荐权重',
   },
   {
-    component: 'InputNumber',
+    component: 'DatePicker',
     componentProps: {
-      placeholder: '请输入评分（1-10分）',
-      min: 1,
-      max: 10,
-      precision: 1,
+      placeholder: '请选择作品发布时间',
+      disabledDate: (current: Date) => {
+        return current && current > new Date();
+      },
+      class: '!w-full',
     },
-    fieldName: 'rating',
-    label: '评分',
+    fieldName: 'publishAt',
+    label: '发布时间',
   },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入版权信息',
-    },
-    fieldName: 'copyright',
-    label: '版权信息',
-  },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入免责声明',
-    },
-    fieldName: 'disclaimer',
-    label: '免责声明',
-  },
+
+  // ========== 其他 ==========
   {
     component: 'Input',
     formItemClass: 'col-span-2',
