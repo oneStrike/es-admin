@@ -31,7 +31,7 @@ export type SystemConfigResponse = SystemConfigDto;
 /**
  *  类型定义 [SystemConfigUpdateRequest]
  *  @来源 系统配置
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type SystemConfigUpdateRequest = SystemConfigDto;
 
@@ -40,7 +40,7 @@ export type SystemConfigUpdateResponse = boolean;
 /**
  *  类型定义 [SystemConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type SystemConfigDto = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type SystemConfigDto = {
 /**
  *  类型定义 [AliyunConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type AliyunConfigDto = {
   /** 任意合法数值 */
@@ -84,7 +84,7 @@ export type AliyunConfigDto = {
 /**
  *  类型定义 [AliyunSmsConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type AliyunSmsConfigDto = {
   /** 任意合法数值 */
@@ -101,7 +101,7 @@ export type AliyunSmsConfigDto = {
 /**
  *  类型定义 [GrowthAntifraudConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type GrowthAntifraudConfigDto = {
   /** 任意合法数值 */
@@ -132,7 +132,7 @@ export type GrowthAntifraudConfigDto = {
 /**
  *  类型定义 [GrowthAntifraudLimitDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type GrowthAntifraudLimitDto = {
   /** 任意合法数值 */
@@ -149,7 +149,7 @@ export type GrowthAntifraudLimitDto = {
 /**
  *  类型定义 [ContentReviewPolicyDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type ContentReviewPolicyDto = {
   /** 任意合法数值 */
@@ -168,7 +168,7 @@ export type ContentReviewPolicyDto = {
 /**
  *  类型定义 [ContentReviewActionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type ContentReviewActionDto = {
   /** 任意合法数值 */
@@ -183,7 +183,7 @@ export type ContentReviewActionDto = {
 /**
  *  类型定义 [CommentRateLimitConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type CommentRateLimitConfigDto = {
   /** 任意合法数值 */
@@ -204,7 +204,7 @@ export type CommentRateLimitConfigDto = {
 /**
  *  类型定义 [SiteConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type SiteConfigDto = {
   /** 任意合法数值 */
@@ -229,7 +229,7 @@ export type SiteConfigDto = {
 /**
  *  类型定义 [MaintenanceConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type MaintenanceConfigDto = {
   /** 任意合法数值 */
@@ -244,7 +244,7 @@ export type MaintenanceConfigDto = {
 /**
  *  类型定义 [RegisterConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type RegisterConfigDto = {
   /** 任意合法数值 */
@@ -261,7 +261,7 @@ export type RegisterConfigDto = {
 /**
  *  类型定义 [NotifyConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type NotifyConfigDto = {
   /** 任意合法数值 */

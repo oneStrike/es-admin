@@ -154,7 +154,6 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
       ageRating: work_age_rating?.options || [],
     });
     gridApi.formApi.updateSchema(pageFilter);
-
     gridApi.setGridOptions({
       columns: comicColumns({
         work_publisher,

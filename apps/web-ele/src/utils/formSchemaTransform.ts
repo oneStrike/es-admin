@@ -52,7 +52,7 @@ function sortItemsWithSortValue<T extends { sortValue: number }>(
 
 export const formSchemaTransform: FormSchemaTransform = {
   toTableColumns: (schema, extra) => {
-    const innerSchema = cloneDeep(schema);
+    const innerSchema = cloneDeep(schema.filter((item) => !item.hide));
 
     const columnsWithSort: Array<
       VxeGridPropTypes.Columns<any>[number] & {
@@ -68,7 +68,7 @@ export const formSchemaTransform: FormSchemaTransform = {
           title: item.label as string,
           field: item.fieldName,
           align: 'center',
-          minWidth: 100,  
+          minWidth: 100,
           sortValue: itemExtra?.sort ?? idx,
           formatter: itemExtra?.cellRender
             ? undefined
@@ -140,9 +140,8 @@ export const formSchemaTransform: FormSchemaTransform = {
     }
 
     // 根据 sort 属性排序，没有 sort 的保持原有位置
-    sortItemsWithSortValue(columnsWithSort);
-
-    columnsWithSort.unshift({
+    const sortedColumns = sortItemsWithSortValue(columnsWithSort);
+    sortedColumns.unshift({
       title: '序号',
       type: 'seq',
       width: 80,
@@ -152,7 +151,7 @@ export const formSchemaTransform: FormSchemaTransform = {
     });
 
     // 移除辅助属性，返回最终的列配置
-    return columnsWithSort;
+    return sortedColumns.map(({ sortValue: _ignored, ...rest }) => rest);
   },
   toSearchSchema: (schema, extra) => {
     const innerSchema = cloneDeep(schema);
@@ -165,9 +164,7 @@ export const formSchemaTransform: FormSchemaTransform = {
         if (!itemExtra || itemExtra.hide === true) return;
 
         // 先从 schema 中查找对应字段
-        const schemaItem = innerSchema.find(
-          (item) => item.fieldName === key,
-        );
+        const schemaItem = innerSchema.find((item) => item.fieldName === key);
 
         if (schemaItem) {
           delete schemaItem.formItemClass;

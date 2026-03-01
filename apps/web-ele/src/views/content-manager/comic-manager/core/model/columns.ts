@@ -7,6 +7,35 @@ import { formSchemaTransform } from '#/utils';
 
 import { formSchema, serialStatus } from './shared';
 
+const hideField = [
+  'authorIds',
+  'alias',
+  'recommendWeight',
+  'originalSource',
+  'categoryIds',
+  'tagIds',
+  'description',
+  'remark',
+  'copyright',
+  'disclaimer',
+  'viewRule',
+  'canComment',
+  'canDownload',
+  'canExchange',
+  'price',
+  'chapterPrice',
+  'exchangePoints',
+  'chapterExchangePoints',
+  'purchaseCount',
+  'requiredViewLevelId',
+  'lastUpdated',
+  'rating',
+];
+
+const hideFieldConfig = Object.fromEntries(
+  hideField.map((field) => [field, { hide: true }]),
+);
+
 export const comicColumns = ({
   work_publisher,
   work_language,
@@ -14,14 +43,13 @@ export const comicColumns = ({
   work_age_rating,
 }: Recordable<undefined | UseDictItem>) => {
   return formSchemaTransform.toTableColumns<BaseWorkDto>(formSchema, {
-    name: {
-      width: 200,
-      fixed: 'left',
-      slots: { default: 'name' },
-    },
+    ...hideFieldConfig,
+    // ========== 核心信息（优先展示） ==========
     cover: {
       title: '封面',
-      width: 100,
+      width: 60,
+      sort: 1,
+      fixed: 'left',
       cellRender: {
         name: 'CellImage',
         props: {
@@ -31,81 +59,17 @@ export const comicColumns = ({
         },
       },
     },
-    authorIds: {
-      hide: true,
+    name: {
+      title: '名称',
+      width: 200,
+      sort: 2,
+      fixed: 'left',
+      slots: { default: 'name' },
     },
-    alias: {
-      hide: true,
-    },
-    originalSource: {
-      hide: true,
-    },
-    categoryIds: {
-      hide: true,
-    },
-    tagIds: {
-      hide: true,
-    },
-    description: {
-      hide: true,
-    },
-    remark: {
-      hide: true,
-    },
-    copyright: {
-      hide: true,
-    },
-    disclaimer: {
-      hide: true,
-    },
-    // ========== 权限设置 ==========
-    viewRule: {
-      hide: true,
-    },
-    canComment: {
-      hide: true,
-    },
-    canDownload: {
-      hide: true,
-    },
-    canExchange: {
-      hide: true,
-    },
-    requiredViewLevelId: {
-      hide: true,
-    },
-    // ========== 价格设置 ==========
-    price: {
-      hide: true,
-    },
-    chapterPrice: {
-      hide: true,
-    },
-    exchangePoints: {
-      hide: true,
-    },
-    chapterExchangePoints: {
-      hide: true,
-    },
-    purchaseCount: {
-      hide: true,
-    },
-    // ========== 发布设置 ==========
-    publishAt: {
-      hide: true,
-    },
-    lastUpdated: {
-      hide: true,
-    },
-    // ========== 推荐设置 ==========
-    rating: {
-      hide: true,
-    },
-    // ========== 列表展示字段 ==========
     authors: {
       title: '作者',
-      width: 240,
-      sort: 2,
+      width: 180,
+      sort: 3,
       cellRender: {
         name: 'CellTag',
         props: {
@@ -120,6 +84,7 @@ export const comicColumns = ({
     serialStatus: {
       title: '连载状态',
       width: 100,
+      sort: 4,
       cellRender: {
         name: 'CellTag',
         props: {
@@ -127,10 +92,12 @@ export const comicColumns = ({
         },
       },
     },
+
+    // ========== 内容分类 ==========
     categories: {
       title: '分类',
       width: 150,
-      sort: 4,
+      sort: 5,
       cellRender: {
         name: 'CellTag',
         props: {
@@ -146,7 +113,7 @@ export const comicColumns = ({
     tags: {
       title: '标签',
       width: 150,
-      sort: 4,
+      sort: 6,
       cellRender: {
         name: 'CellTag',
         props: {
@@ -157,51 +124,68 @@ export const comicColumns = ({
       },
     },
 
+    // ========== 状态标识 ==========
+    isPublished: {
+      title: '发布状态',
+      width: 100,
+      sort: 7,
+      slots: { default: 'isPublished' },
+    },
+    isHot: {
+      title: '热门',
+      width: 80,
+      sort: 8,
+      slots: { default: 'isHot' },
+    },
+    isNew: {
+      title: '新品',
+      width: 80,
+      sort: 9,
+      slots: { default: 'isNew' },
+    },
+    isRecommended: {
+      title: '推荐',
+      width: 80,
+      sort: 10,
+      slots: { default: 'isRecommended' },
+    },
+
+    // ========== 补充信息 ==========
     publisher: {
+      title: '出版社',
       width: 120,
+      sort: 11,
       formatter: ({ cellValue }: { cellValue?: string }) => {
         const value = cellValue ?? '';
         return work_publisher?.labels[value] ?? value;
       },
     },
     region: {
-      width: 120,
+      title: '地区',
+      width: 100,
+      sort: 12,
       formatter: ({ cellValue }: { cellValue?: string }) => {
         const value = cellValue ?? '';
         return work_region?.labels[value] ?? value;
       },
     },
     language: {
-      width: 120,
+      title: '语言',
+      width: 100,
+      sort: 13,
       formatter: ({ cellValue }: { cellValue?: string }) => {
         const value = cellValue ?? '';
         return work_language?.labels[value] ?? value;
       },
     },
     ageRating: {
-      width: 120,
+      title: '年龄分级',
+      width: 100,
+      sort: 14,
       formatter: ({ cellValue }: { cellValue?: string }) => {
         const value = cellValue ?? '';
         return work_age_rating?.labels[value] ?? value;
       },
-    },
-    isPublished: {
-      width: 100,
-      slots: { default: 'isPublished' },
-    },
-    isHot: {
-      slots: { default: 'isHot' },
-    },
-    isNew: {
-      slots: { default: 'isNew' },
-    },
-    recommendWeight: {
-      sortable: true,
-    },
-    isRecommended: {
-      width: 120,
-      title: '是否推荐',
-      slots: { default: 'isRecommended' },
     },
     createdAt: {
       show: true,
@@ -212,22 +196,6 @@ export const comicColumns = ({
     actions: {
       show: true,
       width: 160,
-    },
-    // ========== 分割线隐藏 ==========
-    divider_permission: {
-      hide: true,
-    },
-    divider_price: {
-      hide: true,
-    },
-    divider_publish: {
-      hide: true,
-    },
-    divider_recommend: {
-      hide: true,
-    },
-    divider_copyright: {
-      hide: true,
     },
   });
 };

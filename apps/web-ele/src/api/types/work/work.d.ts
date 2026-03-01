@@ -1,7 +1,7 @@
 /**
  *  类型定义 [WorkCreateRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkCreateRequest = CreateWorkDto;
 
@@ -10,7 +10,7 @@ export type WorkCreateResponse = IdDto;
 /**
  *  类型定义 [WorkPageRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkPageRequest = {
   /** 任意合法数值 */
@@ -94,7 +94,7 @@ export type WorkPageResponse = {
 /**
  *  类型定义 [WorkDetailRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkDetailRequest = {
   /** 任意合法数值 */
@@ -109,7 +109,7 @@ export type WorkDetailResponse = BaseWorkDto;
 /**
  *  类型定义 [WorkUpdateRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkUpdateRequest = UpdateWorkDto;
 
@@ -118,7 +118,7 @@ export type WorkUpdateResponse = IdDto;
 /**
  *  类型定义 [WorkUpdateStatusRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkUpdateStatusRequest = UpdateWorkStatusDto;
 
@@ -127,7 +127,7 @@ export type WorkUpdateStatusResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [WorkUpdateRecommendedRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkUpdateRecommendedRequest = UpdateWorkRecommendedDto;
 
@@ -136,7 +136,7 @@ export type WorkUpdateRecommendedResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [WorkUpdateHotRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkUpdateHotRequest = UpdateWorkHotDto;
 
@@ -145,7 +145,7 @@ export type WorkUpdateHotResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [WorkUpdateNewRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkUpdateNewRequest = UpdateWorkNewDto;
 
@@ -154,7 +154,7 @@ export type WorkUpdateNewResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [WorkDeleteRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkDeleteRequest = IdDto;
 
@@ -163,7 +163,7 @@ export type WorkDeleteResponse = IdDto;
 /**
  *  类型定义 [CreateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type CreateWorkDto = {
   /** 任意合法数值 */
@@ -242,7 +242,7 @@ export type CreateWorkDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -255,7 +255,7 @@ export type IdDto = {
 /**
  *  类型定义 [BaseWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type BaseWorkDto = {
   /** 任意合法数值 */
@@ -354,7 +354,7 @@ export type BaseWorkDto = {
 /**
  *  类型定义 [WorkAuthorRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkAuthorRelationDto = {
   /** 任意合法数值 */
@@ -369,7 +369,7 @@ export type WorkAuthorRelationDto = {
 /**
  *  类型定义 [AuthorInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type AuthorInfoDto = {
   /** 任意合法数值 */
@@ -388,7 +388,7 @@ export type AuthorInfoDto = {
 /**
  *  类型定义 [WorkCategoryRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkCategoryRelationDto = {
   /** 任意合法数值 */
@@ -403,7 +403,7 @@ export type WorkCategoryRelationDto = {
 /**
  *  类型定义 [CategoryInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type CategoryInfoDto = {
   /** 任意合法数值 */
@@ -420,7 +420,7 @@ export type CategoryInfoDto = {
 /**
  *  类型定义 [WorkTagRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type WorkTagRelationDto = {
   /** 任意合法数值 */
@@ -435,7 +435,7 @@ export type WorkTagRelationDto = {
 /**
  *  类型定义 [TagInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type TagInfoDto = {
   /** 任意合法数值 */
@@ -452,7 +452,7 @@ export type TagInfoDto = {
 /**
  *  类型定义 [UpdateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type UpdateWorkDto = {
   /** 任意合法数值 */
@@ -533,7 +533,7 @@ export type UpdateWorkDto = {
 /**
  *  类型定义 [UpdateWorkStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type UpdateWorkStatusDto = {
   /** 任意合法数值 */
@@ -548,7 +548,7 @@ export type UpdateWorkStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -561,7 +561,7 @@ export type BatchOperationResponseDto = {
 /**
  *  类型定义 [UpdateWorkRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type UpdateWorkRecommendedDto = {
   /** 任意合法数值 */
@@ -576,7 +576,7 @@ export type UpdateWorkRecommendedDto = {
 /**
  *  类型定义 [UpdateWorkHotDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type UpdateWorkHotDto = {
   /** 任意合法数值 */
@@ -591,7 +591,7 @@ export type UpdateWorkHotDto = {
 /**
  *  类型定义 [UpdateWorkNewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 13:34:30
+ *  @更新时间 2026-03-01 13:50:05
  */
 export type UpdateWorkNewDto = {
   /** 任意合法数值 */
