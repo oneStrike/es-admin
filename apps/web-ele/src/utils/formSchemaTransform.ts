@@ -156,84 +156,80 @@ export const formSchemaTransform: FormSchemaTransform = {
   },
   toSearchSchema: (schema, extra) => {
     const innerSchema = cloneDeep(schema);
-    const filterListWithSort: Array<
-      EsFormSchema[number] & { sortValue: number }
-    > = [];
+    const filterList: EsFormSchema = [];
 
-    // 先过滤出需要的项目并添加排序信息
-    for (const [i, item] of innerSchema.entries()) {
-      delete item.formItemClass;
-      const itemExtra = extra?.[item.fieldName];
-      delete extra?.[item.fieldName];
-
-      if (itemExtra && itemExtra.hide !== true) {
-        const componentConfig =
-          filterComponentProps[
-            item.component as keyof typeof filterComponentProps
-          ];
-
-        // 获取原有的options（如果componentProps是对象类型）
-        const existingOptions =
-          item.componentProps &&
-          typeof item.componentProps === 'object' &&
-          !Array.isArray(item.componentProps)
-            ? item.componentProps.options
-            : undefined;
-
-        item.componentProps = {
-          ...item.componentProps,
-          placeholder: componentConfig?.placeholder || item.label,
-          class: 'w-[280px]',
-          clearable: true,
-          options: existingOptions ?? [],
-        };
-        if (item.component === 'CheckboxGroup') {
-          item.component = 'Select';
-          item.componentProps.multiple = true;
-          item.componentProps.collapseTags = true;
-          item.componentProps.collapseTagsTooltip = true;
-        }
-        if (item.component === 'RadioGroup') {
-          item.component = 'Select';
-        }
-        if (item.component === 'DatePicker') {
-          item.componentProps.startPlaceholder =
-            item.componentProps.startPlaceholder || '开始时间';
-          item.componentProps.endPlaceholder =
-            item.componentProps.endPlaceholder || '结束时间';
-        }
-        item.label = '';
-        item.rules = '';
-        item.hideLabel = true;
-        delete item.defaultValue;
-        filterListWithSort.push({
-          ...item,
-          sortValue: itemExtra?.sort ?? i,
-        });
-      }
-    }
-
+    // 按照 extra 对象的属性顺序处理
     if (extra) {
       Object.keys(extra).forEach((key) => {
-        const item = extra[key];
-        if (item) {
-          item.fieldName = item?.fieldName || key;
-          item.componentProps = {
-            ...item.componentProps,
-            // @ts-expect-error ignore
-            placeholder: item.componentProps.placeholder ?? item.label,
+        const itemExtra = extra[key];
+        if (!itemExtra || itemExtra.hide === true) return;
+
+        // 先从 schema 中查找对应字段
+        const schemaItem = innerSchema.find(
+          (item) => item.fieldName === key,
+        );
+
+        if (schemaItem) {
+          delete schemaItem.formItemClass;
+          const componentConfig =
+            filterComponentProps[
+              schemaItem.component as keyof typeof filterComponentProps
+            ];
+
+          // 获取原有的options（如果componentProps是对象类型）
+          const existingOptions =
+            schemaItem.componentProps &&
+            typeof schemaItem.componentProps === 'object' &&
+            !Array.isArray(schemaItem.componentProps)
+              ? schemaItem.componentProps.options
+              : undefined;
+
+          schemaItem.componentProps = {
+            ...schemaItem.componentProps,
+            placeholder: componentConfig?.placeholder || schemaItem.label,
+            class: 'w-[280px]',
+            clearable: true,
+            options: existingOptions ?? [],
           };
-          filterListWithSort.push({
-            ...item,
-            sortValue: item?.sort ?? filterListWithSort.length,
-          } as (typeof filterListWithSort)[number]);
+          if (schemaItem.component === 'CheckboxGroup') {
+            schemaItem.component = 'Select';
+            schemaItem.componentProps.multiple = true;
+            schemaItem.componentProps.collapseTags = true;
+            schemaItem.componentProps.collapseTagsTooltip = true;
+          }
+          if (schemaItem.component === 'RadioGroup') {
+            schemaItem.component = 'Select';
+          }
+          if (schemaItem.component === 'DatePicker') {
+            schemaItem.componentProps.startPlaceholder =
+              schemaItem.componentProps.startPlaceholder || '开始时间';
+            schemaItem.componentProps.endPlaceholder =
+              schemaItem.componentProps.endPlaceholder || '结束时间';
+          }
+          schemaItem.label = '';
+          schemaItem.rules = '';
+          schemaItem.hideLabel = true;
+          delete schemaItem.defaultValue;
+
+          // 合并 extra 中的配置
+          filterList.push({
+            ...schemaItem,
+            ...itemExtra,
+          });
+        } else {
+          // schema 中不存在，使用 extra 中的配置创建新项
+          itemExtra.fieldName = itemExtra?.fieldName || key;
+          itemExtra.componentProps = {
+            ...itemExtra.componentProps,
+            // @ts-expect-error ignore
+            placeholder:
+              itemExtra.componentProps?.placeholder ?? itemExtra.label,
+          };
+          filterList.push(itemExtra as EsFormSchema[number]);
         }
       });
     }
-    // 根据 sort 属性排序，没有 sort 的保持原有位置
-    sortItemsWithSortValue(filterListWithSort);
 
-    // 移除辅助属性，返回最终的过滤列表
-    return filterListWithSort;
+    return filterList;
   },
 };

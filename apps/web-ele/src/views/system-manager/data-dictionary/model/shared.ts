@@ -1,14 +1,13 @@
 import type { BaseDictionaryDto, BaseDictionaryItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { cloneDeep } from 'es-toolkit';
-
 import { formSchemaTransform } from '#/utils';
 
 export const formSchema: EsFormSchema = [
   {
     component: 'Upload',
     componentProps: {
+      scene: 'common',
       placeholder: '请上传字典封面',
     },
     fieldName: 'cover',
@@ -33,6 +32,20 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
+    component: 'Switch',
+    componentProps: {},
+    defaultValue: true,
+    fieldName: 'isEnabled',
+    label: '状态',
+    rules: 'required',
+    help: '启用/禁用字典',
+    formItemClass: 'col-span-1',
+    renderComponentContent: () => ({
+      active: () => '启用',
+      inactive: () => '禁用',
+    }),
+  },
+  {
     component: 'Input',
     componentProps: {
       type: 'textarea',
@@ -44,16 +57,70 @@ export const formSchema: EsFormSchema = [
   },
 ];
 
-export const itemFormSchema = cloneDeep(formSchema);
-itemFormSchema.splice(3, 0, {
-  component: 'Input',
-  componentProps: {
-    type: 'number',
-    placeholder: '请输入字典项排序',
+export const itemFormSchema: EsFormSchema = [
+  {
+    component: 'Upload',
+    componentProps: {
+      scene: 'common',
+      placeholder: '请上传字典项封面',
+    },
+    fieldName: 'cover',
+    label: '封面',
   },
-  fieldName: 'sortOrder',
-  label: '排序',
-});
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入字典项名称',
+    },
+    fieldName: 'name',
+    label: '名称',
+    rules: 'required',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入字典项编码',
+    },
+    fieldName: 'code',
+    label: '编码',
+    rules: 'required',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入排序值',
+      min: 0,
+    },
+    defaultValue: 0,
+    fieldName: 'sortOrder',
+    label: '排序',
+    help: '数值越小越靠前',
+  },
+  {
+    component: 'Switch',
+    componentProps: {},
+    defaultValue: true,
+    fieldName: 'isEnabled',
+    label: '状态',
+    rules: 'required',
+    help: '启用/禁用字典项',
+    formItemClass: 'col-span-1',
+    renderComponentContent: () => ({
+      active: () => '启用',
+      inactive: () => '禁用',
+    }),
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      type: 'textarea',
+      placeholder: '请输入备注信息...',
+      rows: 4,
+    },
+    fieldName: 'description',
+    label: '备注',
+  },
+];
 export const dictionaryColumns =
   formSchemaTransform.toTableColumns<BaseDictionaryDto>(formSchema, {
     actions: {

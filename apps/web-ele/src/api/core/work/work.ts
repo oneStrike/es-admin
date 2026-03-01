@@ -22,7 +22,7 @@ import type {
 import { requestClient } from '#/api/request';
 
 /**
- * 创建漫画
+ * 创建作品
  */
 export async function workCreateApi(
   params: WorkCreateRequest,

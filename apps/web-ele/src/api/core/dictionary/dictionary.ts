@@ -1,6 +1,4 @@
 import type {
-  DictionaryBatchUpdateStatusRequest,
-  DictionaryBatchUpdateStatusResponse,
   DictionaryCreateItemRequest,
   DictionaryCreateItemResponse,
   DictionaryCreateRequest,
@@ -23,6 +21,8 @@ import type {
   DictionaryUpdateItemStatusResponse,
   DictionaryUpdateRequest,
   DictionaryUpdateResponse,
+  DictionaryUpdateStatusRequest,
+  DictionaryUpdateStatusResponse,
 } from '../../types/dictionary/dictionary.d';
 
 import { requestClient } from '#/api/request';
@@ -88,13 +88,13 @@ export async function dictionaryDeleteApi(
 }
 
 /**
- * 批量启用禁用字典
+ * 更新字典状态
  */
-export async function dictionaryBatchUpdateStatusApi(
-  params: DictionaryBatchUpdateStatusRequest,
-): Promise<DictionaryBatchUpdateStatusResponse> {
-  return requestClient.post<DictionaryBatchUpdateStatusResponse>(
-    '/api/admin/dictionary/batch-update-status',
+export async function dictionaryUpdateStatusApi(
+  params: DictionaryUpdateStatusRequest,
+): Promise<DictionaryUpdateStatusResponse> {
+  return requestClient.post<DictionaryUpdateStatusResponse>(
+    '/api/admin/dictionary/update-status',
     params,
   );
 }
@@ -136,18 +136,6 @@ export async function dictionaryUpdateItemApi(
 }
 
 /**
- * 删除字典项
- */
-export async function dictionaryDeleteItemApi(
-  params: DictionaryDeleteItemRequest,
-): Promise<DictionaryDeleteItemResponse> {
-  return requestClient.post<DictionaryDeleteItemResponse>(
-    '/api/admin/dictionary/delete-item',
-    params,
-  );
-}
-
-/**
  * 启用禁用字典项
  */
 export async function dictionaryUpdateItemStatusApi(
@@ -160,7 +148,19 @@ export async function dictionaryUpdateItemStatusApi(
 }
 
 /**
- * 分类拖拽排序
+ * 删除字典项
+ */
+export async function dictionaryDeleteItemApi(
+  params: DictionaryDeleteItemRequest,
+): Promise<DictionaryDeleteItemResponse> {
+  return requestClient.post<DictionaryDeleteItemResponse>(
+    '/api/admin/dictionary/delete-item',
+    params,
+  );
+}
+
+/**
+ * 字典项拖拽排序
  */
 export async function dictionaryItemOrderApi(
   params: DictionaryItemOrderRequest,

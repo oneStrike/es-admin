@@ -43,7 +43,7 @@ const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
 });
 
 async function deleteDictionary(row: BaseDictionaryDto) {
-  await Api.dictionaryDeleteApi({ ids: [row.id] });
+  await Api.dictionaryDeleteApi({ id: row.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
@@ -69,8 +69,8 @@ async function toggleEnableStatus(row: BaseDictionaryDto) {
   const newStatus = !row.isEnabled;
   row.loading = true;
   try {
-    await Api.dictionaryBatchUpdateStatusApi({
-      ids: [row.id],
+    await Api.dictionaryUpdateStatusApi({
+      id: row.id,
       isEnabled: newStatus,
     });
     useMessage.success('操作成功');

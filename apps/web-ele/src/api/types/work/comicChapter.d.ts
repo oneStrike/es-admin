@@ -1,18 +1,18 @@
 /**
- *  类型定义 [ChapterCreateRequest]
- *  @来源 内容管理/作品管理/章节
+ *  类型定义 [ComicChapterCreateRequest]
+ *  @来源 内容管理/漫画章节模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type ChapterCreateRequest = CreateWorkChapterDto;
+export type ComicChapterCreateRequest = CreateWorkChapterDto;
 
-export type ChapterCreateResponse = IdDto;
+export type ComicChapterCreateResponse = IdDto;
 
 /**
- *  类型定义 [ChapterPageRequest]
- *  @来源 内容管理/作品管理/章节
+ *  类型定义 [ComicChapterPageRequest]
+ *  @来源 内容管理/漫画章节模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type ChapterPageRequest = {
+export type ComicChapterPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -47,7 +47,7 @@ export type ChapterPageRequest = {
   workId: number;
 };
 
-export type ChapterPageResponse = {
+export type ComicChapterPageResponse = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -65,11 +65,11 @@ export type ChapterPageResponse = {
 };
 
 /**
- *  类型定义 [ChapterDetailRequest]
- *  @来源 内容管理/作品管理/章节
+ *  类型定义 [ComicChapterDetailRequest]
+ *  @来源 内容管理/漫画章节模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type ChapterDetailRequest = {
+export type ComicChapterDetailRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -77,34 +77,34 @@ export type ChapterDetailRequest = {
   id: number;
 };
 
-export type ChapterDetailResponse = IdDto;
+export type ComicChapterDetailResponse = IdDto;
 
 /**
- *  类型定义 [ChapterUpdateRequest]
- *  @来源 内容管理/作品管理/章节
+ *  类型定义 [ComicChapterUpdateRequest]
+ *  @来源 内容管理/漫画章节模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type ChapterUpdateRequest = UpdateWorkChapterDto;
+export type ComicChapterUpdateRequest = UpdateWorkChapterDto;
 
-export type ChapterUpdateResponse = IdDto;
+export type ComicChapterUpdateResponse = IdDto;
 
 /**
- *  类型定义 [ChapterDeleteRequest]
- *  @来源 内容管理/作品管理/章节
+ *  类型定义 [ComicChapterDeleteRequest]
+ *  @来源 内容管理/漫画章节模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type ChapterDeleteRequest = IdDto;
+export type ComicChapterDeleteRequest = IdDto;
 
-export type ChapterDeleteResponse = IdDto;
+export type ComicChapterDeleteResponse = IdDto;
 
 /**
- *  类型定义 [ChapterSwapSortOrderRequest]
- *  @来源 内容管理/作品管理/章节
+ *  类型定义 [ComicChapterSwapSortOrderRequest]
+ *  @来源 内容管理/漫画章节模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type ChapterSwapSortOrderRequest = DragReorderDto;
+export type ComicChapterSwapSortOrderRequest = DragReorderDto;
 
-export type ChapterSwapSortOrderResponse = DragReorderDto;
+export type ComicChapterSwapSortOrderResponse = DragReorderDto;
 
 /**
  *  类型定义 [CreateWorkChapterDto]

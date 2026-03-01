@@ -57,11 +57,10 @@ const gridOptions: VxeGridProps<BaseDictionaryItemDto> = {
     sort: true,
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        const data = await dictionaryItemsApi({
+        return dictionaryItemsApi({
           ...formatQuery({ page, formValues, sorts }),
           dictionaryCode: shareData.value?.record.code,
         });
-        return { list: data };
       },
     },
   },
@@ -129,7 +128,7 @@ async function openFormModal(row?: BaseDictionaryDto) {
 }
 
 async function deleteDictionary(row: BaseDictionaryDto) {
-  await dictionaryDeleteItemApi({ ids: [row.id] });
+  await dictionaryDeleteItemApi({ id: row.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }

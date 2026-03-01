@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ComicChapterCommentPageRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentPageRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type ComicChapterCommentPageResponse = {
 /**
  *  类型定义 [ComicChapterCommentDetailRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentDetailRequest = {
   /** 任意合法数值 */
@@ -88,7 +88,7 @@ export type ComicChapterCommentDetailResponse = IdDto;
 /**
  *  类型定义 [ComicChapterCommentUpdateAuditRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentUpdateAuditRequest = UpdateWorkCommentAuditDto;
 
@@ -97,7 +97,7 @@ export type ComicChapterCommentUpdateAuditResponse = IdDto;
 /**
  *  类型定义 [ComicChapterCommentAuditRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentAuditRequest = UpdateWorkCommentAuditDto;
 
@@ -106,7 +106,7 @@ export type ComicChapterCommentAuditResponse = IdDto;
 /**
  *  类型定义 [ComicChapterCommentUpdateHiddenRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentUpdateHiddenRequest = UpdateWorkCommentHiddenDto;
 
@@ -115,7 +115,7 @@ export type ComicChapterCommentUpdateHiddenResponse = IdDto;
 /**
  *  类型定义 [ComicChapterCommentHideRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentHideRequest = UpdateWorkCommentHiddenDto;
 
@@ -124,7 +124,7 @@ export type ComicChapterCommentHideResponse = IdDto;
 /**
  *  类型定义 [ComicChapterCommentDeleteRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentDeleteRequest = IdDto;
 
@@ -133,7 +133,7 @@ export type ComicChapterCommentDeleteResponse = IdDto;
 /**
  *  类型定义 [ComicChapterCommentRecalcCountRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentRecalcCountRequest = IdDto;
 
@@ -142,7 +142,7 @@ export type ComicChapterCommentRecalcCountResponse = IdDto;
 /**
  *  类型定义 [ComicChapterCommentReportRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ComicChapterCommentReportRequest = HandleWorkCommentReportDto;
 
@@ -151,7 +151,7 @@ export type ComicChapterCommentReportResponse = IdDto;
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -164,7 +164,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateWorkCommentAuditDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type UpdateWorkCommentAuditDto = {
   /** 任意合法数值 */
@@ -181,7 +181,7 @@ export type UpdateWorkCommentAuditDto = {
 /**
  *  类型定义 [UpdateWorkCommentHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type UpdateWorkCommentHiddenDto = {
   /** 任意合法数值 */
@@ -196,7 +196,7 @@ export type UpdateWorkCommentHiddenDto = {
 /**
  *  类型定义 [HandleWorkCommentReportDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type HandleWorkCommentReportDto = {
   /** 任意合法数值 */

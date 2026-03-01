@@ -1,18 +1,18 @@
 /**
- *  类型定义 [WorkCreateRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicCreateRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkCreateRequest = CreateWorkDto;
+export type ComicCreateRequest = CreateWorkDto;
 
-export type WorkCreateResponse = IdDto;
+export type ComicCreateResponse = IdDto;
 
 /**
- *  类型定义 [WorkPageRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicPageRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkPageRequest = {
+export type ComicPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -74,7 +74,7 @@ export type WorkPageRequest = {
   type: number;
 };
 
-export type WorkPageResponse = {
+export type ComicPageResponse = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -92,11 +92,11 @@ export type WorkPageResponse = {
 };
 
 /**
- *  类型定义 [WorkDetailRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicDetailRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkDetailRequest = {
+export type ComicDetailRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
@@ -104,61 +104,61 @@ export type WorkDetailRequest = {
   id: number;
 };
 
-export type WorkDetailResponse = BaseWorkDto;
+export type ComicDetailResponse = BaseWorkDto;
 
 /**
- *  类型定义 [WorkUpdateRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicUpdateRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkUpdateRequest = UpdateWorkDto;
+export type ComicUpdateRequest = UpdateWorkDto;
 
-export type WorkUpdateResponse = IdDto;
+export type ComicUpdateResponse = IdDto;
 
 /**
- *  类型定义 [WorkUpdateStatusRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicUpdateStatusRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkUpdateStatusRequest = UpdateWorkStatusDto;
+export type ComicUpdateStatusRequest = UpdateWorkStatusDto;
 
-export type WorkUpdateStatusResponse = BatchOperationResponseDto;
+export type ComicUpdateStatusResponse = BatchOperationResponseDto;
 
 /**
- *  类型定义 [WorkUpdateRecommendedRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicUpdateRecommendedRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkUpdateRecommendedRequest = UpdateWorkRecommendedDto;
+export type ComicUpdateRecommendedRequest = UpdateWorkRecommendedDto;
 
-export type WorkUpdateRecommendedResponse = BatchOperationResponseDto;
+export type ComicUpdateRecommendedResponse = BatchOperationResponseDto;
 
 /**
- *  类型定义 [WorkUpdateHotRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicUpdateHotRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkUpdateHotRequest = UpdateWorkHotDto;
+export type ComicUpdateHotRequest = UpdateWorkHotDto;
 
-export type WorkUpdateHotResponse = BatchOperationResponseDto;
+export type ComicUpdateHotResponse = BatchOperationResponseDto;
 
 /**
- *  类型定义 [WorkUpdateNewRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicUpdateNewRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkUpdateNewRequest = UpdateWorkNewDto;
+export type ComicUpdateNewRequest = UpdateWorkNewDto;
 
-export type WorkUpdateNewResponse = BatchOperationResponseDto;
+export type ComicUpdateNewResponse = BatchOperationResponseDto;
 
 /**
- *  类型定义 [WorkDeleteRequest]
- *  @来源 内容管理/作品管理
+ *  类型定义 [ComicDeleteRequest]
+ *  @来源 内容管理/漫画管理模块
  *  @更新时间 2026-03-01 13:34:30
  */
-export type WorkDeleteRequest = IdDto;
+export type ComicDeleteRequest = IdDto;
 
-export type WorkDeleteResponse = IdDto;
+export type ComicDeleteResponse = IdDto;
 
 /**
  *  类型定义 [CreateWorkDto]

@@ -5,7 +5,7 @@ import type { UseDictItem } from '#/hooks/useDict';
 
 import { formSchemaTransform } from '#/utils';
 
-import { formSchema, serialStatus, viewRuleOptions } from './shared';
+import { formSchema, serialStatus } from './shared';
 
 export const comicColumns = ({
   work_publisher,
@@ -26,12 +26,18 @@ export const comicColumns = ({
         name: 'CellImage',
         props: {
           fit: 'cover',
-          height: 60,
-          width: 80,
+          height: 80,
+          width: 60,
         },
       },
     },
     authorIds: {
+      hide: true,
+    },
+    alias: {
+      hide: true,
+    },
+    originalSource: {
       hide: true,
     },
     categoryIds: {
@@ -54,13 +60,7 @@ export const comicColumns = ({
     },
     // ========== 权限设置 ==========
     viewRule: {
-      width: 100,
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: viewRuleOptions,
-        },
-      },
+      hide: true,
     },
     canComment: {
       hide: true,
@@ -151,9 +151,7 @@ export const comicColumns = ({
         name: 'CellTag',
         props: {
           formatter: (row: BaseWorkDto['tags']) => {
-            return row?.map(
-              (tag: BaseWorkDto['tags'][number]) => tag.tag.name,
-            );
+            return row?.map((tag: BaseWorkDto['tags'][number]) => tag.tag.name);
           },
         },
       },

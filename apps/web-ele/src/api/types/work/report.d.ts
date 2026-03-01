@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ReportPageRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ReportPageRequest = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type ReportPageResponse = {
 /**
  *  类型定义 [ReportHandleRequest]
  *  @来源 内容管理/漫画章节评论模块
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type ReportHandleRequest = HandleWorkCommentReportDto;
 
@@ -64,7 +64,7 @@ export type ReportHandleResponse = IdDto;
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -77,7 +77,7 @@ export type IdDto = {
 /**
  *  类型定义 [HandleWorkCommentReportDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 01:57:48
+ *  @更新时间 2026-03-01 13:34:30
  */
 export type HandleWorkCommentReportDto = {
   /** 任意合法数值 */

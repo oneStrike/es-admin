@@ -183,15 +183,6 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
 
-  // ========== 权限设置 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_permission',
-    label: '权限设置',
-  },
   {
     component: 'Select',
     componentProps: {
@@ -250,16 +241,6 @@ export const formSchema: EsFormSchema = [
     fieldName: 'requiredViewLevelId',
     label: '阅读会员等级',
   },
-
-  // ========== 价格设置 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_price',
-    label: '价格设置',
-  },
   {
     component: 'InputNumber',
     componentProps: {
@@ -312,16 +293,6 @@ export const formSchema: EsFormSchema = [
     label: '购买数',
     defaultValue: 0,
   },
-
-  // ========== 发布设置 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_publish',
-    label: '发布设置',
-  },
   {
     component: 'DatePicker',
     componentProps: {
@@ -341,16 +312,6 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'lastUpdated',
     label: '最后更新时间',
-  },
-
-  // ========== 推荐设置 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_recommend',
-    label: '推荐设置',
   },
   {
     component: 'RadioGroup',
@@ -409,16 +370,6 @@ export const formSchema: EsFormSchema = [
     fieldName: 'rating',
     label: '评分',
   },
-
-  // ========== 版权信息 ==========
-  {
-    component: 'Divider',
-    componentProps: {
-      contentPosition: 'left',
-    },
-    fieldName: 'divider_copyright',
-    label: '版权信息',
-  },
   {
     component: 'Input',
     componentProps: {
@@ -449,16 +400,37 @@ export const formSchema: EsFormSchema = [
 ];
 
 // 搜索表单配置
-export const pageFilter = formSchemaTransform
-  .toSearchSchema(formSchema, {
-    name: {
-      show: true,
+export const pageFilter = formSchemaTransform.toSearchSchema(formSchema, {
+  name: {
+    show: true,
+  },
+  author: {
+    show: true,
+    component: 'Input',
+    componentProps: {
+      placeholder: '作者名称',
     },
-    publisher: {
-      show: true,
-    },
-    serialStatus: {
-      show: true,
-    },
-  })
-  .toReversed();
+  },
+  isHot: {
+    show: true,
+  },
+  isNew: {
+    show: true,
+  },
+  isRecommended: {
+    show: true,
+  },
+  serialStatus: {
+    show: true,
+  },
+  region: {
+    show: true,
+  },
+  language: {
+    show: true,
+  },
+
+  publisher: {
+    show: true,
+  },
+});

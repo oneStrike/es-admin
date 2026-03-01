@@ -29,6 +29,8 @@ export * from './work/author';
 export * from './work/category';
 export * from './work/chapter';
 export * from './work/chapterContent';
+export * from './work/comic';
+export * from './work/comicChapter';
 export * from './work/comicChapterComment';
 export * from './work/report';
 export * from './work/tag';
