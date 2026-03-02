@@ -273,18 +273,18 @@ export const formSchema: EsFormSchema = [
   },
 
   // ========== 功能开关 ==========
-  {
-    component: 'RadioGroup',
-    defaultValue: true,
-    componentProps: {
-      options: [
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ],
-    },
-    fieldName: 'canComment',
-    label: '允许评论',
-  },
+  // {
+  //   component: 'RadioGroup',
+  //   defaultValue: true,
+  //   componentProps: {
+  //     options: [
+  //       { label: '是', value: true },
+  //       { label: '否', value: false },
+  //     ],
+  //   },
+  //   fieldName: 'canComment',
+  //   label: '允许评论',
+  // },
   // ========== 推荐标记 ==========
   {
     component: 'RadioGroup',
