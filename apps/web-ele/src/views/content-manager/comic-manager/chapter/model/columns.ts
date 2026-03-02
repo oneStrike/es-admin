@@ -12,7 +12,6 @@ const hideField = [
   'workId',
   'cover',
   'price',
-  'exchangePoints',
   'requiredViewLevelId',
   'content',
   'description',
@@ -83,13 +82,6 @@ export const chapterColumns =
     canDownload: {
       width: 100,
       sort: 8,
-      cellRender: {
-        name: 'CellTag',
-      },
-    },
-    canExchange: {
-      width: 100,
-      sort: 9,
       cellRender: {
         name: 'CellTag',
       },

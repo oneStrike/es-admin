@@ -3,6 +3,7 @@ import type { EsFormSchema } from '#/types';
 import { cloneDeep } from 'es-toolkit';
 
 import { authorPageApi } from '#/api';
+import { ContentPermissionEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
 import {
@@ -227,6 +228,12 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'requiredViewLevelId',
     label: '阅读会员等级',
+    dependencies: {
+      show: ({ viewRule }) => {
+        return viewRule === ContentPermissionEnum.VIP;
+      },
+      triggerFields: ['viewRule'],
+    },
   },
 
   // ========== 价格设置 ==========
@@ -240,6 +247,12 @@ export const formSchema: EsFormSchema = [
     fieldName: 'price',
     label: '作品价格',
     defaultValue: 0,
+    dependencies: {
+      show: ({ viewRule }) => {
+        return viewRule === ContentPermissionEnum.PURCHASE;
+      },
+      triggerFields: ['viewRule'],
+    },
   },
   {
     component: 'InputNumber',
@@ -251,26 +264,12 @@ export const formSchema: EsFormSchema = [
     fieldName: 'chapterPrice',
     label: '章节默认价格',
     defaultValue: 0,
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      placeholder: '请输入兑换所需积分',
-      min: 0,
+    dependencies: {
+      show: ({ viewRule }) => {
+        return viewRule === ContentPermissionEnum.PURCHASE;
+      },
+      triggerFields: ['viewRule'],
     },
-    fieldName: 'exchangePoints',
-    label: '兑换积分',
-    defaultValue: 0,
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      placeholder: '请输入章节默认兑换积分',
-      min: 0,
-    },
-    fieldName: 'chapterExchangePoints',
-    label: '章节默认兑换积分',
-    defaultValue: 0,
   },
 
   // ========== 功能开关 ==========
@@ -286,31 +285,6 @@ export const formSchema: EsFormSchema = [
     fieldName: 'canComment',
     label: '允许评论',
   },
-  {
-    component: 'RadioGroup',
-    defaultValue: false,
-    componentProps: {
-      options: [
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ],
-    },
-    fieldName: 'canDownload',
-    label: '允许下载',
-  },
-  {
-    component: 'RadioGroup',
-    defaultValue: false,
-    componentProps: {
-      options: [
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ],
-    },
-    fieldName: 'canExchange',
-    label: '允许兑换',
-  },
-
   // ========== 推荐标记 ==========
   {
     component: 'RadioGroup',

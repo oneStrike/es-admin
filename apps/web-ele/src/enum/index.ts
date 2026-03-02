@@ -41,9 +41,9 @@ export enum GenderEnum {
 // 作品阅读权限枚举
 export enum ContentPermissionEnum {
   /** 登录可见 */
-  ALL = 1,
+  ALL = 0,
   /** 公开 */
-  LOGIN = 0,
+  LOGIN = 1,
   /** 购买可见 */
   PURCHASE = 3,
   /** 会员可见 */

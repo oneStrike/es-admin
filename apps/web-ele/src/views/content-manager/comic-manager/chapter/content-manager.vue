@@ -7,10 +7,10 @@ import { useVbenModal } from '@vben/common-ui';
 import { useSortable } from '@vben/hooks';
 
 import {
-  comicContentClearApi,
-  comicContentDeleteApi,
-  comicContentListApi,
-  comicContentMoveApi,
+  chapterContentClearApi,
+  chapterContentDeleteApi,
+  chapterContentListApi,
+  chapterContentMoveApi,
 } from '#/api';
 import { DeleteBinIcon, EyeLineIcon, UploadLoop } from '#/components/es-icons';
 import EsUpload from '#/components/es-upload/es-upload.vue';
@@ -59,8 +59,8 @@ const gridContainer = ref<HTMLElement>();
 async function loadContents() {
   if (!shareData.value?.chapterId) return;
   try {
-    const res = await comicContentListApi({
-      chapterId: shareData.value.chapterId,
+    const res = await chapterContentListApi({
+      id: shareData.value.chapterId,
     });
     contentList.value = res || [];
   } catch (error) {
@@ -91,7 +91,7 @@ async function handleDelete(index?: number) {
     return;
   }
   useConfirm('delete', async () => {
-    contentList.value = await comicContentDeleteApi({
+    contentList.value = await chapterContentDeleteApi({
       chapterId: shareData.value!.chapterId,
       index: deleteIndex,
     });
@@ -101,7 +101,7 @@ async function handleDelete(index?: number) {
 
 async function handleClearAll() {
   useConfirm('clear', async () => {
-    await comicContentClearApi({ chapterId: shareData.value!.chapterId });
+    await chapterContentClearApi({ id: shareData.value!.chapterId });
     useMessage.success('清空成功');
     await loadContents();
   });
@@ -111,7 +111,7 @@ async function handleMove(fromIndex: number, toIndex: number) {
   if (fromIndex === toIndex) return;
 
   try {
-    contentList.value = await comicContentMoveApi({
+    contentList.value = await chapterContentMoveApi({
       chapterId: shareData.value!.chapterId,
       fromIndex,
       toIndex,

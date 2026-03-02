@@ -120,13 +120,6 @@ export function getDetailCards(
           tagText: detail.canDownload ? '是' : '否',
         },
         {
-          label: '允许兑换',
-          value: detail.canExchange,
-          type: 'tag',
-          tagType: detail.canExchange ? 'success' : 'info',
-          tagText: detail.canExchange ? '是' : '否',
-        },
-        {
           label: '阅读会员等级ID',
           value: detail.requiredViewLevelId || '-',
           type: 'text',
@@ -145,16 +138,6 @@ export function getDetailCards(
         {
           label: '章节默认价格',
           value: detail.chapterPrice || 0,
-          type: 'text',
-        },
-        {
-          label: '兑换积分',
-          value: detail.exchangePoints || 0,
-          type: 'text',
-        },
-        {
-          label: '章节默认兑换积分',
-          value: detail.chapterExchangePoints || 0,
           type: 'text',
         },
         {

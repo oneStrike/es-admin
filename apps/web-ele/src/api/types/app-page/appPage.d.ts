@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AppPageCreateRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AppPageCreateRequest = BaseAppPageDto;
 
@@ -10,7 +10,7 @@ export type AppPageCreateResponse = IdDto;
 /**
  *  类型定义 [AppPagePageRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AppPagePageRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type AppPagePageResponse = {
 /**
  *  类型定义 [AppPageDetailByIdRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AppPageDetailByIdRequest = {
   /** 任意合法数值 */
@@ -81,7 +81,7 @@ export type AppPageDetailByIdResponse = BaseAppPageDto;
 /**
  *  类型定义 [AppPageDetailByCodeRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AppPageDetailByCodeRequest = {
   /** 任意合法数值 */
@@ -95,7 +95,7 @@ export type AppPageDetailByCodeResponse = BaseAppPageDto;
 /**
  *  类型定义 [AppPageUpdateRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AppPageUpdateRequest = UpdateAppPageDto;
 
@@ -104,7 +104,7 @@ export type AppPageUpdateResponse = IdDto;
 /**
  *  类型定义 [AppPageBatchDeleteRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AppPageBatchDeleteRequest = IdsDto;
 
@@ -113,7 +113,7 @@ export type AppPageBatchDeleteResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [BaseAppPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BaseAppPageDto = {
   /** 任意合法数值 */
@@ -146,7 +146,7 @@ export type BaseAppPageDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -159,7 +159,7 @@ export type IdDto = {
 /**
  *  类型定义 [AppPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AppPageResponseDto = {
   /** 任意合法数值 */
@@ -190,7 +190,7 @@ export type AppPageResponseDto = {
 /**
  *  类型定义 [UpdateAppPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type UpdateAppPageDto = {
   /** 任意合法数值 */
@@ -219,7 +219,7 @@ export type UpdateAppPageDto = {
 /**
  *  类型定义 [IdsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type IdsDto = {
   /** 任意合法数值 */
@@ -232,7 +232,7 @@ export type IdsDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */

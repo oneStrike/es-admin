@@ -95,6 +95,39 @@ export const chapterFormSchema: EsFormSchema = [
     },
   },
   {
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: '请选择会员等级限制',
+      filterable: true,
+    },
+    fieldName: 'requiredViewLevelId',
+    label: '会员等级限制（查看）',
+    dependencies: {
+      show: ({ viewRule }) => {
+        return viewRule === ContentPermissionEnum.VIP;
+      },
+      triggerFields: ['viewRule'],
+    },
+  },
+  {
+    fieldName: 'price',
+    label: '章节价格',
+    component: 'InputNumber',
+    defaultValue: 0,
+    componentProps: {
+      placeholder: '请输入章节价格',
+      min: 0,
+      precision: 2,
+    },
+    dependencies: {
+      show: ({ viewRule }) => {
+        return viewRule === ContentPermissionEnum.PURCHASE;
+      },
+      triggerFields: ['viewRule'],
+    },
+  },
+  {
     fieldName: 'isPreview',
     label: '试读章节',
     component: 'RadioGroup',
@@ -131,67 +164,7 @@ export const chapterFormSchema: EsFormSchema = [
       ],
     },
   },
-  {
-    fieldName: 'canExchange',
-    label: '允许兑换',
-    component: 'RadioGroup',
-    defaultValue: false,
-    componentProps: {
-      options: [
-        { label: '否', value: false },
-        { label: '是', value: true },
-      ],
-    },
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      options: [],
-      placeholder: '请选择会员等级限制',
-      filterable: true,
-    },
-    fieldName: 'requiredViewLevelId',
-    label: '会员等级限制（查看）',
-    dependencies: {
-      show: ({ viewRule }) => {
-        return viewRule === ContentPermissionEnum.VIP;
-      },
-      triggerFields: ['viewRule'],
-    },
-  },
-  {
-    fieldName: 'price',
-    label: '章节价格',
-    component: 'InputNumber',
-    defaultValue: 0,
-    componentProps: {
-      placeholder: '请输入章节价格',
-      min: 0,
-      precision: 2,
-    },
-    dependencies: {
-      show: ({ viewRule }) => {
-        return viewRule === ContentPermissionEnum.PURCHASE;
-      },
-      triggerFields: ['viewRule'],
-    },
-  },
-  {
-    fieldName: 'exchangePoints',
-    label: '兑换所需积分',
-    component: 'InputNumber',
-    defaultValue: 0,
-    componentProps: {
-      placeholder: '请输入兑换所需积分',
-      min: 0,
-    },
-    dependencies: {
-      show: ({ canExchange }) => {
-        return canExchange === true;
-      },
-      triggerFields: ['canExchange'],
-    },
-  },
+
   {
     component: 'DatePicker',
     componentProps: {
@@ -241,9 +214,6 @@ export const chapterSearchFormSchema: EsFormSchema =
       show: true,
     },
     canDownload: {
-      show: true,
-    },
-    canExchange: {
       show: true,
     },
     viewRule: {

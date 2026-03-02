@@ -81,13 +81,6 @@ export function getDetailCards(detail: BaseWorkChapterDto) {
           tagText: detail.canDownload ? '是' : '否',
         },
         {
-          label: '允许兑换',
-          value: detail.canExchange,
-          type: 'tag',
-          tagType: detail.canExchange ? 'success' : 'info',
-          tagText: detail.canExchange ? '是' : '否',
-        },
-        {
           label: '查看等级',
           value: detail.requiredViewLevel?.name || '-',
           type: 'text',
@@ -101,11 +94,6 @@ export function getDetailCards(detail: BaseWorkChapterDto) {
         {
           label: '章节价格',
           value: `${detail.price || 0}`,
-          type: 'text',
-        },
-        {
-          label: '兑换所需积分',
-          value: detail.exchangePoints || 0,
           type: 'text',
         },
       ],

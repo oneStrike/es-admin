@@ -217,7 +217,6 @@ async function toggleStatus(
 
 // 打开章节管理弹窗
 function openChapterModal(record: BaseWorkDto) {
-  console.log('🚀 ~ openChapterModal ~ record:', record);
   chapterApi
     .setData({
       workId: record.id,

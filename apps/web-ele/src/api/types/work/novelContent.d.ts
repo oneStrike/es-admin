@@ -1,7 +1,7 @@
 /**
  *  类型定义 [NovelContentListRequest]
  *  @来源 内容管理/作品管理/章节/内容/小说
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type NovelContentListRequest = {
   /** 任意合法数值 */
@@ -16,7 +16,7 @@ export type NovelContentListResponse = string;
 /**
  *  类型定义 [NovelContentAddRequest]
  *  @来源 内容管理/作品管理/章节/内容/小说
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type NovelContentAddRequest = {
   /** 任意合法数值 */
@@ -34,7 +34,7 @@ export type NovelContentAddResponse = FileUploadResponseDto;
 /**
  *  类型定义 [NovelContentDeleteRequest]
  *  @来源 内容管理/作品管理/章节/内容/小说
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type NovelContentDeleteRequest = ChapterIdDto;
 
@@ -43,7 +43,7 @@ export type NovelContentDeleteResponse = IdDto;
 /**
  *  类型定义 [FileUploadResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type FileUploadResponseDto = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type FileUploadResponseDto = {
 /**
  *  类型定义 [ChapterIdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type ChapterIdDto = {
   /** 任意合法数值 */
@@ -83,7 +83,7 @@ export type ChapterIdDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type IdDto = {
   /** 任意合法数值 */

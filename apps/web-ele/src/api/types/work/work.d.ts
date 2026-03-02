@@ -1,7 +1,7 @@
 /**
  *  类型定义 [WorkCreateRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkCreateRequest = CreateWorkDto;
 
@@ -10,7 +10,7 @@ export type WorkCreateResponse = IdDto;
 /**
  *  类型定义 [WorkPageRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkPageRequest = {
   /** 任意合法数值 */
@@ -94,7 +94,7 @@ export type WorkPageResponse = {
 /**
  *  类型定义 [WorkDetailRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkDetailRequest = {
   /** 任意合法数值 */
@@ -109,7 +109,7 @@ export type WorkDetailResponse = BaseWorkDto;
 /**
  *  类型定义 [WorkUpdateRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkUpdateRequest = UpdateWorkDto;
 
@@ -118,7 +118,7 @@ export type WorkUpdateResponse = IdDto;
 /**
  *  类型定义 [WorkUpdateStatusRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkUpdateStatusRequest = UpdateWorkStatusDto;
 
@@ -127,7 +127,7 @@ export type WorkUpdateStatusResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [WorkUpdateRecommendedRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkUpdateRecommendedRequest = UpdateWorkRecommendedDto;
 
@@ -136,7 +136,7 @@ export type WorkUpdateRecommendedResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [WorkUpdateHotRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkUpdateHotRequest = UpdateWorkHotDto;
 
@@ -145,7 +145,7 @@ export type WorkUpdateHotResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [WorkUpdateNewRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkUpdateNewRequest = UpdateWorkNewDto;
 
@@ -154,7 +154,7 @@ export type WorkUpdateNewResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [WorkDeleteRequest]
  *  @来源 内容管理/作品管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkDeleteRequest = IdDto;
 
@@ -163,7 +163,7 @@ export type WorkDeleteResponse = IdDto;
 /**
  *  类型定义 [CreateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type CreateWorkDto = {
   /** 任意合法数值 */
@@ -176,15 +176,9 @@ export type CreateWorkDto = {
   authorIds: number[];
   /* 是否允许评论 */
   canComment: boolean;
-  /* 是否允许下载 */
-  canDownload: boolean;
-  /* 是否允许兑换 */
-  canExchange: boolean;
   /* 关联的分类ID列表 */
   categoryIds: number[];
-  /* 章节默认兑换积分 */
-  chapterExchangePoints: number;
-  /* 章节默认购买价格（余额） */
+  /* 章节默认购买价格（积分） */
   chapterPrice: number;
   /* 版权信息 */
   copyright?: null | string;
@@ -194,8 +188,6 @@ export type CreateWorkDto = {
   description: string;
   /* 免责声明 */
   disclaimer?: null | string;
-  /* 兑换所需积分 */
-  exchangePoints: number;
   /* 是否热门 */
   isHot: boolean;
   /* 是否新作 */
@@ -210,14 +202,10 @@ export type CreateWorkDto = {
   name: string;
   /* 原始来源 */
   originalSource?: null | string;
-  /* 作品购买价格（余额） */
-  price: number;
   /* 发布日期 */
   publishAt?: null | string;
   /* 出版社 */
   publisher?: null | string;
-  /* 购买数 */
-  purchaseCount: number;
   /* 评分（1-10分，保留1位小数） */
   rating?: null | number;
   /* 推荐权重 */
@@ -242,7 +230,7 @@ export type CreateWorkDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -255,7 +243,7 @@ export type IdDto = {
 /**
  *  类型定义 [BaseWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BaseWorkDto = {
   /** 任意合法数值 */
@@ -268,15 +256,9 @@ export type BaseWorkDto = {
   authors: WorkAuthorRelationDto[];
   /* 是否允许评论 */
   canComment: boolean;
-  /* 是否允许下载 */
-  canDownload: boolean;
-  /* 是否允许兑换 */
-  canExchange: boolean;
   /* 作品分类 */
   categories: WorkCategoryRelationDto[];
-  /* 章节默认兑换积分 */
-  chapterExchangePoints: number;
-  /* 章节默认购买价格（余额） */
+  /* 章节默认购买价格（积分） */
   chapterPrice: number;
   /* 版权信息 */
   copyright?: null | string;
@@ -290,8 +272,6 @@ export type BaseWorkDto = {
   disclaimer?: null | string;
   /* 下载量 */
   downloadCount: number;
-  /* 兑换所需积分 */
-  exchangePoints: number;
   /* 收藏数 */
   favoriteCount: number;
   /* 主键id */
@@ -316,14 +296,10 @@ export type BaseWorkDto = {
   originalSource?: null | string;
   /* 热度值 */
   popularity: number;
-  /* 作品购买价格（余额） */
-  price: number;
   /* 发布日期 */
   publishAt?: null | string;
   /* 出版社 */
   publisher?: null | string;
-  /* 购买数 */
-  purchaseCount: number;
   /* 评分（1-10分，保留1位小数） */
   rating?: null | number;
   /* 评分人数 */
@@ -354,7 +330,7 @@ export type BaseWorkDto = {
 /**
  *  类型定义 [WorkAuthorRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkAuthorRelationDto = {
   /** 任意合法数值 */
@@ -369,7 +345,7 @@ export type WorkAuthorRelationDto = {
 /**
  *  类型定义 [AuthorInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AuthorInfoDto = {
   /** 任意合法数值 */
@@ -388,7 +364,7 @@ export type AuthorInfoDto = {
 /**
  *  类型定义 [WorkCategoryRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkCategoryRelationDto = {
   /** 任意合法数值 */
@@ -403,7 +379,7 @@ export type WorkCategoryRelationDto = {
 /**
  *  类型定义 [CategoryInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type CategoryInfoDto = {
   /** 任意合法数值 */
@@ -420,7 +396,7 @@ export type CategoryInfoDto = {
 /**
  *  类型定义 [WorkTagRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type WorkTagRelationDto = {
   /** 任意合法数值 */
@@ -435,7 +411,7 @@ export type WorkTagRelationDto = {
 /**
  *  类型定义 [TagInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type TagInfoDto = {
   /** 任意合法数值 */
@@ -452,7 +428,7 @@ export type TagInfoDto = {
 /**
  *  类型定义 [UpdateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type UpdateWorkDto = {
   /** 任意合法数值 */
@@ -465,15 +441,9 @@ export type UpdateWorkDto = {
   authorIds: number[];
   /* 是否允许评论 */
   canComment: boolean;
-  /* 是否允许下载 */
-  canDownload: boolean;
-  /* 是否允许兑换 */
-  canExchange: boolean;
   /* 关联的分类ID列表 */
   categoryIds: number[];
-  /* 章节默认兑换积分 */
-  chapterExchangePoints: number;
-  /* 章节默认购买价格（余额） */
+  /* 章节默认购买价格（积分） */
   chapterPrice: number;
   /* 版权信息 */
   copyright?: null | string;
@@ -483,8 +453,6 @@ export type UpdateWorkDto = {
   description: string;
   /* 免责声明 */
   disclaimer?: null | string;
-  /* 兑换所需积分 */
-  exchangePoints: number;
   /* 主键id */
   id: number;
   /* 是否热门 */
@@ -501,14 +469,10 @@ export type UpdateWorkDto = {
   name: string;
   /* 原始来源 */
   originalSource?: null | string;
-  /* 作品购买价格（余额） */
-  price: number;
   /* 发布日期 */
   publishAt?: null | string;
   /* 出版社 */
   publisher?: null | string;
-  /* 购买数 */
-  purchaseCount: number;
   /* 评分（1-10分，保留1位小数） */
   rating?: null | number;
   /* 推荐权重 */
@@ -533,7 +497,7 @@ export type UpdateWorkDto = {
 /**
  *  类型定义 [UpdateWorkStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type UpdateWorkStatusDto = {
   /** 任意合法数值 */
@@ -548,7 +512,7 @@ export type UpdateWorkStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -561,7 +525,7 @@ export type BatchOperationResponseDto = {
 /**
  *  类型定义 [UpdateWorkRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type UpdateWorkRecommendedDto = {
   /** 任意合法数值 */
@@ -576,7 +540,7 @@ export type UpdateWorkRecommendedDto = {
 /**
  *  类型定义 [UpdateWorkHotDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type UpdateWorkHotDto = {
   /** 任意合法数值 */
@@ -591,7 +555,7 @@ export type UpdateWorkHotDto = {
 /**
  *  类型定义 [UpdateWorkNewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type UpdateWorkNewDto = {
   /** 任意合法数值 */

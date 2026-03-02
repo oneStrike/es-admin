@@ -3,7 +3,7 @@ export type StatisticsFullResponse = SensitiveWordStatisticsDataDto;
 /**
  *  类型定义 [SensitiveWordStatisticsDataDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type SensitiveWordStatisticsDataDto = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type SensitiveWordStatisticsDataDto = {
 /**
  *  类型定义 [SensitiveWordLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type SensitiveWordLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type SensitiveWordLevelStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordTypeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type SensitiveWordTypeStatisticsDto = {
   /** 任意合法数值 */
@@ -74,7 +74,7 @@ export type SensitiveWordTypeStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordTopHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type SensitiveWordTopHitStatisticsDto = {
   /** 任意合法数值 */
@@ -95,7 +95,7 @@ export type SensitiveWordTopHitStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordRecentHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type SensitiveWordRecentHitStatisticsDto = {
   /** 任意合法数值 */

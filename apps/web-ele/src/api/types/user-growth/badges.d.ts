@@ -1,7 +1,7 @@
 /**
  *  类型定义 [BadgesPageRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesPageRequest = {
   /** 任意合法数值 */
@@ -58,7 +58,7 @@ export type BadgesPageResponse = {
 /**
  *  类型定义 [BadgesDetailRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesDetailRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type BadgesDetailResponse = BaseUserBadgeDto;
 /**
  *  类型定义 [BadgesCreateRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesCreateRequest = CreateUserBadgeDto;
 
@@ -82,7 +82,7 @@ export type BadgesCreateResponse = BaseUserBadgeDto;
 /**
  *  类型定义 [BadgesUpdateRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesUpdateRequest = UpdateUserBadgeDto;
 
@@ -91,7 +91,7 @@ export type BadgesUpdateResponse = BaseUserBadgeDto;
 /**
  *  类型定义 [BadgesDeleteRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesDeleteRequest = IdDto;
 
@@ -100,7 +100,7 @@ export type BadgesDeleteResponse = BaseUserBadgeDto;
 /**
  *  类型定义 [BadgesUpdateStatusRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesUpdateStatusRequest = UpdateUserBadgeDto;
 
@@ -109,7 +109,7 @@ export type BadgesUpdateStatusResponse = BaseUserBadgeDto;
 /**
  *  类型定义 [BadgesAssignRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesAssignRequest = AssignUserBadgeDto;
 
@@ -118,7 +118,7 @@ export type BadgesAssignResponse = BaseUserBadgeDto;
 /**
  *  类型定义 [BadgesRevokeRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesRevokeRequest = AssignUserBadgeDto;
 
@@ -127,7 +127,7 @@ export type BadgesRevokeResponse = BaseUserBadgeDto;
 /**
  *  类型定义 [BadgesUsersRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BadgesUsersRequest = {
   /** 任意合法数值 */
@@ -188,7 +188,7 @@ export type BadgesStatisticsResponse = BaseUserBadgeDto;
 /**
  *  类型定义 [BaseUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type BaseUserBadgeDto = {
   /** 任意合法数值 */
@@ -221,7 +221,7 @@ export type BaseUserBadgeDto = {
 /**
  *  类型定义 [CreateUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type CreateUserBadgeDto = {
   /** 任意合法数值 */
@@ -248,7 +248,7 @@ export type CreateUserBadgeDto = {
 /**
  *  类型定义 [UpdateUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type UpdateUserBadgeDto = {
   /** 任意合法数值 */
@@ -277,7 +277,7 @@ export type UpdateUserBadgeDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -290,7 +290,7 @@ export type IdDto = {
 /**
  *  类型定义 [AssignUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:30
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type AssignUserBadgeDto = {
   /** 任意合法数值 */

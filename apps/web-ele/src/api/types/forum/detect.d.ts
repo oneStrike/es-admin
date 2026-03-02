@@ -1,7 +1,7 @@
 /**
  *  类型定义 [DetectHighestLevelRequest]
  *  @来源 论坛模块/敏感词管理模块
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type DetectHighestLevelRequest = SensitiveWordDetectDto;
 
@@ -12,7 +12,7 @@ export type DetectStatusResponse = SensitiveWordDetectStatusResponseDto;
 /**
  *  类型定义 [SensitiveWordDetectDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type SensitiveWordDetectDto = {
   /** 任意合法数值 */
@@ -27,7 +27,7 @@ export type SensitiveWordDetectDto = {
 /**
  *  类型定义 [SensitiveWordHighestLevelResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type SensitiveWordHighestLevelResponseDto = {
   /** 任意合法数值 */
@@ -40,7 +40,7 @@ export type SensitiveWordHighestLevelResponseDto = {
 /**
  *  类型定义 [SensitiveWordDetectStatusResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-01 22:12:29
+ *  @更新时间 2026-03-02 23:55:35
  */
 export type SensitiveWordDetectStatusResponseDto = {
   /** 任意合法数值 */
