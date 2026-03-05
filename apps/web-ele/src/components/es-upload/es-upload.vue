@@ -168,6 +168,12 @@ function onChange(file: UploadFile, files: UploadFile[]) {
 }
 
 /**
+ * 存储每个文件的上传响应结果
+ * key: file uid, value: 上传响应数据
+ */
+const uploadResponseMap = new Map<number, any>();
+
+/**
  * 将内部 fileList 转换为 v-model 指定的数据格式
  * - url: 以逗号分隔的 url 字符串
  * - array: url 字符串数组
@@ -184,12 +190,23 @@ function handlerModalValue() {
     let data: any;
     if (fileListDataType === 'url') {
       data = fileList.value
-        .map((item: any) => item.response?.filePath)
+        .map(
+          (item: any) =>
+            uploadResponseMap.get(item.uid)?.filePath ??
+            item.response?.filePath,
+        )
         .join(',');
     } else if (fileListDataType === 'array') {
-      data = fileList.value.map((item: any) => item.response?.filePath);
+      data = fileList.value.map(
+        (item: any) =>
+          uploadResponseMap.get(item.uid)?.filePath ?? item.response?.filePath,
+      );
     } else {
-      data = JSON.stringify(fileList.value.map((item: any) => item.response));
+      data = JSON.stringify(
+        fileList.value.map(
+          (item: any) => uploadResponseMap.get(item.uid) ?? item.response,
+        ),
+      );
     }
     emit('update:modelValue', data);
   });
@@ -239,7 +256,10 @@ async function customRequest(options: UploadRequestOptions) {
       url: '',
     } as any);
   } else {
-    // 通知 Element Plus 上传成功，自动写入 file.response/status
+    // 存储上传响应到 Map 中，以便后续使用
+    // Element Plus 的 onSuccess 不会自动设置 file.response，需要手动管理
+    uploadResponseMap.set(options.file.uid, res);
+    // 通知 Element Plus 上传成功
     options.onSuccess?.(res);
     skipModalValueWatch = true;
     handlerModalValue();
@@ -259,7 +279,9 @@ function onExceed(_files: File[]) {
 }
 
 // 删除文件后同步外部 v-model（保持行为直观，不改变原有成功回写逻辑）
-function onRemove() {
+function onRemove(uploadFile: UploadFile) {
+  // 从 Map 中移除对应的响应数据
+  uploadResponseMap.delete(uploadFile.uid);
   skipModalValueWatch = true;
   handlerModalValue();
 }

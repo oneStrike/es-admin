@@ -4,8 +4,6 @@ import { requestClient } from '#/api/request';
 
 import { useMessage } from './useFeedback';
 
-type UploadFileResItem = UploadUploadFileResponse[number]; // UploadResponseDto
-
 export async function useUpload(
   uploadUrl: string,
   file: File,
@@ -15,7 +13,7 @@ export async function useUpload(
     percent: number;
     total: number;
   }) => void,
-): Promise<unknown | UploadFileResItem> {
+): Promise<unknown | UploadUploadFileResponse> {
   try {
     const requestParams = [];
     for (const paramKey in params) {
@@ -47,7 +45,7 @@ export async function useUpload(
       },
     );
     useMessage.success('上传成功');
-    return result as UploadFileResItem;
+    return result as UploadUploadFileResponse;
   } catch (error) {
     return error;
   }
