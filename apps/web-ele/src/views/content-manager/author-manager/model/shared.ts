@@ -28,6 +28,9 @@ export const formSchema: EsFormSchema = [
     componentProps: {
       placeholder: '请上传作者头像',
       scene: 'author',
+      maxCount: 1,
+      multiple: false,
+      accept: 'image/*',
     },
     fieldName: 'avatar',
     label: '头像',
