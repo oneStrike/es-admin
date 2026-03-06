@@ -1,7 +1,7 @@
 /**
  *  类型定义 [TaskCreateRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type TaskCreateRequest = CreateTaskDto;
 
@@ -10,7 +10,7 @@ export type TaskCreateResponse = IdDto;
 /**
  *  类型定义 [TaskUpdateRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type TaskUpdateRequest = UpdateTaskDto;
 
@@ -19,7 +19,7 @@ export type TaskUpdateResponse = IdDto;
 /**
  *  类型定义 [TaskUpdateStatusRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type TaskUpdateStatusRequest = UpdateTaskStatusDto;
 
@@ -28,7 +28,7 @@ export type TaskUpdateStatusResponse = IdDto;
 /**
  *  类型定义 [TaskDeleteRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type TaskDeleteRequest = IdDto;
 
@@ -37,7 +37,7 @@ export type TaskDeleteResponse = IdDto;
 /**
  *  类型定义 [TaskPageRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type TaskPageRequest = {
   /** 任意合法数值 */
@@ -91,7 +91,7 @@ export type TaskPageResponse = {
 /**
  *  类型定义 [TaskDetailRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type TaskDetailRequest = {
   /** 任意合法数值 */
@@ -105,7 +105,7 @@ export type TaskDetailResponse = BaseTaskDto;
 /**
  *  类型定义 [CreateTaskDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CreateTaskDto = {
   /** 任意合法数值 */
@@ -146,7 +146,7 @@ export type CreateTaskDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -159,7 +159,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateTaskDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateTaskDto = {
   /** 任意合法数值 */
@@ -202,7 +202,7 @@ export type UpdateTaskDto = {
 /**
  *  类型定义 [UpdateTaskStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateTaskStatusDto = {
   /** 任意合法数值 */
@@ -219,7 +219,7 @@ export type UpdateTaskStatusDto = {
 /**
  *  类型定义 [BaseTaskDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type BaseTaskDto = {
   /** 任意合法数值 */

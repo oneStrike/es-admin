@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ExperienceRulesRulesPageRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesRulesPageRequest = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type ExperienceRulesRulesPageResponse = {
 /**
  *  类型定义 [ExperienceRulesRulesDetailRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesRulesDetailRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type ExperienceRulesRulesDetailResponse = BaseUserExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesRulesCreateRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesRulesCreateRequest = CreateUserExperienceRuleDto;
 
@@ -79,7 +79,7 @@ export type ExperienceRulesRulesCreateResponse = BaseUserExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesRulesUpdateRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesRulesUpdateRequest = UpdateUserExperienceRuleDto;
 
@@ -88,7 +88,7 @@ export type ExperienceRulesRulesUpdateResponse = BaseUserExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesRulesDeleteRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesRulesDeleteRequest = IdDto;
 
@@ -97,7 +97,7 @@ export type ExperienceRulesRulesDeleteResponse = BaseUserExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesAddRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesAddRequest = AddUserExperienceDto;
 
@@ -106,7 +106,7 @@ export type ExperienceRulesAddResponse = BaseUserExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesRecordsPageRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesRecordsPageRequest = {
   /** 任意合法数值 */
@@ -154,7 +154,7 @@ export type ExperienceRulesRecordsPageResponse = {
 /**
  *  类型定义 [ExperienceRulesRecordsDetailRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesRecordsDetailRequest = {
   /** 任意合法数值 */
@@ -169,7 +169,7 @@ export type ExperienceRulesRecordsDetailResponse = BaseUserExperienceRuleDto;
 /**
  *  类型定义 [ExperienceRulesUserStatsRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ExperienceRulesUserStatsRequest = {
   /** 任意合法数值 */
@@ -183,7 +183,7 @@ export type ExperienceRulesUserStatsResponse = BaseUserExperienceRuleDto;
 /**
  *  类型定义 [BaseUserExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type BaseUserExperienceRuleDto = {
   /** 任意合法数值 */
@@ -225,7 +225,8 @@ export type BaseUserExperienceRuleDto = {
     | 111
     | 112
     | 113
-    | 114;
+    | 114
+    | 115;
 
   /* 更新时间 */
   updatedAt: string;
@@ -234,7 +235,7 @@ export type BaseUserExperienceRuleDto = {
 /**
  *  类型定义 [CreateUserExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CreateUserExperienceRuleDto = {
   /** 任意合法数值 */
@@ -273,13 +274,14 @@ export type CreateUserExperienceRuleDto = {
     | 111
     | 112
     | 113
-    | 114;
+    | 114
+    | 115;
 };
 
 /**
  *  类型定义 [UpdateUserExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateUserExperienceRuleDto = {
   /** 任意合法数值 */
@@ -320,13 +322,14 @@ export type UpdateUserExperienceRuleDto = {
     | 111
     | 112
     | 113
-    | 114;
+    | 114
+    | 115;
 };
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -339,7 +342,7 @@ export type IdDto = {
 /**
  *  类型定义 [AddUserExperienceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type AddUserExperienceDto = {
   /** 任意合法数值 */

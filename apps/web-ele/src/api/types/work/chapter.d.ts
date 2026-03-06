@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ChapterCreateRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ChapterCreateRequest = CreateWorkChapterDto;
 
@@ -10,7 +10,7 @@ export type ChapterCreateResponse = IdDto;
 /**
  *  类型定义 [ChapterPageRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ChapterPageRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type ChapterPageResponse = {
 /**
  *  类型定义 [ChapterDetailRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ChapterDetailRequest = {
   /** 任意合法数值 */
@@ -88,7 +88,7 @@ export type ChapterDetailResponse = BaseWorkChapterDto;
 /**
  *  类型定义 [ChapterUpdateRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ChapterUpdateRequest = UpdateWorkChapterDto;
 
@@ -97,7 +97,7 @@ export type ChapterUpdateResponse = IdDto;
 /**
  *  类型定义 [ChapterDeleteRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ChapterDeleteRequest = IdDto;
 
@@ -106,7 +106,7 @@ export type ChapterDeleteResponse = IdDto;
 /**
  *  类型定义 [ChapterSwapSortOrderRequest]
  *  @来源 内容管理/作品管理/章节
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ChapterSwapSortOrderRequest = DragReorderDto;
 
@@ -115,7 +115,7 @@ export type ChapterSwapSortOrderResponse = DragReorderDto;
 /**
  *  类型定义 [CreateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CreateWorkChapterDto = {
   /** 任意合法数值 */
@@ -160,7 +160,7 @@ export type CreateWorkChapterDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -173,7 +173,7 @@ export type IdDto = {
 /**
  *  类型定义 [BaseWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type BaseWorkChapterDto = {
   /** 任意合法数值 */
@@ -240,7 +240,7 @@ export type BaseWorkChapterDto = {
 /**
  *  类型定义 [WorkInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type WorkInfoDto = {
   /** 任意合法数值 */
@@ -257,7 +257,7 @@ export type WorkInfoDto = {
 /**
  *  类型定义 [UserLevelRuleInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UserLevelRuleInfoDto = {
   /** 任意合法数值 */
@@ -274,7 +274,7 @@ export type UserLevelRuleInfoDto = {
 /**
  *  类型定义 [UpdateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateWorkChapterDto = {
   /** 任意合法数值 */
@@ -321,7 +321,7 @@ export type UpdateWorkChapterDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

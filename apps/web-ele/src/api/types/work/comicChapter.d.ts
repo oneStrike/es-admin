@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ComicChapterCreateRequest]
  *  @来源 内容管理/漫画章节模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicChapterCreateRequest = CreateWorkChapterDto;
 
@@ -10,7 +10,7 @@ export type ComicChapterCreateResponse = IdDto;
 /**
  *  类型定义 [ComicChapterPageRequest]
  *  @来源 内容管理/漫画章节模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicChapterPageRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type ComicChapterPageResponse = {
 /**
  *  类型定义 [ComicChapterDetailRequest]
  *  @来源 内容管理/漫画章节模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicChapterDetailRequest = {
   /** 任意合法数值 */
@@ -88,7 +88,7 @@ export type ComicChapterDetailResponse = IdDto;
 /**
  *  类型定义 [ComicChapterUpdateRequest]
  *  @来源 内容管理/漫画章节模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicChapterUpdateRequest = UpdateWorkChapterDto;
 
@@ -97,7 +97,7 @@ export type ComicChapterUpdateResponse = IdDto;
 /**
  *  类型定义 [ComicChapterDeleteRequest]
  *  @来源 内容管理/漫画章节模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicChapterDeleteRequest = IdDto;
 
@@ -106,7 +106,7 @@ export type ComicChapterDeleteResponse = IdDto;
 /**
  *  类型定义 [ComicChapterSwapSortOrderRequest]
  *  @来源 内容管理/漫画章节模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicChapterSwapSortOrderRequest = DragReorderDto;
 
@@ -115,7 +115,7 @@ export type ComicChapterSwapSortOrderResponse = DragReorderDto;
 /**
  *  类型定义 [CreateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CreateWorkChapterDto = {
   /** 任意合法数值 */
@@ -160,7 +160,7 @@ export type CreateWorkChapterDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -173,7 +173,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateWorkChapterDto = {
   /** 任意合法数值 */
@@ -220,7 +220,7 @@ export type UpdateWorkChapterDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

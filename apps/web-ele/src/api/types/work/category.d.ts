@@ -1,7 +1,7 @@
 /**
  *  类型定义 [CategoryCreateRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CategoryCreateRequest = CreateCategoryDto;
 
@@ -10,7 +10,7 @@ export type CategoryCreateResponse = IdDto;
 /**
  *  类型定义 [CategoryPageRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CategoryPageRequest = {
   /** 任意合法数值 */
@@ -61,7 +61,7 @@ export type CategoryPageResponse = {
 /**
  *  类型定义 [CategoryDetailRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CategoryDetailRequest = {
   /** 任意合法数值 */
@@ -76,7 +76,7 @@ export type CategoryDetailResponse = BaseCategoryDto;
 /**
  *  类型定义 [CategoryUpdateRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CategoryUpdateRequest = UpdateCategoryDto;
 
@@ -85,7 +85,7 @@ export type CategoryUpdateResponse = IdDto;
 /**
  *  类型定义 [CategoryUpdateStatusRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CategoryUpdateStatusRequest = UpdateEnabledStatusDto;
 
@@ -94,7 +94,7 @@ export type CategoryUpdateStatusResponse = IdDto;
 /**
  *  类型定义 [CategoryDeleteRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CategoryDeleteRequest = IdDto;
 
@@ -103,7 +103,7 @@ export type CategoryDeleteResponse = IdDto;
 /**
  *  类型定义 [CategoryOrderRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CategoryOrderRequest = DragReorderDto;
 
@@ -112,7 +112,7 @@ export type CategoryOrderResponse = DragReorderDto;
 /**
  *  类型定义 [CreateCategoryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CreateCategoryDto = {
   /** 任意合法数值 */
@@ -129,13 +129,13 @@ export type CreateCategoryDto = {
   name: string;
 
   /* 排序值 */
-  order?: null | number;
+  sortOrder?: null | number;
 };
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -148,7 +148,7 @@ export type IdDto = {
 /**
  *  类型定义 [BaseCategoryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type BaseCategoryDto = {
   /** 任意合法数值 */
@@ -167,10 +167,10 @@ export type BaseCategoryDto = {
   isEnabled?: boolean | null;
   /* 分类名称 */
   name: string;
-  /* 排序值 */
-  order?: null | number;
   /* 人气值 */
   popularity?: null | number;
+  /* 排序值 */
+  sortOrder?: null | number;
 
   /* 更新时间 */
   updatedAt: string;
@@ -179,7 +179,7 @@ export type BaseCategoryDto = {
 /**
  *  类型定义 [UpdateCategoryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateCategoryDto = {
   /** 任意合法数值 */
@@ -198,13 +198,13 @@ export type UpdateCategoryDto = {
   name: string;
 
   /* 排序值 */
-  order?: null | number;
+  sortOrder?: null | number;
 };
 
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -219,7 +219,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

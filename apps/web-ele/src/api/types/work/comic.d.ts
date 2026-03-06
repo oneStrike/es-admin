@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ComicCreateRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicCreateRequest = CreateWorkDto;
 
@@ -10,7 +10,7 @@ export type ComicCreateResponse = IdDto;
 /**
  *  类型定义 [ComicPageRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicPageRequest = {
   /** 任意合法数值 */
@@ -94,7 +94,7 @@ export type ComicPageResponse = {
 /**
  *  类型定义 [ComicDetailRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicDetailRequest = {
   /** 任意合法数值 */
@@ -109,7 +109,7 @@ export type ComicDetailResponse = BaseWorkDto;
 /**
  *  类型定义 [ComicUpdateRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicUpdateRequest = UpdateWorkDto;
 
@@ -118,7 +118,7 @@ export type ComicUpdateResponse = IdDto;
 /**
  *  类型定义 [ComicUpdateStatusRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicUpdateStatusRequest = UpdateWorkStatusDto;
 
@@ -127,7 +127,7 @@ export type ComicUpdateStatusResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [ComicUpdateRecommendedRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicUpdateRecommendedRequest = UpdateWorkRecommendedDto;
 
@@ -136,7 +136,7 @@ export type ComicUpdateRecommendedResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [ComicUpdateHotRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicUpdateHotRequest = UpdateWorkHotDto;
 
@@ -145,7 +145,7 @@ export type ComicUpdateHotResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [ComicUpdateNewRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicUpdateNewRequest = UpdateWorkNewDto;
 
@@ -154,7 +154,7 @@ export type ComicUpdateNewResponse = BatchOperationResponseDto;
 /**
  *  类型定义 [ComicDeleteRequest]
  *  @来源 内容管理/漫画管理模块
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type ComicDeleteRequest = IdDto;
 
@@ -163,7 +163,7 @@ export type ComicDeleteResponse = IdDto;
 /**
  *  类型定义 [CreateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CreateWorkDto = {
   /** 任意合法数值 */
@@ -175,7 +175,7 @@ export type CreateWorkDto = {
   /* 关联的作者ID列表 */
   authorIds: number[];
   /* 是否允许评论 */
-  canComment: boolean;
+  canComment?: boolean | null;
   /* 关联的分类ID列表 */
   categoryIds: number[];
   /* 章节默认购买价格（积分） */
@@ -230,7 +230,7 @@ export type CreateWorkDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -243,7 +243,7 @@ export type IdDto = {
 /**
  *  类型定义 [BaseWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type BaseWorkDto = {
   /** 任意合法数值 */
@@ -255,7 +255,7 @@ export type BaseWorkDto = {
   /* 作品作者 */
   authors: WorkAuthorRelationDto[];
   /* 是否允许评论 */
-  canComment: boolean;
+  canComment?: boolean | null;
   /* 作品分类 */
   categories: WorkCategoryRelationDto[];
   /* 章节默认购买价格（积分） */
@@ -330,7 +330,7 @@ export type BaseWorkDto = {
 /**
  *  类型定义 [WorkAuthorRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type WorkAuthorRelationDto = {
   /** 任意合法数值 */
@@ -345,7 +345,7 @@ export type WorkAuthorRelationDto = {
 /**
  *  类型定义 [AuthorInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type AuthorInfoDto = {
   /** 任意合法数值 */
@@ -364,7 +364,7 @@ export type AuthorInfoDto = {
 /**
  *  类型定义 [WorkCategoryRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type WorkCategoryRelationDto = {
   /** 任意合法数值 */
@@ -379,7 +379,7 @@ export type WorkCategoryRelationDto = {
 /**
  *  类型定义 [CategoryInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type CategoryInfoDto = {
   /** 任意合法数值 */
@@ -396,7 +396,7 @@ export type CategoryInfoDto = {
 /**
  *  类型定义 [WorkTagRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type WorkTagRelationDto = {
   /** 任意合法数值 */
@@ -411,7 +411,7 @@ export type WorkTagRelationDto = {
 /**
  *  类型定义 [TagInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type TagInfoDto = {
   /** 任意合法数值 */
@@ -428,7 +428,7 @@ export type TagInfoDto = {
 /**
  *  类型定义 [UpdateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateWorkDto = {
   /** 任意合法数值 */
@@ -440,7 +440,7 @@ export type UpdateWorkDto = {
   /* 关联的作者ID列表 */
   authorIds: number[];
   /* 是否允许评论 */
-  canComment: boolean;
+  canComment?: boolean | null;
   /* 关联的分类ID列表 */
   categoryIds: number[];
   /* 章节默认购买价格（积分） */
@@ -497,7 +497,7 @@ export type UpdateWorkDto = {
 /**
  *  类型定义 [UpdateWorkStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateWorkStatusDto = {
   /** 任意合法数值 */
@@ -512,7 +512,7 @@ export type UpdateWorkStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -525,7 +525,7 @@ export type BatchOperationResponseDto = {
 /**
  *  类型定义 [UpdateWorkRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateWorkRecommendedDto = {
   /** 任意合法数值 */
@@ -540,7 +540,7 @@ export type UpdateWorkRecommendedDto = {
 /**
  *  类型定义 [UpdateWorkHotDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateWorkHotDto = {
   /** 任意合法数值 */
@@ -555,7 +555,7 @@ export type UpdateWorkHotDto = {
 /**
  *  类型定义 [UpdateWorkNewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-02 23:55:35
+ *  @更新时间 2026-03-07 00:42:13
  */
 export type UpdateWorkNewDto = {
   /** 任意合法数值 */
