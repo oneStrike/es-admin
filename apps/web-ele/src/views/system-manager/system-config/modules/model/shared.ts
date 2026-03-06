@@ -19,6 +19,8 @@ export const siteFormSchema: EsFormSchema = [
     label: '站点名称',
     componentProps: {
       placeholder: '请输入站点名称',
+      maxlength: 50,
+      showWordLimit: true,
     },
   },
   {
@@ -27,6 +29,8 @@ export const siteFormSchema: EsFormSchema = [
     label: '站点描述',
     componentProps: {
       placeholder: '请输入站点描述',
+      maxlength: 200,
+      showWordLimit: true,
     },
   },
   {
@@ -35,6 +39,8 @@ export const siteFormSchema: EsFormSchema = [
     label: '站点关键词',
     componentProps: {
       placeholder: '请输入站点关键词（SEO用）',
+      maxlength: 100,
+      showWordLimit: true,
     },
   },
   {
@@ -61,8 +67,11 @@ export const siteFormSchema: EsFormSchema = [
     component: 'Input',
     fieldName: 'contactEmail',
     label: '联系邮箱',
+    rules: 'email',
     componentProps: {
       placeholder: '请输入联系邮箱',
+      maxlength: 100,
+      showWordLimit: true,
     },
   },
   {
@@ -71,6 +80,8 @@ export const siteFormSchema: EsFormSchema = [
     label: 'ICP备案号',
     componentProps: {
       placeholder: '请输入ICP备案号',
+      maxlength: 50,
+      showWordLimit: true,
     },
   },
 ];
@@ -108,6 +119,8 @@ export const maintenanceFormSchema: EsFormSchema = [
       type: 'textarea',
       rows: 3,
       placeholder: '请输入维护模式提示信息',
+      maxlength: 500,
+      showWordLimit: true,
     },
   },
 ];
@@ -131,6 +144,7 @@ export const aliyunFormSchema: EsFormSchema = [
     label: 'AccessKey ID',
     componentProps: {
       placeholder: '请输入 AccessKey ID',
+      maxlength: 100,
     },
   },
   {
@@ -139,7 +153,7 @@ export const aliyunFormSchema: EsFormSchema = [
     label: 'AccessKey Secret',
     componentProps: {
       placeholder: '请输入 AccessKey Secret',
-      showPassword: true,
+      maxlength: 100,
     },
   },
   {
@@ -159,6 +173,8 @@ export const aliyunFormSchema: EsFormSchema = [
     label: '短信 Endpoint',
     componentProps: {
       placeholder: '请输入短信 Endpoint',
+      maxlength: 200,
+      showWordLimit: true,
     },
   },
   {
@@ -183,7 +199,7 @@ export const aliyunFormSchema: EsFormSchema = [
     componentProps: {
       placeholder: '请输入验证码长度',
       min: 4,
-      max: 6,
+      max: 8,
     },
   },
   {
@@ -192,7 +208,8 @@ export const aliyunFormSchema: EsFormSchema = [
     label: '验证码过期时间(秒)',
     componentProps: {
       placeholder: '请输入验证码过期时间',
-      min: 1,
+      min: 60,
+      max: 3600,
     },
   },
 ];
