@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ZodType } from 'zod';
 
-import type { FormSchema, MaybeComponentProps } from '../types';
+import type { FormActions, FormSchema, MaybeComponentProps } from '../types';
 
 import { computed, nextTick, onUnmounted, useTemplateRef, watch } from 'vue';
 
@@ -62,6 +62,14 @@ const fieldComponentRef = useTemplateRef<HTMLInputElement>('fieldComponentRef');
 const formApi = formRenderProps.form;
 const compact = computed(() => formRenderProps.compact);
 const isInValid = computed(() => errors.value?.length > 0);
+
+function getFormApi(): FormActions {
+  if (!formApi) {
+    throw new Error('Form api is required in <FormField />');
+  }
+
+  return formApi;
+}
 
 const FieldComponent = computed(() => {
   const finalComponent = isString(component)
@@ -161,7 +169,7 @@ const fieldRules = computed(() => {
 
 const computedProps = computed(() => {
   const finalComponentProps = isFunction(componentProps)
-    ? componentProps(values.value, formApi!)
+    ? componentProps(values.value, getFormApi())
     : componentProps;
 
   return {
@@ -191,7 +199,7 @@ const customContentRender = computed(() => {
   if (!isFunction(renderComponentContent)) {
     return {};
   }
-  return renderComponentContent(values.value, formApi!);
+  return renderComponentContent(values.value, getFormApi());
 });
 
 const renderContentKey = computed(() => {
@@ -313,7 +321,7 @@ onUnmounted(() => {
           cn(
             'flex leading-6',
             {
-              'mr-2 flex-shrink-0 justify-end': !isVertical,
+              'mr-2 shrink-0 justify-end': !isVertical,
               'mb-1 flex-row': isVertical,
             },
             labelClass,
@@ -329,7 +337,7 @@ onUnmounted(() => {
           <VbenRenderContent :content="label" />
         </template>
       </FormLabel>
-      <div class="flex-auto overflow-hidden p-[1px]">
+      <div class="flex-auto overflow-hidden p-px">
         <div :class="cn('relative flex w-full items-center', wrapperClass)">
           <FormControl :class="cn(controlClass)">
             <slot
