@@ -1,0 +1,18 @@
+/**
+ *  类型定义 [ChapterContentDetailRequest]
+ *  @来源 内容管理/漫画管理/三方平台解析
+ *  @更新时间 2026-03-19 21:17:36
+ */
+export type ChapterContentDetailRequest = {
+  /** 任意合法数值 */
+  [property: string]: any
+
+  /* 章节ID */
+  chapterId: string
+
+  /* 漫画ID */
+  comicId: string
+
+  /* 平台代码 */
+  platform: string
+}
