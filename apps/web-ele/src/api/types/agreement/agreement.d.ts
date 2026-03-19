@@ -1,221 +1,221 @@
 /**
  *  类型定义 [AgreementCreateRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
-export type AgreementCreateRequest = CreateAgreementDto;
+export type AgreementCreateRequest = CreateAgreementDto
 
-export type AgreementCreateResponse = IdDto;
+export type AgreementCreateResponse = boolean
 
 /**
  *  类型定义 [AgreementUpdateRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
-export type AgreementUpdateRequest = UpdateAgreementDto;
+export type AgreementUpdateRequest = UpdateAgreementDto
 
-export type AgreementUpdateResponse = IdDto;
+export type AgreementUpdateResponse = boolean
 
 /**
  *  类型定义 [AgreementUpdateStatusRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
-export type AgreementUpdateStatusRequest = UpdatePublishedStatusDto;
+export type AgreementUpdateStatusRequest = UpdatePublishedStatusDto
 
-export type AgreementUpdateStatusResponse = IdDto;
+export type AgreementUpdateStatusResponse = boolean
 
 /**
  *  类型定义 [AgreementDeleteRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
-export type AgreementDeleteRequest = IdDto;
+export type AgreementDeleteRequest = IdDto
 
-export type AgreementDeleteResponse = IdDto;
+export type AgreementDeleteResponse = boolean
 
 /**
  *  类型定义 [AgreementPageRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
 export type AgreementPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否已发布 */
-  isPublished?: boolean | null;
+  isPublished?: boolean
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码 */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 是否展示在登录注册页 */
-  showInAuth?: boolean | null;
+  showInAuth?: boolean
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 协议标题 */
-  title?: string;
-};
+  title?: string
+}
 
 export type AgreementPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: ListOrPageAgreementResponseDto[];
+  list?: ListOrPageAgreementResponseDto[]
 
   /* 当前页码 */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [AgreementDetailRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
 export type AgreementDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type AgreementDetailResponse = BaseAgreementDto;
+export type AgreementDetailResponse = BaseAgreementDto
 
 /**
  *  类型定义 [CreateAgreementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
 export type CreateAgreementDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 协议内容 */
-  content: string;
+  content: string
   /* 是否强制重新同意 */
-  isForce?: boolean | null;
+  isForce: boolean
   /* 是否已发布 */
-  isPublished?: boolean | null;
+  isPublished: boolean
   /* 是否展示在登录注册页 */
-  showInAuth?: boolean | null;
+  showInAuth: boolean
   /* 协议标题 */
-  title: string;
+  title: string
 
   /* 版本号 */
-  version: string;
-};
-
-/**
- *  类型定义 [IdDto]
- *  @来源 components.schemas
- *  @更新时间 2026-03-07 00:42:13
- */
-export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 主键id */
-  id: number;
-};
+  version: string
+}
 
 /**
  *  类型定义 [UpdateAgreementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
 export type UpdateAgreementDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 协议内容 */
-  content: string;
+  content: string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否强制重新同意 */
-  isForce?: boolean | null;
+  isForce: boolean
   /* 是否已发布 */
-  isPublished?: boolean | null;
+  isPublished: boolean
   /* 是否展示在登录注册页 */
-  showInAuth?: boolean | null;
+  showInAuth: boolean
   /* 协议标题 */
-  title: string;
+  title: string
 
   /* 版本号 */
-  version: string;
-};
+  version: string
+}
 
 /**
  *  类型定义 [UpdatePublishedStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
 export type UpdatePublishedStatusDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 发布状态 true发布 false取消发布 */
-  isPublished: boolean;
-};
+  isPublished: boolean
+}
+
+/**
+ *  类型定义 [IdDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-03-19 21:17:36
+ */
+export type IdDto = {
+  /** 任意合法数值 */
+  [property: string]: any
+
+  /* 主键id */
+  id: number
+}
 
 /**
  *  类型定义 [ListOrPageAgreementResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
 export type ListOrPageAgreementResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 协议内容 */
-  content: string;
-};
+  content: string
+}
 
 /**
  *  类型定义 [BaseAgreementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-07 00:42:13
+ *  @更新时间 2026-03-19 21:17:36
  */
 export type BaseAgreementDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 协议内容 */
-  content: string;
+  content: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否强制重新同意 */
-  isForce?: boolean | null;
+  isForce: boolean
   /* 是否已发布 */
-  isPublished?: boolean | null;
+  isPublished: boolean
   /* 发布时间 */
-  publishedAt?: null | string;
+  publishedAt?: null | string
   /* 是否展示在登录注册页 */
-  showInAuth?: boolean | null;
+  showInAuth: boolean
   /* 协议标题 */
-  title: string;
+  title: string
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
 
   /* 版本号 */
-  version: string;
-};
+  version: string
+}

@@ -3,57 +3,31 @@ import type {
   AuthLoginRequest,
   AuthLoginResponse,
   AuthLogoutRequest,
-  AuthLogoutResponse,
-  AuthPublicKeyResponse,
-  AuthRefreshTokenRequest,
-  AuthRefreshTokenResponse,
-} from '../../types/auth/auth.d';
+  AuthLogoutResponse
+} from '../../types/auth/auth.d'
 
-import { requestClient } from '#/api/request';
+import { requestClient } from '#/api/request'
 
-/**
- * 获取验证码
- */
-export async function authCaptchaApi(): Promise<AuthCaptchaResponse> {
-  return requestClient.get<AuthCaptchaResponse>('/api/admin/auth/captcha');
-}
 
-/**
- * 管理员登录
- */
-export async function authLoginApi(
-  params: AuthLoginRequest,
-): Promise<AuthLoginResponse> {
-  return requestClient.post<AuthLoginResponse>('/api/admin/auth/login', params);
-}
+  /**
+   * 获取验证码
+   */
+  export async function authCaptchaApi(params: AuthCaptchaRequest): Promise<AuthCaptchaResponse> {
+    return requestClient.get<AuthCaptchaResponse>('/api/admin/auth/captcha', { params });
+  }
 
-/**
- * 管理员登出
- */
-export async function authLogoutApi(
-  params: AuthLogoutRequest,
-): Promise<AuthLogoutResponse> {
-  return requestClient.post<AuthLogoutResponse>(
-    '/api/admin/auth/logout',
-    params,
-  );
-}
 
-/**
- * 刷新访问令牌
- */
-export async function authRefreshTokenApi(
-  params: AuthRefreshTokenRequest,
-): Promise<AuthRefreshTokenResponse> {
-  return requestClient.post<AuthRefreshTokenResponse>(
-    '/api/admin/auth/refresh-token',
-    params,
-  );
-}
+  /**
+   * 管理员登录
+   */
+  export async function authLoginApi(params: AuthLoginRequest): Promise<AuthLoginResponse> {
+    return requestClient.post<AuthLoginResponse>('/api/admin/auth/login', params);
+  }
 
-/**
- * 获取Admin专用RSA公钥
- */
-export async function authPublicKeyApi(): Promise<AuthPublicKeyResponse> {
-  return requestClient.get<AuthPublicKeyResponse>('/api/admin/auth/public-key');
-}
+
+  /**
+   * 管理员登出
+   */
+  export async function authLogoutApi(params: AuthLogoutRequest): Promise<AuthLogoutResponse> {
+    return requestClient.post<AuthLogoutResponse>('/api/admin/auth/logout', params);
+  }
