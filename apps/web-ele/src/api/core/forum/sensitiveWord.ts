@@ -88,6 +88,6 @@ import { requestClient } from '#/api/request'
   /**
    * 获取当前加载的敏感词数量
    */
-  export async function sensitiveWordCountApi(params: SensitiveWordCountRequest): Promise<SensitiveWordCountResponse> {
-    return requestClient.get<SensitiveWordCountResponse>('/api/admin/forum/sensitive-word/count', { params });
+  export async function sensitiveWordCountApi(): Promise<SensitiveWordCountResponse> {
+    return requestClient.get<SensitiveWordCountResponse>('/api/admin/forum/sensitive-word/count');
   }

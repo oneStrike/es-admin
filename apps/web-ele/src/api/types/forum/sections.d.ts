@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SectionsPageRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SectionsPageRequest = {
   /** 任意合法数值 */
@@ -31,7 +31,7 @@ export type SectionsPageRequest = {
   /* 开始时间 */
   startDate?: null | string
 
-  /* 审核策略 */
+  /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
   topicReviewPolicy?: number
 }
 
@@ -55,7 +55,7 @@ export type SectionsPageResponse = {
 /**
  *  类型定义 [SectionsDetailRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SectionsDetailRequest = {
   /** 任意合法数值 */
@@ -81,7 +81,7 @@ export type SectionsTreeResponse = {
 /**
  *  类型定义 [SectionsCreateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SectionsCreateRequest = CreateForumSectionDto
 
@@ -90,7 +90,7 @@ export type SectionsCreateResponse = BaseForumSectionDto
 /**
  *  类型定义 [SectionsUpdateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SectionsUpdateRequest = UpdateForumSectionDto
 
@@ -99,7 +99,7 @@ export type SectionsUpdateResponse = BaseForumSectionDto
 /**
  *  类型定义 [SectionsDeleteRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SectionsDeleteRequest = IdDto
 
@@ -108,7 +108,7 @@ export type SectionsDeleteResponse = BaseForumSectionDto
 /**
  *  类型定义 [SectionsUpdateEnabledRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SectionsUpdateEnabledRequest = UpdateEnabledStatusDto
 
@@ -117,7 +117,7 @@ export type SectionsUpdateEnabledResponse = BaseForumSectionDto
 /**
  *  类型定义 [SectionsSwapSortOrderRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SectionsSwapSortOrderRequest = DragReorderDto
 
@@ -126,7 +126,7 @@ export type SectionsSwapSortOrderResponse = BaseForumSectionDto
 /**
  *  类型定义 [BaseForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseForumSectionDto = {
   /** 任意合法数值 */
@@ -159,7 +159,7 @@ export type BaseForumSectionDto = {
   sortOrder: number
   /* 主题数 */
   topicCount: number
-  /* 审核策略 */
+  /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
   topicReviewPolicy: 0 | 1 | 2 | 3 | 4
   /* 更新时间 */
   updatedAt: string
@@ -171,7 +171,7 @@ export type BaseForumSectionDto = {
 /**
  *  类型定义 [CreateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateForumSectionDto = {
   /** 任意合法数值 */
@@ -190,7 +190,7 @@ export type CreateForumSectionDto = {
   remark?: null | string
   /* 排序权重 */
   sortOrder: number
-  /* 审核策略 */
+  /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
   topicReviewPolicy: 0 | 1 | 2 | 3 | 4
 
   /* 用户等级规则ID（为空表示所有用户） */
@@ -200,7 +200,7 @@ export type CreateForumSectionDto = {
 /**
  *  类型定义 [UpdateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateForumSectionDto = {
   /** 任意合法数值 */
@@ -221,7 +221,7 @@ export type UpdateForumSectionDto = {
   remark?: null | string
   /* 排序权重 */
   sortOrder: number
-  /* 审核策略 */
+  /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
   topicReviewPolicy: 0 | 1 | 2 | 3 | 4
 
   /* 用户等级规则ID（为空表示所有用户） */
@@ -231,7 +231,7 @@ export type UpdateForumSectionDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -244,7 +244,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -259,7 +259,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

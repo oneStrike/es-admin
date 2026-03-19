@@ -10,8 +10,8 @@ import { requestClient } from '#/api/request'
   /**
    * 获取最新应用配置
    */
-  export async function appConfigActiveApi(params: AppConfigActiveRequest): Promise<AppConfigActiveResponse> {
-    return requestClient.get<AppConfigActiveResponse>('/api/admin/app-config/active', { params });
+  export async function appConfigActiveApi(): Promise<AppConfigActiveResponse> {
+    return requestClient.get<AppConfigActiveResponse>('/api/admin/app-config/active');
   }
 
 

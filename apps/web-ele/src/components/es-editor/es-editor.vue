@@ -124,12 +124,13 @@ const init = reactive({
   images_upload_handler(blobInfo: any) {
     return new Promise((resolve, reject) => {
       useUpload('/api/admin/upload/upload-file', blobInfo.blob()).then(
-        ({ success }) => {
-          if (success.length > 0) {
-            resolve(success[0]?.filePath);
-          } else {
-            reject(new Error('文件上传失败'));
+        (result: any) => {
+          const filePath = result?.filePath ?? result?.success?.[0]?.filePath;
+          if (filePath) {
+            resolve(filePath);
+            return;
           }
+          reject(new Error('文件上传失败'));
         },
       );
     });

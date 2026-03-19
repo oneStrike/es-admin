@@ -3,7 +3,7 @@ export type StatsFullResponse = SensitiveWordStatisticsDataDto
 /**
  *  类型定义 [SensitiveWordStatisticsDataDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SensitiveWordStatisticsDataDto = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type SensitiveWordStatisticsDataDto = {
 /**
  *  类型定义 [SensitiveWordLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SensitiveWordLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -45,7 +45,7 @@ export type SensitiveWordLevelStatisticsDto = {
   count: number
   /* 命中次数 */
   hitCount: number
-  /* 敏感词级别 */
+  /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
   level: 1 | 2 | 3
 
   /* 级别名称 */
@@ -55,7 +55,7 @@ export type SensitiveWordLevelStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordTypeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SensitiveWordTypeStatisticsDto = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type SensitiveWordTypeStatisticsDto = {
   count: number
   /* 命中次数 */
   hitCount: number
-  /* 敏感词类型 */
+  /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
   type: 1 | 2 | 3 | 4 | 5
 
   /* 类型名称 */
@@ -74,7 +74,7 @@ export type SensitiveWordTypeStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordTopHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SensitiveWordTopHitStatisticsDto = {
   /** 任意合法数值 */
@@ -83,9 +83,9 @@ export type SensitiveWordTopHitStatisticsDto = {
   hitCount: number
   /* 最后命中时间 */
   lastHitAt?: null | string
-  /* 敏感词级别 */
+  /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
   level: 1 | 2 | 3
-  /* 敏感词类型 */
+  /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
   type: 1 | 2 | 3 | 4 | 5
 
   /* 敏感词 */
@@ -95,7 +95,7 @@ export type SensitiveWordTopHitStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordRecentHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SensitiveWordRecentHitStatisticsDto = {
   /** 任意合法数值 */
@@ -104,9 +104,9 @@ export type SensitiveWordRecentHitStatisticsDto = {
   hitCount: number
   /* 最后命中时间 */
   lastHitAt?: null | string
-  /* 敏感词级别 */
+  /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
   level: 1 | 2 | 3
-  /* 敏感词类型 */
+  /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
   type: 1 | 2 | 3 | 4 | 5
 
   /* 敏感词 */

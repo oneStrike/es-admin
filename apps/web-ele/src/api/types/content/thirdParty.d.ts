@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ThirdPartySearchRequest]
  *  @来源 内容管理/漫画管理/三方平台解析
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ThirdPartySearchRequest = {
   /** 任意合法数值 */
@@ -49,7 +49,7 @@ export type ThirdPartySearchResponse = {
 /**
  *  类型定义 [ThirdPartyDetailRequest]
  *  @来源 内容管理/漫画管理/三方平台解析
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ThirdPartyDetailRequest = {
   /** 任意合法数值 */
@@ -65,7 +65,7 @@ export type ThirdPartyDetailRequest = {
 /**
  *  类型定义 [SearchComicItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SearchComicItemDto = {
   /** 任意合法数值 */

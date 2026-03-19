@@ -26,7 +26,7 @@ export function getDetailCards(detail: AnnouncementDetailResponse) {
   // 计算平台标签
   const enablePlatformLabels = getOptionLabel(
     enablePlatform,
-    detail.enablePlatform,
+    detail.enablePlatform ?? [],
   );
 
   // 计算公告类型信息

@@ -1,7 +1,7 @@
 /**
  *  类型定义 [PermissionCheckRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type PermissionCheckRequest = CheckUserLevelPermissionDto
 
@@ -10,12 +10,12 @@ export type PermissionCheckResponse = UserLevelPermissionResultDto
 /**
  *  类型定义 [CheckUserLevelPermissionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CheckUserLevelPermissionDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 权限类型 */
+  /* 权限类型（dailyTopicLimit=DAILY_TOPIC_LIMIT，dailyReplyCommentLimit=DAILY_REPLY_COMMENT_LIMIT，postInterval=POST_INTERVAL，dailyLikeLimit=DAILY_LIKE_LIMIT，dailyFavoriteLimit=DAILY_FAVORITE_LIMIT） */
   permissionType: 'dailyFavoriteLimit' | 'dailyLikeLimit' | 'dailyReplyCommentLimit' | 'dailyTopicLimit' | 'postInterval'
 
   /* 用户ID */
@@ -25,7 +25,7 @@ export type CheckUserLevelPermissionDto = {
 /**
  *  类型定义 [UserLevelPermissionResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserLevelPermissionResultDto = {
   /** 任意合法数值 */

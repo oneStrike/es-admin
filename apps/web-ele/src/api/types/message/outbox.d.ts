@@ -1,7 +1,7 @@
 /**
  *  类型定义 [OutboxSummaryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type OutboxSummaryRequest = {
   /** 任意合法数值 */
@@ -19,7 +19,7 @@ export type OutboxSummaryResponse = MessageOutboxMonitorSummaryDto
 /**
  *  类型定义 [MessageOutboxMonitorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type MessageOutboxMonitorSummaryDto = {
   /** 任意合法数值 */

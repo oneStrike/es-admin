@@ -1,7 +1,7 @@
 /**
  *  类型定义 [WsSummaryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type WsSummaryRequest = {
   /** 任意合法数值 */
@@ -16,7 +16,7 @@ export type WsSummaryResponse = MessageWsMonitorSummaryDto
 /**
  *  类型定义 [MessageWsMonitorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type MessageWsMonitorSummaryDto = {
   /** 任意合法数值 */

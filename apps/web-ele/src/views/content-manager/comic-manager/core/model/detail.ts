@@ -5,7 +5,7 @@ import type { UseDictItem } from '#/hooks/useDict';
 
 import { formatUTC } from '#/utils';
 
-import { serialStatusMap, viewRuleOptions } from './shared';
+import { serialStatusMap } from './shared';
 
 // 查看规则映射
 const viewRuleMap: Record<number, string> = {
@@ -35,7 +35,7 @@ export function getDetailCards(
           label: '作者',
           value:
             detail.authors
-              ?.map((author) => author.author.name)
+              ?.map((author: any) => author.author.name)
               .join(', ') || '-',
           type: 'text',
         },
@@ -43,13 +43,13 @@ export function getDetailCards(
           label: '分类',
           value:
             detail.categories
-              ?.map((category) => category.category.name)
+              ?.map((category: any) => category.category.name)
               .join(', ') || '-',
           type: 'text',
         },
         {
           label: '标签',
-          value: detail.tags?.map((tag) => tag.tag.name).join(', ') || '-',
+          value: detail.tags?.map((tag: any) => tag.tag.name).join(', ') || '-',
           type: 'text',
         },
       ],

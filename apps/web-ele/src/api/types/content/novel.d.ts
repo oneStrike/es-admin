@@ -1,7 +1,7 @@
 /**
  *  类型定义 [NovelCreateRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelCreateRequest = CreateWorkDto
 
@@ -10,7 +10,7 @@ export type NovelCreateResponse = IdDto
 /**
  *  类型定义 [NovelPageRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelPageRequest = {
   /** 任意合法数值 */
@@ -58,7 +58,7 @@ export type NovelPageRequest = {
   /* 地区代码 */
   region?: string
 
-  /* 连载状态 */
+  /* 连载状态（0=NOT_STARTED，1=SERIALIZING，2=COMPLETED，3=PAUSED，4=DISCONTINUED） */
   serialStatus?: number
 
   /* 开始时间 */
@@ -88,7 +88,7 @@ export type NovelPageResponse = {
 /**
  *  类型定义 [NovelDetailRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelDetailRequest = {
   /** 任意合法数值 */
@@ -103,7 +103,7 @@ export type NovelDetailResponse = BaseWorkDto
 /**
  *  类型定义 [NovelUpdateRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelUpdateRequest = UpdateWorkDto
 
@@ -112,7 +112,7 @@ export type NovelUpdateResponse = IdDto
 /**
  *  类型定义 [NovelUpdateStatusRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelUpdateStatusRequest = UpdateWorkStatusDto
 
@@ -121,7 +121,7 @@ export type NovelUpdateStatusResponse = BatchOperationResponseDto
 /**
  *  类型定义 [NovelUpdateRecommendedRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelUpdateRecommendedRequest = UpdateWorkRecommendedDto
 
@@ -130,7 +130,7 @@ export type NovelUpdateRecommendedResponse = BatchOperationResponseDto
 /**
  *  类型定义 [NovelUpdateHotRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelUpdateHotRequest = UpdateWorkHotDto
 
@@ -139,7 +139,7 @@ export type NovelUpdateHotResponse = BatchOperationResponseDto
 /**
  *  类型定义 [NovelUpdateNewRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelUpdateNewRequest = UpdateWorkNewDto
 
@@ -148,7 +148,7 @@ export type NovelUpdateNewResponse = BatchOperationResponseDto
 /**
  *  类型定义 [NovelDeleteRequest]
  *  @来源 内容管理/小说管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelDeleteRequest = IdDto
 
@@ -157,7 +157,7 @@ export type NovelDeleteResponse = IdDto
 /**
  *  类型定义 [CreateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateWorkDto = {
   /** 任意合法数值 */
@@ -212,21 +212,21 @@ export type CreateWorkDto = {
   remark?: null | string
   /* 阅读所需会员等级ID */
   requiredViewLevelId?: null | number
-  /* 连载状态 */
+  /* 连载状态（0=NOT_STARTED，1=SERIALIZING，2=COMPLETED，3=PAUSED，4=DISCONTINUED） */
   serialStatus: 0 | 1 | 2 | 3 | 4
   /* 标签ID列表 */
   tagIds: number[]
-  /* 作品类型 */
+  /* 作品类型（1=COMIC，2=NOVEL） */
   type: 1 | 2
 
-  /* 查看规则 */
+  /* 查看规则（-1=INHERIT，INHERIT=-1，0=ALL，1=LOGGED_IN，2=MEMBER，3=PURCHASE） */
   viewRule: -1 | 0 | 1 | 2 | 3
 }
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -239,7 +239,7 @@ export type IdDto = {
 /**
  *  类型定义 [BaseWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseWorkDto = {
   /** 任意合法数值 */
@@ -310,23 +310,23 @@ export type BaseWorkDto = {
   remark?: null | string
   /* 阅读所需会员等级ID */
   requiredViewLevelId?: null | number
-  /* 连载状态 */
+  /* 连载状态（0=NOT_STARTED，1=SERIALIZING，2=COMPLETED，3=PAUSED，4=DISCONTINUED） */
   serialStatus: 0 | 1 | 2 | 3 | 4
-  /* 作品类型 */
+  /* 作品类型（1=COMIC，2=NOVEL） */
   type: 1 | 2
   /* 更新时间 */
   updatedAt: string
   /* 浏览量 */
   viewCount: number
 
-  /* 查看规则 */
+  /* 查看规则（-1=INHERIT，INHERIT=-1，0=ALL，1=LOGGED_IN，2=MEMBER，3=PURCHASE） */
   viewRule: -1 | 0 | 1 | 2 | 3
 }
 
 /**
  *  类型定义 [UpdateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateWorkDto = {
   /** 任意合法数值 */
@@ -383,21 +383,21 @@ export type UpdateWorkDto = {
   remark?: null | string
   /* 阅读所需会员等级ID */
   requiredViewLevelId?: null | number
-  /* 连载状态 */
+  /* 连载状态（0=NOT_STARTED，1=SERIALIZING，2=COMPLETED，3=PAUSED，4=DISCONTINUED） */
   serialStatus?: 0 | 1 | 2 | 3 | 4
   /* 标签ID列表 */
   tagIds?: number[]
-  /* 作品类型 */
+  /* 作品类型（1=COMIC，2=NOVEL） */
   type?: 1 | 2
 
-  /* 查看规则 */
+  /* 查看规则（-1=INHERIT，INHERIT=-1，0=ALL，1=LOGGED_IN，2=MEMBER，3=PURCHASE） */
   viewRule?: -1 | 0 | 1 | 2 | 3
 }
 
 /**
  *  类型定义 [UpdateWorkStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateWorkStatusDto = {
   /** 任意合法数值 */
@@ -412,7 +412,7 @@ export type UpdateWorkStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -425,7 +425,7 @@ export type BatchOperationResponseDto = {
 /**
  *  类型定义 [UpdateWorkRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateWorkRecommendedDto = {
   /** 任意合法数值 */
@@ -440,7 +440,7 @@ export type UpdateWorkRecommendedDto = {
 /**
  *  类型定义 [UpdateWorkHotDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateWorkHotDto = {
   /** 任意合法数值 */
@@ -455,7 +455,7 @@ export type UpdateWorkHotDto = {
 /**
  *  类型定义 [UpdateWorkNewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateWorkNewDto = {
   /** 任意合法数值 */

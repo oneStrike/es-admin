@@ -82,7 +82,10 @@ export async function generateAPI(
     const files: (GeneratedFile & { directory: string })[] = [];
     const groupedPaths = generator.groupPathsByModule();
 
-    for (const [moduleName, paths] of Object.entries(groupedPaths)) {
+    for (const [moduleKey, paths] of Object.entries(groupedPaths)) {
+      const moduleName = moduleKey.includes('::')
+        ? moduleKey.split('::').pop() || moduleKey
+        : moduleKey;
       let finalFileName = `${moduleName}.ts`;
 
       // 如果存在 index.ts 冲突，将其重命名为 indexApi.ts
@@ -145,17 +148,31 @@ export async function generateAPI(
     }
 
     // 生成索引文件，排除与索引文件同名的API文件
-    const exportFiles = files
-      .filter((file) => file.fileName !== 'index.ts') // 排除与索引文件同名的文件
-      .map((file) => {
+    const exportEntries = files
+      .filter((file) => file.fileName !== 'index.ts')
+      .flatMap((file) => {
         const filePath = file.directory
           ? `${file.directory}/${file.fileName.replace('.ts', '')}`
           : file.fileName.replace('.ts', '');
-        return filePath;
+        const exportNames = [
+          ...file.content.matchAll(/export async function (\w+)\(/g),
+        ]
+          .map((match) => match[1])
+          .filter((name): name is string => Boolean(name));
+        return exportNames.map((name) => ({ filePath, name }));
       });
 
-    const indexContent = `${exportFiles
-      .map((filePath) => `export * from './${filePath}'`)
+    const exportNameCount = new Map<string, number>();
+    for (const entry of exportEntries) {
+      exportNameCount.set(
+        entry.name,
+        (exportNameCount.get(entry.name) || 0) + 1,
+      );
+    }
+
+    const indexContent = `${exportEntries
+      .filter((entry) => exportNameCount.get(entry.name) === 1)
+      .map((entry) => `export { ${entry.name} } from './${entry.filePath}'`)
       .join('\n')}\n`;
 
     {

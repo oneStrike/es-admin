@@ -1,19 +1,16 @@
-import { requestClient } from '#/api/request';
+import { requestClient } from '#/api/request'
 
-/**
- * HealthController_healthCheck
- */
-export async function apiHealthApi(
-  params: ApiHealthRequest,
-): Promise<ApiHealthResponse> {
-  return requestClient.get<ApiHealthResponse>('/api/health', { params });
-}
+  /**
+   * HealthController_healthCheck
+   */
+  export async function apiHealthApi(): Promise<any> {
+    return requestClient.get<any>('/api/health');
+  }
 
-/**
- * HealthController_readinessCheck
- */
-export async function apiReadyApi(
-  params: ApiReadyRequest,
-): Promise<ApiReadyResponse> {
-  return requestClient.get<ApiReadyResponse>('/api/ready', { params });
-}
+
+  /**
+   * HealthController_readinessCheck
+   */
+  export async function apiReadyApi(): Promise<any> {
+    return requestClient.get<any>('/api/ready');
+  }

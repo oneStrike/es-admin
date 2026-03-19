@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AssignmentPageRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AssignmentPageRequest = {
   /** 任意合法数值 */
@@ -22,7 +22,7 @@ export type AssignmentPageRequest = {
   /* 开始时间 */
   startDate?: null | string
 
-  /* 任务状态 */
+  /* 任务状态（0=PENDING，1=IN_PROGRESS，2=COMPLETED，3=EXPIRED） */
   status?: number
 
   /* 任务ID */
@@ -52,7 +52,7 @@ export type AssignmentPageResponse = {
 /**
  *  类型定义 [BaseTaskAssignmentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseTaskAssignmentDto = {
   /** 任意合法数值 */
@@ -75,7 +75,7 @@ export type BaseTaskAssignmentDto = {
   id: number
   /* 当前进度 */
   progress: number
-  /* 任务状态 */
+  /* 任务状态（0=PENDING，1=IN_PROGRESS，2=COMPLETED，3=EXPIRED） */
   status: 0 | 1 | 2 | 3
   /* 目标进度 */
   target: number

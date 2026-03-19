@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ComicChapterContentListRequest]
  *  @来源 内容管理/漫画章节内容
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ComicChapterContentListRequest = {
   /** 任意合法数值 */
@@ -16,7 +16,7 @@ export type ComicChapterContentListResponse = string[]
 /**
  *  类型定义 [ComicChapterContentUploadRequest]
  *  @来源 内容管理/漫画章节内容
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ComicChapterContentUploadRequest = {
   /** 任意合法数值 */
@@ -34,7 +34,7 @@ export type ComicChapterContentUploadResponse = FileUploadResponseDto
 /**
  *  类型定义 [ComicChapterContentUpdateRequest]
  *  @来源 内容管理/漫画章节内容
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ComicChapterContentUpdateRequest = UpdateComicContentDto
 
@@ -43,7 +43,7 @@ export type ComicChapterContentUpdateResponse = IdDto
 /**
  *  类型定义 [ComicChapterContentDeleteRequest]
  *  @来源 内容管理/漫画章节内容
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ComicChapterContentDeleteRequest = DeleteComicContentDto
 
@@ -52,7 +52,7 @@ export type ComicChapterContentDeleteResponse = string[]
 /**
  *  类型定义 [ComicChapterContentMoveRequest]
  *  @来源 内容管理/漫画章节内容
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ComicChapterContentMoveRequest = MoveComicContentDto
 
@@ -61,7 +61,7 @@ export type ComicChapterContentMoveResponse = string[]
 /**
  *  类型定义 [ComicChapterContentClearRequest]
  *  @来源 内容管理/漫画章节内容
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ComicChapterContentClearRequest = IdDto
 
@@ -70,7 +70,7 @@ export type ComicChapterContentClearResponse = IdDto
 /**
  *  类型定义 [FileUploadResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type FileUploadResponseDto = {
   /** 任意合法数值 */
@@ -97,7 +97,7 @@ export type FileUploadResponseDto = {
 /**
  *  类型定义 [UpdateComicContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateComicContentDto = {
   /** 任意合法数值 */
@@ -114,7 +114,7 @@ export type UpdateComicContentDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -127,7 +127,7 @@ export type IdDto = {
 /**
  *  类型定义 [DeleteComicContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type DeleteComicContentDto = {
   /** 任意合法数值 */
@@ -142,7 +142,7 @@ export type DeleteComicContentDto = {
 /**
  *  类型定义 [MoveComicContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type MoveComicContentDto = {
   /** 任意合法数值 */

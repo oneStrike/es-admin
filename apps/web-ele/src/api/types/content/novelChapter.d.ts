@@ -1,7 +1,7 @@
 /**
  *  类型定义 [NovelChapterCreateRequest]
  *  @来源 内容管理/小说章节
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelChapterCreateRequest = CreateWorkChapterDto
 
@@ -10,7 +10,7 @@ export type NovelChapterCreateResponse = IdDto
 /**
  *  类型定义 [NovelChapterPageRequest]
  *  @来源 内容管理/小说章节
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelChapterPageRequest = {
   /** 任意合法数值 */
@@ -46,7 +46,7 @@ export type NovelChapterPageRequest = {
   /* 章节标题 */
   title?: string
 
-  /* 查看规则 */
+  /* 查看规则（-1=INHERIT，INHERIT=-1，0=ALL，1=LOGGED_IN，2=MEMBER，3=PURCHASE） */
   viewRule?: number
 
   /* 作品ID */
@@ -73,7 +73,7 @@ export type NovelChapterPageResponse = {
 /**
  *  类型定义 [NovelChapterDetailRequest]
  *  @来源 内容管理/小说章节
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelChapterDetailRequest = {
   /** 任意合法数值 */
@@ -88,7 +88,7 @@ export type NovelChapterDetailResponse = IdDto
 /**
  *  类型定义 [NovelChapterUpdateRequest]
  *  @来源 内容管理/小说章节
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelChapterUpdateRequest = UpdateWorkChapterDto
 
@@ -97,7 +97,7 @@ export type NovelChapterUpdateResponse = IdDto
 /**
  *  类型定义 [NovelChapterDeleteRequest]
  *  @来源 内容管理/小说章节
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelChapterDeleteRequest = IdDto
 
@@ -106,7 +106,7 @@ export type NovelChapterDeleteResponse = IdDto
 /**
  *  类型定义 [NovelChapterSwapSortOrderRequest]
  *  @来源 内容管理/小说章节
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type NovelChapterSwapSortOrderRequest = DragReorderDto
 
@@ -115,7 +115,7 @@ export type NovelChapterSwapSortOrderResponse = DragReorderDto
 /**
  *  类型定义 [CreateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateWorkChapterDto = {
   /** 任意合法数值 */
@@ -148,7 +148,7 @@ export type CreateWorkChapterDto = {
   subtitle?: null | string
   /* 章节标题 */
   title: string
-  /* 查看规则 */
+  /* 查看规则（-1=INHERIT，INHERIT=-1，0=ALL，1=LOGGED_IN，2=MEMBER，3=PURCHASE） */
   viewRule: -1 | 0 | 1 | 2 | 3
   /* 作品ID */
   workId: number
@@ -160,7 +160,7 @@ export type CreateWorkChapterDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -173,7 +173,7 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateWorkChapterDto = {
   /** 任意合法数值 */
@@ -208,7 +208,7 @@ export type UpdateWorkChapterDto = {
   subtitle?: null | string
   /* 章节标题 */
   title?: string
-  /* 查看规则 */
+  /* 查看规则（-1=INHERIT，INHERIT=-1，0=ALL，1=LOGGED_IN，2=MEMBER，3=PURCHASE） */
   viewRule?: -1 | 0 | 1 | 2 | 3
   /* 作品ID */
   workId?: number
@@ -220,7 +220,7 @@ export type UpdateWorkChapterDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

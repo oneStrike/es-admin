@@ -14,7 +14,7 @@ import { typeOptions } from './shared';
  */
 export function getDetailCards(detail: BaseAuthorDto, extraData?: any) {
   // 解析作者类型
-  const authorTypes = getOptionLabel(typeOptions, detail.type);
+  const authorTypes = getOptionLabel(typeOptions, detail.type ?? []);
 
   // 从额外数据中获取国籍映射
   const nationalityMap = extraData?.nationalityMap || {};

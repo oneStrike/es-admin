@@ -100,6 +100,10 @@ async function handleSubmit(
               await pointsRulesRulesUpdateApi({
                 id: row.id,
                 type: row.type,
+                points: row.points,
+                dailyLimit: row.dailyLimit,
+                totalLimit: row.totalLimit,
+                remark: row.remark,
                 isEnabled: !row.isEnabled,
               });
               useMessage.success('操作成功');

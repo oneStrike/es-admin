@@ -1,7 +1,7 @@
 /**
  *  类型定义 [TaskCreateRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type TaskCreateRequest = CreateTaskDto
 
@@ -10,7 +10,7 @@ export type TaskCreateResponse = boolean
 /**
  *  类型定义 [TaskUpdateRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type TaskUpdateRequest = UpdateTaskDto
 
@@ -19,7 +19,7 @@ export type TaskUpdateResponse = boolean
 /**
  *  类型定义 [TaskUpdateStatusRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type TaskUpdateStatusRequest = UpdateTaskStatusDto
 
@@ -28,7 +28,7 @@ export type TaskUpdateStatusResponse = boolean
 /**
  *  类型定义 [TaskDeleteRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type TaskDeleteRequest = IdDto
 
@@ -37,7 +37,7 @@ export type TaskDeleteResponse = boolean
 /**
  *  类型定义 [TaskPageRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type TaskPageRequest = {
   /** 任意合法数值 */
@@ -61,13 +61,13 @@ export type TaskPageRequest = {
   /* 开始时间 */
   startDate?: null | string
 
-  /* 任务状态 */
+  /* 任务状态（0=DRAFT，1=PUBLISHED，2=OFFLINE） */
   status?: number
 
   /* 任务标题 */
   title?: string
 
-  /* 任务类型 */
+  /* 任务类型（1=NEWBIE，2=DAILY，3=REPEAT，4=ACTIVITY，5=OPERATION） */
   type?: number
 }
 
@@ -91,7 +91,7 @@ export type TaskPageResponse = {
 /**
  *  类型定义 [TaskDetailRequest]
  *  @来源 任务管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type TaskDetailRequest = {
   
@@ -106,16 +106,16 @@ export type TaskDetailResponse = BaseTaskDto
 /**
  *  类型定义 [CreateTaskDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateTaskDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 领取模式 */
+  /* 领取模式（1=AUTO，2=MANUAL） */
   claimMode: 1 | 2
   /* 任务编码 */
   code: string
-  /* 完成模式 */
+  /* 完成模式（1=AUTO，2=MANUAL） */
   completeMode: 1 | 2
   /* 封面图 */
   cover?: null | string
@@ -133,30 +133,30 @@ export type CreateTaskDto = {
   repeatRule?: null | string
   /* 奖励配置 */
   rewardConfig?: null | string
-  /* 任务状态 */
+  /* 任务状态（0=DRAFT，1=PUBLISHED，2=OFFLINE） */
   status: 0 | 1 | 2
   /* 完成目标次数 */
   targetCount: number
   /* 任务标题 */
   title: string
 
-  /* 任务类型 */
+  /* 任务类型（1=NEWBIE，2=DAILY，3=REPEAT，4=ACTIVITY，5=OPERATION） */
   type: 1 | 2 | 3 | 4 | 5
 }
 
 /**
  *  类型定义 [UpdateTaskDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateTaskDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 领取模式 */
+  /* 领取模式（1=AUTO，2=MANUAL） */
   claimMode?: 1 | 2
   /* 任务编码 */
   code?: string
-  /* 完成模式 */
+  /* 完成模式（1=AUTO，2=MANUAL） */
   completeMode?: 1 | 2
   /* 封面图 */
   cover?: null | string
@@ -176,21 +176,21 @@ export type UpdateTaskDto = {
   repeatRule?: null | string
   /* 奖励配置 */
   rewardConfig?: null | string
-  /* 任务状态 */
+  /* 任务状态（0=DRAFT，1=PUBLISHED，2=OFFLINE） */
   status?: 0 | 1 | 2
   /* 完成目标次数 */
   targetCount?: number
   /* 任务标题 */
   title?: string
 
-  /* 任务类型 */
+  /* 任务类型（1=NEWBIE，2=DAILY，3=REPEAT，4=ACTIVITY，5=OPERATION） */
   type?: 1 | 2 | 3 | 4 | 5
 }
 
 /**
  *  类型定义 [UpdateTaskStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateTaskStatusDto = {
   /** 任意合法数值 */
@@ -200,14 +200,14 @@ export type UpdateTaskStatusDto = {
   /* 启用状态 */
   isEnabled?: boolean
 
-  /* 任务状态 */
+  /* 任务状态（0=DRAFT，1=PUBLISHED，2=OFFLINE） */
   status?: 0 | 1 | 2
 }
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -220,16 +220,16 @@ export type IdDto = {
 /**
  *  类型定义 [BaseTaskDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseTaskDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 领取模式 */
+  /* 领取模式（1=AUTO，2=MANUAL） */
   claimMode: 1 | 2
   /* 任务编码 */
   code: string
-  /* 完成模式 */
+  /* 完成模式（1=AUTO，2=MANUAL） */
   completeMode: 1 | 2
   /* 封面图 */
   cover?: null | string
@@ -255,13 +255,13 @@ export type BaseTaskDto = {
   repeatRule?: null | string
   /* 奖励配置 */
   rewardConfig?: null | string
-  /* 任务状态 */
+  /* 任务状态（0=DRAFT，1=PUBLISHED，2=OFFLINE） */
   status: 0 | 1 | 2
   /* 完成目标次数 */
   targetCount: number
   /* 任务标题 */
   title: string
-  /* 任务类型 */
+  /* 任务类型（1=NEWBIE，2=DAILY，3=REPEAT，4=ACTIVITY，5=OPERATION） */
   type: 1 | 2 | 3 | 4 | 5
   /* 更新时间 */
   updatedAt: string

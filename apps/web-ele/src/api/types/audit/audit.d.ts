@@ -1,16 +1,16 @@
 /**
  *  类型定义 [AuditPageRequest]
  *  @来源 系统管理/审计日志
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AuditPageRequest = {
   /** 任意合法数值 */
   [property: string]: any
 
-  /* 操作类型编码 */
+  /* 操作类型编码（LOGIN=LOGIN，LOGOUT=LOGOUT，CREATE=CREATE，UPDATE=UPDATE，DELETE=DELETE，UPLOAD=UPLOAD，DOWNLOAD=DOWNLOAD，EXPORT=EXPORT，IMPORT=IMPORT） */
   actionType?: null | string
 
-  /* 接口类型（admin/app/system等） */
+  /* 接口类型（admin/app/system等）（admin=ADMIN，app=APP，system=SYSTEM，public=PUBLIC） */
   apiType?: null | string
 
   /* 结束时间 */
@@ -22,7 +22,7 @@ export type AuditPageRequest = {
   /* 操作是否成功 */
   isSuccess?: boolean
 
-  /* 请求方法 */
+  /* 请求方法（GET=GET，POST=POST，PUT=PUT，DELETE=DELETE，PATCH=PATCH，HEAD=HEAD，OPTIONS=OPTIONS） */
   method?: string
 
   /* 排序字段，json格式 */
@@ -67,16 +67,16 @@ export type AuditPageResponse = {
 /**
  *  类型定义 [AuditItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AuditItemDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 操作类型编码 */
+  /* 操作类型编码（LOGIN=LOGIN，LOGOUT=LOGOUT，CREATE=CREATE，UPDATE=UPDATE，DELETE=DELETE，UPLOAD=UPLOAD，DOWNLOAD=DOWNLOAD，EXPORT=EXPORT，IMPORT=IMPORT） */
   actionType?: null | string
   /* 操作类型展示文案 */
   actionTypeLabel?: null | string
-  /* 接口类型（admin/app/system等） */
+  /* 接口类型（admin/app/system等）（admin=ADMIN，app=APP，system=SYSTEM，public=PUBLIC） */
   apiType?: null | string
   /* 自定义日志内容 */
   content: string
@@ -90,7 +90,7 @@ export type AuditItemDto = {
   ip?: null | string
   /* 操作是否成功 */
   isSuccess: boolean
-  /* 请求方法 */
+  /* 请求方法（GET=GET，POST=POST，PUT=PUT，DELETE=DELETE，PATCH=PATCH，HEAD=HEAD，OPTIONS=OPTIONS） */
   method: 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT'
   /* 请求参数（JSON格式） */
   params?: null | string

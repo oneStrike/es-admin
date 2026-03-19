@@ -50,8 +50,8 @@ import { requestClient } from '#/api/request'
   /**
    * 获取启用标签
    */
-  export async function tagsEnabledApi(params: TagsEnabledRequest): Promise<TagsEnabledResponse> {
-    return requestClient.get<TagsEnabledResponse>('/api/admin/forum/tags/enabled', { params });
+  export async function tagsEnabledApi(): Promise<TagsEnabledResponse> {
+    return requestClient.get<TagsEnabledResponse>('/api/admin/forum/tags/enabled');
   }
 
 

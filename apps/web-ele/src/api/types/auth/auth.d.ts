@@ -3,7 +3,7 @@ export type AuthCaptchaResponse = CaptchaDto
 /**
  *  类型定义 [AuthLoginRequest]
  *  @来源 认证与账号/管理员认证
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AuthLoginRequest = UserLoginDto
 
@@ -12,7 +12,7 @@ export type AuthLoginResponse = LoginResponseDto
 /**
  *  类型定义 [AuthLogoutRequest]
  *  @来源 认证与账号/管理员认证
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AuthLogoutRequest = TokenDto
 
@@ -21,7 +21,7 @@ export type AuthLogoutResponse = boolean
 /**
  *  类型定义 [CaptchaDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CaptchaDto = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type CaptchaDto = {
 /**
  *  类型定义 [UserLoginDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserLoginDto = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type UserLoginDto = {
 /**
  *  类型定义 [LoginResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type LoginResponseDto = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type LoginResponseDto = {
 /**
  *  类型定义 [TokenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type TokenDto = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type TokenDto = {
 /**
  *  类型定义 [BaseUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseUserDto = {
   /** 任意合法数值 */
@@ -106,7 +106,7 @@ export type BaseUserDto = {
   mobile?: null | string
   /* 密码 */
   password: string
-  /* 角色 0普通管理员 1超级管理员 */
+  /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
   role: 0 | 1
   /* 更新时间 */
   updatedAt: string

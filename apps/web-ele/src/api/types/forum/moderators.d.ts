@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ModeratorsPageRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorsPageRequest = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type ModeratorsPageResponse = {
 /**
  *  类型定义 [ModeratorsCreateRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorsCreateRequest = CreateForumModeratorDto
 
@@ -64,7 +64,7 @@ export type ModeratorsCreateResponse = ForumModeratorDto
 /**
  *  类型定义 [ModeratorsUpdateRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorsUpdateRequest = UpdateForumModeratorDto
 
@@ -73,7 +73,7 @@ export type ModeratorsUpdateResponse = ForumModeratorDto
 /**
  *  类型定义 [ModeratorsDeleteRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorsDeleteRequest = IdDto
 
@@ -82,7 +82,7 @@ export type ModeratorsDeleteResponse = IdDto
 /**
  *  类型定义 [ModeratorsAssignSectionRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorsAssignSectionRequest = AssignForumModeratorSectionDto
 
@@ -91,7 +91,7 @@ export type ModeratorsAssignSectionResponse = ForumModeratorDto
 /**
  *  类型定义 [ForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ForumModeratorDto = {
   /** 任意合法数值 */
@@ -118,7 +118,7 @@ export type ForumModeratorDto = {
   permissions: number[]
   /* 备注 */
   remark?: null | string
-  /* 版主角色类型 */
+  /* 版主角色类型（1=SUPER，2=GROUP，3=SECTION） */
   roleType: 1 | 2 | 3
   /* 管理的板块列表 */
   sections: ForumModeratorSectionItemDto[]
@@ -132,7 +132,7 @@ export type ForumModeratorDto = {
 /**
  *  类型定义 [ForumModeratorGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ForumModeratorGroupDto = {
   /** 任意合法数值 */
@@ -147,7 +147,7 @@ export type ForumModeratorGroupDto = {
 /**
  *  类型定义 [ForumModeratorSectionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ForumModeratorSectionItemDto = {
   /** 任意合法数值 */
@@ -168,7 +168,7 @@ export type ForumModeratorSectionItemDto = {
 /**
  *  类型定义 [CreateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateForumModeratorDto = {
   /** 任意合法数值 */
@@ -181,7 +181,7 @@ export type CreateForumModeratorDto = {
   permissions?: any[] | null
   /* 备注 */
   remark?: null | string
-  /* 版主角色类型 */
+  /* 版主角色类型（1=SUPER，2=GROUP，3=SECTION） */
   roleType: 1 | 2 | 3
   /* 板块ID列表（板块版主时必填） */
   sectionIds?: any[] | null
@@ -193,7 +193,7 @@ export type CreateForumModeratorDto = {
 /**
  *  类型定义 [UpdateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateForumModeratorDto = {
   /** 任意合法数值 */
@@ -208,7 +208,7 @@ export type UpdateForumModeratorDto = {
   permissions?: any[] | null
   /* 备注 */
   remark?: null | string
-  /* 版主角色类型 */
+  /* 版主角色类型（1=SUPER，2=GROUP，3=SECTION） */
   roleType?: 1 | 2 | 3
 
   /* 板块ID列表（板块版主时必填） */
@@ -218,7 +218,7 @@ export type UpdateForumModeratorDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -231,7 +231,7 @@ export type IdDto = {
 /**
  *  类型定义 [AssignForumModeratorSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AssignForumModeratorSectionDto = {
   /** 任意合法数值 */

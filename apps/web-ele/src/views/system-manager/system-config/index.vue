@@ -9,10 +9,7 @@ import { ElMenu, ElMenuItem, ElScrollbar } from 'element-plus';
 import forge from 'node-forge';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  systemConfigDetailApi,
-  systemConfigUpdateApi,
-} from '#/api/core/health/system';
+import { systemConfigApi, systemUpdateApi } from '#/api';
 import { useMessage } from '#/hooks/useFeedback';
 import { useAuthStore } from '#/store';
 
@@ -21,6 +18,7 @@ import {
   contentReviewFormSchema,
   maintenanceFormSchema,
   siteFormSchema,
+  uploadFormSchema,
 } from './modules/model/shared';
 
 defineOptions({
@@ -36,6 +34,7 @@ const menuItems = [
   { key: 'maintenance', label: '维护模式' },
   { key: 'aliyun', label: '阿里云配置' },
   { key: 'contentReview', label: '内容审核' },
+  { key: 'upload', label: '上传配置' },
 ];
 
 const currentSchema = computed(() => {
@@ -48,6 +47,9 @@ const currentSchema = computed(() => {
     }
     case 'maintenance': {
       return maintenanceFormSchema;
+    }
+    case 'upload': {
+      return uploadFormSchema;
     }
     default: {
       return siteFormSchema;
@@ -72,7 +74,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 // 缓存完整配置数据
-const configData = ref<SystemConfigDto>({});
+const configData = ref<null | SystemConfigDto>(null);
 
 // 当切换菜单时更新表单
 watch(activeMenu, async () => {
@@ -84,7 +86,7 @@ watch(activeMenu, async () => {
 async function loadConfig() {
   loading.value = true;
   try {
-    const result = await systemConfigDetailApi();
+    const result = await systemConfigApi();
     configData.value = result;
     await updateFormValues();
   } finally {
@@ -97,7 +99,7 @@ async function updateFormValues() {
 
   switch (activeMenu.value) {
     case 'aliyun': {
-      const aliyunConfig = configData.value.aliyunConfig || {};
+      const aliyunConfig = configData.value?.aliyunConfig || {};
       values.accessKeyId = aliyunConfig.accessKeyId;
       values.accessKeySecret = aliyunConfig.accessKeySecret;
       const sms = aliyunConfig.sms || {};
@@ -108,7 +110,7 @@ async function updateFormValues() {
       break;
     }
     case 'contentReview': {
-      const policy = configData.value.contentReviewPolicy || {};
+      const policy = configData.value?.contentReviewPolicy || {};
       values.recordHits = policy.recordHits;
       const light = policy.lightAction || {};
       values.lightActionIsHidden = light.isHidden;
@@ -122,13 +124,35 @@ async function updateFormValues() {
       break;
     }
     case 'maintenance': {
-      const maintenanceConfig = configData.value.maintenanceConfig || {};
+      const maintenanceConfig = configData.value?.maintenanceConfig || {};
       values.enableMaintenanceMode = maintenanceConfig.enableMaintenanceMode;
       values.maintenanceMessage = maintenanceConfig.maintenanceMessage;
       break;
     }
+    case 'upload': {
+      const uploadConfig = configData.value?.uploadConfig || {};
+      const qiniu = uploadConfig.qiniu || {};
+      const superbed = uploadConfig.superbed || {};
+      values.uploadProvider = uploadConfig.provider || 'local';
+      values.superbedNonImageFallbackToLocal =
+        uploadConfig.superbedNonImageFallbackToLocal ?? false;
+      values.qiniuAccessKey = qiniu.accessKey;
+      values.qiniuSecretKey = qiniu.secretKey;
+      values.qiniuBucket = qiniu.bucket;
+      values.qiniuDomain = qiniu.domain;
+      values.qiniuRegion = qiniu.region;
+      values.qiniuPathPrefix = qiniu.pathPrefix;
+      values.qiniuUseHttps = qiniu.useHttps ?? true;
+      values.qiniuTokenExpires = qiniu.tokenExpires;
+      values.superbedToken = superbed.token;
+      values.superbedCategories = superbed.categories;
+      values.superbedWatermark = superbed.watermark ?? false;
+      values.superbedCompress = superbed.compress ?? false;
+      values.superbedWebp = superbed.webp ?? false;
+      break;
+    }
     default: {
-      const siteConfig = configData.value.siteConfig || {};
+      const siteConfig = configData.value?.siteConfig || {};
       values.siteName = siteConfig.siteName;
       values.siteDescription = siteConfig.siteDescription;
       values.siteKeywords = siteConfig.siteKeywords;
@@ -157,29 +181,33 @@ function encryptValue(value: string, publicKey: string) {
 async function handleSaveConfig(values: Record<string, any>) {
   loading.value = true;
   try {
+    const currentConfig = configData.value;
+    if (!currentConfig) return;
+
     // 构建提交数据，保留原有数据
     const submitData: SystemConfigDto = {
-      ...configData.value,
+      ...currentConfig,
     };
 
     // 根据当前菜单更新对应配置
     switch (activeMenu.value) {
       case 'aliyun': {
+        const currentAliyunConfig = currentConfig.aliyunConfig || {};
         // 加密敏感字段
         const publicKey = await authStore.getRsaPublicKey();
         const encryptedAccessKeyId = values.accessKeyId
           ? encryptValue(values.accessKeyId, publicKey)
-          : configData.value.aliyunConfig?.accessKeyId;
+          : currentAliyunConfig.accessKeyId;
         const encryptedAccessKeySecret = values.accessKeySecret
           ? encryptValue(values.accessKeySecret, publicKey)
-          : configData.value.aliyunConfig?.accessKeySecret;
+          : currentAliyunConfig.accessKeySecret;
 
         submitData.aliyunConfig = {
-          ...configData.value.aliyunConfig,
+          ...currentAliyunConfig,
           accessKeyId: encryptedAccessKeyId,
           accessKeySecret: encryptedAccessKeySecret,
           sms: {
-            ...configData.value.aliyunConfig?.sms,
+            ...currentAliyunConfig.sms,
             endpoint: values.smsEndpoint,
             signName: values.smsSignName,
             verifyCodeLength: values.smsVerifyCodeLength,
@@ -189,21 +217,22 @@ async function handleSaveConfig(values: Record<string, any>) {
         break;
       }
       case 'contentReview': {
+        const currentPolicy = currentConfig.contentReviewPolicy || {};
         submitData.contentReviewPolicy = {
-          ...configData.value.contentReviewPolicy,
+          ...currentPolicy,
           recordHits: values.recordHits,
           lightAction: {
-            ...configData.value.contentReviewPolicy?.lightAction,
+            ...currentPolicy.lightAction,
             isHidden: values.lightActionIsHidden,
             auditStatus: values.lightActionAuditStatus,
           },
           generalAction: {
-            ...configData.value.contentReviewPolicy?.generalAction,
+            ...currentPolicy.generalAction,
             isHidden: values.generalActionIsHidden,
             auditStatus: values.generalActionAuditStatus,
           },
           severeAction: {
-            ...configData.value.contentReviewPolicy?.severeAction,
+            ...currentPolicy.severeAction,
             isHidden: values.severeActionIsHidden,
             auditStatus: values.severeActionAuditStatus,
           },
@@ -211,16 +240,65 @@ async function handleSaveConfig(values: Record<string, any>) {
         break;
       }
       case 'maintenance': {
+        const currentMaintenanceConfig = currentConfig.maintenanceConfig || {};
         submitData.maintenanceConfig = {
-          ...configData.value.maintenanceConfig,
+          ...currentMaintenanceConfig,
           enableMaintenanceMode: values.enableMaintenanceMode,
           maintenanceMessage: values.maintenanceMessage,
         };
         break;
       }
+      case 'upload': {
+        const currentUploadConfig = currentConfig.uploadConfig || {};
+        const publicKey = await authStore.getRsaPublicKey();
+        const provider = values.uploadProvider as 'local' | 'qiniu' | 'superbed';
+        const currentQiniu = currentUploadConfig.qiniu || {};
+        const currentSuperbed = currentUploadConfig.superbed || {};
+        submitData.uploadConfig = {
+          ...currentUploadConfig,
+          provider,
+          superbedNonImageFallbackToLocal:
+            provider === 'superbed'
+              ? values.superbedNonImageFallbackToLocal
+              : false,
+          qiniu:
+            provider === 'qiniu'
+              ? {
+                  ...currentQiniu,
+                  accessKey: values.qiniuAccessKey
+                    ? encryptValue(values.qiniuAccessKey, publicKey)
+                    : currentQiniu.accessKey,
+                  secretKey: values.qiniuSecretKey
+                    ? encryptValue(values.qiniuSecretKey, publicKey)
+                    : currentQiniu.secretKey,
+                  bucket: values.qiniuBucket,
+                  domain: values.qiniuDomain,
+                  region: values.qiniuRegion,
+                  pathPrefix: values.qiniuPathPrefix,
+                  useHttps: values.qiniuUseHttps,
+                  tokenExpires: values.qiniuTokenExpires,
+                }
+              : currentQiniu,
+          superbed:
+            provider === 'superbed'
+              ? {
+                  ...currentSuperbed,
+                  token: values.superbedToken
+                    ? encryptValue(values.superbedToken, publicKey)
+                    : currentSuperbed.token,
+                  categories: values.superbedCategories,
+                  watermark: values.superbedWatermark,
+                  compress: values.superbedCompress,
+                  webp: values.superbedWebp,
+                }
+              : currentSuperbed,
+        };
+        break;
+      }
       default: {
+        const currentSiteConfig = currentConfig.siteConfig || {};
         submitData.siteConfig = {
-          ...configData.value.siteConfig,
+          ...currentSiteConfig,
           siteName: values.siteName,
           siteDescription: values.siteDescription,
           siteKeywords: values.siteKeywords,
@@ -233,7 +311,7 @@ async function handleSaveConfig(values: Record<string, any>) {
       }
     }
 
-    await systemConfigUpdateApi(submitData);
+    await systemUpdateApi(submitData as any);
     useMessage.success('配置保存成功');
     await loadConfig();
   } finally {

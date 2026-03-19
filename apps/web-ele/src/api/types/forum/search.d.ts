@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SearchPageRequest]
  *  @来源 论坛管理/论坛搜索
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SearchPageRequest = {
   /** 任意合法数值 */
@@ -25,7 +25,7 @@ export type SearchPageRequest = {
   /* 板块ID */
   sectionId?: null | number
 
-  /* 排序类型 */
+  /* 排序类型（latest=LATEST，hot=HOT，relevance=RELEVANCE） */
   sort?: null | string
 
   /* 开始时间 */
@@ -34,7 +34,7 @@ export type SearchPageRequest = {
   /* 标签ID */
   tagId?: null | number
 
-  /* 搜索类型 */
+  /* 搜索类型（topic=TOPIC，reply=REPLY，all=ALL） */
   type?: null | string
 }
 
@@ -58,7 +58,7 @@ export type SearchPageResponse = {
 /**
  *  类型定义 [ForumSearchResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ForumSearchResultDto = {
   /** 任意合法数值 */
@@ -75,7 +75,7 @@ export type ForumSearchResultDto = {
   replyCount: number
   /* 回复ID */
   replyId?: null | number
-  /* 结果类型 */
+  /* 结果类型（topic=TOPIC，reply=REPLY，all=ALL） */
   resultType: 'all' | 'reply' | 'topic'
   /* 板块ID */
   sectionId: number

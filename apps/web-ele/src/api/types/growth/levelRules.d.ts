@@ -1,7 +1,7 @@
 /**
  *  类型定义 [LevelRulesPageRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type LevelRulesPageRequest = {
   /** 任意合法数值 */
@@ -52,7 +52,7 @@ export type LevelRulesPageResponse = {
 /**
  *  类型定义 [LevelRulesDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type LevelRulesDetailRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type LevelRulesDetailResponse = BaseUserLevelRuleDto
 /**
  *  类型定义 [LevelRulesCreateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type LevelRulesCreateRequest = CreateUserLevelRuleDto
 
@@ -76,7 +76,7 @@ export type LevelRulesCreateResponse = boolean
 /**
  *  类型定义 [LevelRulesUpdateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type LevelRulesUpdateRequest = UpdateUserLevelRuleDto
 
@@ -85,7 +85,7 @@ export type LevelRulesUpdateResponse = boolean
 /**
  *  类型定义 [LevelRulesDeleteRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type LevelRulesDeleteRequest = IdDto
 
@@ -96,7 +96,7 @@ export type LevelRulesStatsResponse = UserLevelStatisticsDto
 /**
  *  类型定义 [BaseUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -149,7 +149,7 @@ export type BaseUserLevelRuleDto = {
 /**
  *  类型定义 [CreateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -196,7 +196,7 @@ export type CreateUserLevelRuleDto = {
 /**
  *  类型定义 [UpdateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -245,7 +245,7 @@ export type UpdateUserLevelRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -258,7 +258,7 @@ export type IdDto = {
 /**
  *  类型定义 [UserLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -275,7 +275,7 @@ export type UserLevelStatisticsDto = {
 /**
  *  类型定义 [UserLevelDistributionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserLevelDistributionItemDto = {
   /** 任意合法数值 */

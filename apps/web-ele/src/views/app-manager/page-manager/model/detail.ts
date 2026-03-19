@@ -18,7 +18,7 @@ export function getDetailCards(detail: BaseAppPageDto) {
   // 计算平台标签
   const enablePlatformLabels = getOptionLabel(
     enablePlatform,
-    detail.enablePlatform,
+    detail.enablePlatform ?? [],
   );
 
   return [

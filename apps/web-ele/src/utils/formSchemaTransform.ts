@@ -214,11 +214,13 @@ export const formSchemaTransform: FormSchemaTransform = {
         } else {
           // schema 中不存在，使用 extra 中的配置创建新项
           itemExtra.fieldName = itemExtra?.fieldName || key;
+          const componentProps = (itemExtra.componentProps ?? {}) as Record<
+            string,
+            any
+          >;
           itemExtra.componentProps = {
-            ...itemExtra.componentProps,
-            // @ts-expect-error ignore
-            placeholder:
-              itemExtra.componentProps?.placeholder ?? itemExtra.label,
+            ...componentProps,
+            placeholder: componentProps.placeholder ?? itemExtra.label,
           };
           filterList.push(itemExtra as EsFormSchema[number]);
         }

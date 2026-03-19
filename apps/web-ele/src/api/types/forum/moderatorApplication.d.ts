@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ModeratorApplicationPageRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorApplicationPageRequest = {
   /** 任意合法数值 */
@@ -31,7 +31,7 @@ export type ModeratorApplicationPageRequest = {
   /* 开始时间 */
   startDate?: null | string
 
-  /* 申请状态 */
+  /* 申请状态（0=PENDING，1=APPROVED，2=REJECTED） */
   status?: number
 }
 
@@ -55,7 +55,7 @@ export type ModeratorApplicationPageResponse = {
 /**
  *  类型定义 [ModeratorApplicationDetailRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorApplicationDetailRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type ModeratorApplicationDetailResponse = ForumModeratorApplicationDto
 /**
  *  类型定义 [ModeratorApplicationAuditRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorApplicationAuditRequest = AuditForumModeratorApplicationDto
 
@@ -79,7 +79,7 @@ export type ModeratorApplicationAuditResponse = ForumModeratorApplicationDto
 /**
  *  类型定义 [ModeratorApplicationDeleteRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ModeratorApplicationDeleteRequest = IdDto
 
@@ -88,7 +88,7 @@ export type ModeratorApplicationDeleteResponse = IdDto
 /**
  *  类型定义 [ForumModeratorApplicationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ForumModeratorApplicationDto = {
   /** 任意合法数值 */
@@ -123,7 +123,7 @@ export type ForumModeratorApplicationDto = {
   section?: ForumModeratorApplicationSectionDto
   /* 申请板块ID */
   sectionId: number
-  /* 申请状态 */
+  /* 申请状态（0=PENDING，1=APPROVED，2=REJECTED） */
   status: 0 | 1 | 2
 
   /* 更新时间 */
@@ -133,7 +133,7 @@ export type ForumModeratorApplicationDto = {
 /**
  *  类型定义 [ForumModeratorApplicationUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ForumModeratorApplicationUserDto = {
   /** 任意合法数值 */
@@ -150,7 +150,7 @@ export type ForumModeratorApplicationUserDto = {
 /**
  *  类型定义 [ForumModeratorApplicationSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ForumModeratorApplicationSectionDto = {
   /** 任意合法数值 */
@@ -169,7 +169,7 @@ export type ForumModeratorApplicationSectionDto = {
 /**
  *  类型定义 [AuditForumModeratorApplicationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AuditForumModeratorApplicationDto = {
   /** 任意合法数值 */
@@ -181,14 +181,14 @@ export type AuditForumModeratorApplicationDto = {
   /* 备注 */
   remark?: null | string
 
-  /* 申请状态 */
+  /* 申请状态（0=PENDING，1=APPROVED，2=REJECTED） */
   status: 0 | 1 | 2
 }
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */

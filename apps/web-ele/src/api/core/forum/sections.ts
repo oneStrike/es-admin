@@ -38,8 +38,8 @@ import { requestClient } from '#/api/request'
   /**
    * 查看板块树
    */
-  export async function sectionsTreeApi(params: SectionsTreeRequest): Promise<SectionsTreeResponse> {
-    return requestClient.get<SectionsTreeResponse>('/api/admin/forum/sections/tree', { params });
+  export async function sectionsTreeApi(): Promise<SectionsTreeResponse> {
+    return requestClient.get<SectionsTreeResponse>('/api/admin/forum/sections/tree');
   }
 
 

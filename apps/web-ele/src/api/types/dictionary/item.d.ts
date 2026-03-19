@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ItemPageRequest]
  *  @来源 系统管理/字典管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ItemPageRequest = {
   /** 任意合法数值 */
@@ -49,7 +49,7 @@ export type ItemPageResponse = {
 /**
  *  类型定义 [ItemListRequest]
  *  @来源 系统管理/字典管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ItemListRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type ItemListResponse = BaseDictionaryItemDto
 /**
  *  类型定义 [ItemCreateRequest]
  *  @来源 系统管理/字典管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ItemCreateRequest = CreateDictionaryItemDto
 
@@ -73,7 +73,7 @@ export type ItemCreateResponse = boolean
 /**
  *  类型定义 [ItemUpdateRequest]
  *  @来源 系统管理/字典管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ItemUpdateRequest = UpdateDictionaryItemDto
 
@@ -82,7 +82,7 @@ export type ItemUpdateResponse = boolean
 /**
  *  类型定义 [ItemUpdateStatusRequest]
  *  @来源 系统管理/字典管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ItemUpdateStatusRequest = UpdateEnabledStatusDto
 
@@ -91,7 +91,7 @@ export type ItemUpdateStatusResponse = BatchOperationResponseDto
 /**
  *  类型定义 [ItemDeleteRequest]
  *  @来源 系统管理/字典管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ItemDeleteRequest = IdDto
 
@@ -100,7 +100,7 @@ export type ItemDeleteResponse = boolean
 /**
  *  类型定义 [ItemSwapSortOrderRequest]
  *  @来源 系统管理/字典管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ItemSwapSortOrderRequest = DragReorderDto
 
@@ -109,7 +109,7 @@ export type ItemSwapSortOrderResponse = boolean
 /**
  *  类型定义 [BaseDictionaryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseDictionaryItemDto = {
   /** 任意合法数值 */
@@ -142,7 +142,7 @@ export type BaseDictionaryItemDto = {
 /**
  *  类型定义 [CreateDictionaryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateDictionaryItemDto = {
   /** 任意合法数值 */
@@ -169,7 +169,7 @@ export type CreateDictionaryItemDto = {
 /**
  *  类型定义 [UpdateDictionaryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateDictionaryItemDto = {
   /** 任意合法数值 */
@@ -198,7 +198,7 @@ export type UpdateDictionaryItemDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -213,7 +213,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [BatchOperationResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BatchOperationResponseDto = {
   /** 任意合法数值 */
@@ -226,7 +226,7 @@ export type BatchOperationResponseDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -239,7 +239,7 @@ export type IdDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type DragReorderDto = {
   /** 任意合法数值 */

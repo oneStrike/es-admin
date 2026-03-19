@@ -12,8 +12,8 @@ import { requestClient } from '#/api/request'
   /**
    * 获取验证码
    */
-  export async function authCaptchaApi(params: AuthCaptchaRequest): Promise<AuthCaptchaResponse> {
-    return requestClient.get<AuthCaptchaResponse>('/api/admin/auth/captcha', { params });
+  export async function authCaptchaApi(): Promise<AuthCaptchaResponse> {
+    return requestClient.get<AuthCaptchaResponse>('/api/admin/auth/captcha');
   }
 
 

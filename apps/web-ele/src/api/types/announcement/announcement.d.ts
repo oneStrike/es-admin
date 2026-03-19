@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AnnouncementCreateRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AnnouncementCreateRequest = CreateAnnouncementDto
 
@@ -10,13 +10,13 @@ export type AnnouncementCreateResponse = boolean
 /**
  *  类型定义 [AnnouncementPageRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AnnouncementPageRequest = {
   /** 任意合法数值 */
   [property: string]: any
 
-  /* 公告类型 */
+  /* 公告类型（0=PLATFORM，1=ACTIVITY，2=MAINTENANCE，3=UPDATE，4=POLICY） */
   announcementType?: number
 
   /* 启用平台筛选 JSON 字符串 */
@@ -43,7 +43,7 @@ export type AnnouncementPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number
 
-  /* 优先级 */
+  /* 优先级（0=LOW，1=MEDIUM，2=HIGH，3=URGENT） */
   priorityLevel?: number
 
   /* 发布结束时间 */
@@ -82,7 +82,7 @@ export type AnnouncementPageResponse = {
 /**
  *  类型定义 [AnnouncementDetailRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AnnouncementDetailRequest = {
   /** 任意合法数值 */
@@ -97,7 +97,7 @@ export type AnnouncementDetailResponse = AnnouncementDetailDto
 /**
  *  类型定义 [AnnouncementUpdateRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AnnouncementUpdateRequest = UpdateAnnouncementDto
 
@@ -106,7 +106,7 @@ export type AnnouncementUpdateResponse = boolean
 /**
  *  类型定义 [AnnouncementUpdateStatusRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AnnouncementUpdateStatusRequest = UpdateAnnouncementStatusDto
 
@@ -115,7 +115,7 @@ export type AnnouncementUpdateStatusResponse = boolean
 /**
  *  类型定义 [AnnouncementDeleteRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AnnouncementDeleteRequest = IdDto
 
@@ -124,12 +124,12 @@ export type AnnouncementDeleteResponse = boolean
 /**
  *  类型定义 [CreateAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateAnnouncementDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 公告类型 */
+  /* 公告类型（0=PLATFORM，1=ACTIVITY，2=MAINTENANCE，3=UPDATE，4=POLICY） */
   announcementType: 0 | 1 | 2 | 3 | 4
   /* 公告内容详情 */
   content: string
@@ -141,7 +141,7 @@ export type CreateAnnouncementDto = {
   pageId?: null | number
   /* 公告弹窗背景图片URL */
   popupBackgroundImage?: null | string
-  /* 优先级 */
+  /* 优先级（0=LOW，1=MEDIUM，2=HIGH，3=URGENT） */
   priorityLevel: 0 | 1 | 2 | 3
   /* 发布结束时间 */
   publishEndTime?: null | string
@@ -159,12 +159,12 @@ export type CreateAnnouncementDto = {
 /**
  *  类型定义 [AnnouncementPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AnnouncementPageResponseDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 公告类型 */
+  /* 公告类型（0=PLATFORM，1=ACTIVITY，2=MAINTENANCE，3=UPDATE，4=POLICY） */
   announcementType: 0 | 1 | 2 | 3 | 4
   /* 创建时间 */
   createdAt: string
@@ -178,7 +178,7 @@ export type AnnouncementPageResponseDto = {
   isPublished: boolean
   /* 关联页面id */
   pageId?: null | number
-  /* 优先级 */
+  /* 优先级（0=LOW，1=MEDIUM，2=HIGH，3=URGENT） */
   priorityLevel: 0 | 1 | 2 | 3
   /* 发布结束时间 */
   publishEndTime?: null | string
@@ -200,12 +200,12 @@ export type AnnouncementPageResponseDto = {
 /**
  *  类型定义 [AnnouncementDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AnnouncementDetailDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 公告类型 */
+  /* 公告类型（0=PLATFORM，1=ACTIVITY，2=MAINTENANCE，3=UPDATE，4=POLICY） */
   announcementType: 0 | 1 | 2 | 3 | 4
   /* 公告关联页面 */
   appPage: RelatedPageDto
@@ -225,7 +225,7 @@ export type AnnouncementDetailDto = {
   pageId?: null | number
   /* 公告弹窗背景图片URL */
   popupBackgroundImage?: null | string
-  /* 优先级 */
+  /* 优先级（0=LOW，1=MEDIUM，2=HIGH，3=URGENT） */
   priorityLevel: 0 | 1 | 2 | 3
   /* 发布结束时间 */
   publishEndTime?: null | string
@@ -247,7 +247,7 @@ export type AnnouncementDetailDto = {
 /**
  *  类型定义 [RelatedPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type RelatedPageDto = {
   /** 任意合法数值 */
@@ -266,12 +266,12 @@ export type RelatedPageDto = {
 /**
  *  类型定义 [UpdateAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateAnnouncementDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 公告类型 */
+  /* 公告类型（0=PLATFORM，1=ACTIVITY，2=MAINTENANCE，3=UPDATE，4=POLICY） */
   announcementType: 0 | 1 | 2 | 3 | 4
   /* 公告内容详情 */
   content: string
@@ -285,7 +285,7 @@ export type UpdateAnnouncementDto = {
   pageId?: null | number
   /* 公告弹窗背景图片URL */
   popupBackgroundImage?: null | string
-  /* 优先级 */
+  /* 优先级（0=LOW，1=MEDIUM，2=HIGH，3=URGENT） */
   priorityLevel: 0 | 1 | 2 | 3
   /* 发布结束时间 */
   publishEndTime?: null | string
@@ -303,7 +303,7 @@ export type UpdateAnnouncementDto = {
 /**
  *  类型定义 [UpdateAnnouncementStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateAnnouncementStatusDto = {
   /** 任意合法数值 */
@@ -318,7 +318,7 @@ export type UpdateAnnouncementStatusDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */

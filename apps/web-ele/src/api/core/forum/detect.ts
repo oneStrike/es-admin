@@ -18,6 +18,6 @@ import { requestClient } from '#/api/request'
   /**
    * 检查敏感词检测器状态
    */
-  export async function detectStatusApi(params: DetectStatusRequest): Promise<DetectStatusResponse> {
-    return requestClient.get<DetectStatusResponse>('/api/admin/forum/sensitive-word/detect/status', { params });
+  export async function detectStatusApi(): Promise<DetectStatusResponse> {
+    return requestClient.get<DetectStatusResponse>('/api/admin/forum/sensitive-word/detect/status');
   }

@@ -1,7 +1,7 @@
 /**
  *  类型定义 [UserDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserDetailRequest = {
   /** 任意合法数值 */
@@ -16,7 +16,7 @@ export type UserDetailResponse = UserLevelInfoDto
 /**
  *  类型定义 [UserPageRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserPageRequest = {
   
@@ -76,7 +76,7 @@ export type UserPageResponse = {
 /**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserLevelInfoDto = {
   /** 任意合法数值 */
@@ -107,7 +107,7 @@ export type UserLevelInfoDto = {
 /**
  *  类型定义 [UserLevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserLevelPermissionsDto = {
   /** 任意合法数值 */
@@ -128,7 +128,7 @@ export type UserLevelPermissionsDto = {
 /**
  *  类型定义 [BadgeUserPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BadgeUserPageItemDto = {
   /** 任意合法数值 */
@@ -149,7 +149,7 @@ export type BadgeUserPageItemDto = {
 /**
  *  类型定义 [BadgeUserInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BadgeUserInfoDto = {
   /** 任意合法数值 */

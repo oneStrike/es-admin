@@ -65,8 +65,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
-      let accessToken = '';
-      accessToken = config.url?.includes('logout')
+      const accessToken = config.url?.includes('logout')
         ? config.data.accessToken || ''
         : accessStore.accessToken || '';
 

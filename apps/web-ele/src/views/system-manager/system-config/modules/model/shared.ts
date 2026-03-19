@@ -363,3 +363,231 @@ export const contentReviewFormSchema: EsFormSchema = [
     },
   },
 ];
+
+// ========== 上传配置 ==========
+export const uploadFormSchema: EsFormSchema = [
+  {
+    component: 'Divider',
+    fieldName: 'divider_upload',
+    hideLabel: true,
+    formItemClass: 'w-full',
+    renderComponentContent: () => {
+      return {
+        default: () => h('div', { class: 'text-lg font-bold' }, '上传配置'),
+      };
+    },
+  },
+  {
+    component: 'Select',
+    fieldName: 'uploadProvider',
+    label: '上传提供方',
+    defaultValue: 'local',
+    componentProps: {
+      placeholder: '请选择上传提供方',
+      options: [
+        { label: '本地', value: 'local' },
+        { label: '七牛', value: 'qiniu' },
+        { label: 'Superbed', value: 'superbed' },
+      ],
+    },
+  },
+  {
+    component: 'Switch',
+    fieldName: 'superbedNonImageFallbackToLocal',
+    label: 'Superbed 非图片回落本地',
+    defaultValue: false,
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'superbed',
+    },
+  },
+  {
+    component: 'Divider',
+    fieldName: 'divider_upload_qiniu',
+    hideLabel: true,
+    formItemClass: 'w-full',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+    renderComponentContent: () => {
+      return {
+        default: () => h('div', { class: 'text-base font-medium text-gray-600' }, '七牛配置'),
+      };
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'qiniuAccessKey',
+    label: 'AccessKey',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+    componentProps: {
+      placeholder: '请输入七牛 AccessKey',
+      maxlength: 200,
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'qiniuSecretKey',
+    label: 'SecretKey',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+    componentProps: {
+      placeholder: '请输入七牛 SecretKey',
+      maxlength: 200,
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'qiniuBucket',
+    label: 'Bucket',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+    componentProps: {
+      placeholder: '请输入七牛 Bucket',
+      maxlength: 100,
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'qiniuDomain',
+    label: '公开域名',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+    componentProps: {
+      placeholder: '请输入七牛公开访问域名',
+      maxlength: 300,
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'qiniuRegion',
+    label: '区域 ID',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+    componentProps: {
+      placeholder: '留空则自动查询',
+      maxlength: 100,
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'qiniuPathPrefix',
+    label: '对象前缀',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+    componentProps: {
+      placeholder: '请输入七牛对象前缀',
+      maxlength: 200,
+    },
+  },
+  {
+    component: 'Switch',
+    fieldName: 'qiniuUseHttps',
+    label: '使用 HTTPS',
+    defaultValue: true,
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'qiniuTokenExpires',
+    label: 'Token 有效期(秒)',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'qiniu',
+    },
+    componentProps: {
+      min: 60,
+      max: 86_400,
+      placeholder: '请输入上传凭证有效期',
+    },
+  },
+  {
+    component: 'Divider',
+    fieldName: 'divider_upload_superbed',
+    hideLabel: true,
+    formItemClass: 'w-full',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'superbed',
+    },
+    renderComponentContent: () => {
+      return {
+        default: () =>
+          h('div', { class: 'text-base font-medium text-gray-600' }, 'Superbed 配置'),
+      };
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'superbedToken',
+    label: 'Token',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'superbed',
+    },
+    componentProps: {
+      placeholder: '请输入 Superbed Token',
+      maxlength: 300,
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'superbedCategories',
+    label: '相册分类',
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'superbed',
+    },
+    componentProps: {
+      placeholder: '多个分类使用英文逗号分隔',
+      maxlength: 300,
+    },
+  },
+  {
+    component: 'Switch',
+    fieldName: 'superbedWatermark',
+    label: '开启水印',
+    defaultValue: false,
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'superbed',
+    },
+  },
+  {
+    component: 'Switch',
+    fieldName: 'superbedCompress',
+    label: '开启压缩',
+    defaultValue: false,
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'superbed',
+    },
+  },
+  {
+    component: 'Switch',
+    fieldName: 'superbedWebp',
+    label: '强制转 WebP',
+    defaultValue: false,
+    dependencies: {
+      triggerFields: ['uploadProvider'],
+      show: (values) => values.uploadProvider === 'superbed',
+    },
+  },
+];

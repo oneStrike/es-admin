@@ -3,7 +3,7 @@ export type PlatformListResponse = PlatformResponseDto[]
 /**
  *  类型定义 [PlatformResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type PlatformResponseDto = {
   /** 任意合法数值 */

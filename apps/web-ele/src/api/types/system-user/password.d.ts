@@ -1,7 +1,7 @@
 /**
  *  类型定义 [PasswordChangeRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type PasswordChangeRequest = ChangePasswordDto
 
@@ -10,7 +10,7 @@ export type PasswordChangeResponse = boolean
 /**
  *  类型定义 [PasswordResetRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type PasswordResetRequest = IdDto
 
@@ -19,7 +19,7 @@ export type PasswordResetResponse = boolean
 /**
  *  类型定义 [ChangePasswordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type ChangePasswordDto = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type ChangePasswordDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */

@@ -75,7 +75,7 @@ const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
 });
 
-async function togglePublishedStatus(record: BaseAgreementDto) {
+async function togglePublishedStatus(record: BaseAgreementDto | ListOrPageAgreementResponseDto) {
   record.loading = true;
   await agreementUpdateStatusApi({
     id: record.id,

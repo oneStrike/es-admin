@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AppPageCreateRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AppPageCreateRequest = CreateAppPageDto
 
@@ -10,13 +10,13 @@ export type AppPageCreateResponse = boolean
 /**
  *  类型定义 [AppPagePageRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AppPagePageRequest = {
   /** 任意合法数值 */
   [property: string]: any
 
-  /* 页面权限级别 */
+  /* 页面权限级别（0=GUEST，1=LOGIN，2=MEMBER，3=VIP） */
   accessLevel?: number
 
   /* 页面编码（唯一标识） */
@@ -67,7 +67,7 @@ export type AppPagePageResponse = {
 /**
  *  类型定义 [AppPageDetailRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AppPageDetailRequest = {
   
@@ -82,7 +82,7 @@ export type AppPageDetailResponse = BaseAppPageDto
 /**
  *  类型定义 [AppPageUpdateRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AppPageUpdateRequest = UpdateAppPageDto
 
@@ -91,7 +91,7 @@ export type AppPageUpdateResponse = boolean
 /**
  *  类型定义 [AppPageDeleteRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AppPageDeleteRequest = IdsDto
 
@@ -100,12 +100,12 @@ export type AppPageDeleteResponse = boolean
 /**
  *  类型定义 [CreateAppPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type CreateAppPageDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 页面权限级别 */
+  /* 页面权限级别（0=GUEST，1=LOGIN，2=MEMBER，3=VIP） */
   accessLevel: 0 | 1 | 2 | 3
   /* 页面编码（唯一标识） */
   code: string
@@ -127,12 +127,12 @@ export type CreateAppPageDto = {
 /**
  *  类型定义 [AppPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type AppPageResponseDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 页面权限级别 */
+  /* 页面权限级别（0=GUEST，1=LOGIN，2=MEMBER，3=VIP） */
   accessLevel: 0 | 1 | 2 | 3
   /* 页面编码（唯一标识） */
   code: string
@@ -158,12 +158,12 @@ export type AppPageResponseDto = {
 /**
  *  类型定义 [BaseAppPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseAppPageDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 页面权限级别 */
+  /* 页面权限级别（0=GUEST，1=LOGIN，2=MEMBER，3=VIP） */
   accessLevel: 0 | 1 | 2 | 3
   /* 页面编码（唯一标识） */
   code: string
@@ -191,12 +191,12 @@ export type BaseAppPageDto = {
 /**
  *  类型定义 [UpdateAppPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UpdateAppPageDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 页面权限级别 */
+  /* 页面权限级别（0=GUEST，1=LOGIN，2=MEMBER，3=VIP） */
   accessLevel?: 0 | 1 | 2 | 3
   /* 页面编码（唯一标识） */
   code?: string
@@ -220,7 +220,7 @@ export type UpdateAppPageDto = {
 /**
  *  类型定义 [IdsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdsDto = {
   /** 任意合法数值 */

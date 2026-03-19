@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SystemUserCreateRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SystemUserCreateRequest = UserRegisterDto
 
@@ -12,7 +12,7 @@ export type SystemUserProfileResponse = BaseUserDto
 /**
  *  类型定义 [SystemUserDetailRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SystemUserDetailRequest = {
   /** 任意合法数值 */
@@ -27,7 +27,7 @@ export type SystemUserDetailResponse = BaseUserDto
 /**
  *  类型定义 [SystemUserPageRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SystemUserPageRequest = {
   /** 任意合法数值 */
@@ -51,7 +51,7 @@ export type SystemUserPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number
 
-  /* 角色 0普通管理员 1超级管理员 */
+  /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
   role?: number
 
   /* 开始时间 */
@@ -81,7 +81,7 @@ export type SystemUserPageResponse = {
 /**
  *  类型定义 [SystemUserUnlockRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type SystemUserUnlockRequest = IdDto
 
@@ -90,7 +90,7 @@ export type SystemUserUnlockResponse = boolean
 /**
  *  类型定义 [UserRegisterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type UserRegisterDto = {
   /** 任意合法数值 */
@@ -103,7 +103,7 @@ export type UserRegisterDto = {
   mobile?: null | string
   /* 密码 */
   password: string
-  /* 角色 0普通管理员 1超级管理员 */
+  /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
   role: 0 | 1
 
   /* 用户名 */
@@ -113,7 +113,7 @@ export type UserRegisterDto = {
 /**
  *  类型定义 [BaseUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type BaseUserDto = {
   /** 任意合法数值 */
@@ -134,7 +134,7 @@ export type BaseUserDto = {
   mobile?: null | string
   /* 密码 */
   password: string
-  /* 角色 0普通管理员 1超级管理员 */
+  /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
   role: 0 | 1
   /* 更新时间 */
   updatedAt: string
@@ -146,7 +146,7 @@ export type BaseUserDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-19 21:17:36
+ *  @更新时间 2026-03-19 23:58:08
  */
 export type IdDto = {
   /** 任意合法数值 */
