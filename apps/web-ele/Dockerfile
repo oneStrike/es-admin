@@ -7,14 +7,14 @@ ENV NODE_OPTIONS=--max-old-space-size=2048
 ENV TZ=Asia/Shanghai
 
 RUN npm i -g corepack
-
+RUN apt-get update && apt-get install -y git
 WORKDIR /app
 
 # 复制整个工作区（.dockerignore 已过滤不必要内容）
 COPY . /app
 
 # 安装依赖（启用 pnpm 缓存）
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # 构建（排除 docs 以加速构建）
 RUN pnpm run build
