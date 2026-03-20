@@ -7,7 +7,6 @@ ENV NODE_OPTIONS=--max-old-space-size=2048
 ENV TZ=Asia/Shanghai
 
 RUN npm i -g corepack
-RUN apt-get update && apt-get install -y git
 WORKDIR /app
 
 # 复制整个工作区（.dockerignore 已过滤不必要内容）
