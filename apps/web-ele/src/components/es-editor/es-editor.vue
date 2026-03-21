@@ -123,7 +123,7 @@ const init = reactive({
     : '/libs/tinymce/skins/content/default/content.css', // 以css文件方式自定义可编辑区域的css样式，css文件需自己创建并引入
   images_upload_handler(blobInfo: any) {
     return new Promise((resolve, reject) => {
-      useUpload('/api/admin/upload/upload-file', blobInfo.blob()).then(
+      useUpload('/api/admin/upload/file/upload', blobInfo.blob()).then(
         (result: any) => {
           const filePath = result?.filePath ?? result?.success?.[0]?.filePath;
           if (filePath) {
