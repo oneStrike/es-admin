@@ -38,8 +38,16 @@ const sharedData = ref<Props>();
 // 创建 Modal 实例
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen: boolean) {
+    if (isOpen) {
+      sharedData.value = {
+        ...props,
+        ...modalApi.getData<Props>(),
+      };
+      modalApi.setState({
+        title: sharedData.value?.title || '详情',
+      });
+    }
     if (isOpen && props.api) {
-      sharedData.value = modalApi.getData<Props>();
       getDetail();
     }
   },
@@ -110,7 +118,7 @@ defineExpose({
 </script>
 
 <template>
-  <Modal :title="sharedData?.title || '详情'" class="!w-[1000px]">
+  <Modal class="!w-[1000px]">
     <div v-loading="loading" class="space-y-6">
       <!-- 封面/头像展示 -->
       <div

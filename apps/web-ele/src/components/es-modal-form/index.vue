@@ -33,8 +33,14 @@ const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
       showForm.value = isOpen;
-      sharedData.value = modalApi.getData<EsModalFormProps>();
+      sharedData.value = {
+        ...props,
+        ...modalApi.getData<EsModalFormProps>(),
+      };
       sharedData.value.width = sharedData.value?.width || 900;
+      modalApi.setState({
+        title: modalTitle.value,
+      });
       if (sharedData.value?.record) {
         formApi.setValues(sharedData.value.record);
       }
@@ -76,7 +82,6 @@ const [BaseForm, formApi] = useVbenForm({
 </script>
 <template>
   <Modal
-    :title="modalTitle"
     class="px-4"
     :class="sharedData.cols === 1 ? 'w-[700px]' : 'w-[1000px]'"
     :style="{ width: `${sharedData.width}px` }"

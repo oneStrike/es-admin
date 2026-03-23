@@ -7,6 +7,9 @@ import type {
   ContentAuthorDetailResponse,
   ContentAuthorPageRequest,
   ContentAuthorPageResponse,
+  ContentAuthorRebuildFollowCountAllResponse,
+  ContentAuthorRebuildFollowCountRequest,
+  ContentAuthorRebuildFollowCountResponse,
   ContentAuthorUpdateRecommendedRequest,
   ContentAuthorUpdateRecommendedResponse,
   ContentAuthorUpdateRequest,
@@ -27,6 +30,12 @@ import type {
   ContentCategoryUpdateResponse,
   ContentCategoryUpdateStatusRequest,
   ContentCategoryUpdateStatusResponse,
+  ContentComicChapterContentArchiveConfirmRequest,
+  ContentComicChapterContentArchiveConfirmResponse,
+  ContentComicChapterContentArchiveDetailRequest,
+  ContentComicChapterContentArchiveDetailResponse,
+  ContentComicChapterContentArchivePreviewRequest,
+  ContentComicChapterContentArchivePreviewResponse,
   ContentComicChapterContentClearRequest,
   ContentComicChapterContentClearResponse,
   ContentComicChapterContentDeleteRequest,
@@ -302,6 +311,30 @@ import { requestClient } from '#/api/request'
 
 
   /**
+   * 预解析漫画压缩包
+   */
+  export async function contentComicChapterContentArchivePreviewApi(params: ContentComicChapterContentArchivePreviewRequest): Promise<ContentComicChapterContentArchivePreviewResponse> {
+    return requestClient.post<ContentComicChapterContentArchivePreviewResponse>('/api/admin/content/comic/chapter-content/archive/preview', params);
+  }
+
+
+  /**
+   * 确认漫画压缩包导入
+   */
+  export async function contentComicChapterContentArchiveConfirmApi(params: ContentComicChapterContentArchiveConfirmRequest): Promise<ContentComicChapterContentArchiveConfirmResponse> {
+    return requestClient.post<ContentComicChapterContentArchiveConfirmResponse>('/api/admin/content/comic/chapter-content/archive/confirm', params);
+  }
+
+
+  /**
+   * 查询漫画压缩包导入任务详情
+   */
+  export async function contentComicChapterContentArchiveDetailApi(params: ContentComicChapterContentArchiveDetailRequest): Promise<ContentComicChapterContentArchiveDetailResponse> {
+    return requestClient.get<ContentComicChapterContentArchiveDetailResponse>('/api/admin/content/comic/chapter-content/archive/detail', { params });
+  }
+
+
+  /**
    * 获取第三方漫画平台列表
    */
   export async function contentComicThirdPartyPlatformListApi(): Promise<ContentComicThirdPartyPlatformListResponse> {
@@ -534,10 +567,26 @@ import { requestClient } from '#/api/request'
 
 
   /**
+   * 重建作者关注计数
+   */
+  export async function contentAuthorRebuildFollowCountApi(params: ContentAuthorRebuildFollowCountRequest): Promise<ContentAuthorRebuildFollowCountResponse> {
+    return requestClient.post<ContentAuthorRebuildFollowCountResponse>('/api/admin/content/author/rebuild-follow-count', params);
+  }
+
+
+  /**
    * 删除作者
    */
   export async function contentAuthorDeleteApi(params: ContentAuthorDeleteRequest): Promise<ContentAuthorDeleteResponse> {
     return requestClient.post<ContentAuthorDeleteResponse>('/api/admin/content/author/delete', params);
+  }
+
+
+  /**
+   * 全量重建作者关注计数
+   */
+  export async function contentAuthorRebuildFollowCountAllApi(): Promise<ContentAuthorRebuildFollowCountAllResponse> {
+    return requestClient.post<ContentAuthorRebuildFollowCountAllResponse>('/api/admin/content/author/rebuild-follow-count-all');
   }
 
 

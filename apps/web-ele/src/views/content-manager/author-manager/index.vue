@@ -67,7 +67,12 @@ useDict('nationality').then(({ nationality }) => {
   useForm.setOptions(authorSearchSchema, {
     nationality: nationality?.options || [],
   });
-  gridApi.formApi.updateSchema(authorSearchSchema);
+  gridApi.setState((prev) => ({
+    formOptions: {
+      ...(prev.formOptions ?? {}),
+      schema: [...authorSearchSchema],
+    },
+  }));
 });
 /**
  * 新建/编辑弹窗

@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SystemUserCreateRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type SystemUserCreateRequest = UserRegisterDto
 
@@ -10,18 +10,18 @@ export type SystemUserCreateResponse = boolean
 /**
  *  类型定义 [SystemUserProfileUpdateRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type SystemUserProfileUpdateRequest = UpdateUserDto
 
 export type SystemUserProfileUpdateResponse = boolean
 
-export type SystemUserProfileResponse = BaseUserDto
+export type SystemUserProfileResponse = BaseAdminUserDto
 
 /**
  *  类型定义 [SystemUserDetailRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type SystemUserDetailRequest = {
   /** 任意合法数值 */
@@ -31,12 +31,12 @@ export type SystemUserDetailRequest = {
   id: number
 }
 
-export type SystemUserDetailResponse = BaseUserDto
+export type SystemUserDetailResponse = BaseAdminUserDto
 
 /**
  *  类型定义 [SystemUserPageRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type SystemUserPageRequest = {
   /** 任意合法数值 */
@@ -75,7 +75,7 @@ export type SystemUserPageResponse = {
   [property: string]: any
 
   /* 列表数据 */
-  list?: BaseUserDto[]
+  list?: BaseAdminUserDto[]
 
   /* 当前页码（从0开始） */
   pageIndex?: number
@@ -90,7 +90,7 @@ export type SystemUserPageResponse = {
 /**
  *  类型定义 [SystemUserPasswordChangeRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type SystemUserPasswordChangeRequest = ChangePasswordDto
 
@@ -99,7 +99,7 @@ export type SystemUserPasswordChangeResponse = boolean
 /**
  *  类型定义 [SystemUserPasswordResetRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type SystemUserPasswordResetRequest = IdDto
 
@@ -108,7 +108,7 @@ export type SystemUserPasswordResetResponse = boolean
 /**
  *  类型定义 [SystemUserUnlockRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type SystemUserUnlockRequest = IdDto
 
@@ -117,7 +117,7 @@ export type SystemUserUnlockResponse = boolean
 /**
  *  类型定义 [UserRegisterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type UserRegisterDto = {
   /** 任意合法数值 */
@@ -140,7 +140,7 @@ export type UserRegisterDto = {
 /**
  *  类型定义 [UpdateUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type UpdateUserDto = {
   /** 任意合法数值 */
@@ -161,11 +161,11 @@ export type UpdateUserDto = {
 }
 
 /**
- *  类型定义 [BaseUserDto]
+ *  类型定义 [BaseAdminUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
-export type BaseUserDto = {
+export type BaseAdminUserDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 头像 */
@@ -196,7 +196,7 @@ export type BaseUserDto = {
 /**
  *  类型定义 [ChangePasswordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type ChangePasswordDto = {
   /** 任意合法数值 */
@@ -213,7 +213,7 @@ export type ChangePasswordDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-23 16:50:34
+ *  @更新时间 2026-03-24 00:50:36
  */
 export type IdDto = {
   /** 任意合法数值 */

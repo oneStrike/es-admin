@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  ContentComicChapterContentArchiveDetailResponse,
   ContentComicChapterCreateRequest,
   ContentComicChapterDetailResponse,
   ContentComicChapterUpdateRequest,
@@ -24,6 +25,7 @@ import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
+import ArchiveImportPanel from './archive-import-panel.vue';
 import ContentManager from './content-manager.vue';
 import { chapterColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
@@ -176,6 +178,12 @@ function openContentModal(record: ContentComicChapterDetailResponse) {
     .open();
 }
 
+async function handleArchiveImportFinished(
+  _task: ContentComicChapterContentArchiveDetailResponse,
+) {
+  await gridApi.reload();
+}
+
 /**
  * 打开章节表单弹窗
  * @param record 章节数据（编辑时传入，新增时不传）
@@ -254,6 +262,12 @@ async function toggleStatus(
         <el-button type="primary" @click="openFormModal()">
           添加章节
         </el-button>
+        <ArchiveImportPanel
+          v-if="shareData"
+          :work-id="shareData.workId"
+          :display-title="shareData.workName"
+          @import-finished="handleArchiveImportFinished"
+        />
       </template>
 
       <!-- 标题列 - 可点击打开详情 -->

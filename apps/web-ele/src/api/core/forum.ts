@@ -41,6 +41,9 @@ import type {
   ForumSectionsDetailResponse,
   ForumSectionsPageRequest,
   ForumSectionsPageResponse,
+  ForumSectionsRebuildFollowCountAllResponse,
+  ForumSectionsRebuildFollowCountRequest,
+  ForumSectionsRebuildFollowCountResponse,
   ForumSectionsSwapSortOrderRequest,
   ForumSectionsSwapSortOrderResponse,
   ForumSectionsTreeResponse,
@@ -496,6 +499,22 @@ import { requestClient } from '#/api/request'
    */
   export async function forumSectionGroupsSwapSortOrderApi(params: ForumSectionGroupsSwapSortOrderRequest): Promise<ForumSectionGroupsSwapSortOrderResponse> {
     return requestClient.post<ForumSectionGroupsSwapSortOrderResponse>('/api/admin/forum/section-groups/swap-sort-order', params);
+  }
+
+
+  /**
+   * 重建板块关注计数
+   */
+  export async function forumSectionsRebuildFollowCountApi(params: ForumSectionsRebuildFollowCountRequest): Promise<ForumSectionsRebuildFollowCountResponse> {
+    return requestClient.post<ForumSectionsRebuildFollowCountResponse>('/api/admin/forum/sections/rebuild-follow-count', params);
+  }
+
+
+  /**
+   * 全量重建板块关注计数
+   */
+  export async function forumSectionsRebuildFollowCountAllApi(): Promise<ForumSectionsRebuildFollowCountAllResponse> {
+    return requestClient.post<ForumSectionsRebuildFollowCountAllResponse>('/api/admin/forum/sections/rebuild-follow-count-all');
   }
 
 

@@ -31,6 +31,9 @@ import type {
   AppUsersPointsStatsResponse,
   AppUsersProfileUpdateRequest,
   AppUsersProfileUpdateResponse,
+  AppUsersRebuildFollowCountAllResponse,
+  AppUsersRebuildFollowCountRequest,
+  AppUsersRebuildFollowCountResponse,
   AppUsersRestoreRequest,
   AppUsersRestoreResponse,
   AppUsersUpdateEnabledRequest,
@@ -179,10 +182,26 @@ import { requestClient } from '#/api/request'
 
 
   /**
+   * 重建 APP 用户关注计数
+   */
+  export async function appUsersRebuildFollowCountApi(params: AppUsersRebuildFollowCountRequest): Promise<AppUsersRebuildFollowCountResponse> {
+    return requestClient.post<AppUsersRebuildFollowCountResponse>('/api/admin/app-users/rebuild-follow-count', params);
+  }
+
+
+  /**
    * 为 APP 用户分配徽章
    */
   export async function appUsersBadgesAssignApi(params: AppUsersBadgesAssignRequest): Promise<AppUsersBadgesAssignResponse> {
     return requestClient.post<AppUsersBadgesAssignResponse>('/api/admin/app-users/badges/assign', params);
+  }
+
+
+  /**
+   * 全量重建 APP 用户关注计数
+   */
+  export async function appUsersRebuildFollowCountAllApi(): Promise<AppUsersRebuildFollowCountAllResponse> {
+    return requestClient.post<AppUsersRebuildFollowCountAllResponse>('/api/admin/app-users/rebuild-follow-count-all');
   }
 
 

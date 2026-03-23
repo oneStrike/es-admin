@@ -165,6 +165,11 @@ const withDefaultPlaceholder = <T extends Component>(
   });
 };
 
+function resolveOptions(props: Recordable<any>, attrs: Recordable<any>) {
+  const options = props.options ?? attrs.options;
+  return Array.isArray(options) ? options : [];
+}
+
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
 export type ComponentType =
   | 'ApiSelect'
@@ -227,8 +232,9 @@ async function initComponentAdapter() {
       if (Reflect.has(slots, 'default')) {
         defaultSlot = slots.default;
       } else {
-        const { options, isButton } = attrs;
-        if (Array.isArray(options)) {
+        const isButton = props.isButton ?? attrs.isButton;
+        const options = resolveOptions(props, attrs);
+        if (options.length > 0) {
           defaultSlot = () =>
             options.map((option) =>
               h(isButton ? ElCheckboxButton : ElCheckbox, option),
@@ -266,11 +272,12 @@ async function initComponentAdapter() {
       if (Reflect.has(slots, 'default')) {
         defaultSlot = slots.default;
       } else {
-        const { options } = attrs;
-        if (Array.isArray(options)) {
+        const isButton = props.isButton ?? attrs.isButton;
+        const options = resolveOptions(props, attrs);
+        if (options.length > 0) {
           defaultSlot = () =>
             options.map((option) =>
-              h(attrs.isButton ? ElRadioButton : ElRadio, option),
+              h(isButton ? ElRadioButton : ElRadio, option),
             );
         }
       }
@@ -281,7 +288,15 @@ async function initComponentAdapter() {
       );
     },
     Select: (props, { attrs, slots }) => {
-      return h(ElSelectV2, { ...props, attrs }, slots);
+      return h(
+        ElSelectV2,
+        {
+          ...attrs,
+          ...props,
+          options: resolveOptions(props, attrs),
+        },
+        slots,
+      );
     },
     Space: ElSpace,
     Switch: ElSwitch,

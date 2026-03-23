@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { Sortable } from '@vben/hooks';
 
+import type { ContentComicChapterContentArchiveDetailResponse } from '#/api/types';
+
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -16,6 +18,8 @@ import { DeleteBinIcon, EyeLineIcon, UploadLoop } from '#/components/es-icons';
 import EsUpload from '#/components/es-upload/es-upload.vue';
 import { UploadSceneEnum, UploadUrlMapEnum } from '#/enum/api';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
+
+import ArchiveImportPanel from './archive-import-panel.vue';
 
 defineOptions({
   name: 'ChapterContentManager',
@@ -95,8 +99,8 @@ async function handleDelete(index?: number) {
       chapterId: shareData.value!.chapterId,
       index: deleteIndex,
     });
-    await loadContents();
     selectedIndices.value = [];
+    await loadContents();
   });
 }
 
@@ -111,14 +115,20 @@ async function handleClearAll() {
 async function handleMove(fromIndex: number, toIndex: number) {
   if (fromIndex === toIndex) return;
 
+  const nextList = [...contentList.value];
+  const [moved] = nextList.splice(fromIndex, 1);
+  if (!moved) return;
+  nextList.splice(toIndex, 0, moved);
+  contentList.value = nextList;
+
   try {
     await contentComicChapterContentMoveApi({
       chapterId: shareData.value!.chapterId,
       fromIndex,
       toIndex,
     });
-    await loadContents();
   } catch (error) {
+    await loadContents();
     console.error('移动失败:', error);
   }
 }
@@ -126,6 +136,12 @@ async function handleMove(fromIndex: number, toIndex: number) {
 async function handleSave() {
   useMessage.success('保存成功');
   modalApi.close();
+}
+
+async function handleArchiveImportFinished(
+  _task: ContentComicChapterContentArchiveDetailResponse,
+) {
+  await loadContents();
 }
 
 function toggleSelection(index: number) {
@@ -181,7 +197,7 @@ async function initializeDrag() {
     <div class="flex h-full flex-col">
       <div class="mb-4 flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <div>
+          <div class="flex items-center gap-3">
             <EsUpload
               :upload-url="UploadUrlMapEnum.COMIC"
               v-model="uploadUrl"
@@ -203,9 +219,16 @@ async function initializeDrag() {
                 <template #icon>
                   <UploadLoop class="text-4xl" />
                 </template>
-                点击上传
+                追加图片
               </el-button>
             </EsUpload>
+            <ArchiveImportPanel
+              v-if="shareData"
+              :work-id="shareData.workId"
+              :chapter-id="shareData.chapterId"
+              :chapter-title="shareData.chapterTitle"
+              @import-finished="handleArchiveImportFinished"
+            />
           </div>
           <div class="flex items-center gap-2">
             <el-checkbox :model-value="isAllSelected" @change="toggleSelectAll">

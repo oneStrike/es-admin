@@ -578,6 +578,9 @@ const [Modal, modalApi] = useVbenModal({
       sharedData.value = modalApi.getData<OperationModalData>();
       currentUser.value = sharedData.value?.record ?? null;
       activeTab.value = 'points';
+      modalApi.setState({
+        title: modalTitle.value,
+      });
       void refreshAll();
     }
   },
@@ -783,7 +786,7 @@ async function revokeBadge(row: AdminAppUserBadgeItemDto) {
 </script>
 
 <template>
-  <Modal :title="modalTitle" class="!w-[1400px]">
+  <Modal class="!w-[1400px]">
     <Page auto-content-height>
       <div v-loading="loading" class="space-y-4">
         <div

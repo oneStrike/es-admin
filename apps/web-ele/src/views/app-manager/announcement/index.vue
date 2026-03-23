@@ -60,7 +60,12 @@ appPagePageApi({
     }
   });
 
-  gridApi.formApi.updateSchema(announcementFilter);
+  gridApi.setState((prev) => ({
+    formOptions: {
+      ...(prev.formOptions ?? {}),
+      schema: [...announcementFilter],
+    },
+  }));
 });
 
 const gridOptions: VxeGridProps<AnnouncementPageResponseDto> = {

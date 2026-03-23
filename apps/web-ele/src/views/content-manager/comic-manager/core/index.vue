@@ -154,7 +154,12 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
       language: work_language?.options || [],
       ageRating: work_age_rating?.options || [],
     });
-    gridApi.formApi.updateSchema(pageFilter);
+    gridApi.setState((prev) => ({
+      formOptions: {
+        ...(prev.formOptions ?? {}),
+        schema: [...pageFilter],
+      },
+    }));
     gridApi.setGridOptions({
       columns: comicColumns({
         work_publisher,
