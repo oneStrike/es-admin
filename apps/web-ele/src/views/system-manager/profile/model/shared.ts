@@ -1,10 +1,10 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
-import type { BaseAuditDto } from '#/api/types';
+import type { AuditItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formatUTC } from '#/utils';
 
-export const loginHistortColumn: VxeGridPropTypes.Columns<BaseAuditDto> = [
+export const loginHistortColumn: VxeGridPropTypes.Columns<AuditItemDto> = [
   {
     title: '序号',
     type: 'seq',

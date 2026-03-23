@@ -1,4 +1,4 @@
-import type { CreateForumSectionDto } from '#/api/types';
+import type { BaseForumSectionDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -84,7 +84,7 @@ export const formSchema: EsFormSchema = [
 
 // 表格列配置
 export const sectionColumns =
-  formSchemaTransform.toTableColumns<CreateForumSectionDto>(formSchema, {
+  formSchemaTransform.toTableColumns<BaseForumSectionDto>(formSchema, {
     icon: {
       hide: true,
     },

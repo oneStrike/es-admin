@@ -17,7 +17,7 @@ import {
   agreementPageApi,
   agreementUpdateApi,
   agreementUpdateStatusApi,
-} from '#/api';
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';

@@ -1,4 +1,4 @@
-import type { ChapterPageResponse } from '#/api/types';
+import type { ContentComicChapterDetailResponse } from '#/api/types';
 
 import { formSchemaTransform } from '#/utils';
 
@@ -23,7 +23,7 @@ const hideFieldConfig = Object.fromEntries(
 );
 
 export const chapterColumns =
-  formSchemaTransform.toTableColumns<ChapterPageResponse>(chapterFormSchema, {
+  formSchemaTransform.toTableColumns<ContentComicChapterDetailResponse>(chapterFormSchema, {
     ...hideFieldConfig,
     seq: {
       dragSort: true,

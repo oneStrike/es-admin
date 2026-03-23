@@ -2,7 +2,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AuditPageRequest,
-  BaseAuditDto,
+  AuditItemDto,
   BaseUserDto,
   ChangePasswordDto,
   UpdateUserDto,
@@ -16,10 +16,10 @@ import { useUserStore } from '@vben/stores';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   auditPageApi,
-  userChangePasswordApi,
-  userInfoApi,
-  userUpdateInfoApi,
-} from '#/api';
+  systemUserPasswordChangeApi,
+  systemUserProfileApi,
+  systemUserProfileUpdateApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 
@@ -35,7 +35,7 @@ const userInfo = ref<BaseUserDto | null>(null);
 const loading = ref(false);
 
 // 登录历史表格配置
-const gridOptions: VxeGridProps<BaseAuditDto> = {
+const gridOptions: VxeGridProps<AuditItemDto> = {
   columns: loginHistortColumn,
   height: 'auto',
   proxyConfig: {
@@ -72,7 +72,7 @@ const [PasswordForm, passwordFormApi] = useVbenModal({
 const fetchUserInfo = async () => {
   try {
     loading.value = true;
-    userInfo.value = await userInfoApi();
+    userInfo.value = await systemUserProfileApi();
   } catch {
     useMessage.error('获取用户信息失败');
   } finally {
@@ -83,7 +83,7 @@ const fetchUserInfo = async () => {
 // 提交：编辑用户信息
 async function handleEditSubmit(values: UpdateUserDto) {
   try {
-    await userUpdateInfoApi({ ...userInfo.value, ...values });
+    await systemUserProfileUpdateApi({ ...userInfo.value, ...values });
     useMessage.success('用户信息更新成功');
     await fetchUserInfo();
     // 更新全局用户信息
@@ -109,7 +109,7 @@ async function handlePasswordSubmit(values: ChangePasswordDto) {
     return;
   }
   try {
-    await userChangePasswordApi(values);
+    await systemUserPasswordChangeApi(values);
     useMessage.success('密码修改成功');
     passwordFormApi.close();
   } catch {

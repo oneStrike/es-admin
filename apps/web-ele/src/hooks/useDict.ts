@@ -5,7 +5,7 @@ import type { BaseDictionaryItemDto } from '#/api/types';
 /**
  * 数据字典
  */
-import { dictionaryAllItemsApi } from '#/api';
+import { dictionaryItemListApi } from '#/api/core';
 
 export interface UseDictItem {
   labels: Record<string, string>;
@@ -13,7 +13,7 @@ export interface UseDictItem {
 }
 
 export async function useDict(codes: string): Promise<Recordable<UseDictItem>> {
-  const list = await dictionaryAllItemsApi({
+  const list = await dictionaryItemListApi({
     dictionaryCode: codes,
     isEnabled: true,
   });

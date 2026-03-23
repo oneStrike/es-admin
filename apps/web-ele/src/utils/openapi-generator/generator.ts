@@ -4,11 +4,11 @@ import type {
   GroupedPaths,
   MethodInfo,
   ModuleCodeResult,
+  OperationContext,
   OpenAPISpec,
-  PathOperation,
 } from './types';
 
-import { defaultConfig, TEMPLATES } from './config';
+import { mergeOpenAPIGeneratorConfig, TEMPLATES } from './config';
 import {
   collectReferencedTypes,
   formatCurrentTime,
@@ -27,7 +27,7 @@ export class OpenAPIGenerator {
   private spec: null | OpenAPISpec = null;
 
   constructor(config: Partial<OpenAPIGeneratorConfig> = {}) {
-    this.config = { ...defaultConfig, ...config };
+    this.config = mergeOpenAPIGeneratorConfig(config);
   }
 
   /**
@@ -94,24 +94,16 @@ export class OpenAPIGenerator {
     const files: GeneratedFile[] = [];
     const groupedPaths = this.groupPathsByModule();
 
-    for (const [moduleKey, paths] of Object.entries(groupedPaths)) {
-      const moduleName = this.getModuleNameFromKey(moduleKey);
-      // 获取该模块的文件夹路径
-      // 取该模块的第一个路径作为示例来确定文件夹
-      const moduleDirectory =
-        paths.length > 0
-          ? this.config.directoryResolver(paths[0]?.path || '')
-          : '';
-
+    for (const group of Object.values(groupedPaths)) {
       const { apiContent, typesContent } = this.generateModuleCode(
-        moduleName,
-        paths,
+        group.fileName,
+        group.operations,
         undefined,
-        moduleDirectory,
+        group.directory,
       );
 
       files.push({
-        fileName: `${moduleName}.ts`,
+        fileName: `${group.fileName}.ts`,
         content: apiContent,
         types: typesContent,
       });
@@ -125,7 +117,7 @@ export class OpenAPIGenerator {
    */
   generateModuleCode(
     moduleName: string,
-    paths: PathOperation[],
+    paths: OperationContext[],
     finalFileName?: string,
     directory?: string,
   ): ModuleCodeResult {
@@ -133,22 +125,16 @@ export class OpenAPIGenerator {
     const apiMethods: string[] = [];
     const typeDefinitions: string[] = [];
     const referencedTypes = new Set<string>();
-    const usedMethodNames = new Set<string>();
-    const usedTypeNames = new Set<string>();
 
-    for (const { path, method, operation } of paths) {
-      const methodInfo = this.resolveMethodInfo(
-        path,
-        method,
-        usedMethodNames,
-        usedTypeNames,
-      );
-      const { requestType, responseType } = methodInfo;
+    for (const { path, method, operation, methodInfo } of paths) {
+      const resolvedMethodInfo =
+        methodInfo || this.resolveMethodInfo(path, method);
+      const { requestType, responseType } = resolvedMethodInfo;
 
       // 检查是否需要参数
       const hasParams = this.hasRequestParams(operation);
       let finalRequestType = 'void';
-      let finalResponseType = 'any';
+      let finalResponseType = 'undefined';
 
       // 生成请求类型定义（仅当有参数时）
       if (hasParams) {
@@ -157,34 +143,31 @@ export class OpenAPIGenerator {
           typeDefinitions.push(requestTypeDef);
           imports.add(requestType);
           finalRequestType = requestType;
-          // 收集引用的类型
+          this.getRequestParameters(operation).forEach((param: any) => {
+            collectReferencedTypes(param.schema, referencedTypes);
+          });
           collectReferencedTypes(
-            operation.requestBody?.content?.['application/json']?.schema,
+            this.getRequestBodySchema(operation),
             referencedTypes,
           );
-          if (operation.parameters) {
-            operation.parameters.forEach((param: any) => {
-              collectReferencedTypes(param.schema, referencedTypes);
-            });
-          }
         } else {
           finalRequestType = 'any';
         }
       }
 
       // 生成响应类型定义
-      if (operation.responses && operation.responses['200']) {
+      const successResponse = this.getSuccessResponse(operation.responses);
+      if (successResponse) {
         const responseTypeDef = this.generateResponseType(
           responseType,
-          operation.responses['200'],
+          successResponse,
         );
         if (responseTypeDef) {
           typeDefinitions.push(responseTypeDef);
           imports.add(responseType);
           finalResponseType = responseType;
-          // 收集引用的类型
           collectReferencedTypes(
-            operation.responses['200'].content?.['application/json']?.schema,
+            this.getResponseSchema(successResponse),
             referencedTypes,
           );
         }
@@ -195,7 +178,7 @@ export class OpenAPIGenerator {
         path,
         method,
         operation,
-        methodInfo,
+        resolvedMethodInfo,
         finalRequestType,
         finalResponseType,
       );
@@ -224,7 +207,7 @@ export class OpenAPIGenerator {
     // 导入路径应该是：../types/user/user.d
     const typeImportPath = directory
       ? `../../${this.config.typesDirName}/${directory}/${typeFileName}.d`
-      : `./${this.config.typesDirName}/${typeFileName}.d`;
+      : `../${this.config.typesDirName}/${typeFileName}.d`;
 
     const importStatements =
       [...imports].length > 0
@@ -245,42 +228,81 @@ export class OpenAPIGenerator {
    */
   groupPathsByModule(): GroupedPaths {
     const grouped: GroupedPaths = {};
+    const operationContexts = this.resolveUniqueNames(
+      this.buildOperationContexts(),
+    );
 
-    if (!this.spec) {
-      return grouped;
-    }
+    for (const context of operationContexts) {
+      if (!grouped[context.moduleKey]) {
+        grouped[context.moduleKey] = {
+          directory: context.directory,
+          fileName: context.fileName,
+          operations: [],
+        };
+      }
 
-    for (const [path, methods] of Object.entries(this.spec.paths)) {
-      for (const [method, operation] of Object.entries(methods)) {
-        if (typeof operation !== 'object') continue;
-
-        const pathParts = path.split('/').filter(Boolean);
-        if (pathParts.length === 0) continue;
-
-        // 使用倒数第二个路径段作为模块名
-        const secondLast =
-          pathParts[pathParts.length - 2] ||
-          pathParts[pathParts.length - 1] ||
-          'default';
-        const moduleName = toCamelCase(secondLast);
-        const directory = this.config.directoryResolver(path);
-        const moduleKey = directory
-          ? `${directory}::${moduleName}`
-          : moduleName;
-
-        if (!grouped[moduleKey]) {
-          grouped[moduleKey] = [];
-        }
-
-        grouped[moduleKey].push({
-          path,
-          method: method.toUpperCase(),
-          operation,
-        });
+      const moduleGroup = grouped[context.moduleKey];
+      if (moduleGroup) {
+        moduleGroup.operations.push(context);
       }
     }
 
     return grouped;
+  }
+
+  private buildOperationContexts(): OperationContext[] {
+    const contexts: OperationContext[] = [];
+
+    if (!this.spec) {
+      return contexts;
+    }
+
+    for (const [path, methods] of Object.entries(this.spec.paths)) {
+      for (const [method, operation] of Object.entries(methods)) {
+        if (!operation || typeof operation !== 'object') continue;
+
+        const namingSegments = this.getNamingSegments(path);
+        if (namingSegments.length === 0) continue;
+
+        const fileName = this.getModuleFileName(namingSegments);
+        const directory = this.getModuleDirectory(
+          path,
+          fileName,
+          namingSegments,
+        );
+        const moduleKey = directory ? `${directory}::${fileName}` : fileName;
+
+        contexts.push({
+          path,
+          method: method.toUpperCase(),
+          operation,
+          directory,
+          fileName,
+          moduleKey,
+          namingSegments,
+        });
+      }
+    }
+
+    return contexts;
+  }
+
+  private resolveUniqueNames(
+    operationContexts: OperationContext[],
+  ): OperationContext[] {
+    const usedMethodNames = new Set<string>();
+    const usedTypeNames = new Set<string>();
+
+    return operationContexts.map((context) => ({
+      ...context,
+      methodInfo: this.resolveMethodInfo(
+        context.path,
+        context.method,
+        context.namingSegments,
+        usedMethodNames,
+        usedTypeNames,
+      ),
+    }));
   }
 
   /**
@@ -326,9 +348,9 @@ export class OpenAPIGenerator {
     operation: any,
     methodInfo?: MethodInfo,
     resolvedRequestType = 'void',
-    resolvedResponseType = 'any',
+    resolvedResponseType = 'undefined',
   ): string {
-    const { methodName } = methodInfo || this.generateMethodInfo(path);
+    const { methodName } = methodInfo || this.resolveMethodInfo(path, method);
     const finalMethodName = `${methodName}${this.config.naming.methodNameSuffix}`;
 
     const paramType = resolvedRequestType;
@@ -378,25 +400,9 @@ export class OpenAPIGenerator {
   /**
    * 生成方法信息
    */
-  private generateMethodInfo(path: string): MethodInfo {
-    return this.generateMethodInfoBySegments(
-      path,
-      this.config.naming.methodNameSegments,
-    );
-  }
-
-  private generateMethodInfoBySegments(
-    path: string,
-    methodNameSegments: number,
-  ): MethodInfo {
-    const pathParts = path.split('/').filter(Boolean);
+  private createMethodInfo(segments: string[]): MethodInfo {
     const { naming } = this.config;
-
-    // 根据配置的段数从后往前取路径段
-    const segments = pathParts.slice(-methodNameSegments);
     const methodNameBase = segments.join('-');
-
-    // 根据配置生成方法名和类型名
     const methodName = naming.useCamelCase
       ? toCamelCase(methodNameBase)
       : methodNameBase;
@@ -414,17 +420,19 @@ export class OpenAPIGenerator {
   private resolveMethodInfo(
     path: string,
     method: string,
-    usedMethodNames: Set<string>,
-    usedTypeNames: Set<string>,
+    namingSegments = this.getNamingSegments(path),
+    usedMethodNames = new Set<string>(),
+    usedTypeNames = new Set<string>(),
   ): MethodInfo {
-    const pathParts = path.split('/').filter(Boolean);
-    const minSegments = Math.min(
-      this.config.naming.methodNameSegments,
-      pathParts.length,
-    );
+    const baseSegments =
+      namingSegments.length > 0 ? namingSegments : this.normalizePathSegments(path);
+    const candidateGroups = [
+      baseSegments,
+      [...baseSegments, method.toLowerCase()],
+    ];
 
-    for (let segmentCount = minSegments; segmentCount <= pathParts.length; segmentCount++) {
-      const methodInfo = this.generateMethodInfoBySegments(path, segmentCount);
+    for (const candidate of candidateGroups) {
+      const methodInfo = this.createMethodInfo(candidate);
       if (
         !usedMethodNames.has(methodInfo.methodName) &&
         !usedTypeNames.has(methodInfo.requestType) &&
@@ -437,17 +445,89 @@ export class OpenAPIGenerator {
       }
     }
 
-    const httpMethodName = toCamelCase(`${method.toLowerCase()}-${pathParts.join('-')}`);
-    const httpTypeName = toPascalCase(`${method.toLowerCase()}-${pathParts.join('-')}`);
-    const fallbackMethodInfo = {
-      methodName: httpMethodName,
-      requestType: `${httpTypeName}${this.config.naming.requestTypeSuffix}`,
-      responseType: `${httpTypeName}${this.config.naming.responseTypeSuffix}`,
-    };
-    usedMethodNames.add(fallbackMethodInfo.methodName);
-    usedTypeNames.add(fallbackMethodInfo.requestType);
-    usedTypeNames.add(fallbackMethodInfo.responseType);
-    return fallbackMethodInfo;
+    let suffix = 2;
+    while (true) {
+      const methodInfo = this.createMethodInfo([
+        ...baseSegments,
+        method.toLowerCase(),
+        `${suffix}`,
+      ]);
+      if (
+        !usedMethodNames.has(methodInfo.methodName) &&
+        !usedTypeNames.has(methodInfo.requestType) &&
+        !usedTypeNames.has(methodInfo.responseType)
+      ) {
+        usedMethodNames.add(methodInfo.methodName);
+        usedTypeNames.add(methodInfo.requestType);
+        usedTypeNames.add(methodInfo.responseType);
+        return methodInfo;
+      }
+      suffix += 1;
+    }
+  }
+
+  private normalizePathSegments(value: string): string[] {
+    return value.split('/').filter(Boolean);
+  }
+
+  private getModuleFileName(namingSegments: string[]): string {
+    return toCamelCase(namingSegments[0] || '') || 'default';
+  }
+
+  private getModuleDirectory(
+    path: string,
+    fileName: string,
+    namingSegments = this.getNamingSegments(path),
+  ): string {
+    const rawDirectory = this.config.directoryResolver(path);
+    const normalizedDirectory = toCamelCase(
+      this.normalizePathSegments(rawDirectory).join('-'),
+    );
+    const normalizedFileName = toCamelCase(fileName);
+    const primarySegment = toCamelCase(namingSegments[0] || '');
+
+    if (
+      !normalizedDirectory ||
+      normalizedDirectory === normalizedFileName ||
+      normalizedDirectory === primarySegment
+    ) {
+      return '';
+    }
+
+    return rawDirectory;
+  }
+
+  private stripExcludedNamingContext(path: string): string[] {
+    const pathSegments = this.normalizePathSegments(path);
+    const excludedContexts = [...this.config.naming.excludedUrlContexts].sort(
+      (left, right) => right.length - left.length,
+    );
+
+    for (const context of excludedContexts) {
+      const contextSegments = this.normalizePathSegments(context);
+      if (
+        contextSegments.length === 0 ||
+        contextSegments.length > pathSegments.length
+      ) {
+        continue;
+      }
+
+      const matched = contextSegments.every(
+        (segment, index) => segment === pathSegments[index],
+      );
+      if (matched) {
+        return pathSegments.slice(contextSegments.length);
+      }
+    }
+
+    return pathSegments;
+  }
+
+  private getNamingSegments(path: string): string[] {
+    const strippedSegments = this.stripExcludedNamingContext(path);
+    return strippedSegments.length > 0
+      ? strippedSegments
+      : this.normalizePathSegments(path);
   }
 
   /**
@@ -510,35 +590,91 @@ export class OpenAPIGenerator {
   }
 
   /**
+   * 获取请求参数
+   */
+  private getRequestParameters(operation: any): any[] {
+    if (!Array.isArray(operation.parameters)) {
+      return [];
+    }
+
+    return operation.parameters.filter(
+      (param: any) => param.in === 'query' || param.in === 'path',
+    );
+  }
+
+  /**
+   * 获取优先使用的内容 schema
+   */
+  private getPreferredContentSchema(content?: Record<string, any>): any {
+    if (!content) {
+      return null;
+    }
+
+    if (content['application/json']?.schema) {
+      return content['application/json'].schema;
+    }
+
+    const firstContent = Object.values(content)[0] as
+      | { schema?: any }
+      | undefined;
+    return firstContent?.schema || null;
+  }
+
+  /**
+   * 获取请求体 schema
+   */
+  private getRequestBodySchema(operation: any): any {
+    return this.getPreferredContentSchema(operation.requestBody?.content);
+  }
+
+  /**
+   * 获取成功响应定义
+   */
+  private getSuccessResponse(responses: any): any {
+    if (!responses || typeof responses !== 'object') {
+      return null;
+    }
+
+    for (const [statusCode, response] of Object.entries(responses)) {
+      if (/^2\d\d$/.test(statusCode)) {
+        return response;
+      }
+    }
+
+    return responses.default || null;
+  }
+
+  /**
+   * 获取响应 schema
+   */
+  private getResponseSchema(response: any): any {
+    const schema = this.getPreferredContentSchema(response?.content);
+    if (!schema) {
+      return null;
+    }
+
+    return schema.properties?.data || schema;
+  }
+
+  /**
    * 生成请求类型
    */
   private generateRequestType(typeName: string, operation: any): null | string {
     const properties: string[] = [];
 
     // 处理查询参数
-    if (operation.parameters) {
-      for (const param of operation.parameters) {
-        if (param.in === 'query' || param.in === 'path') {
-          const required = param.required ? '' : '?';
-          const type = mapOpenAPIType(
-            param.schema?.type || 'string',
-            param.schema?.format,
-          );
-          const description = param.description
-            ? `/* ${param.description} */`
-            : '';
-          properties.push(
-            `  ${description}\n  ${param.name}${required}: ${type}`,
-          );
-        }
-      }
+    for (const param of this.getRequestParameters(operation)) {
+      const required = param.required ? '' : '?';
+      const type = mapOpenAPIType(
+        param.schema?.type || 'string',
+        param.schema?.format,
+      );
+      const description = param.description ? `/* ${param.description} */` : '';
+      properties.push(`  ${description}\n  ${param.name}${required}: ${type}`);
     }
 
-    // 处理请求体
-    if (operation.requestBody?.content?.['application/json']?.schema) {
-      const schema = operation.requestBody.content['application/json'].schema;
-
-      // 如果是引用类型，直接使用引用类型，不嵌套在 data 中
+    const schema = this.getRequestBodySchema(operation);
+    if (schema) {
       if (schema.$ref) {
         const refType = resolveRef(schema.$ref);
         const updateTime = formatCurrentTime(this.config.dateTimeOptions);
@@ -551,9 +687,19 @@ export class OpenAPIGenerator {
 export type ${typeName} = ${refType}`;
       }
 
-      // 对于非引用类型，展开属性
       const bodyProps = this.generatePropertiesFromSchema(schema);
-      properties.push(...bodyProps);
+      if (bodyProps.length > 0) {
+        properties.push(...bodyProps);
+      } else if (properties.length === 0) {
+        const updateTime = formatCurrentTime(this.config.dateTimeOptions);
+        const comment = TEMPLATES.typeComment(
+          typeName,
+          operation.tags?.[0] || '',
+          updateTime,
+        );
+        return `${comment}
+export type ${typeName} = Record<string, any>`;
+      }
     }
 
     if (properties.length === 0) return null;
@@ -579,24 +725,16 @@ ${properties.join('\n\n')}
    * 生成响应类型
    */
   private generateResponseType(typeName: string, response: any): null | string {
-    if (!response.content?.['application/json']?.schema) return null;
-
-    const schema = response.content['application/json'].schema;
-
-    // 只解析data字段的数据
-    let dataSchema = schema;
-    if (schema.properties?.data) {
-      dataSchema = schema.properties.data;
+    const dataSchema = this.getResponseSchema(response);
+    if (!dataSchema) {
+      return `export type ${typeName} = undefined`;
     }
 
-    // 检查是否是基础类型数组
     if (dataSchema.type === 'array') {
       const itemType = mapSchemaToType(dataSchema.items);
-      // 对于基础类型数组，直接返回类型别名
       return `export type ${typeName} = ${itemType}[]`;
     }
 
-    // 检查是否是基础类型
     if (
       dataSchema.type &&
       ['boolean', 'integer', 'number', 'string'].includes(dataSchema.type)
@@ -605,17 +743,22 @@ ${properties.join('\n\n')}
       return `export type ${typeName} = ${baseType}`;
     }
 
-    // 检查是否是引用类型
     if (dataSchema.$ref) {
       const refType = resolveRef(dataSchema.$ref);
       return `export type ${typeName} = ${refType}`;
     }
 
+    if (dataSchema.type !== 'object' || !dataSchema.properties) {
+      const mappedType = mapSchemaToType(dataSchema);
+      return `export type ${typeName} = ${mappedType || 'undefined'}`;
+    }
+
     const properties = this.generatePropertiesFromSchema(dataSchema);
 
-    if (properties.length === 0) return null;
+    if (properties.length === 0) {
+      return `export type ${typeName} = undefined`;
+    }
 
-    // 对象类型添加索引签名
     return `export type ${typeName} = {
 ${properties.join('\n\n')}
 
@@ -762,19 +905,11 @@ ${properties.join('\n')}
    * 检查接口是否需要参数
    */
   private hasRequestParams(operation: any): boolean {
-    // 检查是否有请求体
-    if (operation.requestBody?.content?.['application/json']?.schema) {
+    if (this.getRequestBodySchema(operation)) {
       return true;
     }
 
-    // 检查是否有查询参数或路径参数
-    if (operation.parameters && operation.parameters.length > 0) {
-      return operation.parameters.some(
-        (param: any) => param.in === 'query' || param.in === 'path',
-      );
-    }
-
-    return false;
+    return this.getRequestParameters(operation).length > 0;
   }
 
   /**
@@ -790,20 +925,14 @@ ${properties.join('\n')}
     let hasAny = false;
 
     // 检查查询/路径参数
-    if (operation.parameters && Array.isArray(operation.parameters)) {
-      for (const param of operation.parameters) {
-        if (param.in === 'query' || param.in === 'path') {
-          hasAny = true;
-          if (param.required) {
-            return false;
-          }
-        }
+    for (const param of this.getRequestParameters(operation)) {
+      hasAny = true;
+      if (param.required) {
+        return false;
       }
     }
 
-    // 检查请求体
-    const bodySchema =
-      operation.requestBody?.content?.['application/json']?.schema;
+    const bodySchema = this.getRequestBodySchema(operation);
     if (bodySchema) {
       hasAny = true;
       if (!this.isSchemaAllOptional(bodySchema)) {
@@ -811,7 +940,6 @@ ${properties.join('\n')}
       }
     }
 
-    // 如果有字段且全部可选，则返回 true；如果没有任何字段，这里通常不会被调用
     return hasAny;
   }
 
@@ -843,12 +971,5 @@ ${properties.join('\n')}
 
     // 数组/基础类型等：在生成中会作为必填单字段(items/value)输出
     return false;
-  }
-
-  private getModuleNameFromKey(moduleKey: string): string {
-    const separatorIndex = moduleKey.lastIndexOf('::');
-    return separatorIndex >= 0
-      ? moduleKey.slice(separatorIndex + 2)
-      : moduleKey;
   }
 }

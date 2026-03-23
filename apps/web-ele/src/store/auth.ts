@@ -13,9 +13,9 @@ import { defineStore } from 'pinia';
 import {
   authLoginApi,
   authLogoutApi,
-  authPublicKeyApi,
-  userInfoApi,
-} from '#/api';
+  authKeyPublicApi,
+  systemUserProfileApi,
+} from '#/api/core';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -120,10 +120,9 @@ export const useAuthStore = defineStore('auth', () => {
     });
   }
 
-  async function fetchUserInfo() {
-    let userInfo: null | UserInfo = null;
-    const user = await userInfoApi();
-    userInfo = {
+  async function fetchUserInfo(): Promise<UserInfo> {
+    const user = await systemUserProfileApi();
+    const userInfo: UserInfo = {
       ...user,
       userId: String(user.id),
       realName: user.username,
@@ -143,7 +142,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (publicKey.value) {
       return publicKey.value;
     }
-    const res = await authPublicKeyApi();
+    const res = await authKeyPublicApi();
     publicKey.value = res.publicKey;
     return publicKey.value;
   }

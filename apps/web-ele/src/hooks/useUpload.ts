@@ -1,4 +1,4 @@
-import type { UploadUploadFileResponse } from '#/api/types';
+import type { UploadFileUploadResponse } from '#/api/types';
 
 import { requestClient } from '#/api/request';
 
@@ -13,7 +13,7 @@ export async function useUpload(
     percent: number;
     total: number;
   }) => void,
-): Promise<unknown | UploadUploadFileResponse> {
+): Promise<unknown | UploadFileUploadResponse> {
   try {
     const requestParams = [];
     for (const paramKey in params) {
@@ -45,7 +45,7 @@ export async function useUpload(
       },
     );
     useMessage.success('上传成功');
-    return result as UploadUploadFileResponse;
+    return result as UploadFileUploadResponse;
   } catch (error) {
     return error;
   }

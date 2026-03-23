@@ -2,9 +2,9 @@
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import type {
-  ForumSensitiveWordRecentHitStatisticsDto,
-  ForumSensitiveWordStatisticsDataDto,
-  ForumSensitiveWordTopHitStatisticsDto,
+  SensitiveWordRecentHitStatisticsDto,
+  SensitiveWordStatisticsDataDto,
+  SensitiveWordTopHitStatisticsDto,
 } from '#/api/types';
 
 import { onMounted, ref } from 'vue';
@@ -13,7 +13,7 @@ import { AnalysisChartCard, AnalysisOverview, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { statisticsFullApi } from '#/api';
+import { forumSensitiveWordStatsFullApi } from '#/api/core';
 import {
   AlertCircleIcon,
   DeleteBinIcon,
@@ -25,7 +25,7 @@ defineOptions({
   name: 'ForumSensitiveWordStatistics',
 });
 
-const statisticsData = ref<ForumSensitiveWordStatisticsDataDto | null>(null);
+const statisticsData = ref<SensitiveWordStatisticsDataDto | null>(null);
 const loading = ref(false);
 
 const levelChartRef = ref<EchartsUIType>();
@@ -104,14 +104,14 @@ const recentHitWordsColumns = [
 
 const topHitWordsGridOptions = {
   columns: topHitWordsColumns,
-  data: [] as ForumSensitiveWordTopHitStatisticsDto[],
+  data: [] as SensitiveWordTopHitStatisticsDto[],
   height: 400,
   emptyText: '暂无数据',
 };
 
 const recentHitWordsGridOptions = {
   columns: recentHitWordsColumns,
-  data: [] as ForumSensitiveWordRecentHitStatisticsDto[],
+  data: [] as SensitiveWordRecentHitStatisticsDto[],
   height: 400,
   emptyText: '暂无数据',
 };
@@ -127,7 +127,7 @@ const [RecentHitWordsGrid] = useVbenVxeGrid({
 async function fetchStatistics() {
   loading.value = true;
   try {
-    const data = await statisticsFullApi();
+    const data = await forumSensitiveWordStatsFullApi();
     statisticsData.value = data;
     topHitWordsGridOptions.data = data.topHitWords || [];
     recentHitWordsGridOptions.data = data.recentHitWords || [];

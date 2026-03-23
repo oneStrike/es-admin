@@ -6,12 +6,12 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  appPageBatchDeleteApi,
   appPageCreateApi,
-  appPageDetailByIdApi,
+  appPageDeleteApi,
+  appPageDetailApi,
   appPagePageApi,
   appPageUpdateApi,
-} from '#/api';
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -57,7 +57,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function openFormModal(row?: BaseAppPageDto) {
   let record;
   if (row) {
-    record = await appPageDetailByIdApi({ id: row.id });
+    record = await appPageDetailApi({ id: row.id });
   }
   formApi.setData({ title: '页面配置', record }).open();
 }
@@ -72,7 +72,7 @@ async function handleSubmit(values: BaseAppPageDto | UpdateAppPageDto) {
 }
 
 async function deletePage(record: BaseAppPageDto) {
-  await appPageBatchDeleteApi({ ids: [record.id] });
+  await appPageDeleteApi({ ids: [record.id] });
   useMessage.success('操作成功');
   gridApi.reload();
 }
@@ -148,7 +148,7 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
 
     <DetailModal
       title="页面详情"
-      :api="appPageDetailByIdApi"
+      :api="appPageDetailApi"
       :cards="getDetailCards"
       class="!w-[800px]"
     />

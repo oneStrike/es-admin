@@ -1,23 +1,23 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  ChapterCreateRequest,
-  ChapterPageResponse,
-  ChapterUpdateRequest,
+  ContentComicChapterCreateRequest,
+  ContentComicChapterDetailResponse,
+  ContentComicChapterUpdateRequest,
 } from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  chapterCreateApi,
-  chapterDeleteApi,
-  chapterDetailApi,
-  chapterPageApi,
-  chapterSwapSortOrderApi,
-  chapterUpdateApi,
-  levelRulesPageApi,
-} from '#/api';
+  contentComicChapterCreateApi,
+  contentComicChapterDeleteApi,
+  contentComicChapterDetailApi,
+  contentComicChapterPageApi,
+  contentComicChapterSwapSortOrderApi,
+  contentComicChapterUpdateApi,
+  growthLevelRulesPageApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -89,13 +89,13 @@ const [ContentModal, contentApi] = useVbenModal({
 /**
  * 表格配置选项
  */
-const gridOptions: VxeGridProps<ChapterPageResponse> = {
+const gridOptions: VxeGridProps<ContentComicChapterDetailResponse> = {
   columns: chapterColumns,
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
         formValues.workId = shareData.value?.workId;
-        return await chapterPageApi(
+        return await contentComicChapterPageApi(
           formatQuery({
             page,
             formValues,
@@ -111,7 +111,7 @@ const gridOptions: VxeGridProps<ChapterPageResponse> = {
   },
   rowDragConfig: {
     async dragEndMethod(params) {
-      await chapterSwapSortOrderApi({
+      await contentComicChapterSwapSortOrderApi({
         dragId: params.dragRow.id,
         targetId: params.newRow.id,
       });
@@ -136,7 +136,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
  * 加载会员等级选项
  * 用于表单中的会员等级选择器
  */
-levelRulesPageApi({ isEnabled: true }).then((res) => {
+growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
   const options =
     res?.list?.map((item) => ({
       label: item.name,
@@ -153,7 +153,7 @@ levelRulesPageApi({ isEnabled: true }).then((res) => {
  * 打开章节详情弹窗
  * @param record 章节数据
  */
-function openDetailModal(record: ChapterPageResponse) {
+function openDetailModal(record: ContentComicChapterDetailResponse) {
   detailApi
     .setData({
       recordId: record.id,
@@ -166,7 +166,7 @@ function openDetailModal(record: ChapterPageResponse) {
  * 打开内容管理弹窗
  * @param record 章节数据
  */
-function openContentModal(record: ChapterPageResponse) {
+function openContentModal(record: ContentComicChapterDetailResponse) {
   contentApi
     .setData({
       workId: shareData.value!.workId,
@@ -180,10 +180,10 @@ function openContentModal(record: ChapterPageResponse) {
  * 打开章节表单弹窗
  * @param record 章节数据（编辑时传入，新增时不传）
  */
-async function openFormModal(record?: ChapterPageResponse) {
+async function openFormModal(record?: ContentComicChapterDetailResponse) {
   // 编辑模式获取详情数据，新增模式设为 null
   const recordData = record?.id
-    ? await chapterDetailApi({ id: record.id })
+    ? await contentComicChapterDetailApi({ id: record.id })
     : null;
 
   formApi
@@ -200,15 +200,15 @@ async function openFormModal(record?: ChapterPageResponse) {
  * @param values 表单数据
  */
 async function handleSubmit(
-  values: ChapterCreateRequest | ChapterUpdateRequest,
+  values: ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest,
 ) {
   // 设置作品ID和类型（漫画固定为1）
   values.workId = shareData.value!.workId;
   values.workType = 1;
 
   await (values?.id
-    ? chapterUpdateApi(values as ChapterUpdateRequest)
-    : chapterCreateApi(values as ChapterCreateRequest));
+    ? contentComicChapterUpdateApi(values as ContentComicChapterUpdateRequest)
+    : contentComicChapterCreateApi(values as ContentComicChapterCreateRequest));
 
   formApi.close();
   useMessage.success(values?.id ? '章节更新成功' : '章节创建成功');
@@ -219,8 +219,8 @@ async function handleSubmit(
  * 删除章节
  * @param record 章节数据
  */
-async function deleteChapter(record: ChapterPageResponse) {
-  await chapterDeleteApi({ id: record.id });
+async function deleteChapter(record: ContentComicChapterDetailResponse) {
+  await contentComicChapterDeleteApi({ id: record.id });
   useMessage.success('章节删除成功');
   gridApi.reload();
 }
@@ -229,13 +229,15 @@ async function deleteChapter(record: ChapterPageResponse) {
  * 切换章节发布状态
  * @param row 章节数据
  */
-async function toggleStatus(row: ChapterPageResponse & { loading?: boolean }) {
+async function toggleStatus(
+  row: ContentComicChapterDetailResponse & { loading?: boolean },
+) {
   row.loading = true;
   try {
-    await chapterUpdateApi({
+    await contentComicChapterUpdateApi({
       id: row.id,
       isPublished: !row.isPublished,
-    } as ChapterUpdateRequest);
+    } as ContentComicChapterUpdateRequest);
     useMessage.success('状态切换成功');
     gridApi.reload();
   } finally {
@@ -306,7 +308,7 @@ async function toggleStatus(row: ChapterPageResponse & { loading?: boolean }) {
     <FormModal :schema="chapterFormSchema" :on-submit="handleSubmit" />
 
     <!-- 详情弹窗 -->
-    <DetailModal :api="chapterDetailApi" :cards="getDetailCards" />
+    <DetailModal :api="contentComicChapterDetailApi" :cards="getDetailCards" />
 
     <!-- 内容管理弹窗 -->
     <ContentModal />

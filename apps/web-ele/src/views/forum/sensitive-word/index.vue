@@ -2,21 +2,21 @@
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
-  BaseForumSensitiveWordDto,
-  SensitiveWordCreateRequest,
-  SensitiveWordUpdateRequest,
+  BaseSensitiveWordDto,
+  ForumSensitiveWordCreateRequest,
+  ForumSensitiveWordUpdateRequest,
 } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  sensitiveWordCreateApi,
-  sensitiveWordDeleteApi,
-  sensitiveWordPageApi,
-  sensitiveWordUpdateApi,
-  sensitiveWordUpdateStatusApi,
-} from '#/api';
+  forumSensitiveWordCreateApi,
+  forumSensitiveWordDeleteApi,
+  forumSensitiveWordPageApi,
+  forumSensitiveWordUpdateApi,
+  forumSensitiveWordUpdateStatusApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
@@ -29,12 +29,12 @@ import {
 
 const router = useRouter();
 
-const gridOptions: VxeGridProps<BaseForumSensitiveWordDto> = {
+const gridOptions: VxeGridProps<BaseSensitiveWordDto> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await sensitiveWordPageApi({
+        return await forumSensitiveWordPageApi({
           pageIndex: --page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
@@ -54,30 +54,30 @@ const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-async function openFormModal(row?: BaseForumSensitiveWordDto) {
+async function openFormModal(row?: BaseSensitiveWordDto) {
   formApi.setData({ title: '敏感词', record: row }).open();
 }
 
 async function handleSubmit(
-  values: SensitiveWordCreateRequest | SensitiveWordUpdateRequest,
+  values: ForumSensitiveWordCreateRequest | ForumSensitiveWordUpdateRequest,
 ) {
   await (values?.id
-    ? sensitiveWordUpdateApi(values as SensitiveWordUpdateRequest)
-    : sensitiveWordCreateApi(values as SensitiveWordCreateRequest));
+    ? forumSensitiveWordUpdateApi(values as ForumSensitiveWordUpdateRequest)
+    : forumSensitiveWordCreateApi(values as ForumSensitiveWordCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function deleteSensitiveWord(record: BaseForumSensitiveWordDto) {
-  await sensitiveWordDeleteApi({ id: record.id });
+async function deleteSensitiveWord(record: BaseSensitiveWordDto) {
+  await forumSensitiveWordDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
-async function toggleEnableStatus(record: BaseForumSensitiveWordDto) {
+async function toggleEnableStatus(record: BaseSensitiveWordDto) {
   record.loading = true;
-  await sensitiveWordUpdateStatusApi({
+  await forumSensitiveWordUpdateStatusApi({
     id: record.id,
     isEnabled: !record.isEnabled,
   });

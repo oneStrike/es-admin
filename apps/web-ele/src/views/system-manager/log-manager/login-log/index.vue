@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { AuditPageRequest, BaseAuditDto } from '#/api/types';
+import type { AuditItemDto, AuditPageRequest } from '#/api/types';
 
 import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { auditPageApi } from '#/api';
+import { auditPageApi } from '#/api/core';
 import { createSearchFormOptions } from '#/utils';
 
 import { loginLogColumns, searchFormSchema } from './model/shared';
 
 // 表格配置
-const gridOptions: VxeGridProps<BaseAuditDto> = {
+const gridOptions: VxeGridProps<AuditItemDto> = {
   columns: loginLogColumns,
   height: 'auto',
   proxyConfig: {

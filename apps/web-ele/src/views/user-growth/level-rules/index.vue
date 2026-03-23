@@ -3,20 +3,20 @@ import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
   BaseUserLevelRuleDto,
-  LevelRulesCreateRequest,
-  LevelRulesUpdateRequest,
+  GrowthLevelRulesCreateRequest,
+  GrowthLevelRulesUpdateRequest,
 } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  levelRulesCreateApi,
-  levelRulesDeleteApi,
-  levelRulesDetailApi,
-  levelRulesPageApi,
-  levelRulesUpdateApi,
-} from '#/api';
+  growthLevelRulesCreateApi,
+  growthLevelRulesDeleteApi,
+  growthLevelRulesDetailApi,
+  growthLevelRulesPageApi,
+  growthLevelRulesUpdateApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -29,7 +29,7 @@ const gridOptions: VxeGridProps<BaseUserLevelRuleDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await levelRulesPageApi({
+        return await growthLevelRulesPageApi({
           pageIndex: --page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
@@ -55,24 +55,24 @@ const [DetailModal, detailApi] = useVbenModal({
 async function openFormModal(row?: BaseUserLevelRuleDto) {
   let record;
   if (row) {
-    record = await levelRulesDetailApi({ id: row.id });
+    record = await growthLevelRulesDetailApi({ id: row.id });
   }
   formApi.setData({ title: '等级规则', record, schema: formSchema }).open();
 }
 
 async function handleSubmit(
-  values: LevelRulesCreateRequest | LevelRulesUpdateRequest,
+  values: GrowthLevelRulesCreateRequest | GrowthLevelRulesUpdateRequest,
 ) {
   await (values?.id
-    ? levelRulesUpdateApi(values as LevelRulesUpdateRequest)
-    : levelRulesCreateApi(values as LevelRulesCreateRequest));
+    ? growthLevelRulesUpdateApi(values as GrowthLevelRulesUpdateRequest)
+    : growthLevelRulesCreateApi(values as GrowthLevelRulesCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
 async function deleteLevelRule(record: BaseUserLevelRuleDto) {
-  await levelRulesDeleteApi({ id: record.id });
+  await growthLevelRulesDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
@@ -105,7 +105,7 @@ async function deleteLevelRule(record: BaseUserLevelRuleDto) {
           @change="
             async () => {
               row.loading = true;
-              await levelRulesUpdateApi({
+              await growthLevelRulesUpdateApi({
                 id: row.id,
                 isEnabled: !row.isEnabled,
               });
@@ -151,7 +151,7 @@ async function deleteLevelRule(record: BaseUserLevelRuleDto) {
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
-      :api="levelRulesDetailApi"
+      :api="growthLevelRulesDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"
     />

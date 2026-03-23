@@ -3,9 +3,10 @@ import type { VxeGridProps } from '@vben/plugins/vxe-table';
 import type { Recordable } from '@vben/types';
 
 import type {
-  BadgesCreateRequest,
-  BadgesUpdateRequest,
+  BadgeUserPageItemDto,
   BaseUserBadgeDto,
+  GrowthBadgesCreateRequest,
+  GrowthBadgesUpdateRequest,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -15,16 +16,16 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  badgesAssignApi,
-  badgesCreateApi,
-  badgesDeleteApi,
-  badgesDetailApi,
-  badgesPageApi,
-  badgesRevokeApi,
-  badgesUpdateApi,
-  badgesUpdateStatusApi,
-  badgesUsersApi,
-} from '#/api';
+  growthBadgesAssignApi,
+  growthBadgesCreateApi,
+  growthBadgesDeleteApi,
+  growthBadgesDetailApi,
+  growthBadgesPageApi,
+  growthBadgesRevokeApi,
+  growthBadgesUpdateApi,
+  growthBadgesUpdateStatusApi,
+  growthBadgesUserPageApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsModalTable from '#/components/es-modal-table';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -44,58 +45,29 @@ defineOptions({
 
 const currentBadge = ref<BaseUserBadgeDto | null>(null);
 
-const userSearchSchema: EsFormSchema = [
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入用户名',
-    },
-    fieldName: 'username',
-    label: '用户名',
-  },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入手机号',
-    },
-    fieldName: 'mobile',
-    label: '手机号',
-  },
-];
+const userSearchSchema: EsFormSchema = [];
 
-const userColumns: VxeGridProps['columns'] = [
+const userColumns: VxeGridProps<BadgeUserPageItemDto>['columns'] = [
   {
-    field: 'id',
+    field: 'userId',
     title: '用户ID',
     minWidth: 100,
   },
   {
-    field: 'username',
-    title: '用户名',
+    field: 'user',
+    title: '昵称',
     minWidth: 140,
+    formatter: ({ row }) => row.user?.nickname || '-',
   },
   {
-    field: 'mobile',
-    title: '手机号',
+    field: 'user',
+    title: '等级',
     minWidth: 140,
-  },
-  {
-    field: 'isEnabled',
-    title: '状态',
-    minWidth: 100,
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        map: {
-          false: '禁用',
-          true: '启用',
-        },
-      },
-    },
+    formatter: ({ row }) => row.user?.level || '-',
   },
   {
     field: 'createdAt',
-    title: '创建时间',
+    title: '获得时间',
     minWidth: 160,
     cellRender: {
       name: 'CellDate',
@@ -108,7 +80,7 @@ const gridOptions: VxeGridProps<BaseUserBadgeDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await badgesPageApi(
+        return await growthBadgesPageApi(
           formatQuery({
             page,
             sorts,
@@ -145,36 +117,32 @@ const [RevokeModal, revokeApi] = useVbenModal({
 async function openFormModal(row?: BaseUserBadgeDto) {
   let record;
   if (row) {
-    record = await badgesDetailApi({ id: row.id });
+    record = await growthBadgesDetailApi({ id: row.id });
   }
   formApi.setData({ title: '徽章', record, schema: formSchema }).open();
 }
 
-async function handleSubmit(values: BadgesCreateRequest | BadgesUpdateRequest) {
+async function handleSubmit(
+  values: GrowthBadgesCreateRequest | GrowthBadgesUpdateRequest,
+) {
   await (values?.id
-    ? badgesUpdateApi(values as BadgesUpdateRequest)
-    : badgesCreateApi(values as BadgesCreateRequest));
+    ? growthBadgesUpdateApi(values as GrowthBadgesUpdateRequest)
+    : growthBadgesCreateApi(values as GrowthBadgesCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
 async function deleteBadge(record: BaseUserBadgeDto) {
-  await badgesDeleteApi({ id: record.id });
+  await growthBadgesDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
 async function toggleEnableStatus(record: BaseUserBadgeDto) {
   record.loading = true;
-  await badgesUpdateStatusApi({
+  await growthBadgesUpdateStatusApi({
     id: record.id,
-    name: record.name,
-    type: record.type,
-    description: record.description,
-    icon: record.icon,
-    sortOrder: record.sortOrder,
-    eventKey: record.eventKey,
     isEnabled: !record.isEnabled,
   });
   record.loading = false;
@@ -214,10 +182,12 @@ function openRevokeModal(record: BaseUserBadgeDto) {
       title: `撤销徽章用户 - ${record.name}`,
       columns: userColumns,
       api: (params: Recordable<any>) =>
-        badgesUsersApi({ ...params, badgeId: record.id }),
+        growthBadgesUserPageApi({ ...params, badgeId: record.id }),
       selectionMode: 'multiple',
       multipleLimit: 50,
-      searchSchema: createSearchFormOptions(userSearchSchema),
+      searchSchema: createSearchFormOptions(userSearchSchema, {
+        showCollapseButton: false,
+      }),
     })
     .open();
 }
@@ -231,7 +201,7 @@ async function handleAssignSubmit(values: { userIds: string }) {
   if (ids.length === 0) return;
   await Promise.all(
     ids.map((userId) =>
-      badgesAssignApi({ badgeId: currentBadge.value!.id, userId }),
+      growthBadgesAssignApi({ badgeId: currentBadge.value!.id, userId }),
     ),
   );
   useMessage.success('操作成功');
@@ -239,17 +209,19 @@ async function handleAssignSubmit(values: { userIds: string }) {
   gridApi.reload();
 }
 
-async function handleRevokeConfirm(rows: any[]) {
+async function handleRevokeConfirm(rows: BadgeUserPageItemDto[]) {
   if (!currentBadge.value || rows.length === 0) return;
   await Promise.all(
     rows.map((row) =>
-      badgesRevokeApi({ badgeId: currentBadge.value!.id, userId: row.id }),
+      growthBadgesRevokeApi({
+        badgeId: currentBadge.value!.id,
+        userId: row.userId,
+      }),
     ),
   );
   useMessage.success('操作成功');
   gridApi.reload();
 }
-
 </script>
 
 <template>
@@ -311,7 +283,7 @@ async function handleRevokeConfirm(rows: any[]) {
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
-      :api="badgesDetailApi"
+      :api="growthBadgesDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"
     />

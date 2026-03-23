@@ -6,7 +6,7 @@ import { computed } from 'vue';
 import { AuthenticationLogin, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { authCaptchaApi } from '#/api';
+import { authCaptchaApi } from '#/api/core';
 import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });

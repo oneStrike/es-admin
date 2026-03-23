@@ -3,20 +3,20 @@ import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
   BaseUserExperienceRuleDto,
-  ExperienceRulesRulesCreateRequest,
-  ExperienceRulesRulesUpdateRequest,
+  GrowthExperienceRulesCreateRequest,
+  GrowthExperienceRulesUpdateRequest,
 } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  experienceRulesRulesCreateApi,
-  experienceRulesRulesDeleteApi,
-  experienceRulesRulesDetailApi,
-  experienceRulesRulesPageApi,
-  experienceRulesRulesUpdateApi,
-} from '#/api';
+  growthExperienceRulesCreateApi,
+  growthExperienceRulesDeleteApi,
+  growthExperienceRulesDetailApi,
+  growthExperienceRulesPageApi,
+  growthExperienceRulesUpdateApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -34,7 +34,7 @@ const gridOptions: VxeGridProps<BaseUserExperienceRuleDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await experienceRulesRulesPageApi(
+        return await growthExperienceRulesPageApi(
           formatQuery({
             page,
             formValues,
@@ -63,26 +63,24 @@ const [DetailModal, detailApi] = useVbenModal({
 async function openFormModal(row?: BaseUserExperienceRuleDto) {
   let record;
   if (row) {
-    record = await experienceRulesRulesDetailApi({ id: row.id });
+    record = await growthExperienceRulesDetailApi({ id: row.id });
   }
   formApi.setData({ title: '经验规则', record, schema: formSchema }).open();
 }
 
 async function handleSubmit(
-  values: ExperienceRulesRulesCreateRequest | ExperienceRulesRulesUpdateRequest,
+  values: GrowthExperienceRulesCreateRequest | GrowthExperienceRulesUpdateRequest,
 ) {
   await (values?.id
-    ? experienceRulesRulesUpdateApi(values as ExperienceRulesRulesUpdateRequest)
-    : experienceRulesRulesCreateApi(
-        values as ExperienceRulesRulesCreateRequest,
-      ));
+    ? growthExperienceRulesUpdateApi(values as GrowthExperienceRulesUpdateRequest)
+    : growthExperienceRulesCreateApi(values as GrowthExperienceRulesCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
 async function deleteExperienceRule(record: BaseUserExperienceRuleDto) {
-  await experienceRulesRulesDeleteApi({ id: record.id });
+  await growthExperienceRulesDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
@@ -105,7 +103,7 @@ async function deleteExperienceRule(record: BaseUserExperienceRuleDto) {
           @change="
             async () => {
               row.loading = true;
-              await experienceRulesRulesUpdateApi({
+              await growthExperienceRulesUpdateApi({
                 id: row.id,
                 type: row.type,
                 isEnabled: !row.isEnabled,
@@ -152,7 +150,7 @@ async function deleteExperienceRule(record: BaseUserExperienceRuleDto) {
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
-      :api="experienceRulesRulesDetailApi"
+      :api="growthExperienceRulesDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"
     />

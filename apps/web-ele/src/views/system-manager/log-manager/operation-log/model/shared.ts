@@ -1,11 +1,11 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
-import type { BaseAuditDto } from '#/api/types';
+import type { AuditItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formatUTC } from '#/utils';
 
 // 操作日志表格列配置
-export const operationLogColumns: VxeGridPropTypes.Columns<BaseAuditDto> = [
+export const operationLogColumns: VxeGridPropTypes.Columns<AuditItemDto> = [
   {
     title: '序号',
     type: 'seq',

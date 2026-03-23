@@ -3,11 +3,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminAppUserDetailDto,
   AdminAppUserPageItemDto,
+  AppUsersCreateRequest,
+  AppUsersPasswordResetRequest,
+  AppUsersProfileUpdateRequest,
   AppUsersUpdateStatusRequest,
 } from '#/api/types';
-import type { AppUsersCreateRequest } from '#/api/types/app-users/appUsers.d';
-import type { PasswordResetRequest } from '#/api/types/app-users/password.d';
-import type { ProfileUpdateRequest } from '#/api/types/app-users/profile.d';
 
 import { computed } from 'vue';
 
@@ -27,8 +27,8 @@ import {
   appUsersRestoreApi,
   appUsersUpdateEnabledApi,
   appUsersUpdateStatusApi,
-  authPublicKeyApi,
-} from '#/api';
+  authKeyPublicApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
@@ -271,14 +271,14 @@ async function handleCreateSubmit(values: AppUsersCreateRequest) {
 }
 
 async function handlePasswordSubmit(
-  values: PasswordResetRequest & { confirmPassword?: string },
+  values: AppUsersPasswordResetRequest & { confirmPassword?: string },
 ) {
   if (values.password !== values.confirmPassword) {
     useMessage.warning('两次输入的密码不一致');
     return;
   }
 
-  const publicKey = await authPublicKeyApi();
+  const publicKey = await authKeyPublicApi();
   const publicKeyPem = forge.pki.publicKeyFromPem(publicKey.publicKey);
   const encrypted = publicKeyPem.encrypt(values.password, 'RSA-OAEP', {
     md: forge.md.sha256.create(),
@@ -296,7 +296,7 @@ async function handlePasswordSubmit(
   passwordFormApi.close();
 }
 
-async function handleEditSubmit(values: ProfileUpdateRequest) {
+async function handleEditSubmit(values: AppUsersProfileUpdateRequest) {
   await appUsersProfileUpdateApi({
     ...values,
     avatarUrl: values.avatarUrl || undefined,
@@ -382,7 +382,9 @@ async function handleRowCommand(command: string, row: AdminAppUserPageItemDto) {
   }
 }
 
-function mapDetailToEditRecord(detail: AdminAppUserDetailDto): ProfileUpdateRequest {
+function mapDetailToEditRecord(
+  detail: AdminAppUserDetailDto,
+): AppUsersProfileUpdateRequest {
   return {
     avatarUrl: detail.avatarUrl ?? undefined,
     bio: detail.forumProfile?.bio ?? undefined,

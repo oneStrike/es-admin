@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import type { ThirdPartySearchResponse } from '#/api/types';
+import type { SearchComicItemDto } from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { thirdPartyDetailApi, thirdPartySearchApi } from '#/api';
+import {
+  contentComicThirdPartyDetailApi,
+  contentComicThirdPartySearchPageApi,
+} from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
@@ -39,7 +42,7 @@ const [Form] = useVbenForm(
 );
 
 const loading = ref(false);
-const comicList = ref<ThirdPartySearchResponse>([]);
+const comicList = ref<SearchComicItemDto[]>([]);
 const pagination = ref({
   pageIndex: 1,
   pageSize: 20,
@@ -50,7 +53,7 @@ async function handleSearch() {
   if (!keyword.value) return;
   try {
     loading.value = true;
-    const res = await thirdPartySearchApi({
+    const res = await contentComicThirdPartySearchPageApi({
       platform: 'copy',
       keyword: keyword.value.trim(),
       pageIndex: pagination.value.pageIndex - 1,
@@ -86,10 +89,10 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-async function showDetail(item: ThirdPartySearchResponse[0]) {
-  await thirdPartyDetailApi({
+async function showDetail(item: SearchComicItemDto) {
+  await contentComicThirdPartyDetailApi({
+    comicId: String(item.id),
     platform: item.platform,
-    comicId: item.id,
   });
 }
 </script>

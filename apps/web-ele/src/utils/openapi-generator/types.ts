@@ -28,6 +28,14 @@ export interface PathOperation {
   path: string;
 }
 
+export interface OperationContext extends PathOperation {
+  directory: string;
+  fileName: string;
+  methodInfo?: MethodInfo;
+  moduleKey: string;
+  namingSegments: string[];
+}
+
 /**
  * 方法信息
  */
@@ -48,4 +56,10 @@ export interface ModuleCodeResult {
 /**
  * 分组的路径映射
  */
-export type GroupedPaths = Record<string, PathOperation[]>;
+export interface ModuleGroup {
+  directory: string;
+  fileName: string;
+  operations: OperationContext[];
+}
+
+export type GroupedPaths = Record<string, ModuleGroup>;

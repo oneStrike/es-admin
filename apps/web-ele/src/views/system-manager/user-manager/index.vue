@@ -2,8 +2,8 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseUserDto,
+  SystemUserCreateRequest,
   UpdateUserDto,
-  UserRegisterRequest,
 } from '#/api/types';
 
 import { computed } from 'vue';
@@ -13,12 +13,12 @@ import { useUserStore } from '@vben/stores';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  userInfoByIdApi,
-  userPageApi,
-  userRegisterApi,
-  userResetPasswordApi,
-  userUpdateInfoApi,
-} from '#/api';
+  systemUserCreateApi,
+  systemUserDetailApi,
+  systemUserPageApi,
+  systemUserPasswordResetApi,
+  systemUserProfileUpdateApi,
+} from '#/api/core';
 import { QuestionIcon } from '#/components/es-icons';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
@@ -46,7 +46,7 @@ const gridOptions: VxeGridProps<BaseUserDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await userPageApi(formatQuery({ page, formValues, sorts }));
+        return await systemUserPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
@@ -70,7 +70,7 @@ async function openFormModal(row?: BaseUserDto) {
 
   let record;
   if (row) {
-    record = await userInfoByIdApi({ id: row.id });
+    record = await systemUserDetailApi({ id: row.id });
   }
   formApi
     .setData({
@@ -81,10 +81,10 @@ async function openFormModal(row?: BaseUserDto) {
     .open();
 }
 
-async function handleSubmit(values: UpdateUserDto | UserRegisterRequest) {
+async function handleSubmit(values: SystemUserCreateRequest | UpdateUserDto) {
   await (values?.id
-    ? userUpdateInfoApi(values as UpdateUserDto)
-    : userRegisterApi(values as UserRegisterRequest));
+    ? systemUserProfileUpdateApi(values as UpdateUserDto)
+    : systemUserCreateApi(values as SystemUserCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
@@ -97,7 +97,7 @@ async function toggleUserStatus(record: BaseUserDto) {
   }
 
   const newStatus = !record.isEnabled;
-  await userUpdateInfoApi({
+  await systemUserProfileUpdateApi({
     id: record.id,
     username: record.username,
     mobile: record.mobile,
@@ -115,7 +115,7 @@ async function resetUserPassword(record: BaseUserDto) {
     return;
   }
 
-  await userResetPasswordApi({
+  await systemUserPasswordResetApi({
     id: record.id,
   });
   useMessage.success('密码重置成功');

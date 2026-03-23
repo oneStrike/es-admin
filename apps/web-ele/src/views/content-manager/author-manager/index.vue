@@ -11,14 +11,14 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  authorCreateApi,
-  authorDeleteApi,
-  authorDetailApi,
-  authorPageApi,
-  authorUpdateApi,
-  authorUpdateIsRecommendedApi,
-  authorUpdateStatusApi,
-} from '#/api';
+  contentAuthorCreateApi,
+  contentAuthorDeleteApi,
+  contentAuthorDetailApi,
+  contentAuthorPageApi,
+  contentAuthorUpdateApi,
+  contentAuthorUpdateRecommendedApi,
+  contentAuthorUpdateStatusApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useDict } from '#/hooks/useDict';
@@ -45,7 +45,7 @@ const gridOptions: VxeGridProps<AuthorPageResponseDto> = {
   proxyConfig: {
     ajax: {
       query: ({ page, sorts }, formValues) =>
-        authorPageApi(formatQuery({ page, formValues, sorts })),
+        contentAuthorPageApi(formatQuery({ page, formValues, sorts })),
     },
     sort: true,
   },
@@ -89,7 +89,7 @@ const [DetailModal, detailApi] = useVbenModal({
 async function openFormModal(row?: AuthorPageResponseDto): Promise<void> {
   let record: any;
   if (row) {
-    record = await authorDetailApi({ id: row.id });
+    record = await contentAuthorDetailApi({ id: row.id });
   }
   formApi
     .setData({
@@ -105,7 +105,7 @@ async function openFormModal(row?: AuthorPageResponseDto): Promise<void> {
  */
 async function toggleEnableStatus(row: AuthorPageResponseDto): Promise<void> {
   row.loading = true as any;
-  await authorUpdateStatusApi({
+  await contentAuthorUpdateStatusApi({
     id: row.id,
     isEnabled: !row.isEnabled,
   });
@@ -120,7 +120,7 @@ async function toggleIsRecommendedStatus(
   row: AuthorPageResponseDto,
 ): Promise<void> {
   row.loading = true as any;
-  await authorUpdateIsRecommendedApi({
+  await contentAuthorUpdateRecommendedApi({
     id: row.id,
     isRecommended: !row.isRecommended,
   });
@@ -135,8 +135,8 @@ type AuthorFormValues = CreateAuthorDto | UpdateAuthorDto;
 
 async function addOrUpdateAuthor(values: AuthorFormValues): Promise<void> {
   await (values.id
-    ? authorUpdateApi(values as UpdateAuthorDto)
-    : authorCreateApi(values as CreateAuthorDto));
+    ? contentAuthorUpdateApi(values as UpdateAuthorDto)
+    : contentAuthorCreateApi(values as CreateAuthorDto));
   useMessage.success('操作成功');
   await gridApi.reload();
 }
@@ -145,7 +145,7 @@ async function addOrUpdateAuthor(values: AuthorFormValues): Promise<void> {
  * 删除作者
  */
 async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
-  await authorDeleteApi({
+  await contentAuthorDeleteApi({
     id: row.id,
   });
   handleSuccessReload(gridApi);
@@ -223,7 +223,7 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
     <Form :schema="formSchema" :on-submit="addOrUpdateAuthor" />
     <DetailModal
       title="作者详情"
-      :api="authorDetailApi"
+      :api="contentAuthorDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"
     />

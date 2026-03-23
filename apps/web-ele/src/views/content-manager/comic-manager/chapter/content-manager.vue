@@ -7,11 +7,11 @@ import { useVbenModal } from '@vben/common-ui';
 import { useSortable } from '@vben/hooks';
 
 import {
-  chapterContentClearApi,
-  chapterContentDeleteApi,
-  chapterContentListApi,
-  chapterContentMoveApi,
-} from '#/api';
+  contentComicChapterContentClearApi,
+  contentComicChapterContentDeleteApi,
+  contentComicChapterContentListApi,
+  contentComicChapterContentMoveApi,
+} from '#/api/core';
 import { DeleteBinIcon, EyeLineIcon, UploadLoop } from '#/components/es-icons';
 import EsUpload from '#/components/es-upload/es-upload.vue';
 import { UploadSceneEnum, UploadUrlMapEnum } from '#/enum/api';
@@ -59,7 +59,7 @@ const gridContainer = ref<HTMLElement>();
 async function loadContents() {
   if (!shareData.value?.chapterId) return;
   try {
-    const res = await chapterContentListApi({
+    const res = await contentComicChapterContentListApi({
       id: shareData.value.chapterId,
     });
     contentList.value = res || [];
@@ -91,17 +91,18 @@ async function handleDelete(index?: number) {
     return;
   }
   useConfirm('delete', async () => {
-    contentList.value = await chapterContentDeleteApi({
+    await contentComicChapterContentDeleteApi({
       chapterId: shareData.value!.chapterId,
       index: deleteIndex,
     });
+    await loadContents();
     selectedIndices.value = [];
   });
 }
 
 async function handleClearAll() {
   useConfirm('clear', async () => {
-    await chapterContentClearApi({ id: shareData.value!.chapterId });
+    await contentComicChapterContentClearApi({ id: shareData.value!.chapterId });
     useMessage.success('清空成功');
     await loadContents();
   });
@@ -111,11 +112,12 @@ async function handleMove(fromIndex: number, toIndex: number) {
   if (fromIndex === toIndex) return;
 
   try {
-    contentList.value = await chapterContentMoveApi({
+    await contentComicChapterContentMoveApi({
       chapterId: shareData.value!.chapterId,
       fromIndex,
       toIndex,
     });
+    await loadContents();
   } catch (error) {
     console.error('移动失败:', error);
   }

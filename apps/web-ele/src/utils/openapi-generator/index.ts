@@ -4,7 +4,7 @@ import type { GeneratedFile } from './types';
 import path from 'node:path';
 import process from 'node:process';
 
-import { defaultConfig } from './config';
+import { defaultConfig, mergeOpenAPIGeneratorConfig } from './config';
 import { clearDirectory, ensureDirectory, writeFile } from './file-utils';
 import { OpenAPIGenerator } from './generator';
 
@@ -17,9 +17,9 @@ export async function generateAPIFromOpenAPI(
   config?: Partial<OpenAPIGeneratorConfig>,
 ): Promise<GeneratedFile[]> {
   const generator = new OpenAPIGenerator({
+    ...mergeOpenAPIGeneratorConfig(config),
     openApiUrl,
     outputDir,
-    ...config,
   });
 
   try {
@@ -44,7 +44,10 @@ export async function generateAPIFromOpenAPI(
 export async function generateAPI(
   config: Partial<OpenAPIGeneratorConfig> = {},
 ): Promise<void> {
-  const finalConfig = { ...defaultConfig, ...config };
+  const finalConfig = mergeOpenAPIGeneratorConfig({
+    ...defaultConfig,
+    ...config,
+  });
   const outputDir = path.resolve(process.cwd(), finalConfig.outputDir);
   const typesDir = finalConfig.typesOutputDir;
 
@@ -82,11 +85,8 @@ export async function generateAPI(
     const files: (GeneratedFile & { directory: string })[] = [];
     const groupedPaths = generator.groupPathsByModule();
 
-    for (const [moduleKey, paths] of Object.entries(groupedPaths)) {
-      const moduleName = moduleKey.includes('::')
-        ? moduleKey.split('::').pop() || moduleKey
-        : moduleKey;
-      let finalFileName = `${moduleName}.ts`;
+    for (const group of Object.values(groupedPaths)) {
+      let finalFileName = `${group.fileName}.ts`;
 
       // 如果存在 index.ts 冲突，将其重命名为 indexApi.ts
       if (hasIndexConflict && finalFileName === 'index.ts') {
@@ -96,26 +96,19 @@ export async function generateAPI(
         );
       }
 
-      // 获取该模块的文件夹路径
-      // 取该模块的第一个路径作为示例来确定文件夹
-      const moduleDirectory =
-        paths.length > 0
-          ? finalConfig.directoryResolver(paths[0]?.path || '')
-          : '';
-
       // 使用正确的最终文件名重新生成内容
       const { apiContent, typesContent } = generator.generateModuleCode(
-        moduleName,
-        paths,
+        group.fileName,
+        group.operations,
         finalFileName,
-        moduleDirectory,
+        group.directory,
       );
 
       files.push({
         fileName: finalFileName,
         content: apiContent,
         types: typesContent,
-        directory: moduleDirectory,
+        directory: group.directory,
       });
     }
 

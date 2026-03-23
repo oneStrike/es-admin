@@ -1,4 +1,4 @@
-import type { UploadUploadFileResponse } from '#/api/types';
+import type { UploadFileUploadResponse } from '#/api/types';
 import type { UploadSceneEnum } from '#/enum/api';
 
 export interface EsUploadProps {
@@ -7,7 +7,7 @@ export interface EsUploadProps {
   /** 上传接口地址 */
   uploadUrl?: string;
   /** 上传地址 */
-  modelValue: string | string[] | UploadUploadFileResponse;
+  modelValue: string | string[] | UploadFileUploadResponse;
   /** 允许上传的文件类型 */
   accept?: string;
   /** 上传时附带的额外参数 */

@@ -3,19 +3,19 @@ import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
   BaseUserPointRuleDto,
-  PointsRulesRulesCreateRequest,
-  PointsRulesRulesUpdateRequest,
+  GrowthPointsRulesCreateRequest,
+  GrowthPointsRulesUpdateRequest,
 } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  pointsRulesRulesCreateApi,
-  pointsRulesRulesDetailApi,
-  pointsRulesRulesPageApi,
-  pointsRulesRulesUpdateApi,
-} from '#/api';
+  growthPointsRulesCreateApi,
+  growthPointsRulesDetailApi,
+  growthPointsRulesPageApi,
+  growthPointsRulesUpdateApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -33,7 +33,7 @@ const gridOptions: VxeGridProps<BaseUserPointRuleDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await pointsRulesRulesPageApi(
+        return await growthPointsRulesPageApi(
           formatQuery({
             page,
             formValues,
@@ -46,7 +46,6 @@ const gridOptions: VxeGridProps<BaseUserPointRuleDto> = {
   },
 };
 
-// 表格配置
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   formOptions: createSearchFormOptions(searchFormSchema),
@@ -63,17 +62,17 @@ const [DetailModal, detailApi] = useVbenModal({
 async function openFormModal(row?: BaseUserPointRuleDto) {
   let record;
   if (row) {
-    record = await pointsRulesRulesDetailApi({ id: row.id });
+    record = await growthPointsRulesDetailApi({ id: row.id });
   }
   formApi.setData({ title: '积分规则', record, schema: formSchema }).open();
 }
 
 async function handleSubmit(
-  values: PointsRulesRulesCreateRequest | PointsRulesRulesUpdateRequest,
+  values: GrowthPointsRulesCreateRequest | GrowthPointsRulesUpdateRequest,
 ) {
   await (values?.id
-    ? pointsRulesRulesUpdateApi(values as PointsRulesRulesUpdateRequest)
-    : pointsRulesRulesCreateApi(values as PointsRulesRulesCreateRequest));
+    ? growthPointsRulesUpdateApi(values as GrowthPointsRulesUpdateRequest)
+    : growthPointsRulesCreateApi(values as GrowthPointsRulesCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
@@ -97,7 +96,7 @@ async function handleSubmit(
           @change="
             async () => {
               row.loading = true;
-              await pointsRulesRulesUpdateApi({
+              await growthPointsRulesUpdateApi({
                 id: row.id,
                 type: row.type,
                 points: row.points,
@@ -137,7 +136,7 @@ async function handleSubmit(
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
-      :api="pointsRulesRulesDetailApi"
+      :api="growthPointsRulesDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"
     />

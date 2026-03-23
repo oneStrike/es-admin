@@ -2,6 +2,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AnnouncementPageResponseDto,
+  BaseAppPageDto,
   CreateAnnouncementDto,
   UpdateAnnouncementDto,
 } from '#/api/types';
@@ -17,7 +18,7 @@ import {
   announcementUpdateApi,
   announcementUpdateStatusApi,
   appPagePageApi,
-} from '#/api';
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -39,7 +40,7 @@ appPagePageApi({
   pageSize: 500,
 }).then((res) => {
   const pageOptions =
-    res.list?.map((pageItem) => {
+    res.list?.map((pageItem: BaseAppPageDto) => {
       clientPageObj.value[pageItem.id!] = pageItem.name;
       return {
         label: pageItem.name,

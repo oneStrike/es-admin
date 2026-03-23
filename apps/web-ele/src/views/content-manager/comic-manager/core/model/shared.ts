@@ -2,7 +2,7 @@ import type { EsFormSchema } from '#/types';
 
 import { cloneDeep } from 'es-toolkit';
 
-import { authorPageApi } from '#/api';
+import { contentAuthorPageApi } from '#/api/core';
 import { ContentPermissionEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
@@ -82,7 +82,7 @@ export const formSchema: EsFormSchema = [
           ),
         ),
         api: async (value: Record<string, any>) => {
-          return authorPageApi({
+          return contentAuthorPageApi({
             ...value,
             isEnabled: true,
             type: JSON.stringify([4]),

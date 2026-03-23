@@ -11,14 +11,14 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  categoryCreateApi,
-  categoryDeleteApi,
-  categoryDetailApi,
-  categoryOrderApi,
-  categoryPageApi,
-  categoryUpdateApi,
-  categoryUpdateStatusApi,
-} from '#/api';
+  contentCategoryCreateApi,
+  contentCategoryDeleteApi,
+  contentCategoryDetailApi,
+  contentCategoryPageApi,
+  contentCategorySwapSortOrderApi,
+  contentCategoryUpdateApi,
+  contentCategoryUpdateStatusApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
@@ -48,7 +48,7 @@ const gridOptions: VxeGridProps<BaseCategoryDto> = {
   },
   rowDragConfig: {
     async dragEndMethod(params) {
-      await categoryOrderApi({
+      await contentCategorySwapSortOrderApi({
         dragId: params.dragRow.id,
         targetId: params.newRow.id,
       });
@@ -62,7 +62,7 @@ const gridOptions: VxeGridProps<BaseCategoryDto> = {
         if (Array.isArray(formValues.contentType)) {
           formValues.contentType = JSON.stringify(formValues.contentType);
         }
-        return await categoryPageApi(formatQuery({ page, formValues, sorts }));
+        return await contentCategoryPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
@@ -89,7 +89,7 @@ const [Form, formApi] = useVbenModal({
 async function openFormModal(row?: BaseCategoryDto): Promise<void> {
   let record: BaseCategoryDto | undefined;
   if (row) {
-    record = await categoryDetailApi({ id: row.id });
+    record = await contentCategoryDetailApi({ id: row.id });
   }
   formApi
     .setData({
@@ -105,7 +105,7 @@ async function openFormModal(row?: BaseCategoryDto): Promise<void> {
  */
 async function toggleEnableStatus(row: BaseCategoryDto): Promise<void> {
   row.loading = true as any;
-  await categoryUpdateStatusApi({
+  await contentCategoryUpdateStatusApi({
     id: row.id,
     isEnabled: !row.isEnabled,
   });
@@ -120,8 +120,8 @@ type CategoryFormValues = CreateCategoryDto | UpdateCategoryDto;
 
 async function addOrUpdateCategory(values: CategoryFormValues): Promise<void> {
   await (values.id
-    ? categoryUpdateApi(values as UpdateCategoryDto)
-    : categoryCreateApi(values as CreateCategoryDto));
+    ? contentCategoryUpdateApi(values as UpdateCategoryDto)
+    : contentCategoryCreateApi(values as CreateCategoryDto));
   useMessage.success('操作成功');
   await gridApi.reload();
 }
@@ -130,7 +130,7 @@ async function addOrUpdateCategory(values: CategoryFormValues): Promise<void> {
  * 删除分类
  */
 async function deleteCategory(row: BaseCategoryDto): Promise<void> {
-  await categoryDeleteApi({
+  await contentCategoryDeleteApi({
     id: row.id,
   });
   handleSuccessReload(gridApi);

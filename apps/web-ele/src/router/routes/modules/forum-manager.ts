@@ -49,15 +49,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
 
-      {
-        name: 'ForumSystemConfig',
-        path: '/forum/system-config',
-        component: () => import('#/views/forum/system-config/index.vue'),
-        meta: {
-          icon: 'codex:dot-circle',
-          title: '系统配置',
-        },
-      },
     ],
   },
 ];

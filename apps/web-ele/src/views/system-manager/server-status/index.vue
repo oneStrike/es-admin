@@ -8,13 +8,11 @@
  * - 可访问性：语义化结构、aria 标签、sr-only 文案
  */
 
-import type { SystemHealthResponse, SystemReadyResponse } from '#/api/types';
-
 import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { systemHealthApi, systemReadyApi } from '#/api';
+import { apiHealthApi, apiReadyApi } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
 
 type Disk = {
@@ -40,8 +38,10 @@ type Alert = {
   title: string;
 };
 
-const healthData = ref<null | SystemHealthResponse>(null);
-const readyData = ref<null | SystemReadyResponse>(null);
+type StatusPayload = Record<string, any>;
+
+const healthData = ref<null | StatusPayload>(null);
+const readyData = ref<null | StatusPayload>(null);
 const statusLoading = ref(false);
 const healthUpdatedAt = ref('');
 
@@ -68,11 +68,11 @@ async function loadHealthStatus() {
   statusLoading.value = true;
   try {
     const [health, ready] = await Promise.all([
-      systemHealthApi(),
-      systemReadyApi(),
+      apiHealthApi(),
+      apiReadyApi(),
     ]);
-    healthData.value = health;
-    readyData.value = ready;
+    healthData.value = health ?? null;
+    readyData.value = ready ?? null;
     healthUpdatedAt.value = new Date().toLocaleString();
   } catch {
     useMessage.error('获取系统健康状态失败');

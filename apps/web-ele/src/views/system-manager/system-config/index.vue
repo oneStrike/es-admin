@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SystemConfigDto } from '#/api/types';
+import type { BaseSystemConfigDto } from '#/api/types';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
@@ -9,7 +9,7 @@ import { ElMenu, ElMenuItem, ElScrollbar } from 'element-plus';
 import forge from 'node-forge';
 
 import { useVbenForm } from '#/adapter/form';
-import { systemConfigApi, systemUpdateApi } from '#/api';
+import { systemConfigApi, systemUpdateApi } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
 import { useAuthStore } from '#/store';
 
@@ -74,7 +74,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 // 缓存完整配置数据
-const configData = ref<null | SystemConfigDto>(null);
+const configData = ref<null | BaseSystemConfigDto>(null);
 
 // 当切换菜单时更新表单
 watch(activeMenu, async () => {
@@ -185,7 +185,7 @@ async function handleSaveConfig(values: Record<string, any>) {
     if (!currentConfig) return;
 
     // 构建提交数据，保留原有数据
-    const submitData: SystemConfigDto = {
+    const submitData: BaseSystemConfigDto = {
       ...currentConfig,
     };
 

@@ -2,29 +2,30 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseForumSectionGroupDto,
-  CreateForumSectionDto,
-  CreateForumSectionGroupDto,
-  UpdateForumSectionDto,
-  UpdateForumSectionGroupDto,
+  BaseForumSectionDto,
+  ForumSectionGroupsCreateRequest,
+  ForumSectionGroupsUpdateRequest,
+  ForumSectionsCreateRequest,
+  ForumSectionsUpdateRequest,
 } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  sectionGroupsCreateApi,
-  sectionGroupsDeleteApi,
-  sectionGroupsDetailApi,
-  sectionGroupsPageApi,
-  sectionGroupsSwapSortOrderApi,
-  sectionGroupsUpdateApi,
-  sectionsCreateApi,
-  sectionsDeleteApi,
-  sectionsDetailApi,
-  sectionsPageApi,
-  sectionsUpdateApi,
-  sectionsUpdateEnabledApi,
-} from '#/api';
+  forumSectionGroupsCreateApi,
+  forumSectionGroupsDeleteApi,
+  forumSectionGroupsDetailApi,
+  forumSectionGroupsPageApi,
+  forumSectionGroupsSwapSortOrderApi,
+  forumSectionGroupsUpdateApi,
+  forumSectionsCreateApi,
+  forumSectionsDeleteApi,
+  forumSectionsDetailApi,
+  forumSectionsPageApi,
+  forumSectionsUpdateApi,
+  forumSectionsUpdateEnabledApi,
+} from '#/api/core';
 import {
   AlertCircleIcon,
   DeleteBinIcon,
@@ -63,7 +64,7 @@ const filteredSections = computed(() => {
   );
 });
 
-const gridOptions: VxeGridProps<CreateForumSectionDto> = {
+const gridOptions: VxeGridProps<BaseForumSectionDto> = {
   columns: sectionColumns,
   height: '100%',
   proxyConfig: {
@@ -71,7 +72,7 @@ const gridOptions: VxeGridProps<CreateForumSectionDto> = {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
         formValues.groupId = currentSectionGroup.value?.id;
-        return await sectionsPageApi(
+        return await forumSectionsPageApi(
           formatQuery({
             page,
             sorts,
@@ -89,7 +90,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 async function loadSectionGroups() {
-  const data = await sectionGroupsPageApi({ pageSize: 500 });
+  const data = await forumSectionGroupsPageApi({ pageSize: 500 });
   if (!currentSectionGroup.value) {
     currentSectionGroup.value = data?.list?.[0] || null;
   }
@@ -106,49 +107,49 @@ const [SectionGroupForm, sectionGroupFormApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-async function openFormModal(row?: CreateForumSectionDto, groupId?: string) {
+async function openFormModal(row?: BaseForumSectionDto, groupId?: number) {
   let record;
   if (row) {
-    record = await sectionsDetailApi({ id: row.id });
+    record = await forumSectionsDetailApi({ id: row.id });
   } else if (groupId) {
     record = { groupId };
   }
   formApi.setData({ title: '板块配置', record }).open();
 }
 
-async function openSectionGroupFormModal(row?: CreateForumSectionGroupDto) {
+async function openSectionGroupFormModal(row?: BaseForumSectionGroupDto) {
   let record;
   if (row) {
-    record = await sectionGroupsDetailApi({ id: row.id });
+    record = await forumSectionGroupsDetailApi({ id: row.id });
   }
   sectionGroupFormApi.setData({ title: '板块组配置', record }).open();
 }
 
 async function handleSubmit(
-  values: CreateForumSectionDto | UpdateForumSectionDto,
+  values: ForumSectionsCreateRequest | ForumSectionsUpdateRequest,
 ) {
   values.groupId = currentSectionGroup.value?.id;
   await (values?.id
-    ? sectionsUpdateApi(values as UpdateForumSectionDto)
-    : sectionsCreateApi(values as CreateForumSectionDto));
+    ? forumSectionsUpdateApi(values as ForumSectionsUpdateRequest)
+    : forumSectionsCreateApi(values as ForumSectionsCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
 async function handleSectionGroupSubmit(
-  values: CreateForumSectionGroupDto | UpdateForumSectionGroupDto,
+  values: ForumSectionGroupsCreateRequest | ForumSectionGroupsUpdateRequest,
 ) {
   await (values?.id
-    ? sectionGroupsUpdateApi(values as UpdateForumSectionGroupDto)
-    : sectionGroupsCreateApi(values as CreateForumSectionGroupDto));
+    ? forumSectionGroupsUpdateApi(values as ForumSectionGroupsUpdateRequest)
+    : forumSectionGroupsCreateApi(values as ForumSectionGroupsCreateRequest));
   sectionGroupFormApi.close();
   useMessage.success('操作成功');
   await loadSectionGroups();
 }
 
-async function deleteSection(record: CreateForumSectionDto) {
-  await sectionsDeleteApi({ id: record.id });
+async function deleteSection(record: BaseForumSectionDto) {
+  await forumSectionsDeleteApi({ id: record.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
@@ -161,11 +162,11 @@ const [SectionGroupDetailModal, sectionGroupDetailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
 });
 
-async function toggleEnableStatus(record: CreateForumSectionDto) {
+async function toggleEnableStatus(record: BaseForumSectionDto) {
   record.loading = true;
-  await sectionsUpdateEnabledApi({
+  await forumSectionsUpdateEnabledApi({
     id: record.id,
-    isEnabled: record.isEnabled,
+    isEnabled: !record.isEnabled,
   });
   record.loading = false;
   useMessage.success('操作成功');
@@ -177,8 +178,8 @@ function handleNodeClick(node: BaseForumSectionGroupDto) {
   gridApi.reload();
 }
 
-async function deleteSectionGroup(record: CreateForumSectionGroupDto) {
-  await sectionGroupsDeleteApi({ id: record.id });
+async function deleteSectionGroup(record: BaseForumSectionGroupDto) {
+  await forumSectionGroupsDeleteApi({ id: record.id });
   useMessage.success('操作成功');
 
   // 如果删除的是当前选中的板块分组，需要重置当前选中的分组
@@ -194,7 +195,7 @@ function allowDrop(__dragNode: any, __dropNode: any, type: string) {
 }
 
 async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
-  await sectionGroupsSwapSortOrderApi({
+  await forumSectionGroupsSwapSortOrderApi({
     dragId: dragNode.data.id,
     targetId: dropNode.data.id,
   });
@@ -351,7 +352,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      :api="sectionsDetailApi"
+      :api="forumSectionsDetailApi"
       :cards="getDetailCards"
       class="!w-[800px]"
     />
@@ -362,7 +363,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
     />
 
     <SectionGroupDetailModal
-      :api="sectionGroupsDetailApi"
+      :api="forumSectionGroupsDetailApi"
       :cards="getSectionGroupDetailCards"
       class="!w-[800px]"
     />

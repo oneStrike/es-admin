@@ -6,13 +6,13 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  dictionaryCreateItemApi,
-  dictionaryDeleteItemApi,
-  dictionaryItemOrderApi,
-  dictionaryItemsApi,
-  dictionaryUpdateItemApi,
-  dictionaryUpdateItemStatusApi,
-} from '#/api';
+  dictionaryItemCreateApi,
+  dictionaryItemDeleteApi,
+  dictionaryItemPageApi,
+  dictionaryItemSwapSortOrderApi,
+  dictionaryItemUpdateApi,
+  dictionaryItemUpdateStatusApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
@@ -45,7 +45,7 @@ const gridOptions: VxeGridProps<BaseDictionaryItemDto> = {
   },
   rowDragConfig: {
     async dragEndMethod(params) {
-      await dictionaryItemOrderApi({
+      await dictionaryItemSwapSortOrderApi({
         dragId: params.dragRow.id,
         targetId: params.newRow.id,
       });
@@ -57,7 +57,7 @@ const gridOptions: VxeGridProps<BaseDictionaryItemDto> = {
     sort: true,
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return dictionaryItemsApi({
+        return dictionaryItemPageApi({
           ...formatQuery({ page, formValues, sorts }),
           dictionaryCode: shareData.value?.record.code,
         });
@@ -94,19 +94,19 @@ async function addDictionaryItem(values: any) {
     values.dictionaryCode = shareData.value!.record.code;
   }
   await (values.id
-    ? dictionaryUpdateItemApi(values)
-    : dictionaryCreateItemApi(values));
+    ? dictionaryItemUpdateApi(values)
+    : dictionaryItemCreateApi(values));
 
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function toggleEnableStatus(row: BaseDictionaryDto) {
+async function toggleEnableStatus(row: BaseDictionaryItemDto) {
   const newStatus = !row.isEnabled;
   row.loading = true;
   try {
-    await dictionaryUpdateItemStatusApi({
+    await dictionaryItemUpdateStatusApi({
       id: row.id,
       isEnabled: newStatus,
     });
@@ -117,7 +117,7 @@ async function toggleEnableStatus(row: BaseDictionaryDto) {
   }
 }
 
-async function openFormModal(row?: BaseDictionaryDto) {
+async function openFormModal(row?: BaseDictionaryItemDto) {
   formApi
     .setData({
       title: '数据字典子项',
@@ -127,8 +127,8 @@ async function openFormModal(row?: BaseDictionaryDto) {
     .open();
 }
 
-async function deleteDictionary(row: BaseDictionaryDto) {
-  await dictionaryDeleteItemApi({ id: row.id });
+async function deleteDictionary(row: BaseDictionaryItemDto) {
+  await dictionaryItemDeleteApi({ id: row.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }

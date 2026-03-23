@@ -8,10 +8,10 @@ import type {
   AdminAppUserPageItemDto,
   AdminAppUserPointRecordDto,
   AdminAppUserPointStatsDto,
+  AppUsersExperienceGrantRequest,
+  AppUsersPointsConsumeRequest,
+  AppUsersPointsGrantRequest,
 } from '#/api/types';
-import type { BadgesAssignRequest } from '#/api/types/app-users/badges.d';
-import type { ExperienceGrantRequest } from '#/api/types/app-users/experience.d';
-import type { PointsConsumeRequest, PointsGrantRequest } from '#/api/types/app-users/points.d';
 import type { EsFormSchema } from '#/types';
 
 import { computed, ref } from 'vue';
@@ -21,20 +21,19 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { z } from '#/adapter/form';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  appUsersBadgesAssignApi,
+  appUsersBadgesPageApi,
+  appUsersBadgesRevokeApi,
   appUsersDetailApi,
-  experienceGrantApi,
-  experienceStatsApi,
-  pointsConsumeApi,
-  pointsGrantApi,
-  pointsStatsApi,
-} from '#/api';
-import {
-  badgesAssignApi as appUserBadgesAssignApi,
-  badgesPageApi as appUserBadgesPageApi,
-  badgesRevokeApi as appUserBadgesRevokeApi,
-} from '#/api/core/app-users/badges';
-import { experienceRecordPageApi, recordPageApi } from '#/api/core/app-users/record';
-import { badgesPageApi as growthBadgesPageApi } from '#/api/core/growth/badges';
+  appUsersExperienceGrantApi,
+  appUsersExperienceRecordPageApi,
+  appUsersExperienceStatsApi,
+  appUsersPointsConsumeApi,
+  appUsersPointsGrantApi,
+  appUsersPointsRecordPageApi,
+  appUsersPointsStatsApi,
+  growthBadgesPageApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsModalTable from '#/components/es-modal-table';
 import { useMessage } from '#/hooks/useFeedback';
@@ -466,7 +465,7 @@ const [PointGrid, pointGridApi] = useVbenVxeGrid({
             return { list: [], total: 0 };
           }
 
-          return await recordPageApi(
+          return await appUsersPointsRecordPageApi(
             formatQuery({
               page,
               formValues: {
@@ -503,7 +502,7 @@ const [ExperienceGrid, experienceGridApi] = useVbenVxeGrid({
             return { list: [], total: 0 };
           }
 
-          return await experienceRecordPageApi(
+          return await appUsersExperienceRecordPageApi(
             formatQuery({
               page,
               formValues: {
@@ -540,7 +539,7 @@ const [BadgeGrid, badgeGridApi] = useVbenVxeGrid({
             return { list: [], total: 0 };
           }
 
-          return await appUserBadgesPageApi(
+          return await appUsersBadgesPageApi(
             formatQuery({
               page,
               formValues: {
@@ -605,8 +604,8 @@ async function refreshStats() {
   }
 
   const [nextPointStats, nextExperienceStats] = await Promise.all([
-    pointsStatsApi({ userId: currentUser.value.id }),
-    experienceStatsApi({ userId: currentUser.value.id }),
+    appUsersPointsStatsApi({ userId: currentUser.value.id }),
+    appUsersExperienceStatsApi({ userId: currentUser.value.id }),
   ]);
 
   pointStats.value = nextPointStats;
@@ -679,7 +678,7 @@ function openAssignBadgeModal() {
 
   assignBadgeApi
     .setData({
-      api: (params: Record<string, any>) => growthBadgesPageApi(params as any),
+      api: growthBadgesPageApi,
       columns: availableBadgeColumns,
       multipleLimit: 20,
       searchSchema: createSearchFormOptions(badgeSearchSchema, {
@@ -691,12 +690,12 @@ function openAssignBadgeModal() {
     .open();
 }
 
-async function handlePointsGrantSubmit(values: PointsGrantRequest) {
+async function handlePointsGrantSubmit(values: AppUsersPointsGrantRequest) {
   if (!currentUser.value) {
     return;
   }
 
-  await pointsGrantApi({
+  await appUsersPointsGrantApi({
     remark: values.remark?.trim() || undefined,
     ruleType: values.ruleType,
     userId: currentUser.value.id,
@@ -708,12 +707,12 @@ async function handlePointsGrantSubmit(values: PointsGrantRequest) {
   await notifyParentUpdated();
 }
 
-async function handlePointsConsumeSubmit(values: PointsConsumeRequest) {
+async function handlePointsConsumeSubmit(values: AppUsersPointsConsumeRequest) {
   if (!currentUser.value) {
     return;
   }
 
-  await pointsConsumeApi({
+  await appUsersPointsConsumeApi({
     exchangeId: values.exchangeId || undefined,
     points: values.points,
     remark: values.remark?.trim() || undefined,
@@ -728,12 +727,14 @@ async function handlePointsConsumeSubmit(values: PointsConsumeRequest) {
   await notifyParentUpdated();
 }
 
-async function handleExperienceGrantSubmit(values: ExperienceGrantRequest) {
+async function handleExperienceGrantSubmit(
+  values: AppUsersExperienceGrantRequest,
+) {
   if (!currentUser.value) {
     return;
   }
 
-  await experienceGrantApi({
+  await appUsersExperienceGrantApi({
     remark: values.remark?.trim() || undefined,
     ruleType: values.ruleType,
     userId: currentUser.value.id,
@@ -752,10 +753,10 @@ async function handleAssignBadgeConfirm(rows: Array<{ id: number }>) {
 
   await Promise.all(
     rows.map((row) =>
-      appUserBadgesAssignApi({
+      appUsersBadgesAssignApi({
         badgeId: row.id,
         userId: currentUser.value!.id,
-      } satisfies BadgesAssignRequest),
+      }),
     ),
   );
 
@@ -770,7 +771,7 @@ async function revokeBadge(row: AdminAppUserBadgeItemDto) {
     return;
   }
 
-  await appUserBadgesRevokeApi({
+  await appUsersBadgesRevokeApi({
     badgeId: row.badge.id,
     userId: currentUser.value.id,
   });

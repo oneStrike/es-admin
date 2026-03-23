@@ -1,4 +1,4 @@
-import type { BaseForumSensitiveWordDto } from '#/api/types';
+import type { BaseSensitiveWordDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { z } from '#/adapter/form';
@@ -91,7 +91,7 @@ export const formSchema: EsFormSchema = [
 ];
 
 export const pageColumns =
-  formSchemaTransform.toTableColumns<BaseForumSensitiveWordDto>(formSchema, {
+  formSchemaTransform.toTableColumns<BaseSensitiveWordDto>(formSchema, {
     remark: {
       showOverflow: 'tooltip',
     },

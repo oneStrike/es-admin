@@ -1,10 +1,10 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
   AdminAppUserPageItemDto,
+  AppUsersCreateRequest,
+  AppUsersProfileUpdateRequest,
   AppUsersUpdateStatusRequest,
 } from '#/api/types';
-import type { AppUsersCreateRequest } from '#/api/types/app-users/appUsers.d';
-import type { ProfileUpdateRequest } from '#/api/types/app-users/profile.d';
 import type { EsFormSchema } from '#/types';
 
 import { z } from '#/adapter/form';
@@ -12,7 +12,7 @@ import { UploadSceneEnum } from '#/enum/api';
 import { formatUTC } from '#/utils';
 
 type UserStatusValue = AppUsersUpdateStatusRequest['status'];
-type GenderValue = NonNullable<ProfileUpdateRequest['genderType']>;
+type GenderValue = NonNullable<AppUsersProfileUpdateRequest['genderType']>;
 
 export const normalUserStatus = 1 as UserStatusValue;
 

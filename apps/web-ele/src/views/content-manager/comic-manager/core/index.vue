@@ -4,8 +4,8 @@ import type { BasicOption, Recordable } from '@vben/types';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseWorkDto,
-  WorkCreateRequest,
-  WorkUpdateRequest,
+  ContentComicCreateRequest,
+  ContentComicUpdateRequest,
 } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
@@ -13,19 +13,19 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  categoryPageApi,
-  levelRulesPageApi,
-  tagPageApi,
-  workCreateApi,
-  workDeleteApi,
-  workDetailApi,
-  workPageApi,
-  workUpdateApi,
-  workUpdateHotApi,
-  workUpdateNewApi,
-  workUpdateRecommendedApi,
-  workUpdateStatusApi,
-} from '#/api';
+  contentCategoryPageApi,
+  contentComicCreateApi,
+  contentComicDeleteApi,
+  contentComicDetailApi,
+  contentComicPageApi,
+  contentComicUpdateApi,
+  contentComicUpdateHotApi,
+  contentComicUpdateNewApi,
+  contentComicUpdateRecommendedApi,
+  contentComicUpdateStatusApi,
+  contentTagPageApi,
+  growthLevelRulesPageApi,
+} from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useDict } from '#/hooks/useDict';
@@ -46,8 +46,7 @@ const gridOptions: VxeGridProps<BaseWorkDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        formValues.type = 1;
-        return await workPageApi(formatQuery({ page, formValues, sorts }));
+        return await contentComicPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
     sort: true,
@@ -79,7 +78,7 @@ const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
 
 // 加载会员等级选项
-levelRulesPageApi({ isEnabled: true }).then((res) => {
+growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
   const options =
     res?.list?.map((item) => ({
       label: item.name,
@@ -94,9 +93,9 @@ levelRulesPageApi({ isEnabled: true }).then((res) => {
 async function openFormModal(row?: BaseWorkDto) {
   let record;
   if (row) {
-    record = await workDetailApi({ id: row.id });
+    record = await contentComicDetailApi({ id: row.id });
     record.authorIds = record?.authors.map(
-      (item: { author: { id: number } }) => item.author,
+      (item: { author: { id: number } }) => item.author.id,
     );
     record.categoryIds = record?.categories.map(
       (item: { category: { id: number } }) => item.category.id,
@@ -107,7 +106,7 @@ async function openFormModal(row?: BaseWorkDto) {
   }
 
   if (tagOptions.length === 0) {
-    const data = await tagPageApi({
+    const data = await contentTagPageApi({
       pageSize: 500,
     });
     tagOptions.push(
@@ -121,7 +120,7 @@ async function openFormModal(row?: BaseWorkDto) {
     });
   }
   if (categoryOptions.length === 0) {
-    const data = await categoryPageApi({
+    const data = await contentCategoryPageApi({
       pageSize: 500,
     });
     categoryOptions.push(
@@ -167,18 +166,20 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
   },
 );
 
-async function handleSubmit(values: WorkCreateRequest | WorkUpdateRequest) {
+async function handleSubmit(
+  values: ContentComicCreateRequest | ContentComicUpdateRequest,
+) {
   values.type = 1; // 漫画固定 type=1
   await (values?.id
-    ? workUpdateApi(values as WorkUpdateRequest)
-    : workCreateApi(values as WorkCreateRequest));
+    ? contentComicUpdateApi(values as ContentComicUpdateRequest)
+    : contentComicCreateApi(values as ContentComicCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
 async function deleteComic(record: BaseWorkDto) {
-  await workDeleteApi({ id: record.id });
+  await contentComicDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
@@ -191,19 +192,22 @@ async function toggleStatus(
   const newValue = !record[field];
   switch (field) {
     case 'isHot': {
-      await workUpdateHotApi({ id: record.id, isHot: newValue });
+      await contentComicUpdateHotApi({ id: record.id, isHot: newValue });
       break;
     }
     case 'isNew': {
-      await workUpdateNewApi({ id: record.id, isNew: newValue });
+      await contentComicUpdateNewApi({ id: record.id, isNew: newValue });
       break;
     }
     case 'isPublished': {
-      await workUpdateStatusApi({ id: record.id, isPublished: newValue });
+      await contentComicUpdateStatusApi({
+        id: record.id,
+        isPublished: newValue,
+      });
       break;
     }
     case 'isRecommended': {
-      await workUpdateRecommendedApi({
+      await contentComicUpdateRecommendedApi({
         id: record.id,
         isRecommended: newValue,
       });
@@ -333,7 +337,7 @@ function openChapterModal(record: BaseWorkDto) {
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      :api="workDetailApi"
+      :api="contentComicDetailApi"
       :cards="(data: BaseWorkDto) => getDetailCards(data, dataDict || {})"
     />
 

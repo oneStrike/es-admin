@@ -26,6 +26,8 @@ if (result.error) {
 export interface NamingConfig {
   /** 方法名生成策略：使用路径的几个上下文段 */
   methodNameSegments: number;
+  /** 命名时需要排除的接口 URL 上下文 */
+  excludedUrlContexts: string[];
   /** 方法名后缀 */
   methodNameSuffix: string;
   /** 请求类型后缀 */
@@ -64,7 +66,7 @@ export interface OpenAPIGeneratorConfig {
     data: Record<string, any>;
     headers: Record<string, string>;
   };
-  /** 文件夹解析器，根据接口地址返回文件夹名字 */
+  /** 文件夹解析器，如需额外创建子目录可自定义 */
   directoryResolver: (path: string) => string;
   /** 生成前是否清理之前的文件 */
   cleanBeforeGenerate: boolean;
@@ -93,6 +95,7 @@ export const defaultConfig: OpenAPIGeneratorConfig = {
   httpHandlerImport: '#/api/request',
   naming: {
     methodNameSegments: 2,
+    excludedUrlContexts: ['api/admin'],
     methodNameSuffix: 'Api',
     requestTypeSuffix: 'Request',
     responseTypeSuffix: 'Response',
@@ -108,11 +111,38 @@ export const defaultConfig: OpenAPIGeneratorConfig = {
     second: '2-digit',
     hour12: false,
   },
-  // 默认文件夹解析器，返回空字符串表示直接放在outputDir中
-  directoryResolver: (path) => path.split('/')[3] || '',
+  // 默认不额外创建子目录，按首个上下文直接生成文件
+  directoryResolver: () => '',
   // 默认不清理之前的文件
   cleanBeforeGenerate: true,
 };
+
+export function mergeOpenAPIGeneratorConfig(
+  config: Partial<OpenAPIGeneratorConfig> = {},
+): OpenAPIGeneratorConfig {
+  return {
+    ...defaultConfig,
+    ...config,
+    naming: {
+      ...defaultConfig.naming,
+      ...config.naming,
+    },
+    dateTimeOptions: {
+      ...defaultConfig.dateTimeOptions,
+      ...config.dateTimeOptions,
+    },
+    proxyConfig: {
+      data: {
+        ...defaultConfig.proxyConfig.data,
+        ...config.proxyConfig?.data,
+      },
+      headers: {
+        ...defaultConfig.proxyConfig.headers,
+        ...config.proxyConfig?.headers,
+      },
+    },
+  };
+}
 
 /**
  * 类型映射配置
