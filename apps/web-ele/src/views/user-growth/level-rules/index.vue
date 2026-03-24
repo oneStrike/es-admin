@@ -9,7 +9,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   growthLevelRulesCreateApi,
   growthLevelRulesDeleteApi,
@@ -20,21 +20,23 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
+import { createSearchFormOptions } from '#/utils';
 
 import { getDetailCards } from './modules/model/detail';
-import { formSchema, pageColumns } from './modules/model/shared';
+import {
+  formSchema,
+  pageColumns,
+  searchFormSchema,
+} from './modules/model/shared';
 
 const gridOptions: VxeGridProps<BaseUserLevelRuleDto> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
-      query: async ({ page }, formValues) => {
-        return await growthLevelRulesPageApi({
-          pageIndex: --page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
-      },
+      query: async ({ page, sorts }, formValues) =>
+        await growthLevelRulesPageApi(
+          formatQuery({ page, formValues, sorts }),
+        ),
     },
     sort: true,
   },
@@ -42,6 +44,7 @@ const gridOptions: VxeGridProps<BaseUserLevelRuleDto> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
+  formOptions: createSearchFormOptions(searchFormSchema),
 });
 
 const [Form, formApi] = useVbenModal({
@@ -50,6 +53,7 @@ const [Form, formApi] = useVbenModal({
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '等级规则详情',
 });
 
 async function openFormModal(row?: BaseUserLevelRuleDto) {
@@ -76,6 +80,22 @@ async function deleteLevelRule(record: BaseUserLevelRuleDto) {
   useMessage.success('删除成功');
   gridApi.reload();
 }
+
+async function toggleEnableStatus(
+  row: BaseUserLevelRuleDto & { loading?: boolean },
+) {
+  row.loading = true;
+  try {
+    await growthLevelRulesUpdateApi({
+      id: row.id,
+      isEnabled: !row.isEnabled,
+    });
+    useMessage.success('操作成功');
+    gridApi.reload();
+  } finally {
+    row.loading = false;
+  }
+}
 </script>
 
 <template>
@@ -101,19 +121,9 @@ async function deleteLevelRule(record: BaseUserLevelRuleDto) {
         <el-switch
           :active-value="true"
           :inactive-value="false"
+          :loading="row.loading"
           :model-value="row.isEnabled"
-          @change="
-            async () => {
-              row.loading = true;
-              await growthLevelRulesUpdateApi({
-                id: row.id,
-                isEnabled: !row.isEnabled,
-              });
-              useMessage.success('操作成功');
-              gridApi.reload();
-              row.loading = false;
-            }
-          "
+          @change="toggleEnableStatus(row)"
         />
       </template>
 
@@ -122,11 +132,7 @@ async function deleteLevelRule(record: BaseUserLevelRuleDto) {
           <el-button
             link
             type="primary"
-            @click="
-              detailApi
-                .setData({ title: '等级规则详情', recordId: row.id })
-                .open()
-            "
+            @click="detailApi.setData({ recordId: row.id }).open()"
           >
             详情
           </el-button>

@@ -103,7 +103,7 @@ async function openFormModal(row?: AnnouncementPageResponseDto) {
     record = await announcementDetailApi({ id: row.id });
     record.dateTimeRange = [record.publishStartTime, record.publishEndTime];
   }
-  formApi.setData({ title: '公告管理', record }).open();
+  formApi.setData({ title: '公告', record }).open();
 }
 
 async function handleSubmit(
@@ -152,6 +152,7 @@ function canPublish(record: AnnouncementPageResponseDto): boolean {
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '公告详情',
 });
 </script>
 

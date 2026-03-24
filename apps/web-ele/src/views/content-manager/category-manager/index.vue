@@ -105,12 +105,15 @@ async function openFormModal(row?: BaseCategoryDto): Promise<void> {
  */
 async function toggleEnableStatus(row: BaseCategoryDto): Promise<void> {
   row.loading = true as any;
-  await contentCategoryUpdateStatusApi({
-    id: row.id,
-    isEnabled: !row.isEnabled,
-  });
-  handleSuccessReload(gridApi);
-  row.loading = false as any;
+  try {
+    await contentCategoryUpdateStatusApi({
+      id: row.id,
+      isEnabled: !row.isEnabled,
+    });
+    handleSuccessReload(gridApi);
+  } finally {
+    row.loading = false as any;
+  }
 }
 
 /**
@@ -149,7 +152,7 @@ async function deleteCategory(row: BaseCategoryDto): Promise<void> {
       <template #isEnabled="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isEnabled!"
+          :inactive-value="false"
           :loading="row.loading"
           :model-value="row.isEnabled!"
           @change="toggleEnableStatus(row)"

@@ -21,6 +21,16 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'NovelManager',
+        path: '/content-manager/novel-manager',
+        component: () =>
+          import('#/views/content-manager/novel-manager/core/index.vue'),
+        meta: {
+          title: '小说',
+          icon: 'codex:dot-circle',
+        },
+      },
+      {
         name: 'AuthorManager',
         path: '/content-manager/author-manager',
         component: () =>

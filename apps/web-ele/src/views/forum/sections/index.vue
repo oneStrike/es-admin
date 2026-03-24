@@ -114,7 +114,7 @@ async function openFormModal(row?: BaseForumSectionDto, groupId?: number) {
   } else if (groupId) {
     record = { groupId };
   }
-  formApi.setData({ title: '板块配置', record }).open();
+  formApi.setData({ title: '板块', record }).open();
 }
 
 async function openSectionGroupFormModal(row?: BaseForumSectionGroupDto) {
@@ -122,7 +122,7 @@ async function openSectionGroupFormModal(row?: BaseForumSectionGroupDto) {
   if (row) {
     record = await forumSectionGroupsDetailApi({ id: row.id });
   }
-  sectionGroupFormApi.setData({ title: '板块组配置', record }).open();
+  sectionGroupFormApi.setData({ title: '板块组', record }).open();
 }
 
 async function handleSubmit(
@@ -156,21 +156,26 @@ async function deleteSection(record: BaseForumSectionDto) {
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '板块详情',
 });
 
 const [SectionGroupDetailModal, sectionGroupDetailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '板块组详情',
 });
 
 async function toggleEnableStatus(record: BaseForumSectionDto) {
   record.loading = true;
-  await forumSectionsUpdateEnabledApi({
-    id: record.id,
-    isEnabled: !record.isEnabled,
-  });
-  record.loading = false;
-  useMessage.success('操作成功');
-  gridApi.reload();
+  try {
+    await forumSectionsUpdateEnabledApi({
+      id: record.id,
+      isEnabled: !record.isEnabled,
+    });
+    useMessage.success('操作成功');
+    gridApi.reload();
+  } finally {
+    record.loading = false;
+  }
 }
 
 function handleNodeClick(node: BaseForumSectionGroupDto) {
@@ -245,9 +250,9 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
                     :show-after="300"
                   >
                     <div
-                      @click.stop="
-                        sectionGroupDetailApi
-                          .setData({ title: '板块组详情', recordId: data.id })
+                        @click.stop="
+                          sectionGroupDetailApi
+                          .setData({ recordId: data.id })
                           .open()
                       "
                     >
@@ -310,7 +315,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
         <template #isEnabled="{ row }">
           <el-switch
             :active-value="true"
-            :inactive-value="row.isEnabled"
+            :inactive-value="false"
             :loading="row.loading"
             :model-value="row.isEnabled"
             @change="toggleEnableStatus(row)"
@@ -323,7 +328,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
               type="primary"
               @click="
                 detailApi
-                  .setData({ title: '板块详情', recordId: row.id })
+                  .setData({ recordId: row.id })
                   .open()
               "
             >

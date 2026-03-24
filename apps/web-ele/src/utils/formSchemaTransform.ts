@@ -53,6 +53,7 @@ function sortItemsWithSortValue<T extends { sortValue: number }>(
 export const formSchemaTransform: FormSchemaTransform = {
   toTableColumns: (schema, extra) => {
     const innerSchema = cloneDeep(schema);
+    const extraConfig = { ...(extra ?? {}) } as ColumnItemExtra<any>;
 
     const columnsWithSort: Array<
       VxeGridPropTypes.Columns<any>[number] & {
@@ -61,8 +62,8 @@ export const formSchemaTransform: FormSchemaTransform = {
     > = [];
 
     innerSchema.forEach((item, idx) => {
-      const itemExtra = extra?.[item.fieldName];
-      delete extra?.[item.fieldName];
+      const itemExtra = extraConfig[item.fieldName];
+      delete extraConfig[item.fieldName];
       if (!item.hide && item.component !== 'Divider' && !itemExtra?.hide) {
         columnsWithSort.push({
           title: item.label as string,
@@ -80,7 +81,7 @@ export const formSchemaTransform: FormSchemaTransform = {
       }
     });
 
-    if (extra?.actions && extra.actions.show) {
+    if (extraConfig.actions && extraConfig.actions.show) {
       columnsWithSort.push({
         title: '操作',
         field: 'actions',
@@ -89,12 +90,12 @@ export const formSchemaTransform: FormSchemaTransform = {
         sortValue: 999_999,
         width: 150,
         slots: { default: 'actions' },
-        ...extra?.actions,
+        ...extraConfig.actions,
       });
-      delete extra.actions;
+      delete extraConfig.actions;
     }
 
-    if (extra?.updatedAt && extra.updatedAt.hide !== true) {
+    if (extraConfig.updatedAt && extraConfig.updatedAt.hide !== true) {
       columnsWithSort.push({
         title: '更新时间',
         field: 'updatedAt',
@@ -105,11 +106,11 @@ export const formSchemaTransform: FormSchemaTransform = {
         cellRender: {
           name: 'CellDate',
         },
-        ...extra?.updatedAt, // 修复：原来是 ...extra?.actions
+        ...extraConfig.updatedAt, // 修复：原来是 ...extra?.actions
       });
-      delete extra.updatedAt; // 修复：原来是 delete extra.actions
+      delete extraConfig.updatedAt; // 修复：原来是 delete extra.actions
     }
-    if (extra?.createdAt && extra.createdAt.hide !== true) {
+    if (extraConfig.createdAt && extraConfig.createdAt.hide !== true) {
       columnsWithSort.push({
         title: '创建时间',
         field: 'createdAt',
@@ -120,13 +121,13 @@ export const formSchemaTransform: FormSchemaTransform = {
         cellRender: {
           name: 'CellDate',
         },
-        ...extra?.createdAt, // 修复：原来是 ...extra?.actions
+        ...extraConfig.createdAt, // 修复：原来是 ...extra?.actions
       });
-      delete extra.createdAt; // 修复：原来是 delete extra.actions
+      delete extraConfig.createdAt; // 修复：原来是 delete extra.actions
     }
-    if (extra && Object.keys(extra).length > 0) {
-      Object.keys(extra).forEach((key) => {
-        const item = extra[key];
+    if (Object.keys(extraConfig).length > 0) {
+      Object.keys(extraConfig).forEach((key) => {
+        const item = extraConfig[key];
         if (!['createdAt', 'seq'].includes(key) && item && !item.hide) {
           columnsWithSort.push({
             ...item,
@@ -145,7 +146,7 @@ export const formSchemaTransform: FormSchemaTransform = {
       width: 80,
       fixed: 'left',
       sortValue: -1,
-      ...extra?.seq,
+      ...extraConfig.seq,
     });
 
     // 移除辅助属性，返回最终的列配置
@@ -153,76 +154,87 @@ export const formSchemaTransform: FormSchemaTransform = {
   },
   toSearchSchema: (schema, extra) => {
     const innerSchema = cloneDeep(schema);
+    const extraConfig = cloneDeep(extra ?? {}) as FilterItemExtra;
     const filterList: EsFormSchema = [];
 
     // 按照 extra 对象的属性顺序处理
-    if (extra) {
-      Object.keys(extra).forEach((key) => {
-        const itemExtra = extra[key];
+    if (Object.keys(extraConfig).length > 0) {
+      Object.keys(extraConfig).forEach((key) => {
+        const itemExtra = extraConfig[key];
         if (!itemExtra || itemExtra.hide === true) return;
 
         // 先从 schema 中查找对应字段
         const schemaItem = innerSchema.find((item) => item.fieldName === key);
 
         if (schemaItem) {
-          delete schemaItem.formItemClass;
           const componentConfig =
             filterComponentProps[
               schemaItem.component as keyof typeof filterComponentProps
             ];
 
-          // 获取原有的options（如果componentProps是对象类型）
-          const existingOptions =
+          const componentProps =
             schemaItem.componentProps &&
             typeof schemaItem.componentProps === 'object' &&
             !Array.isArray(schemaItem.componentProps)
-              ? schemaItem.componentProps.options
-              : undefined;
+              ? ({ ...schemaItem.componentProps } as Record<string, any>)
+              : ({} as Record<string, any>);
 
-          schemaItem.componentProps = {
-            ...schemaItem.componentProps,
+          // 获取原有的options（如果componentProps是对象类型）
+          const existingOptions = componentProps.options;
+          const nextComponentProps: Record<string, any> = {
+            ...componentProps,
             placeholder: componentConfig?.placeholder || schemaItem.label,
             class: 'w-[280px]',
             clearable: true,
             options: existingOptions ?? [],
           };
-          if (schemaItem.component === 'CheckboxGroup') {
-            schemaItem.component = 'Select';
-            schemaItem.componentProps.multiple = true;
-            schemaItem.componentProps.collapseTags = true;
-            schemaItem.componentProps.collapseTagsTooltip = true;
+
+          const nextSchemaItem = {
+            ...schemaItem,
+            componentProps: nextComponentProps,
+            label: '',
+            rules: '',
+            hideLabel: true,
+          };
+          delete nextSchemaItem.formItemClass;
+          delete nextSchemaItem.defaultValue;
+
+          if (nextSchemaItem.component === 'CheckboxGroup') {
+            nextSchemaItem.component = 'Select';
+            nextSchemaItem.componentProps.multiple = true;
+            nextSchemaItem.componentProps.collapseTags = true;
+            nextSchemaItem.componentProps.collapseTagsTooltip = true;
           }
-          if (schemaItem.component === 'RadioGroup') {
-            schemaItem.component = 'Select';
+          if (nextSchemaItem.component === 'RadioGroup') {
+            nextSchemaItem.component = 'Select';
           }
-          if (schemaItem.component === 'DatePicker') {
-            schemaItem.componentProps.startPlaceholder =
-              schemaItem.componentProps.startPlaceholder || '开始时间';
-            schemaItem.componentProps.endPlaceholder =
-              schemaItem.componentProps.endPlaceholder || '结束时间';
+          if (nextSchemaItem.component === 'DatePicker') {
+            nextSchemaItem.componentProps.startPlaceholder =
+              nextSchemaItem.componentProps.startPlaceholder || '开始时间';
+            nextSchemaItem.componentProps.endPlaceholder =
+              nextSchemaItem.componentProps.endPlaceholder || '结束时间';
           }
-          schemaItem.label = '';
-          schemaItem.rules = '';
-          schemaItem.hideLabel = true;
-          delete schemaItem.defaultValue;
 
           // 合并 extra 中的配置
           filterList.push({
-            ...schemaItem,
+            ...nextSchemaItem,
             ...itemExtra,
           });
         } else {
           // schema 中不存在，使用 extra 中的配置创建新项
-          itemExtra.fieldName = itemExtra?.fieldName || key;
           const componentProps = (itemExtra.componentProps ?? {}) as Record<
             string,
             any
           >;
-          itemExtra.componentProps = {
-            ...componentProps,
-            placeholder: componentProps.placeholder ?? itemExtra.label,
+          const nextItemExtra = {
+            ...itemExtra,
+            fieldName: itemExtra.fieldName || key,
+            componentProps: {
+              ...componentProps,
+              placeholder: componentProps.placeholder ?? itemExtra.label,
+            },
           };
-          filterList.push(itemExtra as EsFormSchema[number]);
+          filterList.push(nextItemExtra as EsFormSchema[number]);
         }
       });
     }

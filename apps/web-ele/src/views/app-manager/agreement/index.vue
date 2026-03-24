@@ -53,7 +53,7 @@ async function openFormModal(row?: ListOrPageAgreementResponseDto) {
   if (row) {
     record = await agreementDetailApi({ id: row.id });
   }
-  formApi.setData({ title: '协议管理', record }).open();
+  formApi.setData({ title: '协议', record }).open();
 }
 
 async function handleSubmit(values: CreateAgreementDto | UpdateAgreementDto) {
@@ -73,17 +73,21 @@ async function deleteAgreement(record: ListOrPageAgreementResponseDto) {
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '协议详情',
 });
 
 async function togglePublishedStatus(record: BaseAgreementDto | ListOrPageAgreementResponseDto) {
   record.loading = true;
-  await agreementUpdateStatusApi({
-    id: record.id,
-    isPublished: !record.isPublished,
-  });
-  record.loading = false;
-  useMessage.success('操作成功');
-  gridApi.reload();
+  try {
+    await agreementUpdateStatusApi({
+      id: record.id,
+      isPublished: !record.isPublished,
+    });
+    useMessage.success('操作成功');
+    gridApi.reload();
+  } finally {
+    record.loading = false;
+  }
 }
 </script>
 
@@ -99,7 +103,7 @@ async function togglePublishedStatus(record: BaseAgreementDto | ListOrPageAgreem
       <template #isPublished="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isPublished"
+          :inactive-value="false"
           :loading="row.loading"
           :model-value="row.isPublished"
           @change="togglePublishedStatus(row)"
@@ -137,7 +141,6 @@ async function togglePublishedStatus(record: BaseAgreementDto | ListOrPageAgreem
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      title="协议详情"
       :api="agreementDetailApi"
       :cards="getDetailCards"
       class="!w-[900px]"

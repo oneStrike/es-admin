@@ -145,7 +145,7 @@ async function deleteDictionary(row: BaseDictionaryItemDto) {
       <template #isEnabled="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isEnabled"
+          :inactive-value="false"
           :loading="row.loading"
           :model-value="row.isEnabled"
           @change="toggleEnableStatus(row)"

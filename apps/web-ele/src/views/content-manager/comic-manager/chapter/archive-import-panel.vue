@@ -9,6 +9,8 @@ import type {
 
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
+
 import {
   contentComicChapterContentArchiveConfirmApi,
   contentComicChapterContentArchiveDetailApi,
@@ -36,7 +38,6 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-const dialogVisible = ref(false);
 const detailLoading = ref(false);
 const errorMessage = ref('');
 const uploading = ref(false);
@@ -49,6 +50,21 @@ const taskDetail =
 
 let pollTimer: null | number = null;
 let notifiedTaskId = '';
+
+const [Modal, modalApi] = useVbenModal({
+  closeOnClickModal: false,
+  closeOnPressEscape: false,
+  showCancelButton: false,
+  showConfirmButton: false,
+  title: '压缩包导入',
+  onOpenChange(isOpen) {
+    if (isOpen) {
+      modalApi.setState({
+        title: panelTitle.value,
+      });
+    }
+  },
+});
 
 const terminalStatuses = new Set([
   'cancelled',
@@ -183,11 +199,22 @@ const taskHint = computed(() => {
   return `${sourceFileName.value || '压缩包'} · 任务 ${taskDetail.value.taskId.slice(0, 8)}`;
 });
 
+function openPanel() {
+  modalApi.setState({
+    title: panelTitle.value,
+  });
+  modalApi.open();
+}
+
+function closePanel() {
+  modalApi.close();
+}
+
 watch(
   () => `${props.workId}-${props.chapterId ?? 'all'}-${props.displayTitle ?? ''}`,
   () => {
     stopPolling();
-    dialogVisible.value = false;
+    closePanel();
     detailLoading.value = false;
     errorMessage.value = '';
     uploading.value = false;
@@ -280,7 +307,7 @@ async function handleArchiveUpload(options: UploadRequestOptions) {
     params.set('chapterId', String(props.chapterId));
   }
 
-  dialogVisible.value = true;
+  openPanel();
   errorMessage.value = '';
   sourceFileName.value = file.name;
   taskDetail.value = null;
@@ -373,7 +400,7 @@ async function handleConfirmImport() {
       v-if="taskDetail"
       class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 via-white to-blue-50 px-4 py-2 text-left shadow-sm transition hover:border-blue-300 hover:shadow"
       type="button"
-      @click="dialogVisible = true"
+      @click="openPanel"
     >
       <div
         class="flex size-9 items-center justify-center rounded-xl bg-slate-900 text-white"
@@ -391,8 +418,8 @@ async function handleConfirmImport() {
       </el-tag>
     </button>
 
-    <el-dialog v-model="dialogVisible" width="1080px" top="6vh">
-      <template #header>
+    <Modal class="w-[1080px] top-[6vh]">
+      <template #title>
         <div class="flex items-start justify-between gap-4">
           <div>
             <div class="text-lg font-semibold text-slate-900">{{ panelTitle }}</div>
@@ -690,7 +717,7 @@ async function handleConfirmImport() {
         <div class="flex items-center justify-between gap-4">
           <div class="text-xs text-slate-500">{{ taskHint }}</div>
           <div class="flex gap-2">
-            <el-button @click="dialogVisible = false">
+            <el-button @click="closePanel">
               {{ hasActiveTask ? '后台继续处理，先关闭' : '关闭' }}
             </el-button>
             <el-button
@@ -709,6 +736,6 @@ async function handleConfirmImport() {
           </div>
         </div>
       </template>
-    </el-dialog>
+    </Modal>
   </div>
 </template>

@@ -121,6 +121,7 @@ const [PasswordForm, passwordFormApi] = useVbenModal({
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '用户详情',
 });
 
 const [OperationModal, operationApi] = useVbenModal({
@@ -152,7 +153,7 @@ async function toggleUserEnabled(row: AdminAppUserPageItemDto) {
 }
 
 function openDetailModal(row: AdminAppUserPageItemDto) {
-  detailApi.setData({ recordId: row.id, title: '用户详情' }).open();
+  detailApi.setData({ recordId: row.id }).open();
 }
 
 function openOperationModal(row: AdminAppUserPageItemDto) {

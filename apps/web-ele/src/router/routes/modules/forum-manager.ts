@@ -28,6 +28,15 @@ const routes: RouteRecordRaw[] = [
           title: '版主管理',
         },
       },
+      {
+        name: 'ForumModeratorApplication',
+        path: '/forum/moderator-application',
+        component: () => import('#/views/forum/moderator-application/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '版主申请',
+        },
+      },
 
       {
         name: 'ForumSections',
@@ -48,7 +57,6 @@ const routes: RouteRecordRaw[] = [
           title: '话题管理',
         },
       },
-
     ],
   },
 ];

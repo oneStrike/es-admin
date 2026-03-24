@@ -86,6 +86,7 @@ const [Form, formApi] = useVbenModal({
  */
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '作者详情',
 });
 
 /**
@@ -110,12 +111,15 @@ async function openFormModal(row?: AuthorPageResponseDto): Promise<void> {
  */
 async function toggleEnableStatus(row: AuthorPageResponseDto): Promise<void> {
   row.loading = true as any;
-  await contentAuthorUpdateStatusApi({
-    id: row.id,
-    isEnabled: !row.isEnabled,
-  });
-  handleSuccessReload(gridApi);
-  row.loading = false as any;
+  try {
+    await contentAuthorUpdateStatusApi({
+      id: row.id,
+      isEnabled: !row.isEnabled,
+    });
+    handleSuccessReload(gridApi);
+  } finally {
+    row.loading = false as any;
+  }
 }
 
 /**
@@ -125,12 +129,15 @@ async function toggleIsRecommendedStatus(
   row: AuthorPageResponseDto,
 ): Promise<void> {
   row.loading = true as any;
-  await contentAuthorUpdateRecommendedApi({
-    id: row.id,
-    isRecommended: !row.isRecommended,
-  });
-  handleSuccessReload(gridApi);
-  row.loading = false as any;
+  try {
+    await contentAuthorUpdateRecommendedApi({
+      id: row.id,
+      isRecommended: !row.isRecommended,
+    });
+    handleSuccessReload(gridApi);
+  } finally {
+    row.loading = false as any;
+  }
 }
 
 /**
@@ -169,7 +176,7 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
       <template #isEnabled="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isEnabled"
+          :inactive-value="false"
           :loading="row.loading"
           :model-value="row.isEnabled"
           @change="toggleEnableStatus(row)"
@@ -182,7 +189,7 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
       <template #isRecommended="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isRecommended"
+          :inactive-value="false"
           :loading="row.loading"
           :model-value="row.isRecommended"
           @change="toggleIsRecommendedStatus(row)"
@@ -227,7 +234,6 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
     <!-- 复用模块化的表单 schema -->
     <Form :schema="formSchema" :on-submit="addOrUpdateAuthor" />
     <DetailModal
-      title="作者详情"
       :api="contentAuthorDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"

@@ -4,8 +4,8 @@ import type { BasicOption, Recordable } from '@vben/types';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseWorkDto,
-  ContentComicCreateRequest,
-  ContentComicUpdateRequest,
+  ContentNovelCreateRequest,
+  ContentNovelUpdateRequest,
 } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
@@ -14,15 +14,15 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   contentCategoryPageApi,
-  contentComicCreateApi,
-  contentComicDeleteApi,
-  contentComicDetailApi,
-  contentComicPageApi,
-  contentComicUpdateApi,
-  contentComicUpdateHotApi,
-  contentComicUpdateNewApi,
-  contentComicUpdateRecommendedApi,
-  contentComicUpdateStatusApi,
+  contentNovelCreateApi,
+  contentNovelDeleteApi,
+  contentNovelDetailApi,
+  contentNovelPageApi,
+  contentNovelUpdateApi,
+  contentNovelUpdateHotApi,
+  contentNovelUpdateNewApi,
+  contentNovelUpdateRecommendedApi,
+  contentNovelUpdateStatusApi,
   contentTagPageApi,
   growthLevelRulesPageApi,
 } from '#/api/core';
@@ -34,19 +34,22 @@ import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import Chapter from '../chapter/index.vue';
-import ThirdPartyPlatform from '../third-party/index.vue';
-import { comicColumns } from './model/columns';
+import { novelColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
 import { formSchema, pageFilter } from './model/shared';
 
-defineOptions({ name: 'ComicChapterManager' });
+defineOptions({
+  name: 'NovelManager',
+});
 
 const gridOptions: VxeGridProps<BaseWorkDto> = {
   columns: [],
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await contentComicPageApi(formatQuery({ page, formValues, sorts }));
+        return await contentNovelPageApi(
+          formatQuery({ page, formValues, sorts }),
+        );
       },
     },
     sort: true,
@@ -69,15 +72,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
 });
-const [ThirdPartyModal, ThirdPartyApi] = useVbenModal({
-  connectedComponent: ThirdPartyPlatform,
-});
 
 const tagOptions: BasicOption[] = [];
 const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
+const emptyDict: Recordable<undefined | UseDictItem> = {};
 
-// 加载会员等级选项
 growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
   const options =
     res?.list?.map((item) => ({
@@ -93,7 +93,7 @@ growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
 async function openFormModal(row?: BaseWorkDto) {
   let record;
   if (row) {
-    record = await contentComicDetailApi({ id: row.id });
+    record = await contentNovelDetailApi({ id: row.id });
     record.authorIds = record?.authors.map(
       (item: { author: { id: number } }) => item.author.id,
     );
@@ -119,6 +119,7 @@ async function openFormModal(row?: BaseWorkDto) {
       tagIds: tagOptions,
     });
   }
+
   if (categoryOptions.length === 0) {
     const data = await contentCategoryPageApi({
       pageSize: 500,
@@ -134,59 +135,58 @@ async function openFormModal(row?: BaseWorkDto) {
     });
   }
 
-  formApi.setData({ title: '漫画', record }).open();
+  formApi.setData({ title: '小说', record }).open();
 }
 
-const dataDict = ref<Required<Recordable<undefined | UseDictItem>>>();
+const dataDict = ref<Recordable<undefined | UseDictItem>>();
 useDict('work_age_rating,work_publisher,work_region,work_language').then(
   (res) => {
     dataDict.value = res;
     const { work_age_rating, work_publisher, work_region, work_language } = res;
     useForm.setOptions(formSchema, {
+      ageRating: work_age_rating?.options || [],
+      language: work_language?.options || [],
       publisher: work_publisher?.options || [],
       region: work_region?.options || [],
-      language: work_language?.options || [],
-      ageRating: work_age_rating?.options || [],
     });
     useForm.setOptions(pageFilter, {
+      ageRating: work_age_rating?.options || [],
+      language: work_language?.options || [],
       publisher: work_publisher?.options || [],
       region: work_region?.options || [],
-      language: work_language?.options || [],
-      ageRating: work_age_rating?.options || [],
     });
     gridApi.setState((prev) => ({
       formOptions: {
-        ...(prev.formOptions ?? {}),
+        ...prev.formOptions,
         schema: [...pageFilter],
       },
     }));
     gridApi.setGridOptions({
-      columns: comicColumns({
-        work_publisher,
-        work_language,
-        work_region,
+      columns: novelColumns({
         work_age_rating,
+        work_language,
+        work_publisher,
+        work_region,
       }),
     });
   },
 );
 
 async function handleSubmit(
-  values: ContentComicCreateRequest | ContentComicUpdateRequest,
+  values: ContentNovelCreateRequest | ContentNovelUpdateRequest,
 ) {
-  values.type = 1; // 漫画固定 type=1
+  values.type = 2;
   await (values?.id
-    ? contentComicUpdateApi(values as ContentComicUpdateRequest)
-    : contentComicCreateApi(values as ContentComicCreateRequest));
-  formApi.close();
+    ? contentNovelUpdateApi(values as ContentNovelUpdateRequest)
+    : contentNovelCreateApi(values as ContentNovelCreateRequest));
   useMessage.success('操作成功');
-  gridApi.reload();
+  await gridApi.reload();
 }
 
-async function deleteComic(record: BaseWorkDto) {
-  await contentComicDeleteApi({ id: record.id });
+async function deleteNovel(record: BaseWorkDto) {
+  await contentNovelDeleteApi({ id: record.id });
   useMessage.success('删除成功');
-  gridApi.reload();
+  await gridApi.reload();
 }
 
 async function toggleStatus(
@@ -198,22 +198,22 @@ async function toggleStatus(
   try {
     switch (field) {
       case 'isHot': {
-        await contentComicUpdateHotApi({ id: record.id, isHot: newValue });
+        await contentNovelUpdateHotApi({ id: record.id, isHot: newValue });
         break;
       }
       case 'isNew': {
-        await contentComicUpdateNewApi({ id: record.id, isNew: newValue });
+        await contentNovelUpdateNewApi({ id: record.id, isNew: newValue });
         break;
       }
       case 'isPublished': {
-        await contentComicUpdateStatusApi({
+        await contentNovelUpdateStatusApi({
           id: record.id,
           isPublished: newValue,
         });
         break;
       }
       case 'isRecommended': {
-        await contentComicUpdateRecommendedApi({
+        await contentNovelUpdateRecommendedApi({
           id: record.id,
           isRecommended: newValue,
         });
@@ -222,13 +222,12 @@ async function toggleStatus(
     }
 
     useMessage.success('操作成功');
-    gridApi.reload();
+    await gridApi.reload();
   } finally {
     record.loading = false;
   }
 }
 
-// 打开章节管理弹窗
 function openChapterModal(record: BaseWorkDto) {
   chapterApi
     .setData({
@@ -244,10 +243,7 @@ function openChapterModal(record: BaseWorkDto) {
     <Grid>
       <template #toolbar-actions>
         <el-button class="ml-2" type="primary" @click="openFormModal()">
-          添加漫画
-        </el-button>
-        <el-button class="ml-2" type="primary" @click="ThirdPartyApi.open()">
-          资源解析
+          添加小说
         </el-button>
       </template>
 
@@ -256,14 +252,14 @@ function openChapterModal(record: BaseWorkDto) {
           <el-tag class="mr-2" v-if="row.isNew" type="danger" size="small">
             新
           </el-tag>
-          <el-tag class="mr-2" type="danger" v-if="row.isHot" size="small">
+          <el-tag class="mr-2" v-if="row.isHot" type="danger" size="small">
             热
           </el-tag>
           <el-tag
             class="mr-2"
-            type="danger"
             v-if="row.isRecommended"
             size="small"
+            type="danger"
           >
             荐
           </el-tag>
@@ -330,10 +326,10 @@ function openChapterModal(record: BaseWorkDto) {
           </el-button>
           <el-divider direction="vertical" />
           <el-popconfirm
-            title="确认删除当前漫画?"
+            title="确认删除当前小说?"
             confirm-button-text="确认"
             cancel-button-text="取消"
-            @confirm="deleteComic(row)"
+            @confirm="deleteNovel(row)"
           >
             <template #reference>
               <el-button link type="danger">删除</el-button>
@@ -346,13 +342,11 @@ function openChapterModal(record: BaseWorkDto) {
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      :api="contentComicDetailApi"
-      :cards="(data: BaseWorkDto) => getDetailCards(data, dataDict || {})"
+      :api="contentNovelDetailApi"
+      :cards="(data: BaseWorkDto) => getDetailCards(data, dataDict ?? emptyDict)"
     />
 
     <ChapterModal />
-
-    <ThirdPartyModal />
   </Page>
 </template>
 

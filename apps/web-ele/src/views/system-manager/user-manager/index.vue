@@ -18,6 +18,7 @@ import {
   systemUserPageApi,
   systemUserPasswordResetApi,
   systemUserProfileUpdateApi,
+  systemUserUnlockApi,
 } from '#/api/core';
 import { QuestionIcon } from '#/components/es-icons';
 import EsModalForm from '#/components/es-modal-form/index.vue';
@@ -97,16 +98,43 @@ async function toggleUserStatus(record: BaseUserDto) {
   }
 
   const newStatus = !record.isEnabled;
-  await systemUserProfileUpdateApi({
-    id: record.id,
-    username: record.username,
-    mobile: record.mobile,
-    avatar: record.avatar,
-    role: record.role,
-    isEnabled: newStatus,
-  });
-  useMessage.success(newStatus ? '启用成功' : '禁用成功');
-  gridApi.reload();
+  record.loading = true as any;
+  try {
+    await systemUserProfileUpdateApi({
+      id: record.id,
+      username: record.username,
+      mobile: record.mobile,
+      avatar: record.avatar,
+      role: record.role,
+      isEnabled: newStatus,
+    });
+    useMessage.success(newStatus ? '启用成功' : '禁用成功');
+    gridApi.reload();
+  } finally {
+    record.loading = false as any;
+  }
+}
+
+async function unlockUser(record: BaseUserDto) {
+  if (!isSuperAdmin.value) {
+    useMessage.warning('只有超级管理员才能执行此操作');
+    return;
+  }
+
+  if (!record.isLocked) {
+    return;
+  }
+
+  record.loading = true as any;
+  try {
+    await systemUserUnlockApi({
+      id: record.id,
+    });
+    useMessage.success('解除锁定成功');
+    gridApi.reload();
+  } finally {
+    record.loading = false as any;
+  }
 }
 
 async function resetUserPassword(record: BaseUserDto) {
@@ -171,7 +199,7 @@ async function resetUserPassword(record: BaseUserDto) {
       <template #isEnabled="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isEnabled"
+          :inactive-value="false"
           :loading="row.loading"
           :model-value="row.isEnabled"
           :disabled="userStore.userInfo?.id === row.id || !isSuperAdmin"
@@ -211,11 +239,16 @@ async function resetUserPassword(record: BaseUserDto) {
               width="180"
               confirm-button-text="确认"
               cancel-button-text="取消"
-              :disabled="!row.isLocked"
-              @confirm="toggleUserStatus(row)"
+              :disabled="!row.isLocked || row.loading"
+              @confirm="unlockUser(row)"
             >
               <template #reference>
-                <el-button link type="warning" :disabled="!row.isLocked">
+                <el-button
+                  link
+                  type="warning"
+                  :disabled="!row.isLocked || row.loading"
+                  :loading="row.loading"
+                >
                   解除锁定
                 </el-button>
               </template>

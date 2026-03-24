@@ -59,7 +59,7 @@ async function openFormModal(row?: BaseAppPageDto) {
   if (row) {
     record = await appPageDetailApi({ id: row.id });
   }
-  formApi.setData({ title: '页面配置', record }).open();
+  formApi.setData({ title: '页面', record }).open();
 }
 
 async function handleSubmit(values: BaseAppPageDto | UpdateAppPageDto) {
@@ -79,17 +79,21 @@ async function deletePage(record: BaseAppPageDto) {
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '页面详情',
 });
 
 async function toggleEnableStatus(record: BaseAppPageDto) {
   record.loading = true;
-  await appPageUpdateApi({
-    id: record.id,
-    isEnabled: !record.isEnabled,
-  });
-  record.loading = false;
-  useMessage.success('操作成功');
-  gridApi.reload();
+  try {
+    await appPageUpdateApi({
+      id: record.id,
+      isEnabled: !record.isEnabled,
+    });
+    useMessage.success('操作成功');
+    gridApi.reload();
+  } finally {
+    record.loading = false;
+  }
 }
 </script>
 
@@ -110,7 +114,7 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
       <template #isEnabled="{ row }">
         <el-switch
           :active-value="true"
-          :inactive-value="row.isEnabled"
+          :inactive-value="false"
           :loading="row.loading"
           :model-value="row.isEnabled"
           @change="toggleEnableStatus(row)"
@@ -147,7 +151,6 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
     <Form :schema="formSchema" :on-submit="handleSubmit" />
 
     <DetailModal
-      title="页面详情"
       :api="appPageDetailApi"
       :cards="getDetailCards"
       class="!w-[800px]"

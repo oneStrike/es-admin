@@ -93,12 +93,15 @@ async function openFormModal(row?: BaseTagDto): Promise<void> {
  */
 async function toggleEnableStatus(row: BaseTagDto): Promise<void> {
   row.loading = true as any;
-  await contentTagUpdateStatusApi({
-    id: row.id,
-    isEnabled: !row.isEnabled,
-  });
-  handleSuccessReload(gridApi);
-  row.loading = false as any;
+  try {
+    await contentTagUpdateStatusApi({
+      id: row.id,
+      isEnabled: !row.isEnabled,
+    });
+    handleSuccessReload(gridApi);
+  } finally {
+    row.loading = false as any;
+  }
 }
 
 /**

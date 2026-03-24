@@ -58,6 +58,7 @@ const [Form, formApi] = useVbenModal({
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '经验规则详情',
 });
 
 async function openFormModal(row?: BaseUserExperienceRuleDto) {
@@ -84,6 +85,23 @@ async function deleteExperienceRule(record: BaseUserExperienceRuleDto) {
   useMessage.success('删除成功');
   gridApi.reload();
 }
+
+async function toggleEnableStatus(
+  row: BaseUserExperienceRuleDto & { loading?: boolean },
+) {
+  row.loading = true;
+  try {
+    await growthExperienceRulesUpdateApi({
+      id: row.id,
+      type: row.type,
+      isEnabled: !row.isEnabled,
+    });
+    useMessage.success('操作成功');
+    gridApi.reload();
+  } finally {
+    row.loading = false;
+  }
+}
 </script>
 
 <template>
@@ -99,20 +117,9 @@ async function deleteExperienceRule(record: BaseUserExperienceRuleDto) {
         <el-switch
           :active-value="true"
           :inactive-value="false"
+          :loading="row.loading"
           :model-value="row.isEnabled"
-          @change="
-            async () => {
-              row.loading = true;
-              await growthExperienceRulesUpdateApi({
-                id: row.id,
-                type: row.type,
-                isEnabled: !row.isEnabled,
-              });
-              useMessage.success('操作成功');
-              gridApi.reload();
-              row.loading = false;
-            }
-          "
+          @change="toggleEnableStatus(row)"
         />
       </template>
 
@@ -121,11 +128,7 @@ async function deleteExperienceRule(record: BaseUserExperienceRuleDto) {
           <el-button
             link
             type="primary"
-            @click="
-              detailApi
-                .setData({ title: '经验规则详情', recordId: row.id })
-                .open()
-            "
+            @click="detailApi.setData({ recordId: row.id }).open()"
           >
             详情
           </el-button>

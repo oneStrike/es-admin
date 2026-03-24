@@ -104,6 +104,7 @@ const [Form, formApi] = useVbenModal({
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '徽章详情',
 });
 
 const [AssignForm, assignFormApi] = useVbenModal({
@@ -141,13 +142,16 @@ async function deleteBadge(record: BaseUserBadgeDto) {
 
 async function toggleEnableStatus(record: BaseUserBadgeDto) {
   record.loading = true;
-  await growthBadgesUpdateStatusApi({
-    id: record.id,
-    isEnabled: !record.isEnabled,
-  });
-  record.loading = false;
-  useMessage.success('操作成功');
-  gridApi.reload();
+  try {
+    await growthBadgesUpdateStatusApi({
+      id: record.id,
+      isEnabled: !record.isEnabled,
+    });
+    useMessage.success('操作成功');
+    gridApi.reload();
+  } finally {
+    record.loading = false;
+  }
 }
 
 const assignFormSchema: EsFormSchema = [
@@ -248,9 +252,7 @@ async function handleRevokeConfirm(rows: BadgeUserPageItemDto[]) {
           <el-button
             link
             type="primary"
-            @click="
-              detailApi.setData({ title: '徽章详情', recordId: row.id }).open()
-            "
+            @click="detailApi.setData({ recordId: row.id }).open()"
           >
             详情
           </el-button>

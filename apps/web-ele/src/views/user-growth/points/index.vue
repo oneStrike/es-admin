@@ -57,6 +57,7 @@ const [Form, formApi] = useVbenModal({
 
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
+  title: '积分规则详情',
 });
 
 async function openFormModal(row?: BaseUserPointRuleDto) {
@@ -77,6 +78,27 @@ async function handleSubmit(
   useMessage.success('操作成功');
   gridApi.reload();
 }
+
+async function toggleEnableStatus(
+  row: BaseUserPointRuleDto & { loading?: boolean },
+) {
+  row.loading = true;
+  try {
+    await growthPointsRulesUpdateApi({
+      id: row.id,
+      type: row.type,
+      points: row.points,
+      dailyLimit: row.dailyLimit,
+      totalLimit: row.totalLimit,
+      remark: row.remark,
+      isEnabled: !row.isEnabled,
+    });
+    useMessage.success('操作成功');
+    gridApi.reload();
+  } finally {
+    row.loading = false;
+  }
+}
 </script>
 
 <template>
@@ -92,24 +114,9 @@ async function handleSubmit(
         <el-switch
           :active-value="true"
           :inactive-value="false"
+          :loading="row.loading"
           :model-value="row.isEnabled"
-          @change="
-            async () => {
-              row.loading = true;
-              await growthPointsRulesUpdateApi({
-                id: row.id,
-                type: row.type,
-                points: row.points,
-                dailyLimit: row.dailyLimit,
-                totalLimit: row.totalLimit,
-                remark: row.remark,
-                isEnabled: !row.isEnabled,
-              });
-              useMessage.success('操作成功');
-              gridApi.reload();
-              row.loading = false;
-            }
-          "
+          @change="toggleEnableStatus(row)"
         />
       </template>
 
@@ -118,11 +125,7 @@ async function handleSubmit(
           <el-button
             link
             type="primary"
-            @click="
-              detailApi
-                .setData({ title: '积分规则详情', recordId: row.id })
-                .open()
-            "
+            @click="detailApi.setData({ recordId: row.id }).open()"
           >
             详情
           </el-button>

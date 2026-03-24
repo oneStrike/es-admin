@@ -77,12 +77,16 @@ async function deleteSensitiveWord(record: BaseSensitiveWordDto) {
 
 async function toggleEnableStatus(record: BaseSensitiveWordDto) {
   record.loading = true;
-  await forumSensitiveWordUpdateStatusApi({
-    id: record.id,
-    isEnabled: !record.isEnabled,
-  });
-  useMessage.success('操作成功');
-  gridApi.reload();
+  try {
+    await forumSensitiveWordUpdateStatusApi({
+      id: record.id,
+      isEnabled: !record.isEnabled,
+    });
+    useMessage.success('操作成功');
+    gridApi.reload();
+  } finally {
+    record.loading = false;
+  }
 }
 </script>
 
