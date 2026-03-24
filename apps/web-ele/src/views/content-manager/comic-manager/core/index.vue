@@ -46,6 +46,7 @@ const gridOptions: VxeGridProps<BaseWorkDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
+        formValues.type=1
         return await contentComicPageApi(formatQuery({ page, formValues, sorts }));
       },
     },
@@ -156,7 +157,7 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
     });
     gridApi.setState((prev) => ({
       formOptions: {
-        ...(prev.formOptions ?? {}),
+        ...prev.formOptions,
         schema: [...pageFilter],
       },
     }));

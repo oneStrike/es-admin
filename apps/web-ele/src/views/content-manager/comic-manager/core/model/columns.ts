@@ -72,7 +72,7 @@ export const comicColumns = ({
         props: {
           formatter: (row: BaseWorkDto['authors']) => {
             return row?.map(
-              (author: BaseWorkDto['authors'][number]) => author.author.name,
+              (author: BaseWorkDto['authors'][number]) => author.name,
             );
           },
         },
@@ -101,7 +101,7 @@ export const comicColumns = ({
           formatter: (row: BaseWorkDto['categories']) => {
             return row?.map(
               (category: BaseWorkDto['categories'][number]) =>
-                category.category.name,
+                category.name,
             );
           },
         },
@@ -115,7 +115,7 @@ export const comicColumns = ({
         name: 'CellTag',
         props: {
           formatter: (row: BaseWorkDto['tags']) => {
-            return row?.map((tag: BaseWorkDto['tags'][number]) => tag.tag.name);
+            return row?.map((tag: BaseWorkDto['tags'][number]) => tag.name);
           },
         },
       },
