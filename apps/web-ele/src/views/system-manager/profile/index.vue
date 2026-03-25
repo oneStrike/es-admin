@@ -43,7 +43,7 @@ const gridOptions: VxeGridProps<AuditItemDto> = {
       query: async ({ page }) => {
         if (!userInfo.value) return { list: [], total: 0 };
         const params: AuditPageRequest = {
-          pageIndex: --page.currentPage,
+          pageIndex: page.currentPage,
           pageSize: page.pageSize,
           username: userInfo.value.username,
           path: '/api/admin/user/user-login',

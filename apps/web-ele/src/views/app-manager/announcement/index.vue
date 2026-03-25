@@ -78,7 +78,7 @@ const gridOptions: VxeGridProps<AnnouncementPageResponseDto> = {
           formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
         }
         return await announcementPageApi({
-          pageIndex: --page.currentPage,
+          pageIndex: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
         });

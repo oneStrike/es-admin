@@ -56,12 +56,12 @@ async function handleSearch() {
     const res = await contentComicThirdPartySearchPageApi({
       platform: 'copy',
       keyword: keyword.value.trim(),
-      pageIndex: pagination.value.pageIndex - 1,
+      pageIndex: pagination.value.pageIndex,
       pageSize: pagination.value.pageSize,
     });
     comicList.value = res.list || [];
     pagination.value.total = res.total || 0;
-    pagination.value.pageIndex = (res.pageIndex || 0) + 1;
+    pagination.value.pageIndex = res.pageIndex || 1;
     pagination.value.pageSize = res.pageSize || 20;
   } finally {
     loading.value = false;

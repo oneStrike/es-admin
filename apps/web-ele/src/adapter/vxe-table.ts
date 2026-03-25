@@ -303,7 +303,7 @@ const formatQuery = ({ page, formValues, sorts }: any) => {
     formValues.orderBy = JSON.stringify(formValues.orderBy);
   }
   return {
-    pageIndex: --page.currentPage,
+    pageIndex: page.currentPage,
     pageSize: page.pageSize,
     ...formValues,
   };

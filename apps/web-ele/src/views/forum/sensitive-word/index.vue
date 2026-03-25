@@ -35,7 +35,7 @@ const gridOptions: VxeGridProps<BaseSensitiveWordDto> = {
     ajax: {
       query: async ({ page }, formValues) => {
         return await forumSensitiveWordPageApi({
-          pageIndex: --page.currentPage,
+          pageIndex: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
         });

@@ -24,7 +24,7 @@ const gridOptions: VxeGridProps<AuditItemDto> = {
         }
 
         const params: AuditPageRequest = {
-          pageIndex: --page.currentPage,
+          pageIndex: page.currentPage,
           pageSize: page.pageSize,
           username: formValues.username || undefined,
           ip: formValues.ip || undefined,

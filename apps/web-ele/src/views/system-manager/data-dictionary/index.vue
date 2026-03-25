@@ -28,7 +28,7 @@ const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
           formValues: Recordable<any>,
         ) => {
           return await Api.dictionaryPageApi({
-            pageIndex: --page.currentPage,
+            pageIndex: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
           });
