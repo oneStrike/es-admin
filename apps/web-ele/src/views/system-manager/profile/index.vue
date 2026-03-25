@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  AuditPageRequest,
   AuditItemDto,
+  AuditPageRequest,
   BaseUserDto,
   ChangePasswordDto,
   UpdateUserDto,

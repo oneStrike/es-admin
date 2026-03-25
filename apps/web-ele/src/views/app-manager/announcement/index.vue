@@ -62,7 +62,7 @@ appPagePageApi({
 
   gridApi.setState((prev) => ({
     formOptions: {
-      ...(prev.formOptions ?? {}),
+      ...prev.formOptions,
       schema: [...announcementFilter],
     },
   }));
