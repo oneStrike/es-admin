@@ -10,6 +10,9 @@ import type {
   ContentAuthorRebuildFollowCountAllResponse,
   ContentAuthorRebuildFollowCountRequest,
   ContentAuthorRebuildFollowCountResponse,
+  ContentAuthorRebuildWorkCountAllResponse,
+  ContentAuthorRebuildWorkCountRequest,
+  ContentAuthorRebuildWorkCountResponse,
   ContentAuthorUpdateRecommendedRequest,
   ContentAuthorUpdateRecommendedResponse,
   ContentAuthorUpdateRequest,
@@ -575,18 +578,34 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 删除作者
-   */
-  export async function contentAuthorDeleteApi(params: ContentAuthorDeleteRequest): Promise<ContentAuthorDeleteResponse> {
-    return requestClient.post<ContentAuthorDeleteResponse>('/api/admin/content/author/delete', params);
-  }
-
-
-  /**
    * 全量重建作者关注计数
    */
   export async function contentAuthorRebuildFollowCountAllApi(): Promise<ContentAuthorRebuildFollowCountAllResponse> {
     return requestClient.post<ContentAuthorRebuildFollowCountAllResponse>('/api/admin/content/author/rebuild-follow-count-all');
+  }
+
+
+  /**
+   * 重建作者作品计数
+   */
+  export async function contentAuthorRebuildWorkCountApi(params: ContentAuthorRebuildWorkCountRequest): Promise<ContentAuthorRebuildWorkCountResponse> {
+    return requestClient.post<ContentAuthorRebuildWorkCountResponse>('/api/admin/content/author/rebuild-work-count', params);
+  }
+
+
+  /**
+   * 全量重建作者作品计数
+   */
+  export async function contentAuthorRebuildWorkCountAllApi(): Promise<ContentAuthorRebuildWorkCountAllResponse> {
+    return requestClient.post<ContentAuthorRebuildWorkCountAllResponse>('/api/admin/content/author/rebuild-work-count-all');
+  }
+
+
+  /**
+   * 删除作者
+   */
+  export async function contentAuthorDeleteApi(params: ContentAuthorDeleteRequest): Promise<ContentAuthorDeleteResponse> {
+    return requestClient.post<ContentAuthorDeleteResponse>('/api/admin/content/author/delete', params);
   }
 
 

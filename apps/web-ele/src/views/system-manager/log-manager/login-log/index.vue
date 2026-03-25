@@ -4,7 +4,7 @@ import type { AuditItemDto, AuditPageRequest } from '#/api/types';
 
 import { Page } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { toApiPageIndex, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { auditPageApi } from '#/api/core';
 import { createSearchFormOptions } from '#/utils';
 
@@ -24,7 +24,7 @@ const gridOptions: VxeGridProps<AuditItemDto> = {
         }
 
         const params: AuditPageRequest = {
-          pageIndex: page.currentPage,
+          pageIndex: toApiPageIndex(page.currentPage),
           pageSize: page.pageSize,
           username: formValues.username || undefined,
           isSuccess: formValues.isSuccess,

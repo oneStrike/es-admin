@@ -23,9 +23,9 @@ export const sensitiveWordTypeOptions = [
 
 export const sensitiveWordLevelOptions = [
   {
-    label: '低',
+    label: '高',
     value: 1,
-    color: 'success',
+    color: 'danger',
   },
   {
     label: '中',
@@ -33,9 +33,9 @@ export const sensitiveWordLevelOptions = [
     color: 'warning',
   },
   {
-    label: '高',
+    label: '低',
     value: 3,
-    color: 'danger',
+    color: 'success',
   },
 ];
 

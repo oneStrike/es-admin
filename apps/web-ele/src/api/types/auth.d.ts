@@ -3,7 +3,7 @@ export type AuthCaptchaResponse = CaptchaDto
 /**
  *  类型定义 [AuthLoginRequest]
  *  @来源 认证与账号/管理员认证
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AuthLoginRequest = UserLoginDto
 
@@ -12,7 +12,7 @@ export type AuthLoginResponse = LoginResponseDto
 /**
  *  类型定义 [AuthLogoutRequest]
  *  @来源 认证与账号/管理员认证
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AuthLogoutRequest = TokenDto
 
@@ -21,7 +21,7 @@ export type AuthLogoutResponse = boolean
 /**
  *  类型定义 [AuthTokenRefreshRequest]
  *  @来源 认证与账号/管理员认证
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AuthTokenRefreshRequest = RefreshTokenDto
 
@@ -32,7 +32,7 @@ export type AuthKeyPublicResponse = RsaPublicKeyDto
 /**
  *  类型定义 [CaptchaDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type CaptchaDto = {
   /** 任意合法数值 */
@@ -47,7 +47,7 @@ export type CaptchaDto = {
 /**
  *  类型定义 [UserLoginDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type UserLoginDto = {
   /** 任意合法数值 */
@@ -66,7 +66,7 @@ export type UserLoginDto = {
 /**
  *  类型定义 [LoginResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type LoginResponseDto = {
   /** 任意合法数值 */
@@ -75,13 +75,13 @@ export type LoginResponseDto = {
   tokens: TokenDto
 
   /* 用户信息 */
-  user: BaseAdminUserDto
+  user: AdminUserOmitPwdDto
 }
 
 /**
  *  类型定义 [TokenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type TokenDto = {
   /** 任意合法数值 */
@@ -94,11 +94,11 @@ export type TokenDto = {
 }
 
 /**
- *  类型定义 [BaseAdminUserDto]
+ *  类型定义 [AdminUserOmitPwdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
-export type BaseAdminUserDto = {
+export type AdminUserOmitPwdDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 头像 */
@@ -115,8 +115,6 @@ export type BaseAdminUserDto = {
   lastLoginIp?: null | string
   /* 手机号 */
   mobile?: null | string
-  /* 密码 */
-  password: string
   /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
   role: 0 | 1
   /* 更新时间 */
@@ -129,7 +127,7 @@ export type BaseAdminUserDto = {
 /**
  *  类型定义 [RefreshTokenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type RefreshTokenDto = {
   /** 任意合法数值 */
@@ -142,7 +140,7 @@ export type RefreshTokenDto = {
 /**
  *  类型定义 [RsaPublicKeyDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type RsaPublicKeyDto = {
   /** 任意合法数值 */

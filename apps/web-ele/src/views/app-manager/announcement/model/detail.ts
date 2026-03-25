@@ -7,6 +7,7 @@ import {
   announcementPriorityObj,
   announcementTypeObj,
   enablePlatform,
+  formatPublishEndTime,
   getPublishStatus,
   publishStatusObj,
 } from './shared';
@@ -105,9 +106,7 @@ export function getDetailCards(detail: AnnouncementDetailResponse) {
         },
         {
           label: '发布结束时间',
-          value: detail?.publishEndTime
-            ? `${formatUTC(detail.publishEndTime, 'YYYY-MM-DD')} 23:59:59`
-            : '-',
+          value: formatPublishEndTime(detail?.publishEndTime),
           type: 'text' as const,
         },
         {

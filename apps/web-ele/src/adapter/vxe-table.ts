@@ -291,7 +291,12 @@ setupVbenVxeTable({
   useVbenForm,
 });
 
-// 表格查询参数
+const toApiPageIndex = (currentPage?: number) =>
+  Math.max((currentPage ?? 1) - 1, 0);
+
+const fromApiPageIndex = (pageIndex?: null | number) =>
+  Math.max((pageIndex ?? 0) + 1, 1);
+
 const formatQuery = ({ page, formValues, sorts }: any) => {
   if (sorts.length > 0) {
     formValues.orderBy = [];
@@ -303,12 +308,12 @@ const formatQuery = ({ page, formValues, sorts }: any) => {
     formValues.orderBy = JSON.stringify(formValues.orderBy);
   }
   return {
-    pageIndex: page.currentPage,
+    pageIndex: toApiPageIndex(page.currentPage),
     pageSize: page.pageSize,
     ...formValues,
   };
 };
 
-export { formatQuery, useVbenVxeGrid };
+export { formatQuery, fromApiPageIndex, toApiPageIndex, useVbenVxeGrid };
 
 export type * from '@vben/plugins/vxe-table';

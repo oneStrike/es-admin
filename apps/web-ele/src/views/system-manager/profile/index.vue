@@ -13,7 +13,7 @@ import { onMounted, ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { toApiPageIndex, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   auditPageApi,
   systemUserPasswordChangeApi,
@@ -43,7 +43,7 @@ const gridOptions: VxeGridProps<AuditItemDto> = {
       query: async ({ page }) => {
         if (!userInfo.value) return { list: [], total: 0 };
         const params: AuditPageRequest = {
-          pageIndex: page.currentPage,
+          pageIndex: toApiPageIndex(page.currentPage),
           pageSize: page.pageSize,
           username: userInfo.value.username,
           path: '/api/admin/user/user-login',

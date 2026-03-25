@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AppUsersPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersPageRequest = {
   /** 任意合法数值 */
@@ -76,7 +76,7 @@ export type AppUsersPageResponse = {
 /**
  *  类型定义 [AppUsersDetailRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersDetailRequest = {
   /** 任意合法数值 */
@@ -91,7 +91,7 @@ export type AppUsersDetailResponse = AdminAppUserDetailDto
 /**
  *  类型定义 [AppUsersCreateRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersCreateRequest = CreateAdminAppUserDto
 
@@ -100,7 +100,7 @@ export type AppUsersCreateResponse = boolean
 /**
  *  类型定义 [AppUsersProfileUpdateRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersProfileUpdateRequest = UpdateAdminAppUserProfileDto
 
@@ -109,7 +109,7 @@ export type AppUsersProfileUpdateResponse = boolean
 /**
  *  类型定义 [AppUsersUpdateEnabledRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersUpdateEnabledRequest = UpdateAdminAppUserEnabledDto
 
@@ -118,7 +118,7 @@ export type AppUsersUpdateEnabledResponse = boolean
 /**
  *  类型定义 [AppUsersUpdateStatusRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersUpdateStatusRequest = UpdateAdminAppUserStatusDto
 
@@ -127,7 +127,7 @@ export type AppUsersUpdateStatusResponse = boolean
 /**
  *  类型定义 [AppUsersDeleteRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersDeleteRequest = IdDto
 
@@ -136,16 +136,27 @@ export type AppUsersDeleteResponse = boolean
 /**
  *  类型定义 [AppUsersRestoreRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersRestoreRequest = IdDto
 
 export type AppUsersRestoreResponse = boolean
 
 /**
+ *  类型定义 [AppUsersRebuildFollowCountRequest]
+ *  @来源 APP管理/用户管理
+ *  @更新时间 2026-03-25 23:30:38
+ */
+export type AppUsersRebuildFollowCountRequest = UserIdDto
+
+export type AppUsersRebuildFollowCountResponse = AdminAppUserFollowCountRepairResultDto
+
+export type AppUsersRebuildFollowCountAllResponse = boolean
+
+/**
  *  类型定义 [AppUsersPasswordResetRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersPasswordResetRequest = ResetAdminAppUserPasswordDto
 
@@ -154,7 +165,7 @@ export type AppUsersPasswordResetResponse = boolean
 /**
  *  类型定义 [AppUsersPointsStatsRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersPointsStatsRequest = {
   /** 任意合法数值 */
@@ -169,7 +180,7 @@ export type AppUsersPointsStatsResponse = AdminAppUserPointStatsDto
 /**
  *  类型定义 [AppUsersPointsRecordPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersPointsRecordPageRequest = {
   /** 任意合法数值 */
@@ -223,7 +234,7 @@ export type AppUsersPointsRecordPageResponse = {
 /**
  *  类型定义 [AppUsersPointsGrantRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersPointsGrantRequest = AddAdminAppUserPointsDto
 
@@ -232,7 +243,7 @@ export type AppUsersPointsGrantResponse = boolean
 /**
  *  类型定义 [AppUsersPointsConsumeRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersPointsConsumeRequest = ConsumeAdminAppUserPointsDto
 
@@ -241,7 +252,7 @@ export type AppUsersPointsConsumeResponse = boolean
 /**
  *  类型定义 [AppUsersExperienceStatsRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersExperienceStatsRequest = {
   /** 任意合法数值 */
@@ -256,7 +267,7 @@ export type AppUsersExperienceStatsResponse = AdminAppUserExperienceStatsDto
 /**
  *  类型定义 [AppUsersExperienceRecordPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersExperienceRecordPageRequest = {
   /** 任意合法数值 */
@@ -304,7 +315,7 @@ export type AppUsersExperienceRecordPageResponse = {
 /**
  *  类型定义 [AppUsersExperienceGrantRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersExperienceGrantRequest = AddAdminAppUserExperienceDto
 
@@ -313,7 +324,7 @@ export type AppUsersExperienceGrantResponse = boolean
 /**
  *  类型定义 [AppUsersBadgesPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersBadgesPageRequest = {
   /** 任意合法数值 */
@@ -371,29 +382,18 @@ export type AppUsersBadgesPageResponse = {
 }
 
 /**
- *  类型定义 [AppUsersRebuildFollowCountRequest]
- *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
- */
-export type AppUsersRebuildFollowCountRequest = UserIdDto
-
-export type AppUsersRebuildFollowCountResponse = AdminAppUserFollowCountRepairResultDto
-
-/**
  *  类型定义 [AppUsersBadgesAssignRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersBadgesAssignRequest = AssignAdminAppUserBadgeDto
 
 export type AppUsersBadgesAssignResponse = boolean
 
-export type AppUsersRebuildFollowCountAllResponse = boolean
-
 /**
  *  类型定义 [AppUsersBadgesRevokeRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppUsersBadgesRevokeRequest = AssignAdminAppUserBadgeDto
 
@@ -402,7 +402,7 @@ export type AppUsersBadgesRevokeResponse = boolean
 /**
  *  类型定义 [AdminAppUserPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserPageItemDto = {
   /** 任意合法数值 */
@@ -461,7 +461,7 @@ export type AdminAppUserPageItemDto = {
 /**
  *  类型定义 [AdminAppUserCountDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserCountDto = {
   /** 任意合法数值 */
@@ -490,7 +490,7 @@ export type AdminAppUserCountDto = {
 /**
  *  类型定义 [AdminAppUserDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserDetailDto = {
   /** 任意合法数值 */
@@ -555,7 +555,7 @@ export type AdminAppUserDetailDto = {
 /**
  *  类型定义 [AdminAppUserLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserLevelDto = {
   /** 任意合法数值 */
@@ -572,7 +572,7 @@ export type AdminAppUserLevelDto = {
 /**
  *  类型定义 [AdminAppUserPointStatsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserPointStatsDto = {
   /** 任意合法数值 */
@@ -589,7 +589,7 @@ export type AdminAppUserPointStatsDto = {
 /**
  *  类型定义 [AdminAppUserExperienceStatsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserExperienceStatsDto = {
   /** 任意合法数值 */
@@ -610,7 +610,7 @@ export type AdminAppUserExperienceStatsDto = {
 /**
  *  类型定义 [CreateAdminAppUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type CreateAdminAppUserDto = {
   /** 任意合法数值 */
@@ -643,7 +643,7 @@ export type CreateAdminAppUserDto = {
 /**
  *  类型定义 [UpdateAdminAppUserProfileDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type UpdateAdminAppUserProfileDto = {
   /** 任意合法数值 */
@@ -672,7 +672,7 @@ export type UpdateAdminAppUserProfileDto = {
 /**
  *  类型定义 [UpdateAdminAppUserEnabledDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type UpdateAdminAppUserEnabledDto = {
   /** 任意合法数值 */
@@ -687,7 +687,7 @@ export type UpdateAdminAppUserEnabledDto = {
 /**
  *  类型定义 [UpdateAdminAppUserStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type UpdateAdminAppUserStatusDto = {
   /** 任意合法数值 */
@@ -706,7 +706,7 @@ export type UpdateAdminAppUserStatusDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -717,9 +717,39 @@ export type IdDto = {
 }
 
 /**
+ *  类型定义 [UserIdDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-03-25 23:30:38
+ */
+export type UserIdDto = {
+  /** 任意合法数值 */
+  [property: string]: any
+
+  /* 用户id */
+  userId: number
+}
+
+/**
+ *  类型定义 [AdminAppUserFollowCountRepairResultDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-03-25 23:30:38
+ */
+export type AdminAppUserFollowCountRepairResultDto = {
+  /** 任意合法数值 */
+  [property: string]: any
+  /* 粉丝总数 */
+  followersCount: number
+  /* 发起关注总数 */
+  followingCount: number
+
+  /* 用户id */
+  userId: number
+}
+
+/**
  *  类型定义 [ResetAdminAppUserPasswordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type ResetAdminAppUserPasswordDto = {
   /** 任意合法数值 */
@@ -734,7 +764,7 @@ export type ResetAdminAppUserPasswordDto = {
 /**
  *  类型定义 [AdminAppUserPointRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserPointRecordDto = {
   /** 任意合法数值 */
@@ -765,7 +795,7 @@ export type AdminAppUserPointRecordDto = {
 /**
  *  类型定义 [AddAdminAppUserPointsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AddAdminAppUserPointsDto = {
   /** 任意合法数值 */
@@ -782,7 +812,7 @@ export type AddAdminAppUserPointsDto = {
 /**
  *  类型定义 [ConsumeAdminAppUserPointsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type ConsumeAdminAppUserPointsDto = {
   /** 任意合法数值 */
@@ -805,7 +835,7 @@ export type ConsumeAdminAppUserPointsDto = {
 /**
  *  类型定义 [AdminAppUserExperienceRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserExperienceRecordDto = {
   /** 任意合法数值 */
@@ -832,7 +862,7 @@ export type AdminAppUserExperienceRecordDto = {
 /**
  *  类型定义 [AddAdminAppUserExperienceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AddAdminAppUserExperienceDto = {
   /** 任意合法数值 */
@@ -849,7 +879,7 @@ export type AddAdminAppUserExperienceDto = {
 /**
  *  类型定义 [AdminAppUserBadgeItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AdminAppUserBadgeItemDto = {
   /** 任意合法数值 */
@@ -866,7 +896,7 @@ export type AdminAppUserBadgeItemDto = {
 /**
  *  类型定义 [BaseUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type BaseUserBadgeDto = {
   /** 任意合法数值 */
@@ -897,39 +927,9 @@ export type BaseUserBadgeDto = {
 }
 
 /**
- *  类型定义 [UserIdDto]
- *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
- */
-export type UserIdDto = {
-  /** 任意合法数值 */
-  [property: string]: any
-
-  /* 用户id */
-  userId: number
-}
-
-/**
- *  类型定义 [AdminAppUserFollowCountRepairResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
- */
-export type AdminAppUserFollowCountRepairResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any
-  /* 粉丝总数 */
-  followersCount: number
-  /* 发起关注总数 */
-  followingCount: number
-
-  /* 用户id */
-  userId: number
-}
-
-/**
  *  类型定义 [AssignAdminAppUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AssignAdminAppUserBadgeDto = {
   /** 任意合法数值 */

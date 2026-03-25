@@ -22,7 +22,7 @@ export const accessLevel = [
     color: '#fa8c16', // 橙色
   },
   {
-    label: '管理员访问',
+    label: 'VIP访问',
     value: 3,
     color: '#ff4d4f', // 红色
   },

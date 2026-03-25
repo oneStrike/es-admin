@@ -97,8 +97,6 @@ import type {
   ForumTopicDeleteResponse,
   ForumTopicDetailRequest,
   ForumTopicDetailResponse,
-  ForumTopicIncrementViewCountRequest,
-  ForumTopicIncrementViewCountResponse,
   ForumTopicPageRequest,
   ForumTopicPageResponse,
   ForumTopicUpdateAuditStatusRequest,
@@ -375,14 +373,6 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 增加主题浏览次数
-   */
-  export async function forumTopicIncrementViewCountApi(params: ForumTopicIncrementViewCountRequest): Promise<ForumTopicIncrementViewCountResponse> {
-    return requestClient.post<ForumTopicIncrementViewCountResponse>('/api/admin/forum/topic/increment-view-count', params);
-  }
-
-
-  /**
    * 查看板块分页
    */
   export async function forumSectionsPageApi(params?: ForumSectionsPageRequest): Promise<ForumSectionsPageResponse> {
@@ -435,6 +425,22 @@ import { requestClient } from '#/api/request'
    */
   export async function forumSectionsUpdateEnabledApi(params: ForumSectionsUpdateEnabledRequest): Promise<ForumSectionsUpdateEnabledResponse> {
     return requestClient.post<ForumSectionsUpdateEnabledResponse>('/api/admin/forum/sections/update-enabled', params);
+  }
+
+
+  /**
+   * 重建板块关注计数
+   */
+  export async function forumSectionsRebuildFollowCountApi(params: ForumSectionsRebuildFollowCountRequest): Promise<ForumSectionsRebuildFollowCountResponse> {
+    return requestClient.post<ForumSectionsRebuildFollowCountResponse>('/api/admin/forum/sections/rebuild-follow-count', params);
+  }
+
+
+  /**
+   * 全量重建板块关注计数
+   */
+  export async function forumSectionsRebuildFollowCountAllApi(): Promise<ForumSectionsRebuildFollowCountAllResponse> {
+    return requestClient.post<ForumSectionsRebuildFollowCountAllResponse>('/api/admin/forum/sections/rebuild-follow-count-all');
   }
 
 
@@ -499,22 +505,6 @@ import { requestClient } from '#/api/request'
    */
   export async function forumSectionGroupsSwapSortOrderApi(params: ForumSectionGroupsSwapSortOrderRequest): Promise<ForumSectionGroupsSwapSortOrderResponse> {
     return requestClient.post<ForumSectionGroupsSwapSortOrderResponse>('/api/admin/forum/section-groups/swap-sort-order', params);
-  }
-
-
-  /**
-   * 重建板块关注计数
-   */
-  export async function forumSectionsRebuildFollowCountApi(params: ForumSectionsRebuildFollowCountRequest): Promise<ForumSectionsRebuildFollowCountResponse> {
-    return requestClient.post<ForumSectionsRebuildFollowCountResponse>('/api/admin/forum/sections/rebuild-follow-count', params);
-  }
-
-
-  /**
-   * 全量重建板块关注计数
-   */
-  export async function forumSectionsRebuildFollowCountAllApi(): Promise<ForumSectionsRebuildFollowCountAllResponse> {
-    return requestClient.post<ForumSectionsRebuildFollowCountAllResponse>('/api/admin/forum/sections/rebuild-follow-count-all');
   }
 
 

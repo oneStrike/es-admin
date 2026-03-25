@@ -1,7 +1,7 @@
 import type { AnnouncementPageResponseDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { formSchemaTransform } from '#/utils';
+import { formatUTC, formSchemaTransform } from '#/utils';
 
 // 公告类型配置
 export const announcementType = [
@@ -125,6 +125,26 @@ for (const item of publishStatus) {
 }
 
 // 获取发布状态的函数
+function normalizePublishEndTime(publishEndTime?: null | string) {
+  if (!publishEndTime) {
+    return undefined;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(publishEndTime)) {
+    return `${publishEndTime} 23:59:59`;
+  }
+
+  return publishEndTime;
+}
+
+export function formatPublishEndTime(publishEndTime?: null | string) {
+  const normalizedPublishEndTime = normalizePublishEndTime(publishEndTime);
+
+  return normalizedPublishEndTime
+    ? formatUTC(normalizedPublishEndTime, 'YYYY-MM-DD HH:mm:ss')
+    : '-';
+}
+
 export function getPublishStatus(
   isPublished: boolean,
   publishEndTime?: null | string,
@@ -133,7 +153,12 @@ export function getPublishStatus(
     return 'unpublished';
   }
 
-  if (publishEndTime && new Date(publishEndTime) < new Date()) {
+  const normalizedPublishEndTime = normalizePublishEndTime(publishEndTime);
+
+  if (
+    normalizedPublishEndTime &&
+    new Date(normalizedPublishEndTime) < new Date()
+  ) {
     return 'expired';
   }
 

@@ -9,7 +9,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { toApiPageIndex, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   announcementCreateApi,
   announcementDeleteApi,
@@ -74,13 +74,22 @@ const gridOptions: VxeGridProps<AnnouncementPageResponseDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        if (formValues.enablePlatform) {
-          formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
+        const { dateTimeRange, ...restFormValues } = formValues;
+        const [publishStartTime, publishEndTime] = Array.isArray(dateTimeRange)
+          ? dateTimeRange
+          : [];
+
+        if (restFormValues.enablePlatform) {
+          restFormValues.enablePlatform = JSON.stringify(
+            restFormValues.enablePlatform,
+          );
         }
         return await announcementPageApi({
-          pageIndex: page.currentPage,
+          pageIndex: toApiPageIndex(page.currentPage),
           pageSize: page.pageSize,
-          ...formValues,
+          publishEndTime,
+          publishStartTime,
+          ...restFormValues,
         });
       },
     },

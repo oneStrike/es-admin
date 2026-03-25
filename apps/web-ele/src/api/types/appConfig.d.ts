@@ -3,7 +3,7 @@ export type AppConfigActiveResponse = BaseAppConfigDto
 /**
  *  类型定义 [AppConfigUpdateRequest]
  *  @来源 APP管理/应用配置
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type AppConfigUpdateRequest = UpdateAppConfigDto
 
@@ -12,7 +12,7 @@ export type AppConfigUpdateResponse = boolean
 /**
  *  类型定义 [BaseAppConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type BaseAppConfigDto = {
   /** 任意合法数值 */
@@ -51,7 +51,7 @@ export type BaseAppConfigDto = {
 /**
  *  类型定义 [UpdateAppConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-24 00:50:36
+ *  @更新时间 2026-03-25 23:30:38
  */
 export type UpdateAppConfigDto = {
   /** 任意合法数值 */
