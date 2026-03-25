@@ -35,7 +35,7 @@ export const formSchema: EsFormSchema = [
       controlsPosition: 'right',
       placeholder: '请输入排序值（数字越小越靠前）',
     },
-    fieldName: 'order',
+    fieldName: 'sortOrder',
     label: '排序',
   },
   {
@@ -63,7 +63,7 @@ export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
       },
     },
 
-    order: {
+    sortOrder: {
       sortable: true,
     },
     popularity: {

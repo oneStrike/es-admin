@@ -65,7 +65,7 @@ export const formSchema: EsFormSchema = [
       controlsPosition: 'right',
       placeholder: '请输入排序值（数字越小越靠前）',
     },
-    fieldName: 'order',
+    fieldName: 'sortOrder',
     label: '排序',
   },
   {
@@ -99,7 +99,7 @@ export const categoryColumns =
       minWidth: 100,
       slots: { default: 'isEnabled' },
     },
-    order: {
+    sortOrder: {
       sortable: true,
     },
     contentType: {
