@@ -115,7 +115,7 @@ export const authorColumns =
       },
     },
     gender: {
-      formatter: ({ cellValue }) => GenderEnum[cellValue] ?? '-',
+      formatter: ({ cellValue }) => genderOptions.find((item) => item.value === cellValue)?.label ?? '-',
     },
     nationality: {
       slots: { default: 'nationality' },
@@ -144,10 +144,10 @@ export const authorColumns =
       minWidth: 100,
       slots: { default: 'isRecommended' },
     },
-    worksCount: {
+    workCount: {
       show: true,
       title: '作品数',
-      field: 'worksCount',
+      field: 'workCount',
       sort: 10,
       minWidth: 100,
       sortable: true,
@@ -180,9 +180,6 @@ export const authorSearchSchema = formSchemaTransform.toSearchSchema(
     },
     gender: {
       show: true,
-      componentProps: {
-        clearable: true,
-      },
     },
     nationality: {
       show: true,

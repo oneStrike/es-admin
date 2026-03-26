@@ -69,7 +69,7 @@ useDict('nationality').then(({ nationality }) => {
   });
   gridApi.setState((prev) => ({
     formOptions: {
-      ...(prev.formOptions ?? {}),
+      ...prev.formOptions,
       schema: [...authorSearchSchema],
     },
   }));

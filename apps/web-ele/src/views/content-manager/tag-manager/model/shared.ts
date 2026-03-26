@@ -11,6 +11,7 @@ export const formSchema: EsFormSchema = [
     component: 'Upload',
     componentProps: {
       placeholder: '请上传标签图标',
+      scene: 'common',
     },
     fieldName: 'icon',
     label: '图标',
