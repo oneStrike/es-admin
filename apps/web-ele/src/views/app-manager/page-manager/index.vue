@@ -4,7 +4,7 @@ import type { BaseAppPageDto, UpdateAppPageDto } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { toApiPageIndex, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   appPageCreateApi,
   appPageDeleteApi,
@@ -35,7 +35,7 @@ const gridOptions: VxeGridProps<BaseAppPageDto> = {
           formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
         }
         return await appPagePageApi({
-          pageIndex: toApiPageIndex(page.currentPage),
+          pageIndex: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
         });
