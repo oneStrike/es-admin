@@ -33,6 +33,7 @@ import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
+import { extractRelationIds } from '../../work-relations';
 import Chapter from '../chapter/index.vue';
 import { novelColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
@@ -95,15 +96,9 @@ async function openFormModal(row?: BaseWorkDto) {
   let record;
   if (row) {
     record = await contentNovelDetailApi({ id: row.id });
-    record.authorIds = record?.authors.map(
-      (item: { author: { id: number } }) => item.author.id,
-    );
-    record.categoryIds = record?.categories.map(
-      (item: { category: { id: number } }) => item.category.id,
-    );
-    record.tagIds = record?.tags.map(
-      (item: { tag: { id: number } }) => item.tag.id,
-    );
+    record.authorIds = extractRelationIds(record?.authors, 'author');
+    record.categoryIds = extractRelationIds(record?.categories, 'category');
+    record.tagIds = extractRelationIds(record?.tags, 'tag');
   }
   currentNovelRecord.value = record ?? null;
 
@@ -177,9 +172,12 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
 async function handleSubmit(
   values: ContentNovelCreateRequest | ContentNovelUpdateRequest,
 ) {
+  const rawValues = { ...(values as Record<string, any>) };
+  delete rawValues.price;
   const payload = {
-    ...(values as Record<string, any>),
-    canComment: values.canComment ?? currentNovelRecord.value?.canComment ?? true,
+    ...rawValues,
+    canComment:
+      values.canComment ?? currentNovelRecord.value?.canComment ?? true,
     chapterPrice:
       values.chapterPrice ?? currentNovelRecord.value?.chapterPrice ?? 0,
     isHot: values.isHot ?? currentNovelRecord.value?.isHot ?? false,

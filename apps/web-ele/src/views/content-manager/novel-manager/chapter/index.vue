@@ -36,6 +36,8 @@ defineOptions({
 type ShareData = { workId: number; workName: string };
 
 const shareData = ref<ShareData>();
+const currentChapterRecord =
+  ref<null | Partial<ContentNovelChapterDetailResponse>>(null);
 
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen) {
@@ -140,6 +142,7 @@ async function openFormModal(record?: ContentNovelChapterDetailResponse) {
   const recordData = record?.id
     ? await contentNovelChapterDetailApi({ id: record.id })
     : null;
+  currentChapterRecord.value = recordData ?? null;
 
   formApi
     .setData({
@@ -153,14 +156,24 @@ async function openFormModal(record?: ContentNovelChapterDetailResponse) {
 async function handleSubmit(
   values: ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest,
 ) {
-  values.workId = shareData.value!.workId;
-  values.workType = 2;
+  const payload = {
+    ...(values as Record<string, any>),
+    canComment:
+      values.canComment ?? currentChapterRecord.value?.canComment ?? true,
+    canDownload:
+      values.canDownload ?? currentChapterRecord.value?.canDownload ?? false,
+    isPreview: values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
+    price: values.price ?? currentChapterRecord.value?.price ?? 0,
+    viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
+    workId: shareData.value!.workId,
+    workType: 2,
+  } as ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest;
 
-  await (values?.id
-    ? contentNovelChapterUpdateApi(values as ContentNovelChapterUpdateRequest)
-    : contentNovelChapterCreateApi(values as ContentNovelChapterCreateRequest));
+  await (payload?.id
+    ? contentNovelChapterUpdateApi(payload as ContentNovelChapterUpdateRequest)
+    : contentNovelChapterCreateApi(payload as ContentNovelChapterCreateRequest));
 
-  useMessage.success(values?.id ? '章节更新成功' : '章节创建成功');
+  useMessage.success(payload?.id ? '章节更新成功' : '章节创建成功');
   await gridApi.reload();
 }
 

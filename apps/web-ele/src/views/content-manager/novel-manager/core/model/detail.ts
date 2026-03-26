@@ -5,13 +5,14 @@ import type { UseDictItem } from '#/hooks/useDict';
 
 import { formatUTC } from '#/utils';
 
+import { extractRelationNames } from '../../../work-relations';
 import { serialStatusMap } from './shared';
 
 const viewRuleMap: Record<number, string> = {
   0: '所有人',
   1: '登录用户',
   2: '会员用户',
-  3: '积分购买',
+  3: '购买',
   [-1]: '继承',
 };
 
@@ -31,23 +32,18 @@ export function getDetailCards(
         },
         {
           label: '作者',
-          value:
-            detail.authors
-              ?.map((author: any) => author.author.name)
-              .join(', ') || '-',
+          value: extractRelationNames(detail.authors, 'author').join(', ') || '-',
           type: 'text',
         },
         {
           label: '分类',
           value:
-            detail.categories
-              ?.map((category: any) => category.category.name)
-              .join(', ') || '-',
+            extractRelationNames(detail.categories, 'category').join(', ') || '-',
           type: 'text',
         },
         {
           label: '标签',
-          value: detail.tags?.map((tag: any) => tag.tag.name).join(', ') || '-',
+          value: extractRelationNames(detail.tags, 'tag').join(', ') || '-',
           type: 'text',
         },
       ],

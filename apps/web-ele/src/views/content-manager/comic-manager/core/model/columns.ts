@@ -5,6 +5,7 @@ import type { UseDictItem } from '#/hooks/useDict';
 
 import { formSchemaTransform } from '#/utils';
 
+import { extractRelationNames } from '../../../work-relations';
 import { formSchema, serialStatus } from './shared';
 
 const hideField = [
@@ -71,9 +72,7 @@ export const comicColumns = ({
         name: 'CellTag',
         props: {
           formatter: (row: BaseWorkDto['authors']) => {
-            return row?.map(
-              (author: BaseWorkDto['authors'][number]) => author.name,
-            );
+            return extractRelationNames(row, 'author');
           },
         },
       },
@@ -99,10 +98,7 @@ export const comicColumns = ({
         name: 'CellTag',
         props: {
           formatter: (row: BaseWorkDto['categories']) => {
-            return row?.map(
-              (category: BaseWorkDto['categories'][number]) =>
-                category.name,
-            );
+            return extractRelationNames(row, 'category');
           },
         },
       },
@@ -115,7 +111,7 @@ export const comicColumns = ({
         name: 'CellTag',
         props: {
           formatter: (row: BaseWorkDto['tags']) => {
-            return row?.map((tag: BaseWorkDto['tags'][number]) => tag.name);
+            return extractRelationNames(row, 'tag');
           },
         },
       },

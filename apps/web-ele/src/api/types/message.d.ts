@@ -1,7 +1,7 @@
 /**
  *  类型定义 [MessageMonitorOutboxSummaryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-03-25 23:30:38
+ *  @更新时间 2026-03-26 16:37:00
  */
 export type MessageMonitorOutboxSummaryRequest = {
   /** 任意合法数值 */
@@ -19,7 +19,7 @@ export type MessageMonitorOutboxSummaryResponse = MessageOutboxMonitorSummaryDto
 /**
  *  类型定义 [MessageMonitorWsSummaryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-03-25 23:30:38
+ *  @更新时间 2026-03-26 16:37:00
  */
 export type MessageMonitorWsSummaryRequest = {
   /** 任意合法数值 */
@@ -34,7 +34,7 @@ export type MessageMonitorWsSummaryResponse = MessageWsMonitorSummaryDto
 /**
  *  类型定义 [MessageOutboxMonitorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-25 23:30:38
+ *  @更新时间 2026-03-26 16:37:00
  */
 export type MessageOutboxMonitorSummaryDto = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type MessageOutboxMonitorSummaryDto = {
 /**
  *  类型定义 [MessageWsMonitorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-25 23:30:38
+ *  @更新时间 2026-03-26 16:37:00
  */
 export type MessageWsMonitorSummaryDto = {
   /** 任意合法数值 */

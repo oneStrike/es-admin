@@ -13,10 +13,11 @@ import {
 
 // 连载状态配置
 export const serialStatus = [
-  { label: '连载中', value: 0, color: 'primary' },
-  { label: '已完结', value: 1, color: 'success' },
-  { label: '暂停更新', value: 2, color: 'warning' },
-  { label: '停止更新', value: 3, color: 'danger' },
+  { label: '未开始', value: 0, color: 'info' },
+  { label: '连载中', value: 1, color: 'primary' },
+  { label: '已完结', value: 2, color: 'success' },
+  { label: '暂停更新', value: 3, color: 'warning' },
+  { label: '停止更新', value: 4, color: 'danger' },
 ];
 
 export const serialStatusMap = optionsToMap(serialStatus);

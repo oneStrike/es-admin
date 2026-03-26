@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AuditPageRequest]
  *  @来源 系统管理/审计日志
- *  @更新时间 2026-03-25 23:30:38
+ *  @更新时间 2026-03-26 16:37:00
  */
 export type AuditPageRequest = {
   /** 任意合法数值 */
@@ -28,7 +28,7 @@ export type AuditPageRequest = {
   /* 排序字段，json格式 */
   orderBy?: null | string
 
-  /* 当前页码（从0开始） */
+  /* 当前页码（从1开始） */
   pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
@@ -54,7 +54,7 @@ export type AuditPageResponse = {
   /* 列表数据 */
   list?: AuditItemDto[]
 
-  /* 当前页码（从0开始） */
+  /* 当前页码（从1开始） */
   pageIndex?: number
 
   /* 每页条数 */
@@ -67,7 +67,7 @@ export type AuditPageResponse = {
 /**
  *  类型定义 [AuditItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-25 23:30:38
+ *  @更新时间 2026-03-26 16:37:00
  */
 export type AuditItemDto = {
   /** 任意合法数值 */

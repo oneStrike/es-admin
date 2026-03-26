@@ -42,6 +42,8 @@ type ShareData = { workId: number; workName: string };
 
 // ========== 状态定义 ==========
 const shareData = ref<ShareData>();
+const currentChapterRecord =
+  ref<null | Partial<ContentComicChapterDetailResponse>>(null);
 
 // ========== 弹窗定义 ==========
 
@@ -193,6 +195,7 @@ async function openFormModal(record?: ContentComicChapterDetailResponse) {
   const recordData = record?.id
     ? await contentComicChapterDetailApi({ id: record.id })
     : null;
+  currentChapterRecord.value = recordData ?? null;
 
   formApi
     .setData({
@@ -210,16 +213,25 @@ async function openFormModal(record?: ContentComicChapterDetailResponse) {
 async function handleSubmit(
   values: ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest,
 ) {
-  // 设置作品ID和类型（漫画固定为1）
-  values.workId = shareData.value!.workId;
-  values.workType = 1;
+  const payload = {
+    ...(values as Record<string, any>),
+    canComment:
+      values.canComment ?? currentChapterRecord.value?.canComment ?? true,
+    canDownload:
+      values.canDownload ?? currentChapterRecord.value?.canDownload ?? false,
+    isPreview: values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
+    price: values.price ?? currentChapterRecord.value?.price ?? 0,
+    viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
+    workId: shareData.value!.workId,
+    workType: 1,
+  } as ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest;
 
-  await (values?.id
-    ? contentComicChapterUpdateApi(values as ContentComicChapterUpdateRequest)
-    : contentComicChapterCreateApi(values as ContentComicChapterCreateRequest));
+  await (payload?.id
+    ? contentComicChapterUpdateApi(payload as ContentComicChapterUpdateRequest)
+    : contentComicChapterCreateApi(payload as ContentComicChapterCreateRequest));
 
   formApi.close();
-  useMessage.success(values?.id ? '章节更新成功' : '章节创建成功');
+  useMessage.success(payload?.id ? '章节更新成功' : '章节创建成功');
   gridApi.reload();
 }
 
