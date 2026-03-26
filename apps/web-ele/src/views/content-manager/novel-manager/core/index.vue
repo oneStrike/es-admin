@@ -77,6 +77,7 @@ const tagOptions: BasicOption[] = [];
 const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
 const emptyDict: Recordable<undefined | UseDictItem> = {};
+const currentNovelRecord = ref<null | Partial<BaseWorkDto>>(null);
 
 growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
   const options =
@@ -104,6 +105,7 @@ async function openFormModal(row?: BaseWorkDto) {
       (item: { tag: { id: number } }) => item.tag.id,
     );
   }
+  currentNovelRecord.value = record ?? null;
 
   if (tagOptions.length === 0) {
     const data = await contentTagPageApi({
@@ -175,10 +177,31 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
 async function handleSubmit(
   values: ContentNovelCreateRequest | ContentNovelUpdateRequest,
 ) {
-  values.type = 2;
-  await (values?.id
-    ? contentNovelUpdateApi(values as ContentNovelUpdateRequest)
-    : contentNovelCreateApi(values as ContentNovelCreateRequest));
+  const payload = {
+    ...(values as Record<string, any>),
+    canComment: values.canComment ?? currentNovelRecord.value?.canComment ?? true,
+    chapterPrice:
+      values.chapterPrice ?? currentNovelRecord.value?.chapterPrice ?? 0,
+    isHot: values.isHot ?? currentNovelRecord.value?.isHot ?? false,
+    isNew: values.isNew ?? currentNovelRecord.value?.isNew ?? false,
+    isPublished:
+      values.isPublished ?? currentNovelRecord.value?.isPublished ?? false,
+    isRecommended:
+      values.isRecommended ??
+      currentNovelRecord.value?.isRecommended ??
+      false,
+    recommendWeight:
+      values.recommendWeight ??
+      currentNovelRecord.value?.recommendWeight ??
+      0,
+    tagIds: values.tagIds ?? currentNovelRecord.value?.tagIds ?? [],
+    type: 2,
+    viewRule: values.viewRule ?? currentNovelRecord.value?.viewRule ?? 0,
+  } as ContentNovelCreateRequest | ContentNovelUpdateRequest;
+
+  await (('id' in payload && payload.id)
+    ? contentNovelUpdateApi(payload as ContentNovelUpdateRequest)
+    : contentNovelCreateApi(payload as ContentNovelCreateRequest));
   useMessage.success('操作成功');
   await gridApi.reload();
 }

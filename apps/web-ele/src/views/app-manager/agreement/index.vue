@@ -48,18 +48,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
+const currentAgreementRecord = ref<null | Partial<BaseAgreementDto>>(null);
+
 async function openFormModal(row?: ListOrPageAgreementResponseDto) {
   let record;
   if (row) {
     record = await agreementDetailApi({ id: row.id });
   }
+  currentAgreementRecord.value = record ?? { isPublished: false };
   formApi.setData({ title: '协议', record }).open();
 }
 
 async function handleSubmit(values: CreateAgreementDto | UpdateAgreementDto) {
-  await (values?.id
-    ? agreementUpdateApi(values as UpdateAgreementDto)
-    : agreementCreateApi(values as CreateAgreementDto));
+  const payload = {
+    ...(values as Record<string, any>),
+    isPublished:
+      values.isPublished ?? currentAgreementRecord.value?.isPublished ?? false,
+  } as CreateAgreementDto | UpdateAgreementDto;
+
+  await (('id' in payload && payload.id)
+    ? agreementUpdateApi(payload as UpdateAgreementDto)
+    : agreementCreateApi(payload as CreateAgreementDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();

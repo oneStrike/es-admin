@@ -5,7 +5,7 @@ import type { BaseDictionaryDto } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { toApiPageIndex, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {  useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as Api from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
@@ -28,7 +28,7 @@ const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
           formValues: Recordable<any>,
         ) => {
           return await Api.dictionaryPageApi({
-            pageIndex: toApiPageIndex(page.currentPage),
+            pageIndex: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
           });

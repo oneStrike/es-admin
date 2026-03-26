@@ -73,6 +73,7 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'title',
     label: '页面标题',
+    rules: 'required',
   },
   {
     label: '权限级别',

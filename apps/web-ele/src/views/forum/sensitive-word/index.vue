@@ -9,7 +9,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { toApiPageIndex, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {  useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   forumSensitiveWordCreateApi,
   forumSensitiveWordDeleteApi,
@@ -35,7 +35,7 @@ const gridOptions: VxeGridProps<BaseSensitiveWordDto> = {
     ajax: {
       query: async ({ page }, formValues) => {
         return await forumSensitiveWordPageApi({
-          pageIndex: toApiPageIndex(page.currentPage),
+          pageIndex: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
         });

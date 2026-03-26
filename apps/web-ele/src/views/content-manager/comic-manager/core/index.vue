@@ -77,6 +77,7 @@ const [ThirdPartyModal, ThirdPartyApi] = useVbenModal({
 const tagOptions: BasicOption[] = [];
 const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
+const currentComicRecord = ref<null | Partial<BaseWorkDto>>(null);
 
 // 加载会员等级选项
 growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
@@ -105,6 +106,7 @@ async function openFormModal(row?: BaseWorkDto) {
       (item: { tag: { id: number } }) => item.tag.id,
     );
   }
+  currentComicRecord.value = record ?? null;
 
   if (tagOptions.length === 0) {
     const data = await contentTagPageApi({
@@ -175,10 +177,31 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
 async function handleSubmit(
   values: ContentComicCreateRequest | ContentComicUpdateRequest,
 ) {
-  values.type = 1; // 漫画固定 type=1
-  await (values?.id
-    ? contentComicUpdateApi(values as ContentComicUpdateRequest)
-    : contentComicCreateApi(values as ContentComicCreateRequest));
+  const payload = {
+    ...(values as Record<string, any>),
+    canComment: values.canComment ?? currentComicRecord.value?.canComment ?? true,
+    chapterPrice:
+      values.chapterPrice ?? currentComicRecord.value?.chapterPrice ?? 0,
+    isHot: values.isHot ?? currentComicRecord.value?.isHot ?? false,
+    isNew: values.isNew ?? currentComicRecord.value?.isNew ?? false,
+    isPublished:
+      values.isPublished ?? currentComicRecord.value?.isPublished ?? false,
+    isRecommended:
+      values.isRecommended ??
+      currentComicRecord.value?.isRecommended ??
+      false,
+    recommendWeight:
+      values.recommendWeight ??
+      currentComicRecord.value?.recommendWeight ??
+      0,
+    tagIds: values.tagIds ?? currentComicRecord.value?.tagIds ?? [],
+    type: 1,
+    viewRule: values.viewRule ?? currentComicRecord.value?.viewRule ?? 0,
+  } as ContentComicCreateRequest | ContentComicUpdateRequest;
+
+  await (('id' in payload && payload.id)
+    ? contentComicUpdateApi(payload as ContentComicUpdateRequest)
+    : contentComicCreateApi(payload as ContentComicCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();

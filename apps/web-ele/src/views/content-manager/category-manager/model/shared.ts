@@ -65,8 +65,31 @@ export const formSchema: EsFormSchema = [
       controlsPosition: 'right',
       placeholder: '请输入排序值（数字越小越靠前）',
     },
+    defaultValue: 0,
     fieldName: 'sortOrder',
     label: '排序',
+    rules: 'required',
+  },
+  {
+    component: 'RadioGroup',
+    componentProps: {
+      class: 'w-full',
+      options: [
+        {
+          label: '启用',
+          value: true,
+        },
+        {
+          label: '禁用',
+          value: false,
+        },
+      ],
+      placeholder: '请选择状态',
+    },
+    defaultValue: true,
+    fieldName: 'isEnabled',
+    label: '状态',
+    rules: 'required',
   },
   {
     component: 'Input',

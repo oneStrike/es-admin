@@ -233,6 +233,7 @@ export const formSchema: EsFormSchema = [
     label: '是否置顶',
     fieldName: 'isPinned',
     component: 'RadioGroup',
+    defaultValue: false,
     componentProps: {
       placeholder: '请选择是否置顶',
       options: [
@@ -251,6 +252,7 @@ export const formSchema: EsFormSchema = [
     label: '首页弹窗展示',
     fieldName: 'showAsPopup',
     component: 'RadioGroup',
+    defaultValue: false,
     componentProps: {
       placeholder: '请选择是否首页弹窗展示',
       options: [

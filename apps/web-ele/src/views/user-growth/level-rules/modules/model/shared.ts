@@ -96,6 +96,27 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入所需登录天数',
+      min: 0,
+    },
+    defaultValue: 0,
+    fieldName: 'loginDays',
+    label: '所需登录天数',
+    rules: 'required',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入积分购买折扣（0-1）',
+    },
+    defaultValue: '1',
+    fieldName: 'discount',
+    label: '积分购买折扣',
+    rules: 'required',
+  },
+  {
     component: 'Divider',
     fieldName: '_permissionDivider',
     formItemClass: 'col-span-2',
@@ -155,6 +176,30 @@ export const formSchema: EsFormSchema = [
       placeholder: '0表示无限制',
       min: 0,
     },
+    defaultValue: 0,
+    fieldName: 'workCollectionLimit',
+    label: '作品收藏上限',
+    rules: 'required',
+    help: '0表示无限制',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '0表示无限制',
+      min: 0,
+    },
+    defaultValue: 0,
+    fieldName: 'blacklistLimit',
+    label: '黑名单上限',
+    rules: 'required',
+    help: '0表示无限制',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '0表示无限制',
+      min: 0,
+    },
     fieldName: 'postInterval',
     label: '发帖间隔秒数',
     rules: 'required',
@@ -202,6 +247,18 @@ export const pageColumns =
       slots: { default: 'color' },
     },
     description: {
+      hide: true,
+    },
+    discount: {
+      hide: true,
+    },
+    loginDays: {
+      hide: true,
+    },
+    workCollectionLimit: {
+      hide: true,
+    },
+    blacklistLimit: {
       hide: true,
     },
     dailyReplyCommentLimit: {

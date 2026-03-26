@@ -4,7 +4,7 @@ import type { SearchComicItemDto } from '#/api/types';
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { fromApiPageIndex, toApiPageIndex } from '#/adapter/vxe-table';
+import { fromApiPageIndex,  } from '#/adapter/vxe-table';
 import {
   contentComicThirdPartyDetailApi,
   contentComicThirdPartySearchPageApi,
@@ -57,7 +57,7 @@ async function handleSearch() {
     const res = await contentComicThirdPartySearchPageApi({
       platform: 'copy',
       keyword: keyword.value.trim(),
-      pageIndex: toApiPageIndex(pagination.value.pageIndex),
+      pageIndex:pagination.value.pageIndex,
       pageSize: pagination.value.pageSize,
     });
     comicList.value = res.list || [];

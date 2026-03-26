@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  BaseForumSectionGroupDto,
   BaseForumSectionDto,
+  BaseForumSectionGroupDto,
   ForumSectionGroupsCreateRequest,
   ForumSectionGroupsUpdateRequest,
   ForumSectionsCreateRequest,
@@ -107,6 +107,8 @@ const [SectionGroupForm, sectionGroupFormApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
+const currentSectionRecord = ref<null | Partial<BaseForumSectionDto>>(null);
+
 async function openFormModal(row?: BaseForumSectionDto, groupId?: number) {
   let record;
   if (row) {
@@ -114,6 +116,9 @@ async function openFormModal(row?: BaseForumSectionDto, groupId?: number) {
   } else if (groupId) {
     record = { groupId };
   }
+  currentSectionRecord.value = row
+    ? record ?? { followersCount: 0 }
+    : { followersCount: 0 };
   formApi.setData({ title: '板块', record }).open();
 }
 
@@ -128,10 +133,16 @@ async function openSectionGroupFormModal(row?: BaseForumSectionGroupDto) {
 async function handleSubmit(
   values: ForumSectionsCreateRequest | ForumSectionsUpdateRequest,
 ) {
-  values.groupId = currentSectionGroup.value?.id;
-  await (values?.id
-    ? forumSectionsUpdateApi(values as ForumSectionsUpdateRequest)
-    : forumSectionsCreateApi(values as ForumSectionsCreateRequest));
+  const payload = {
+    ...(values as Record<string, any>),
+    followersCount:
+      values.followersCount ?? currentSectionRecord.value?.followersCount ?? 0,
+    groupId: values.groupId ?? currentSectionGroup.value?.id,
+  } as ForumSectionsCreateRequest | ForumSectionsUpdateRequest;
+
+  await (('id' in payload && payload.id)
+    ? forumSectionsUpdateApi(payload as ForumSectionsUpdateRequest)
+    : forumSectionsCreateApi(payload as ForumSectionsCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();

@@ -48,6 +48,19 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入版主数量上限，0 表示不限制',
+      min: 0,
+      controlsPosition: 'right',
+      class: 'w-full',
+    },
+    defaultValue: 0,
+    fieldName: 'maxModerators',
+    label: '版主数量上限',
+    rules: 'required',
+  },
+  {
     label: '分组描述',
     fieldName: 'description',
     component: 'Input',

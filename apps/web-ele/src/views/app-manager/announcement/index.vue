@@ -9,7 +9,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { toApiPageIndex, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   announcementCreateApi,
   announcementDeleteApi,
@@ -85,7 +85,7 @@ const gridOptions: VxeGridProps<AnnouncementPageResponseDto> = {
           );
         }
         return await announcementPageApi({
-          pageIndex: toApiPageIndex(page.currentPage),
+          pageIndex: page.currentPage,
           pageSize: page.pageSize,
           publishEndTime,
           publishStartTime,
@@ -118,9 +118,15 @@ async function openFormModal(row?: AnnouncementPageResponseDto) {
 async function handleSubmit(
   values: CreateAnnouncementDto | UpdateAnnouncementDto,
 ) {
-  await (values?.id
-    ? announcementUpdateApi(values as UpdateAnnouncementDto)
-    : announcementCreateApi(values as CreateAnnouncementDto));
+  const payload = {
+    ...(values as Record<string, any>),
+    isPinned: values.isPinned ?? false,
+    showAsPopup: values.showAsPopup ?? false,
+  } as CreateAnnouncementDto | UpdateAnnouncementDto;
+
+  await (('id' in payload && payload.id)
+    ? announcementUpdateApi(payload as UpdateAnnouncementDto)
+    : announcementCreateApi(payload as CreateAnnouncementDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();

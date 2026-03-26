@@ -291,9 +291,6 @@ setupVbenVxeTable({
   useVbenForm,
 });
 
-const toApiPageIndex = (currentPage?: number) =>
-  Math.max((currentPage ?? 1) - 1, 0);
-
 const fromApiPageIndex = (pageIndex?: null | number) =>
   Math.max((pageIndex ?? 0) + 1, 1);
 
@@ -308,12 +305,12 @@ const formatQuery = ({ page, formValues, sorts }: any) => {
     formValues.orderBy = JSON.stringify(formValues.orderBy);
   }
   return {
-    pageIndex: toApiPageIndex(page.currentPage),
+    pageIndex: page.currentPage,
     pageSize: page.pageSize,
     ...formValues,
   };
 };
 
-export { formatQuery, fromApiPageIndex, toApiPageIndex, useVbenVxeGrid };
+export { formatQuery, fromApiPageIndex, useVbenVxeGrid };
 
 export type * from '@vben/plugins/vxe-table';

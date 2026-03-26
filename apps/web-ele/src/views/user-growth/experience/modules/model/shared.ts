@@ -40,6 +40,18 @@ export const formSchema: EsFormSchema = [
     help: '0表示无限制',
   },
   {
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '0表示无限制',
+      min: 0,
+    },
+    defaultValue: 0,
+    fieldName: 'totalLimit',
+    label: '总上限',
+    rules: 'required',
+    help: '0表示无限制',
+  },
+  {
     component: 'RadioGroup',
     componentProps: {
       placeholder: '请选择是否启用',
@@ -96,6 +108,20 @@ export const pageColumns =
       },
     },
     dailyLimit: {
+      minWidth: 120,
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          formatter: (value: number) => {
+            return value === 0 ? '无限制' : value;
+          },
+          type: (value: number) => {
+            return value === 0 ? 'danger' : 'success';
+          },
+        },
+      },
+    },
+    totalLimit: {
       minWidth: 120,
       cellRender: {
         name: 'CellTag',
