@@ -40,15 +40,17 @@ import { comicColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
 import { formSchema, pageFilter } from './model/shared';
 
-defineOptions({ name: 'ComicChapterManager' });
+defineOptions({ name: 'ComicManager' });
 
 const gridOptions: VxeGridProps<BaseWorkDto> = {
   columns: [],
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        formValues.type=1
-        return await contentComicPageApi(formatQuery({ page, formValues, sorts }));
+        formValues.type = 1;
+        return await contentComicPageApi(
+          formatQuery({ page, formValues, sorts }),
+        );
       },
     },
     sort: true,
@@ -185,19 +187,15 @@ async function handleSubmit(
     isPublished:
       values.isPublished ?? currentComicRecord.value?.isPublished ?? false,
     isRecommended:
-      values.isRecommended ??
-      currentComicRecord.value?.isRecommended ??
-      false,
+      values.isRecommended ?? currentComicRecord.value?.isRecommended ?? false,
     recommendWeight:
-      values.recommendWeight ??
-      currentComicRecord.value?.recommendWeight ??
-      0,
+      values.recommendWeight ?? currentComicRecord.value?.recommendWeight ?? 0,
     tagIds: values.tagIds ?? currentComicRecord.value?.tagIds ?? [],
     type: 1,
     viewRule: values.viewRule ?? currentComicRecord.value?.viewRule ?? 0,
   } as ContentComicCreateRequest | ContentComicUpdateRequest;
 
-  await (('id' in payload && payload.id)
+  await ('id' in payload && payload.id
     ? contentComicUpdateApi(payload as ContentComicUpdateRequest)
     : contentComicCreateApi(payload as ContentComicCreateRequest));
   formApi.close();

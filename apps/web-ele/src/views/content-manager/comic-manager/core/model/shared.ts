@@ -157,6 +157,7 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'tagIds',
     label: '标签',
+    rules: 'arrayRequired',
   },
 
   // ========== 作品简介 ==========
@@ -366,8 +367,8 @@ export const pageFilter = formSchemaTransform.toSearchSchema(formSchema, {
     show: true,
   },
   author: {
-    show: true,
     component: 'Input',
+    hideLabel: true,
     componentProps: {
       placeholder: '作者名称',
     },
