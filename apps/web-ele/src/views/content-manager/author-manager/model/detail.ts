@@ -21,14 +21,15 @@ export function getDetailCards(detail: BaseAuthorDto, extraData?: any) {
 
   return [
     {
+      title: '作者头像',
+      show: !!detail.avatar,
+      type: 'image' as const,
+      imageUrl: detail.avatar,
+    },
+    {
       title: '',
       show: true,
       fields: [
-        {
-          label: '头像',
-          value: detail.avatar,
-          type: 'image' as const,
-        },
         {
           label: '姓名',
           value: detail.name,

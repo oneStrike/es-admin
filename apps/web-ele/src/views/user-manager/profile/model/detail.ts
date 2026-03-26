@@ -18,14 +18,15 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
 
   return [
     {
+      title: '头像',
+      show: !!detail.avatarUrl,
+      type: 'image' as const,
+      imageUrl: detail.avatarUrl,
+    },
+    {
       title: '',
       show: true,
       fields: [
-        {
-          label: '头像',
-          value: detail.avatarUrl,
-          type: 'image' as const,
-        },
         {
           label: '昵称',
           value: detail.nickname || detail.account,

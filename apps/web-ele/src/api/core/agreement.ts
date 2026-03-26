@@ -1,19 +1,18 @@
+import { requestClient } from '#/api/request'
 import type {
   AgreementCreateRequest,
   AgreementCreateResponse,
-  AgreementDeleteRequest,
-  AgreementDeleteResponse,
-  AgreementDetailRequest,
-  AgreementDetailResponse,
-  AgreementPageRequest,
-  AgreementPageResponse,
   AgreementUpdateRequest,
   AgreementUpdateResponse,
   AgreementUpdateStatusRequest,
-  AgreementUpdateStatusResponse
+  AgreementUpdateStatusResponse,
+  AgreementDeleteRequest,
+  AgreementDeleteResponse,
+  AgreementPageRequest,
+  AgreementPageResponse,
+  AgreementDetailRequest,
+  AgreementDetailResponse
 } from '../types/agreement.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

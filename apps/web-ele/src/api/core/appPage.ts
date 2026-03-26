@@ -1,19 +1,18 @@
+import { requestClient } from '#/api/request'
 import type {
   AppPageCreateRequest,
   AppPageCreateResponse,
-  AppPageDeleteRequest,
-  AppPageDeleteResponse,
-  AppPageDetailCodeRequest,
-  AppPageDetailCodeResponse,
-  AppPageDetailRequest,
-  AppPageDetailResponse,
   AppPagePageRequest,
   AppPagePageResponse,
+  AppPageDetailRequest,
+  AppPageDetailResponse,
+  AppPageDetailCodeRequest,
+  AppPageDetailCodeResponse,
   AppPageUpdateRequest,
-  AppPageUpdateResponse
+  AppPageUpdateResponse,
+  AppPageDeleteRequest,
+  AppPageDeleteResponse
 } from '../types/appPage.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

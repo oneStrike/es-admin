@@ -1,4 +1,4 @@
-import type { CreateForumSectionDto } from '#/api/types';
+import type { ForumSectionsDetailResponse } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
@@ -9,13 +9,19 @@ import { topicReviewPolicy } from './constants';
  * @param detail 板块详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: CreateForumSectionDto) {
+export function getDetailCards(detail: ForumSectionsDetailResponse) {
   // 获取审核策略标签
   const reviewPolicyLabel =
     topicReviewPolicy.find((item) => item.value === detail.topicReviewPolicy)
       ?.label || '-';
 
   return [
+     {
+      title: '图标',
+      show: !!detail.icon,
+      type: 'image' as const,
+      imageUrl: detail.icon,
+    },
     {
       title: '基本信息',
       show: true,
@@ -40,17 +46,20 @@ export function getDetailCards(detail: CreateForumSectionDto) {
           value: reviewPolicyLabel,
           type: 'text' as const,
         },
-        {
-          label: '板块图标',
-          value: detail?.icon || '-',
-          type: 'text' as const,
-        },
-        {
-          label: '板块描述',
-          value: detail?.description || '-',
-          type: 'text' as const,
-        },
       ],
+    },
+    {
+      title: '板块背景图',
+      show: !!detail?.cover,
+      type: 'image' as const,
+      imageUrl: detail?.cover,
+      pinTop: false,
+    },
+    {
+      title: '板块描述',
+      show: true,
+      type: 'html' as const,
+      content: detail?.description || '<p>-</p>',
     },
     {
       title: '时间信息',

@@ -1,9 +1,8 @@
+import { requestClient } from '#/api/request'
 import type {
   ApiHealthResponse,
   ApiReadyResponse
 } from '../types/api.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

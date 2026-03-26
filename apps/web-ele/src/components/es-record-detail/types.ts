@@ -20,4 +20,5 @@ export interface DetailCard {
   type?: 'html' | 'image' | 'text';
   content?: string;
   imageUrl?: string;
+  pinTop?: boolean;
 }

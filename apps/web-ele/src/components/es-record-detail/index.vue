@@ -109,6 +109,28 @@ const detailCards = computed(() => {
   return props.cards(detail.value, extraData.value);
 });
 
+// 过滤出可渲染卡片，图片卡片必须有图片地址
+const availableDetailCards = computed(() => {
+  return detailCards.value.filter((card) => {
+    if (!card.show) return false;
+    if (card.type === 'image') return !!card.imageUrl;
+    return true;
+  });
+});
+
+// 图片卡片默认置顶展示，可通过 pinTop: false 关闭
+const topImageCards = computed(() => {
+  return availableDetailCards.value.filter(
+    (card) => card.type === 'image' && card.pinTop !== false,
+  );
+});
+
+const normalDetailCards = computed(() => {
+  return availableDetailCards.value.filter(
+    (card) => card.type !== 'image' || card.pinTop === false,
+  );
+});
+
 // 暴露方法给父组件
 defineExpose({
   setData: modalApi.setData,
@@ -120,23 +142,26 @@ defineExpose({
 <template>
   <Modal class="!w-[1000px]">
     <div v-loading="loading" class="space-y-6">
-      <!-- 封面/头像展示 -->
+      <!-- 置顶图片卡片 -->
       <div
-        v-if="detail && (detail.cover || detail.avatar)"
+        v-for="(card, index) in topImageCards"
+        :key="`top-image-${card.title || 'image'}-${index}`"
         class="flex justify-center py-4"
       >
         <el-image
-          :src="detail.cover || detail.avatar"
-          :preview-src-list="[detail.cover || detail.avatar]"
+          :src="card.imageUrl || ''"
+          :preview-src-list="card.imageUrl ? [card.imageUrl] : []"
           class="h-64 w-48 rounded-xl border-4 border-white object-cover shadow-lg dark:border-gray-800"
           fit="cover"
           preview-teleported
         />
       </div>
       <!-- 动态渲染卡片 -->
-      <template v-for="card in detailCards" :key="card.title">
+      <template
+        v-for="(card, index) in normalDetailCards"
+        :key="`detail-card-${card.title || 'card'}-${index}`"
+      >
         <el-card
-          v-if="card.show"
           shadow="hover"
           class="rounded-lg border border-gray-200 dark:border-gray-700"
         >
@@ -169,9 +194,7 @@ defineExpose({
               class="!gap-x-8 !gap-y-4 !text-sm"
             >
               <el-descriptions-item
-                v-for="field in card.fields.filter(
-                  (f) => f.type !== 'title' && f.type !== 'image',
-                )"
+                v-for="field in card.fields.filter((f) => f.type !== 'title')"
                 :key="field.label"
                 :label="`${field.label}：`"
                 class="!text-gray-600 dark:!text-gray-300"

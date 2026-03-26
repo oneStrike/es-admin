@@ -1,9 +1,28 @@
 import type { BaseForumSectionDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
+import { UploadSceneEnum } from '#/enum/api';
 import { formSchemaTransform } from '#/utils';
 
 import { topicReviewPolicy } from './constants';
+
+const HTML_TAG_REGEX = /<[^>]+>/g;
+const HTML_SPACE_ENTITY_REGEX = /&nbsp;/gi;
+const EXTRA_WHITESPACE_REGEX = /\s+/g;
+
+function toPlainTextFromRichText(content?: null | string) {
+  if (!content) {
+    return '-';
+  }
+
+  const text = content
+    .replace(HTML_TAG_REGEX, ' ')
+    .replace(HTML_SPACE_ENTITY_REGEX, ' ')
+    .replace(EXTRA_WHITESPACE_REGEX, ' ')
+    .trim();
+
+  return text || '-';
+}
 
 // 表单配置
 export const formSchema: EsFormSchema = [
@@ -62,22 +81,38 @@ export const formSchema: EsFormSchema = [
     },
   },
   {
-    component: 'Input',
+    component: 'Upload',
     componentProps: {
-      placeholder: '请输入板块图标',
+      accept: 'image/*',
+      maxCount: 1,
+      multiple: false,
+      returnDataType: 'url',
+      scene: UploadSceneEnum.SHARED,
     },
     fieldName: 'icon',
     label: '板块图标',
+    rules: 'required',
+  },
+  {
+    component: 'Upload',
+    componentProps: {
+      accept: 'image/*',
+      maxCount: 1,
+      multiple: false,
+      returnDataType: 'url',
+      scene: UploadSceneEnum.SHARED,
+    },
+    fieldName: 'cover',
+    label: '背景图',
+    rules: 'required',
   },
   {
     label: '板块描述',
     fieldName: 'description',
-    component: 'Input',
+    component: 'RichText',
     formItemClass: 'col-span-2',
     componentProps: {
-      type: 'textarea',
       placeholder: '请输入板块描述信息...',
-      rows: 4,
     },
   },
 ];
@@ -88,10 +123,14 @@ export const sectionColumns =
     icon: {
       hide: true,
     },
+    cover: {
+      hide: true,
+    },
     actions: {
       show: true,
     },
     description: {
+      formatter: ({ cellValue }) => toPlainTextFromRichText(cellValue),
       showOverflow: 'tooltip',
       sort: 0,
     },

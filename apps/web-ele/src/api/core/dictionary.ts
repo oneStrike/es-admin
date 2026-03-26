@@ -1,33 +1,32 @@
+import { requestClient } from '#/api/request'
 import type {
-  DictionaryCreateRequest,
-  DictionaryCreateResponse,
-  DictionaryDeleteRequest,
-  DictionaryDeleteResponse,
+  DictionaryPageRequest,
+  DictionaryPageResponse,
   DictionaryDetailRequest,
   DictionaryDetailResponse,
-  DictionaryItemCreateRequest,
-  DictionaryItemCreateResponse,
-  DictionaryItemDeleteRequest,
-  DictionaryItemDeleteResponse,
-  DictionaryItemListRequest,
-  DictionaryItemListResponse,
+  DictionaryCreateRequest,
+  DictionaryCreateResponse,
+  DictionaryUpdateRequest,
+  DictionaryUpdateResponse,
+  DictionaryDeleteRequest,
+  DictionaryDeleteResponse,
+  DictionaryUpdateStatusRequest,
+  DictionaryUpdateStatusResponse,
   DictionaryItemPageRequest,
   DictionaryItemPageResponse,
-  DictionaryItemSwapSortOrderRequest,
-  DictionaryItemSwapSortOrderResponse,
+  DictionaryItemListRequest,
+  DictionaryItemListResponse,
+  DictionaryItemCreateRequest,
+  DictionaryItemCreateResponse,
   DictionaryItemUpdateRequest,
   DictionaryItemUpdateResponse,
   DictionaryItemUpdateStatusRequest,
   DictionaryItemUpdateStatusResponse,
-  DictionaryPageRequest,
-  DictionaryPageResponse,
-  DictionaryUpdateRequest,
-  DictionaryUpdateResponse,
-  DictionaryUpdateStatusRequest,
-  DictionaryUpdateStatusResponse
+  DictionaryItemDeleteRequest,
+  DictionaryItemDeleteResponse,
+  DictionaryItemSwapSortOrderRequest,
+  DictionaryItemSwapSortOrderResponse
 } from '../types/dictionary.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

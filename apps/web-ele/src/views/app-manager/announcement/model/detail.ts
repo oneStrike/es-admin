@@ -165,6 +165,7 @@ export function getDetailCards(detail: AnnouncementDetailResponse) {
       show: !!detail?.popupBackgroundImage,
       type: 'image' as const,
       imageUrl: detail?.popupBackgroundImage,
+      pinTop: false,
     },
     {
       title: '公告内容',
