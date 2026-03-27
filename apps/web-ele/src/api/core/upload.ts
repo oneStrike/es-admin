@@ -1,7 +1,8 @@
-import { requestClient } from '#/api/request'
 import type {
   UploadFileUploadResponse
 } from '../types/upload.d'
+
+import { requestClient } from '#/api/request'
 
 
   /**

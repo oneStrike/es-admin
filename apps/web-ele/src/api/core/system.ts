@@ -1,9 +1,10 @@
-import { requestClient } from '#/api/request'
 import type {
   SystemConfigResponse,
   SystemUpdateRequest,
   SystemUpdateResponse
 } from '../types/system.d'
+
+import { requestClient } from '#/api/request'
 
 
   /**

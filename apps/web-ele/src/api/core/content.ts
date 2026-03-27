@@ -1,147 +1,178 @@
-import { requestClient } from '#/api/request'
 import type {
-  ContentComicCreateRequest,
-  ContentComicCreateResponse,
-  ContentComicPageRequest,
-  ContentComicPageResponse,
-  ContentComicDetailRequest,
-  ContentComicDetailResponse,
-  ContentComicUpdateRequest,
-  ContentComicUpdateResponse,
-  ContentComicUpdateStatusRequest,
-  ContentComicUpdateStatusResponse,
-  ContentComicUpdateRecommendedRequest,
-  ContentComicUpdateRecommendedResponse,
-  ContentComicUpdateHotRequest,
-  ContentComicUpdateHotResponse,
-  ContentComicUpdateNewRequest,
-  ContentComicUpdateNewResponse,
-  ContentComicDeleteRequest,
-  ContentComicDeleteResponse,
-  ContentComicChapterCreateRequest,
-  ContentComicChapterCreateResponse,
-  ContentComicChapterPageRequest,
-  ContentComicChapterPageResponse,
-  ContentComicChapterDetailRequest,
-  ContentComicChapterDetailResponse,
-  ContentComicChapterUpdateRequest,
-  ContentComicChapterUpdateResponse,
-  ContentComicChapterDeleteRequest,
-  ContentComicChapterDeleteResponse,
-  ContentComicChapterSwapSortOrderRequest,
-  ContentComicChapterSwapSortOrderResponse,
-  ContentComicChapterContentListRequest,
-  ContentComicChapterContentListResponse,
-  ContentComicChapterContentUploadRequest,
-  ContentComicChapterContentUploadResponse,
-  ContentComicChapterContentUpdateRequest,
-  ContentComicChapterContentUpdateResponse,
-  ContentComicChapterContentDeleteRequest,
-  ContentComicChapterContentDeleteResponse,
-  ContentComicChapterContentMoveRequest,
-  ContentComicChapterContentMoveResponse,
-  ContentComicChapterContentClearRequest,
-  ContentComicChapterContentClearResponse,
-  ContentComicChapterContentArchivePreviewRequest,
-  ContentComicChapterContentArchivePreviewResponse,
-  ContentComicChapterContentArchiveConfirmRequest,
-  ContentComicChapterContentArchiveConfirmResponse,
-  ContentComicChapterContentArchiveDetailRequest,
-  ContentComicChapterContentArchiveDetailResponse,
-  ContentComicThirdPartyPlatformListResponse,
-  ContentComicThirdPartySearchPageRequest,
-  ContentComicThirdPartySearchPageResponse,
-  ContentComicThirdPartyDetailRequest,
-  ContentComicThirdPartyDetailResponse,
-  ContentComicThirdPartyChapterListRequest,
-  ContentComicThirdPartyChapterListResponse,
-  ContentComicThirdPartyChapterContentDetailRequest,
-  ContentComicThirdPartyChapterContentDetailResponse,
-  ContentNovelCreateRequest,
-  ContentNovelCreateResponse,
-  ContentNovelPageRequest,
-  ContentNovelPageResponse,
-  ContentNovelDetailRequest,
-  ContentNovelDetailResponse,
-  ContentNovelUpdateRequest,
-  ContentNovelUpdateResponse,
-  ContentNovelUpdateStatusRequest,
-  ContentNovelUpdateStatusResponse,
-  ContentNovelUpdateRecommendedRequest,
-  ContentNovelUpdateRecommendedResponse,
-  ContentNovelUpdateHotRequest,
-  ContentNovelUpdateHotResponse,
-  ContentNovelUpdateNewRequest,
-  ContentNovelUpdateNewResponse,
-  ContentNovelDeleteRequest,
-  ContentNovelDeleteResponse,
-  ContentNovelChapterCreateRequest,
-  ContentNovelChapterCreateResponse,
-  ContentNovelChapterPageRequest,
-  ContentNovelChapterPageResponse,
-  ContentNovelChapterDetailRequest,
-  ContentNovelChapterDetailResponse,
-  ContentNovelChapterUpdateRequest,
-  ContentNovelChapterUpdateResponse,
-  ContentNovelChapterDeleteRequest,
-  ContentNovelChapterDeleteResponse,
-  ContentNovelChapterSwapSortOrderRequest,
-  ContentNovelChapterSwapSortOrderResponse,
-  ContentNovelChapterContentDetailRequest,
-  ContentNovelChapterContentDetailResponse,
-  ContentNovelChapterContentUploadRequest,
-  ContentNovelChapterContentUploadResponse,
-  ContentNovelChapterContentDeleteRequest,
-  ContentNovelChapterContentDeleteResponse,
   ContentAuthorCreateRequest,
   ContentAuthorCreateResponse,
-  ContentAuthorPageRequest,
-  ContentAuthorPageResponse,
+  ContentAuthorDeleteRequest,
+  ContentAuthorDeleteResponse,
   ContentAuthorDetailRequest,
   ContentAuthorDetailResponse,
+  ContentAuthorPageRequest,
+  ContentAuthorPageResponse,
+  ContentAuthorRebuildFollowCountAllResponse,
+  ContentAuthorRebuildFollowCountRequest,
+  ContentAuthorRebuildFollowCountResponse,
+  ContentAuthorRebuildWorkCountAllResponse,
+  ContentAuthorRebuildWorkCountRequest,
+  ContentAuthorRebuildWorkCountResponse,
+  ContentAuthorUpdateRecommendedRequest,
+  ContentAuthorUpdateRecommendedResponse,
   ContentAuthorUpdateRequest,
   ContentAuthorUpdateResponse,
   ContentAuthorUpdateStatusRequest,
   ContentAuthorUpdateStatusResponse,
-  ContentAuthorUpdateRecommendedRequest,
-  ContentAuthorUpdateRecommendedResponse,
-  ContentAuthorRebuildFollowCountRequest,
-  ContentAuthorRebuildFollowCountResponse,
-  ContentAuthorRebuildFollowCountAllResponse,
-  ContentAuthorRebuildWorkCountRequest,
-  ContentAuthorRebuildWorkCountResponse,
-  ContentAuthorRebuildWorkCountAllResponse,
-  ContentAuthorDeleteRequest,
-  ContentAuthorDeleteResponse,
   ContentCategoryCreateRequest,
   ContentCategoryCreateResponse,
-  ContentCategoryPageRequest,
-  ContentCategoryPageResponse,
+  ContentCategoryDeleteRequest,
+  ContentCategoryDeleteResponse,
   ContentCategoryDetailRequest,
   ContentCategoryDetailResponse,
+  ContentCategoryPageRequest,
+  ContentCategoryPageResponse,
+  ContentCategorySwapSortOrderRequest,
+  ContentCategorySwapSortOrderResponse,
   ContentCategoryUpdateRequest,
   ContentCategoryUpdateResponse,
   ContentCategoryUpdateStatusRequest,
   ContentCategoryUpdateStatusResponse,
-  ContentCategoryDeleteRequest,
-  ContentCategoryDeleteResponse,
-  ContentCategorySwapSortOrderRequest,
-  ContentCategorySwapSortOrderResponse,
+  ContentComicChapterContentArchiveConfirmRequest,
+  ContentComicChapterContentArchiveConfirmResponse,
+  ContentComicChapterContentArchiveDetailRequest,
+  ContentComicChapterContentArchiveDetailResponse,
+  ContentComicChapterContentArchivePreviewRequest,
+  ContentComicChapterContentArchivePreviewResponse,
+  ContentComicChapterContentClearRequest,
+  ContentComicChapterContentClearResponse,
+  ContentComicChapterContentDeleteRequest,
+  ContentComicChapterContentDeleteResponse,
+  ContentComicChapterContentListRequest,
+  ContentComicChapterContentListResponse,
+  ContentComicChapterContentMoveRequest,
+  ContentComicChapterContentMoveResponse,
+  ContentComicChapterContentUpdateRequest,
+  ContentComicChapterContentUpdateResponse,
+  ContentComicChapterContentUploadRequest,
+  ContentComicChapterContentUploadResponse,
+  ContentComicChapterCreateRequest,
+  ContentComicChapterCreateResponse,
+  ContentComicChapterDeleteRequest,
+  ContentComicChapterDeleteResponse,
+  ContentComicChapterDetailRequest,
+  ContentComicChapterDetailResponse,
+  ContentComicChapterPageRequest,
+  ContentComicChapterPageResponse,
+  ContentComicChapterSwapSortOrderRequest,
+  ContentComicChapterSwapSortOrderResponse,
+  ContentComicChapterUpdateRequest,
+  ContentComicChapterUpdateResponse,
+  ContentComicCreateRequest,
+  ContentComicCreateResponse,
+  ContentComicDeleteRequest,
+  ContentComicDeleteResponse,
+  ContentComicDetailRequest,
+  ContentComicDetailResponse,
+  ContentComicPageRequest,
+  ContentComicPageResponse,
+  ContentComicThirdPartyChapterContentDetailRequest,
+  ContentComicThirdPartyChapterContentDetailResponse,
+  ContentComicThirdPartyChapterListRequest,
+  ContentComicThirdPartyChapterListResponse,
+  ContentComicThirdPartyDetailRequest,
+  ContentComicThirdPartyDetailResponse,
+  ContentComicThirdPartyPlatformListResponse,
+  ContentComicThirdPartySearchPageRequest,
+  ContentComicThirdPartySearchPageResponse,
+  ContentComicUpdateHotRequest,
+  ContentComicUpdateHotResponse,
+  ContentComicUpdateNewRequest,
+  ContentComicUpdateNewResponse,
+  ContentComicUpdateRecommendedRequest,
+  ContentComicUpdateRecommendedResponse,
+  ContentComicUpdateRequest,
+  ContentComicUpdateResponse,
+  ContentComicUpdateStatusRequest,
+  ContentComicUpdateStatusResponse,
+  ContentEmojiAssetCreateRequest,
+  ContentEmojiAssetCreateResponse,
+  ContentEmojiAssetDeleteRequest,
+  ContentEmojiAssetDeleteResponse,
+  ContentEmojiAssetDetailRequest,
+  ContentEmojiAssetDetailResponse,
+  ContentEmojiAssetPageRequest,
+  ContentEmojiAssetPageResponse,
+  ContentEmojiAssetSwapSortOrderRequest,
+  ContentEmojiAssetSwapSortOrderResponse,
+  ContentEmojiAssetUpdateEnabledRequest,
+  ContentEmojiAssetUpdateEnabledResponse,
+  ContentEmojiAssetUpdateRequest,
+  ContentEmojiAssetUpdateResponse,
+  ContentEmojiPackCreateRequest,
+  ContentEmojiPackCreateResponse,
+  ContentEmojiPackDeleteRequest,
+  ContentEmojiPackDeleteResponse,
+  ContentEmojiPackDetailRequest,
+  ContentEmojiPackDetailResponse,
+  ContentEmojiPackPageRequest,
+  ContentEmojiPackPageResponse,
+  ContentEmojiPackSwapSortOrderRequest,
+  ContentEmojiPackSwapSortOrderResponse,
+  ContentEmojiPackUpdateEnabledRequest,
+  ContentEmojiPackUpdateEnabledResponse,
+  ContentEmojiPackUpdateRequest,
+  ContentEmojiPackUpdateResponse,
+  ContentEmojiPackUpdateSceneTypeRequest,
+  ContentEmojiPackUpdateSceneTypeResponse,
+  ContentNovelChapterContentDeleteRequest,
+  ContentNovelChapterContentDeleteResponse,
+  ContentNovelChapterContentDetailRequest,
+  ContentNovelChapterContentDetailResponse,
+  ContentNovelChapterContentUploadRequest,
+  ContentNovelChapterContentUploadResponse,
+  ContentNovelChapterCreateRequest,
+  ContentNovelChapterCreateResponse,
+  ContentNovelChapterDeleteRequest,
+  ContentNovelChapterDeleteResponse,
+  ContentNovelChapterDetailRequest,
+  ContentNovelChapterDetailResponse,
+  ContentNovelChapterPageRequest,
+  ContentNovelChapterPageResponse,
+  ContentNovelChapterSwapSortOrderRequest,
+  ContentNovelChapterSwapSortOrderResponse,
+  ContentNovelChapterUpdateRequest,
+  ContentNovelChapterUpdateResponse,
+  ContentNovelCreateRequest,
+  ContentNovelCreateResponse,
+  ContentNovelDeleteRequest,
+  ContentNovelDeleteResponse,
+  ContentNovelDetailRequest,
+  ContentNovelDetailResponse,
+  ContentNovelPageRequest,
+  ContentNovelPageResponse,
+  ContentNovelUpdateHotRequest,
+  ContentNovelUpdateHotResponse,
+  ContentNovelUpdateNewRequest,
+  ContentNovelUpdateNewResponse,
+  ContentNovelUpdateRecommendedRequest,
+  ContentNovelUpdateRecommendedResponse,
+  ContentNovelUpdateRequest,
+  ContentNovelUpdateResponse,
+  ContentNovelUpdateStatusRequest,
+  ContentNovelUpdateStatusResponse,
   ContentTagCreateRequest,
   ContentTagCreateResponse,
-  ContentTagPageRequest,
-  ContentTagPageResponse,
+  ContentTagDeleteRequest,
+  ContentTagDeleteResponse,
   ContentTagDetailRequest,
   ContentTagDetailResponse,
+  ContentTagPageRequest,
+  ContentTagPageResponse,
+  ContentTagSwapSortOrderRequest,
+  ContentTagSwapSortOrderResponse,
   ContentTagUpdateRequest,
   ContentTagUpdateResponse,
   ContentTagUpdateStatusRequest,
-  ContentTagUpdateStatusResponse,
-  ContentTagDeleteRequest,
-  ContentTagDeleteResponse,
-  ContentTagSwapSortOrderRequest,
-  ContentTagSwapSortOrderResponse
+  ContentTagUpdateStatusResponse
 } from '../types/content.d'
+
+import { requestClient } from '#/api/request'
 
 
   /**
@@ -717,4 +748,124 @@ import type {
    */
   export async function contentTagSwapSortOrderApi(params: ContentTagSwapSortOrderRequest): Promise<ContentTagSwapSortOrderResponse> {
     return requestClient.post<ContentTagSwapSortOrderResponse>('/api/admin/content/tag/swap-sort-order', params);
+  }
+
+
+  /**
+   * 分页查询表情包
+   */
+  export async function contentEmojiPackPageApi(params?: ContentEmojiPackPageRequest): Promise<ContentEmojiPackPageResponse> {
+    return requestClient.get<ContentEmojiPackPageResponse>('/api/admin/content/emoji-pack/page', { params });
+  }
+
+
+  /**
+   * 查询表情包详情
+   */
+  export async function contentEmojiPackDetailApi(params: ContentEmojiPackDetailRequest): Promise<ContentEmojiPackDetailResponse> {
+    return requestClient.get<ContentEmojiPackDetailResponse>('/api/admin/content/emoji-pack/detail', { params });
+  }
+
+
+  /**
+   * 创建表情包
+   */
+  export async function contentEmojiPackCreateApi(params: ContentEmojiPackCreateRequest): Promise<ContentEmojiPackCreateResponse> {
+    return requestClient.post<ContentEmojiPackCreateResponse>('/api/admin/content/emoji-pack/create', params);
+  }
+
+
+  /**
+   * 更新表情包
+   */
+  export async function contentEmojiPackUpdateApi(params: ContentEmojiPackUpdateRequest): Promise<ContentEmojiPackUpdateResponse> {
+    return requestClient.post<ContentEmojiPackUpdateResponse>('/api/admin/content/emoji-pack/update', params);
+  }
+
+
+  /**
+   * 删除表情包
+   */
+  export async function contentEmojiPackDeleteApi(params: ContentEmojiPackDeleteRequest): Promise<ContentEmojiPackDeleteResponse> {
+    return requestClient.post<ContentEmojiPackDeleteResponse>('/api/admin/content/emoji-pack/delete', params);
+  }
+
+
+  /**
+   * 更新表情包启用状态
+   */
+  export async function contentEmojiPackUpdateEnabledApi(params: ContentEmojiPackUpdateEnabledRequest): Promise<ContentEmojiPackUpdateEnabledResponse> {
+    return requestClient.post<ContentEmojiPackUpdateEnabledResponse>('/api/admin/content/emoji-pack/update-enabled', params);
+  }
+
+
+  /**
+   * 交换表情包排序
+   */
+  export async function contentEmojiPackSwapSortOrderApi(params: ContentEmojiPackSwapSortOrderRequest): Promise<ContentEmojiPackSwapSortOrderResponse> {
+    return requestClient.post<ContentEmojiPackSwapSortOrderResponse>('/api/admin/content/emoji-pack/swap-sort-order', params);
+  }
+
+
+  /**
+   * 更新表情包场景类型
+   */
+  export async function contentEmojiPackUpdateSceneTypeApi(params: ContentEmojiPackUpdateSceneTypeRequest): Promise<ContentEmojiPackUpdateSceneTypeResponse> {
+    return requestClient.post<ContentEmojiPackUpdateSceneTypeResponse>('/api/admin/content/emoji-pack/update-scene-type', params);
+  }
+
+
+  /**
+   * 分页查询表情资源
+   */
+  export async function contentEmojiAssetPageApi(params?: ContentEmojiAssetPageRequest): Promise<ContentEmojiAssetPageResponse> {
+    return requestClient.get<ContentEmojiAssetPageResponse>('/api/admin/content/emoji-asset/page', { params });
+  }
+
+
+  /**
+   * 查询表情资源详情
+   */
+  export async function contentEmojiAssetDetailApi(params: ContentEmojiAssetDetailRequest): Promise<ContentEmojiAssetDetailResponse> {
+    return requestClient.get<ContentEmojiAssetDetailResponse>('/api/admin/content/emoji-asset/detail', { params });
+  }
+
+
+  /**
+   * 创建表情资源
+   */
+  export async function contentEmojiAssetCreateApi(params: ContentEmojiAssetCreateRequest): Promise<ContentEmojiAssetCreateResponse> {
+    return requestClient.post<ContentEmojiAssetCreateResponse>('/api/admin/content/emoji-asset/create', params);
+  }
+
+
+  /**
+   * 更新表情资源
+   */
+  export async function contentEmojiAssetUpdateApi(params: ContentEmojiAssetUpdateRequest): Promise<ContentEmojiAssetUpdateResponse> {
+    return requestClient.post<ContentEmojiAssetUpdateResponse>('/api/admin/content/emoji-asset/update', params);
+  }
+
+
+  /**
+   * 删除表情资源
+   */
+  export async function contentEmojiAssetDeleteApi(params: ContentEmojiAssetDeleteRequest): Promise<ContentEmojiAssetDeleteResponse> {
+    return requestClient.post<ContentEmojiAssetDeleteResponse>('/api/admin/content/emoji-asset/delete', params);
+  }
+
+
+  /**
+   * 更新表情资源启用状态
+   */
+  export async function contentEmojiAssetUpdateEnabledApi(params: ContentEmojiAssetUpdateEnabledRequest): Promise<ContentEmojiAssetUpdateEnabledResponse> {
+    return requestClient.post<ContentEmojiAssetUpdateEnabledResponse>('/api/admin/content/emoji-asset/update-enabled', params);
+  }
+
+
+  /**
+   * 交换表情资源排序
+   */
+  export async function contentEmojiAssetSwapSortOrderApi(params: ContentEmojiAssetSwapSortOrderRequest): Promise<ContentEmojiAssetSwapSortOrderResponse> {
+    return requestClient.post<ContentEmojiAssetSwapSortOrderResponse>('/api/admin/content/emoji-asset/swap-sort-order', params);
   }

@@ -1,18 +1,19 @@
-import { requestClient } from '#/api/request'
 import type {
   AnnouncementCreateRequest,
   AnnouncementCreateResponse,
-  AnnouncementPageRequest,
-  AnnouncementPageResponse,
+  AnnouncementDeleteRequest,
+  AnnouncementDeleteResponse,
   AnnouncementDetailRequest,
   AnnouncementDetailResponse,
+  AnnouncementPageRequest,
+  AnnouncementPageResponse,
   AnnouncementUpdateRequest,
   AnnouncementUpdateResponse,
   AnnouncementUpdateStatusRequest,
-  AnnouncementUpdateStatusResponse,
-  AnnouncementDeleteRequest,
-  AnnouncementDeleteResponse
+  AnnouncementUpdateStatusResponse
 } from '../types/announcement.d'
+
+import { requestClient } from '#/api/request'
 
 
   /**

@@ -11,6 +11,16 @@ const routes: RouteRecordRaw[] = [
     path: '/comprehensive-manager',
     children: [
       {
+        name: 'EmojiManager',
+        path: '/comprehensive-manager/emoji-manager',
+        component: () =>
+          import('#/views/comprehensive-manager/emoji-manager/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '表情管理',
+        },
+      },
+      {
         name: 'ForumReports',
         path: '/forum/reports',
         component: () => import('#/views/forum/reports/index.vue'),
