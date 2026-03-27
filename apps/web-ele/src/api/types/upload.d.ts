@@ -1,4 +1,4 @@
-export type UploadFileUploadResponse = UploadResponseDto
+export type UploadFileUploadResponse = UploadResponseDto;
 
 /**
  *  类型定义 [UploadResponseDto]
@@ -7,22 +7,22 @@ export type UploadFileUploadResponse = UploadResponseDto
  */
 export type UploadResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 文件名 */
-  filename: string
+  filename: string;
   /* 文件路径 */
-  filePath: string
+  filePath: string;
   /* 文件大小 */
-  fileSize: number
+  fileSize: number;
   /* 文件类型 */
-  fileType: string
+  fileType: string;
   /* 文件类型mimeType */
-  mimeType: string
+  mimeType: string;
   /* 原始文件名 */
-  originalName: string
+  originalName: string;
   /* 文件场景 */
-  scene: string
+  scene: string;
 
   /* 上传时间 */
-  uploadTime: string
-}
+  uploadTime: string;
+};

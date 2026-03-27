@@ -663,8 +663,8 @@ onMounted(() => {
 }
 
 :deep(
-    .emoji-pack-grid .vxe-body--row.row--current > .vxe-body--column:first-child
-  ) {
+  .emoji-pack-grid .vxe-body--row.row--current > .vxe-body--column:first-child
+) {
   box-shadow:
     inset 4px 0 0 var(--el-color-primary),
     inset 0 1px 0 rgb(59 130 246 / 18%),

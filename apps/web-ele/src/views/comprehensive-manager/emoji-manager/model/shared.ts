@@ -39,8 +39,8 @@ export function normalizeSceneTypeValue(value: unknown): EmojiSceneType[] {
   }
 
   if (typeof value === 'number') {
-    return [value].filter(
-      (item): item is EmojiSceneType => [1, 2, 3].includes(item),
+    return [value].filter((item): item is EmojiSceneType =>
+      [1, 2, 3].includes(item),
     );
   }
 
@@ -66,9 +66,9 @@ export function buildEmojiPackOptions(
   packs: BaseEmojiPackDto[] = [],
 ): BasicOption[] {
   return sortEmojiPacks(packs).map((item) => ({
-      label: `${item.name}（${item.code}）${item.isEnabled ? '' : '（已禁用）'}`,
-      value: item.id,
-    }));
+    label: `${item.name}（${item.code}）${item.isEnabled ? '' : '（已禁用）'}`,
+    value: item.id,
+  }));
 }
 
 export function sortEmojiPacks(

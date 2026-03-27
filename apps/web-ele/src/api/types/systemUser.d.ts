@@ -3,20 +3,20 @@
  *  @来源 认证与账号/管理员账号
  *  @更新时间 2026-03-27 21:17:41
  */
-export type SystemUserCreateRequest = UserRegisterDto
+export type SystemUserCreateRequest = UserRegisterDto;
 
-export type SystemUserCreateResponse = boolean
+export type SystemUserCreateResponse = boolean;
 
 /**
  *  类型定义 [SystemUserProfileUpdateRequest]
  *  @来源 认证与账号/管理员账号
  *  @更新时间 2026-03-27 21:17:41
  */
-export type SystemUserProfileUpdateRequest = UpdateUserDto
+export type SystemUserProfileUpdateRequest = UpdateUserDto;
 
-export type SystemUserProfileUpdateResponse = boolean
+export type SystemUserProfileUpdateResponse = boolean;
 
-export type SystemUserProfileResponse = BaseAdminUserDto
+export type SystemUserProfileResponse = BaseAdminUserDto;
 
 /**
  *  类型定义 [SystemUserDetailRequest]
@@ -25,13 +25,13 @@ export type SystemUserProfileResponse = BaseAdminUserDto
  */
 export type SystemUserDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 主键id */
-  id: number
-}
+  id: number;
+};
 
-export type SystemUserDetailResponse = BaseAdminUserDto
+export type SystemUserDetailResponse = BaseAdminUserDto;
 
 /**
  *  类型定义 [SystemUserPageRequest]
@@ -40,79 +40,79 @@ export type SystemUserDetailResponse = BaseAdminUserDto
  */
 export type SystemUserPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 结束时间 */
-  endDate?: null | string
+  endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean
+  isEnabled?: boolean;
 
   /* 手机号 */
-  mobile?: null | string
+  mobile?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number
+  pageSize?: null | number;
 
   /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
-  role?: number
+  role?: number;
 
   /* 开始时间 */
-  startDate?: null | string
+  startDate?: null | string;
 
   /* 用户名 */
-  username?: string
-}
+  username?: string;
+};
 
 export type SystemUserPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 列表数据 */
-  list?: BaseAdminUserDto[]
+  list?: BaseAdminUserDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: number
+  pageIndex?: number;
 
   /* 每页条数 */
-  pageSize?: number
+  pageSize?: number;
 
   /* 总条数 */
-  total?: number
-}
+  total?: number;
+};
 
 /**
  *  类型定义 [SystemUserPasswordChangeRequest]
  *  @来源 认证与账号/管理员账号
  *  @更新时间 2026-03-27 21:17:41
  */
-export type SystemUserPasswordChangeRequest = ChangePasswordDto
+export type SystemUserPasswordChangeRequest = ChangePasswordDto;
 
-export type SystemUserPasswordChangeResponse = boolean
+export type SystemUserPasswordChangeResponse = boolean;
 
 /**
  *  类型定义 [SystemUserPasswordResetRequest]
  *  @来源 认证与账号/管理员账号
  *  @更新时间 2026-03-27 21:17:41
  */
-export type SystemUserPasswordResetRequest = IdDto
+export type SystemUserPasswordResetRequest = IdDto;
 
-export type SystemUserPasswordResetResponse = boolean
+export type SystemUserPasswordResetResponse = boolean;
 
 /**
  *  类型定义 [SystemUserUnlockRequest]
  *  @来源 认证与账号/管理员账号
  *  @更新时间 2026-03-27 21:17:41
  */
-export type SystemUserUnlockRequest = IdDto
+export type SystemUserUnlockRequest = IdDto;
 
-export type SystemUserUnlockResponse = boolean
+export type SystemUserUnlockResponse = boolean;
 
 /**
  *  类型定义 [UserRegisterDto]
@@ -121,21 +121,21 @@ export type SystemUserUnlockResponse = boolean
  */
 export type UserRegisterDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 头像 */
-  avatar?: null | string
+  avatar?: null | string;
   /* 确认密码 */
-  confirmPassword: string
+  confirmPassword: string;
   /* 手机号 */
-  mobile?: null | string
+  mobile?: null | string;
   /* 密码 */
-  password: string
+  password: string;
   /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
-  role: 0 | 1
+  role: 0 | 1;
 
   /* 用户名 */
-  username: string
-}
+  username: string;
+};
 
 /**
  *  类型定义 [UpdateUserDto]
@@ -144,21 +144,21 @@ export type UserRegisterDto = {
  */
 export type UpdateUserDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 头像 */
-  avatar?: null | string
+  avatar?: null | string;
   /* 主键id */
-  id: number
+  id: number;
   /* 是否启用 */
-  isEnabled: boolean
+  isEnabled: boolean;
   /* 手机号 */
-  mobile?: null | string
+  mobile?: null | string;
   /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
-  role: 0 | 1
+  role: 0 | 1;
 
   /* 用户名 */
-  username: string
-}
+  username: string;
+};
 
 /**
  *  类型定义 [BaseAdminUserDto]
@@ -167,31 +167,31 @@ export type UpdateUserDto = {
  */
 export type BaseAdminUserDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 头像 */
-  avatar?: null | string
+  avatar?: null | string;
   /* 创建时间 */
-  createdAt: string
+  createdAt: string;
   /* 主键id */
-  id: number
+  id: number;
   /* 是否启用 */
-  isEnabled: boolean
+  isEnabled: boolean;
   /* 最后登录时间 */
-  lastLoginAt?: null | string
+  lastLoginAt?: null | string;
   /* 最后登录IP */
-  lastLoginIp?: null | string
+  lastLoginIp?: null | string;
   /* 手机号 */
-  mobile?: null | string
+  mobile?: null | string;
   /* 密码 */
-  password: string
+  password: string;
   /* 角色 0普通管理员 1超级管理员（0=NORMAL_ADMIN，1=SUPER_ADMIN） */
-  role: 0 | 1
+  role: 0 | 1;
   /* 更新时间 */
-  updatedAt: string
+  updatedAt: string;
 
   /* 用户名 */
-  username: string
-}
+  username: string;
+};
 
 /**
  *  类型定义 [ChangePasswordDto]
@@ -200,15 +200,15 @@ export type BaseAdminUserDto = {
  */
 export type ChangePasswordDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 确认新密码 */
-  confirmPassword: string
+  confirmPassword: string;
   /* 新密码 */
-  newPassword: string
+  newPassword: string;
 
   /* 旧密码 */
-  oldPassword: string
-}
+  oldPassword: string;
+};
 
 /**
  *  类型定义 [IdDto]
@@ -217,8 +217,8 @@ export type ChangePasswordDto = {
  */
 export type IdDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 主键id */
-  id: number
-}
+  id: number;
+};
