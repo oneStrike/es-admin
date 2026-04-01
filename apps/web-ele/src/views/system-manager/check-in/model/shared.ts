@@ -47,7 +47,6 @@ export interface CheckInPlanFormModel {
   publishStartAt?: string;
   status: CheckInPlanStatusValue;
   streakRewardRules: CheckInPlanRuleFormItem[];
-  timezone: string;
 }
 
 export type CheckInPlanRow = AdminCheckInPlanPageResponseDto & {
@@ -256,7 +255,7 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> = [
   {
     field: 'cycleAnchorDate',
     minWidth: 130,
-    title: '锚点日期',
+    title: '起算日期',
   },
   {
     field: 'allowMakeupCountPerCycle',
@@ -292,16 +291,11 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> = [
     title: '待补偿',
   },
   {
-    field: 'timezone',
-    minWidth: 140,
-    title: '时区',
-  },
-  {
     field: 'publishStartAt',
     minWidth: 220,
     showOverflow: false,
     slots: { default: 'publishWindow' },
-    title: '发布时间窗',
+    title: '生效时间',
   },
   {
     field: 'updatedAt',
@@ -426,7 +420,6 @@ export function createDefaultPlanFormModel(): CheckInPlanFormModel {
     publishStartAt: undefined,
     status: 0,
     streakRewardRules: [],
-    timezone: 'Asia/Shanghai',
   };
 }
 
@@ -493,7 +486,6 @@ export function mapPlanDetailToFormModel(
         streakDays: rule.streakDays,
       };
     }),
-    timezone: detail.timezone,
   };
 }
 
@@ -523,7 +515,6 @@ export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
     publishStartAt: model.publishStartAt || undefined,
     status: model.status,
     streakRewardRules,
-    timezone: model.timezone.trim(),
   } as Record<string, unknown>;
 
   if (model.id) {

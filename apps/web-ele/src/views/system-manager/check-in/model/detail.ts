@@ -113,7 +113,7 @@ export function getDetailCards(detail: AdminCheckInPlanDetailResponseDto) {
           value: getOptionLabel(checkInCycleTypeOptions, detail.cycleType),
         },
         {
-          label: '周期锚点',
+          label: '周期起算日期',
           type: 'text',
           value: detail.cycleAnchorDate,
         },
@@ -121,11 +121,6 @@ export function getDetailCards(detail: AdminCheckInPlanDetailResponseDto) {
           label: '每周期补签次数',
           type: 'text',
           value: detail.allowMakeupCountPerCycle,
-        },
-        {
-          label: '计划时区',
-          type: 'text',
-          value: detail.timezone,
         },
       ],
       show: true,
@@ -139,14 +134,14 @@ export function getDetailCards(detail: AdminCheckInPlanDetailResponseDto) {
           value: formatRewardSummary(detail.baseRewardConfig),
         },
         {
-          label: '发布时间开始',
+          label: '生效开始时间',
           type: 'text',
           value: detail.publishStartAt
             ? formatUTC(detail.publishStartAt, 'YYYY-MM-DD HH:mm:ss')
             : '-',
         },
         {
-          label: '发布时间结束',
+          label: '生效结束时间',
           type: 'text',
           value: detail.publishEndAt
             ? formatUTC(detail.publishEndAt, 'YYYY-MM-DD HH:mm:ss')

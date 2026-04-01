@@ -3,7 +3,7 @@ export type UploadFileUploadResponse = UploadResponseDto
 /**
  *  类型定义 [UploadResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-01 15:24:49
+ *  @更新时间 2026-04-01 17:27:33
  */
 export type UploadResponseDto = {
   /** 任意合法数值 */

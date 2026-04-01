@@ -13,6 +13,7 @@ import type {
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { QuestionIcon } from '#/components/es-icons';
 import { useMessage } from '#/hooks/useFeedback';
 import { dayjs } from '#/utils';
 
@@ -53,7 +54,7 @@ const formRules: FormRules<CheckInPlanFormModel> = {
   ],
   cycleAnchorDate: [
     {
-      message: '请选择周期锚点日期',
+      message: '请选择周期起算日期',
       required: true,
       trigger: 'change',
     },
@@ -84,13 +85,6 @@ const formRules: FormRules<CheckInPlanFormModel> = {
       message: '请选择计划状态',
       required: true,
       trigger: 'change',
-    },
-  ],
-  timezone: [
-    {
-      message: '请填写计划时区',
-      required: true,
-      trigger: 'blur',
     },
   ],
 };
@@ -188,7 +182,7 @@ function validateBusinessRules() {
     dayjs(formModel.publishEndAt).valueOf()
       <= dayjs(formModel.publishStartAt).valueOf()
   ) {
-    useMessage.warning('发布时间结束时间必须晚于开始时间');
+    useMessage.warning('生效结束时间必须晚于开始时间');
     throw new Error('invalid publish window');
   }
 
@@ -209,7 +203,7 @@ function validateBusinessRules() {
     }
 
     if (!Number.isInteger(normalizedStreakDays) || normalizedStreakDays <= 0) {
-      useMessage.warning(`第 ${rowNumber} 条连续奖励的阈值天数必须为正整数`);
+      useMessage.warning(`第 ${rowNumber} 条连续奖励的连续签到天数必须为正整数`);
       throw new Error('invalid streak days');
     }
 
@@ -241,39 +235,6 @@ function validateBusinessRules() {
 <template>
   <Modal class="!w-[1180px]">
     <div class="space-y-5">
-      <div
-        class="overflow-hidden rounded-3xl border border-slate-200/80 bg-[linear-gradient(135deg,#f8fafc_0%,#fff7ed_45%,#eff6ff_100%)] p-6 shadow-sm"
-      >
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div class="max-w-3xl">
-            <div class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-              Check-In Ops
-            </div>
-            <div class="mt-3 text-2xl font-semibold text-slate-900">
-              {{ modalTitle }}
-            </div>
-            <div class="mt-2 text-sm leading-6 text-slate-600">
-              计划的关键配置变更会在服务端自动切到新版本，已生成的用户周期继续使用自己的快照。
-              这里建议一次性把周期、基础奖励和连续奖励规则维护完整，减少后续补偿成本。
-            </div>
-          </div>
-          <div class="grid min-w-[280px] grid-cols-1 gap-3 sm:grid-cols-2">
-            <div class="rounded-2xl bg-white/90 p-4 shadow-sm ring-1 ring-slate-100">
-              <div class="text-xs text-slate-500">当前基础奖励</div>
-              <div class="mt-2 text-base font-semibold text-slate-900">
-                {{ baseRewardSummary }}
-              </div>
-            </div>
-            <div class="rounded-2xl bg-white/90 p-4 shadow-sm ring-1 ring-slate-100">
-              <div class="text-xs text-slate-500">连续奖励规则</div>
-              <div class="mt-2 text-base font-semibold text-slate-900">
-                {{ formModel.streakRewardRules.length }} 条
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <el-scrollbar max-height="70vh">
         <el-form
           ref="formRef"
@@ -288,7 +249,7 @@ function validateBusinessRules() {
                 <div>
                   <div class="text-base font-semibold text-slate-900">基础信息</div>
                   <div class="mt-1 text-xs text-slate-500">
-                    维护计划编码、版本入口状态以及当前部署的时区口径。
+                    维护计划编码、版本入口状态等基础配置。
                   </div>
                 </div>
               </div>
@@ -339,11 +300,11 @@ function validateBusinessRules() {
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="周期锚点日期" prop="cycleAnchorDate">
+              <el-form-item label="周期起算日期" prop="cycleAnchorDate">
                 <el-date-picker
                   v-model="formModel.cycleAnchorDate"
                   class="!w-full"
-                  placeholder="请选择周期锚点日期"
+                  placeholder="请选择周期起算日期"
                   type="date"
                   value-format="YYYY-MM-DD"
                 />
@@ -355,22 +316,15 @@ function validateBusinessRules() {
                   class="!w-full"
                 />
               </el-form-item>
-              <el-form-item label="计划时区" prop="timezone">
-                <el-input
-                  v-model="formModel.timezone"
-                  disabled
-                  placeholder="当前部署时区"
-                />
-              </el-form-item>
             </div>
           </el-card>
 
           <el-card shadow="never" class="rounded-3xl border-slate-200/80">
             <template #header>
               <div>
-                <div class="text-base font-semibold text-slate-900">发布时间窗</div>
+                <div class="text-base font-semibold text-slate-900">生效时间</div>
                 <div class="mt-1 text-xs text-slate-500">
-                  发布时间按左闭右开处理，不填写结束时间表示长期有效。
+                  生效时间按左闭右开处理，不填写结束时间表示长期有效。
                 </div>
               </div>
             </template>
@@ -445,7 +399,7 @@ function validateBusinessRules() {
                 <div>
                   <div class="text-base font-semibold text-slate-900">连续奖励规则</div>
                   <div class="mt-1 text-xs text-slate-500">
-                    支持配置多档阈值；同一计划版本内，规则编码和阈值天数都必须唯一。
+                    支持配置多档规则；同一计划版本内，规则编码和连续签到天数都必须唯一。
                   </div>
                 </div>
                 <el-button type="primary" @click="addRule()">新增规则</el-button>
@@ -469,7 +423,7 @@ function validateBusinessRules() {
                       规则 {{ index + 1 }}
                     </div>
                     <div class="mt-1 text-xs text-slate-500">
-                      建议让排序值和阈值天数保持一致，便于后台查看。
+                      建议让排序值和连续签到天数保持一致，便于后台查看。
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
@@ -494,7 +448,7 @@ function validateBusinessRules() {
                       show-word-limit
                     />
                   </el-form-item>
-                  <el-form-item :label="`阈值天数 ${index + 1}`">
+                  <el-form-item :label="`连续签到天数 ${index + 1}`">
                     <el-input-number
                       v-model="rule.streakDays"
                       :min="1"
@@ -533,6 +487,19 @@ function validateBusinessRules() {
                     />
                   </el-form-item>
                   <el-form-item :label="`重复领取 ${index + 1}`">
+                    <template #label>
+                      <div class="flex items-center">
+                        <span>重复领取 {{ index + 1 }}</span>
+                        <el-tooltip
+                          popper-class="w-72"
+                          effect="dark"
+                          content="关闭时，同一周期内该规则只发一次；开启时，同一周期内再次满足这条连续奖励规则时，允许再次发放。"
+                          placement="top"
+                        >
+                          <QuestionIcon class="ml-2 size-4 text-[#606266]" />
+                        </el-tooltip>
+                      </div>
+                    </template>
                     <div class="flex h-10 items-center">
                       <el-switch
                         v-model="rule.repeatable"
