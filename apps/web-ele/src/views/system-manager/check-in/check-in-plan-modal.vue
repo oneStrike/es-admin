@@ -90,7 +90,9 @@ const formRules: FormRules<CheckInPlanFormModel> = {
 };
 
 const modalTitle = computed(() => {
-  return sharedData.value?.title || (formModel.id ? '编辑签到计划' : '新增签到计划');
+  return (
+    sharedData.value?.title || (formModel.id ? '编辑签到计划' : '新增签到计划')
+  );
 });
 
 const baseRewardSummary = computed(() => {
@@ -130,7 +132,7 @@ function resetForm(record?: CheckInPlanFormModel) {
 function cloneFormModel(record: CheckInPlanFormModel): CheckInPlanFormModel {
   return {
     ...record,
-    streakRewardRules: (record.streakRewardRules || []).map(rule => ({
+    streakRewardRules: (record.streakRewardRules || []).map((rule) => ({
       ...rule,
       localId: rule.localId || createDefaultRuleFormItem().localId,
     })),
@@ -145,7 +147,7 @@ function addRule() {
 
 function removeRule(localId: string) {
   formModel.streakRewardRules = formModel.streakRewardRules.filter(
-    item => item.localId !== localId,
+    (item) => item.localId !== localId,
   );
 }
 
@@ -179,8 +181,8 @@ function validateBusinessRules() {
   if (
     formModel.publishStartAt &&
     formModel.publishEndAt &&
-    dayjs(formModel.publishEndAt).valueOf()
-      <= dayjs(formModel.publishStartAt).valueOf()
+    dayjs(formModel.publishEndAt).valueOf() <=
+      dayjs(formModel.publishStartAt).valueOf()
   ) {
     useMessage.warning('生效结束时间必须晚于开始时间');
     throw new Error('invalid publish window');
@@ -195,7 +197,6 @@ function validateBusinessRules() {
     const normalizedStreakDays = Number(rule.streakDays ?? 0);
     const rewardPoints = Number(rule.rewardPoints ?? 0);
     const rewardExperience = Number(rule.rewardExperience ?? 0);
-    const sortOrder = Number(rule.sortOrder ?? normalizedStreakDays);
 
     if (!ruleCode) {
       useMessage.warning(`请填写第 ${rowNumber} 条连续奖励规则编码`);
@@ -203,7 +204,9 @@ function validateBusinessRules() {
     }
 
     if (!Number.isInteger(normalizedStreakDays) || normalizedStreakDays <= 0) {
-      useMessage.warning(`第 ${rowNumber} 条连续奖励的连续签到天数必须为正整数`);
+      useMessage.warning(
+        `第 ${rowNumber} 条连续奖励的连续签到天数必须为正整数`,
+      );
       throw new Error('invalid streak days');
     }
 
@@ -219,11 +222,6 @@ function validateBusinessRules() {
     if (rewardPoints <= 0 && rewardExperience <= 0) {
       useMessage.warning(`第 ${rowNumber} 条连续奖励至少配置一种奖励`);
       throw new Error('missing rule reward');
-    }
-
-    if (sortOrder < 0 || !Number.isInteger(sortOrder)) {
-      useMessage.warning(`第 ${rowNumber} 条连续奖励排序值必须为非负整数`);
-      throw new Error('invalid sort order');
     }
 
     ruleCodes.add(ruleCode);
@@ -247,7 +245,9 @@ function validateBusinessRules() {
             <template #header>
               <div class="flex items-center justify-between">
                 <div>
-                  <div class="text-base font-semibold text-slate-900">基础信息</div>
+                  <div class="text-base font-semibold text-slate-900">
+                    基础信息
+                  </div>
                   <div class="mt-1 text-xs text-slate-500">
                     维护计划编码、版本入口状态等基础配置。
                   </div>
@@ -272,7 +272,11 @@ function validateBusinessRules() {
                 />
               </el-form-item>
               <el-form-item label="计划状态" prop="status">
-                <el-select v-model="formModel.status" class="w-full" placeholder="请选择计划状态">
+                <el-select
+                  v-model="formModel.status"
+                  class="w-full"
+                  placeholder="请选择计划状态"
+                >
                   <el-option
                     v-for="item in checkInPlanStatusOptions"
                     :key="item.value"
@@ -291,7 +295,11 @@ function validateBusinessRules() {
                 </div>
               </el-form-item>
               <el-form-item label="周期类型" prop="cycleType">
-                <el-select v-model="formModel.cycleType" class="w-full" placeholder="请选择周期类型">
+                <el-select
+                  v-model="formModel.cycleType"
+                  class="w-full"
+                  placeholder="请选择周期类型"
+                >
                   <el-option
                     v-for="item in checkInCycleTypeOptions"
                     :key="item.value"
@@ -309,7 +317,10 @@ function validateBusinessRules() {
                   value-format="YYYY-MM-DD"
                 />
               </el-form-item>
-              <el-form-item label="每周期补签次数" prop="allowMakeupCountPerCycle">
+              <el-form-item
+                label="每周期补签次数"
+                prop="allowMakeupCountPerCycle"
+              >
                 <el-input-number
                   v-model="formModel.allowMakeupCountPerCycle"
                   :min="0"
@@ -322,7 +333,9 @@ function validateBusinessRules() {
           <el-card shadow="never" class="rounded-3xl border-slate-200/80">
             <template #header>
               <div>
-                <div class="text-base font-semibold text-slate-900">生效时间</div>
+                <div class="text-base font-semibold text-slate-900">
+                  生效时间
+                </div>
                 <div class="mt-1 text-xs text-slate-500">
                   生效时间按左闭右开处理，不填写结束时间表示长期有效。
                 </div>
@@ -356,7 +369,9 @@ function validateBusinessRules() {
             <template #header>
               <div class="flex items-center justify-between">
                 <div>
-                  <div class="text-base font-semibold text-slate-900">基础奖励配置</div>
+                  <div class="text-base font-semibold text-slate-900">
+                    基础奖励配置
+                  </div>
                   <div class="mt-1 text-xs text-slate-500">
                     不配置任何数值时，表示该计划只记录签到事实，不发放每日基础奖励。
                   </div>
@@ -397,12 +412,16 @@ function validateBusinessRules() {
             <template #header>
               <div class="flex items-center justify-between gap-4">
                 <div>
-                  <div class="text-base font-semibold text-slate-900">连续奖励规则</div>
+                  <div class="text-base font-semibold text-slate-900">
+                    连续奖励规则
+                  </div>
                   <div class="mt-1 text-xs text-slate-500">
                     支持配置多档规则；同一计划版本内，规则编码和连续签到天数都必须唯一。
                   </div>
                 </div>
-                <el-button type="primary" @click="addRule()">新增规则</el-button>
+                <el-button type="primary" @click="addRule()">
+新增规则
+</el-button>
               </div>
             </template>
 
@@ -417,7 +436,9 @@ function validateBusinessRules() {
                 :key="rule.localId"
                 class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 shadow-sm"
               >
-                <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div
+                  class="mb-4 flex flex-wrap items-center justify-between gap-3"
+                >
                   <div>
                     <div class="text-sm font-semibold text-slate-900">
                       规则 {{ index + 1 }}
@@ -427,7 +448,9 @@ function validateBusinessRules() {
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
-                    <el-button plain size="small" @click="copyRule(rule)">复制</el-button>
+                    <el-button plain size="small" @click="copyRule(rule)">
+复制
+</el-button>
                     <el-button
                       plain
                       size="small"
@@ -439,8 +462,10 @@ function validateBusinessRules() {
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-                  <el-form-item :label="`规则编码 ${index + 1}`">
+                <div
+                  class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
+                >
+                  <el-form-item label="规则编码">
                     <el-input
                       v-model="rule.ruleCode"
                       maxlength="50"
@@ -448,22 +473,19 @@ function validateBusinessRules() {
                       show-word-limit
                     />
                   </el-form-item>
-                  <el-form-item :label="`连续签到天数 ${index + 1}`">
+                  <el-form-item label="连续签到天数">
                     <el-input-number
                       v-model="rule.streakDays"
                       :min="1"
                       class="!w-full"
                     />
                   </el-form-item>
-                  <el-form-item :label="`排序值 ${index + 1}`">
-                    <el-input-number
-                      v-model="rule.sortOrder"
-                      :min="0"
-                      class="!w-full"
-                    />
-                  </el-form-item>
-                  <el-form-item :label="`规则状态 ${index + 1}`">
-                    <el-select v-model="rule.status" class="w-full" placeholder="请选择规则状态">
+                  <el-form-item label="规则状态">
+                    <el-select
+                      v-model="rule.status"
+                      class="w-full"
+                      placeholder="请选择规则状态"
+                    >
                       <el-option
                         v-for="item in checkInRuleStatusOptions"
                         :key="item.value"
@@ -472,24 +494,24 @@ function validateBusinessRules() {
                       />
                     </el-select>
                   </el-form-item>
-                  <el-form-item :label="`奖励积分 ${index + 1}`">
+                  <el-form-item label="奖励积分">
                     <el-input-number
                       v-model="rule.rewardPoints"
                       :min="0"
                       class="!w-full"
                     />
                   </el-form-item>
-                  <el-form-item :label="`奖励经验 ${index + 1}`">
+                  <el-form-item label="奖励经验">
                     <el-input-number
                       v-model="rule.rewardExperience"
                       :min="0"
                       class="!w-full"
                     />
                   </el-form-item>
-                  <el-form-item :label="`重复领取 ${index + 1}`">
+                  <el-form-item label="重复领取">
                     <template #label>
                       <div class="flex items-center">
-                        <span>重复领取 {{ index + 1 }}</span>
+                        <span>重复领取</span>
                         <el-tooltip
                           popper-class="w-72"
                           effect="dark"
@@ -508,8 +530,12 @@ function validateBusinessRules() {
                       />
                     </div>
                   </el-form-item>
-                  <div class="rounded-2xl bg-white/80 p-4 ring-1 ring-slate-100">
-                    <div class="text-xs uppercase tracking-[0.2em] text-slate-400">
+                  <div
+                    class="rounded-2xl bg-white/80 p-4 ring-1 ring-slate-100"
+                  >
+                    <div
+                      class="text-xs uppercase tracking-[0.2em] text-slate-400"
+                    >
                       Reward Preview
                     </div>
                     <div class="mt-2 text-sm font-medium text-slate-900">
