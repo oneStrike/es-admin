@@ -5,8 +5,6 @@ import type {
   CheckInPlanDetailResponse,
   CheckInPlanPageRequest,
   CheckInPlanPageResponse,
-  CheckInPlanPublishRequest,
-  CheckInPlanPublishResponse,
   CheckInPlanUpdateRequest,
   CheckInPlanUpdateResponse,
   CheckInPlanUpdateStatusRequest,
@@ -57,14 +55,6 @@ import { requestClient } from '#/api/request'
    */
   export async function checkInPlanUpdateStatusApi(params: CheckInPlanUpdateStatusRequest): Promise<CheckInPlanUpdateStatusResponse> {
     return requestClient.post<CheckInPlanUpdateStatusResponse>('/api/admin/check-in/plan/update-status', params);
-  }
-
-
-  /**
-   * 发布签到计划
-   */
-  export async function checkInPlanPublishApi(params: CheckInPlanPublishRequest): Promise<CheckInPlanPublishResponse> {
-    return requestClient.post<CheckInPlanPublishResponse>('/api/admin/check-in/plan/publish', params);
   }
 
 

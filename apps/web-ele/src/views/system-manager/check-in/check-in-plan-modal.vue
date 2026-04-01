@@ -285,15 +285,6 @@ function validateBusinessRules() {
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="启用状态" prop="isEnabled">
-                <div class="flex h-10 items-center">
-                  <el-switch
-                    v-model="formModel.isEnabled"
-                    :active-value="true"
-                    :inactive-value="false"
-                  />
-                </div>
-              </el-form-item>
               <el-form-item label="周期类型" prop="cycleType">
                 <el-select
                   v-model="formModel.cycleType"
@@ -420,8 +411,8 @@ function validateBusinessRules() {
                   </div>
                 </div>
                 <el-button type="primary" @click="addRule()">
-新增规则
-</el-button>
+                  新增规则
+                </el-button>
               </div>
             </template>
 
@@ -449,8 +440,8 @@ function validateBusinessRules() {
                   </div>
                   <div class="flex items-center gap-2">
                     <el-button plain size="small" @click="copyRule(rule)">
-复制
-</el-button>
+                      复制
+                    </el-button>
                     <el-button
                       plain
                       size="small"

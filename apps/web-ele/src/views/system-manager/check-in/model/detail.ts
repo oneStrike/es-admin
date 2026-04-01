@@ -68,13 +68,6 @@ export function getDetailCards(detail: AdminCheckInPlanDetailResponseDto) {
           type: 'tag',
           value: detail.status,
         },
-        {
-          label: '启用状态',
-          tagText: detail.isEnabled ? '启用' : '禁用',
-          tagType: detail.isEnabled ? 'success' : 'danger',
-          type: 'tag',
-          value: detail.isEnabled,
-        },
       ],
       show: true,
       title: '',

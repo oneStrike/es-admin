@@ -1,8 +1,10 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
+  AdminCheckInGrantItemDto,
   AdminCheckInPlanDetailResponseDto,
   AdminCheckInPlanPageResponseDto,
   AdminCheckInReconciliationPageResponseDto,
+  AdminCheckInStreakRewardRuleItemDto,
   CheckInPlanCreateRequest,
   CheckInPlanUpdateRequest,
 } from '#/api/types';
@@ -10,44 +12,59 @@ import type { EsFormSchema } from '#/types';
 
 import { dayjs, safeParseJson } from '#/utils';
 
-export type CheckInPlanStatusValue = 0 | 1 | 2;
-export type CheckInRewardStatusValue = 0 | 1 | 2;
-export type CheckInRewardResultValue = 1 | 2 | 3;
-export type CheckInRecordTypeValue = 1 | 2;
-export type CheckInRuleStatusValue = 0 | 1;
-export type CheckInCycleTypeValue = 'daily' | 'monthly' | 'weekly';
+export type CheckInPlanStatusValue =
+  AdminCheckInPlanDetailResponseDto['status'];
+export type CheckInRuleStatusValue =
+  AdminCheckInStreakRewardRuleItemDto['status'];
+export type CheckInCycleTypeValue =
+  AdminCheckInPlanDetailResponseDto['cycleType'];
+export type CheckInRewardConfigValue = NonNullable<
+  AdminCheckInPlanDetailResponseDto['baseRewardConfig']
+>;
 
-export interface CheckInRewardConfigValue {
-  experience?: number;
-  points?: number;
-}
+type CheckInRewardStatusValue = Exclude<
+  | AdminCheckInGrantItemDto['grantStatus']
+  | AdminCheckInReconciliationPageResponseDto['rewardStatus'],
+  null | undefined
+>;
+type CheckInRewardResultValue = Exclude<
+  | AdminCheckInGrantItemDto['grantResultType']
+   ,
+  null | undefined
+>;
+type CheckInRecordTypeValue =
+  AdminCheckInReconciliationPageResponseDto['recordType'];
 
-export interface CheckInPlanRuleFormItem {
-  localId: string;
-  repeatable: boolean;
-  rewardExperience?: number;
-  rewardPoints?: number;
-  ruleCode: string;
-  sortOrder?: number;
-  status: CheckInRuleStatusValue;
-  streakDays?: number;
-}
+type CheckInPlanFormBase = Pick<
+  AdminCheckInPlanDetailResponseDto,
+  | 'allowMakeupCountPerCycle'
+  | 'cycleAnchorDate'
+  | 'cycleType'
+  | 'planCode'
+  | 'planName'
+  | 'publishEndAt'
+  | 'publishStartAt'
+  | 'status'
+>;
 
-export interface CheckInPlanFormModel {
-  allowMakeupCountPerCycle: number;
-  baseRewardExperience?: number;
-  baseRewardPoints?: number;
-  cycleAnchorDate: string;
-  cycleType: CheckInCycleTypeValue;
-  id?: number;
-  isEnabled: boolean;
-  planCode: string;
-  planName: string;
-  publishEndAt?: string;
-  publishStartAt?: string;
-  status: CheckInPlanStatusValue;
-  streakRewardRules: CheckInPlanRuleFormItem[];
-}
+type CheckInPlanRuleFormBase = Pick<
+  AdminCheckInStreakRewardRuleItemDto,
+  'repeatable' | 'ruleCode' | 'status' | 'streakDays'
+>;
+
+export type CheckInPlanRuleFormItem = CheckInPlanRuleFormBase & {
+  localId: AdminCheckInStreakRewardRuleItemDto['ruleCode'];
+  rewardExperience?: CheckInRewardConfigValue['experience'];
+  rewardPoints?: CheckInRewardConfigValue['points'];
+  sortOrder?: AdminCheckInStreakRewardRuleItemDto['streakDays'];
+};
+
+export type CheckInPlanFormModel = CheckInPlanFormBase &
+  Partial<Pick<CheckInPlanUpdateRequest, 'id'>> & {
+    baseRewardExperience?: CheckInRewardConfigValue['experience'];
+    baseRewardPoints?: CheckInRewardConfigValue['points'];
+    streakRewardRules: CheckInPlanRuleFormItem[];
+  };
 
 export type CheckInPlanRow = AdminCheckInPlanPageResponseDto & {
   enableLoading?: boolean;
@@ -55,52 +72,67 @@ export type CheckInPlanRow = AdminCheckInPlanPageResponseDto & {
   statusLoading?: boolean;
 };
 
-export type CheckInReconciliationRow = AdminCheckInReconciliationPageResponseDto;
+export type CheckInReconciliationRow =
+  AdminCheckInReconciliationPageResponseDto;
 
 export const checkInPlanStatusOptions = [
   { color: 'info' as const, label: '草稿', value: 0 },
   { color: 'success' as const, label: '已发布', value: 1 },
   { color: 'danger' as const, label: '已下线', value: 2 },
-];
-
-export const checkInEnableOptions = [
-  { label: '启用', value: true },
-  { label: '禁用', value: false },
-];
+  { color: 'warning' as const, label: '已停用', value: 3 },
+] satisfies Array<{
+  color: string;
+  label: string;
+  value: CheckInPlanStatusValue;
+}>;
 
 export const checkInCycleTypeOptions = [
   { color: 'primary' as const, label: '按日', value: 'daily' },
   { color: 'warning' as const, label: '按周', value: 'weekly' },
   { color: 'success' as const, label: '按月', value: 'monthly' },
-];
+] satisfies Array<{
+  color: string;
+  label: string;
+  value: CheckInCycleTypeValue;
+}>;
 
 export const checkInRewardStatusOptions = [
   { color: 'warning' as const, label: '待处理', value: 0 },
   { color: 'success' as const, label: '成功', value: 1 },
   { color: 'danger' as const, label: '失败', value: 2 },
-];
+] satisfies Array<{
+  color: string;
+  label: string;
+  value: CheckInRewardStatusValue;
+}>;
 
 export const checkInRewardResultOptions = [
   { color: 'success' as const, label: '已落账', value: 1 },
   { color: 'info' as const, label: '幂等命中', value: 2 },
   { color: 'danger' as const, label: '处理失败', value: 3 },
-];
+] satisfies Array<{
+  color: string;
+  label: string;
+  value: CheckInRewardResultValue;
+}>;
 
 export const checkInRecordTypeOptions = [
   { color: 'success' as const, label: '正常签到', value: 1 },
   { color: 'warning' as const, label: '补签', value: 2 },
-];
+] satisfies Array<{
+  color: string;
+  label: string;
+  value: CheckInRecordTypeValue;
+}>;
 
 export const checkInRuleStatusOptions = [
   { color: 'info' as const, label: '停用', value: 0 },
   { color: 'success' as const, label: '启用', value: 1 },
-];
-
-export const checkInRepairTargetOptions = [
-  { label: '基础奖励', value: 1 },
-  { label: '连续奖励', value: 2 },
-];
-
+] satisfies Array<{
+  color: string;
+  label: string;
+  value: CheckInRuleStatusValue;
+}>;
 export const planSearchFormSchema: EsFormSchema = [
   {
     component: 'Input',
@@ -126,15 +158,6 @@ export const planSearchFormSchema: EsFormSchema = [
       placeholder: '计划状态',
     },
     fieldName: 'status',
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      clearable: true,
-      options: checkInEnableOptions,
-      placeholder: '启用状态',
-    },
-    fieldName: 'isEnabled',
   },
 ];
 
@@ -221,8 +244,14 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> = [
     fixed: 'left',
     minWidth: 240,
     showOverflow: 'tooltip',
-    slots: { default: 'planName' },
     title: '签到计划',
+    slots: { default: 'planName' },
+  },
+  {
+    field: 'planCode',
+    fixed: 'left',
+    minWidth: 140,
+    title: '编码',
   },
   {
     field: 'status',
@@ -234,12 +263,6 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> = [
         mapOptions: checkInPlanStatusOptions,
       },
     },
-  },
-  {
-    field: 'isEnabled',
-    minWidth: 110,
-    slots: { default: 'isEnabled' },
-    title: '启用',
   },
   {
     field: 'cycleType',
@@ -315,8 +338,8 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> = [
   },
 ];
 
-export const reconciliationColumns:
-  VxeGridPropTypes.Columns<CheckInReconciliationRow> = [
+export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliationRow> =
+  [
     {
       field: 'recordId',
       fixed: 'left',
@@ -391,9 +414,7 @@ export const reconciliationColumns:
     },
   ];
 
-export function createDefaultRuleFormItem(
-  seed = 1,
-): CheckInPlanRuleFormItem {
+export function createDefaultRuleFormItem(seed = 1): CheckInPlanRuleFormItem {
   return {
     localId: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
     repeatable: false,
@@ -413,7 +434,6 @@ export function createDefaultPlanFormModel(): CheckInPlanFormModel {
     baseRewardPoints: undefined,
     cycleAnchorDate: dayjs().format('YYYY-MM-DD'),
     cycleType: 'weekly',
-    isEnabled: true,
     planCode: '',
     planName: '',
     publishEndAt: undefined,
@@ -446,7 +466,12 @@ export function formatRewardSummary(value: unknown) {
   return items.length > 0 ? items.join(' / ') : '未配置';
 }
 
-export function formatLedgerIds(ids?: null | number[]) {
+export function formatLedgerIds(
+  ids?:
+    | AdminCheckInGrantItemDto['ledgerIds']
+
+    | null,
+) {
   return ids && ids.length > 0 ? ids.join(', ') : '-';
 }
 
@@ -462,7 +487,6 @@ export function mapPlanDetailToFormModel(
     cycleAnchorDate: detail.cycleAnchorDate,
     cycleType: detail.cycleType,
     id: detail.id,
-    isEnabled: detail.isEnabled,
     planCode: detail.planCode,
     planName: detail.planName,
     publishEndAt: detail.publishEndAt
@@ -494,7 +518,7 @@ export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
     model.baseRewardPoints,
     model.baseRewardExperience,
   );
-  const streakRewardRules = model.streakRewardRules.map(rule => ({
+  const streakRewardRules = model.streakRewardRules.map((rule) => ({
     repeatable: rule.repeatable,
     rewardConfig: buildRewardConfig(rule.rewardPoints, rule.rewardExperience),
     ruleCode: rule.ruleCode.trim(),
@@ -508,7 +532,6 @@ export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
     baseRewardConfig,
     cycleAnchorDate: model.cycleAnchorDate,
     cycleType: model.cycleType,
-    isEnabled: !!model.isEnabled,
     planCode: model.planCode.trim(),
     planName: model.planName.trim(),
     publishEndAt: model.publishEndAt || undefined,
@@ -525,7 +548,10 @@ export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
   return payload as unknown as CheckInPlanCreateRequest;
 }
 
-function buildRewardConfig(points?: number, experience?: number) {
+function buildRewardConfig(
+  points?: CheckInRewardConfigValue['points'],
+  experience?: CheckInRewardConfigValue['experience'],
+) {
   const rewardConfig: CheckInRewardConfigValue = {};
 
   if (points && points > 0) {
@@ -542,5 +568,5 @@ export function getOptionLabel<T extends boolean | number | string>(
   options: Array<{ label: string; value: T }>,
   value: T,
 ) {
-  return options.find(item => item.value === value)?.label || '-';
+  return options.find((item) => item.value === value)?.label || '-';
 }

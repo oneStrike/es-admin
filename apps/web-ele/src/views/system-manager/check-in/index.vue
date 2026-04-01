@@ -16,7 +16,6 @@ import {
   checkInPlanCreateApi,
   checkInPlanDetailApi,
   checkInPlanPageApi,
-  checkInPlanPublishApi,
   checkInPlanUpdateApi,
   checkInPlanUpdateStatusApi,
   checkInReconciliationPageApi,
@@ -122,9 +121,7 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '签到计划详情',
 });
 
-const enableLoadingMap = reactive<Record<number, boolean>>({});
 const statusLoadingMap = reactive<Record<number, boolean>>({});
-const publishLoadingMap = reactive<Record<number, boolean>>({});
 const baseRepairingMap = reactive<Record<number, boolean>>({});
 const grantRepairingMap = reactive<Record<number, boolean>>({});
 
@@ -151,7 +148,9 @@ async function openPlanFormModal(row?: CheckInPlanRow) {
   let record: CheckInPlanFormModel | undefined;
 
   if (row?.id) {
-    record = mapPlanDetailToFormModel(await checkInPlanDetailApi({ id: row.id }));
+    record = mapPlanDetailToFormModel(
+      await checkInPlanDetailApi({ id: row.id }),
+    );
   }
 
   planFormApi
@@ -183,20 +182,6 @@ function openPlanDetail(row: CheckInPlanRow) {
     .open();
 }
 
-async function togglePlanEnable(row: CheckInPlanRow) {
-  enableLoadingMap[row.id] = true;
-  try {
-    await checkInPlanUpdateStatusApi({
-      id: row.id,
-      isEnabled: !row.isEnabled,
-    });
-    useMessage.success(row.isEnabled ? '已禁用该计划' : '已启用该计划');
-    await planGridApi.reload();
-  } finally {
-    enableLoadingMap[row.id] = false;
-  }
-}
-
 async function changePlanStatus(row: CheckInPlanRow, status: 0 | 1 | 2) {
   if (row.status === status) {
     return;
@@ -212,25 +197,6 @@ async function changePlanStatus(row: CheckInPlanRow, status: 0 | 1 | 2) {
     await planGridApi.reload();
   } finally {
     statusLoadingMap[row.id] = false;
-  }
-}
-
-async function publishPlan(row: CheckInPlanRow) {
-  publishLoadingMap[row.id] = true;
-  try {
-    const confirmed = await confirmAction(
-      `确认发布计划「${row.planName}」吗？发布后会成为可执行计划。`,
-      '发布签到计划',
-      '确认发布',
-    );
-    if (!confirmed) {
-      return;
-    }
-    await checkInPlanPublishApi({ id: row.id });
-    useMessage.success('计划已发布');
-    await planGridApi.reload();
-  } finally {
-    publishLoadingMap[row.id] = false;
   }
 }
 
@@ -284,7 +250,11 @@ async function repairGrantReward(grant: AdminCheckInGrantItemDto) {
   }
 }
 
-async function confirmRepair(params: { grantId?: number; recordId?: number; targetType: 1 | 2 }) {
+async function confirmRepair(params: {
+  grantId?: number;
+  recordId?: number;
+  targetType: 1 | 2;
+}) {
   const targetLabel = params.targetType === 1 ? '基础奖励' : '连续奖励';
   const targetId = params.targetType === 1 ? params.recordId : params.grantId;
 
@@ -322,7 +292,8 @@ function hasRepairableGrant(grant: AdminCheckInGrantItemDto) {
 
 function renderRewardTagType(status?: null | number) {
   return (
-    checkInRewardStatusOptions.find(item => item.value === status)?.color || 'info'
+    checkInRewardStatusOptions.find((item) => item.value === status)?.color ||
+    'info'
   );
 }
 </script>
@@ -340,27 +311,13 @@ function renderRewardTagType(status?: null | number) {
             </template>
 
             <template #planName="{ row }">
-              <div class="min-w-0">
-                <div
-                  class="cursor-pointer truncate text-left text-sm font-semibold text-slate-900 transition hover:text-primary"
-                  @click="openPlanDetail(row)"
-                >
-                  {{ row.planName }}
-                </div>
-                <div class="mt-1 truncate text-xs text-slate-500">
-                  {{ row.planCode }}
-                </div>
-              </div>
-            </template>
-
-            <template #isEnabled="{ row }">
-              <el-switch
-                :active-value="true"
-                :inactive-value="false"
-                :loading="enableLoadingMap[row.id]"
-                :model-value="row.isEnabled"
-                @change="togglePlanEnable(row)"
-              />
+              <el-text
+                class="cursor-pointer hover:opacity-50"
+                type="primary"
+                @click="openPlanDetail(row)"
+              >
+                {{ row.planName }}
+              </el-text>
             </template>
 
             <template #baseRewardConfig="{ row }">
@@ -373,7 +330,9 @@ function renderRewardTagType(status?: null | number) {
 
             <template #pendingRewardCount="{ row }">
               <div class="flex items-center gap-2">
-                <span class="font-medium text-slate-900">{{ row.pendingRewardCount }}</span>
+                <span class="font-medium text-slate-900">{{
+                  row.pendingRewardCount
+                }}</span>
                 <el-tag
                   v-if="row.pendingRewardCount > 0"
                   effect="light"
@@ -414,31 +373,35 @@ function renderRewardTagType(status?: null | number) {
                 <el-button link type="primary" @click="openPlanFormModal(row)">
                   编辑
                 </el-button>
-                <el-button
-                  :disabled="row.status === 1 && row.isEnabled"
-                  :loading="publishLoadingMap[row.id]"
-                  link
-                  type="success"
-                  @click="publishPlan(row)"
-                >
-                  发布
-                </el-button>
                 <el-dropdown
                   trigger="click"
                   @command="(value: 0 | 1 | 2) => changePlanStatus(row, value)"
                 >
-                  <el-button :loading="statusLoadingMap[row.id]" link type="warning">
+                  <el-button
+                    :loading="statusLoadingMap[row.id]"
+                    link
+                    type="primary"
+                  >
                     切换状态
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <el-dropdown-item :command="0" :disabled="row.status === 0">
+                      <el-dropdown-item
+                        :command="0"
+                        :disabled="row.status === 0"
+                      >
                         设为草稿
                       </el-dropdown-item>
-                      <el-dropdown-item :command="1" :disabled="row.status === 1">
+                      <el-dropdown-item
+                        :command="1"
+                        :disabled="row.status === 1"
+                      >
                         设为已发布
                       </el-dropdown-item>
-                      <el-dropdown-item :command="2" :disabled="row.status === 2">
+                      <el-dropdown-item
+                        :command="2"
+                        :disabled="row.status === 2"
+                      >
                         设为已下线
                       </el-dropdown-item>
                     </el-dropdown-menu>
@@ -460,7 +423,9 @@ function renderRewardTagType(status?: null | number) {
                   round
                 >
                   {{
-                    checkInRecordTypeOptions.find(item => item.value === row.recordType)?.label
+                    checkInRecordTypeOptions.find(
+                      (item) => item.value === row.recordType,
+                    )?.label
                   }}
                 </el-tag>
               </div>
@@ -478,7 +443,9 @@ function renderRewardTagType(status?: null | number) {
                     round
                   >
                     {{
-                      checkInRewardStatusOptions.find(item => item.value === row.rewardStatus)?.label
+                      checkInRewardStatusOptions.find(
+                        (item) => item.value === row.rewardStatus,
+                      )?.label
                     }}
                   </el-tag>
                   <el-tag
@@ -487,13 +454,13 @@ function renderRewardTagType(status?: null | number) {
                     round
                     :type="
                       checkInRewardResultOptions.find(
-                        item => item.value === row.rewardResultType,
+                        (item) => item.value === row.rewardResultType,
                       )?.color || 'info'
                     "
                   >
                     {{
                       checkInRewardResultOptions.find(
-                        item => item.value === row.rewardResultType,
+                        (item) => item.value === row.rewardResultType,
                       )?.label
                     }}
                   </el-tag>
@@ -516,7 +483,9 @@ function renderRewardTagType(status?: null | number) {
                   :key="grant.id"
                   class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3"
                 >
-                  <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div
+                    class="flex flex-wrap items-center justify-between gap-2"
+                  >
                     <div class="flex flex-wrap items-center gap-2">
                       <el-tag effect="light" round type="primary">
                         发放 #{{ grant.id }}
@@ -528,7 +497,7 @@ function renderRewardTagType(status?: null | number) {
                       >
                         {{
                           checkInRewardStatusOptions.find(
-                            item => item.value === grant.grantStatus,
+                            (item) => item.value === grant.grantStatus,
                           )?.label
                         }}
                       </el-tag>
@@ -538,13 +507,13 @@ function renderRewardTagType(status?: null | number) {
                         round
                         :type="
                           checkInRewardResultOptions.find(
-                            item => item.value === grant.grantResultType,
+                            (item) => item.value === grant.grantResultType,
                           )?.color || 'info'
                         "
                       >
                         {{
                           checkInRewardResultOptions.find(
-                            item => item.value === grant.grantResultType,
+                            (item) => item.value === grant.grantResultType,
                           )?.label
                         }}
                       </el-tag>
@@ -588,7 +557,9 @@ function renderRewardTagType(status?: null | number) {
                 >
                   补基础奖励
                 </el-button>
-                <el-text v-else class="text-xs text-slate-400">无需补偿</el-text>
+                <el-text v-else class="text-xs text-slate-400">
+无需补偿
+</el-text>
               </div>
             </template>
           </ReconciliationGrid>
@@ -608,9 +579,9 @@ function renderRewardTagType(status?: null | number) {
 <style scoped>
 .check-in-tabs {
   display: flex;
+  flex-direction: column;
   height: 100%;
   min-height: 0;
-  flex-direction: column;
 }
 
 :deep(.check-in-tabs .el-tabs__header) {
@@ -629,7 +600,7 @@ function renderRewardTagType(status?: null | number) {
 
 :deep(.check-in-tabs .el-tabs__item) {
   padding: 0 18px;
-  border-radius: 9999px;
   font-weight: 600;
+  border-radius: 9999px;
 }
 </style>

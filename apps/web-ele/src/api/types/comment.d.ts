@@ -1,7 +1,7 @@
 /**
  *  类型定义 [CommentPageRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type CommentPageRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type CommentPageResponse = {
 /**
  *  类型定义 [CommentDetailRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type CommentDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type CommentDetailResponse = AdminCommentDetailDto
 /**
  *  类型定义 [CommentUpdateAuditStatusRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type CommentUpdateAuditStatusRequest = UpdateAdminCommentAuditStatusDto
 
@@ -94,7 +94,7 @@ export type CommentUpdateAuditStatusResponse = boolean
 /**
  *  类型定义 [CommentUpdateHiddenRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type CommentUpdateHiddenRequest = UpdateAdminCommentHiddenDto
 
@@ -103,7 +103,7 @@ export type CommentUpdateHiddenResponse = boolean
 /**
  *  类型定义 [AdminCommentPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type AdminCommentPageItemDto = {
   /** 任意合法数值 */
@@ -154,7 +154,7 @@ export type AdminCommentPageItemDto = {
 /**
  *  类型定义 [AdminCommentUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type AdminCommentUserDto = {
   /** 任意合法数值 */
@@ -175,7 +175,7 @@ export type AdminCommentUserDto = {
 /**
  *  类型定义 [AdminCommentDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type AdminCommentDetailDto = {
   /** 任意合法数值 */
@@ -230,7 +230,7 @@ export type AdminCommentDetailDto = {
 /**
  *  类型定义 [AdminCommentReplyTargetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type AdminCommentReplyTargetDto = {
   /** 任意合法数值 */
@@ -261,7 +261,7 @@ export type AdminCommentReplyTargetDto = {
 /**
  *  类型定义 [UpdateAdminCommentAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type UpdateAdminCommentAuditStatusDto = {
   /** 任意合法数值 */
@@ -278,7 +278,7 @@ export type UpdateAdminCommentAuditStatusDto = {
 /**
  *  类型定义 [UpdateAdminCommentHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-01 17:27:33
+ *  @更新时间 2026-04-01 23:22:02
  */
 export type UpdateAdminCommentHiddenDto = {
   /** 任意合法数值 */

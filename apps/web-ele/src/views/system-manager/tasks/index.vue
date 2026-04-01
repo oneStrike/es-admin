@@ -235,7 +235,7 @@ function openAssignmentModal(row: TaskRow) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
+        <div class="my-1 flex items-center">
           <el-button
             link
             type="primary"
