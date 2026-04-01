@@ -1,13 +1,16 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
-import type { BaseTaskAssignmentDto, BaseTaskDto } from '#/api/types';
+import type {
+  AdminTaskAssignmentPageResponseDto,
+  AdminTaskPageResponseDto,
+} from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { growthTypeOptions } from '#/views/user-growth/model/constants';
 
 export const taskTypeOptions = [
   { label: '新手任务', value: 1, color: 'success' as const },
   { label: '日常任务', value: 2, color: 'primary' as const },
-  { label: '周期任务', value: 3, color: 'warning' as const },
   { label: '活动任务', value: 4, color: 'danger' as const },
-  { label: '运营任务', value: 5, color: 'info' as const },
 ];
 
 export const taskStatusOptions = [
@@ -29,6 +32,11 @@ export const claimModeOptions = [
 export const completeModeOptions = [
   { label: '自动完成', value: 1 },
   { label: '手动完成', value: 2 },
+];
+
+export const objectiveTypeOptions = [
+  { label: '人工任务', value: 1 },
+  { label: '事件累计', value: 2 },
 ];
 
 export const assignmentStatusOptions = [
@@ -134,6 +142,30 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
+    component: 'RadioGroup',
+    componentProps: {
+      class: 'w-full',
+      options: objectiveTypeOptions,
+      placeholder: '请选择目标类型',
+    },
+    defaultValue: 1,
+    fieldName: 'objectiveType',
+    label: '目标类型',
+    rules: 'required',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      class: 'w-full',
+      clearable: true,
+      filterable: true,
+      options: growthTypeOptions,
+      placeholder: '事件累计任务请选择事件编码',
+    },
+    fieldName: 'eventCode',
+    label: '事件编码',
+  },
+  {
     component: 'InputNumber',
     componentProps: {
       class: '!w-full',
@@ -191,6 +223,17 @@ export const formSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     help: '建议填写便于运营识别的周期规则描述或规则串',
     label: '周期规则',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入目标附加配置；如使用 JSON，请保持格式正确',
+      rows: 4,
+      type: 'textarea',
+    },
+    fieldName: 'objectiveConfig',
+    formItemClass: 'col-span-2',
+    label: '目标配置',
   },
   {
     component: 'Input',
@@ -297,7 +340,7 @@ export const assignmentSearchSchema: EsFormSchema = [
   },
 ];
 
-export const pageColumns: VxeGridPropTypes.Columns<BaseTaskDto> = [
+export const pageColumns: VxeGridPropTypes.Columns<AdminTaskPageResponseDto> = [
   {
     field: 'cover',
     fixed: 'left',
@@ -427,7 +470,7 @@ export const pageColumns: VxeGridPropTypes.Columns<BaseTaskDto> = [
   },
 ];
 
-export const assignmentColumns: VxeGridPropTypes.Columns<BaseTaskAssignmentDto> =
+export const assignmentColumns: VxeGridPropTypes.Columns<AdminTaskAssignmentPageResponseDto> =
   [
     {
       field: 'userId',
@@ -509,9 +552,10 @@ function normalizeJsonLikeField(value: unknown) {
   }
 }
 
-export function mapTaskToFormRecord(record: BaseTaskDto) {
+export function mapTaskToFormRecord(record: AdminTaskPageResponseDto) {
   return {
     ...record,
+    objectiveConfig: normalizeJsonLikeField(record.objectiveConfig),
     repeatRule: normalizeJsonLikeField(record.repeatRule),
     rewardConfig: normalizeJsonLikeField(record.rewardConfig),
   };

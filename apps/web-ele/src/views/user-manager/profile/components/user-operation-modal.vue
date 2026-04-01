@@ -60,6 +60,9 @@ const userDetail = ref<AdminAppUserDetailDto | null>(null);
 const pointStats = ref<AdminAppUserPointStatsDto | null>(null);
 const experienceStats = ref<AdminAppUserExperienceStatsDto | null>(null);
 const sharedData = ref<null | OperationModalData>(null);
+const pointsGrantOperationKey = ref('');
+const pointsConsumeOperationKey = ref('');
+const experienceGrantOperationKey = ref('');
 
 const canOperate = computed(() => {
   return !!sharedData.value?.isSuperAdmin && !currentUser.value?.deletedAt;
@@ -628,12 +631,22 @@ async function notifyParentUpdated() {
   await sharedData.value?.onUpdated?.();
 }
 
+function buildOperationKey(
+  action: 'experience-grant' | 'points-consume' | 'points-grant',
+) {
+  const userId = currentUser.value?.id ?? 0;
+  const randomSuffix = Math.random().toString(36).slice(2, 8);
+
+  return `manual-${action}-${userId}-${Date.now()}-${randomSuffix}`;
+}
+
 function openPointsGrantModal() {
   if (!canOperate.value) {
     useMessage.warning('当前用户不可执行运营操作');
     return;
   }
 
+  pointsGrantOperationKey.value = buildOperationKey('points-grant');
   pointsGrantFormApi
     .setData({
       cols: 1,
@@ -649,6 +662,7 @@ function openPointsConsumeModal() {
     return;
   }
 
+  pointsConsumeOperationKey.value = buildOperationKey('points-consume');
   pointsConsumeFormApi
     .setData({
       cols: 1,
@@ -664,6 +678,7 @@ function openExperienceGrantModal() {
     return;
   }
 
+  experienceGrantOperationKey.value = buildOperationKey('experience-grant');
   experienceGrantFormApi
     .setData({
       cols: 1,
@@ -699,6 +714,8 @@ async function handlePointsGrantSubmit(values: AppUsersPointsGrantRequest) {
   }
 
   await appUsersPointsGrantApi({
+    operationKey:
+      pointsGrantOperationKey.value || buildOperationKey('points-grant'),
     remark: values.remark?.trim() || undefined,
     ruleType: values.ruleType,
     userId: currentUser.value.id,
@@ -717,6 +734,8 @@ async function handlePointsConsumeSubmit(values: AppUsersPointsConsumeRequest) {
 
   await appUsersPointsConsumeApi({
     exchangeId: values.exchangeId || undefined,
+    operationKey:
+      pointsConsumeOperationKey.value || buildOperationKey('points-consume'),
     points: values.points,
     remark: values.remark?.trim() || undefined,
     targetId: values.targetId || undefined,
@@ -738,6 +757,8 @@ async function handleExperienceGrantSubmit(
   }
 
   await appUsersExperienceGrantApi({
+    operationKey:
+      experienceGrantOperationKey.value || buildOperationKey('experience-grant'),
     remark: values.remark?.trim() || undefined,
     ruleType: values.ruleType,
     userId: currentUser.value.id,

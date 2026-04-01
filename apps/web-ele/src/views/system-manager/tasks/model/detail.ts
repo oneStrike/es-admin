@@ -1,10 +1,12 @@
-import type { BaseTaskDto } from '#/api/types';
+import type { AdminTaskPageResponseDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
+import { growthTypeOptions } from '#/views/user-growth/model/constants';
 
 import {
   claimModeOptions,
   completeModeOptions,
+  objectiveTypeOptions,
   taskStatusOptions,
   taskTypeOptions,
 } from './shared';
@@ -16,8 +18,10 @@ function getOptionLabel(
   return options.find((item) => item.value === value)?.label || '-';
 }
 
-export function getDetailCards(detail: BaseTaskDto) {
+export function getDetailCards(detail: AdminTaskPageResponseDto) {
   const taskStatus = taskStatusOptions.find((item) => item.value === detail.status);
+  const eventCodeLabel =
+    growthTypeOptions.find((item) => item.value === detail.eventCode)?.label || '-';
 
   return [
     {
@@ -75,6 +79,11 @@ export function getDetailCards(detail: BaseTaskDto) {
           type: 'text',
         },
         {
+          label: '目标类型',
+          value: getOptionLabel(objectiveTypeOptions, detail.objectiveType),
+          type: 'text',
+        },
+        {
           label: '优先级',
           value: detail.priority ?? 0,
           type: 'text',
@@ -105,6 +114,16 @@ export function getDetailCards(detail: BaseTaskDto) {
       title: '规则配置',
       show: true,
       fields: [
+        {
+          label: '事件编码',
+          value: detail.eventCode ? eventCodeLabel : '-',
+          type: 'text',
+        },
+        {
+          label: '目标配置',
+          value: detail.objectiveConfig || '-',
+          type: 'text',
+        },
         {
           label: '周期规则',
           value: detail.repeatRule || '-',

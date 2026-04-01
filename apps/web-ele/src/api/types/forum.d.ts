@@ -1,2293 +1,2274 @@
 /**
  *  类型定义 [ForumModeratorsPageRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorsPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 用户名 */
-  nickname?: null | string;
+  nickname?: null | string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 板块ID */
-  sectionId?: null | number;
+  sectionId?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 用户id */
-  userId?: number;
-};
+  userId?: number
+}
 
 export type ForumModeratorsPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: ForumModeratorDto[];
+  list?: ForumModeratorDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [ForumModeratorsCreateRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumModeratorsCreateRequest = CreateForumModeratorDto;
+export type ForumModeratorsCreateRequest = CreateForumModeratorDto
 
-export type ForumModeratorsCreateResponse = boolean;
+export type ForumModeratorsCreateResponse = boolean
 
 /**
  *  类型定义 [ForumModeratorsUpdateRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumModeratorsUpdateRequest = UpdateForumModeratorDto;
+export type ForumModeratorsUpdateRequest = UpdateForumModeratorDto
 
-export type ForumModeratorsUpdateResponse = boolean;
+export type ForumModeratorsUpdateResponse = boolean
 
 /**
  *  类型定义 [ForumModeratorsDeleteRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumModeratorsDeleteRequest = IdDto;
+export type ForumModeratorsDeleteRequest = IdDto
 
-export type ForumModeratorsDeleteResponse = boolean;
+export type ForumModeratorsDeleteResponse = boolean
 
 /**
  *  类型定义 [ForumModeratorsAssignSectionRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumModeratorsAssignSectionRequest =
-  AssignForumModeratorSectionDto;
+export type ForumModeratorsAssignSectionRequest = AssignForumModeratorSectionDto
 
-export type ForumModeratorsAssignSectionResponse = boolean;
+export type ForumModeratorsAssignSectionResponse = boolean
 
 /**
  *  类型定义 [ForumModeratorApplicationPageRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorApplicationPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 申请人用户ID */
-  applicantId?: number;
+  applicantId?: number
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 申请人昵称 */
-  nickname?: null | string;
+  nickname?: null | string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 申请板块ID */
-  sectionId?: number;
+  sectionId?: number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 申请状态（0=PENDING，1=APPROVED，2=REJECTED） */
-  status?: number;
-};
+  status?: number
+}
 
 export type ForumModeratorApplicationPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: ForumModeratorApplicationDto[];
+  list?: ForumModeratorApplicationDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [ForumModeratorApplicationDetailRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorApplicationDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type ForumModeratorApplicationDetailResponse =
-  ForumModeratorApplicationDto;
+export type ForumModeratorApplicationDetailResponse = ForumModeratorApplicationDto
 
 /**
  *  类型定义 [ForumModeratorApplicationAuditRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumModeratorApplicationAuditRequest =
-  AuditForumModeratorApplicationDto;
+export type ForumModeratorApplicationAuditRequest = AuditForumModeratorApplicationDto
 
-export type ForumModeratorApplicationAuditResponse = boolean;
+export type ForumModeratorApplicationAuditResponse = boolean
 
 /**
  *  类型定义 [ForumModeratorApplicationDeleteRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumModeratorApplicationDeleteRequest = IdDto;
+export type ForumModeratorApplicationDeleteRequest = IdDto
 
-export type ForumModeratorApplicationDeleteResponse = boolean;
+export type ForumModeratorApplicationDeleteResponse = boolean
 
 /**
  *  类型定义 [ForumSearchPageRequest]
  *  @来源 论坛管理/搜索
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSearchPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 搜索关键词 */
-  keyword: string;
+  keyword: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 板块ID */
-  sectionId?: null | number;
+  sectionId?: null | number
 
   /* 排序类型（latest=LATEST，hot=HOT，relevance=RELEVANCE） */
-  sort?: null | string;
+  sort?: null | string
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 标签ID */
-  tagId?: null | number;
+  tagId?: null | number
 
   /* 搜索类型（topic=TOPIC，comment=COMMENT，all=ALL） */
-  type?: null | string;
-};
+  type?: null | string
+}
 
 export type ForumSearchPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: ForumSearchResultDto[];
+  list?: ForumSearchResultDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [ForumSensitiveWordPageRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSensitiveWordPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
-  level?: number;
+  level?: number
 
   /* 匹配模式（1=EXACT，2=FUZZY，3=REGEX） */
-  matchMode?: number;
+  matchMode?: number
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
-  type?: number;
+  type?: number
 
   /* 敏感词 */
-  word?: string;
-};
+  word?: string
+}
 
 export type ForumSensitiveWordPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BaseSensitiveWordDto[];
+  list?: BaseSensitiveWordDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [ForumSensitiveWordCreateRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSensitiveWordCreateRequest = CreateSensitiveWordDto;
+export type ForumSensitiveWordCreateRequest = CreateSensitiveWordDto
 
-export type ForumSensitiveWordCreateResponse = boolean;
+export type ForumSensitiveWordCreateResponse = boolean
 
 /**
  *  类型定义 [ForumSensitiveWordUpdateRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSensitiveWordUpdateRequest = UpdateSensitiveWordDto;
+export type ForumSensitiveWordUpdateRequest = UpdateSensitiveWordDto
 
-export type ForumSensitiveWordUpdateResponse = boolean;
+export type ForumSensitiveWordUpdateResponse = boolean
 
 /**
  *  类型定义 [ForumSensitiveWordDeleteRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSensitiveWordDeleteRequest = IdDto;
+export type ForumSensitiveWordDeleteRequest = IdDto
 
-export type ForumSensitiveWordDeleteResponse = boolean;
+export type ForumSensitiveWordDeleteResponse = boolean
 
 /**
  *  类型定义 [ForumSensitiveWordUpdateStatusRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSensitiveWordUpdateStatusRequest = UpdateEnabledStatusDto;
+export type ForumSensitiveWordUpdateStatusRequest = UpdateEnabledStatusDto
 
-export type ForumSensitiveWordUpdateStatusResponse = boolean;
+export type ForumSensitiveWordUpdateStatusResponse = boolean
 
 /**
  *  类型定义 [ForumSensitiveWordDetectRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSensitiveWordDetectRequest = SensitiveWordDetectDto;
+export type ForumSensitiveWordDetectRequest = SensitiveWordDetectDto
 
-export type ForumSensitiveWordDetectResponse = SensitiveWordDetectResponseDto;
+export type ForumSensitiveWordDetectResponse = SensitiveWordDetectResponseDto
 
 /**
  *  类型定义 [ForumSensitiveWordStatsRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSensitiveWordStatsRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 统计类型（level=LEVEL，type=TYPE，topHits=TOP_HITS，recentHits=RECENT_HITS） */
-  type?: null | string;
-};
+  type?: null | string
+}
 
-export type ForumSensitiveWordStatsResponse =
-  SensitiveWordStatisticsResponseDto;
+export type ForumSensitiveWordStatsResponse = SensitiveWordStatisticsResponseDto
 
-export type ForumSensitiveWordStatsFullResponse =
-  SensitiveWordStatisticsDataDto;
+export type ForumSensitiveWordStatsFullResponse = SensitiveWordStatisticsDataDto
 
 /**
  *  类型定义 [ForumSensitiveWordReplaceRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSensitiveWordReplaceRequest = SensitiveWordReplaceDto;
+export type ForumSensitiveWordReplaceRequest = SensitiveWordReplaceDto
 
-export type ForumSensitiveWordReplaceResponse = SensitiveWordReplaceResponseDto;
+export type ForumSensitiveWordReplaceResponse = SensitiveWordReplaceResponseDto
 
 /**
  *  类型定义 [ForumSensitiveWordDetectHighestLevelRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSensitiveWordDetectHighestLevelRequest =
-  SensitiveWordDetectDto;
+export type ForumSensitiveWordDetectHighestLevelRequest = SensitiveWordDetectDto
 
-export type ForumSensitiveWordDetectHighestLevelResponse =
-  SensitiveWordHighestLevelResponseDto;
+export type ForumSensitiveWordDetectHighestLevelResponse = SensitiveWordHighestLevelResponseDto
 
-export type ForumSensitiveWordDetectStatusResponse =
-  SensitiveWordDetectStatusResponseDto;
+export type ForumSensitiveWordDetectStatusResponse = SensitiveWordDetectStatusResponseDto
 
-export type ForumSensitiveWordCountResponse = SensitiveWordCountResponseDto;
+export type ForumSensitiveWordCountResponse = SensitiveWordCountResponseDto
 
 /**
  *  类型定义 [ForumTopicPageRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumTopicPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 审核状态（0=待审核, 1=已通过, 2=已拒绝） */
-  auditStatus?: number;
+  auditStatus?: number
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否精华 */
-  isFeatured?: boolean;
+  isFeatured?: boolean
 
   /* 是否隐藏 */
-  isHidden?: boolean;
+  isHidden?: boolean
 
   /* 是否锁定 */
-  isLocked?: boolean;
+  isLocked?: boolean
 
   /* 是否置顶 */
-  isPinned?: boolean;
+  isPinned?: boolean
 
   /* 关键词搜索（标题或内容） */
-  keyword?: null | string;
+  keyword?: null | string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 关联的板块ID */
-  sectionId?: number;
+  sectionId?: number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 用户ID */
-  userId?: number;
-};
+  userId?: number
+}
 
 export type ForumTopicPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BaseForumTopicDto[];
+  list?: AdminForumTopicPageItemDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [ForumTopicDetailRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumTopicDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type ForumTopicDetailResponse = AdminForumTopicDetailDto;
+export type ForumTopicDetailResponse = AdminForumTopicDetailDto
 
 /**
  *  类型定义 [ForumTopicCreateRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTopicCreateRequest = CreateForumTopicDto;
+export type ForumTopicCreateRequest = CreateForumTopicDto
 
-export type ForumTopicCreateResponse = boolean;
+export type ForumTopicCreateResponse = boolean
 
 /**
  *  类型定义 [ForumTopicUpdateRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTopicUpdateRequest = UpdateForumTopicDto;
+export type ForumTopicUpdateRequest = UpdateForumTopicDto
 
-export type ForumTopicUpdateResponse = boolean;
+export type ForumTopicUpdateResponse = boolean
 
 /**
  *  类型定义 [ForumTopicDeleteRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTopicDeleteRequest = IdDto;
+export type ForumTopicDeleteRequest = IdDto
 
-export type ForumTopicDeleteResponse = boolean;
+export type ForumTopicDeleteResponse = boolean
 
 /**
  *  类型定义 [ForumTopicUpdatePinnedRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTopicUpdatePinnedRequest = UpdateForumTopicPinnedDto;
+export type ForumTopicUpdatePinnedRequest = UpdateForumTopicPinnedDto
 
-export type ForumTopicUpdatePinnedResponse = boolean;
+export type ForumTopicUpdatePinnedResponse = boolean
 
 /**
  *  类型定义 [ForumTopicUpdateFeaturedRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTopicUpdateFeaturedRequest = UpdateForumTopicFeaturedDto;
+export type ForumTopicUpdateFeaturedRequest = UpdateForumTopicFeaturedDto
 
-export type ForumTopicUpdateFeaturedResponse = boolean;
+export type ForumTopicUpdateFeaturedResponse = boolean
 
 /**
  *  类型定义 [ForumTopicUpdateLockedRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTopicUpdateLockedRequest = UpdateForumTopicLockedDto;
+export type ForumTopicUpdateLockedRequest = UpdateForumTopicLockedDto
 
-export type ForumTopicUpdateLockedResponse = boolean;
+export type ForumTopicUpdateLockedResponse = boolean
 
 /**
  *  类型定义 [ForumTopicUpdateHiddenRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTopicUpdateHiddenRequest = UpdateForumTopicHiddenDto;
+export type ForumTopicUpdateHiddenRequest = UpdateForumTopicHiddenDto
 
-export type ForumTopicUpdateHiddenResponse = boolean;
+export type ForumTopicUpdateHiddenResponse = boolean
 
 /**
  *  类型定义 [ForumTopicUpdateAuditStatusRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTopicUpdateAuditStatusRequest = UpdateForumTopicAuditStatusDto;
+export type ForumTopicUpdateAuditStatusRequest = UpdateForumTopicAuditStatusDto
 
-export type ForumTopicUpdateAuditStatusResponse = boolean;
+export type ForumTopicUpdateAuditStatusResponse = boolean
 
 /**
  *  类型定义 [ForumSectionsPageRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSectionsPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 板块分组ID（为空表示未分组） */
-  groupId?: null | number;
+  groupId?: null | number
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 板块名称 */
-  name?: string;
+  name?: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
-  topicReviewPolicy?: number;
-};
+  topicReviewPolicy?: number
+}
 
 export type ForumSectionsPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BaseForumSectionDto[];
+  list?: BaseForumSectionDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [ForumSectionsDetailRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSectionsDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type ForumSectionsDetailResponse = BaseForumSectionDto;
+export type ForumSectionsDetailResponse = BaseForumSectionDto
 
 export type ForumSectionsTreeResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 响应状态码 */
-  code?: number;
+  code?: number
 
   /* 响应消息 */
-  message?: string;
-};
+  message?: string
+}
 
 /**
  *  类型定义 [ForumSectionsCreateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionsCreateRequest = CreateForumSectionDto;
+export type ForumSectionsCreateRequest = CreateForumSectionDto
 
-export type ForumSectionsCreateResponse = boolean;
+export type ForumSectionsCreateResponse = boolean
 
 /**
  *  类型定义 [ForumSectionsUpdateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionsUpdateRequest = UpdateForumSectionDto;
+export type ForumSectionsUpdateRequest = UpdateForumSectionDto
 
-export type ForumSectionsUpdateResponse = boolean;
+export type ForumSectionsUpdateResponse = boolean
 
 /**
  *  类型定义 [ForumSectionsDeleteRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionsDeleteRequest = IdDto;
+export type ForumSectionsDeleteRequest = IdDto
 
-export type ForumSectionsDeleteResponse = boolean;
+export type ForumSectionsDeleteResponse = boolean
 
 /**
  *  类型定义 [ForumSectionsUpdateEnabledRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionsUpdateEnabledRequest = UpdateEnabledStatusDto;
+export type ForumSectionsUpdateEnabledRequest = UpdateEnabledStatusDto
 
-export type ForumSectionsUpdateEnabledResponse = boolean;
+export type ForumSectionsUpdateEnabledResponse = boolean
 
 /**
  *  类型定义 [ForumSectionsRebuildFollowCountRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionsRebuildFollowCountRequest = IdDto;
+export type ForumSectionsRebuildFollowCountRequest = IdDto
 
-export type ForumSectionsRebuildFollowCountResponse =
-  ForumSectionFollowCountRepairResultDto;
+export type ForumSectionsRebuildFollowCountResponse = ForumSectionFollowCountRepairResultDto
 
-export type ForumSectionsRebuildFollowCountAllResponse = boolean;
+export type ForumSectionsRebuildFollowCountAllResponse = boolean
 
 /**
  *  类型定义 [ForumSectionsSwapSortOrderRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionsSwapSortOrderRequest = DragReorderDto;
+export type ForumSectionsSwapSortOrderRequest = DragReorderDto
 
-export type ForumSectionsSwapSortOrderResponse = boolean;
+export type ForumSectionsSwapSortOrderResponse = boolean
 
 /**
  *  类型定义 [ForumSectionGroupsPageRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSectionGroupsPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 分组名称 */
-  name?: string;
+  name?: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
-};
+  startDate?: null | string
+}
 
 export type ForumSectionGroupsPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BaseForumSectionGroupDto[];
+  list?: BaseForumSectionGroupDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [ForumSectionGroupsDetailRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSectionGroupsDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type ForumSectionGroupsDetailResponse = BaseForumSectionGroupDto;
+export type ForumSectionGroupsDetailResponse = BaseForumSectionGroupDto
 
 /**
  *  类型定义 [ForumSectionGroupsCreateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionGroupsCreateRequest = CreateForumSectionGroupDto;
+export type ForumSectionGroupsCreateRequest = CreateForumSectionGroupDto
 
-export type ForumSectionGroupsCreateResponse = boolean;
+export type ForumSectionGroupsCreateResponse = boolean
 
 /**
  *  类型定义 [ForumSectionGroupsUpdateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionGroupsUpdateRequest = UpdateForumSectionGroupDto;
+export type ForumSectionGroupsUpdateRequest = UpdateForumSectionGroupDto
 
-export type ForumSectionGroupsUpdateResponse = boolean;
+export type ForumSectionGroupsUpdateResponse = boolean
 
 /**
  *  类型定义 [ForumSectionGroupsDeleteRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionGroupsDeleteRequest = IdDto;
+export type ForumSectionGroupsDeleteRequest = IdDto
 
-export type ForumSectionGroupsDeleteResponse = boolean;
+export type ForumSectionGroupsDeleteResponse = boolean
 
 /**
  *  类型定义 [ForumSectionGroupsUpdateEnabledRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionGroupsUpdateEnabledRequest = UpdateEnabledStatusDto;
+export type ForumSectionGroupsUpdateEnabledRequest = UpdateEnabledStatusDto
 
-export type ForumSectionGroupsUpdateEnabledResponse = boolean;
+export type ForumSectionGroupsUpdateEnabledResponse = boolean
 
 /**
  *  类型定义 [ForumSectionGroupsSwapSortOrderRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumSectionGroupsSwapSortOrderRequest = DragReorderDto;
+export type ForumSectionGroupsSwapSortOrderRequest = DragReorderDto
 
-export type ForumSectionGroupsSwapSortOrderResponse = boolean;
+export type ForumSectionGroupsSwapSortOrderResponse = boolean
 
 /**
  *  类型定义 [ForumTagsPageRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumTagsPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 标签名称 */
-  name?: string;
+  name?: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
-};
+  startDate?: null | string
+}
 
 export type ForumTagsPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BaseForumTagDto[];
+  list?: BaseForumTagDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [ForumTagsDetailRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumTagsDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type ForumTagsDetailResponse = ForumTagDetailResponseDto;
+export type ForumTagsDetailResponse = ForumTagDetailResponseDto
 
 /**
  *  类型定义 [ForumTagsPopularListRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumTagsPopularListRequest = {
+  
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
-  limit: number;
-};
+  limit: number
+}
 
-export type ForumTagsPopularListResponse = BaseForumTagDto[];
+export type ForumTagsPopularListResponse = BaseForumTagDto[]
 
-export type ForumTagsEnabledListResponse = BaseForumTagDto[];
+export type ForumTagsEnabledListResponse = BaseForumTagDto[]
 
 /**
  *  类型定义 [ForumTagsTopicTagListRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumTagsTopicTagListRequest = {
+  
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
-  topicId: number;
-};
+  topicId: number
+}
 
-export type ForumTagsTopicTagListResponse = BaseForumTagDto[];
+export type ForumTagsTopicTagListResponse = BaseForumTagDto[]
 
 /**
  *  类型定义 [ForumTagsCreateRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTagsCreateRequest = CreateForumTagDto;
+export type ForumTagsCreateRequest = CreateForumTagDto
 
-export type ForumTagsCreateResponse = boolean;
+export type ForumTagsCreateResponse = boolean
 
 /**
  *  类型定义 [ForumTagsUpdateRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTagsUpdateRequest = UpdateForumTagDto;
+export type ForumTagsUpdateRequest = UpdateForumTagDto
 
-export type ForumTagsUpdateResponse = boolean;
+export type ForumTagsUpdateResponse = boolean
 
 /**
  *  类型定义 [ForumTagsDeleteRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTagsDeleteRequest = IdDto;
+export type ForumTagsDeleteRequest = IdDto
 
-export type ForumTagsDeleteResponse = boolean;
+export type ForumTagsDeleteResponse = boolean
 
 /**
  *  类型定义 [ForumTagsAssignTopicRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTagsAssignTopicRequest = AssignForumTagToTopicDto;
+export type ForumTagsAssignTopicRequest = AssignForumTagToTopicDto
 
-export type ForumTagsAssignTopicResponse = boolean;
+export type ForumTagsAssignTopicResponse = boolean
 
 /**
  *  类型定义 [ForumTagsUnassignTopicRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type ForumTagsUnassignTopicRequest = AssignForumTagToTopicDto;
+export type ForumTagsUnassignTopicRequest = AssignForumTagToTopicDto
 
-export type ForumTagsUnassignTopicResponse = boolean;
+export type ForumTagsUnassignTopicResponse = boolean
 
 /**
  *  类型定义 [ForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 头像 */
-  avatar?: null | string;
+  avatar?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 删除时间 */
-  deletedAt?: null | string;
+  deletedAt?: null | string
   /* 所属分组 */
-  group?: ForumModeratorGroupDto;
+  group?: ForumModeratorGroupDto
   /* 分组ID（分组版主时使用） */
-  groupId?: null | number;
+  groupId?: null | number
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 昵称 */
-  nickname: string;
+  nickname: string
   /* 权限名称列表 */
-  permissionNames: string[];
+  permissionNames: string[]
   /* 权限列表 */
-  permissions: number[];
+  permissions: number[]
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 版主角色类型（1=SUPER，2=GROUP，3=SECTION） */
-  roleType: 1 | 2 | 3;
+  roleType: 1 | 2 | 3
   /* 管理的板块列表 */
-  sections: ForumModeratorSectionItemDto[];
+  sections: ForumModeratorSectionItemDto[]
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [ForumModeratorGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorGroupDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 分组ID */
-  id: number;
+  id: number
 
   /* 分组名称 */
-  name: string;
-};
+  name: string
+}
 
 /**
  *  类型定义 [ForumModeratorSectionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorSectionItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 板块自定义权限 */
-  customPermissions: number[];
+  customPermissions: number[]
   /* 板块最终生效权限 */
-  finalPermissions: number[];
+  finalPermissions: number[]
   /* 板块ID */
-  id: number;
+  id: number
   /* 是否继承基础权限 */
-  inheritFromParent: boolean;
+  inheritFromParent: boolean
 
   /* 板块名称 */
-  name: string;
-};
+  name: string
+}
 
 /**
  *  类型定义 [CreateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type CreateForumModeratorDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 分组ID（分组版主时使用） */
-  groupId?: null | number;
+  groupId?: null | number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 权限列表 */
-  permissions?: any[] | null;
+  permissions?: any[] | null
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 版主角色类型（1=SUPER，2=GROUP，3=SECTION） */
-  roleType: 1 | 2 | 3;
+  roleType: 1 | 2 | 3
   /* 板块ID列表（板块版主时必填） */
-  sectionIds?: any[] | null;
+  sectionIds?: any[] | null
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [UpdateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumModeratorDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 分组ID（分组版主时使用） */
-  groupId?: null | number;
+  groupId?: null | number
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
   /* 权限列表 */
-  permissions?: any[] | null;
+  permissions?: any[] | null
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 版主角色类型（1=SUPER，2=GROUP，3=SECTION） */
-  roleType?: 1 | 2 | 3;
+  roleType?: 1 | 2 | 3
 
   /* 板块ID列表（板块版主时必填） */
-  sectionIds?: any[] | null;
-};
+  sectionIds?: any[] | null
+}
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type IdDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
 /**
  *  类型定义 [AssignForumModeratorSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AssignForumModeratorSectionDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 版主ID */
-  moderatorId: number;
+  moderatorId: number
   /* 板块自定义权限列表，未传则沿用版主基础权限 */
-  permissions?: any[] | null;
+  permissions?: any[] | null
 
   /* 板块ID列表 */
-  sectionIds: number[];
-};
+  sectionIds: number[]
+}
 
 /**
  *  类型定义 [ForumModeratorApplicationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorApplicationDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 申请人信息 */
-  applicant?: ForumModeratorApplicationUserDto;
+  applicant?: ForumModeratorApplicationUserDto
   /* 申请人用户ID */
-  applicantId: number;
+  applicantId: number
   /* 审核时间 */
-  auditAt?: null | string;
+  auditAt?: null | string
   /* 审核人ID */
-  auditById?: null | number;
+  auditById?: null | number
   /* 审核人信息 */
-  auditor?: ForumModeratorApplicationUserDto;
+  auditor?: ForumModeratorApplicationUserDto
   /* 审核意见 */
-  auditReason?: null | string;
+  auditReason?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 删除时间 */
-  deletedAt?: null | string;
+  deletedAt?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 权限名称列表 */
-  permissionNames: string[];
+  permissionNames: string[]
   /* 申请权限列表 */
-  permissions?: any[] | null;
+  permissions?: any[] | null
   /* 申请理由 */
-  reason: string;
+  reason: string
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 板块信息 */
-  section?: ForumModeratorApplicationSectionDto;
+  section?: ForumModeratorApplicationSectionDto
   /* 申请板块ID */
-  sectionId: number;
+  sectionId: number
   /* 申请状态（0=PENDING，1=APPROVED，2=REJECTED） */
-  status: 0 | 1 | 2;
+  status: 0 | 1 | 2
 
   /* 更新时间 */
-  updatedAt: string;
-};
+  updatedAt: string
+}
 
 /**
  *  类型定义 [ForumModeratorApplicationUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorApplicationUserDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl?: null | string
   /* 主键id */
-  id: number;
+  id: number
 
   /* 昵称 */
-  nickname: string;
-};
+  nickname: string
+}
 
 /**
  *  类型定义 [ForumModeratorApplicationSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumModeratorApplicationSectionDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 板块封面 */
-  cover: string;
+  cover: string
   /* 板块描述 */
-  description?: null | string;
+  description?: null | string
   /* 板块图标 */
-  icon: string;
+  icon: string
   /* 主键id */
-  id: number;
+  id: number
 
   /* 板块名称 */
-  name: string;
-};
+  name: string
+}
 
 /**
  *  类型定义 [AuditForumModeratorApplicationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AuditForumModeratorApplicationDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 审核意见 */
-  auditReason?: null | string;
+  auditReason?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
 
   /* 申请状态（0=PENDING，1=APPROVED，2=REJECTED） */
-  status: 0 | 1 | 2;
-};
+  status: 0 | 1 | 2
+}
 
 /**
  *  类型定义 [ForumSearchResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSearchResultDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 评论内容摘要 */
-  commentContentSnippet?: null | string;
+  commentContentSnippet?: null | string
   /* 评论数 */
-  commentCount: number;
+  commentCount: number
   /* 评论ID */
-  commentId?: null | number;
+  commentId?: null | number
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 收藏数 */
-  favoriteCount: number;
+  favoriteCount: number
   /* 点赞数 */
-  likeCount: number;
+  likeCount: number
   /* 结果类型（topic=TOPIC，comment=COMMENT，all=ALL） */
-  resultType: 'all' | 'comment' | 'topic';
+  resultType: 'all' | 'comment' | 'topic'
   /* 板块ID */
-  sectionId: number;
+  sectionId: number
   /* 板块名称 */
-  sectionName: string;
+  sectionName: string
   /* 主题内容摘要 */
-  topicContentSnippet?: null | string;
+  topicContentSnippet?: null | string
   /* 主题ID */
-  topicId: number;
+  topicId: number
   /* 主题标题 */
-  topicTitle: string;
+  topicTitle: string
   /* 用户头像 */
-  userAvatarUrl?: null | string;
+  userAvatarUrl?: null | string
   /* 用户ID */
-  userId: number;
+  userId: number
   /* 用户昵称 */
-  userNickname: string;
+  userNickname: string
 
   /* 浏览数 */
-  viewCount: number;
-};
+  viewCount: number
+}
 
 /**
  *  类型定义 [BaseSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type BaseSensitiveWordDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 创建人ID */
-  createdBy?: null | number;
+  createdBy?: null | number
   /* 命中次数 */
-  hitCount: number;
+  hitCount: number
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 最后命中时间 */
-  lastHitAt?: null | string;
+  lastHitAt?: null | string
   /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
-  level: 1 | 2 | 3;
+  level: 1 | 2 | 3
   /* 匹配模式（1=EXACT，2=FUZZY，3=REGEX） */
-  matchMode: 1 | 2 | 3;
+  matchMode: 1 | 2 | 3
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 替换词 */
-  replaceWord?: null | string;
+  replaceWord?: null | string
   /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: 1 | 2 | 3 | 4 | 5
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
   /* 更新人ID */
-  updatedBy?: null | number;
+  updatedBy?: null | number
   /* 版本号（乐观锁） */
-  version: number;
+  version: number
 
   /* 敏感词 */
-  word: string;
-};
+  word: string
+}
 
 /**
  *  类型定义 [CreateSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type CreateSensitiveWordDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
-  level: 1 | 2 | 3;
+  level: 1 | 2 | 3
   /* 匹配模式（1=EXACT，2=FUZZY，3=REGEX） */
-  matchMode: 1 | 2 | 3;
+  matchMode: 1 | 2 | 3
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 替换词 */
-  replaceWord?: null | string;
+  replaceWord?: null | string
   /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: 1 | 2 | 3 | 4 | 5
 
   /* 敏感词 */
-  word: string;
-};
+  word: string
+}
 
 /**
  *  类型定义 [UpdateSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateSensitiveWordDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
-  level: 1 | 2 | 3;
+  level: 1 | 2 | 3
   /* 匹配模式（1=EXACT，2=FUZZY，3=REGEX） */
-  matchMode: 1 | 2 | 3;
+  matchMode: 1 | 2 | 3
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 替换词 */
-  replaceWord?: null | string;
+  replaceWord?: null | string
   /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: 1 | 2 | 3 | 4 | 5
 
   /* 敏感词 */
-  word: string;
-};
+  word: string
+}
 
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 状态 true启用 false禁用 */
-  isEnabled: boolean;
-};
+  isEnabled: boolean
+}
 
 /**
  *  类型定义 [SensitiveWordDetectDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordDetectDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 检测内容 */
-  content: string;
+  content: string
 
   /* 匹配模式（1=EXACT，2=FUZZY，3=REGEX） */
-  matchMode?: null | number;
-};
+  matchMode?: null | number
+}
 
 /**
  *  类型定义 [SensitiveWordDetectResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordDetectResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 最高敏感等级（1=SEVERE，2=GENERAL，3=LIGHT） */
-  highestLevel?: null | number;
+  highestLevel?: null | number
 
   /* 命中的敏感词列表 */
-  hits: BaseSensitiveWordHitDto[];
-};
+  hits: BaseSensitiveWordHitDto[]
+}
 
 /**
  *  类型定义 [BaseSensitiveWordHitDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type BaseSensitiveWordHitDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 结束位置 */
-  end: number;
+  end: number
   /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
-  level: 1 | 2 | 3;
+  level: 1 | 2 | 3
   /* 替换词 */
-  replaceWord?: null | string;
+  replaceWord?: null | string
   /* 起始位置 */
-  start: number;
+  start: number
   /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: 1 | 2 | 3 | 4 | 5
 
   /* 敏感词内容 */
-  word: string;
-};
+  word: string
+}
 
 /**
  *  类型定义 [SensitiveWordStatisticsResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordStatisticsResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 统计结果 */
-  data: Record<string, any>[];
+  data: Record<string, any>[]
 
   /* 统计类型（level=LEVEL，type=TYPE，topHits=TOP_HITS，recentHits=RECENT_HITS） */
-  type: 'level' | 'recentHits' | 'topHits' | 'type';
-};
+  type: 'level' | 'recentHits' | 'topHits' | 'type'
+}
 
 /**
  *  类型定义 [SensitiveWordStatisticsDataDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordStatisticsDataDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 禁用词数 */
-  disabledWords: number;
+  disabledWords: number
   /* 启用词数 */
-  enabledWords: number;
+  enabledWords: number
   /* 最近一月命中次数 */
-  lastMonthHits: number;
+  lastMonthHits: number
   /* 最近一周命中次数 */
-  lastWeekHits: number;
+  lastWeekHits: number
   /* 级别统计 */
-  levelStatistics: SensitiveWordLevelStatisticsDto[];
+  levelStatistics: SensitiveWordLevelStatisticsDto[]
   /* 最近命中词 */
-  recentHitWords: SensitiveWordTopHitStatisticsDto[];
+  recentHitWords: SensitiveWordTopHitStatisticsDto[]
   /* 今日命中次数 */
-  todayHits: number;
+  todayHits: number
   /* 热门命中词 */
-  topHitWords: SensitiveWordTopHitStatisticsDto[];
+  topHitWords: SensitiveWordTopHitStatisticsDto[]
   /* 总命中次数 */
-  totalHits: number;
+  totalHits: number
   /* 总词数 */
-  totalWords: number;
+  totalWords: number
 
   /* 类型统计 */
-  typeStatistics: SensitiveWordTypeStatisticsDto[];
-};
+  typeStatistics: SensitiveWordTypeStatisticsDto[]
+}
 
 /**
  *  类型定义 [SensitiveWordLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordLevelStatisticsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 词数量 */
-  count: number;
+  count: number
   /* 命中次数 */
-  hitCount: number;
+  hitCount: number
   /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
-  level: 1 | 2 | 3;
+  level: 1 | 2 | 3
 
   /* 级别名称 */
-  levelName: string;
-};
+  levelName: string
+}
 
 /**
  *  类型定义 [SensitiveWordTypeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordTypeStatisticsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 词数量 */
-  count: number;
+  count: number
   /* 命中次数 */
-  hitCount: number;
+  hitCount: number
   /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: 1 | 2 | 3 | 4 | 5
 
   /* 类型名称 */
-  typeName: string;
-};
+  typeName: string
+}
 
 /**
  *  类型定义 [SensitiveWordTopHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordTopHitStatisticsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 命中次数 */
-  hitCount: number;
+  hitCount: number
   /* 最后命中时间 */
-  lastHitAt?: null | string;
+  lastHitAt?: null | string
   /* 敏感词级别（1=SEVERE，2=GENERAL，3=LIGHT） */
-  level: 1 | 2 | 3;
+  level: 1 | 2 | 3
   /* 敏感词类型（1=POLITICS，2=PORN，3=VIOLENCE，4=AD，5=OTHER） */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: 1 | 2 | 3 | 4 | 5
 
   /* 敏感词 */
-  word: string;
-};
+  word: string
+}
 
 /**
  *  类型定义 [SensitiveWordReplaceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordReplaceDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 检测内容 */
-  content: string;
+  content: string
   /* 匹配模式（1=EXACT，2=FUZZY，3=REGEX） */
-  matchMode?: null | number;
+  matchMode?: null | number
 
   /* 替换字符 */
-  replaceChar?: null | string;
-};
+  replaceChar?: null | string
+}
 
 /**
  *  类型定义 [SensitiveWordReplaceResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordReplaceResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 替换后的文本 */
-  replacedText: string;
-};
+  replacedText: string
+}
 
 /**
  *  类型定义 [SensitiveWordHighestLevelResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordHighestLevelResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 敏感词最高等级（1=SEVERE，2=GENERAL，3=LIGHT） */
-  highestLevel?: null | number;
-};
+  highestLevel?: null | number
+}
 
 /**
  *  类型定义 [SensitiveWordDetectStatusResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordDetectStatusResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 检测器是否就绪 */
-  isReady: boolean;
+  isReady: boolean
 
   /* 已加载的敏感词数量 */
-  wordCount: number;
-};
+  wordCount: number
+}
 
 /**
  *  类型定义 [SensitiveWordCountResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type SensitiveWordCountResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 当前加载的敏感词数量 */
-  count: number;
-};
+  count: number
+}
 
 /**
- *  类型定义 [BaseForumTopicDto]
+ *  类型定义 [AdminForumTopicPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
-export type BaseForumTopicDto = {
+export type AdminForumTopicPageItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 审核时间 */
-  auditAt?: null | string;
-  /* 关联的审核用户ID */
-  auditById?: null | number;
+  auditAt?: null | string
   /* 审核拒绝原因 */
-  auditReason?: null | string;
-  /* 审核角色（0=版主, 1=管理员） */
-  auditRole?: null | number;
+  auditReason?: null | string
   /* 审核状态（0=待审核, 1=已通过, 2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
-  /* 主题正文解析 token（EmojiParser 输出） */
-  bodyTokens?: null | string;
+  auditStatus: 0 | 1 | 2
   /* 评论次数 */
-  commentCount: number;
-  /* 主题内容 */
-  content: string;
+  commentCount: number
+  /* 主题简要内容（正文前 60 个字符） */
+  contentSnippet: string
   /* 创建时间 */
-  createdAt: string;
-  /* 删除时间 */
-  deletedAt?: null | string;
+  createdAt: string
   /* 收藏次数 */
-  favoriteCount: number;
+  favoriteCount: number
   /* 主键id */
-  id: number;
+  id: number
   /* 主题图片列表 */
-  images: string[];
+  images: string[]
   /* 是否精华 */
-  isFeatured: boolean;
+  isFeatured: boolean
   /* 是否隐藏 */
-  isHidden: boolean;
+  isHidden: boolean
   /* 是否锁定 */
-  isLocked: boolean;
+  isLocked: boolean
   /* 是否置顶 */
-  isPinned: boolean;
+  isPinned: boolean
   /* 最后评论时间 */
-  lastCommentAt?: null | string;
+  lastCommentAt?: null | string
   /* 最后评论用户ID */
-  lastCommentUserId?: null | number;
+  lastCommentUserId?: null | number
   /* 点赞次数 */
-  likeCount: number;
+  likeCount: number
   /* 关联的板块ID */
-  sectionId: number;
-  /* 敏感词命中记录 */
-  sensitiveWordHits?: any[] | null;
+  sectionId: number
   /* 主题标题 */
-  title: string;
+  title: string
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
   /* 用户ID */
-  userId: number;
-  /* 乐观锁版本号 */
-  version: number;
+  userId: number
   /* 主题视频列表 */
-  videos: string[];
+  videos: string[]
 
   /* 浏览次数 */
-  viewCount: number;
-};
+  viewCount: number
+}
 
 /**
  *  类型定义 [AdminForumTopicDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AdminForumTopicDetailDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 审核时间 */
-  auditAt?: null | string;
+  auditAt?: null | string
   /* 审核拒绝原因 */
-  auditReason?: null | string;
+  auditReason?: null | string
   /* 审核状态（0=待审核, 1=已通过, 2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: 0 | 1 | 2
   /* 评论次数 */
-  commentCount: number;
+  commentCount: number
   /* 主题内容 */
-  content: string;
+  content: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 收藏次数 */
-  favoriteCount: number;
+  favoriteCount: number
   /* 主键id */
-  id: number;
+  id: number
   /* 主题图片列表 */
-  images: string[];
+  images: string[]
   /* 是否精华 */
-  isFeatured: boolean;
+  isFeatured: boolean
   /* 是否隐藏 */
-  isHidden: boolean;
+  isHidden: boolean
   /* 是否锁定 */
-  isLocked: boolean;
+  isLocked: boolean
   /* 是否置顶 */
-  isPinned: boolean;
+  isPinned: boolean
   /* 最后评论时间 */
-  lastCommentAt?: null | string;
+  lastCommentAt?: null | string
   /* 最后评论用户ID */
-  lastCommentUserId?: null | number;
+  lastCommentUserId?: null | number
   /* 点赞次数 */
-  likeCount: number;
+  likeCount: number
   /* 所属板块 */
-  section: AdminForumTopicSectionDto;
+  section: AdminForumTopicSectionDto
   /* 关联的板块ID */
-  sectionId: number;
+  sectionId: number
   /* 敏感词命中记录 */
-  sensitiveWordHits?: any[] | null;
+  sensitiveWordHits?: any[] | null
   /* 主题标题 */
-  title: string;
+  title: string
   /* 主题标签关联 */
-  topicTags: AdminForumTopicTagRelationDto[];
+  topicTags: AdminForumTopicTagRelationDto[]
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
   /* 发帖用户 */
-  user: AdminForumTopicUserDto;
+  user: AdminForumTopicUserDto
   /* 用户ID */
-  userId: number;
+  userId: number
   /* 乐观锁版本号 */
-  version: number;
+  version: number
   /* 主题视频列表 */
-  videos: string[];
+  videos: string[]
 
   /* 浏览次数 */
-  viewCount: number;
-};
+  viewCount: number
+}
 
 /**
  *  类型定义 [AdminForumTopicTagRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AdminForumTopicTagRelationDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 关联ID */
-  id: number;
+  id: number
   /* 标签ID */
-  tagId: number;
+  tagId: number
 
   /* 主题ID */
-  topicId: number;
-};
+  topicId: number
+}
 
 /**
  *  类型定义 [AdminForumTopicSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AdminForumTopicSectionDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 板块封面 */
-  cover: string;
+  cover: string
   /* 板块描述 */
-  description?: null | string;
+  description?: null | string
   /* 板块图标 */
-  icon: string;
+  icon: string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 板块名称 */
-  name: string;
+  name: string
 
   /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
-  topicReviewPolicy: 0 | 1 | 2 | 3 | 4;
-};
+  topicReviewPolicy: 0 | 1 | 2 | 3 | 4
+}
 
 /**
  *  类型定义 [AdminForumTopicUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AdminForumTopicUserDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl?: null | string
   /* 封禁原因 */
-  banReason?: null | string;
+  banReason?: null | string
   /* 封禁到期时间 */
-  banUntil?: null | string;
+  banUntil?: null | string
   /* 个人简介 */
-  bio?: null | string;
+  bio?: null | string
   /* 用户计数 */
-  counts?: AdminForumTopicUserCountDto;
+  counts?: AdminForumTopicUserCountDto
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 论坛等级 */
-  level?: AdminForumTopicUserLevelDto;
+  level?: AdminForumTopicUserLevelDto
   /* 等级ID */
-  levelId?: null | number;
+  levelId?: null | number
   /* 昵称 */
-  nickname: string;
+  nickname: string
   /* 积分 */
-  points: number;
+  points: number
   /* 个性签名 */
-  signature?: null | string;
+  signature?: null | string
 
   /* 用户状态（1=NORMAL，2=MUTED，3=PERMANENT_MUTED，4=BANNED，5=PERMANENT_BANNED） */
-  status: 1 | 2 | 3 | 4 | 5;
-};
+  status: 1 | 2 | 3 | 4 | 5
+}
 
 /**
  *  类型定义 [AdminForumTopicUserCountDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AdminForumTopicUserCountDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 发出的评论总数 */
-  commentCount: number;
+  commentCount: number
   /* 评论收到的点赞总数 */
-  commentReceivedLikeCount: number;
+  commentReceivedLikeCount: number
   /* 发出的收藏总数 */
-  favoriteCount: number;
+  favoriteCount: number
   /* 论坛主题数 */
-  forumTopicCount: number;
+  forumTopicCount: number
   /* 论坛主题收到的收藏总数 */
-  forumTopicReceivedFavoriteCount: number;
+  forumTopicReceivedFavoriteCount: number
   /* 论坛主题收到的点赞总数 */
-  forumTopicReceivedLikeCount: number;
+  forumTopicReceivedLikeCount: number
 
   /* 发出的点赞总数 */
-  likeCount: number;
-};
+  likeCount: number
+}
 
 /**
  *  类型定义 [AdminForumTopicUserLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AdminForumTopicUserLevelDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 等级图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 等级名称 */
-  name: string;
+  name: string
 
   /* 排序值（数值越小越靠前） */
-  sortOrder: number;
-};
+  sortOrder: number
+}
 
 /**
  *  类型定义 [CreateForumTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type CreateForumTopicDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主题内容 */
-  content: string;
+  content: string
   /* 主题图片列表 */
-  images?: any[] | null;
+  images?: string[]
   /* 关联的板块ID */
-  sectionId: number;
+  sectionId: number
   /* 主题标题 */
-  title: string;
+  title: string
   /* 用户ID */
-  userId: number;
+  userId: number
 
   /* 主题视频列表 */
-  videos?: any[] | null;
-};
+  videos?: string[]
+}
 
 /**
  *  类型定义 [UpdateForumTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumTopicDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主题内容 */
-  content: string;
+  content: string
   /* 主键id */
-  id: number;
+  id: number
   /* 主题图片列表 */
-  images?: any[] | null;
+  images?: string[]
   /* 主题标题 */
-  title: string;
+  title: string
 
   /* 主题视频列表 */
-  videos?: any[] | null;
-};
+  videos?: string[]
+}
 
 /**
  *  类型定义 [UpdateForumTopicPinnedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumTopicPinnedDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 是否置顶 */
-  isPinned: boolean;
-};
+  isPinned: boolean
+}
 
 /**
  *  类型定义 [UpdateForumTopicFeaturedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumTopicFeaturedDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 是否精华 */
-  isFeatured: boolean;
-};
+  isFeatured: boolean
+}
 
 /**
  *  类型定义 [UpdateForumTopicLockedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumTopicLockedDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 是否锁定 */
-  isLocked: boolean;
-};
+  isLocked: boolean
+}
 
 /**
  *  类型定义 [UpdateForumTopicHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumTopicHiddenDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 是否隐藏 */
-  isHidden: boolean;
-};
+  isHidden: boolean
+}
 
 /**
  *  类型定义 [UpdateForumTopicAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumTopicAuditStatusDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 审核拒绝原因 */
-  auditReason?: null | string;
+  auditReason?: null | string
   /* 审核状态（0=待审核, 1=已通过, 2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: 0 | 1 | 2
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
 /**
  *  类型定义 [BaseForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type BaseForumSectionDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 评论数 */
-  commentCount: number;
+  commentCount: number
   /* 板块封面 */
-  cover: string;
+  cover: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 删除时间 */
-  deletedAt?: null | string;
+  deletedAt?: null | string
   /* 板块描述 */
-  description?: null | string;
+  description?: null | string
   /* 关注人数 */
-  followersCount: number;
+  followersCount: number
   /* 板块分组ID（为空表示未分组） */
-  groupId?: null | number;
+  groupId?: null | number
   /* 板块图标 */
-  icon: string;
+  icon: string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 最后发表时间 */
-  lastPostAt?: null | string;
+  lastPostAt?: null | string
   /* 最后发表主题ID */
-  lastTopicId?: null | number;
+  lastTopicId?: null | number
   /* 板块名称 */
-  name: string;
+  name: string
   /* 备注信息 */
-  remark?: null | string;
+  remark?: null | string
   /* 排序权重 */
-  sortOrder: number;
+  sortOrder: number
   /* 主题数 */
-  topicCount: number;
+  topicCount: number
   /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
-  topicReviewPolicy: 0 | 1 | 2 | 3 | 4;
+  topicReviewPolicy: 0 | 1 | 2 | 3 | 4
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
 
   /* 用户等级规则ID（为空表示所有用户） */
-  userLevelRuleId?: null | number;
-};
+  userLevelRuleId?: null | number
+}
 
 /**
  *  类型定义 [CreateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type CreateForumSectionDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 板块封面 */
-  cover: string;
+  cover: string
   /* 板块描述 */
-  description?: null | string;
+  description?: null | string
   /* 关注人数 */
-  followersCount: number;
+  followersCount: number
   /* 板块分组ID（为空表示未分组） */
-  groupId?: null | number;
+  groupId?: null | number
   /* 板块图标 */
-  icon: string;
+  icon: string
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 板块名称 */
-  name: string;
+  name: string
   /* 备注信息 */
-  remark?: null | string;
+  remark?: null | string
   /* 排序权重 */
-  sortOrder: number;
+  sortOrder: number
   /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
-  topicReviewPolicy: 0 | 1 | 2 | 3 | 4;
+  topicReviewPolicy: 0 | 1 | 2 | 3 | 4
 
   /* 用户等级规则ID（为空表示所有用户） */
-  userLevelRuleId?: null | number;
-};
+  userLevelRuleId?: null | number
+}
 
 /**
  *  类型定义 [UpdateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumSectionDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 板块封面 */
-  cover: string;
+  cover: string
   /* 板块描述 */
-  description?: null | string;
+  description?: null | string
   /* 关注人数 */
-  followersCount: number;
+  followersCount: number
   /* 板块分组ID（为空表示未分组） */
-  groupId?: null | number;
+  groupId?: null | number
   /* 板块图标 */
-  icon: string;
+  icon: string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 板块名称 */
-  name: string;
+  name: string
   /* 备注信息 */
-  remark?: null | string;
+  remark?: null | string
   /* 排序权重 */
-  sortOrder: number;
+  sortOrder: number
   /* 审核策略（0=NONE，1=SEVERE_SENSITIVE_WORD，2=GENERAL_SENSITIVE_WORD，3=MILD_SENSITIVE_WORD，4=MANUAL） */
-  topicReviewPolicy: 0 | 1 | 2 | 3 | 4;
+  topicReviewPolicy: 0 | 1 | 2 | 3 | 4
 
   /* 用户等级规则ID（为空表示所有用户） */
-  userLevelRuleId?: null | number;
-};
+  userLevelRuleId?: null | number
+}
 
 /**
  *  类型定义 [ForumSectionFollowCountRepairResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumSectionFollowCountRepairResultDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 关注人数 */
-  followersCount: number;
+  followersCount: number
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type DragReorderDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 当前拖拽元素的id */
-  dragId: number;
+  dragId: number
 
   /* 拖拽的目标位置id */
-  targetId: number;
-};
+  targetId: number
+}
 
 /**
  *  类型定义 [BaseForumSectionGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type BaseForumSectionGroupDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 删除时间 */
-  deletedAt?: null | string;
+  deletedAt?: null | string
   /* 分组描述 */
-  description?: null | string;
+  description?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 分组版主数量限制（0表示不限制） */
-  maxModerators: number;
+  maxModerators: number
   /* 分组名称 */
-  name: string;
+  name: string
   /* 排序权重 */
-  sortOrder: number;
+  sortOrder: number
 
   /* 更新时间 */
-  updatedAt: string;
-};
+  updatedAt: string
+}
 
 /**
  *  类型定义 [CreateForumSectionGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type CreateForumSectionGroupDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 分组描述 */
-  description?: null | string;
+  description?: null | string
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 分组版主数量限制（0表示不限制） */
-  maxModerators: number;
+  maxModerators: number
   /* 分组名称 */
-  name: string;
+  name: string
 
   /* 排序权重 */
-  sortOrder: number;
-};
+  sortOrder: number
+}
 
 /**
  *  类型定义 [UpdateForumSectionGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumSectionGroupDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 分组描述 */
-  description?: null | string;
+  description?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
   /* 分组版主数量限制（0表示不限制） */
-  maxModerators?: number;
+  maxModerators?: number
   /* 分组名称 */
-  name?: string;
+  name?: string
 
   /* 排序权重 */
-  sortOrder?: number;
-};
+  sortOrder?: number
+}
 
 /**
  *  类型定义 [BaseForumTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type BaseForumTagDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 标签描述 */
-  description?: null | string;
+  description?: null | string
   /* 标签图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 标签名称 */
-  name: string;
+  name: string
   /* 排序权重 */
-  sortOrder: number;
+  sortOrder: number
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
 
   /* 使用次数 */
-  useCount: number;
-};
+  useCount: number
+}
 
 /**
  *  类型定义 [ForumTagDetailResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumTagDetailResponseDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 标签描述 */
-  description?: null | string;
+  description?: null | string
   /* 标签图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 标签名称 */
-  name: string;
+  name: string
   /* 排序权重 */
-  sortOrder: number;
+  sortOrder: number
   /* 最近使用该标签的主题列表 */
-  topics: ForumTagTopicSummaryDto[];
+  topics: ForumTagTopicSummaryDto[]
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
 
   /* 使用次数 */
-  useCount: number;
-};
+  useCount: number
+}
 
 /**
  *  类型定义 [ForumTagTopicSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type ForumTagTopicSummaryDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 主键id */
-  id: number;
+  id: number
 
   /* 主题标题 */
-  title: string;
-};
+  title: string
+}
 
 /**
  *  类型定义 [CreateForumTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type CreateForumTagDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 标签描述 */
-  description?: null | string;
+  description?: null | string
   /* 标签图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 标签名称 */
-  name: string;
+  name: string
 
   /* 排序权重 */
-  sortOrder: number;
-};
+  sortOrder: number
+}
 
 /**
  *  类型定义 [UpdateForumTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type UpdateForumTagDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 标签描述 */
-  description?: null | string;
+  description?: null | string
   /* 标签图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 标签名称 */
-  name: string;
+  name: string
 
   /* 排序权重 */
-  sortOrder: number;
-};
+  sortOrder: number
+}
 
 /**
  *  类型定义 [AssignForumTagToTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AssignForumTagToTopicDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 标签ID */
-  tagId: number;
+  tagId: number
 
   /* 主题ID */
-  topicId: number;
-};
+  topicId: number
+}

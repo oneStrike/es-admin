@@ -1,108 +1,108 @@
 /**
  *  类型定义 [AuditPageRequest]
  *  @来源 系统管理/审计日志
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AuditPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 操作类型编码（LOGIN=LOGIN，LOGOUT=LOGOUT，CREATE=CREATE，UPDATE=UPDATE，DELETE=DELETE，UPLOAD=UPLOAD，DOWNLOAD=DOWNLOAD，EXPORT=EXPORT，IMPORT=IMPORT） */
-  actionType?: null | string;
+  actionType?: null | string
 
   /* 接口类型（admin/app/system等）（admin=ADMIN，app=APP，system=SYSTEM，public=PUBLIC） */
-  apiType?: null | string;
+  apiType?: null | string
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* IP地址 */
-  ip?: null | string;
+  ip?: null | string
 
   /* 操作是否成功 */
-  isSuccess?: boolean;
+  isSuccess?: boolean
 
   /* 请求方法（GET=GET，POST=POST，PUT=PUT，DELETE=DELETE，PATCH=PATCH，HEAD=HEAD，OPTIONS=OPTIONS） */
-  method?: string;
+  method?: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 请求路径 */
-  path?: string;
+  path?: string
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 用户ID */
-  userId?: null | number;
+  userId?: null | number
 
   /* 用户名 */
-  username?: null | string;
-};
+  username?: null | string
+}
 
 export type AuditPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: AuditItemDto[];
+  list?: AuditItemDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [AuditItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-03-27 21:17:41
+ *  @更新时间 2026-04-01 15:24:49
  */
 export type AuditItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 操作类型编码（LOGIN=LOGIN，LOGOUT=LOGOUT，CREATE=CREATE，UPDATE=UPDATE，DELETE=DELETE，UPLOAD=UPLOAD，DOWNLOAD=DOWNLOAD，EXPORT=EXPORT，IMPORT=IMPORT） */
-  actionType?: null | string;
+  actionType?: null | string
   /* 操作类型展示文案 */
-  actionTypeLabel?: null | string;
+  actionTypeLabel?: null | string
   /* 接口类型（admin/app/system等）（admin=ADMIN，app=APP，system=SYSTEM，public=PUBLIC） */
-  apiType?: null | string;
+  apiType?: null | string
   /* 自定义日志内容 */
-  content: string;
+  content: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 设备信息解析结果（JSON） */
-  device?: null | string;
+  device?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* IP地址 */
-  ip?: null | string;
+  ip?: null | string
   /* 操作是否成功 */
-  isSuccess: boolean;
+  isSuccess: boolean
   /* 请求方法（GET=GET，POST=POST，PUT=PUT，DELETE=DELETE，PATCH=PATCH，HEAD=HEAD，OPTIONS=OPTIONS） */
-  method: 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
+  method: 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT'
   /* 请求参数（JSON格式） */
-  params?: null | string;
+  params?: null | string
   /* 请求路径 */
-  path: string;
+  path: string
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
   /* 设备信息（User-Agent） */
-  userAgent?: null | string;
+  userAgent?: null | string
   /* 用户ID */
-  userId?: null | number;
+  userId?: null | number
 
   /* 用户名 */
-  username?: null | string;
-};
+  username?: null | string
+}

@@ -4,12 +4,6 @@ import { formatUTC } from '#/utils';
 
 import { auditStatusMap } from './shared';
 
-function getAuditRoleLabel(role?: null | number) {
-  if (role === 0) return '版主';
-  if (role === 1) return '管理员';
-  return '-';
-}
-
 export function getDetailCards(detail: ForumTopicDetailResponse) {
   return [
     {
@@ -41,11 +35,6 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
         {
           label: '审核状态',
           value: auditStatusMap[detail.auditStatus]?.label || '-',
-          type: 'text' as const,
-        },
-        {
-          label: '审核角色',
-          value: getAuditRoleLabel(detail.auditRole),
           type: 'text' as const,
         },
       ],
@@ -88,8 +77,8 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
           type: 'text' as const,
         },
         {
-          label: '回复数',
-          value: detail.replyCount,
+          label: '评论数',
+          value: detail.commentCount,
           type: 'text' as const,
         },
         {
@@ -158,9 +147,9 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
           type: 'text' as const,
         },
         {
-          label: '最后回复时间',
-          value: detail.lastReplyAt
-            ? formatUTC(detail.lastReplyAt, 'YYYY-MM-DD HH:mm:ss')
+          label: '最后评论时间',
+          value: detail.lastCommentAt
+            ? formatUTC(detail.lastCommentAt, 'YYYY-MM-DD HH:mm:ss')
             : '-',
           type: 'text' as const,
         },

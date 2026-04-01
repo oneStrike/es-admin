@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  AdminForumTopicPageItemDto,
   BaseForumTagDto,
-  BaseForumTopicDto,
   ForumTagsPageRequest,
   ForumTopicCreateRequest,
   ForumTopicUpdateAuditStatusRequest,
@@ -50,12 +50,19 @@ defineOptions({
   name: 'ForumTopic',
 });
 
-const currentTopic = ref<BaseForumTopicDto | null>(null);
+type ForumTopicRow = AdminForumTopicPageItemDto & {
+  featuredLoading?: boolean;
+  hiddenLoading?: boolean;
+  lockedLoading?: boolean;
+  pinnedLoading?: boolean;
+};
+
+const currentTopic = ref<ForumTopicRow | null>(null);
 const currentTopicTags = ref<BaseForumTagDto[]>([]);
 
 void fetchTopicSectionOptions();
 
-const gridOptions: VxeGridProps<BaseForumTopicDto> = {
+const gridOptions: VxeGridProps<ForumTopicRow> = {
   columns: topicColumns,
   proxyConfig: {
     ajax: {
@@ -117,7 +124,7 @@ function openCreateModal() {
     .open();
 }
 
-async function openEditModal(row: BaseForumTopicDto) {
+async function openEditModal(row: ForumTopicRow) {
   const detail = await forumTopicDetailApi({ id: row.id });
   editFormApi
     .setData({
@@ -134,7 +141,7 @@ async function openEditModal(row: BaseForumTopicDto) {
     .open();
 }
 
-async function openAuditModal(row: BaseForumTopicDto) {
+async function openAuditModal(row: ForumTopicRow) {
   const detail = await forumTopicDetailApi({ id: row.id });
   auditFormApi
     .setData({
@@ -151,7 +158,7 @@ async function openAuditModal(row: BaseForumTopicDto) {
     .open();
 }
 
-async function openTagModal(row: BaseForumTopicDto) {
+async function openTagModal(row: ForumTopicRow) {
   currentTopic.value = row;
   const selectedRows = await forumTagsTopicTagListApi({ topicId: row.id });
   currentTopicTags.value = selectedRows;
@@ -240,7 +247,7 @@ async function handleAuditSubmit(values: Record<string, any>) {
   await gridApi.reload();
 }
 
-async function deleteTopic(row: BaseForumTopicDto) {
+async function deleteTopic(row: ForumTopicRow) {
   await forumTopicDeleteApi({ id: row.id });
   useMessage.success('删除成功');
   await gridApi.reload();
@@ -272,12 +279,12 @@ async function handleTagConfirm(rows: BaseForumTagDto[]) {
 }
 
 async function toggleTopicBoolean(
-  row: BaseForumTopicDto,
+  row: ForumTopicRow,
   field: 'isFeatured' | 'isHidden' | 'isLocked' | 'isPinned',
   api: (params: any) => Promise<any>,
   loadingKey: 'featuredLoading' | 'hiddenLoading' | 'lockedLoading' | 'pinnedLoading',
 ) {
-  row[loadingKey] = true as any;
+  row[loadingKey] = true;
   try {
     await api({
       [field]: !row[field],
@@ -286,7 +293,7 @@ async function toggleTopicBoolean(
     useMessage.success('操作成功');
     await gridApi.reload();
   } finally {
-    row[loadingKey] = false as any;
+    row[loadingKey] = false;
   }
 }
 </script>

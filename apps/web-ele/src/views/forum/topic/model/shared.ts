@@ -1,9 +1,9 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
   AdminAppUserPageItemDto,
+  AdminForumTopicPageItemDto,
   BaseForumSectionDto,
   BaseForumTagDto,
-  BaseForumTopicDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -328,7 +328,7 @@ export const tagSelectionColumns: VxeGridPropTypes.Columns<BaseForumTagDto> = [
   },
 ];
 
-export const topicColumns: VxeGridPropTypes.Columns<BaseForumTopicDto> = [
+export const topicColumns: VxeGridPropTypes.Columns<AdminForumTopicPageItemDto> = [
   {
     field: 'title',
     fixed: 'left',
@@ -390,10 +390,10 @@ export const topicColumns: VxeGridPropTypes.Columns<BaseForumTopicDto> = [
     title: '浏览数',
   },
   {
-    field: 'replyCount',
+    field: 'commentCount',
     minWidth: 100,
     sortable: true,
-    title: '回复数',
+    title: '评论数',
   },
   {
     field: 'likeCount',

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  BaseTaskDto,
+  AdminTaskPageResponseDto,
   TaskCreateRequest,
   TaskDetailResponse,
   TaskUpdateRequest,
@@ -37,7 +37,12 @@ defineOptions({
   name: 'TaskManager',
 });
 
-const gridOptions: VxeGridProps<BaseTaskDto> = {
+type TaskRow = AdminTaskPageResponseDto & {
+  enableLoading?: boolean;
+  statusLoading?: boolean;
+};
+
+const gridOptions: VxeGridProps<TaskRow> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
@@ -82,7 +87,7 @@ const [AssignmentModal, assignmentApi] = useVbenModal({
   connectedComponent: TaskAssignmentModal,
 });
 
-async function openFormModal(row?: BaseTaskDto) {
+async function openFormModal(row?: TaskRow) {
   let record: TaskDetailResponse | undefined;
   if (row) {
     record = mapTaskToFormRecord(await taskDetailApi({ id: row.id }));
@@ -128,6 +133,9 @@ function normalizeTaskPayload(values: Record<string, any>) {
     description: values.description?.trim?.() || undefined,
     id: values.id ? Number(values.id) : undefined,
     isEnabled: !!values.isEnabled,
+    eventCode: values.eventCode ? Number(values.eventCode) : undefined,
+    objectiveConfig: values.objectiveConfig?.trim?.() || undefined,
+    objectiveType: Number(values.objectiveType ?? 1) as 1 | 2,
     priority: Number(values.priority ?? 0),
     publishEndAt,
     publishStartAt,
@@ -136,12 +144,17 @@ function normalizeTaskPayload(values: Record<string, any>) {
     status: Number(values.status) as 0 | 1 | 2,
     targetCount: Number(values.targetCount ?? 1),
     title,
-    type: Number(values.type) as 1 | 2 | 3 | 4 | 5,
+    type: Number(values.type) as 1 | 2 | 4,
   };
 }
 
 async function handleSubmit(values: Record<string, any>) {
   const payload = normalizeTaskPayload(values);
+
+  if (payload.objectiveType === 2 && !payload.eventCode) {
+    useMessage.warning('事件累计任务必须选择事件编码');
+    throw new Error('missing event code');
+  }
 
   await (payload.id
     ? taskUpdateApi(payload as TaskUpdateRequest)
@@ -151,13 +164,13 @@ async function handleSubmit(values: Record<string, any>) {
   await gridApi.reload();
 }
 
-async function deleteTask(row: BaseTaskDto) {
+async function deleteTask(row: TaskRow) {
   await taskDeleteApi({ id: row.id });
   useMessage.success('删除成功');
   await gridApi.reload();
 }
 
-async function toggleEnableStatus(row: BaseTaskDto) {
+async function toggleEnableStatus(row: TaskRow) {
   row.enableLoading = true;
   try {
     await taskUpdateStatusApi({
@@ -171,7 +184,7 @@ async function toggleEnableStatus(row: BaseTaskDto) {
   }
 }
 
-async function updateTaskStatus(row: BaseTaskDto, status: 0 | 1 | 2) {
+async function updateTaskStatus(row: TaskRow, status: 0 | 1 | 2) {
   if (row.status === status) return;
 
   row.statusLoading = true;
@@ -187,7 +200,7 @@ async function updateTaskStatus(row: BaseTaskDto, status: 0 | 1 | 2) {
   }
 }
 
-function openAssignmentModal(row: BaseTaskDto) {
+function openAssignmentModal(row: TaskRow) {
   assignmentApi.setData({ task: row }).open();
 }
 </script>

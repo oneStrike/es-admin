@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { BaseTaskAssignmentDto, BaseTaskDto } from '#/api/types';
+import type {
+  AdminTaskAssignmentPageResponseDto,
+  AdminTaskPageResponseDto,
+} from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -14,7 +17,7 @@ import {
 } from './model/shared';
 
 type ShareData = {
-  task: BaseTaskDto;
+  task: AdminTaskPageResponseDto;
 };
 
 defineOptions({
@@ -23,7 +26,7 @@ defineOptions({
 
 const shareData = ref<ShareData>();
 
-const gridOptions: VxeGridProps<BaseTaskAssignmentDto> = {
+const gridOptions: VxeGridProps<AdminTaskAssignmentPageResponseDto> = {
   columns: assignmentColumns,
   proxyConfig: {
     ajax: {
