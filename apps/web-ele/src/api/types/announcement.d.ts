@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AnnouncementCreateRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type AnnouncementCreateRequest = CreateAnnouncementDto
 
@@ -10,7 +10,7 @@ export type AnnouncementCreateResponse = boolean
 /**
  *  类型定义 [AnnouncementPageRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type AnnouncementPageRequest = {
   /** 任意合法数值 */
@@ -82,7 +82,7 @@ export type AnnouncementPageResponse = {
 /**
  *  类型定义 [AnnouncementDetailRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type AnnouncementDetailRequest = {
   /** 任意合法数值 */
@@ -97,7 +97,7 @@ export type AnnouncementDetailResponse = AnnouncementDetailDto
 /**
  *  类型定义 [AnnouncementUpdateRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type AnnouncementUpdateRequest = UpdateAnnouncementDto
 
@@ -106,7 +106,7 @@ export type AnnouncementUpdateResponse = boolean
 /**
  *  类型定义 [AnnouncementUpdateStatusRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type AnnouncementUpdateStatusRequest = UpdateAnnouncementStatusDto
 
@@ -115,7 +115,7 @@ export type AnnouncementUpdateStatusResponse = boolean
 /**
  *  类型定义 [AnnouncementDeleteRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type AnnouncementDeleteRequest = IdDto
 
@@ -124,7 +124,7 @@ export type AnnouncementDeleteResponse = boolean
 /**
  *  类型定义 [CreateAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type CreateAnnouncementDto = {
   /** 任意合法数值 */
@@ -159,7 +159,7 @@ export type CreateAnnouncementDto = {
 /**
  *  类型定义 [AnnouncementPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type AnnouncementPageResponseDto = {
   /** 任意合法数值 */
@@ -200,7 +200,7 @@ export type AnnouncementPageResponseDto = {
 /**
  *  类型定义 [AnnouncementDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type AnnouncementDetailDto = {
   /** 任意合法数值 */
@@ -247,7 +247,7 @@ export type AnnouncementDetailDto = {
 /**
  *  类型定义 [RelatedPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type RelatedPageDto = {
   /** 任意合法数值 */
@@ -266,7 +266,7 @@ export type RelatedPageDto = {
 /**
  *  类型定义 [UpdateAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type UpdateAnnouncementDto = {
   /** 任意合法数值 */
@@ -303,7 +303,7 @@ export type UpdateAnnouncementDto = {
 /**
  *  类型定义 [UpdateAnnouncementStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type UpdateAnnouncementStatusDto = {
   /** 任意合法数值 */
@@ -318,7 +318,7 @@ export type UpdateAnnouncementStatusDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-02 13:36:25
+ *  @更新时间 2026-04-02 21:41:27
  */
 export type IdDto = {
   /** 任意合法数值 */
