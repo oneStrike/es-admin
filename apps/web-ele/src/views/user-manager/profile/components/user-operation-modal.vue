@@ -38,8 +38,11 @@ import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsModalTable from '#/components/es-modal-table';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
-import { badgeTypeMap, badgeTypeOptions } from '#/views/user-growth/badges/modules/model/constants';
-import { growthTypeOptions } from '#/views/user-growth/model/constants';
+import {
+  badgeTypeMap,
+  badgeTypeOptions,
+} from '#/views/user-manager/growth/badges/modules/model/constants';
+import { growthTypeOptions } from '#/views/user-manager/growth/model/constants';
 
 import {
   getUserStatusText,

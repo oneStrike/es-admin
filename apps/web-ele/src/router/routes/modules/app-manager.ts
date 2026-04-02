@@ -42,7 +42,7 @@ const routes: RouteRecordRaw[] = [
         path: '/app-manager/app-config',
         component: () => import('#/views/app-manager/app-config/index.vue'),
         meta: {
-          title: '系统配置',
+          title: '应用配置',
           icon: 'codex:dot-circle',
         },
       },

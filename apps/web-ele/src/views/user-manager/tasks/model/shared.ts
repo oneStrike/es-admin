@@ -5,7 +5,7 @@ import type {
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { growthTypeOptions } from '#/views/user-growth/model/constants';
+import { growthTypeOptions } from '#/views/user-manager/growth/model/constants';
 
 export const taskTypeOptions = [
   { label: '新手任务', value: 1, color: 'success' as const },

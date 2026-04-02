@@ -1,7 +1,7 @@
 import type { AdminTaskPageResponseDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
-import { growthTypeOptions } from '#/views/user-growth/model/constants';
+import { growthTypeOptions } from '#/views/user-manager/growth/model/constants';
 
 import {
   claimModeOptions,
