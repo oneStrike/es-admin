@@ -12,55 +12,31 @@ import type { EsFormSchema } from '#/types';
 
 import { dayjs, safeParseJson } from '#/utils';
 
-export type CheckInPlanStatusValue =
-  AdminCheckInPlanDetailResponseDto['status'];
-export type CheckInRuleStatusValue =
-  AdminCheckInStreakRewardRuleItemDto['status'];
-export type CheckInCycleTypeValue =
-  AdminCheckInPlanDetailResponseDto['cycleType'];
 export type CheckInRewardConfigValue = NonNullable<
   AdminCheckInPlanDetailResponseDto['baseRewardConfig']
 >;
 
-type CheckInRewardStatusValue = Exclude<
-  | AdminCheckInGrantItemDto['grantStatus']
-  | AdminCheckInReconciliationPageResponseDto['rewardStatus'],
-  null | undefined
->;
-type CheckInRewardResultValue = Exclude<
-  | AdminCheckInGrantItemDto['grantResultType']
-   ,
-  null | undefined
->;
-type CheckInRecordTypeValue =
-  AdminCheckInReconciliationPageResponseDto['recordType'];
-
-type CheckInPlanFormBase = Pick<
-  AdminCheckInPlanDetailResponseDto,
-  | 'allowMakeupCountPerCycle'
-  | 'cycleAnchorDate'
-  | 'cycleType'
-  | 'planCode'
-  | 'planName'
-  | 'publishEndAt'
-  | 'publishStartAt'
-  | 'status'
->;
-
-type CheckInPlanRuleFormBase = Pick<
+export type CheckInPlanRuleFormItem = Pick<
   AdminCheckInStreakRewardRuleItemDto,
   'repeatable' | 'ruleCode' | 'status' | 'streakDays'
->;
-
-export type CheckInPlanRuleFormItem = CheckInPlanRuleFormBase & {
-  localId: AdminCheckInStreakRewardRuleItemDto['ruleCode'];
+> & {
+  localId: string;
   rewardExperience?: CheckInRewardConfigValue['experience'];
   rewardPoints?: CheckInRewardConfigValue['points'];
-  sortOrder?: AdminCheckInStreakRewardRuleItemDto['streakDays'];
+  sortOrder?: AdminCheckInStreakRewardRuleItemDto['sortOrder'];
 };
 
-export type CheckInPlanFormModel = CheckInPlanFormBase &
-  Partial<Pick<CheckInPlanUpdateRequest, 'id'>> & {
+export type CheckInPlanFormModel = Partial<Pick<CheckInPlanUpdateRequest, 'id'>> &
+  Pick<
+  AdminCheckInPlanDetailResponseDto,
+  | 'allowMakeupCountPerCycle'
+  | 'cycleType'
+  | 'endDate'
+  | 'planCode'
+  | 'planName'
+  | 'startDate'
+  | 'status'
+> & {
     baseRewardExperience?: CheckInRewardConfigValue['experience'];
     baseRewardPoints?: CheckInRewardConfigValue['points'];
     streakRewardRules: CheckInPlanRuleFormItem[];
@@ -80,59 +56,35 @@ export const checkInPlanStatusOptions = [
   { color: 'success' as const, label: '已发布', value: 1 },
   { color: 'danger' as const, label: '已下线', value: 2 },
   { color: 'warning' as const, label: '已停用', value: 3 },
-] satisfies Array<{
-  color: string;
-  label: string;
-  value: CheckInPlanStatusValue;
-}>;
+]
 
 export const checkInCycleTypeOptions = [
   { color: 'primary' as const, label: '按日', value: 'daily' },
   { color: 'warning' as const, label: '按周', value: 'weekly' },
   { color: 'success' as const, label: '按月', value: 'monthly' },
-] satisfies Array<{
-  color: string;
-  label: string;
-  value: CheckInCycleTypeValue;
-}>;
+]
 
 export const checkInRewardStatusOptions = [
   { color: 'warning' as const, label: '待处理', value: 0 },
   { color: 'success' as const, label: '成功', value: 1 },
   { color: 'danger' as const, label: '失败', value: 2 },
-] satisfies Array<{
-  color: string;
-  label: string;
-  value: CheckInRewardStatusValue;
-}>;
+]
 
 export const checkInRewardResultOptions = [
   { color: 'success' as const, label: '已落账', value: 1 },
   { color: 'info' as const, label: '幂等命中', value: 2 },
   { color: 'danger' as const, label: '处理失败', value: 3 },
-] satisfies Array<{
-  color: string;
-  label: string;
-  value: CheckInRewardResultValue;
-}>;
+]
 
 export const checkInRecordTypeOptions = [
   { color: 'success' as const, label: '正常签到', value: 1 },
   { color: 'warning' as const, label: '补签', value: 2 },
-] satisfies Array<{
-  color: string;
-  label: string;
-  value: CheckInRecordTypeValue;
-}>;
+]
 
 export const checkInRuleStatusOptions = [
   { color: 'info' as const, label: '停用', value: 0 },
   { color: 'success' as const, label: '启用', value: 1 },
-] satisfies Array<{
-  color: string;
-  label: string;
-  value: CheckInRuleStatusValue;
-}>;
+]
 export const planSearchFormSchema: EsFormSchema = [
   {
     component: 'Input',
@@ -276,9 +228,9 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> = [
     },
   },
   {
-    field: 'cycleAnchorDate',
+    field: 'startDate',
     minWidth: 130,
-    title: '起算日期',
+    title: '开始日期',
   },
   {
     field: 'allowMakeupCountPerCycle',
@@ -314,7 +266,7 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> = [
     title: '待补偿',
   },
   {
-    field: 'publishStartAt',
+    field: 'startDate',
     minWidth: 220,
     showOverflow: false,
     slots: { default: 'publishWindow' },
@@ -432,12 +384,11 @@ export function createDefaultPlanFormModel(): CheckInPlanFormModel {
     allowMakeupCountPerCycle: 0,
     baseRewardExperience: undefined,
     baseRewardPoints: undefined,
-    cycleAnchorDate: dayjs().format('YYYY-MM-DD'),
     cycleType: 'weekly',
+    endDate: undefined,
     planCode: '',
     planName: '',
-    publishEndAt: undefined,
-    publishStartAt: undefined,
+    startDate: dayjs().format('YYYY-MM-DD'),
     status: 0,
     streakRewardRules: [],
   };
@@ -466,11 +417,38 @@ export function formatRewardSummary(value: unknown) {
   return items.length > 0 ? items.join(' / ') : '未配置';
 }
 
-export function formatLedgerIds(
-  ids?:
-    | AdminCheckInGrantItemDto['ledgerIds']
+export function hasConfiguredReward(value: {
+  experience?: null | number;
+  points?: null | number;
+}) {
+  return Number(value.experience ?? 0) > 0 || Number(value.points ?? 0) > 0;
+}
 
-    | null,
+export function getBaseRewardValidationMessage(
+  model: Pick<CheckInPlanFormModel, 'baseRewardExperience' | 'baseRewardPoints'>,
+) {
+  return hasConfiguredReward({
+    experience: model.baseRewardExperience,
+    points: model.baseRewardPoints,
+  })
+    ? null
+    : '基础奖励积分或经验至少填写一项';
+}
+
+export function getRuleRewardValidationMessage(
+  rule: Pick<CheckInPlanRuleFormItem, 'rewardExperience' | 'rewardPoints'>,
+  rowNumber: number,
+) {
+  return hasConfiguredReward({
+    experience: rule.rewardExperience,
+    points: rule.rewardPoints,
+  })
+    ? null
+    : `第 ${rowNumber} 条连续奖励积分或经验至少填写一项`;
+}
+
+export function formatLedgerIds(
+  ids?: AdminCheckInGrantItemDto['ledgerIds'] | null,
 ) {
   return ids && ids.length > 0 ? ids.join(', ') : '-';
 }
@@ -484,17 +462,12 @@ export function mapPlanDetailToFormModel(
     allowMakeupCountPerCycle: detail.allowMakeupCountPerCycle,
     baseRewardExperience: baseRewardConfig.experience,
     baseRewardPoints: baseRewardConfig.points,
-    cycleAnchorDate: detail.cycleAnchorDate,
     cycleType: detail.cycleType,
+    endDate: detail.endDate ? dayjs(detail.endDate).format('YYYY-MM-DD') : undefined,
     id: detail.id,
     planCode: detail.planCode,
     planName: detail.planName,
-    publishEndAt: detail.publishEndAt
-      ? dayjs(detail.publishEndAt).format('YYYY-MM-DD HH:mm:ss')
-      : undefined,
-    publishStartAt: detail.publishStartAt
-      ? dayjs(detail.publishStartAt).format('YYYY-MM-DD HH:mm:ss')
-      : undefined,
+    startDate: dayjs(detail.startDate).format('YYYY-MM-DD'),
     status: detail.status,
     streakRewardRules: (detail.streakRewardRules || []).map((rule, index) => {
       const rewardConfig = parseRewardConfig(rule.rewardConfig);
@@ -530,12 +503,11 @@ export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
   const payload = {
     allowMakeupCountPerCycle: Number(model.allowMakeupCountPerCycle ?? 0),
     baseRewardConfig,
-    cycleAnchorDate: model.cycleAnchorDate,
     cycleType: model.cycleType,
+    endDate: model.endDate || undefined,
     planCode: model.planCode.trim(),
     planName: model.planName.trim(),
-    publishEndAt: model.publishEndAt || undefined,
-    publishStartAt: model.publishStartAt || undefined,
+    startDate: model.startDate,
     status: model.status,
     streakRewardRules,
   } as Record<string, unknown>;

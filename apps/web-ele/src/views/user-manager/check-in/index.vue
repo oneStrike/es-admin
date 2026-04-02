@@ -23,7 +23,7 @@ import {
 } from '#/api/core';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
-import { createSearchFormOptions, formatUTC } from '#/utils';
+import { createSearchFormOptions } from '#/utils';
 
 import CheckInPlanModal from './check-in-plan-modal.vue';
 import { getDetailCards } from './model/detail';
@@ -349,17 +349,13 @@ function renderRewardTagType(status?: null | number) {
                 <div>
                   开始：
                   {{
-                    row.publishStartAt
-                      ? formatUTC(row.publishStartAt, 'YYYY-MM-DD HH:mm:ss')
-                      : '不限'
+                    row.startDate || '不限'
                   }}
                 </div>
                 <div>
                   结束：
                   {{
-                    row.publishEndAt
-                      ? formatUTC(row.publishEndAt, 'YYYY-MM-DD HH:mm:ss')
-                      : '不限'
+                    row.endDate || '不限'
                   }}
                 </div>
               </div>
