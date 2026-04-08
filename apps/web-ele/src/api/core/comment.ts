@@ -1,15 +1,14 @@
+import { requestClient } from '#/api/request'
 import type {
-  CommentDetailRequest,
-  CommentDetailResponse,
   CommentPageRequest,
   CommentPageResponse,
+  CommentDetailRequest,
+  CommentDetailResponse,
   CommentUpdateAuditStatusRequest,
   CommentUpdateAuditStatusResponse,
   CommentUpdateHiddenRequest,
   CommentUpdateHiddenResponse
 } from '../types/comment.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

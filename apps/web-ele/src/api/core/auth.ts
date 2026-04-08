@@ -1,15 +1,14 @@
+import { requestClient } from '#/api/request'
 import type {
   AuthCaptchaResponse,
-  AuthKeyPublicResponse,
   AuthLoginRequest,
   AuthLoginResponse,
   AuthLogoutRequest,
   AuthLogoutResponse,
   AuthTokenRefreshRequest,
-  AuthTokenRefreshResponse
+  AuthTokenRefreshResponse,
+  AuthKeyPublicResponse
 } from '../types/auth.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

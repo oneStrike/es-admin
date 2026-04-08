@@ -1,6 +1,10 @@
+import { requestClient } from '#/api/request'
 import type {
   SystemUserCreateRequest,
   SystemUserCreateResponse,
+  SystemUserProfileUpdateRequest,
+  SystemUserProfileUpdateResponse,
+  SystemUserProfileResponse,
   SystemUserDetailRequest,
   SystemUserDetailResponse,
   SystemUserPageRequest,
@@ -9,14 +13,9 @@ import type {
   SystemUserPasswordChangeResponse,
   SystemUserPasswordResetRequest,
   SystemUserPasswordResetResponse,
-  SystemUserProfileResponse,
-  SystemUserProfileUpdateRequest,
-  SystemUserProfileUpdateResponse,
   SystemUserUnlockRequest,
   SystemUserUnlockResponse
 } from '../types/systemUser.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

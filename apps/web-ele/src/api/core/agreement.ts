@@ -1,19 +1,16 @@
+import { requestClient } from '#/api/request'
 import type {
   AgreementCreateRequest,
   AgreementCreateResponse,
-  AgreementDeleteRequest,
-  AgreementDeleteResponse,
-  AgreementDetailRequest,
-  AgreementDetailResponse,
-  AgreementPageRequest,
-  AgreementPageResponse,
   AgreementUpdateRequest,
   AgreementUpdateResponse,
   AgreementUpdateStatusRequest,
-  AgreementUpdateStatusResponse
+  AgreementUpdateStatusResponse,
+  AgreementPageRequest,
+  AgreementPageResponse,
+  AgreementDetailRequest,
+  AgreementDetailResponse
 } from '../types/agreement.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**
@@ -33,18 +30,10 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 更新协议状态
+   * 更新协议发布状态
    */
   export async function agreementUpdateStatusApi(params: AgreementUpdateStatusRequest): Promise<AgreementUpdateStatusResponse> {
     return requestClient.post<AgreementUpdateStatusResponse>('/api/admin/agreement/update-status', params);
-  }
-
-
-  /**
-   * 下线协议
-   */
-  export async function agreementDeleteApi(params: AgreementDeleteRequest): Promise<AgreementDeleteResponse> {
-    return requestClient.post<AgreementDeleteResponse>('/api/admin/agreement/delete', params);
   }
 
 

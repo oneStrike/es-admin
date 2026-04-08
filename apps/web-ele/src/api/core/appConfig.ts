@@ -1,10 +1,9 @@
+import { requestClient } from '#/api/request'
 import type {
   AppConfigActiveResponse,
   AppConfigUpdateRequest,
   AppConfigUpdateResponse
 } from '../types/appConfig.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

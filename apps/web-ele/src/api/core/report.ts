@@ -1,13 +1,12 @@
+import { requestClient } from '#/api/request'
 import type {
+  ReportPageRequest,
+  ReportPageResponse,
   ReportDetailRequest,
   ReportDetailResponse,
   ReportHandleRequest,
-  ReportHandleResponse,
-  ReportPageRequest,
-  ReportPageResponse
+  ReportHandleResponse
 } from '../types/report.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

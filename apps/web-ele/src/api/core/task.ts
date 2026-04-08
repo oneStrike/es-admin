@@ -1,27 +1,26 @@
+import { requestClient } from '#/api/request'
 import type {
+  TaskCreateRequest,
+  TaskCreateResponse,
+  TaskUpdateRequest,
+  TaskUpdateResponse,
+  TaskUpdateStatusRequest,
+  TaskUpdateStatusResponse,
+  TaskDeleteRequest,
+  TaskDeleteResponse,
+  TaskPageRequest,
+  TaskPageResponse,
+  TaskDetailRequest,
+  TaskDetailResponse,
   TaskAssignmentPageRequest,
   TaskAssignmentPageResponse,
   TaskAssignmentReconciliationPageRequest,
   TaskAssignmentReconciliationPageResponse,
-  TaskAssignmentRetryRewardBatchRequest,
-  TaskAssignmentRetryRewardBatchResponse,
   TaskAssignmentRetryRewardRequest,
   TaskAssignmentRetryRewardResponse,
-  TaskCreateRequest,
-  TaskCreateResponse,
-  TaskDeleteRequest,
-  TaskDeleteResponse,
-  TaskDetailRequest,
-  TaskDetailResponse,
-  TaskPageRequest,
-  TaskPageResponse,
-  TaskUpdateRequest,
-  TaskUpdateResponse,
-  TaskUpdateStatusRequest,
-  TaskUpdateStatusResponse
+  TaskAssignmentRetryRewardBatchRequest,
+  TaskAssignmentRetryRewardBatchResponse
 } from '../types/task.d'
-
-import { requestClient } from '#/api/request'
 
 
   /**

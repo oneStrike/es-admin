@@ -61,6 +61,16 @@ const routes: RouteRecordRaw[] = [
           icon: 'codex:dot-circle',
         },
       },
+      {
+        name: 'IpGeolocationManager',
+        path: '/system-manager/ip-geolocation',
+        component: () =>
+          import('#/views/system-manager/ip-geolocation/index.vue'),
+        meta: {
+          title: 'IP 属地库',
+          icon: 'codex:dot-circle',
+        },
+      },
     ],
   },
 ];
