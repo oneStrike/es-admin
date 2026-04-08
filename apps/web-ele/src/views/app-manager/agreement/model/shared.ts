@@ -1,4 +1,4 @@
-import type { ListOrPageAgreementResponseDto } from '#/api/types';
+import type { AgreementListItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -84,39 +84,36 @@ export const formSchema: EsFormSchema = [
 ];
 
 export const agreementColumns =
-  formSchemaTransform.toTableColumns<ListOrPageAgreementResponseDto>(
-    formSchema,
-    {
-      content: {
-        hide: true,
-      },
-      isPublished: {
-        title: '发布状态',
-        slots: { default: 'isPublished' },
-      },
-      showInAuth: {
-        title: '登录注册页',
-        cellRender: {
-          name: 'CellTag',
-        },
-      },
-      isForce: {
-        title: '强制同意',
-        cellRender: {
-          name: 'CellTag',
-        },
-      },
-      createdAt: {
-        show: true,
-      },
-      updatedAt: {
-        show: true,
-      },
-      actions: {
-        show: true,
+  formSchemaTransform.toTableColumns<AgreementListItemDto>(formSchema, {
+    content: {
+      hide: true,
+    },
+    isPublished: {
+      title: '发布状态',
+      slots: { default: 'isPublished' },
+    },
+    showInAuth: {
+      title: '登录注册页',
+      cellRender: {
+        name: 'CellTag',
       },
     },
-  );
+    isForce: {
+      title: '强制同意',
+      cellRender: {
+        name: 'CellTag',
+      },
+    },
+    createdAt: {
+      show: true,
+    },
+    updatedAt: {
+      show: true,
+    },
+    actions: {
+      show: true,
+    },
+  });
 
 export const agreementFilter = formSchemaTransform.toSearchSchema(formSchema, {
   title: {

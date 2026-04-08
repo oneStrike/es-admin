@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  AgreementListItemDto,
   BaseAgreementDto,
   CreateAgreementDto,
-  ListOrPageAgreementResponseDto,
   UpdateAgreementDto,
 } from '#/api/types';
 
@@ -12,7 +12,6 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   agreementCreateApi,
-  agreementDeleteApi,
   agreementDetailApi,
   agreementPageApi,
   agreementUpdateApi,
@@ -26,7 +25,7 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 import { getDetailCards } from './model/detail';
 import { agreementColumns, agreementFilter, formSchema } from './model/shared';
 
-const gridOptions: VxeGridProps<ListOrPageAgreementResponseDto> = {
+const gridOptions: VxeGridProps<AgreementListItemDto> = {
   columns: agreementColumns,
   height: 'auto',
   proxyConfig: {
@@ -48,34 +47,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-const currentAgreementRecord = ref<null | Partial<BaseAgreementDto>>(null);
-
-async function openFormModal(row?: ListOrPageAgreementResponseDto) {
-  let record;
-  if (row) {
-    record = await agreementDetailApi({ id: row.id });
-  }
-  currentAgreementRecord.value = record ?? { isPublished: false };
+async function openFormModal(row?: AgreementListItemDto) {
+  const record = row ? await agreementDetailApi({ id: row.id }) : undefined;
   formApi.setData({ title: '协议', record }).open();
 }
 
 async function handleSubmit(values: CreateAgreementDto | UpdateAgreementDto) {
-  const payload = {
-    ...(values as Record<string, any>),
-    isPublished:
-      values.isPublished ?? currentAgreementRecord.value?.isPublished ?? false,
-  } as CreateAgreementDto | UpdateAgreementDto;
-
-  await (('id' in payload && payload.id)
-    ? agreementUpdateApi(payload as UpdateAgreementDto)
-    : agreementCreateApi(payload as CreateAgreementDto));
+  await (typeof (values as UpdateAgreementDto).id === 'number' ? agreementUpdateApi(values as UpdateAgreementDto) : agreementCreateApi(values as CreateAgreementDto));
   formApi.close();
-  useMessage.success('操作成功');
-  gridApi.reload();
-}
-
-async function deleteAgreement(record: ListOrPageAgreementResponseDto) {
-  await agreementDeleteApi({ id: record.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
@@ -85,7 +64,9 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '协议详情',
 });
 
-async function togglePublishedStatus(record: BaseAgreementDto | ListOrPageAgreementResponseDto) {
+async function togglePublishedStatus(
+  record: AgreementListItemDto | BaseAgreementDto,
+) {
   record.loading = true;
   try {
     await agreementUpdateStatusApi({
@@ -132,17 +113,6 @@ async function togglePublishedStatus(record: BaseAgreementDto | ListOrPageAgreem
           <el-button link type="primary" @click="openFormModal(row)">
             编辑
           </el-button>
-          <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前项?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteAgreement(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
         </div>
       </template>
     </Grid>
