@@ -4,9 +4,14 @@ import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import type { Options } from '#/utils/options';
 
+import type { ComponentPropsMap, ComponentType } from './component';
+
 import { h } from 'vue';
 
-import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
+import {
+  setupVbenVxeTable,
+  useVbenVxeGrid as useGrid,
+} from '@vben/plugins/vxe-table';
 
 import { ElButton, ElImage, ElTag, ElText } from 'element-plus';
 
@@ -291,6 +296,9 @@ setupVbenVxeTable({
   useVbenForm,
 });
 
+export const useVbenVxeGrid = <T extends Record<string, any>>(
+  ...rest: Parameters<typeof useGrid<T, ComponentType, ComponentPropsMap>>
+) => useGrid<T, ComponentType, ComponentPropsMap>(...rest);
 const fromApiPageIndex = (pageIndex?: null | number) =>
   Math.max((pageIndex ?? 0) + 1, 1);
 
