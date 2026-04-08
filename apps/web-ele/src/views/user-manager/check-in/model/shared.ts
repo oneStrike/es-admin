@@ -10,7 +10,7 @@ import type {
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { dayjs, safeParseJson } from '#/utils';
+import { dayjs, formSchemaTransform, safeParseJson } from '#/utils';
 
 export type CheckInRewardConfigValue = NonNullable<
   AdminCheckInPlanDetailResponseDto['baseRewardConfig']
@@ -26,17 +26,19 @@ export type CheckInPlanRuleFormItem = Pick<
   sortOrder?: AdminCheckInStreakRewardRuleItemDto['sortOrder'];
 };
 
-export type CheckInPlanFormModel = Partial<Pick<CheckInPlanUpdateRequest, 'id'>> &
+export type CheckInPlanFormModel = Partial<
+  Pick<CheckInPlanUpdateRequest, 'id'>
+> &
   Pick<
-  AdminCheckInPlanDetailResponseDto,
-  | 'allowMakeupCountPerCycle'
-  | 'cycleType'
-  | 'endDate'
-  | 'planCode'
-  | 'planName'
-  | 'startDate'
-  | 'status'
-> & {
+    AdminCheckInPlanDetailResponseDto,
+    | 'allowMakeupCountPerCycle'
+    | 'cycleType'
+    | 'endDate'
+    | 'planCode'
+    | 'planName'
+    | 'startDate'
+    | 'status'
+  > & {
     baseRewardExperience?: CheckInRewardConfigValue['experience'];
     baseRewardPoints?: CheckInRewardConfigValue['points'];
     streakRewardRules: CheckInPlanRuleFormItem[];
@@ -56,36 +58,36 @@ export const checkInPlanStatusOptions = [
   { color: 'success' as const, label: '已发布', value: 1 },
   { color: 'danger' as const, label: '已下线', value: 2 },
   { color: 'warning' as const, label: '已停用', value: 3 },
-]
+];
 
 export const checkInCycleTypeOptions = [
-  { color: 'primary' as const, label: '按日', value: 'daily' },
   { color: 'warning' as const, label: '按周', value: 'weekly' },
   { color: 'success' as const, label: '按月', value: 'monthly' },
-]
+];
 
 export const checkInRewardStatusOptions = [
   { color: 'warning' as const, label: '待处理', value: 0 },
   { color: 'success' as const, label: '成功', value: 1 },
   { color: 'danger' as const, label: '失败', value: 2 },
-]
+];
 
 export const checkInRewardResultOptions = [
   { color: 'success' as const, label: '已落账', value: 1 },
   { color: 'info' as const, label: '幂等命中', value: 2 },
   { color: 'danger' as const, label: '处理失败', value: 3 },
-]
+];
 
 export const checkInRecordTypeOptions = [
   { color: 'success' as const, label: '正常签到', value: 1 },
   { color: 'warning' as const, label: '补签', value: 2 },
-]
+];
 
 export const checkInRuleStatusOptions = [
   { color: 'info' as const, label: '停用', value: 0 },
   { color: 'success' as const, label: '启用', value: 1 },
-]
-export const planSearchFormSchema: EsFormSchema = [
+];
+
+const planFormSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
@@ -93,6 +95,7 @@ export const planSearchFormSchema: EsFormSchema = [
       placeholder: '计划编码',
     },
     fieldName: 'planCode',
+    label: '计划编码',
   },
   {
     component: 'Input',
@@ -101,6 +104,7 @@ export const planSearchFormSchema: EsFormSchema = [
       placeholder: '计划名称',
     },
     fieldName: 'planName',
+    label: '计划名称',
   },
   {
     component: 'Select',
@@ -110,10 +114,48 @@ export const planSearchFormSchema: EsFormSchema = [
       placeholder: '计划状态',
     },
     fieldName: 'status',
+    label: '计划状态',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      options: checkInCycleTypeOptions,
+      placeholder: '周期类型',
+    },
+    fieldName: 'cycleType',
+    label: '周期类型',
+  },
+  {
+    component: 'DatePicker',
+    componentProps: {
+      placeholder: '开始日期',
+      type: 'date',
+      valueFormat: 'YYYY-MM-DD',
+    },
+    fieldName: 'startDate',
+    label: '开始日期',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 0,
+      placeholder: '每周期补签次数',
+    },
+    fieldName: 'allowMakeupCountPerCycle',
+    label: '每周期补签次数',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '基础奖励',
+    },
+    fieldName: 'baseRewardConfig',
+    label: '基础奖励',
   },
 ];
 
-export const reconciliationSearchFormSchema: EsFormSchema = [
+const reconciliationSearchBaseSchema: EsFormSchema = [
   {
     component: 'InputNumber',
     componentProps: {
@@ -122,6 +164,7 @@ export const reconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '用户ID',
     },
     fieldName: 'userId',
+    label: '用户ID',
   },
   {
     component: 'InputNumber',
@@ -131,6 +174,7 @@ export const reconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '计划ID',
     },
     fieldName: 'planId',
+    label: '计划ID',
   },
   {
     component: 'InputNumber',
@@ -140,6 +184,7 @@ export const reconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '周期ID',
     },
     fieldName: 'cycleId',
+    label: '周期ID',
   },
   {
     component: 'InputNumber',
@@ -149,6 +194,7 @@ export const reconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '记录ID',
     },
     fieldName: 'recordId',
+    label: '记录ID',
   },
   {
     component: 'InputNumber',
@@ -158,6 +204,7 @@ export const reconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '发放事实ID',
     },
     fieldName: 'grantId',
+    label: '发放事实ID',
   },
   {
     component: 'Select',
@@ -167,6 +214,7 @@ export const reconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '基础奖励状态',
     },
     fieldName: 'rewardStatus',
+    label: '基础奖励状态',
   },
   {
     component: 'Select',
@@ -176,6 +224,7 @@ export const reconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '连续奖励状态',
     },
     fieldName: 'grantStatus',
+    label: '连续奖励状态',
   },
   {
     component: 'DatePicker',
@@ -187,184 +236,256 @@ export const reconciliationSearchFormSchema: EsFormSchema = [
       valueFormat: 'YYYY-MM-DD',
     },
     fieldName: 'dateRange',
+    label: '签到日期',
   },
 ];
 
-export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> = [
+const reconciliationTableFormSchema: EsFormSchema = [
   {
-    field: 'planName',
-    fixed: 'left',
-    minWidth: 240,
-    showOverflow: 'tooltip',
-    title: '签到计划',
-    slots: { default: 'planName' },
-  },
-  {
-    field: 'planCode',
-    fixed: 'left',
-    minWidth: 140,
-    title: '编码',
-  },
-  {
-    field: 'status',
-    minWidth: 120,
-    title: '状态',
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        mapOptions: checkInPlanStatusOptions,
-      },
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '签到记录ID',
     },
+    fieldName: 'recordId',
+    label: '签到记录ID',
   },
   {
-    field: 'cycleType',
-    minWidth: 110,
-    title: '周期',
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        mapOptions: checkInCycleTypeOptions,
-      },
+    component: 'DatePicker',
+    componentProps: {
+      placeholder: '签到日期',
+      type: 'date',
+      valueFormat: 'YYYY-MM-DD',
     },
+    fieldName: 'signDate',
+    label: '签到日期',
   },
   {
-    field: 'startDate',
-    minWidth: 130,
-    title: '开始日期',
-  },
-  {
-    field: 'allowMakeupCountPerCycle',
-    minWidth: 110,
-    title: '补签次数',
-  },
-  {
-    field: 'baseRewardConfig',
-    minWidth: 190,
-    showOverflow: false,
-    slots: { default: 'baseRewardConfig' },
-    title: '基础奖励',
-  },
-  {
-    field: 'version',
-    minWidth: 90,
-    title: '版本',
-  },
-  {
-    field: 'ruleCount',
-    minWidth: 110,
-    title: '规则数',
-  },
-  {
-    field: 'activeCycleCount',
-    minWidth: 120,
-    title: '活跃周期',
-  },
-  {
-    field: 'pendingRewardCount',
-    minWidth: 120,
-    slots: { default: 'pendingRewardCount' },
-    title: '待补偿',
-  },
-  {
-    field: 'startDate',
-    minWidth: 220,
-    showOverflow: false,
-    slots: { default: 'publishWindow' },
-    title: '生效时间',
-  },
-  {
-    field: 'updatedAt',
-    minWidth: 160,
-    sortable: true,
-    title: '更新时间',
-    cellRender: {
-      name: 'CellDate',
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '用户ID',
     },
+    fieldName: 'userId',
+    label: '用户ID',
   },
   {
-    field: 'actions',
-    fixed: 'right',
-    minWidth: 340,
-    slots: { default: 'planActions' },
-    title: '操作',
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '计划ID',
+    },
+    fieldName: 'planId',
+    label: '计划ID',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '周期ID',
+    },
+    fieldName: 'cycleId',
+    label: '周期ID',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      options: checkInRewardStatusOptions,
+      placeholder: '基础奖励',
+    },
+    fieldName: 'rewardStatus',
+    label: '基础奖励',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '基础账本',
+    },
+    fieldName: 'baseRewardLedgerIds',
+    label: '基础账本',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '连续奖励',
+    },
+    fieldName: 'grants',
+    label: '连续奖励',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '基础奖励错误',
+    },
+    fieldName: 'lastRewardError',
+    label: '基础奖励错误',
   },
 ];
 
-export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliationRow> =
-  [
-    {
-      field: 'recordId',
+export const planSearchFormSchema = formSchemaTransform.toSearchSchema(
+  planFormSchema,
+  {
+    planCode: {
+      show: true,
+    },
+    planName: {
+      show: true,
+    },
+    status: {
+      show: true,
+    },
+  },
+);
+
+export const reconciliationSearchFormSchema =
+  formSchemaTransform.toSearchSchema(reconciliationSearchBaseSchema, {
+    userId: {
+      show: true,
+    },
+    planId: {
+      show: true,
+    },
+    cycleId: {
+      show: true,
+    },
+    recordId: {
+      show: true,
+    },
+    grantId: {
+      show: true,
+    },
+    rewardStatus: {
+      show: true,
+    },
+    grantStatus: {
+      show: true,
+    },
+    dateRange: {
+      show: true,
+    },
+  });
+
+export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> =
+  formSchemaTransform.toTableColumns<CheckInPlanRow>(planFormSchema, {
+    planName: {
       fixed: 'left',
+      minWidth: 240,
+      sort: 1,
+      showOverflow: 'tooltip',
+      slots: { default: 'planName' },
+      title: '签到计划',
+    },
+    planCode: {
+      fixed: 'left',
+      minWidth: 140,
+      sort: 2,
+      title: '编码',
+    },
+    status: {
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          mapOptions: checkInPlanStatusOptions,
+        },
+      },
+      minWidth: 120,
+      title: '状态',
+    },
+    cycleType: {
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          mapOptions: checkInCycleTypeOptions,
+        },
+      },
       minWidth: 110,
-      title: '签到记录ID',
+      title: '周期',
     },
-    {
-      field: 'signDate',
-      fixed: 'left',
-      minWidth: 180,
+    startDate: {
+      minWidth: 130,
+      title: '开始日期',
+    },
+    allowMakeupCountPerCycle: {
+      formatter: ({ cellValue }) => {
+        return cellValue ?? '-';
+      },
+      minWidth: 110,
+      title: '补签次数',
+    },
+    baseRewardConfig: {
+      minWidth: 190,
       showOverflow: false,
-      slots: { default: 'signInfo' },
-      title: '签到日期',
-    },
-    {
-      field: 'userId',
-      minWidth: 100,
-      title: '用户ID',
-    },
-    {
-      field: 'planId',
-      minWidth: 100,
-      title: '计划ID',
-    },
-    {
-      field: 'cycleId',
-      minWidth: 100,
-      title: '周期ID',
-    },
-    {
-      field: 'rewardStatus',
-      minWidth: 150,
-      showOverflow: false,
-      slots: { default: 'baseRewardStatus' },
+      slots: { default: 'baseRewardConfig' },
       title: '基础奖励',
     },
-    {
-      field: 'baseRewardLedgerIds',
-      minWidth: 180,
-      showOverflow: false,
-      slots: { default: 'baseRewardLedgerIds' },
-      title: '基础账本',
+    updatedAt: {
+      show: true,
+      width: 160,
     },
-    {
-      field: 'grants',
-      minWidth: 360,
-      showOverflow: false,
-      slots: { default: 'grants' },
-      title: '连续奖励',
+    actions: {
+      show: true,
+      slots: { default: 'planActions' },
+      width: 180,
     },
+  });
+
+export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliationRow> =
+  formSchemaTransform.toTableColumns<CheckInReconciliationRow>(
+    reconciliationTableFormSchema,
     {
-      field: 'lastRewardError',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      title: '基础奖励错误',
-    },
-    {
-      field: 'createdAt',
-      minWidth: 160,
-      sortable: true,
-      title: '创建时间',
-      cellRender: {
-        name: 'CellDate',
+      recordId: {
+        fixed: 'left',
+        minWidth: 110,
+      },
+      signDate: {
+        fixed: 'left',
+        minWidth: 180,
+        showOverflow: false,
+        slots: { default: 'signInfo' },
+      },
+      userId: {
+        minWidth: 100,
+      },
+      planId: {
+        minWidth: 100,
+      },
+      cycleId: {
+        minWidth: 100,
+      },
+      rewardStatus: {
+        minWidth: 150,
+        showOverflow: false,
+        slots: { default: 'baseRewardStatus' },
+      },
+      baseRewardLedgerIds: {
+        minWidth: 180,
+        showOverflow: false,
+        slots: { default: 'baseRewardLedgerIds' },
+      },
+      grants: {
+        minWidth: 360,
+        showOverflow: false,
+        slots: { default: 'grants' },
+      },
+      lastRewardError: {
+        minWidth: 220,
+        showOverflow: 'tooltip',
+      },
+      createdAt: {
+        show: true,
+        width: 160,
+      },
+      actions: {
+        sort: 999_999,
+        slots: { default: 'reconciliationActions' },
+        title: '操作',
       },
     },
-    {
-      field: 'actions',
-      fixed: 'right',
-      minWidth: 160,
-      slots: { default: 'reconciliationActions' },
-      title: '操作',
-    },
-  ];
+  );
 
 export function createDefaultRuleFormItem(seed = 1): CheckInPlanRuleFormItem {
   return {
@@ -425,7 +546,10 @@ export function hasConfiguredReward(value: {
 }
 
 export function getBaseRewardValidationMessage(
-  model: Pick<CheckInPlanFormModel, 'baseRewardExperience' | 'baseRewardPoints'>,
+  model: Pick<
+    CheckInPlanFormModel,
+    'baseRewardExperience' | 'baseRewardPoints'
+  >,
 ) {
   return hasConfiguredReward({
     experience: model.baseRewardExperience,
@@ -463,7 +587,9 @@ export function mapPlanDetailToFormModel(
     baseRewardExperience: baseRewardConfig.experience,
     baseRewardPoints: baseRewardConfig.points,
     cycleType: detail.cycleType,
-    endDate: detail.endDate ? dayjs(detail.endDate).format('YYYY-MM-DD') : undefined,
+    endDate: detail.endDate
+      ? dayjs(detail.endDate).format('YYYY-MM-DD')
+      : undefined,
     id: detail.id,
     planCode: detail.planCode,
     planName: detail.planName,

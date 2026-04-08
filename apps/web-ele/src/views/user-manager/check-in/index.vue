@@ -328,39 +328,6 @@ function renderRewardTagType(status?: null | number) {
               </div>
             </template>
 
-            <template #pendingRewardCount="{ row }">
-              <div class="flex items-center gap-2">
-                <span class="font-medium text-slate-900">{{
-                  row.pendingRewardCount
-                }}</span>
-                <el-tag
-                  v-if="row.pendingRewardCount > 0"
-                  effect="light"
-                  round
-                  type="danger"
-                >
-                  待处理
-                </el-tag>
-              </div>
-            </template>
-
-            <template #publishWindow="{ row }">
-              <div class="space-y-1 text-xs leading-5 text-slate-500">
-                <div>
-                  开始：
-                  {{
-                    row.startDate || '不限'
-                  }}
-                </div>
-                <div>
-                  结束：
-                  {{
-                    row.endDate || '不限'
-                  }}
-                </div>
-              </div>
-            </template>
-
             <template #planActions="{ row }">
               <div class="flex flex-wrap items-center gap-2 py-1">
                 <el-button link type="primary" @click="openPlanDetail(row)">
@@ -554,8 +521,8 @@ function renderRewardTagType(status?: null | number) {
                   补基础奖励
                 </el-button>
                 <el-text v-else class="text-xs text-slate-400">
-无需补偿
-</el-text>
+                  无需补偿
+                </el-text>
               </div>
             </template>
           </ReconciliationGrid>
