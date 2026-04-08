@@ -19,11 +19,18 @@ import { useAuthStore } from '#/store';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
-function createRequestClient(baseURL: string, options?: RequestClientOptions) {
+function createRequestClient(
+  baseURL: string,
+  options?: RequestClientOptions,
+  config: {
+    enableAuthenticationInterceptor?: boolean;
+  } = {},
+) {
   const client = new RequestClient({
     ...options,
     baseURL,
   });
+  const { enableAuthenticationInterceptor = true } = config;
 
   /**
    * 重新认证逻辑
@@ -85,15 +92,17 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   );
 
   // token过期的处理
-  client.addResponseInterceptor(
-    authenticateResponseInterceptor({
-      client,
-      doReAuthenticate,
-      doRefreshToken,
-      enableRefreshToken: preferences.app.enableRefreshToken,
-      formatToken,
-    }),
-  );
+  if (enableAuthenticationInterceptor) {
+    client.addResponseInterceptor(
+      authenticateResponseInterceptor({
+        client,
+        doReAuthenticate,
+        doRefreshToken,
+        enableRefreshToken: preferences.app.enableRefreshToken,
+        formatToken,
+      }),
+    );
+  }
 
   // 通用的错误处理,如果没有进入上面的错误处理逻辑，就会进入这里
   client.addResponseInterceptor(
@@ -113,5 +122,15 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 export const requestClient = createRequestClient(apiURL, {
   responseReturn: 'data',
 });
+
+export const authRequestClient = createRequestClient(
+  apiURL,
+  {
+    responseReturn: 'data',
+  },
+  {
+    enableAuthenticationInterceptor: false,
+  },
+);
 
 export const baseRequestClient = new RequestClient({ baseURL: apiURL });

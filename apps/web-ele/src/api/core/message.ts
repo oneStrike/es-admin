@@ -1,4 +1,3 @@
-import { requestClient } from '#/api/request'
 import type {
   MessageMonitorDeliveryPageRequest,
   MessageMonitorDeliveryPageResponse,
@@ -8,19 +7,21 @@ import type {
   MessageMonitorOutboxSummaryResponse,
   MessageMonitorWsSummaryRequest,
   MessageMonitorWsSummaryResponse,
-  MessageNotificationTemplatesPageRequest,
-  MessageNotificationTemplatesPageResponse,
-  MessageNotificationTemplatesDetailRequest,
-  MessageNotificationTemplatesDetailResponse,
   MessageNotificationTemplatesCreateRequest,
   MessageNotificationTemplatesCreateResponse,
-  MessageNotificationTemplatesUpdateRequest,
-  MessageNotificationTemplatesUpdateResponse,
+  MessageNotificationTemplatesDeleteRequest,
+  MessageNotificationTemplatesDeleteResponse,
+  MessageNotificationTemplatesDetailRequest,
+  MessageNotificationTemplatesDetailResponse,
+  MessageNotificationTemplatesPageRequest,
+  MessageNotificationTemplatesPageResponse,
   MessageNotificationTemplatesUpdateEnabledRequest,
   MessageNotificationTemplatesUpdateEnabledResponse,
-  MessageNotificationTemplatesDeleteRequest,
-  MessageNotificationTemplatesDeleteResponse
+  MessageNotificationTemplatesUpdateRequest,
+  MessageNotificationTemplatesUpdateResponse
 } from '../types/message.d'
+
+import { requestClient } from '#/api/request'
 
 
   /**

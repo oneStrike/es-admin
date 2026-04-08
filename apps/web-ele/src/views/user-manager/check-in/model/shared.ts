@@ -1,36 +1,35 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
-  AdminCheckInGrantItemDto,
-  AdminCheckInPlanDetailResponseDto,
-  AdminCheckInPlanPageResponseDto,
-  AdminCheckInReconciliationPageResponseDto,
-  AdminCheckInStreakRewardRuleItemDto,
+  CheckInGrantItemDto,
   CheckInPlanCreateRequest,
+  CheckInPlanDetailResponseDto,
+  CheckInPlanPageItemDto,
   CheckInPlanUpdateRequest,
+  CheckInReconciliationItemDto,
+  CheckInStreakRewardRuleItemDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { dayjs, formSchemaTransform, safeParseJson } from '#/utils';
 
 export type CheckInRewardConfigValue = NonNullable<
-  AdminCheckInPlanDetailResponseDto['baseRewardConfig']
+  CheckInPlanDetailResponseDto['baseRewardConfig']
 >;
 
 export type CheckInPlanRuleFormItem = Pick<
-  AdminCheckInStreakRewardRuleItemDto,
+  CheckInStreakRewardRuleItemDto,
   'repeatable' | 'ruleCode' | 'status' | 'streakDays'
 > & {
   localId: string;
   rewardExperience?: CheckInRewardConfigValue['experience'];
   rewardPoints?: CheckInRewardConfigValue['points'];
-  sortOrder?: AdminCheckInStreakRewardRuleItemDto['sortOrder'];
 };
 
 export type CheckInPlanFormModel = Partial<
   Pick<CheckInPlanUpdateRequest, 'id'>
 > &
   Pick<
-    AdminCheckInPlanDetailResponseDto,
+    CheckInPlanDetailResponseDto,
     | 'allowMakeupCountPerCycle'
     | 'cycleType'
     | 'endDate'
@@ -44,14 +43,13 @@ export type CheckInPlanFormModel = Partial<
     streakRewardRules: CheckInPlanRuleFormItem[];
   };
 
-export type CheckInPlanRow = AdminCheckInPlanPageResponseDto & {
+export type CheckInPlanRow = CheckInPlanPageItemDto & {
   enableLoading?: boolean;
   publishLoading?: boolean;
   statusLoading?: boolean;
 };
 
-export type CheckInReconciliationRow =
-  AdminCheckInReconciliationPageResponseDto;
+export type CheckInReconciliationRow = CheckInReconciliationItemDto;
 
 export const checkInPlanStatusOptions = [
   { color: 'info' as const, label: '草稿', value: 0 },
@@ -226,18 +224,6 @@ const reconciliationSearchBaseSchema: EsFormSchema = [
     fieldName: 'grantStatus',
     label: '连续奖励状态',
   },
-  {
-    component: 'DatePicker',
-    componentProps: {
-      clearable: true,
-      endPlaceholder: '签到结束日期',
-      startPlaceholder: '签到开始日期',
-      type: 'daterange',
-      valueFormat: 'YYYY-MM-DD',
-    },
-    fieldName: 'dateRange',
-    label: '签到日期',
-  },
 ];
 
 const reconciliationTableFormSchema: EsFormSchema = [
@@ -364,9 +350,6 @@ export const reconciliationSearchFormSchema =
     grantStatus: {
       show: true,
     },
-    dateRange: {
-      show: true,
-    },
   });
 
 export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> =
@@ -410,7 +393,7 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> =
       title: '开始日期',
     },
     allowMakeupCountPerCycle: {
-      formatter: ({ cellValue }) => {
+      formatter: ({ cellValue }: { cellValue?: null | number }) => {
         return cellValue ?? '-';
       },
       minWidth: 110,
@@ -494,7 +477,6 @@ export function createDefaultRuleFormItem(seed = 1): CheckInPlanRuleFormItem {
     rewardExperience: undefined,
     rewardPoints: undefined,
     ruleCode: `streak-${seed}`,
-    sortOrder: seed,
     status: 1,
     streakDays: seed,
   };
@@ -572,13 +554,13 @@ export function getRuleRewardValidationMessage(
 }
 
 export function formatLedgerIds(
-  ids?: AdminCheckInGrantItemDto['ledgerIds'] | null,
+  ids?: CheckInGrantItemDto['ledgerIds'] | null,
 ) {
   return ids && ids.length > 0 ? ids.join(', ') : '-';
 }
 
 export function mapPlanDetailToFormModel(
-  detail: AdminCheckInPlanDetailResponseDto,
+  detail: CheckInPlanDetailResponseDto,
 ): CheckInPlanFormModel {
   const baseRewardConfig = parseRewardConfig(detail.baseRewardConfig);
 
@@ -604,7 +586,6 @@ export function mapPlanDetailToFormModel(
         rewardExperience: rewardConfig.experience,
         rewardPoints: rewardConfig.points,
         ruleCode: rule.ruleCode,
-        sortOrder: rule.sortOrder,
         status: rule.status,
         streakDays: rule.streakDays,
       };
@@ -621,7 +602,6 @@ export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
     repeatable: rule.repeatable,
     rewardConfig: buildRewardConfig(rule.rewardPoints, rule.rewardExperience),
     ruleCode: rule.ruleCode.trim(),
-    sortOrder: Number(rule.sortOrder ?? rule.streakDays ?? 0),
     status: rule.status,
     streakDays: Number(rule.streakDays ?? 0),
   }));

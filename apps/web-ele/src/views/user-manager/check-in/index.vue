@@ -1,7 +1,13 @@
 <script lang="ts" setup>
+import type {
+  CheckInPlanFormModel,
+  CheckInPlanRow,
+  CheckInReconciliationRow,
+} from './model/shared';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  AdminCheckInGrantItemDto,
+  CheckInGrantItemDto,
   CheckInPlanCreateRequest,
   CheckInPlanUpdateRequest,
   CheckInReconciliationRepairRequest,
@@ -28,9 +34,6 @@ import { createSearchFormOptions } from '#/utils';
 import CheckInPlanModal from './check-in-plan-modal.vue';
 import { getDetailCards } from './model/detail';
 import {
-  type CheckInPlanFormModel,
-  type CheckInPlanRow,
-  type CheckInReconciliationRow,
   checkInRecordTypeOptions,
   checkInRewardResultOptions,
   checkInRewardStatusOptions,
@@ -84,17 +87,10 @@ const reconciliationGridOptions: VxeGridProps<CheckInReconciliationRow> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        const { dateRange, ...restFormValues } = formValues || {};
-        const [startDate, endDate] = Array.isArray(dateRange) ? dateRange : [];
-
         return await checkInReconciliationPageApi(
           formatQuery({
             page,
-            formValues: {
-              ...restFormValues,
-              endDate,
-              startDate,
-            },
+            formValues,
             sorts,
           }),
         );
@@ -225,7 +221,7 @@ async function repairRecordReward(row: CheckInReconciliationRow) {
   }
 }
 
-async function repairGrantReward(grant: AdminCheckInGrantItemDto) {
+async function repairGrantReward(grant: CheckInGrantItemDto) {
   if (grant.grantStatus === 1) {
     return;
   }
@@ -286,7 +282,7 @@ function hasRepairableBaseReward(row: CheckInReconciliationRow) {
   return row.rewardStatus === 0 || row.rewardStatus === 2;
 }
 
-function hasRepairableGrant(grant: AdminCheckInGrantItemDto) {
+function hasRepairableGrant(grant: CheckInGrantItemDto) {
   return grant.grantStatus === 0 || grant.grantStatus === 2;
 }
 

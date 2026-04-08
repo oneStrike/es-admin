@@ -2,9 +2,9 @@ import type { TagProps } from 'element-plus';
 
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
-import type { Options } from '#/utils/options';
-
 import type { ComponentPropsMap, ComponentType } from './component';
+
+import type { Options } from '#/utils/options';
 
 import { h } from 'vue';
 
@@ -319,6 +319,6 @@ const formatQuery = ({ page, formValues, sorts }: any) => {
   };
 };
 
-export { formatQuery, fromApiPageIndex, useVbenVxeGrid };
+export { formatQuery, fromApiPageIndex };
 
 export type * from '@vben/plugins/vxe-table';

@@ -1,4 +1,4 @@
-import type { AdminCheckInPlanDetailResponseDto } from '#/api/types';
+import type { CheckInPlanDetailResponseDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
@@ -10,7 +10,7 @@ import {
   getOptionLabel,
 } from './shared';
 
-function buildRuleFields(detail: AdminCheckInPlanDetailResponseDto) {
+function buildRuleFields(detail: CheckInPlanDetailResponseDto) {
   if (!detail.streakRewardRules?.length) {
     return [
       {
@@ -45,8 +45,10 @@ function buildRuleFields(detail: AdminCheckInPlanDetailResponseDto) {
   ]);
 }
 
-export function getDetailCards(detail: AdminCheckInPlanDetailResponseDto) {
-  const status = checkInPlanStatusOptions.find(item => item.value === detail.status);
+export function getDetailCards(detail: CheckInPlanDetailResponseDto) {
+  const status = checkInPlanStatusOptions.find(
+    (item) => item.value === detail.status,
+  );
 
   return [
     {

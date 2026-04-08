@@ -441,7 +441,7 @@ function validateBusinessRules() {
                       规则 {{ index + 1 }}
                     </div>
                     <div class="mt-1 text-xs text-slate-500">
-                      建议让排序值和连续签到天数保持一致，便于后台查看。
+                      建议让规则编码和连续签到天数一一对应，便于后台查看。
                     </div>
                   </div>
                   <div class="flex items-center gap-2">

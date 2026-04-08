@@ -1,11 +1,12 @@
-import { requestClient } from '#/api/request'
 import type {
   SystemConfigResponse,
-  SystemUpdateRequest,
-  SystemUpdateResponse,
   SystemIp2regionStatusResponse,
-  SystemIp2regionUploadResponse
+  SystemIp2regionUploadResponse,
+  SystemUpdateRequest,
+  SystemUpdateResponse
 } from '../types/system.d'
+
+import { requestClient } from '#/api/request'
 
 
   /**
