@@ -1,7 +1,7 @@
 /**
  *  类型定义 [CheckInPlanPageRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInPlanPageRequest = {
   /** 任意合法数值 */
@@ -46,7 +46,7 @@ export type CheckInPlanPageResponse = {
 /**
  *  类型定义 [CheckInPlanDetailRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInPlanDetailRequest = {
   /** 任意合法数值 */
@@ -61,43 +61,25 @@ export type CheckInPlanDetailResponse = CheckInPlanDetailResponseDto
 /**
  *  类型定义 [CheckInPlanCreateRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInPlanCreateRequest = CreateCheckInPlanDto
 
-export type CheckInPlanCreateResponse = boolean
-
-/**
- *  类型定义 [CheckInPlanRewardConfigCreateRequest]
- *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
- */
-export type CheckInPlanRewardConfigCreateRequest = CreateCheckInPlanRewardConfigDto
-
-export type CheckInPlanRewardConfigCreateResponse = boolean
+export type CheckInPlanCreateResponse = IdDto
 
 /**
  *  类型定义 [CheckInPlanUpdateRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInPlanUpdateRequest = UpdateCheckInPlanDto
 
 export type CheckInPlanUpdateResponse = boolean
 
 /**
- *  类型定义 [CheckInPlanRewardConfigUpdateRequest]
- *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
- */
-export type CheckInPlanRewardConfigUpdateRequest = UpdateCheckInPlanRewardConfigDto
-
-export type CheckInPlanRewardConfigUpdateResponse = boolean
-
-/**
  *  类型定义 [CheckInPlanUpdateStatusRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInPlanUpdateStatusRequest = UpdateCheckInPlanStatusDto
 
@@ -106,7 +88,7 @@ export type CheckInPlanUpdateStatusResponse = boolean
 /**
  *  类型定义 [CheckInReconciliationPageRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInReconciliationPageRequest = {
   /** 任意合法数值 */
@@ -163,7 +145,7 @@ export type CheckInReconciliationPageResponse = {
 /**
  *  类型定义 [CheckInReconciliationRepairRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInReconciliationRepairRequest = RepairCheckInRewardDto
 
@@ -172,7 +154,7 @@ export type CheckInReconciliationRepairResponse = RepairCheckInRewardResponseDto
 /**
  *  类型定义 [CheckInPlanPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInPlanPageItemDto = {
   /** 任意合法数值 */
@@ -181,7 +163,7 @@ export type CheckInPlanPageItemDto = {
   activeCycleCount: number
   /* 每周期允许补签次数。 */
   allowMakeupCountPerCycle: number
-  /* 计划默认基础奖励配置；当天未配置按日奖励时回退到该配置。 */
+  /* 基础签到奖励配置；为空表示该计划没有基础奖励。 */
   baseRewardConfig?: CheckInRewardConfigDto
   /* 创建时间 */
   createdAt: string
@@ -199,7 +181,7 @@ export type CheckInPlanPageItemDto = {
   planName: string
   /* 当前版本连续奖励规则数量。 */
   ruleCount: number
-  /* 计划开始日期（date 语义，同时作为计划生效窗口起点）。 */
+  /* 计划开始日期（date 语义，同时作为周期切片起点）。 */
   startDate: string
   /* 签到计划状态（0=草稿，仅后台编辑；1=已发布，满足时间窗口时可对用户生效；2=已下线，不再对外开放；3=已停用，表示人工禁用）。 */
   status: 0 | 1 | 2 | 3
@@ -213,7 +195,7 @@ export type CheckInPlanPageItemDto = {
 /**
  *  类型定义 [CheckInRewardConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInRewardConfigDto = {
   /** 任意合法数值 */
@@ -228,7 +210,7 @@ export type CheckInRewardConfigDto = {
 /**
  *  类型定义 [CheckInPlanDetailResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInPlanDetailResponseDto = {
   /** 任意合法数值 */
@@ -237,14 +219,12 @@ export type CheckInPlanDetailResponseDto = {
   activeCycleCount: number
   /* 每周期允许补签次数。 */
   allowMakeupCountPerCycle: number
-  /* 计划默认基础奖励配置；当天未配置按日奖励时回退到该配置。 */
+  /* 基础签到奖励配置；为空表示该计划没有基础奖励。 */
   baseRewardConfig?: CheckInRewardConfigDto
   /* 创建时间 */
   createdAt: string
   /* 周期类型（weekly=按周切分签到周期；monthly=按月切分签到周期）。 */
   cycleType: 'monthly' | 'weekly'
-  /* 当前版本按日基础奖励规则列表。 */
-  dailyRewardRules: CheckInDailyRewardRuleItemDto[]
   /* 计划结束日期（date 语义）；为空表示长期有效。 */
   endDate?: null | string
   /* 主键id */
@@ -257,7 +237,7 @@ export type CheckInPlanDetailResponseDto = {
   planName: string
   /* 当前版本连续奖励规则数量。 */
   ruleCount: number
-  /* 计划开始日期（date 语义，同时作为计划生效窗口起点）。 */
+  /* 计划开始日期（date 语义，同时作为周期切片起点）。 */
   startDate: string
   /* 签到计划状态（0=草稿，仅后台编辑；1=已发布，满足时间窗口时可对用户生效；2=已下线，不再对外开放；3=已停用，表示人工禁用）。 */
   status: 0 | 1 | 2 | 3
@@ -271,26 +251,9 @@ export type CheckInPlanDetailResponseDto = {
 }
 
 /**
- *  类型定义 [CheckInDailyRewardRuleItemDto]
- *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
- */
-export type CheckInDailyRewardRuleItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any
-  /* 奖励天序号。 */
-  dayIndex: number
-  /* 主键id */
-  id: number
-
-  /* 当天基础奖励配置。 */
-  rewardConfig: CheckInRewardConfigDto
-}
-
-/**
  *  类型定义 [CheckInStreakRewardRuleItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInStreakRewardRuleItemDto = {
   /** 任意合法数值 */
@@ -313,13 +276,15 @@ export type CheckInStreakRewardRuleItemDto = {
 /**
  *  类型定义 [CreateCheckInPlanDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CreateCheckInPlanDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 每周期允许补签次数。 */
   allowMakeupCountPerCycle: number
+  /* 基础签到奖励配置；为空表示该计划没有基础奖励。 */
+  baseRewardConfig?: CheckInRewardConfigDto
   /* 周期类型（weekly=按周切分签到周期；monthly=按月切分签到周期）。 */
   cycleType: 'monthly' | 'weekly'
   /* 计划结束日期（date 语义）；为空表示长期有效。 */
@@ -328,42 +293,40 @@ export type CreateCheckInPlanDto = {
   planCode: string
   /* 签到计划名称。 */
   planName: string
-  /* 计划开始日期（date 语义，同时作为计划生效窗口起点）。 */
+  /* 计划开始日期（date 语义，同时作为周期切片起点）。 */
   startDate: string
-
   /* 签到计划状态（0=草稿，仅后台编辑；1=已发布，满足时间窗口时可对用户生效；2=已下线，不再对外开放；3=已停用，表示人工禁用）。 */
   status: 0 | 1 | 2 | 3
-}
-
-/**
- *  类型定义 [CreateCheckInPlanRewardConfigDto]
- *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
- */
-export type CreateCheckInPlanRewardConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any
-  /* 计划默认基础奖励配置；当天未配置按日奖励时回退到该配置。 */
-  baseRewardConfig?: CheckInRewardConfigDto
-  /* 按日基础奖励规则列表。 */
-  dailyRewardRules?: any[] | null
-  /* 主键id */
-  id: number
 
   /* 连续签到奖励规则列表。 */
   streakRewardRules?: any[] | null
 }
 
 /**
+ *  类型定义 [IdDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-04-09 21:01:08
+ */
+export type IdDto = {
+  /** 任意合法数值 */
+  [property: string]: any
+
+  /* 主键id */
+  id: number
+}
+
+/**
  *  类型定义 [UpdateCheckInPlanDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type UpdateCheckInPlanDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 每周期允许补签次数。 */
   allowMakeupCountPerCycle?: number
+  /* 基础签到奖励配置；为空表示该计划没有基础奖励。 */
+  baseRewardConfig?: CheckInRewardConfigDto
   /* 周期类型（weekly=按周切分签到周期；monthly=按月切分签到周期）。 */
   cycleType?: 'monthly' | 'weekly'
   /* 计划结束日期（date 语义）；为空表示长期有效。 */
@@ -374,27 +337,10 @@ export type UpdateCheckInPlanDto = {
   planCode?: string
   /* 签到计划名称。 */
   planName?: string
-  /* 计划开始日期（date 语义，同时作为计划生效窗口起点）。 */
+  /* 计划开始日期（date 语义，同时作为周期切片起点）。 */
   startDate?: string
-
   /* 签到计划状态（0=草稿，仅后台编辑；1=已发布，满足时间窗口时可对用户生效；2=已下线，不再对外开放；3=已停用，表示人工禁用）。 */
   status?: 0 | 1 | 2 | 3
-}
-
-/**
- *  类型定义 [UpdateCheckInPlanRewardConfigDto]
- *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
- */
-export type UpdateCheckInPlanRewardConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any
-  /* 计划默认基础奖励配置；当天未配置按日奖励时回退到该配置。 */
-  baseRewardConfig?: CheckInRewardConfigDto
-  /* 按日基础奖励规则列表。 */
-  dailyRewardRules?: any[] | null
-  /* 主键id */
-  id: number
 
   /* 连续签到奖励规则列表。 */
   streakRewardRules?: any[] | null
@@ -403,7 +349,7 @@ export type UpdateCheckInPlanRewardConfigDto = {
 /**
  *  类型定义 [UpdateCheckInPlanStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type UpdateCheckInPlanStatusDto = {
   /** 任意合法数值 */
@@ -418,7 +364,7 @@ export type UpdateCheckInPlanStatusDto = {
 /**
  *  类型定义 [CheckInReconciliationItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInReconciliationItemDto = {
   /** 任意合法数值 */
@@ -439,10 +385,6 @@ export type CheckInReconciliationItemDto = {
   recordId: number
   /* 签到类型（1=正常签到；2=补签）。 */
   recordType: 1 | 2
-  /* 本次基础奖励解析结果快照；来源可能是按日奖励或计划默认基础奖励，为空表示该签到事实没有基础奖励。 */
-  resolvedRewardConfig?: CheckInRewardConfigDto
-  /* 本次基础奖励对应的奖励天序号；命中按日奖励和回退默认基础奖励时都会回写当天序号。 */
-  rewardDayIndex?: null | number
   /* 基础奖励结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败）。 */
   rewardResultType?: null | number
   /* 基础奖励状态（0=待处理，表示已创建事实但尚未结算；1=已成功；2=已失败）。 */
@@ -457,7 +399,7 @@ export type CheckInReconciliationItemDto = {
 /**
  *  类型定义 [CheckInGrantItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type CheckInGrantItemDto = {
   /** 任意合法数值 */
@@ -482,7 +424,7 @@ export type CheckInGrantItemDto = {
 /**
  *  类型定义 [RepairCheckInRewardDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type RepairCheckInRewardDto = {
   /** 任意合法数值 */
@@ -499,7 +441,7 @@ export type RepairCheckInRewardDto = {
 /**
  *  类型定义 [RepairCheckInRewardResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type RepairCheckInRewardResponseDto = {
   /** 任意合法数值 */

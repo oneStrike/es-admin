@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ReportPageRequest]
  *  @来源 内容治理/举报处理
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type ReportPageRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type ReportPageResponse = {
 /**
  *  类型定义 [ReportDetailRequest]
  *  @来源 内容治理/举报处理
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type ReportDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type ReportDetailResponse = BaseReportDto
 /**
  *  类型定义 [ReportHandleRequest]
  *  @来源 内容治理/举报处理
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type ReportHandleRequest = HandleAdminReportDto
 
@@ -94,7 +94,7 @@ export type ReportHandleResponse = boolean
 /**
  *  类型定义 [BaseReportDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type BaseReportDto = {
   /** 任意合法数值 */
@@ -137,7 +137,7 @@ export type BaseReportDto = {
 /**
  *  类型定义 [HandleAdminReportDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 16:55:02
+ *  @更新时间 2026-04-09 21:01:08
  */
 export type HandleAdminReportDto = {
   /** 任意合法数值 */
