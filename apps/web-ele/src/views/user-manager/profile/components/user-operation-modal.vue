@@ -287,56 +287,57 @@ const experienceGrantFormSchema: EsFormSchema = [
   },
 ];
 
-const pointRecordColumns: VxeGridProps<AdminAppUserPointRecordDto>['columns'] = [
-  {
-    title: '序号',
-    type: 'seq',
-    width: 60,
-  },
-  {
-    field: 'createdAt',
-    title: '操作时间',
-    minWidth: 170,
-    cellRender: {
-      name: 'CellDate',
+const pointRecordColumns: VxeGridProps<AdminAppUserPointRecordDto>['columns'] =
+  [
+    {
+      title: '序号',
+      type: 'seq',
+      width: 60,
     },
-  },
-  {
-    field: 'points',
-    title: '积分变化',
-    width: 110,
-    slots: { default: 'pointsDelta' },
-  },
-  {
-    field: 'beforePoints',
-    title: '变化前',
-    width: 100,
-  },
-  {
-    field: 'afterPoints',
-    title: '变化后',
-    width: 100,
-  },
-  {
-    field: 'targetType',
-    title: '目标类型',
-    minWidth: 100,
-    formatter: ({ cellValue }) => cellValue ?? '-',
-  },
-  {
-    field: 'targetId',
-    title: '目标 ID',
-    minWidth: 100,
-    formatter: ({ cellValue }) => cellValue ?? '-',
-  },
-  {
-    field: 'remark',
-    title: '备注',
-    minWidth: 220,
-    showOverflow: 'tooltip',
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-];
+    {
+      field: 'createdAt',
+      title: '操作时间',
+      minWidth: 170,
+      cellRender: {
+        name: 'CellDate',
+      },
+    },
+    {
+      field: 'points',
+      title: '积分变化',
+      width: 110,
+      slots: { default: 'pointsDelta' },
+    },
+    {
+      field: 'beforePoints',
+      title: '变化前',
+      width: 100,
+    },
+    {
+      field: 'afterPoints',
+      title: '变化后',
+      width: 100,
+    },
+    {
+      field: 'targetType',
+      title: '目标类型',
+      minWidth: 100,
+      formatter: ({ cellValue }) => cellValue ?? '-',
+    },
+    {
+      field: 'targetId',
+      title: '目标 ID',
+      minWidth: 100,
+      formatter: ({ cellValue }) => cellValue ?? '-',
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 220,
+      showOverflow: 'tooltip',
+      formatter: ({ cellValue }) => cellValue || '-',
+    },
+  ];
 
 const experienceRecordColumns: VxeGridProps<AdminAppUserExperienceRecordDto>['columns'] =
   [
@@ -761,7 +762,8 @@ async function handleExperienceGrantSubmit(
 
   await appUsersExperienceGrantApi({
     operationKey:
-      experienceGrantOperationKey.value || buildOperationKey('experience-grant'),
+      experienceGrantOperationKey.value ||
+      buildOperationKey('experience-grant'),
     remark: values.remark?.trim() || undefined,
     ruleType: values.ruleType,
     userId: currentUser.value.id,
@@ -833,7 +835,9 @@ async function revokeBadge(row: AdminAppUserBadgeItemDto) {
                   <span class="text-lg font-semibold text-foreground">
                     {{ currentUser.nickname || currentUser.account }}
                   </span>
-                  <el-tag :type="userStatusMap[currentUser.status]?.tagType || 'info'">
+                  <el-tag
+                    :type="userStatusMap[currentUser.status]?.tagType || 'info'"
+                  >
                     {{ getUserStatusText(currentUser.status) }}
                   </el-tag>
                   <el-tag :type="currentUser.isEnabled ? 'success' : 'danger'">
@@ -863,8 +867,7 @@ async function revokeBadge(row: AdminAppUserBadgeItemDto) {
                 <div class="text-xs text-muted-foreground">当前经验</div>
                 <div class="mt-1 text-lg font-semibold">
                   {{
-                    experienceStats?.currentExperience
-                      ?? userDetail.experience
+                    experienceStats?.currentExperience ?? userDetail.experience
                   }}
                 </div>
               </div>
@@ -892,7 +895,7 @@ async function revokeBadge(row: AdminAppUserBadgeItemDto) {
               状态截止：{{
                 isPermanentStatus(userDetail.status)
                   ? '永久'
-                  : (userDetail.banUntil || '-')
+                  : userDetail.banUntil || '-'
               }}
             </span>
           </div>
@@ -929,9 +932,7 @@ async function revokeBadge(row: AdminAppUserBadgeItemDto) {
               <template #experienceDelta="{ row }">
                 <el-text :type="row.experience >= 0 ? 'success' : 'danger'">
                   {{
-                    row.experience > 0
-                      ? `+${row.experience}`
-                      : row.experience
+                    row.experience > 0 ? `+${row.experience}` : row.experience
                   }}
                 </el-text>
               </template>

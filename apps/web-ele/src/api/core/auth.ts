@@ -9,7 +9,7 @@ import type {
   AuthTokenRefreshResponse
 } from '../types/auth.d'
 
-import { authRequestClient, requestClient } from '#/api/request'
+import { requestClient } from '#/api/request'
 
 
   /**
@@ -32,7 +32,7 @@ import { authRequestClient, requestClient } from '#/api/request'
    * 管理员登出
    */
   export async function authLogoutApi(params: AuthLogoutRequest): Promise<AuthLogoutResponse> {
-    return authRequestClient.post<AuthLogoutResponse>('/api/admin/auth/logout', params);
+    return requestClient.post<AuthLogoutResponse>('/api/admin/auth/logout', params);
   }
 
 
@@ -40,7 +40,7 @@ import { authRequestClient, requestClient } from '#/api/request'
    * 刷新访问令牌
    */
   export async function authTokenRefreshApi(params: AuthTokenRefreshRequest): Promise<AuthTokenRefreshResponse> {
-    return authRequestClient.post<AuthTokenRefreshResponse>('/api/admin/auth/token/refresh', params);
+    return requestClient.post<AuthTokenRefreshResponse>('/api/admin/auth/token/refresh', params);
   }
 
 

@@ -41,6 +41,14 @@ import { requestClient } from '#/api/request'
 
 
   /**
+   * 根据页面编码查询页面配置详情
+   */
+  export async function appPageCodeDetailApi(params: AppPageCodeDetailRequest): Promise<AppPageCodeDetailResponse> {
+    return requestClient.get<AppPageCodeDetailResponse>('/api/admin/app-page/code/detail', { params });
+  }
+
+
+  /**
    * 更新页面配置
    */
   export async function appPageUpdateApi(params: AppPageUpdateRequest): Promise<AppPageUpdateResponse> {
@@ -53,12 +61,4 @@ import { requestClient } from '#/api/request'
    */
   export async function appPageDeleteApi(params: AppPageDeleteRequest): Promise<AppPageDeleteResponse> {
     return requestClient.post<AppPageDeleteResponse>('/api/admin/app-page/delete', params);
-  }
-
-
-  /**
-   * 根据页面编码查询页面配置详情
-   */
-  export async function appPageCodeDetailApi(params: AppPageCodeDetailRequest): Promise<AppPageCodeDetailResponse> {
-    return requestClient.get<AppPageCodeDetailResponse>('/api/admin/app-page/code/detail', { params });
   }

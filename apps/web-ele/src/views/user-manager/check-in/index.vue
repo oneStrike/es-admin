@@ -27,18 +27,22 @@ import {
   checkInReconciliationPageApi,
   checkInReconciliationRepairApi,
 } from '#/api/core';
+import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
-import CheckInPlanModal from './check-in-plan-modal.vue';
 import { getDetailCards } from './model/detail';
 import {
+  buildPlanSubmitPayload,
   checkInRecordTypeOptions,
   checkInRewardResultOptions,
   checkInRewardStatusOptions,
   formatLedgerIds,
   formatRewardSummary,
+  formSchema,
+  getPlanBaseRewardSummary,
+  getPlanBusinessRuleError,
   mapPlanDetailToFormModel,
   planColumns,
   planSearchFormSchema,
@@ -109,7 +113,7 @@ const [ReconciliationGrid, reconciliationGridApi] = useVbenVxeGrid({
 });
 
 const [PlanFormModal, planFormApi] = useVbenModal({
-  connectedComponent: CheckInPlanModal,
+  connectedComponent: EsModalForm,
 });
 
 const [DetailModal, detailApi] = useVbenModal({
@@ -151,16 +155,27 @@ async function openPlanFormModal(row?: CheckInPlanRow) {
 
   planFormApi
     .setData({
+      cols: 2,
       onSubmit: handlePlanSubmit,
       record,
+      schema: formSchema,
       title: '签到计划',
+      width: 960,
     })
     .open();
 }
 
-async function handlePlanSubmit(
-  payload: CheckInPlanCreateRequest | CheckInPlanUpdateRequest,
-) {
+async function handlePlanSubmit(values: Record<string, any>) {
+  const payload = buildPlanSubmitPayload(values as CheckInPlanFormModel);
+  const validationMessage = getPlanBusinessRuleError(
+    values as CheckInPlanFormModel,
+  );
+
+  if (validationMessage) {
+    useMessage.warning(validationMessage);
+    throw new Error('invalid plan form values');
+  }
+
   await ('id' in payload && payload.id
     ? checkInPlanUpdateApi(payload as CheckInPlanUpdateRequest)
     : checkInPlanCreateApi(payload as CheckInPlanCreateRequest));
@@ -292,6 +307,16 @@ function renderRewardTagType(status?: null | number) {
     'info'
   );
 }
+
+function formatPlanBaseRewardSummary(row: CheckInPlanRow) {
+  return row.baseRewardConfig === undefined
+    ? '查看详情'
+    : getPlanBaseRewardSummary(row);
+}
+
+function formatRewardDayIndex(dayIndex?: null | number) {
+  return dayIndex ? `第 ${dayIndex} 天` : '-';
+}
 </script>
 
 <template>
@@ -319,7 +344,7 @@ function renderRewardTagType(status?: null | number) {
             <template #baseRewardConfig="{ row }">
               <div class="flex min-h-10 items-center">
                 <el-tag effect="light" round type="info">
-                  {{ formatRewardSummary(row.baseRewardConfig) }}
+                  {{ formatPlanBaseRewardSummary(row) }}
                 </el-tag>
               </div>
             </template>
@@ -376,17 +401,31 @@ function renderRewardTagType(status?: null | number) {
             <template #signInfo="{ row }">
               <div class="space-y-1">
                 <div class="font-medium text-slate-900">{{ row.signDate }}</div>
-                <el-tag
-                  :type="row.recordType === 1 ? 'success' : 'warning'"
-                  effect="light"
-                  round
-                >
-                  {{
-                    checkInRecordTypeOptions.find(
-                      (item) => item.value === row.recordType,
-                    )?.label
-                  }}
+                <div class="flex flex-wrap items-center gap-2">
+                  <el-tag
+                    :type="row.recordType === 1 ? 'success' : 'warning'"
+                    effect="light"
+                    round
+                  >
+                    {{
+                      checkInRecordTypeOptions.find(
+                        (item) => item.value === row.recordType,
+                      )?.label
+                    }}
+                  </el-tag>
+                  <el-tag v-if="row.rewardDayIndex" effect="plain" round type="info">
+                    {{ formatRewardDayIndex(row.rewardDayIndex) }}
+                  </el-tag>
+                </div>
+              </div>
+            </template>
+
+            <template #rewardDayIndex="{ row }">
+              <div class="flex min-h-10 items-center">
+                <el-tag v-if="row.rewardDayIndex" effect="light" round type="info">
+                  {{ formatRewardDayIndex(row.rewardDayIndex) }}
                 </el-tag>
+                <el-text v-else class="text-xs text-slate-400">-</el-text>
               </div>
             </template>
 
@@ -427,6 +466,14 @@ function renderRewardTagType(status?: null | number) {
               </div>
             </template>
 
+            <template #resolvedRewardConfig="{ row }">
+              <div class="flex min-h-10 items-center">
+                <el-tag effect="light" round type="primary">
+                  {{ row.rewardStatus === null ? '无基础奖励' : formatRewardSummary(row.resolvedRewardConfig) }}
+                </el-tag>
+              </div>
+            </template>
+
             <template #baseRewardLedgerIds="{ row }">
               <div class="flex min-h-10 items-center">
                 <el-tag effect="light" round type="info">
@@ -442,9 +489,7 @@ function renderRewardTagType(status?: null | number) {
                   :key="grant.id"
                   class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3"
                 >
-                  <div
-                    class="flex flex-wrap items-center justify-between gap-2"
-                  >
+                  <div class="flex flex-wrap items-center justify-between gap-2">
                     <div class="flex flex-wrap items-center gap-2">
                       <el-tag effect="light" round type="primary">
                         发放 #{{ grant.id }}
@@ -526,7 +571,7 @@ function renderRewardTagType(status?: null | number) {
       </el-tabs>
     </div>
 
-    <PlanFormModal />
+    <PlanFormModal :schema="formSchema" :on-submit="handlePlanSubmit" />
     <DetailModal
       :api="checkInPlanDetailApi"
       :cards="getDetailCards"

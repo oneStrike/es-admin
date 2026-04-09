@@ -5,45 +5,9 @@ import { formatUTC } from '#/utils';
 import {
   checkInCycleTypeOptions,
   checkInPlanStatusOptions,
-  checkInRuleStatusOptions,
-  formatRewardSummary,
   getOptionLabel,
+  getPlanBaseRewardSummary,
 } from './shared';
-
-function buildRuleFields(detail: CheckInPlanDetailResponseDto) {
-  if (!detail.streakRewardRules?.length) {
-    return [
-      {
-        label: '规则列表',
-        type: 'text',
-        value: '当前版本未配置连续奖励规则',
-      },
-    ];
-  }
-
-  return detail.streakRewardRules.flatMap((rule, index) => [
-    {
-      label: `规则 ${index + 1}`,
-      type: 'text',
-      value: `${rule.ruleCode} · 连续 ${rule.streakDays} 天`,
-    },
-    {
-      label: `奖励 ${index + 1}`,
-      type: 'text',
-      value: formatRewardSummary(rule.rewardConfig),
-    },
-    {
-      label: `触发方式 ${index + 1}`,
-      type: 'text',
-      value: rule.repeatable ? '可重复领取' : '周期内仅一次',
-    },
-    {
-      label: `状态 ${index + 1}`,
-      type: 'text',
-      value: getOptionLabel(checkInRuleStatusOptions, rule.status),
-    },
-  ]);
-}
 
 export function getDetailCards(detail: CheckInPlanDetailResponseDto) {
   const status = checkInPlanStatusOptions.find(
@@ -82,11 +46,6 @@ export function getDetailCards(detail: CheckInPlanDetailResponseDto) {
           value: detail.version,
         },
         {
-          label: '规则数量',
-          type: 'text',
-          value: detail.ruleCount,
-        },
-        {
           label: '活跃周期实例',
           type: 'text',
           value: detail.activeCycleCount,
@@ -113,39 +72,29 @@ export function getDetailCards(detail: CheckInPlanDetailResponseDto) {
           value: detail.startDate,
         },
         {
+          label: '结束日期',
+          type: 'text',
+          value: detail.endDate || '-',
+        },
+        {
           label: '每周期补签次数',
           type: 'text',
           value: detail.allowMakeupCountPerCycle,
         },
       ],
       show: true,
-      title: '周期配置',
+      title: '周期与时间窗',
     },
     {
       fields: [
         {
           label: '基础奖励',
           type: 'text',
-          value: formatRewardSummary(detail.baseRewardConfig),
-        },
-        {
-          label: '开始日期',
-          type: 'text',
-          value: detail.startDate || '-',
-        },
-        {
-          label: '结束日期',
-          type: 'text',
-          value: detail.endDate || '-',
+          value: getPlanBaseRewardSummary(detail),
         },
       ],
       show: true,
-      title: '奖励与时间窗',
-    },
-    {
-      fields: buildRuleFields(detail),
-      show: true,
-      title: '连续奖励规则',
+      title: '基础奖励配置',
     },
     {
       fields: [
