@@ -1,8 +1,13 @@
-import type { BaseUserDto } from '#/api/types';
+import type { AdminUserResponseDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { z } from '#/adapter/form';
 import { formatUTC, formSchemaTransform } from '#/utils';
+
+export type SystemUserRow = AdminUserResponseDto & {
+  isLocked?: boolean;
+  loading?: boolean;
+};
 
 // 用户角色配置
 export const userRole = [
@@ -168,7 +173,7 @@ export const editFormSchema: EsFormSchema = formSchema.filter(
 );
 
 // 表格列配置
-export const userColumns = formSchemaTransform.toTableColumns<BaseUserDto>(
+export const userColumns = formSchemaTransform.toTableColumns<SystemUserRow>(
   formSchema,
   {
     password: {

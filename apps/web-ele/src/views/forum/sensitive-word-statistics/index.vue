@@ -2,7 +2,6 @@
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import type {
-  SensitiveWordRecentHitStatisticsDto,
   SensitiveWordStatisticsDataDto,
   SensitiveWordTopHitStatisticsDto,
 } from '#/api/types';
@@ -111,7 +110,7 @@ const topHitWordsGridOptions = {
 
 const recentHitWordsGridOptions = {
   columns: recentHitWordsColumns,
-  data: [] as SensitiveWordRecentHitStatisticsDto[],
+  data: [] as SensitiveWordTopHitStatisticsDto[],
   height: 400,
   emptyText: '暂无数据',
 };

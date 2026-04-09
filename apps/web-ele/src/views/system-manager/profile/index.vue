@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  AdminUserResponseDto,
   AuditItemDto,
   AuditPageRequest,
-  BaseUserDto,
   ChangePasswordDto,
   UpdateUserDto,
 } from '#/api/types';
@@ -29,9 +29,13 @@ import {
   passwordFormSchema,
 } from './model/shared';
 
+type SystemUserProfile = AdminUserResponseDto & {
+  isLocked?: boolean;
+};
+
 const userStore = useUserStore();
 // 用户信息
-const userInfo = ref<BaseUserDto | null>(null);
+const userInfo = ref<SystemUserProfile | null>(null);
 const loading = ref(false);
 
 // 登录历史表格配置
@@ -142,13 +146,13 @@ const formatRole = (role: number) => {
 };
 
 // 格式化状态
-const formatStatus = (isEnabled: boolean, isLocked: boolean) => {
+const formatStatus = (isEnabled: boolean, isLocked?: boolean) => {
   if (isLocked) return '已锁定';
   return isEnabled ? '正常' : '禁用';
 };
 
 // 获取状态颜色
-const getStatusColor = (isEnabled: boolean, isLocked: boolean) => {
+const getStatusColor = (isEnabled: boolean, isLocked?: boolean) => {
   if (isLocked) return 'danger';
   return isEnabled ? 'success' : 'warning';
 };

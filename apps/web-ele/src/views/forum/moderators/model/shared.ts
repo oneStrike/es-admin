@@ -9,6 +9,8 @@ import type { EsFormSchema } from '#/types';
 
 import { appUsersPageApi, forumSectionGroupsPageApi, forumSectionsPageApi } from '#/api/core';
 
+const ACTIVE_DELETED_SCOPE = 0;
+
 export const moderatorRoleOptions = [
   { label: '超级版主', value: 1, color: 'danger' as const },
   { label: '分组版主', value: 2, color: 'warning' as const },
@@ -97,7 +99,7 @@ const userSelectComponentProps = () => ({
   api: async (params: Record<string, any>) =>
     appUsersPageApi({
       ...params,
-      deletedScope: 'active',
+      deletedScope: ACTIVE_DELETED_SCOPE,
     }),
   columns: moderatorUserColumns,
   displayField: 'nickname',

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  AdminAppUserBadgeItemDto,
   AdminAppUserDetailDto,
   AdminAppUserExperienceRecordDto,
   AdminAppUserExperienceStatsDto,
@@ -11,6 +10,7 @@ import type {
   AppUsersExperienceGrantRequest,
   AppUsersPointsConsumeRequest,
   AppUsersPointsGrantRequest,
+  UserBadgeItemDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -379,7 +379,7 @@ const experienceRecordColumns: VxeGridProps<AdminAppUserExperienceRecordDto>['co
     },
   ];
 
-const userBadgeColumns: VxeGridProps<AdminAppUserBadgeItemDto>['columns'] = [
+const userBadgeColumns: VxeGridProps<UserBadgeItemDto>['columns'] = [
   {
     title: '序号',
     type: 'seq',
@@ -794,14 +794,16 @@ async function handleAssignBadgeConfirm(rows: Array<{ id: number }>) {
   await notifyParentUpdated();
 }
 
-async function revokeBadge(row: AdminAppUserBadgeItemDto) {
+async function revokeBadge(row: Record<string, any>) {
   if (!currentUser.value || !canOperate.value) {
     useMessage.warning('当前用户不可执行运营操作');
     return;
   }
 
+  const badgeRecord = row as UserBadgeItemDto;
+
   await appUsersBadgesRevokeApi({
-    badgeId: row.badge.id,
+    badgeId: badgeRecord.badge.id,
     userId: currentUser.value.id,
   });
 

@@ -9,6 +9,8 @@ import type { EsFormSchema } from '#/types';
 
 import { appUsersPageApi, forumSectionsPageApi } from '#/api/core';
 
+const ACTIVE_DELETED_SCOPE = 0;
+
 export const auditStatusOptions = [
   { label: '待审核', value: 0, color: 'warning' as const },
   { label: '已通过', value: 1, color: 'success' as const },
@@ -74,7 +76,7 @@ const userSelectComponentProps = () => ({
   api: async (params: Record<string, any>) =>
     appUsersPageApi({
       ...params,
-      deletedScope: 'active',
+      deletedScope: ACTIVE_DELETED_SCOPE,
       isEnabled: true,
     }),
   columns: userColumns,

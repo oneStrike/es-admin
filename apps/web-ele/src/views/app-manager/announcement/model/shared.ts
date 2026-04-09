@@ -1,4 +1,4 @@
-import type { AnnouncementPageResponseDto } from '#/api/types';
+import type { BaseAnnouncementDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';
@@ -303,7 +303,7 @@ export const formSchema: EsFormSchema = [
 
 // 表格列配置
 export const announcementColumns =
-  formSchemaTransform.toTableColumns<AnnouncementPageResponseDto>(formSchema, {
+  formSchemaTransform.toTableColumns<BaseAnnouncementDto>(formSchema, {
     content: {
       hide: true,
     },

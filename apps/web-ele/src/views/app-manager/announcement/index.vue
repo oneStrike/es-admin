@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  AnnouncementPageResponseDto,
+  BaseAnnouncementDto,
   BaseAppPageDto,
   CreateAnnouncementDto,
   UpdateAnnouncementDto,
@@ -68,7 +68,7 @@ appPagePageApi({
   }));
 });
 
-const gridOptions: VxeGridProps<AnnouncementPageResponseDto> = {
+const gridOptions: VxeGridProps<BaseAnnouncementDto> = {
   columns: announcementColumns,
   height: 'auto',
   proxyConfig: {
@@ -106,7 +106,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-async function openFormModal(row?: AnnouncementPageResponseDto) {
+async function openFormModal(row?: BaseAnnouncementDto) {
   let record;
   if (row) {
     record = await announcementDetailApi({ id: row.id });
@@ -132,13 +132,13 @@ async function handleSubmit(
   gridApi.reload();
 }
 
-async function deleteAnnouncement(record: AnnouncementPageResponseDto) {
+async function deleteAnnouncement(record: BaseAnnouncementDto) {
   await announcementDeleteApi({ id: record.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function togglePublishStatus(record: AnnouncementPageResponseDto) {
+async function togglePublishStatus(record: BaseAnnouncementDto) {
   const newStatus = !record.isPublished;
   await announcementUpdateStatusApi({
     id: record.id,
@@ -148,7 +148,7 @@ async function togglePublishStatus(record: AnnouncementPageResponseDto) {
   gridApi.reload();
 }
 
-function getPublishButtonText(record: AnnouncementPageResponseDto): string {
+function getPublishButtonText(record: BaseAnnouncementDto): string {
   const status = getPublishStatus(record.isPublished, record.publishEndTime);
 
   if (status === 'unpublished') {
@@ -160,7 +160,7 @@ function getPublishButtonText(record: AnnouncementPageResponseDto): string {
   }
 }
 
-function canPublish(record: AnnouncementPageResponseDto): boolean {
+function canPublish(record: BaseAnnouncementDto): boolean {
   const status = getPublishStatus(record.isPublished, record.publishEndTime);
   return status !== 'expired';
 }

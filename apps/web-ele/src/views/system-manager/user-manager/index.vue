@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  BaseUserDto,
   SystemUserCreateRequest,
   UpdateUserDto,
 } from '#/api/types';
@@ -29,6 +28,7 @@ import {
   editFormSchema,
   formSchema,
   lockStatusObj,
+  type SystemUserRow,
   userColumns,
   userFilter,
   userRoleObj,
@@ -41,7 +41,7 @@ const isSuperAdmin = computed(() => {
   return userStore.userInfo?.role === 1;
 });
 
-const gridOptions: VxeGridProps<BaseUserDto> = {
+const gridOptions: VxeGridProps<SystemUserRow> = {
   columns: userColumns,
   height: 'auto',
   proxyConfig: {
@@ -63,7 +63,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-async function openFormModal(row?: BaseUserDto) {
+async function openFormModal(row?: SystemUserRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -91,7 +91,7 @@ async function handleSubmit(values: SystemUserCreateRequest | UpdateUserDto) {
   gridApi.reload();
 }
 
-async function toggleUserStatus(record: BaseUserDto) {
+async function toggleUserStatus(record: SystemUserRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -115,7 +115,7 @@ async function toggleUserStatus(record: BaseUserDto) {
   }
 }
 
-async function unlockUser(record: BaseUserDto) {
+async function unlockUser(record: SystemUserRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -137,7 +137,7 @@ async function unlockUser(record: BaseUserDto) {
   }
 }
 
-async function resetUserPassword(record: BaseUserDto) {
+async function resetUserPassword(record: SystemUserRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
