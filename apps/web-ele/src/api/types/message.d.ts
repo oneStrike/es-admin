@@ -1,7 +1,7 @@
 /**
  *  类型定义 [MessageMonitorDeliveryPageRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageMonitorDeliveryPageRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type MessageMonitorDeliveryPageResponse = {
 /**
  *  类型定义 [MessageMonitorDeliveryRetryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageMonitorDeliveryRetryRequest = RetryMessageNotificationDeliveryDto
 
@@ -76,7 +76,7 @@ export type MessageMonitorDeliveryRetryResponse = boolean
 /**
  *  类型定义 [MessageMonitorOutboxSummaryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageMonitorOutboxSummaryRequest = {
   /** 任意合法数值 */
@@ -94,7 +94,7 @@ export type MessageMonitorOutboxSummaryResponse = MessageOutboxMonitorSummaryDto
 /**
  *  类型定义 [MessageMonitorWsSummaryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageMonitorWsSummaryRequest = {
   /** 任意合法数值 */
@@ -109,7 +109,7 @@ export type MessageMonitorWsSummaryResponse = MessageWsMonitorSummaryDto
 /**
  *  类型定义 [MessageNotificationTemplatesPageRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageNotificationTemplatesPageRequest = {
   /** 任意合法数值 */
@@ -160,7 +160,7 @@ export type MessageNotificationTemplatesPageResponse = {
 /**
  *  类型定义 [MessageNotificationTemplatesDetailRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageNotificationTemplatesDetailRequest = {
   /** 任意合法数值 */
@@ -175,7 +175,7 @@ export type MessageNotificationTemplatesDetailResponse = AdminMessageNotificatio
 /**
  *  类型定义 [MessageNotificationTemplatesCreateRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageNotificationTemplatesCreateRequest = CreateNotificationTemplateDto
 
@@ -184,7 +184,7 @@ export type MessageNotificationTemplatesCreateResponse = boolean
 /**
  *  类型定义 [MessageNotificationTemplatesUpdateRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageNotificationTemplatesUpdateRequest = UpdateNotificationTemplateDto
 
@@ -193,7 +193,7 @@ export type MessageNotificationTemplatesUpdateResponse = boolean
 /**
  *  类型定义 [MessageNotificationTemplatesUpdateEnabledRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageNotificationTemplatesUpdateEnabledRequest = UpdateNotificationTemplateEnabledDto
 
@@ -202,7 +202,7 @@ export type MessageNotificationTemplatesUpdateEnabledResponse = boolean
 /**
  *  类型定义 [MessageNotificationTemplatesDeleteRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageNotificationTemplatesDeleteRequest = IdDto
 
@@ -211,7 +211,7 @@ export type MessageNotificationTemplatesDeleteResponse = boolean
 /**
  *  类型定义 [MessageNotificationDeliveryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageNotificationDeliveryItemDto = {
   /** 任意合法数值 */
@@ -262,7 +262,7 @@ export type MessageNotificationDeliveryItemDto = {
 /**
  *  类型定义 [RetryMessageNotificationDeliveryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type RetryMessageNotificationDeliveryDto = {
   /** 任意合法数值 */
@@ -275,7 +275,7 @@ export type RetryMessageNotificationDeliveryDto = {
 /**
  *  类型定义 [MessageOutboxMonitorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageOutboxMonitorSummaryDto = {
   /** 任意合法数值 */
@@ -287,7 +287,7 @@ export type MessageOutboxMonitorSummaryDto = {
   /* 延迟重试中的待处理数量 */
   delayedPendingCount: number
   /* 按域+状态的分布 */
-  domainStatus?: any[] | null
+  domainStatus?: MessageOutboxDomainStatusItemDto[]
   /* 失败数量 */
   failedCount: number
   /* 失败但无错误文本的数量 */
@@ -315,7 +315,7 @@ export type MessageOutboxMonitorSummaryDto = {
   /* 快照时间 */
   snapshotAt: string
   /* 失败错误分布 TopN */
-  topErrors?: any[] | null
+  topErrors?: MessageOutboxErrorItemDto[]
   /* 统计窗口（小时） */
   windowHours: number
 
@@ -324,9 +324,41 @@ export type MessageOutboxMonitorSummaryDto = {
 }
 
 /**
+ *  类型定义 [MessageOutboxDomainStatusItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-04-10 07:21:59
+ */
+export type MessageOutboxDomainStatusItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any
+  /* 数量 */
+  count: number
+  /* 事件域（1=通知,2=聊天） */
+  domain: number
+
+  /* 状态（1=待处理,2=处理中,3=成功,4=失败） */
+  status: number
+}
+
+/**
+ *  类型定义 [MessageOutboxErrorItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-04-10 07:21:59
+ */
+export type MessageOutboxErrorItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any
+  /* 出现次数 */
+  count: number
+
+  /* 错误信息 */
+  message: string
+}
+
+/**
  *  类型定义 [MessageWsMonitorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MessageWsMonitorSummaryDto = {
   /** 任意合法数值 */
@@ -361,7 +393,7 @@ export type MessageWsMonitorSummaryDto = {
 /**
  *  类型定义 [AdminMessageNotificationTemplateDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type AdminMessageNotificationTemplateDto = {
   /** 任意合法数值 */
@@ -392,7 +424,7 @@ export type AdminMessageNotificationTemplateDto = {
 /**
  *  类型定义 [CreateNotificationTemplateDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CreateNotificationTemplateDto = {
   /** 任意合法数值 */
@@ -413,7 +445,7 @@ export type CreateNotificationTemplateDto = {
 /**
  *  类型定义 [UpdateNotificationTemplateDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateNotificationTemplateDto = {
   /** 任意合法数值 */
@@ -436,7 +468,7 @@ export type UpdateNotificationTemplateDto = {
 /**
  *  类型定义 [UpdateNotificationTemplateEnabledDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateNotificationTemplateEnabledDto = {
   /** 任意合法数值 */
@@ -451,7 +483,7 @@ export type UpdateNotificationTemplateEnabledDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type IdDto = {
   /** 任意合法数值 */

@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ContentComicCreateRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicCreateRequest = CreateWorkDto
 
@@ -10,7 +10,7 @@ export type ContentComicCreateResponse = boolean
 /**
  *  类型定义 [ContentComicPageRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicPageRequest = {
   /** 任意合法数值 */
@@ -26,7 +26,7 @@ export type ContentComicPageRequest = {
   authorId?: null | number
 
   /* 分类ID列表 */
-  categoryIds?: any[] | null
+  categoryIds?: any[]
 
   /* 结束时间 */
   endDate?: null | string
@@ -71,7 +71,7 @@ export type ContentComicPageRequest = {
   startDate?: null | string
 
   /* 标签ID列表 */
-  tagIds?: any[] | null
+  tagIds?: any[]
 
   /* 作品类型 */
   type?: number
@@ -97,7 +97,7 @@ export type ContentComicPageResponse = {
 /**
  *  类型定义 [ContentComicDetailRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicDetailRequest = {
   /** 任意合法数值 */
@@ -112,7 +112,7 @@ export type ContentComicDetailResponse = BaseWorkDto
 /**
  *  类型定义 [ContentComicUpdateRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicUpdateRequest = UpdateWorkDto
 
@@ -121,7 +121,7 @@ export type ContentComicUpdateResponse = boolean
 /**
  *  类型定义 [ContentComicUpdateStatusRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicUpdateStatusRequest = UpdateWorkStatusDto
 
@@ -130,7 +130,7 @@ export type ContentComicUpdateStatusResponse = boolean
 /**
  *  类型定义 [ContentComicUpdateRecommendedRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicUpdateRecommendedRequest = UpdateWorkRecommendedDto
 
@@ -139,7 +139,7 @@ export type ContentComicUpdateRecommendedResponse = boolean
 /**
  *  类型定义 [ContentComicUpdateHotRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicUpdateHotRequest = UpdateWorkHotDto
 
@@ -148,7 +148,7 @@ export type ContentComicUpdateHotResponse = boolean
 /**
  *  类型定义 [ContentComicUpdateNewRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicUpdateNewRequest = UpdateWorkNewDto
 
@@ -157,7 +157,7 @@ export type ContentComicUpdateNewResponse = boolean
 /**
  *  类型定义 [ContentComicDeleteRequest]
  *  @来源 内容管理/漫画管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicDeleteRequest = IdDto
 
@@ -166,7 +166,7 @@ export type ContentComicDeleteResponse = boolean
 /**
  *  类型定义 [ContentComicChapterCreateRequest]
  *  @来源 内容管理/漫画管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterCreateRequest = CreateWorkChapterDto
 
@@ -175,7 +175,7 @@ export type ContentComicChapterCreateResponse = boolean
 /**
  *  类型定义 [ContentComicChapterPageRequest]
  *  @来源 内容管理/漫画管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterPageRequest = {
   /** 任意合法数值 */
@@ -238,7 +238,7 @@ export type ContentComicChapterPageResponse = {
 /**
  *  类型定义 [ContentComicChapterDetailRequest]
  *  @来源 内容管理/漫画管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterDetailRequest = {
   /** 任意合法数值 */
@@ -253,7 +253,7 @@ export type ContentComicChapterDetailResponse = IdDto
 /**
  *  类型定义 [ContentComicChapterUpdateRequest]
  *  @来源 内容管理/漫画管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterUpdateRequest = UpdateWorkChapterDto
 
@@ -262,7 +262,7 @@ export type ContentComicChapterUpdateResponse = boolean
 /**
  *  类型定义 [ContentComicChapterDeleteRequest]
  *  @来源 内容管理/漫画管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterDeleteRequest = IdDto
 
@@ -271,7 +271,7 @@ export type ContentComicChapterDeleteResponse = boolean
 /**
  *  类型定义 [ContentComicChapterSwapSortOrderRequest]
  *  @来源 内容管理/漫画管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterSwapSortOrderRequest = DragReorderDto
 
@@ -280,7 +280,7 @@ export type ContentComicChapterSwapSortOrderResponse = boolean
 /**
  *  类型定义 [ContentComicChapterContentListRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentListRequest = {
   /** 任意合法数值 */
@@ -295,7 +295,7 @@ export type ContentComicChapterContentListResponse = string[]
 /**
  *  类型定义 [ContentComicChapterContentUploadRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentUploadRequest = {
   /** 任意合法数值 */
@@ -313,7 +313,7 @@ export type ContentComicChapterContentUploadResponse = UploadResponseDto
 /**
  *  类型定义 [ContentComicChapterContentUpdateRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentUpdateRequest = UpdateComicContentDto
 
@@ -322,7 +322,7 @@ export type ContentComicChapterContentUpdateResponse = boolean
 /**
  *  类型定义 [ContentComicChapterContentDeleteRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentDeleteRequest = DeleteComicContentDto
 
@@ -331,7 +331,7 @@ export type ContentComicChapterContentDeleteResponse = boolean
 /**
  *  类型定义 [ContentComicChapterContentMoveRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentMoveRequest = MoveComicContentDto
 
@@ -340,7 +340,7 @@ export type ContentComicChapterContentMoveResponse = boolean
 /**
  *  类型定义 [ContentComicChapterContentClearRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentClearRequest = IdDto
 
@@ -349,7 +349,7 @@ export type ContentComicChapterContentClearResponse = boolean
 /**
  *  类型定义 [ContentComicChapterContentArchivePreviewRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentArchivePreviewRequest = {
   /** 任意合法数值 */
@@ -367,7 +367,7 @@ export type ContentComicChapterContentArchivePreviewResponse = ComicArchiveTaskR
 /**
  *  类型定义 [ContentComicChapterContentArchiveConfirmRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentArchiveConfirmRequest = ConfirmComicArchiveDto
 
@@ -376,7 +376,7 @@ export type ContentComicChapterContentArchiveConfirmResponse = boolean
 /**
  *  类型定义 [ContentComicChapterContentArchiveDetailRequest]
  *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicChapterContentArchiveDetailRequest = {
   /** 任意合法数值 */
@@ -393,7 +393,7 @@ export type ContentComicThirdPartyPlatformListResponse = PlatformResponseDto[]
 /**
  *  类型定义 [ContentComicThirdPartySearchPageRequest]
  *  @来源 内容管理/漫画管理/三方平台解析
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicThirdPartySearchPageRequest = {
   /** 任意合法数值 */
@@ -441,7 +441,7 @@ export type ContentComicThirdPartySearchPageResponse = {
 /**
  *  类型定义 [ContentComicThirdPartyDetailRequest]
  *  @来源 内容管理/漫画管理/三方平台解析
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicThirdPartyDetailRequest = {
   /** 任意合法数值 */
@@ -459,7 +459,7 @@ export type ContentComicThirdPartyDetailResponse = undefined
 /**
  *  类型定义 [ContentComicThirdPartyChapterListRequest]
  *  @来源 内容管理/漫画管理/三方平台解析
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicThirdPartyChapterListRequest = {
   /** 任意合法数值 */
@@ -477,7 +477,7 @@ export type ContentComicThirdPartyChapterListResponse = Record<string, any>[]
 /**
  *  类型定义 [ContentComicThirdPartyChapterContentDetailRequest]
  *  @来源 内容管理/漫画管理/三方平台解析
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentComicThirdPartyChapterContentDetailRequest = {
   /** 任意合法数值 */
@@ -498,7 +498,7 @@ export type ContentComicThirdPartyChapterContentDetailResponse = undefined
 /**
  *  类型定义 [ContentNovelCreateRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelCreateRequest = CreateWorkDto
 
@@ -507,7 +507,7 @@ export type ContentNovelCreateResponse = boolean
 /**
  *  类型定义 [ContentNovelPageRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelPageRequest = {
   /** 任意合法数值 */
@@ -523,7 +523,7 @@ export type ContentNovelPageRequest = {
   authorId?: null | number
 
   /* 分类ID列表 */
-  categoryIds?: any[] | null
+  categoryIds?: any[]
 
   /* 结束时间 */
   endDate?: null | string
@@ -568,7 +568,7 @@ export type ContentNovelPageRequest = {
   startDate?: null | string
 
   /* 标签ID列表 */
-  tagIds?: any[] | null
+  tagIds?: any[]
 
   /* 作品类型 */
   type?: number
@@ -594,7 +594,7 @@ export type ContentNovelPageResponse = {
 /**
  *  类型定义 [ContentNovelDetailRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelDetailRequest = {
   /** 任意合法数值 */
@@ -609,7 +609,7 @@ export type ContentNovelDetailResponse = BaseWorkDto
 /**
  *  类型定义 [ContentNovelUpdateRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelUpdateRequest = UpdateWorkDto
 
@@ -618,7 +618,7 @@ export type ContentNovelUpdateResponse = boolean
 /**
  *  类型定义 [ContentNovelUpdateStatusRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelUpdateStatusRequest = UpdateWorkStatusDto
 
@@ -627,7 +627,7 @@ export type ContentNovelUpdateStatusResponse = boolean
 /**
  *  类型定义 [ContentNovelUpdateRecommendedRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelUpdateRecommendedRequest = UpdateWorkRecommendedDto
 
@@ -636,7 +636,7 @@ export type ContentNovelUpdateRecommendedResponse = boolean
 /**
  *  类型定义 [ContentNovelUpdateHotRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelUpdateHotRequest = UpdateWorkHotDto
 
@@ -645,7 +645,7 @@ export type ContentNovelUpdateHotResponse = boolean
 /**
  *  类型定义 [ContentNovelUpdateNewRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelUpdateNewRequest = UpdateWorkNewDto
 
@@ -654,7 +654,7 @@ export type ContentNovelUpdateNewResponse = boolean
 /**
  *  类型定义 [ContentNovelDeleteRequest]
  *  @来源 内容管理/小说管理/基础信息
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelDeleteRequest = IdDto
 
@@ -663,7 +663,7 @@ export type ContentNovelDeleteResponse = boolean
 /**
  *  类型定义 [ContentNovelChapterCreateRequest]
  *  @来源 内容管理/小说管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterCreateRequest = CreateWorkChapterDto
 
@@ -672,7 +672,7 @@ export type ContentNovelChapterCreateResponse = boolean
 /**
  *  类型定义 [ContentNovelChapterPageRequest]
  *  @来源 内容管理/小说管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterPageRequest = {
   /** 任意合法数值 */
@@ -735,7 +735,7 @@ export type ContentNovelChapterPageResponse = {
 /**
  *  类型定义 [ContentNovelChapterDetailRequest]
  *  @来源 内容管理/小说管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterDetailRequest = {
   /** 任意合法数值 */
@@ -750,7 +750,7 @@ export type ContentNovelChapterDetailResponse = IdDto
 /**
  *  类型定义 [ContentNovelChapterUpdateRequest]
  *  @来源 内容管理/小说管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterUpdateRequest = UpdateWorkChapterDto
 
@@ -759,7 +759,7 @@ export type ContentNovelChapterUpdateResponse = boolean
 /**
  *  类型定义 [ContentNovelChapterDeleteRequest]
  *  @来源 内容管理/小说管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterDeleteRequest = IdDto
 
@@ -768,7 +768,7 @@ export type ContentNovelChapterDeleteResponse = boolean
 /**
  *  类型定义 [ContentNovelChapterSwapSortOrderRequest]
  *  @来源 内容管理/小说管理/章节管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterSwapSortOrderRequest = DragReorderDto
 
@@ -777,7 +777,7 @@ export type ContentNovelChapterSwapSortOrderResponse = boolean
 /**
  *  类型定义 [ContentNovelChapterContentDetailRequest]
  *  @来源 内容管理/小说管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterContentDetailRequest = {
   /** 任意合法数值 */
@@ -792,7 +792,7 @@ export type ContentNovelChapterContentDetailResponse = string
 /**
  *  类型定义 [ContentNovelChapterContentUploadRequest]
  *  @来源 内容管理/小说管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterContentUploadRequest = {
   /** 任意合法数值 */
@@ -810,7 +810,7 @@ export type ContentNovelChapterContentUploadResponse = UploadResponseDto
 /**
  *  类型定义 [ContentNovelChapterContentDeleteRequest]
  *  @来源 内容管理/小说管理/章节内容
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentNovelChapterContentDeleteRequest = IdDto
 
@@ -819,7 +819,7 @@ export type ContentNovelChapterContentDeleteResponse = boolean
 /**
  *  类型定义 [ContentAuthorCreateRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorCreateRequest = CreateAuthorDto
 
@@ -828,7 +828,7 @@ export type ContentAuthorCreateResponse = boolean
 /**
  *  类型定义 [ContentAuthorPageRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorPageRequest = {
   /** 任意合法数值 */
@@ -888,7 +888,7 @@ export type ContentAuthorPageResponse = {
 /**
  *  类型定义 [ContentAuthorDetailRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorDetailRequest = {
   /** 任意合法数值 */
@@ -903,7 +903,7 @@ export type ContentAuthorDetailResponse = BaseAuthorDto
 /**
  *  类型定义 [ContentAuthorUpdateRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorUpdateRequest = UpdateAuthorDto
 
@@ -912,7 +912,7 @@ export type ContentAuthorUpdateResponse = boolean
 /**
  *  类型定义 [ContentAuthorUpdateStatusRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorUpdateStatusRequest = UpdateAuthorStatusDto
 
@@ -921,7 +921,7 @@ export type ContentAuthorUpdateStatusResponse = boolean
 /**
  *  类型定义 [ContentAuthorUpdateRecommendedRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorUpdateRecommendedRequest = UpdateAuthorRecommendedDto
 
@@ -930,7 +930,7 @@ export type ContentAuthorUpdateRecommendedResponse = boolean
 /**
  *  类型定义 [ContentAuthorRebuildFollowCountRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorRebuildFollowCountRequest = IdDto
 
@@ -941,7 +941,7 @@ export type ContentAuthorRebuildFollowCountAllResponse = boolean
 /**
  *  类型定义 [ContentAuthorRebuildWorkCountRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorRebuildWorkCountRequest = IdDto
 
@@ -952,7 +952,7 @@ export type ContentAuthorRebuildWorkCountAllResponse = boolean
 /**
  *  类型定义 [ContentAuthorDeleteRequest]
  *  @来源 内容管理/作者管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentAuthorDeleteRequest = IdDto
 
@@ -961,7 +961,7 @@ export type ContentAuthorDeleteResponse = boolean
 /**
  *  类型定义 [ContentCategoryCreateRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentCategoryCreateRequest = CreateCategoryDto
 
@@ -970,7 +970,7 @@ export type ContentCategoryCreateResponse = boolean
 /**
  *  类型定义 [ContentCategoryPageRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentCategoryPageRequest = {
   /** 任意合法数值 */
@@ -1021,7 +1021,7 @@ export type ContentCategoryPageResponse = {
 /**
  *  类型定义 [ContentCategoryDetailRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentCategoryDetailRequest = {
   /** 任意合法数值 */
@@ -1036,7 +1036,7 @@ export type ContentCategoryDetailResponse = BaseCategoryDto
 /**
  *  类型定义 [ContentCategoryUpdateRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentCategoryUpdateRequest = UpdateCategoryDto
 
@@ -1045,7 +1045,7 @@ export type ContentCategoryUpdateResponse = boolean
 /**
  *  类型定义 [ContentCategoryUpdateStatusRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentCategoryUpdateStatusRequest = UpdateCategoryStatusDto
 
@@ -1054,7 +1054,7 @@ export type ContentCategoryUpdateStatusResponse = boolean
 /**
  *  类型定义 [ContentCategoryDeleteRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentCategoryDeleteRequest = IdDto
 
@@ -1063,7 +1063,7 @@ export type ContentCategoryDeleteResponse = boolean
 /**
  *  类型定义 [ContentCategorySwapSortOrderRequest]
  *  @来源 内容管理/分类管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentCategorySwapSortOrderRequest = UpdateCategorySortDto
 
@@ -1072,7 +1072,7 @@ export type ContentCategorySwapSortOrderResponse = boolean
 /**
  *  类型定义 [ContentTagCreateRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentTagCreateRequest = CreateTagDto
 
@@ -1081,7 +1081,7 @@ export type ContentTagCreateResponse = boolean
 /**
  *  类型定义 [ContentTagPageRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentTagPageRequest = {
   /** 任意合法数值 */
@@ -1129,7 +1129,7 @@ export type ContentTagPageResponse = {
 /**
  *  类型定义 [ContentTagDetailRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentTagDetailRequest = {
   /** 任意合法数值 */
@@ -1144,7 +1144,7 @@ export type ContentTagDetailResponse = BaseTagDto
 /**
  *  类型定义 [ContentTagUpdateRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentTagUpdateRequest = UpdateTagDto
 
@@ -1153,7 +1153,7 @@ export type ContentTagUpdateResponse = boolean
 /**
  *  类型定义 [ContentTagUpdateStatusRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentTagUpdateStatusRequest = UpdateEnabledStatusDto
 
@@ -1162,7 +1162,7 @@ export type ContentTagUpdateStatusResponse = boolean
 /**
  *  类型定义 [ContentTagDeleteRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentTagDeleteRequest = IdDto
 
@@ -1171,7 +1171,7 @@ export type ContentTagDeleteResponse = boolean
 /**
  *  类型定义 [ContentTagSwapSortOrderRequest]
  *  @来源 内容管理/标签管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentTagSwapSortOrderRequest = UpdateTagSortDto
 
@@ -1180,7 +1180,7 @@ export type ContentTagSwapSortOrderResponse = boolean
 /**
  *  类型定义 [ContentEmojiPackPageRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiPackPageRequest = {
   /** 任意合法数值 */
@@ -1234,7 +1234,7 @@ export type ContentEmojiPackPageResponse = {
 /**
  *  类型定义 [ContentEmojiPackDetailRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiPackDetailRequest = {
   /** 任意合法数值 */
@@ -1249,7 +1249,7 @@ export type ContentEmojiPackDetailResponse = BaseEmojiPackDto
 /**
  *  类型定义 [ContentEmojiPackCreateRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiPackCreateRequest = CreateEmojiPackDto
 
@@ -1258,7 +1258,7 @@ export type ContentEmojiPackCreateResponse = boolean
 /**
  *  类型定义 [ContentEmojiPackUpdateRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiPackUpdateRequest = UpdateEmojiPackDto
 
@@ -1267,7 +1267,7 @@ export type ContentEmojiPackUpdateResponse = boolean
 /**
  *  类型定义 [ContentEmojiPackDeleteRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiPackDeleteRequest = IdDto
 
@@ -1276,7 +1276,7 @@ export type ContentEmojiPackDeleteResponse = boolean
 /**
  *  类型定义 [ContentEmojiPackUpdateEnabledRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiPackUpdateEnabledRequest = UpdateEnabledStatusDto
 
@@ -1285,7 +1285,7 @@ export type ContentEmojiPackUpdateEnabledResponse = boolean
 /**
  *  类型定义 [ContentEmojiPackSwapSortOrderRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiPackSwapSortOrderRequest = DragReorderDto
 
@@ -1294,7 +1294,7 @@ export type ContentEmojiPackSwapSortOrderResponse = boolean
 /**
  *  类型定义 [ContentEmojiPackUpdateSceneTypeRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiPackUpdateSceneTypeRequest = UpdateEmojiPackSceneTypeDto
 
@@ -1303,7 +1303,7 @@ export type ContentEmojiPackUpdateSceneTypeResponse = boolean
 /**
  *  类型定义 [ContentEmojiAssetPageRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiAssetPageRequest = {
   /** 任意合法数值 */
@@ -1360,7 +1360,7 @@ export type ContentEmojiAssetPageResponse = {
 /**
  *  类型定义 [ContentEmojiAssetDetailRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiAssetDetailRequest = {
   /** 任意合法数值 */
@@ -1375,7 +1375,7 @@ export type ContentEmojiAssetDetailResponse = BaseEmojiAssetDto
 /**
  *  类型定义 [ContentEmojiAssetCreateRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiAssetCreateRequest = CreateEmojiAssetDto
 
@@ -1384,7 +1384,7 @@ export type ContentEmojiAssetCreateResponse = boolean
 /**
  *  类型定义 [ContentEmojiAssetUpdateRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiAssetUpdateRequest = UpdateEmojiAssetDto
 
@@ -1393,7 +1393,7 @@ export type ContentEmojiAssetUpdateResponse = boolean
 /**
  *  类型定义 [ContentEmojiAssetDeleteRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiAssetDeleteRequest = IdDto
 
@@ -1402,7 +1402,7 @@ export type ContentEmojiAssetDeleteResponse = boolean
 /**
  *  类型定义 [ContentEmojiAssetUpdateEnabledRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiAssetUpdateEnabledRequest = UpdateEnabledStatusDto
 
@@ -1411,7 +1411,7 @@ export type ContentEmojiAssetUpdateEnabledResponse = boolean
 /**
  *  类型定义 [ContentEmojiAssetSwapSortOrderRequest]
  *  @来源 内容管理/表情管理
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ContentEmojiAssetSwapSortOrderRequest = DragReorderDto
 
@@ -1420,7 +1420,7 @@ export type ContentEmojiAssetSwapSortOrderResponse = boolean
 /**
  *  类型定义 [CreateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CreateWorkDto = {
   /** 任意合法数值 */
@@ -1489,7 +1489,7 @@ export type CreateWorkDto = {
 /**
  *  类型定义 [PageWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type PageWorkDto = {
   /** 任意合法数值 */
@@ -1540,7 +1540,7 @@ export type PageWorkDto = {
 /**
  *  类型定义 [AuthorInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type AuthorInfoDto = {
   /** 任意合法数值 */
@@ -1555,13 +1555,13 @@ export type AuthorInfoDto = {
   name: string
 
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: any[] | null
+  type?: 1 | 2[]
 }
 
 /**
  *  类型定义 [CategoryInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CategoryInfoDto = {
   /** 任意合法数值 */
@@ -1578,7 +1578,7 @@ export type CategoryInfoDto = {
 /**
  *  类型定义 [TagInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type TagInfoDto = {
   /** 任意合法数值 */
@@ -1595,7 +1595,7 @@ export type TagInfoDto = {
 /**
  *  类型定义 [BaseWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type BaseWorkDto = {
   /** 任意合法数值 */
@@ -1678,7 +1678,7 @@ export type BaseWorkDto = {
 /**
  *  类型定义 [UpdateWorkDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateWorkDto = {
   /** 任意合法数值 */
@@ -1749,7 +1749,7 @@ export type UpdateWorkDto = {
 /**
  *  类型定义 [UpdateWorkStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateWorkStatusDto = {
   /** 任意合法数值 */
@@ -1764,7 +1764,7 @@ export type UpdateWorkStatusDto = {
 /**
  *  类型定义 [UpdateWorkRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateWorkRecommendedDto = {
   /** 任意合法数值 */
@@ -1779,7 +1779,7 @@ export type UpdateWorkRecommendedDto = {
 /**
  *  类型定义 [UpdateWorkHotDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateWorkHotDto = {
   /** 任意合法数值 */
@@ -1794,7 +1794,7 @@ export type UpdateWorkHotDto = {
 /**
  *  类型定义 [UpdateWorkNewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateWorkNewDto = {
   /** 任意合法数值 */
@@ -1809,7 +1809,7 @@ export type UpdateWorkNewDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -1822,7 +1822,7 @@ export type IdDto = {
 /**
  *  类型定义 [CreateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CreateWorkChapterDto = {
   /** 任意合法数值 */
@@ -1867,7 +1867,7 @@ export type CreateWorkChapterDto = {
 /**
  *  类型定义 [UpdateWorkChapterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateWorkChapterDto = {
   /** 任意合法数值 */
@@ -1914,7 +1914,7 @@ export type UpdateWorkChapterDto = {
 /**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type DragReorderDto = {
   /** 任意合法数值 */
@@ -1929,7 +1929,7 @@ export type DragReorderDto = {
 /**
  *  类型定义 [UploadResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UploadResponseDto = {
   /** 任意合法数值 */
@@ -1956,7 +1956,7 @@ export type UploadResponseDto = {
 /**
  *  类型定义 [UpdateComicContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateComicContentDto = {
   /** 任意合法数值 */
@@ -1973,7 +1973,7 @@ export type UpdateComicContentDto = {
 /**
  *  类型定义 [DeleteComicContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type DeleteComicContentDto = {
   /** 任意合法数值 */
@@ -1988,7 +1988,7 @@ export type DeleteComicContentDto = {
 /**
  *  类型定义 [MoveComicContentDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type MoveComicContentDto = {
   /** 任意合法数值 */
@@ -2005,7 +2005,7 @@ export type MoveComicContentDto = {
 /**
  *  类型定义 [ComicArchiveTaskResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ComicArchiveTaskResponseDto = {
   /** 任意合法数值 */
@@ -2042,7 +2042,7 @@ export type ComicArchiveTaskResponseDto = {
 /**
  *  类型定义 [ComicArchiveMatchedItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ComicArchiveMatchedItemDto = {
   /** 任意合法数值 */
@@ -2071,7 +2071,7 @@ export type ComicArchiveMatchedItemDto = {
 /**
  *  类型定义 [ComicArchiveIgnoredItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ComicArchiveIgnoredItemDto = {
   /** 任意合法数值 */
@@ -2088,7 +2088,7 @@ export type ComicArchiveIgnoredItemDto = {
 /**
  *  类型定义 [ComicArchiveResultItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ComicArchiveResultItemDto = {
   /** 任意合法数值 */
@@ -2109,7 +2109,7 @@ export type ComicArchiveResultItemDto = {
 /**
  *  类型定义 [ComicArchiveSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ComicArchiveSummaryDto = {
   /** 任意合法数值 */
@@ -2126,7 +2126,7 @@ export type ComicArchiveSummaryDto = {
 /**
  *  类型定义 [ConfirmComicArchiveDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type ConfirmComicArchiveDto = {
   /** 任意合法数值 */
@@ -2141,7 +2141,7 @@ export type ConfirmComicArchiveDto = {
 /**
  *  类型定义 [PlatformResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type PlatformResponseDto = {
   /** 任意合法数值 */
@@ -2156,7 +2156,7 @@ export type PlatformResponseDto = {
 /**
  *  类型定义 [SearchComicItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type SearchComicItemDto = {
   /** 任意合法数值 */
@@ -2177,7 +2177,7 @@ export type SearchComicItemDto = {
 /**
  *  类型定义 [CreateAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CreateAuthorDto = {
   /** 任意合法数值 */
@@ -2196,13 +2196,13 @@ export type CreateAuthorDto = {
   remark?: null | string
 
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: any[] | null
+  type?: 1 | 2[]
 }
 
 /**
  *  类型定义 [AuthorPageResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type AuthorPageResponseDto = {
   /** 任意合法数值 */
@@ -2226,7 +2226,7 @@ export type AuthorPageResponseDto = {
   /* 国籍 */
   nationality?: null | string
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: any[] | null
+  type?: 1 | 2[]
   /* 更新时间 */
   updatedAt: string
 
@@ -2237,7 +2237,7 @@ export type AuthorPageResponseDto = {
 /**
  *  类型定义 [BaseAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type BaseAuthorDto = {
   /** 任意合法数值 */
@@ -2265,7 +2265,7 @@ export type BaseAuthorDto = {
   /* 管理员备注 */
   remark?: null | string
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: any[] | null
+  type?: 1 | 2[]
   /* 更新时间 */
   updatedAt: string
 
@@ -2276,7 +2276,7 @@ export type BaseAuthorDto = {
 /**
  *  类型定义 [UpdateAuthorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateAuthorDto = {
   /** 任意合法数值 */
@@ -2297,13 +2297,13 @@ export type UpdateAuthorDto = {
   remark?: null | string
 
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: any[] | null
+  type?: 1 | 2[]
 }
 
 /**
  *  类型定义 [UpdateAuthorStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateAuthorStatusDto = {
   /** 任意合法数值 */
@@ -2318,7 +2318,7 @@ export type UpdateAuthorStatusDto = {
 /**
  *  类型定义 [UpdateAuthorRecommendedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateAuthorRecommendedDto = {
   /** 任意合法数值 */
@@ -2333,7 +2333,7 @@ export type UpdateAuthorRecommendedDto = {
 /**
  *  类型定义 [AuthorFollowCountRepairResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type AuthorFollowCountRepairResultDto = {
   /** 任意合法数值 */
@@ -2348,7 +2348,7 @@ export type AuthorFollowCountRepairResultDto = {
 /**
  *  类型定义 [AuthorWorkCountRepairResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type AuthorWorkCountRepairResultDto = {
   /** 任意合法数值 */
@@ -2363,13 +2363,13 @@ export type AuthorWorkCountRepairResultDto = {
 /**
  *  类型定义 [CreateCategoryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CreateCategoryDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: any[] | null
+  contentType?: 1 | 2 | 3[]
   /* 分类描述 */
   description?: null | string
   /* 分类图标 URL */
@@ -2386,13 +2386,13 @@ export type CreateCategoryDto = {
 /**
  *  类型定义 [BaseCategoryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type BaseCategoryDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: any[] | null
+  contentType?: 1 | 2 | 3[]
   /* 创建时间 */
   createdAt: string
   /* 分类描述 */
@@ -2417,13 +2417,13 @@ export type BaseCategoryDto = {
 /**
  *  类型定义 [UpdateCategoryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateCategoryDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: any[] | null
+  contentType?: 1 | 2 | 3[]
   /* 分类描述 */
   description?: null | string
   /* 分类图标 URL */
@@ -2442,7 +2442,7 @@ export type UpdateCategoryDto = {
 /**
  *  类型定义 [UpdateCategoryStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateCategoryStatusDto = {
   /** 任意合法数值 */
@@ -2457,7 +2457,7 @@ export type UpdateCategoryStatusDto = {
 /**
  *  类型定义 [UpdateCategorySortDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateCategorySortDto = {
   /** 任意合法数值 */
@@ -2472,7 +2472,7 @@ export type UpdateCategorySortDto = {
 /**
  *  类型定义 [CreateTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CreateTagDto = {
   /** 任意合法数值 */
@@ -2491,7 +2491,7 @@ export type CreateTagDto = {
 /**
  *  类型定义 [BaseTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type BaseTagDto = {
   /** 任意合法数值 */
@@ -2520,7 +2520,7 @@ export type BaseTagDto = {
 /**
  *  类型定义 [UpdateTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateTagDto = {
   /** 任意合法数值 */
@@ -2541,7 +2541,7 @@ export type UpdateTagDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -2556,7 +2556,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [UpdateTagSortDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateTagSortDto = {
   /** 任意合法数值 */
@@ -2571,7 +2571,7 @@ export type UpdateTagSortDto = {
 /**
  *  类型定义 [BaseEmojiPackDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type BaseEmojiPackDto = {
   /** 任意合法数值 */
@@ -2608,7 +2608,7 @@ export type BaseEmojiPackDto = {
 /**
  *  类型定义 [CreateEmojiPackDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CreateEmojiPackDto = {
   /** 任意合法数值 */
@@ -2635,7 +2635,7 @@ export type CreateEmojiPackDto = {
 /**
  *  类型定义 [UpdateEmojiPackDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateEmojiPackDto = {
   /** 任意合法数值 */
@@ -2664,7 +2664,7 @@ export type UpdateEmojiPackDto = {
 /**
  *  类型定义 [UpdateEmojiPackSceneTypeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateEmojiPackSceneTypeDto = {
   /** 任意合法数值 */
@@ -2679,7 +2679,7 @@ export type UpdateEmojiPackSceneTypeDto = {
 /**
  *  类型定义 [BaseEmojiAssetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type BaseEmojiAssetDto = {
   /** 任意合法数值 */
@@ -2722,7 +2722,7 @@ export type BaseEmojiAssetDto = {
 /**
  *  类型定义 [CreateEmojiAssetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type CreateEmojiAssetDto = {
   /** 任意合法数值 */
@@ -2755,7 +2755,7 @@ export type CreateEmojiAssetDto = {
 /**
  *  类型定义 [UpdateEmojiAssetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-09 21:01:08
+ *  @更新时间 2026-04-10 07:21:59
  */
 export type UpdateEmojiAssetDto = {
   /** 任意合法数值 */

@@ -1,50 +1,30 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
-  CheckInDailyRewardRuleItemDto,
   CheckInGrantItemDto,
-  CheckInPlanCreateRequest,
+  CheckInPatternRewardRuleItemDto,
   CheckInPlanDetailResponseDto,
   CheckInPlanPageItemDto,
-  CheckInPlanUpdateRequest,
   CheckInReconciliationItemDto,
   CheckInRewardConfigDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { dayjs, formSchemaTransform, safeParseJson } from '#/utils';
+import { formSchemaTransform } from '#/utils';
+
+import {
+  formatRewardSummary,
+  hasConfiguredReward,
+  parseRewardConfig,
+} from './plan-modal';
+
+export { formatRewardSummary } from './plan-modal';
 
 export type CheckInRewardConfigValue = CheckInRewardConfigDto;
-
-type CheckInCycleType = CheckInPlanDetailResponseDto['cycleType'];
-
-type CheckInPlanRewardSource = {
-  baseRewardConfig?: CheckInRewardConfigValue | null;
-  cycleType?: CheckInCycleType;
-  dailyRewardRules?: Array<Pick<CheckInDailyRewardRuleItemDto, 'rewardConfig'>> | null;
+export type CheckInPlanRow = CheckInPlanPageItemDto & {
+  enableLoading?: boolean;
+  publishLoading?: boolean;
+  statusLoading?: boolean;
 };
-
-export type CheckInPlanFormModel = Partial<Pick<CheckInPlanUpdateRequest, 'id'>> &
-  Pick<
-    CheckInPlanDetailResponseDto,
-    | 'allowMakeupCountPerCycle'
-    | 'cycleType'
-    | 'endDate'
-    | 'planCode'
-    | 'planName'
-    | 'startDate'
-    | 'status'
-  > & {
-    baseRewardExperience?: CheckInRewardConfigValue['experience'];
-    baseRewardPoints?: CheckInRewardConfigValue['points'];
-  };
-
-export type CheckInPlanRow = CheckInPlanPageItemDto &
-  Pick<CheckInPlanRewardSource, 'baseRewardConfig'> & {
-    enableLoading?: boolean;
-    publishLoading?: boolean;
-    statusLoading?: boolean;
-  };
-
 export type CheckInReconciliationRow = CheckInReconciliationItemDto;
 
 export const checkInPlanStatusOptions = [
@@ -71,117 +51,21 @@ export const checkInRewardResultOptions = [
   { color: 'danger' as const, label: '处理失败', value: 3 },
 ];
 
+export const checkInRewardSourceOptions = [
+  { color: 'info' as const, label: '默认基础奖励', value: 'BASE_REWARD' },
+  { color: 'success' as const, label: '具体日期奖励', value: 'DATE_RULE' },
+  { color: 'warning' as const, label: '周期模式奖励', value: 'PATTERN_RULE' },
+];
+
+export const checkInPatternTypeOptions = [
+  { color: 'success' as const, label: '按周几', value: 'WEEKDAY' },
+  { color: 'warning' as const, label: '按每月几号', value: 'MONTH_DAY' },
+  { color: 'info' as const, label: '按月末', value: 'MONTH_LAST_DAY' },
+];
+
 export const checkInRecordTypeOptions = [
   { color: 'success' as const, label: '正常签到', value: 1 },
   { color: 'warning' as const, label: '补签', value: 2 },
-];
-
-export const formSchema: EsFormSchema = [
-  {
-    component: 'Input',
-    componentProps: {
-      maxlength: 200,
-      placeholder: '请输入签到计划名称',
-      showWordLimit: true,
-    },
-    fieldName: 'planName',
-    label: '计划名称',
-    rules: 'required',
-  },
-  {
-    component: 'Input',
-    componentProps: {
-      maxlength: 50,
-      placeholder: '请输入签到计划编码',
-      showWordLimit: true,
-    },
-    fieldName: 'planCode',
-    label: '计划编码',
-    rules: 'required',
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      class: 'w-full',
-      options: checkInPlanStatusOptions,
-      placeholder: '请选择计划状态',
-    },
-    defaultValue: 0,
-    fieldName: 'status',
-    label: '计划状态',
-    rules: 'required',
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      class: 'w-full',
-      options: checkInCycleTypeOptions,
-      placeholder: '请选择周期类型',
-    },
-    defaultValue: 'weekly',
-    fieldName: 'cycleType',
-    label: '周期类型',
-    rules: 'required',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入每周期补签次数',
-    },
-    defaultValue: 0,
-    fieldName: 'allowMakeupCountPerCycle',
-    label: '每周期补签次数',
-    rules: 'required',
-  },
-  {
-    component: 'DatePicker',
-    componentProps: {
-      class: '!w-full',
-      placeholder: '请选择开始日期',
-      type: 'date',
-      valueFormat: 'YYYY-MM-DD',
-    },
-    defaultValue: dayjs().format('YYYY-MM-DD'),
-    fieldName: 'startDate',
-    label: '开始日期',
-    rules: 'required',
-  },
-  {
-    component: 'DatePicker',
-    componentProps: {
-      class: '!w-full',
-      placeholder: '请选择结束日期',
-      type: 'date',
-      valueFormat: 'YYYY-MM-DD',
-    },
-    fieldName: 'endDate',
-    help: '不填写表示长期有效；周计划需选周日，月计划需选月末。',
-    label: '结束日期',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入基础奖励积分',
-    },
-    fieldName: 'baseRewardPoints',
-    help: '基础奖励积分和经验至少填写一项。',
-    label: '基础奖励积分',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入基础奖励经验',
-    },
-    fieldName: 'baseRewardExperience',
-    help: '基础奖励积分和经验至少填写一项。',
-    label: '基础奖励经验',
-  },
 ];
 
 const planTableSchema: EsFormSchema = [
@@ -216,6 +100,7 @@ const planTableSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
+      clearable: true,
       options: checkInCycleTypeOptions,
       placeholder: '周期类型',
     },
@@ -377,14 +262,12 @@ const reconciliationTableFormSchema: EsFormSchema = [
     label: '周期ID',
   },
   {
-    component: 'InputNumber',
+    component: 'Input',
     componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '奖励日序号',
+      placeholder: '解析来源',
     },
-    fieldName: 'rewardDayIndex',
-    label: '奖励日序号',
+    fieldName: 'resolvedRewardSourceType',
+    label: '解析来源',
   },
   {
     component: 'Select',
@@ -510,7 +393,8 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> =
       title: '开始日期',
     },
     allowMakeupCountPerCycle: {
-      formatter: ({ cellValue }: { cellValue?: null | number }) => cellValue ?? '-',
+      formatter: ({ cellValue }: { cellValue?: null | number }) =>
+        cellValue ?? '-',
       minWidth: 110,
       title: '补签次数',
     },
@@ -518,7 +402,7 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> =
       minWidth: 190,
       showOverflow: false,
       slots: { default: 'baseRewardConfig' },
-      title: '基础奖励',
+      title: '默认奖励',
     },
     updatedAt: {
       show: true,
@@ -527,7 +411,7 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> =
     actions: {
       show: true,
       slots: { default: 'planActions' },
-      width: 180,
+      width: 240,
     },
   });
 
@@ -554,11 +438,11 @@ export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliati
       cycleId: {
         minWidth: 100,
       },
-      rewardDayIndex: {
-        minWidth: 120,
+      resolvedRewardSourceType: {
+        minWidth: 140,
         showOverflow: false,
-        slots: { default: 'rewardDayIndex' },
-        title: '奖励日',
+        slots: { default: 'resolvedRewardSourceType' },
+        title: '解析来源',
       },
       rewardStatus: {
         minWidth: 150,
@@ -566,7 +450,7 @@ export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliati
         slots: { default: 'baseRewardStatus' },
       },
       resolvedRewardConfig: {
-        minWidth: 180,
+        minWidth: 220,
         showOverflow: false,
         slots: { default: 'resolvedRewardConfig' },
         title: '奖励快照',
@@ -597,223 +481,34 @@ export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliati
     },
   );
 
-export function parseRewardConfig(value: unknown): CheckInRewardConfigValue {
-  if (!value) {
-    return {};
-  }
-  if (typeof value === 'object' && !Array.isArray(value)) {
-    return value as CheckInRewardConfigValue;
-  }
-  if (typeof value === 'string') {
-    return (safeParseJson(value) as CheckInRewardConfigValue | undefined) || {};
-  }
-  return {};
-}
-
-export function formatRewardSummary(value: unknown) {
-  const rewardConfig = parseRewardConfig(value);
-  const items = [
-    rewardConfig.points ? `积分 ${rewardConfig.points}` : '',
-    rewardConfig.experience ? `经验 ${rewardConfig.experience}` : '',
-  ].filter(Boolean);
-
-  return items.length > 0 ? items.join(' / ') : '未配置';
-}
-
-export function getCycleMaxDayIndex(cycleType: CheckInCycleType) {
-  return cycleType === 'weekly' ? 7 : 31;
-}
-
-export function hasConfiguredReward(value: {
-  experience?: null | number;
-  points?: null | number;
-}) {
-  return Number(value.experience ?? 0) > 0 || Number(value.points ?? 0) > 0;
-}
-
-export function getBaseRewardValidationMessage(
-  model: Pick<
-    CheckInPlanFormModel,
-    'baseRewardExperience' | 'baseRewardPoints'
-  >,
+export function formatLedgerIds(
+  ids?: CheckInGrantItemDto['ledgerIds'] | null  ,
 ) {
-  return hasConfiguredReward({
-    experience: model.baseRewardExperience,
-    points: model.baseRewardPoints,
-  })
-    ? null
-    : '基础奖励积分或经验至少填写一项';
-}
-
-function getPlanBoundaryValidationMessage(model: CheckInPlanFormModel) {
-  if (!model.startDate) {
-    return null;
-  }
-
-  if (
-    model.endDate &&
-    dayjs(model.endDate).valueOf() < dayjs(model.startDate).valueOf()
-  ) {
-    return '结束日期不能早于开始日期';
-  }
-
-  const startDate = dayjs(model.startDate);
-  if (model.cycleType === 'weekly') {
-    if (startDate.day() !== 1) {
-      return '周计划开始日期必须选择周一';
-    }
-
-    if (model.endDate && dayjs(model.endDate).day() !== 0) {
-      return '周计划结束日期必须选择周日';
-    }
-    return null;
-  }
-
-  if (startDate.date() !== 1) {
-    return '月计划开始日期必须选择每月 1 号';
-  }
-
-  if (model.endDate) {
-    const endDate = dayjs(model.endDate);
-    if (endDate.date() !== endDate.daysInMonth()) {
-      return '月计划结束日期必须选择月末';
-    }
-  }
-
-  return null;
-}
-
-export function getPlanBusinessRuleError(model: CheckInPlanFormModel) {
-  return (
-    getPlanBoundaryValidationMessage(model) ||
-    getBaseRewardValidationMessage(model)
-  );
-}
-
-function isSameRewardConfig(
-  left: CheckInRewardConfigValue,
-  right: CheckInRewardConfigValue,
-) {
-  return (
-    Number(left.points ?? 0) === Number(right.points ?? 0) &&
-    Number(left.experience ?? 0) === Number(right.experience ?? 0)
-  );
-}
-
-function resolveUniformDailyRewardConfig(source: CheckInPlanRewardSource) {
-  const { cycleType, dailyRewardRules } = source;
-  if (!cycleType || !dailyRewardRules?.length) {
-    return {};
-  }
-
-  if (dailyRewardRules.length !== getCycleMaxDayIndex(cycleType)) {
-    return {};
-  }
-
-  const rewardConfigs = dailyRewardRules.map((rule) =>
-    parseRewardConfig(rule.rewardConfig),
-  );
-  const [firstRewardConfig, ...restRewardConfigs] = rewardConfigs;
-  if (!firstRewardConfig || !hasConfiguredReward(firstRewardConfig)) {
-    return {};
-  }
-
-  return restRewardConfigs.every((item) =>
-    isSameRewardConfig(item, firstRewardConfig),
-  )
-    ? firstRewardConfig
-    : {};
-}
-
-export function resolvePlanBaseRewardConfig(source: CheckInPlanRewardSource) {
-  const baseRewardConfig = parseRewardConfig(source.baseRewardConfig);
-  if (hasConfiguredReward(baseRewardConfig)) {
-    return baseRewardConfig;
-  }
-
-  return resolveUniformDailyRewardConfig(source);
-}
-
-export function getPlanBaseRewardSummary(source: CheckInPlanRewardSource) {
-  const rewardConfig = resolvePlanBaseRewardConfig(source);
-  if (hasConfiguredReward(rewardConfig)) {
-    return formatRewardSummary(rewardConfig);
-  }
-
-  return source.dailyRewardRules?.length ? '按日多档配置' : '未配置';
-}
-
-export function formatLedgerIds(ids?: CheckInGrantItemDto['ledgerIds'] | null) {
   return ids && ids.length > 0 ? ids.join(', ') : '-';
 }
 
-export function mapPlanDetailToFormModel(
-  detail: CheckInPlanDetailResponseDto &
-    Pick<CheckInPlanRewardSource, 'baseRewardConfig'>,
-): CheckInPlanFormModel {
-  const baseRewardConfig = resolvePlanBaseRewardConfig(detail);
-
-  return {
-    allowMakeupCountPerCycle: detail.allowMakeupCountPerCycle,
-    cycleType: detail.cycleType,
-    baseRewardExperience: baseRewardConfig.experience,
-    baseRewardPoints: baseRewardConfig.points,
-    endDate: detail.endDate ? dayjs(detail.endDate).format('YYYY-MM-DD') : undefined,
-    id: detail.id,
-    planCode: detail.planCode,
-    planName: detail.planName,
-    startDate: dayjs(detail.startDate).format('YYYY-MM-DD'),
-    status: detail.status,
-  };
-}
-
-export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
-  const baseRewardConfig = buildRewardConfig(
-    model.baseRewardPoints,
-    model.baseRewardExperience,
-  );
-  const dailyRewardRules = baseRewardConfig
-    ? Array.from({ length: getCycleMaxDayIndex(model.cycleType) }, (_, index) => ({
-        dayIndex: index + 1,
-        rewardConfig: baseRewardConfig,
-      }))
-    : [];
-
-  const payload = {
-    allowMakeupCountPerCycle: Number(model.allowMakeupCountPerCycle ?? 0),
-    baseRewardConfig,
-    cycleType: model.cycleType,
-    dailyRewardRules,
-    endDate: model.endDate || undefined,
-    planCode: model.planCode.trim(),
-    planName: model.planName.trim(),
-    startDate: model.startDate,
-    streakRewardRules: [],
-    status: model.status,
-  } as Record<string, unknown>;
-
-  if (model.id) {
-    payload.id = model.id;
-    return payload as unknown as CheckInPlanUpdateRequest;
+export function getPlanBaseRewardSummary(source: {
+  baseRewardConfig?: CheckInRewardConfigValue | null;
+  dateRewardRules?: Array<
+    Pick<
+      CheckInPlanDetailResponseDto['dateRewardRules'][number],
+      'rewardConfig'
+    >
+  > | null;
+  patternRewardRules?: Array<
+    Pick<CheckInPatternRewardRuleItemDto, 'rewardConfig'>
+  > | null;
+}) {
+  const baseRewardConfig = parseRewardConfig(source.baseRewardConfig);
+  if (hasConfiguredReward(baseRewardConfig)) {
+    return formatRewardSummary(baseRewardConfig);
   }
 
-  return payload as unknown as CheckInPlanCreateRequest;
-}
-
-function buildRewardConfig(
-  points?: CheckInRewardConfigValue['points'],
-  experience?: CheckInRewardConfigValue['experience'],
-) {
-  const rewardConfig: CheckInRewardConfigValue = {};
-
-  if (points && points > 0) {
-    rewardConfig.points = Number(points);
-  }
-  if (experience && experience > 0) {
-    rewardConfig.experience = Number(experience);
+  if (source.dateRewardRules?.length || source.patternRewardRules?.length) {
+    return '规则内单独配置';
   }
 
-  return Object.keys(rewardConfig).length > 0 ? rewardConfig : null;
+  return '未配置';
 }
 
 export function getOptionLabel<T extends boolean | number | string>(

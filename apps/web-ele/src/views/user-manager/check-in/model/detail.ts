@@ -41,6 +41,11 @@ export function getDetailCards(detail: CheckInPlanDetailResponseDto) {
     {
       fields: [
         {
+          label: '计划ID',
+          type: 'text',
+          value: detail.id,
+        },
+        {
           label: '计划版本',
           type: 'text',
           value: detail.version,
@@ -88,13 +93,28 @@ export function getDetailCards(detail: CheckInPlanDetailResponseDto) {
     {
       fields: [
         {
-          label: '基础奖励',
+          label: '默认基础奖励',
           type: 'text',
           value: getPlanBaseRewardSummary(detail),
         },
+        {
+          label: '具体日期奖励',
+          type: 'text',
+          value: detail.dateRewardRules.length,
+        },
+        {
+          label: '周期模式奖励',
+          type: 'text',
+          value: detail.patternRewardRules.length,
+        },
+        {
+          label: '连续奖励规则',
+          type: 'text',
+          value: detail.ruleCount,
+        },
       ],
       show: true,
-      title: '基础奖励配置',
+      title: '奖励配置',
     },
     {
       fields: [

@@ -1,15 +1,9 @@
 <script lang="ts" setup>
-import type {
-  CheckInPlanFormModel,
-  CheckInPlanRow,
-  CheckInReconciliationRow,
-} from './model/shared';
+import type { CheckInPlanRow, CheckInReconciliationRow } from './model/shared';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   CheckInGrantItemDto,
-  CheckInPlanCreateRequest,
-  CheckInPlanUpdateRequest,
   CheckInReconciliationRepairRequest,
 } from '#/api/types';
 
@@ -19,31 +13,27 @@ import { ElMessageBox } from 'element-plus';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  checkInPlanCreateApi,
   checkInPlanDetailApi,
   checkInPlanPageApi,
-  checkInPlanUpdateApi,
   checkInPlanUpdateStatusApi,
   checkInReconciliationPageApi,
   checkInReconciliationRepairApi,
 } from '#/api/core';
-import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
+import CheckInPlanModal from './components/check-in-plan-modal.vue';
+import CheckInPlanRewardPreviewModal from './components/check-in-plan-reward-preview-modal.vue';
 import { getDetailCards } from './model/detail';
 import {
-  buildPlanSubmitPayload,
   checkInRecordTypeOptions,
   checkInRewardResultOptions,
+  checkInRewardSourceOptions,
   checkInRewardStatusOptions,
   formatLedgerIds,
   formatRewardSummary,
-  formSchema,
   getPlanBaseRewardSummary,
-  getPlanBusinessRuleError,
-  mapPlanDetailToFormModel,
   planColumns,
   planSearchFormSchema,
   reconciliationColumns,
@@ -113,7 +103,11 @@ const [ReconciliationGrid, reconciliationGridApi] = useVbenVxeGrid({
 });
 
 const [PlanFormModal, planFormApi] = useVbenModal({
-  connectedComponent: EsModalForm,
+  connectedComponent: CheckInPlanModal,
+});
+
+const [RewardPreviewModal, rewardPreviewApi] = useVbenModal({
+  connectedComponent: CheckInPlanRewardPreviewModal,
 });
 
 const [DetailModal, detailApi] = useVbenModal({
@@ -145,43 +139,12 @@ onMounted(() => {
 });
 
 async function openPlanFormModal(row?: CheckInPlanRow) {
-  let record: CheckInPlanFormModel | undefined;
-
-  if (row?.id) {
-    record = mapPlanDetailToFormModel(
-      await checkInPlanDetailApi({ id: row.id }),
-    );
-  }
-
   planFormApi
     .setData({
-      cols: 2,
-      onSubmit: handlePlanSubmit,
-      record,
-      schema: formSchema,
-      title: '签到计划',
-      width: 960,
+      onSaved: () => planGridApi.reload(),
+      row,
     })
     .open();
-}
-
-async function handlePlanSubmit(values: Record<string, any>) {
-  const payload = buildPlanSubmitPayload(values as CheckInPlanFormModel);
-  const validationMessage = getPlanBusinessRuleError(
-    values as CheckInPlanFormModel,
-  );
-
-  if (validationMessage) {
-    useMessage.warning(validationMessage);
-    throw new Error('invalid plan form values');
-  }
-
-  await ('id' in payload && payload.id
-    ? checkInPlanUpdateApi(payload as CheckInPlanUpdateRequest)
-    : checkInPlanCreateApi(payload as CheckInPlanCreateRequest));
-
-  useMessage.success('保存成功');
-  await planGridApi.reload();
 }
 
 function openPlanDetail(row: CheckInPlanRow) {
@@ -189,6 +152,14 @@ function openPlanDetail(row: CheckInPlanRow) {
     .setData({
       recordId: row.id,
       title: `${row.planName} · 详情`,
+    })
+    .open();
+}
+
+function openPlanRewardPreview(row: CheckInPlanRow) {
+  rewardPreviewApi
+    .setData({
+      row,
     })
     .open();
 }
@@ -314,8 +285,11 @@ function formatPlanBaseRewardSummary(row: CheckInPlanRow) {
     : getPlanBaseRewardSummary(row);
 }
 
-function formatRewardDayIndex(dayIndex?: null | number) {
-  return dayIndex ? `第 ${dayIndex} 天` : '-';
+function formatRewardSourceLabel(sourceType?: null | string) {
+  return (
+    checkInRewardSourceOptions.find((item) => item.value === sourceType)
+      ?.label || '未命中'
+  );
 }
 </script>
 
@@ -342,10 +316,12 @@ function formatRewardDayIndex(dayIndex?: null | number) {
             </template>
 
             <template #baseRewardConfig="{ row }">
-              <div class="flex min-h-10 items-center">
-                <el-tag effect="light" round type="info">
-                  {{ formatPlanBaseRewardSummary(row) }}
-                </el-tag>
+              <div class="w-full flex justify-center">
+                <div class="flex min-h-10 items-center">
+                  <el-tag effect="light" round type="info">
+                    {{ formatPlanBaseRewardSummary(row) }}
+                  </el-tag>
+                </div>
               </div>
             </template>
 
@@ -353,6 +329,13 @@ function formatRewardDayIndex(dayIndex?: null | number) {
               <div class="flex flex-wrap items-center gap-2 py-1">
                 <el-button link type="primary" @click="openPlanDetail(row)">
                   详情
+                </el-button>
+                <el-button
+                  link
+                  type="primary"
+                  @click="openPlanRewardPreview(row)"
+                >
+                  周期奖励
                 </el-button>
                 <el-button link type="primary" @click="openPlanFormModal(row)">
                   编辑
@@ -413,17 +396,27 @@ function formatRewardDayIndex(dayIndex?: null | number) {
                       )?.label
                     }}
                   </el-tag>
-                  <el-tag v-if="row.rewardDayIndex" effect="plain" round type="info">
-                    {{ formatRewardDayIndex(row.rewardDayIndex) }}
+                  <el-tag
+                    v-if="row.resolvedRewardSourceType"
+                    effect="plain"
+                    round
+                    type="info"
+                  >
+                    {{ formatRewardSourceLabel(row.resolvedRewardSourceType) }}
                   </el-tag>
                 </div>
               </div>
             </template>
 
-            <template #rewardDayIndex="{ row }">
+            <template #resolvedRewardSourceType="{ row }">
               <div class="flex min-h-10 items-center">
-                <el-tag v-if="row.rewardDayIndex" effect="light" round type="info">
-                  {{ formatRewardDayIndex(row.rewardDayIndex) }}
+                <el-tag
+                  v-if="row.resolvedRewardSourceType"
+                  effect="light"
+                  round
+                  type="info"
+                >
+                  {{ formatRewardSourceLabel(row.resolvedRewardSourceType) }}
                 </el-tag>
                 <el-text v-else class="text-xs text-slate-400">-</el-text>
               </div>
@@ -469,7 +462,11 @@ function formatRewardDayIndex(dayIndex?: null | number) {
             <template #resolvedRewardConfig="{ row }">
               <div class="flex min-h-10 items-center">
                 <el-tag effect="light" round type="primary">
-                  {{ row.rewardStatus === null ? '无基础奖励' : formatRewardSummary(row.resolvedRewardConfig) }}
+                  {{
+                    row.rewardStatus === null
+                      ? '无基础奖励'
+                      : formatRewardSummary(row.resolvedRewardConfig)
+                  }}
                 </el-tag>
               </div>
             </template>
@@ -489,7 +486,9 @@ function formatRewardDayIndex(dayIndex?: null | number) {
                   :key="grant.id"
                   class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3"
                 >
-                  <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div
+                    class="flex flex-wrap items-center justify-between gap-2"
+                  >
                     <div class="flex flex-wrap items-center gap-2">
                       <el-tag effect="light" round type="primary">
                         发放 #{{ grant.id }}
@@ -571,7 +570,8 @@ function formatRewardDayIndex(dayIndex?: null | number) {
       </el-tabs>
     </div>
 
-    <PlanFormModal :schema="formSchema" :on-submit="handlePlanSubmit" />
+    <PlanFormModal />
+    <RewardPreviewModal />
     <DetailModal
       :api="checkInPlanDetailApi"
       :cards="getDetailCards"
