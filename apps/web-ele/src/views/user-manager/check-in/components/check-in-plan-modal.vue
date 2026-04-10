@@ -1,3 +1,16 @@
+<!--
+  签到计划编辑弹窗 - 视图层
+
+  两步式编辑器：
+  Step 1 - 基础信息：计划名称、编码、状态、周期类型、补签次数、起止日期
+  Step 2 - 奖励配置：默认基础奖励 + 周期规则（周视图/月视图日历）+ 连续奖励
+
+  核心交互流程：
+  1. 用户填写基础信息 → 点击「下一步」→ 校验通过后进入 Step 2
+  2. 在日历上选择日期 → 编辑该日期的奖励（支持 date/weekday/month_day 三种模式）
+  3. 可选配置连续签到奖励规则
+  4. 点击「完成并保存」→ 先提交计划 → 再提交奖励配置（自动区分 create/update）
+-->
 <script lang="ts" setup>
 import type { Dayjs } from 'dayjs';
 
@@ -5,10 +18,8 @@ import type { CheckInPatternRuleDraft } from '../model/plan-modal';
 import type { CheckInPlanRow } from '../model/shared';
 
 import type {
-  CheckInPlanCreateRequest,
   CheckInPlanRewardConfigCreateRequest,
   CheckInPlanRewardConfigUpdateRequest,
-  CheckInPlanUpdateRequest,
 } from '#/api/types';
 
 import { computed, reactive, ref, watch } from 'vue';
@@ -28,7 +39,6 @@ import { dayjs } from '#/utils';
 
 import {
   buildMonthCalendar,
-  buildPlanSubmitPayload,
   buildRewardPayload,
   buildWeekCalendar,
   createDefaultPlanFormModel,
@@ -48,6 +58,7 @@ import {
   removePatternRule,
   resolveMonthlyRewardMode,
   resolveWeeklyRewardMode,
+  submitPlanOnly,
   upsertDateRule,
   upsertPatternRule,
 } from '../model/plan-modal';
@@ -56,30 +67,49 @@ defineOptions({
   name: 'CheckInPlanModal',
 });
 
+/** 弹窗外部传入的数据：编辑时携带 row，保存成功后回调 onSaved */
 type SharedData = {
   onSaved?: () => Promise<void> | void;
   row?: CheckInPlanRow;
 };
 
+/** 当前步骤：1=基础信息, 2=奖励配置 */
 type StepKey = 1 | 2;
 
+// ======================== 响应式状态 ========================
+
+/** 弹窗共享数据（从 modalApi.getData 获取） */
 const sharedData = ref<SharedData>({});
+/** 详情加载中的 loading 状态 */
 const loading = ref(false);
+/** 提交中的 loading 状态（控制按钮禁用 + 全局遮罩） */
 const submitting = ref(false);
+/** 当前所处的编辑步骤 */
 const currentStep = ref<StepKey>(1);
+/** 该计划是否已存在奖励配置（决定保存时走 create 还是 update 接口） */
 const rewardConfigExists = ref(false);
+/** 周视图中当前选中的星期几（1-7） */
 const weeklySelectedWeekday = ref(1);
+/** 周视图中当前选中的日期字符串 (YYYY-MM-DD) */
 const weeklyDateSelection = ref('');
+/** 月视图中当前选中的日期字符串 (YYYY-MM-DD) */
 const monthlyDateSelection = ref('');
 
+/** 第一步：计划基础信息表单状态 */
 const planState = reactive(createDefaultPlanFormModel());
+/** 第二步：奖励配置表单状态 */
 const rewardState = reactive(createDefaultRewardFormModel());
+/** 日期选择器的禁用闭包，内部读取最新的 planState 实现联动 */
 const planDateDisableHandlers = createPlanDateDisableHandlers(() => ({
   cycleType: planState.cycleType,
   startDate: planState.startDate,
 }));
 
+// ======================== 表单与弹窗实例 ========================
+
+/** 基础信息表单实例 */
 const [PlanForm, planFormApi] = useVbenForm({
+  /** 表单值变化回调：归一化日期、同步显示值、动态更新日期选择器 Schema */
   handleValuesChange(values, changedFields) {
     const nextPlanState = normalizePlanFormValues({
       ...planState,
@@ -114,11 +144,13 @@ const [PlanForm, planFormApi] = useVbenForm({
   wrapperClass: 'grid-cols-1 gap-x-4 md:grid-cols-2',
 });
 
+/** 弹窗实例 */
 const [Modal, modalApi] = useVbenModal({
   closeOnClickModal: false,
   showCancelButton: false,
   showConfirmButton: false,
   title: '签到计划',
+  /** 弹窗打开时初始化数据：区分新增/编辑模式 */
   async onOpenChange(isOpen) {
     if (!isOpen) {
       return;
@@ -133,6 +165,9 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
+// ======================== 计算属性 ========================
+
+/** 周视图日历格子数据（根据当前 weekCursor 和奖励规则实时计算） */
 const weekCalendarCells = computed(() =>
   buildWeekCalendar({
     dateRules: rewardState.dateRules,
@@ -141,6 +176,10 @@ const weekCalendarCells = computed(() =>
   }),
 );
 
+/**
+ * 月末规则草稿：从 patternRules 中查找 MONTH_LAST_DAY 规则
+ * 若不存在则返回空默认值，用于月末奖励独立编辑区域的绑定
+ */
 const monthLastDayRule = computed(() => {
   return (
     findPatternRuleByKey(rewardState.patternRules, 'MONTH_LAST_DAY') || {
@@ -152,6 +191,7 @@ const monthLastDayRule = computed(() => {
   );
 });
 
+/** 月视图日历格子数据（根据当前 monthCursor 和奖励规则实时计算） */
 const monthlyCalendarCells = computed(() =>
   buildMonthCalendar({
     cycleType: planState.cycleType,
@@ -164,10 +204,12 @@ const monthlyCalendarCells = computed(() =>
   }),
 );
 
+/** 月视图标题（如「2025 年 1 月」） */
 const monthTitle = computed(() =>
   dayjs(`${rewardState.monthCursor}-01`).format('YYYY 年 M 月'),
 );
 
+/** 是否允许切换到上一月（不能早于计划开始月份） */
 const canGoPrevMonth = computed(() => {
   const prevMonthEnd = dayjs(`${rewardState.monthCursor}-01`)
     .subtract(1, 'month')
@@ -178,6 +220,7 @@ const canGoPrevMonth = computed(() => {
   );
 });
 
+/** 是否允许切换到下一月（无结束日期则不限；否则不能超过计划结束月份） */
 const canGoNextMonth = computed(() => {
   if (!planState.endDate) {
     return true;
@@ -190,12 +233,14 @@ const canGoNextMonth = computed(() => {
   );
 });
 
+/** 周视图标题（如「2025-01-13 至 2025-01-19」） */
 const weekTitle = computed(() => {
   const start = dayjs(rewardState.weekCursor);
   const end = start.add(6, 'day');
   return `${start.format('YYYY-MM-DD')} 至 ${end.format('YYYY-MM-DD')}`;
 });
 
+/** 是否允许切换到上一周（不能早于计划开始日期） */
 const canGoPrevWeek = computed(() => {
   const prevWeekEnd = dayjs(rewardState.weekCursor).subtract(1, 'day');
   return (
@@ -203,6 +248,7 @@ const canGoPrevWeek = computed(() => {
   );
 });
 
+/** 是否允许切换到下一周（无结束日期则不限；否则不能超过计划结束日期） */
 const canGoNextWeek = computed(() => {
   if (!planState.endDate) {
     return true;
@@ -213,13 +259,20 @@ const canGoNextWeek = computed(() => {
   );
 });
 
+/** 周度奖励模式选项列表 */
 const weeklyModeOptions = computed(() => getWeeklyRewardModeOptions());
 
+/**
+ * 周视图中当前选中日期对应的规则草稿
+ * 根据 weeklyRewardMode 决定从 dateRules 还是 patternRules 中查找
+ * 若不存在已有规则则返回空草稿（用于绑定编辑框）
+ */
 const selectedWeeklyRuleDraft = computed(() => {
   if (!weeklyDateSelection.value) {
     return null;
   }
 
+  // date 模式：在具体日期规则中按 rewardDate 查找
   if (rewardState.weeklyRewardMode === 'date') {
     return (
       rewardState.dateRules.find(
@@ -233,6 +286,7 @@ const selectedWeeklyRuleDraft = computed(() => {
     );
   }
 
+  // weekday 模式：在周期模式规则中按 WEEKDAY:key 查找
   return (
     findPatternRuleByKey(
       rewardState.patternRules,
@@ -247,12 +301,14 @@ const selectedWeeklyRuleDraft = computed(() => {
   );
 });
 
+/** 周度奖励模式的描述文案（用于提示用户当前奖励的作用范围） */
 const currentWeeklyModeDescription = computed(() => {
   return rewardState.weeklyRewardMode === 'weekday'
-    ? '当前奖励会应用到周期内每周这一天。'
+    ? '当前奖励会应用到周期内每一天。'
     : '当前奖励只对这个自然日生效。';
 });
 
+/** 月度奖励模式选项列表（未选择日期时返回空） */
 const monthlyModeOptions = computed(() => {
   if (!monthlyDateSelection.value) {
     return [];
@@ -260,11 +316,16 @@ const monthlyModeOptions = computed(() => {
   return getMonthlyRewardModeOptions(monthlyDateSelection.value);
 });
 
+/**
+ * 月视图中当前选中日期对应的规则草稿
+ * 逻辑同 selectedWeeklyRuleDraft，但额外处理 month_last_day 模式
+ */
 const selectedMonthlyRuleDraft = computed(() => {
   if (!monthlyDateSelection.value) {
     return null;
   }
 
+  // date 模式：在具体日期规则中查找
   if (rewardState.monthlyRewardMode === 'date') {
     return (
       rewardState.dateRules.find(
@@ -278,6 +339,7 @@ const selectedMonthlyRuleDraft = computed(() => {
     );
   }
 
+  // month_day 或 month_last_day 模式：在周期模式规则中查找
   const selectedDate = dayjs(monthlyDateSelection.value);
   const key =
     rewardState.monthlyRewardMode === 'month_last_day'
@@ -302,6 +364,7 @@ const selectedMonthlyRuleDraft = computed(() => {
   );
 });
 
+/** 月度奖励模式的描述文案 */
 const currentMonthlyModeDescription = computed(() => {
   switch (rewardState.monthlyRewardMode) {
     case 'month_day': {
@@ -316,6 +379,9 @@ const currentMonthlyModeDescription = computed(() => {
   }
 });
 
+// ======================== 监听器 ========================
+
+/** 周光标变化时重新对齐选中日期和奖励模式 */
 watch(
   () => rewardState.weekCursor,
   () => {
@@ -324,6 +390,7 @@ watch(
   },
 );
 
+/** 月光标变化时重新对齐选中日期和奖励模式 */
 watch(
   () => rewardState.monthCursor,
   () => {
@@ -332,15 +399,24 @@ watch(
   },
 );
 
+// ======================== 初始化与重置 ========================
+
+/**
+ * 弹窗打开时的初始化入口
+ * 新增模式：使用默认值填充表单
+ * 编辑模式：请求 API 获取详情并映射为编辑器状态
+ */
 async function initializeModal() {
   resetModalState();
 
+  // 新增模式：直接使用默认值
   if (!sharedData.value.row?.id) {
     await planFormApi.setValues(getPlanFormDisplayValues(planState));
     syncPlanDateSchema(planState.startDate, planState.cycleType);
     return;
   }
 
+  // 编辑模式：拉取详情并填充
   loading.value = true;
   try {
     const detail = await checkInPlanDetailApi({ id: sharedData.value.row.id });
@@ -356,6 +432,7 @@ async function initializeModal() {
   }
 }
 
+/** 重置所有状态到初始值（弹窗打开 / 关闭时调用） */
 function resetModalState() {
   Object.assign(planState, createDefaultPlanFormModel());
   Object.assign(rewardState, createDefaultRewardFormModel(planState.startDate));
@@ -367,6 +444,10 @@ function resetModalState() {
   syncPlanDateSchema(planState.startDate, planState.cycleType);
 }
 
+/**
+ * 同步所有日历选中状态和奖励模式
+ * 将 weekCursor/monthCursor 钳位到合法范围后重新确定选中日期和模式
+ */
 function syncSelections() {
   rewardState.weekCursor = clampWeekCursor(rewardState.weekCursor);
   rewardState.monthCursor = clampMonthCursor(rewardState.monthCursor);
@@ -379,19 +460,14 @@ function syncSelections() {
   syncSelectedMonthlyMode();
 }
 
-async function handleNextStep() {
-  const { valid } = await planFormApi.validate();
-  if (!valid) {
-    return;
-  }
+// ======================== 步骤流转与提交 ========================
 
-  Object.assign(
-    planState,
-    normalizePlanFormValues(await planFormApi.getValues()),
-  );
-  const validationMessage = getPlanBusinessRuleError(planState);
+/**
+ * 「下一步」按钮处理：校验基础信息 → 通过后进入奖励配置步骤
+ */
+async function handleNextStep() {
+  const validationMessage = await validateAndSyncPlanState();
   if (validationMessage) {
-    useMessage.warning(validationMessage);
     return;
   }
 
@@ -400,10 +476,15 @@ async function handleNextStep() {
   syncSelections();
 }
 
-async function handleSubmit() {
-  if (currentStep.value === 1) {
-    await handleNextStep();
-    return;
+/**
+ * 校验并同步计划表单状态
+ * 先做表单级校验（必填、格式等），再做业务规则校验（周期约束等）
+ * 返回错误信息或 null（表示通过）
+ */
+async function validateAndSyncPlanState() {
+  const { valid } = await planFormApi.validate();
+  if (!valid) {
+    return 'invalid';
   }
 
   Object.assign(
@@ -411,9 +492,62 @@ async function handleSubmit() {
     normalizePlanFormValues(await planFormApi.getValues()),
   );
 
+  const validationMessage = getPlanBusinessRuleError(planState);
+  if (validationMessage) {
+    useMessage.warning(validationMessage);
+    return validationMessage;
+  }
+
+  return null;
+}
+
+/**
+ * 「保存」按钮处理（仅保存计划基础信息，不进入奖励配置步骤）
+ * 用于只想快速保存基本信息的场景
+ */
+async function handleSavePlanOnly() {
+  const validationMessage = await validateAndSyncPlanState();
+  if (validationMessage) {
+    return;
+  }
+
+  submitting.value = true;
+  try {
+    const { planId, rewardConfigExists: nextRewardConfigExists } =
+      await submitPlanOnly(planState, {
+        createApi: checkInPlanCreateApi,
+        updateApi: checkInPlanUpdateApi,
+      });
+    planState.id = planId;
+    rewardConfigExists.value = nextRewardConfigExists;
+    useMessage.success('保存成功');
+    await sharedData.value.onSaved?.();
+    modalApi.close();
+  } finally {
+    submitting.value = false;
+  }
+}
+
+/**
+ * 主提交入口（「下一步」/「完成并保存」共用）
+ * Step 1 时执行「下一步」逻辑；
+ * Step 2 时依次校验计划 → 校验奖励 → 提交计划 → 提交奖励配置
+ */
+async function handleSubmit() {
+  if (currentStep.value === 1) {
+    await handleNextStep();
+    return;
+  }
+
+  // Step 2：先重新同步最新表单值，再执行完整校验
+  Object.assign(
+    planState,
+    normalizePlanFormValues(await planFormApi.getValues()),
+  );
+
   const planValidationMessage = getPlanBusinessRuleError(planState);
   if (planValidationMessage) {
-    currentStep.value = 1;
+    currentStep.value = 1; // 计划有误则回退到 Step 1 让用户修改
     useMessage.warning(planValidationMessage);
     return;
   }
@@ -428,24 +562,15 @@ async function handleSubmit() {
   }
 
   submitting.value = true;
-  let planSaved = false;
   try {
     // 新增和编辑都先保存计划，再决定奖励配置是 create 还是 update。
-    let planId = planState.id;
-
-    if (planId) {
-      await checkInPlanUpdateApi(
-        buildPlanSubmitPayload(planState) as CheckInPlanUpdateRequest,
-      );
-      planSaved = true;
-    } else {
-      const created = await checkInPlanCreateApi(
-        buildPlanSubmitPayload(planState) as CheckInPlanCreateRequest,
-      );
-      planId = created.id;
-      planState.id = created.id;
-      planSaved = true;
-    }
+    const { planId, rewardConfigExists: nextRewardConfigExists } =
+      await submitPlanOnly(planState, {
+        createApi: checkInPlanCreateApi,
+        updateApi: checkInPlanUpdateApi,
+      });
+    planState.id = planId;
+    rewardConfigExists.value = nextRewardConfigExists;
 
     const rewardPayload = buildRewardPayload({
       cycleType: planState.cycleType,
@@ -467,28 +592,31 @@ async function handleSubmit() {
     useMessage.success('保存成功');
     await sharedData.value.onSaved?.();
     modalApi.close();
-  } catch (error: any) {
-    if (planSaved) {
-      useMessage.error(
-        error?.message || '计划已保存，但奖励配置保存失败，请检查后重试',
-      );
-      return;
-    }
-    useMessage.error(error?.message || '保存失败，请稍后重试');
   } finally {
     submitting.value = false;
   }
 }
 
+// ======================== 导航操作 ========================
+
+/** 关闭弹窗 */
 function handleClose() {
   modalApi.close();
 }
 
+/** 从奖励配置步骤返回基础信息步骤 */
 function goBackToPlanStep() {
   void planFormApi.setValues(getPlanFormDisplayValues(planState));
   currentStep.value = 1;
 }
 
+// ======================== Schema 动态更新 ========================
+
+/**
+ * 根据周期类型动态更新开始/结束日期选择器的 Schema
+ * 周计划：type=date, valueFormat=YYYY-MM-DD, 禁用非周一/非周日
+ * 月计划：type=month, valueFormat=YYYY-MM, 禁用早于开始月的月份
+ */
 function syncPlanDateSchema(
   startDate?: string,
   cycleType?: 'monthly' | 'weekly',
@@ -521,16 +649,24 @@ function syncPlanDateSchema(
   ]);
 }
 
+// ======================== 周视图交互 ========================
+
+/** 选中周视图中的某个格子，同时记录日期和星期几 */
 function selectWeekCell(date: string, weekday: number) {
   weeklyDateSelection.value = date;
   weeklySelectedWeekday.value = weekday;
   syncSelectedWeeklyMode();
 }
 
+/** 切换周度奖励的生效模式（date ↔ weekday） */
 function updateWeeklyRuleMode(value: 'date' | 'weekday') {
   rewardState.weeklyRewardMode = value;
 }
 
+/**
+ * 更新周视图中当前选中日期的奖励值
+ * 根据 weeklyRewardMode 决定写入 dateRules 还是 patternRules
+ */
 function updateSelectedWeeklyReward(
   field: 'experience' | 'points',
   value?: number,
@@ -559,6 +695,7 @@ function updateSelectedWeeklyReward(
   });
 }
 
+/** 清除周视图中当前选中日期的奖励规则 */
 function removeSelectedWeeklyRule() {
   if (!selectedWeeklyRuleDraft.value || !weeklyDateSelection.value) {
     return;
@@ -581,15 +718,23 @@ function removeSelectedWeeklyRule() {
   );
 }
 
+// ======================== 月视图交互 ========================
+
+/** 选中月视图中的某个格子 */
 function selectMonthCell(date: string) {
   monthlyDateSelection.value = date;
   syncSelectedMonthlyMode();
 }
 
+/** 切换月度奖励的生效模式（date ↔ month_day） */
 function updateMonthlyRuleMode(value: 'date' | 'month_day') {
   rewardState.monthlyRewardMode = value;
 }
 
+/**
+ * 更新月视图中当前选中日期的奖励值
+ * 根据 monthlyRewardMode 决定写入 dateRules 还是 patternRules
+ */
 function updateSelectedMonthlyReward(
   field: 'experience' | 'points',
   value?: number,
@@ -618,6 +763,7 @@ function updateSelectedMonthlyReward(
   });
 }
 
+/** 清除月视图中当前选中日期的奖励规则 */
 function removeSelectedMonthlyRule() {
   if (!selectedMonthlyRuleDraft.value || !monthlyDateSelection.value) {
     return;
@@ -640,6 +786,7 @@ function removeSelectedMonthlyRule() {
   );
 }
 
+/** 更新月末规则的奖励值 */
 function updateMonthLastDayReward(
   field: 'experience' | 'points',
   value?: number,
@@ -650,6 +797,7 @@ function updateMonthLastDayReward(
   });
 }
 
+/** 清除月末规则 */
 function removeMonthLastDayRule() {
   rewardState.patternRules = removePatternRule(
     rewardState.patternRules,
@@ -657,11 +805,15 @@ function removeMonthLastDayRule() {
   );
 }
 
+// ======================== 连续奖励交互 ========================
+
+/** 新增一条连续签到奖励规则（追加到列表末尾） */
 function addStreakRule() {
   rewardState.streakRules = [
     ...rewardState.streakRules,
     {
       experience: undefined,
+      // 使用时间戳+随机数生成唯一 localId
       localId: `streak-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       points: undefined,
       repeatable: false,
@@ -672,12 +824,14 @@ function addStreakRule() {
   ];
 }
 
+/** 按 localId 删除一条连续签到奖励规则 */
 function removeStreakRule(localId: string) {
   rewardState.streakRules = rewardState.streakRules.filter(
     (item) => item.localId !== localId,
   );
 }
 
+/** 更新某条连续签到规则的指定字段 */
 function updateStreakRule(
   localId: string,
   field:
@@ -708,6 +862,9 @@ function updateStreakRule(
   });
 }
 
+// ======================== 日历导航 ========================
+
+/** 切换到上一月（带边界钳位） */
 function goPrevMonth() {
   if (!canGoPrevMonth.value) {
     return;
@@ -719,6 +876,7 @@ function goPrevMonth() {
   );
 }
 
+/** 切换到下一月（带边界钳位） */
 function goNextMonth() {
   if (!canGoNextMonth.value) {
     return;
@@ -728,6 +886,7 @@ function goNextMonth() {
   );
 }
 
+/** 切换到上一周（带边界钳位） */
 function goPrevWeek() {
   if (!canGoPrevWeek.value) {
     return;
@@ -737,6 +896,7 @@ function goPrevWeek() {
   );
 }
 
+/** 切换到下一周（带边界钳位） */
 function goNextWeek() {
   if (!canGoNextWeek.value) {
     return;
@@ -746,6 +906,12 @@ function goNextWeek() {
   );
 }
 
+// ======================== 选中状态同步工具 ========================
+
+/**
+ * 确保月视图的选中日期落在有效格子上
+ * 优先保持原选中日期；若已失效则回退到当月第一个有效日期
+ */
 function ensureMonthlyDateSelection() {
   if (planState.cycleType !== 'monthly') {
     return;
@@ -765,6 +931,7 @@ function ensureMonthlyDateSelection() {
   monthlyDateSelection.value = targetCell?.date || '';
 }
 
+/** 根据当前选中日期已有的规则类型，自动设置月度奖励模式 */
 function syncSelectedMonthlyMode() {
   if (!monthlyDateSelection.value) {
     rewardState.monthlyRewardMode = 'date';
@@ -778,6 +945,10 @@ function syncSelectedMonthlyMode() {
   });
 }
 
+/**
+ * 确保周视图的选中日期落在有效格子上
+ * 优先保持原选中日期；若已失效则回退到第一个有效日期
+ */
 function ensureWeeklyDateSelection() {
   if (planState.cycleType !== 'weekly') {
     return;
@@ -794,6 +965,7 @@ function ensureWeeklyDateSelection() {
   }
 }
 
+/** 根据当前选中日期已有的规则类型，自动设置周度奖励模式 */
 function syncSelectedWeeklyMode() {
   if (!weeklyDateSelection.value) {
     rewardState.weeklyRewardMode = 'date';
@@ -807,6 +979,12 @@ function syncSelectedWeeklyMode() {
   });
 }
 
+// ======================== 工具函数 ========================
+
+/**
+ * 将月份光标钳位到计划有效范围内
+ * 不能早于开始月份，不能晚于结束月份（如有）
+ */
 function clampMonthCursor(value: string) {
   const startMonth = formatMonthCursor(planState.startDate);
   const endMonth = planState.endDate
@@ -823,6 +1001,10 @@ function clampMonthCursor(value: string) {
   return monthCursor;
 }
 
+/**
+ * 将周光标钳位到计划有效范围内
+ * 归一到所在周周一后判断是否超出起止日期边界
+ */
 function clampWeekCursor(value: string) {
   const weekCursor = dayjs(value);
   const weekStart = weekCursor.subtract(
@@ -849,15 +1031,18 @@ function clampWeekCursor(value: string) {
   return weekStart.format('YYYY-MM-DD');
 }
 
+/** 将 dayjs 星期转为周一制（与模型层 toMondayBasedWeekday 功能相同，Vue 层本地副本） */
 function getMondayBasedWeekday(value: Dayjs) {
   const weekday = value.day();
   return weekday === 0 ? 7 : weekday;
 }
 
+/** 规范化奖励输入值：仅保留大于 0 的数值，否则返回 undefined */
 function normalizeRewardInput(value?: number) {
   return value && value > 0 ? Number(value) : undefined;
 }
 
+/** 规范化数量输入值：仅保留大于 0 的数值，否则返回 undefined */
 function normalizeCountInput(value?: number) {
   return value && value > 0 ? Number(value) : undefined;
 }
@@ -1397,6 +1582,13 @@ function normalizeCountInput(value?: number) {
             @click="currentStep === 1 ? handleClose() : goBackToPlanStep()"
           >
             {{ currentStep === 1 ? '取消' : '上一步' }}
+          </el-button>
+          <el-button
+            v-if="currentStep === 1"
+            :loading="submitting"
+            @click="handleSavePlanOnly"
+          >
+            保存
           </el-button>
           <el-button :loading="submitting" type="primary" @click="handleSubmit">
             {{ currentStep === 1 ? '下一步' : '完成并保存' }}

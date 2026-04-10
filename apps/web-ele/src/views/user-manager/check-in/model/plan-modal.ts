@@ -1,3 +1,17 @@
+/**
+ * 签到计划编辑器 - 模型层
+ *
+ * 本文件是签到计划弹窗的核心数据模型，包含：
+ * - 类型定义：表单状态、日历单元格、奖励规则草稿等
+ * - 表单 Schema：基础信息表单的字段定义与校验规则
+ * - 工厂函数：创建默认的表单模型
+ * - 日期工具：周期光标格式化、边界日期归一化、日期禁用判断
+ * - 奖励工具：奖励摘要格式化、模式解析、规则 CRUD
+ * - 日历构建：周视图 / 月视图的格子数据生成
+ * - 业务校验：计划和奖励的业务规则错误检测
+ * - 数据映射：API 详情 → 编辑器状态、编辑器状态 → 提交载荷
+ */
+
 import type { Dayjs } from 'dayjs';
 
 import type {
@@ -16,12 +30,20 @@ import type { EsFormSchema } from '#/types';
 
 import { dayjs } from '#/utils';
 
+// ======================== 类型定义 ========================
+
+/** 奖励配置值类型，包含积分和经验两个字段 */
 export type CheckInRewardConfigValue = CheckInRewardConfigDto;
+/** 签到周期类型：按周(weekly) / 按月(monthly) */
 export type CheckInCycleType = CheckInPlanDetailResponseDto['cycleType'];
+/** 周期模式规则类型：星期几(WEEKDAY) / 每月几号(MONTH_DAY) / 月末(MONTH_LAST_DAY) */
 export type CheckInPatternType = CheckInPatternRewardRuleItemDto['patternType'];
+/** 月度奖励模式：仅当前日期(date) / 每月同一天(month_day) / 月末(month_last_day) */
 export type CheckInMonthlyRewardMode = 'date' | 'month_day' | 'month_last_day';
+/** 周度奖励模式：仅当前日期(date) / 每周同一天(weekday) */
 export type CheckInWeeklyRewardMode = 'date' | 'weekday';
 
+/** 第一步「基础信息」表单字段子集，从 API 返回详情中提取关键字段 */
 type PlanFormFields = Pick<
   CheckInPlanDetailResponseDto,
   | 'allowMakeupCountPerCycle'
@@ -33,11 +55,17 @@ type PlanFormFields = Pick<
   | 'status'
 >;
 
+/** 完整的计划表单模型，新增时无 id，编辑时携带 id */
 export type CheckInPlanFormModel = Partial<
   Pick<CheckInPlanUpdateRequest, 'id'>
 > &
   PlanFormFields;
 
+/**
+ * 周期模式奖励规则草稿（用于周计划的 WEEKDAY 或月计划的 MONTH_DAY / MONTH_LAST_DAY）
+ * - key: 由 createPatternRuleKey 生成的唯一标识，如 "WEEKDAY:1"、"MONTH_DAY:15"
+ * - id: 已有规则的数据库主键，新增时为 undefined
+ */
 export type CheckInPatternRuleDraft = {
   experience?: CheckInRewardConfigValue['experience'];
   id?: number;
@@ -48,6 +76,11 @@ export type CheckInPatternRuleDraft = {
   weekday?: number;
 };
 
+/**
+ * 具体日期奖励规则草稿
+ * - localId: 前端生成的临时唯一标识，格式如 "date-2025-01-15"
+ * - rewardDate: 目标日期字符串 (YYYY-MM-DD)
+ */
 export type CheckInDateRuleDraft = {
   experience?: CheckInRewardConfigValue['experience'];
   id?: number;
@@ -56,6 +89,12 @@ export type CheckInDateRuleDraft = {
   rewardDate: string;
 };
 
+/**
+ * 连续签到奖励规则草稿
+ * - streakDays: 连续签到天数阈值
+ * - repeatable: 是否可重复领取（达到后每次循环都可领 / 仅首次达到时领取一次）
+ * - ruleCode: 规则编码，业务标识用
+ */
 export type CheckInStreakRuleDraft = {
   experience?: CheckInRewardConfigValue['experience'];
   id?: number;
@@ -67,6 +106,11 @@ export type CheckInStreakRuleDraft = {
   streakDays?: number;
 };
 
+/**
+ * 第二步「奖励配置」完整表单模型
+ * - weekCursor / monthCursor: 日历视图当前浏览的位置（周起始日 / 月）
+ * - weeklyRewardMode / monthlyRewardMode: 当前选中日期的奖励生效范围模式
+ */
 export type CheckInRewardFormModel = {
   baseRewardExperience?: CheckInRewardConfigValue['experience'];
   baseRewardPoints?: CheckInRewardConfigValue['points'];
@@ -79,32 +123,45 @@ export type CheckInRewardFormModel = {
   weeklyRewardMode: CheckInWeeklyRewardMode;
 };
 
+/** 编辑器完整状态，合并了计划基础信息和奖励配置 */
 export type CheckInPlanEditorState = {
   plan: CheckInPlanFormModel;
   reward: CheckInRewardFormModel;
+  /** 标记该计划是否已存在奖励配置（决定保存时调用 create 还是 update 接口） */
   rewardConfigExists: boolean;
 };
 
+/** 月视图中每个格子的数据结构 */
 export type CheckInMonthCalendarCell = {
   date: string;
   day: number;
+  /** 是否属于当前正在查看的月份（非上月/下月的溢出日期） */
   isCurrentMonth: boolean;
+  /** 是否不可交互（非当月日期或超出计划时间窗口） */
   isDisabled: boolean;
+  /** 是否在计划的有效起止时间范围内 */
   isInPlanWindow: boolean;
   isLastDayOfMonth: boolean;
+  /** 若该日期命中了某个周期模式规则，记录其 key */
   patternRuleKey?: string;
+  /** 奖励摘要文本，用于在日历格子上展示 */
   rewardSummary: string;
 };
 
+/** 周视图中每个格子的数据结构 */
 export type CheckInWeekCalendarCell = {
   date: string;
   dayLabel: string;
   isDisabled: boolean;
   rewardSummary: string;
   weekday: number;
+  /** 若该星期几命中了 WEEKDAY 周期规则，记录其 key */
   weekdayRuleKey?: string;
 };
 
+// ======================== 常量 ========================
+
+/** 周视图的星期标签，周一=1 ... 周日=7 */
 export const weeklyCalendarLabels = [
   { dayLabel: '周一', value: 1 },
   { dayLabel: '周二', value: 2 },
@@ -115,6 +172,9 @@ export const weeklyCalendarLabels = [
   { dayLabel: '周日', value: 7 },
 ];
 
+// ======================== 表单 Schema ========================
+
+/** 第一步「基础信息」表单字段定义 */
 export const planFormSchema: EsFormSchema = [
   {
     component: 'Input',
@@ -209,6 +269,9 @@ export const planFormSchema: EsFormSchema = [
   },
 ];
 
+// ======================== 工厂函数 ========================
+
+/** 创建默认的计划基础信息表单模型（新增场景使用） */
 export function createDefaultPlanFormModel(): CheckInPlanFormModel {
   return {
     allowMakeupCountPerCycle: 0,
@@ -220,6 +283,7 @@ export function createDefaultPlanFormModel(): CheckInPlanFormModel {
   };
 }
 
+/** 创建默认的奖励配置表单模型，weekCursor/monthCursor 会根据传入的 startDate 对齐到正确周期 */
 export function createDefaultRewardFormModel(
   startDate?: string,
 ): CheckInRewardFormModel {
@@ -236,6 +300,14 @@ export function createDefaultRewardFormModel(
   };
 }
 
+// ======================== 日期工具函数 ========================
+
+/**
+ * 为周期模式规则生成唯一标识 key
+ * - WEEKDAY → "WEEKDAY:1" ~ "WEEKDAY:7"
+ * - MONTH_DAY → "MONTH_DAY:1" ~ "MONTH_DAY:31"
+ * - MONTH_LAST_DAY → "MONTH_LAST_DAY"
+ */
 export function createPatternRuleKey(rule: {
   monthDay?: null | number;
   patternType: CheckInPatternType;
@@ -254,10 +326,15 @@ export function createPatternRuleKey(rule: {
   }
 }
 
+/** 将日期格式化为月份光标 (YYYY-MM)，用于月视图定位 */
 export function formatMonthCursor(value: string) {
   return dayjs(value).format('YYYY-MM');
 }
 
+/**
+ * 将日期归一到所在周的周一作为周光标 (YYYY-MM-DD)
+ * 例如：2025-01-15（周三）→ 2025-01-13（周一）
+ */
 export function formatWeekCursor(value: string) {
   const date = dayjs(value);
   return date
@@ -265,16 +342,28 @@ export function formatWeekCursor(value: string) {
     .format('YYYY-MM-DD');
 }
 
+/**
+ * 根据周期类型获取默认的开始日期
+ * - 周计划：对齐到当周周一
+ * - 月计划：对齐到当月 1 号
+ */
 export function getDefaultPlanStartDate(cycleType: CheckInCycleType) {
   const now = dayjs();
 
   if (cycleType === 'weekly') {
-    return now.subtract(toMondayBasedWeekday(now) - 1, 'day').format('YYYY-MM-DD');
+    return now
+      .subtract(toMondayBasedWeekday(now) - 1, 'day')
+      .format('YYYY-MM-DD');
   }
 
   return now.startOf('month').format('YYYY-MM-DD');
 }
 
+/**
+ * 将用户选择的日期归一化为符合周期约束的标准边界日期
+ * - 周计划 start → 所在周周一，end → 所在周周日
+ * - 月计划 start → 所在月 1 号，end → 所在月最后一天
+ */
 export function normalizePlanBoundaryDate(
   value: string | undefined,
   cycleType: CheckInCycleType,
@@ -297,6 +386,7 @@ export function normalizePlanBoundaryDate(
     : date.endOf('month').format('YYYY-MM-DD');
 }
 
+/** 对整个计划表单值做归一化处理，确保起止日期符合周期约束 */
 export function normalizePlanFormValues(model: CheckInPlanFormModel) {
   return {
     ...model,
@@ -311,6 +401,10 @@ export function normalizePlanFormValues(model: CheckInPlanFormModel) {
   } satisfies CheckInPlanFormModel;
 }
 
+/**
+ * 获取表单显示用的值
+ * 月计划模式下，日期选择器使用 month 类型，需要将 YYYY-MM-DD 转为 YYYY-MM 显示
+ */
 export function getPlanFormDisplayValues(model: CheckInPlanFormModel) {
   if (model.cycleType !== 'monthly') {
     return model;
@@ -323,6 +417,12 @@ export function getPlanFormDisplayValues(model: CheckInPlanFormModel) {
   } satisfies CheckInPlanFormModel;
 }
 
+// ======================== 奖励相关工具函数 ========================
+
+/**
+ * 格式化奖励摘要文本，用于在日历格子上展示
+ * 示例：「积分 10 / 经验 20」或「未配置」
+ */
 export function formatRewardSummary(value: unknown) {
   const rewardConfig = parseRewardConfig(value);
   const items = [
@@ -333,6 +433,7 @@ export function formatRewardSummary(value: unknown) {
   return items.length > 0 ? items.join(' / ') : '未配置';
 }
 
+/** 获取月度奖励模式的选项列表（目前不含 month_last_day，月末规则有独立入口） */
 export function getMonthlyRewardModeOptions(_selectedDate: string) {
   const options: Array<{ label: string; value: CheckInMonthlyRewardMode }> = [
     { label: '仅当前日期生效', value: 'date' },
@@ -342,6 +443,7 @@ export function getMonthlyRewardModeOptions(_selectedDate: string) {
   return options;
 }
 
+/** 获取周度奖励模式的选项列表 */
 export function getWeeklyRewardModeOptions() {
   return [
     { label: '仅当前日期生效', value: 'date' as const },
@@ -349,6 +451,10 @@ export function getWeeklyRewardModeOptions() {
   ];
 }
 
+/**
+ * 根据已有规则自动推断月度奖励应使用的模式
+ * 优先级：具体日期规则 > 每月同日规则 > 默认(date)
+ */
 export function resolveMonthlyRewardMode(params: {
   dateRules: CheckInDateRuleDraft[];
   patternRules: CheckInPatternRuleDraft[];
@@ -356,12 +462,14 @@ export function resolveMonthlyRewardMode(params: {
 }): CheckInMonthlyRewardMode {
   const { dateRules, patternRules, selectedDate } = params;
 
+  // 如果该日期已存在具体日期规则，则模式为 date
   if (dateRules.some((item) => item.rewardDate === selectedDate)) {
     return 'date';
   }
 
   const date = dayjs(selectedDate);
 
+  // 如果该日期的「几号」已存在 MONTH_DAY 规则，则模式为 month_day
   if (
     patternRules.some(
       (item) =>
@@ -374,6 +482,10 @@ export function resolveMonthlyRewardMode(params: {
   return 'date';
 }
 
+/**
+ * 根据已有规则自动推断周度奖励应使用的模式
+ * 优先级：具体日期规则 > 每周同日规则 > 默认(date)
+ */
 export function resolveWeeklyRewardMode(params: {
   dateRules: CheckInDateRuleDraft[];
   patternRules: CheckInPatternRuleDraft[];
@@ -399,6 +511,7 @@ export function resolveWeeklyRewardMode(params: {
   return 'date';
 }
 
+/** 安全地解析奖励配置对象，非对象类型返回空对象 */
 export function parseRewardConfig(value: unknown): CheckInRewardConfigValue {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return {};
@@ -406,6 +519,7 @@ export function parseRewardConfig(value: unknown): CheckInRewardConfigValue {
   return value as CheckInRewardConfigValue;
 }
 
+/** 判断奖励配置中是否至少填写了积分或经验的一项（大于 0 视为有效） */
 export function hasConfiguredReward(value: {
   experience?: null | number;
   points?: null | number;
@@ -413,6 +527,10 @@ export function hasConfiguredReward(value: {
   return Number(value.experience ?? 0) > 0 || Number(value.points ?? 0) > 0;
 }
 
+/**
+ * 判断一个计划详情是否已经存在任何有效的奖励配置
+ * 用于区分新建（需调 create 接口）和编辑（需调 update 接口）场景
+ */
 export function hasExistingRewardConfig(source: {
   baseRewardConfig?: CheckInRewardConfigValue | null;
   dateRewardRules?: Array<{
@@ -439,6 +557,15 @@ export function hasExistingRewardConfig(source: {
   );
 }
 
+// ======================== 数据映射 ========================
+
+/**
+ * 将服务端返回的计划详情转换为编辑器可用的状态
+ * 主要处理：
+ * - 日期格式统一转为 YYYY-MM-DD
+ * - 奖励配置拆分为三类规则数组并排序
+ * - 生成前端所需的 localId / key 等临时标识
+ */
 export function mapPlanDetailToEditorState(
   detail: CheckInPlanDetailResponseDto,
 ): CheckInPlanEditorState {
@@ -515,6 +642,10 @@ export function mapPlanDetailToEditorState(
   };
 }
 
+/**
+ * 构建计划基础信息的提交载荷
+ * 根据 model.id 是否存在自动区分为更新或创建请求
+ */
 export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
   const payload = {
     allowMakeupCountPerCycle: Number(model.allowMakeupCountPerCycle ?? 0),
@@ -536,6 +667,45 @@ export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
   return payload satisfies CheckInPlanCreateRequest;
 }
 
+/**
+ * 仅提交计划基础信息（不包含奖励配置）
+ * 编辑场景直接复用已有 id；新建场景从创建响应中取回新 id
+ * 返回的 rewardConfigExists 用于后续决定奖励配置走 create 还是 update
+ */
+export async function submitPlanOnly(
+  model: CheckInPlanFormModel,
+  deps: {
+    createApi: (params: CheckInPlanCreateRequest) => Promise<{ id: number }>;
+    updateApi: (params: CheckInPlanUpdateRequest) => Promise<unknown>;
+  },
+) {
+  if (model.id) {
+    await deps.updateApi(
+      buildPlanSubmitPayload(model) as CheckInPlanUpdateRequest,
+    );
+    return {
+      planId: model.id,
+      rewardConfigExists: true,
+    };
+  }
+
+  const created = await deps.createApi(
+    buildPlanSubmitPayload(model) as CheckInPlanCreateRequest,
+  );
+
+  return {
+    planId: created.id,
+    rewardConfigExists: false,
+  };
+}
+
+/**
+ * 构建奖励配置的提交载荷
+ * 处理逻辑：
+ * 1. 过滤掉未填写有效奖励的规则
+ * 2. 按周期类型过滤不匹配的模式规则（如周计划排除 MONTH_DAY）
+ * 3. 各类规则分别排序后组装为 DTO
+ */
 export function buildRewardPayload(params: {
   cycleType: CheckInCycleType;
   planId: number;
@@ -546,6 +716,7 @@ export function buildRewardPayload(params: {
     reward.baseRewardPoints,
     reward.baseRewardExperience,
   );
+  // 具体日期规则：仅保留有效奖励项，按日期升序排列
   const dateRewardRules =
     cycleType === 'weekly' || cycleType === 'monthly'
       ? reward.dateRules
@@ -619,6 +790,13 @@ export function buildRewardPayload(params: {
     UpdateCheckInPlanRewardConfigDto;
 }
 
+// ======================== 日历构建函数 ========================
+
+/**
+ * 构建月视图日历格子数据
+ * 从当月 1 号所在周的周一开始，填满整个矩形网格（含上月/下月溢出日期）
+ * 每个格子会标记：是否当月、是否在计划窗口内、是否禁用、奖励摘要等
+ */
 export function buildMonthCalendar(params: {
   cycleType: CheckInCycleType;
   dateRules: CheckInDateRuleDraft[];
@@ -628,18 +806,17 @@ export function buildMonthCalendar(params: {
   patternRules: CheckInPatternRuleDraft[];
   startDate: string;
 }) {
-  const { dateRules, endDate, monthCursor, patternRules, startDate } =
-    params;
+  const { dateRules, endDate, monthCursor, patternRules, startDate } = params;
   const monthStart = dayjs(`${monthCursor}-01`);
   const monthEnd = monthStart.endOf('month');
+  // 网格起始日 = 当月 1 号向前偏移到所在周的周一
   const gridStart = monthStart.subtract(
     toMondayBasedWeekday(monthStart) - 1,
     'day',
   );
+  // 总格子数向上取整到 7 的倍数（保证完整的行）
   const totalCells =
-    Math.ceil(
-      ((toMondayBasedWeekday(monthStart) - 1) + monthEnd.date()) / 7,
-    ) * 7;
+    Math.ceil((toMondayBasedWeekday(monthStart) - 1 + monthEnd.date()) / 7) * 7;
 
   return Array.from({ length: totalCells }, (_, index) => {
     const current = gridStart.add(index, 'day');
@@ -677,6 +854,10 @@ export function buildMonthCalendar(params: {
   });
 }
 
+/**
+ * 构建周视图日历格子数据（固定 7 个格子，周一 ~ 周日）
+ * 每个格子展示星期标签 + 日期 + 当前生效的奖励摘要
+ */
 export function buildWeekCalendar(params: {
   dateRules: CheckInDateRuleDraft[];
   patternRules: CheckInPatternRuleDraft[];
@@ -689,7 +870,10 @@ export function buildWeekCalendar(params: {
     const date = current.format('YYYY-MM-DD');
     const weekdayRuleKey = `WEEKDAY:${item.value}`;
     const dateRule = params.dateRules.find((rule) => rule.rewardDate === date);
-    const weekdayRule = findPatternRuleByKey(params.patternRules, weekdayRuleKey);
+    const weekdayRule = findPatternRuleByKey(
+      params.patternRules,
+      weekdayRuleKey,
+    );
 
     return {
       date,
@@ -697,13 +881,22 @@ export function buildWeekCalendar(params: {
       isDisabled: false,
       rewardSummary: dateRule
         ? formatRewardSummary(dateRule)
-        : (weekdayRule ? formatRewardSummary(weekdayRule) : '沿用默认'),
+        : (weekdayRule
+          ? formatRewardSummary(weekdayRule)
+          : '沿用默认'),
       weekday: item.value,
       weekdayRuleKey: weekdayRule?.key,
     } satisfies CheckInWeekCalendarCell;
   });
 }
 
+// ======================== 业务校验函数 ========================
+
+/**
+ * 校验计划基础信息的业务规则
+ * 包括：起止日期顺序、周计划必须周一始/周日止、月计划必须 1 号始/月末止
+ * 返回 null 表示校验通过，否则返回错误信息
+ */
 export function getPlanBusinessRuleError(model: CheckInPlanFormModel) {
   if (
     model.endDate &&
@@ -738,6 +931,9 @@ export function getPlanBusinessRuleError(model: CheckInPlanFormModel) {
   return null;
 }
 
+// ======================== 日期禁用判断 ========================
+
+/** 判断某日期是否应被禁用（开始日期选择器）：周计划只允许选周一，月计划只允许选 1 号 */
 export function isPlanStartDateDisabled(
   current: Date,
   cycleType: CheckInCycleType,
@@ -748,6 +944,10 @@ export function isPlanStartDateDisabled(
     : date.date() !== 1;
 }
 
+/**
+ * 判断某日期是否应被禁用（结束日期选择器）
+ * 不能早于开始日期；周计划只允许选周日，月计划只允许选月末
+ */
 export function isPlanEndDateDisabled(
   current: Date,
   cycleType: CheckInCycleType,
@@ -764,6 +964,10 @@ export function isPlanEndDateDisabled(
     : date.date() !== date.daysInMonth();
 }
 
+/**
+ * 创建日期选择器的禁用回调处理器闭包
+ * 内部通过 getState 获取最新的 cycleType 和 startDate，确保动态联动
+ */
 export function createPlanDateDisableHandlers(
   getState: () => {
     cycleType: CheckInCycleType;
@@ -776,11 +980,7 @@ export function createPlanDateDisableHandlers(
       if (state.cycleType === 'monthly') {
         return isPlanEndMonthDisabled(current, state.startDate);
       }
-      return isPlanEndDateDisabled(
-        current,
-        state.cycleType,
-        state.startDate,
-      );
+      return isPlanEndDateDisabled(current, state.cycleType, state.startDate);
     },
     isStartDateDisabled(current: Date) {
       const state = getState();
@@ -792,10 +992,12 @@ export function createPlanDateDisableHandlers(
   };
 }
 
+/** 月计划开始月份选择器不禁用任何月份（由 UI 层自行限制） */
 export function isPlanStartMonthDisabled(_current: Date) {
   return false;
 }
 
+/** 月计划结束月份选择器：不允许选择早于开始月份的月份 */
 export function isPlanEndMonthDisabled(current: Date, startDate?: string) {
   if (!startDate) {
     return false;
@@ -807,6 +1009,16 @@ export function isPlanEndMonthDisabled(current: Date, startDate?: string) {
   );
 }
 
+/**
+ * 校验奖励配置的业务规则
+ * 检查项包括：
+ * 1. 默认基础奖励至少填写积分或经验其中一项
+ * 2. 所有具体日期规则都必须有有效奖励
+ * 3. 所有周期模式规则都必须有有效奖励
+ * 4. 连续奖励的天数不能为空、不能重复、每条必须有有效奖励
+ * 5. 周计划的 WEEKDAY 规则必须绑定了具体星期几
+ * 返回 null 表示校验通过
+ */
 export function getRewardBusinessRuleError(
   plan: CheckInPlanFormModel,
   reward: CheckInRewardFormModel,
@@ -874,6 +1086,12 @@ export function getRewardBusinessRuleError(
   return null;
 }
 
+// ======================== 规则 CRUD 操作 ========================
+
+/**
+ * 新增或更新具体日期奖励规则（按 rewardDate 去重）
+ * 若新的 draft 无有效奖励则视为删除操作
+ */
 export function upsertDateRule(
   dateRules: CheckInDateRuleDraft[],
   draft: CheckInDateRuleDraft,
@@ -895,6 +1113,10 @@ export function upsertDateRule(
   );
 }
 
+/**
+ * 新增或更新周期模式奖励规则（按 key 去重）
+ * 若新的 draft 无有效奖励则视为删除操作
+ */
 export function upsertPatternRule(
   patternRules: CheckInPatternRuleDraft[],
   draft: CheckInPatternRuleDraft,
@@ -911,6 +1133,7 @@ export function upsertPatternRule(
   return nextRules.toSorted(comparePatternRuleDraft);
 }
 
+/** 按 key 移除一条周期模式规则 */
 export function removePatternRule(
   patternRules: CheckInPatternRuleDraft[],
   key: string,
@@ -918,6 +1141,7 @@ export function removePatternRule(
   return patternRules.filter((item) => item.key !== key);
 }
 
+/** 按 rewardDate 移除一条具体日期规则 */
 export function removeDateRule(
   dateRules: CheckInDateRuleDraft[],
   rewardDate: string,
@@ -925,6 +1149,9 @@ export function removeDateRule(
   return dateRules.filter((item) => item.rewardDate !== rewardDate);
 }
 
+// ======================== 规则转换与查询 ========================
+
+/** 根据星期几创建周计划的 WEEKDAY 模式规则草稿，可从已有规则复制奖励值 */
 export function toWeeklyPatternDraft(
   weekday: number,
   source?: CheckInPatternRuleDraft,
@@ -942,6 +1169,7 @@ export function toWeeklyPatternDraft(
   } satisfies CheckInPatternRuleDraft;
 }
 
+/** 根据模式类型和参数创建月计划的模式规则草稿（MONTH_DAY 或 MONTH_LAST_DAY） */
 export function toMonthlyPatternDraft(params: {
   monthDay?: number;
   patternType: 'MONTH_DAY' | 'MONTH_LAST_DAY';
@@ -962,6 +1190,7 @@ export function toMonthlyPatternDraft(params: {
   } satisfies CheckInPatternRuleDraft;
 }
 
+/** 按 key 在周期模式规则列表中查找匹配项 */
 export function findPatternRuleByKey(
   patternRules: CheckInPatternRuleDraft[],
   key: string,
@@ -969,6 +1198,12 @@ export function findPatternRuleByKey(
   return patternRules.find((item) => item.key === key);
 }
 
+// ======================== 内部辅助函数 ========================
+
+/**
+* 构建奖励配置对象，只有值大于 0 的字段才会被包含
+* 若两个字段都无效则返回 null（表示无需提交该配置）
+*/
 function buildRewardConfig(
   points?: CheckInRewardConfigValue['points'],
   experience?: CheckInRewardConfigValue['experience'],
@@ -985,6 +1220,7 @@ function buildRewardConfig(
   return Object.keys(rewardConfig).length > 0 ? rewardConfig : null;
 }
 
+/** 周期模式规则排序比较器：WEEKDAY 按星期排，MONTH_DAY 按日期排，MONTH_LAST_DAY 排最后 */
 function comparePatternRuleDraft(
   left: CheckInPatternRuleDraft,
   right: CheckInPatternRuleDraft,
@@ -992,6 +1228,7 @@ function comparePatternRuleDraft(
   return getPatternRuleSortWeight(left) - getPatternRuleSortWeight(right);
 }
 
+/** 获取周期模式规则的排序权重值 */
 function getPatternRuleSortWeight(rule: CheckInPatternRuleDraft) {
   if (rule.patternType === 'WEEKDAY') {
     return Number(rule.weekday ?? 0);
@@ -999,9 +1236,15 @@ function getPatternRuleSortWeight(rule: CheckInPatternRuleDraft) {
   if (rule.patternType === 'MONTH_DAY') {
     return Number(rule.monthDay ?? 0);
   }
+  // MONTH_LAST_DAY 固定排在最后
   return 99;
 }
 
+/**
+ * 根据日期查找匹配的周期模式规则
+ * 优先级：月末规则(MONTH_LAST_DAY) > 星期规则(WEEKDAY) / 几号规则(MONTH_DAY)
+ * 月末日期会优先匹配 MONTH_LAST_DAY，若没有再尝试匹配 WEEKDAY 或 MONTH_DAY
+ */
 function getPatternRuleForDate(
   date: Dayjs,
   patternRules: CheckInPatternRuleDraft[],
@@ -1010,6 +1253,7 @@ function getPatternRuleForDate(
   const day = date.date();
   const isLastDayOfMonth = day === date.daysInMonth();
 
+  // 月末日期优先匹配 MONTH_LAST_DAY 规则
   if (isLastDayOfMonth) {
     const monthLastDayRule = patternRules.find(
       (item) => item.patternType === 'MONTH_LAST_DAY',
@@ -1030,6 +1274,11 @@ function getPatternRuleForDate(
   });
 }
 
+/**
+ * 将 dayjs 的星期数转换为以周一为基础的表示
+ * dayjs: 周日=0, 周一=1 ... 周六=6
+ * 转换后: 周一=1, 周二=2 ... 周日=7
+ */
 function toMondayBasedWeekday(value: Dayjs) {
   const weekday = value.day();
   return weekday === 0 ? 7 : weekday;

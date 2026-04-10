@@ -3,7 +3,7 @@ export type AuthCaptchaResponse = CaptchaDto
 /**
  *  类型定义 [AuthLoginRequest]
  *  @来源 认证与账号/管理员认证
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type AuthLoginRequest = UserLoginDto
 
@@ -12,7 +12,7 @@ export type AuthLoginResponse = LoginResponseDto
 /**
  *  类型定义 [AuthLogoutRequest]
  *  @来源 认证与账号/管理员认证
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type AuthLogoutRequest = TokenDto
 
@@ -21,7 +21,7 @@ export type AuthLogoutResponse = boolean
 /**
  *  类型定义 [AuthTokenRefreshRequest]
  *  @来源 认证与账号/管理员认证
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type AuthTokenRefreshRequest = RefreshTokenDto
 
@@ -32,7 +32,7 @@ export type AuthKeyPublicResponse = RsaPublicKeyDto
 /**
  *  类型定义 [CaptchaDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type CaptchaDto = {
   /** 任意合法数值 */
@@ -47,7 +47,7 @@ export type CaptchaDto = {
 /**
  *  类型定义 [UserLoginDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type UserLoginDto = {
   /** 任意合法数值 */
@@ -66,7 +66,7 @@ export type UserLoginDto = {
 /**
  *  类型定义 [LoginResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type LoginResponseDto = {
   /** 任意合法数值 */
@@ -81,7 +81,7 @@ export type LoginResponseDto = {
 /**
  *  类型定义 [TokenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type TokenDto = {
   /** 任意合法数值 */
@@ -96,7 +96,7 @@ export type TokenDto = {
 /**
  *  类型定义 [AdminUserResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type AdminUserResponseDto = {
   /** 任意合法数值 */
@@ -127,7 +127,7 @@ export type AdminUserResponseDto = {
 /**
  *  类型定义 [RefreshTokenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type RefreshTokenDto = {
   /** 任意合法数值 */
@@ -140,7 +140,7 @@ export type RefreshTokenDto = {
 /**
  *  类型定义 [RsaPublicKeyDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-10 07:21:59
+ *  @更新时间 2026-04-11 04:02:11
  */
 export type RsaPublicKeyDto = {
   /** 任意合法数值 */

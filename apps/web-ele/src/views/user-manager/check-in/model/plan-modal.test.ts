@@ -1,6 +1,6 @@
 import type { CheckInPlanDetailResponseDto } from '#/api/types';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   buildMonthCalendar,
@@ -17,6 +17,7 @@ import {
   normalizePlanFormValues,
   resolveMonthlyRewardMode,
   resolveWeeklyRewardMode,
+  submitPlanOnly,
 } from './plan-modal';
 import {
   clampRewardPreviewMonthCursor,
@@ -778,5 +779,80 @@ describe('reward preview state', () => {
         startDate: '2026-05-01',
       }),
     ).toBe('2026-07');
+  });
+});
+
+describe('submitPlanOnly', () => {
+  it('should call update api when plan id exists', async () => {
+    const updateApi = vi.fn().mockResolvedValue(true);
+    const createApi = vi.fn();
+
+    const result = await submitPlanOnly(
+      {
+        allowMakeupCountPerCycle: 2,
+        cycleType: 'weekly',
+        endDate: '2026-05-31',
+        id: 9,
+        planCode: ' weekly_plan ',
+        planName: ' 每周签到 ',
+        startDate: '2026-05-04',
+        status: 1,
+      },
+      {
+        createApi,
+        updateApi,
+      },
+    );
+
+    expect(updateApi).toHaveBeenCalledWith({
+      allowMakeupCountPerCycle: 2,
+      cycleType: 'weekly',
+      endDate: '2026-05-31',
+      id: 9,
+      planCode: 'weekly_plan',
+      planName: '每周签到',
+      startDate: '2026-05-04',
+      status: 1,
+    });
+    expect(createApi).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      planId: 9,
+      rewardConfigExists: true,
+    });
+  });
+
+  it('should call create api when plan id does not exist', async () => {
+    const updateApi = vi.fn();
+    const createApi = vi.fn().mockResolvedValue({ id: 12 });
+
+    const result = await submitPlanOnly(
+      {
+        allowMakeupCountPerCycle: 0,
+        cycleType: 'monthly',
+        planCode: ' monthly_plan ',
+        planName: ' 月度签到 ',
+        startDate: '2026-05-01',
+        status: 0,
+      },
+      {
+        createApi,
+        updateApi,
+      },
+    );
+
+    expect(createApi).toHaveBeenCalledWith({
+      allowMakeupCountPerCycle: 0,
+      cycleType: 'monthly',
+      endDate: undefined,
+      planCode: 'monthly_plan',
+      planName: '月度签到',
+      startDate: '2026-05-01',
+      status: 0,
+    });
+    expect(updateApi).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      planId: 12,
+      rewardConfigExists: false,
+    });
   });
 });

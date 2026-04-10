@@ -5,10 +5,6 @@ import type {
   CheckInPlanDetailResponse,
   CheckInPlanPageRequest,
   CheckInPlanPageResponse,
-  CheckInPlanRewardConfigCreateRequest,
-  CheckInPlanRewardConfigCreateResponse,
-  CheckInPlanRewardConfigUpdateRequest,
-  CheckInPlanRewardConfigUpdateResponse,
   CheckInPlanUpdateRequest,
   CheckInPlanUpdateResponse,
   CheckInPlanUpdateStatusRequest,
@@ -47,26 +43,10 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 创建计划奖励配置
-   */
-  export async function checkInPlanRewardConfigCreateApi(params: CheckInPlanRewardConfigCreateRequest): Promise<CheckInPlanRewardConfigCreateResponse> {
-    return requestClient.post<CheckInPlanRewardConfigCreateResponse>('/api/admin/check-in/plan/reward-config/create', params);
-  }
-
-
-  /**
    * 更新签到计划
    */
   export async function checkInPlanUpdateApi(params: CheckInPlanUpdateRequest): Promise<CheckInPlanUpdateResponse> {
     return requestClient.post<CheckInPlanUpdateResponse>('/api/admin/check-in/plan/update', params);
-  }
-
-
-  /**
-   * 更新计划奖励配置
-   */
-  export async function checkInPlanRewardConfigUpdateApi(params: CheckInPlanRewardConfigUpdateRequest): Promise<CheckInPlanRewardConfigUpdateResponse> {
-    return requestClient.post<CheckInPlanRewardConfigUpdateResponse>('/api/admin/check-in/plan/reward-config/update', params);
   }
 
 
