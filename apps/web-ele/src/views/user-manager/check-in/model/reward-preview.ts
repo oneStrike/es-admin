@@ -23,7 +23,6 @@ export type CheckInRewardPreviewState = {
     status: 0 | 1;
     streakDays: number;
   }>;
-  version: number;
 };
 
 export function createRewardPreviewState(
@@ -45,7 +44,6 @@ export function createRewardPreviewState(
       status: item.status,
       streakDays: Number(item.streakDays ?? 0),
     })),
-    version: detail.version,
   };
 }
 

@@ -46,11 +46,6 @@ export function getDetailCards(detail: CheckInPlanDetailResponseDto) {
           value: detail.id,
         },
         {
-          label: '计划版本',
-          type: 'text',
-          value: detail.version,
-        },
-        {
           label: '活跃周期实例',
           type: 'text',
           value: detail.activeCycleCount,

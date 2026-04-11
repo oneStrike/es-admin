@@ -284,9 +284,6 @@ function goNextMonth() {
                 <el-tag effect="light" round type="warning">
                   {{ cycleTypeLabel }}
                 </el-tag>
-                <el-tag effect="light" round type="info">
-                  版本 {{ previewState.version }}
-                </el-tag>
                 <el-tag effect="plain" round type="success">
                   {{ planWindowLabel }}
                 </el-tag>

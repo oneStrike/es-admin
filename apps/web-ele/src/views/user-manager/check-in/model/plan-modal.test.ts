@@ -83,7 +83,6 @@ describe('mapPlanDetailToEditorState', () => {
         },
       ],
       updatedAt: '2026-04-10T01:00:00Z',
-      version: 1,
     } satisfies CheckInPlanDetailResponseDto;
 
     const state = mapPlanDetailToEditorState(detail);
@@ -752,7 +751,6 @@ describe('reward preview state', () => {
         },
       ],
       updatedAt: '2026-04-10T01:00:00Z',
-      version: 3,
     } satisfies CheckInPlanDetailResponseDto;
 
     const previewState = createRewardPreviewState(detail);
