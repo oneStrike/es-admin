@@ -9,18 +9,13 @@
   1. 用户填写基础信息 → 点击「下一步」→ 校验通过后进入 Step 2
   2. 在日历上选择日期 → 编辑该日期的奖励（支持 date/weekday/month_day 三种模式）
   3. 可选配置连续签到奖励规则
-  4. 点击「完成并保存」→ 先提交计划 → 再提交奖励配置（自动区分 create/update）
+  4. 点击「完成并保存」→ 将计划和奖励配置合并后一次性提交
 -->
 <script lang="ts" setup>
 import type { Dayjs } from 'dayjs';
 
 import type { CheckInPatternRuleDraft } from '../model/plan-modal';
 import type { CheckInPlanRow } from '../model/shared';
-
-import type {
-  CheckInPlanRewardConfigCreateRequest,
-  CheckInPlanRewardConfigUpdateRequest,
-} from '#/api/types';
 
 import { computed, reactive, ref, watch } from 'vue';
 
@@ -30,8 +25,6 @@ import { useVbenForm } from '#/adapter/form';
 import {
   checkInPlanCreateApi,
   checkInPlanDetailApi,
-  checkInPlanRewardConfigCreateApi,
-  checkInPlanRewardConfigUpdateApi,
   checkInPlanUpdateApi,
 } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
@@ -39,7 +32,8 @@ import { dayjs } from '#/utils';
 
 import {
   buildMonthCalendar,
-  buildRewardPayload,
+  buildPlanSubmitPayload,
+  buildPlanWithRewardPayload,
   buildWeekCalendar,
   createDefaultPlanFormModel,
   createDefaultRewardFormModel,
@@ -58,7 +52,6 @@ import {
   removePatternRule,
   resolveMonthlyRewardMode,
   resolveWeeklyRewardMode,
-  submitPlanOnly,
   upsertDateRule,
   upsertPatternRule,
 } from '../model/plan-modal';
@@ -513,13 +506,17 @@ async function handleSavePlanOnly() {
 
   submitting.value = true;
   try {
-    const { planId, rewardConfigExists: nextRewardConfigExists } =
-      await submitPlanOnly(planState, {
-        createApi: checkInPlanCreateApi,
-        updateApi: checkInPlanUpdateApi,
-      });
-    planState.id = planId;
-    rewardConfigExists.value = nextRewardConfigExists;
+    const payload = buildPlanSubmitPayload(planState);
+    if (planState.id) {
+      await checkInPlanUpdateApi(
+        payload as Parameters<typeof checkInPlanUpdateApi>[0],
+      );
+    } else {
+      const created = await checkInPlanCreateApi(
+        payload as Parameters<typeof checkInPlanCreateApi>[0],
+      );
+      planState.id = (created as { id: number }).id;
+    }
     useMessage.success('保存成功');
     await sharedData.value.onSaved?.();
     modalApi.close();
@@ -563,31 +560,21 @@ async function handleSubmit() {
 
   submitting.value = true;
   try {
-    // 新增和编辑都先保存计划，再决定奖励配置是 create 还是 update。
-    const { planId, rewardConfigExists: nextRewardConfigExists } =
-      await submitPlanOnly(planState, {
-        createApi: checkInPlanCreateApi,
-        updateApi: checkInPlanUpdateApi,
-      });
-    planState.id = planId;
-    rewardConfigExists.value = nextRewardConfigExists;
-
-    const rewardPayload = buildRewardPayload({
+    // 将计划基础信息与奖励配置合并，通过计划接口一次性提交
+    const payload = buildPlanWithRewardPayload({
       cycleType: planState.cycleType,
-      planId: planId!,
+      plan: planState,
       reward: rewardState,
     });
 
-    if (rewardConfigExists.value) {
-      await checkInPlanRewardConfigUpdateApi(
-        rewardPayload as CheckInPlanRewardConfigUpdateRequest,
-      );
-    } else {
-      await checkInPlanRewardConfigCreateApi(
-        rewardPayload as CheckInPlanRewardConfigCreateRequest,
-      );
-      rewardConfigExists.value = true;
-    }
+    const isEdit = !!planState.id;
+    void (isEdit
+      ? checkInPlanUpdateApi(
+          payload as Parameters<typeof checkInPlanUpdateApi>[0],
+        )
+      : checkInPlanCreateApi(
+          payload as Parameters<typeof checkInPlanCreateApi>[0],
+        ));
 
     useMessage.success('保存成功');
     await sharedData.value.onSaved?.();

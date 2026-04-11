@@ -4,7 +4,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
   buildMonthCalendar,
-  buildRewardPayload,
+  buildPlanSubmitPayload,
+  buildPlanWithRewardPayload,
   buildWeekCalendar,
   createPlanDateDisableHandlers,
   getMonthlyRewardModeOptions,
@@ -17,7 +18,6 @@ import {
   normalizePlanFormValues,
   resolveMonthlyRewardMode,
   resolveWeeklyRewardMode,
-  submitPlanOnly,
 } from './plan-modal';
 import {
   clampRewardPreviewMonthCursor,
@@ -121,11 +121,20 @@ describe('mapPlanDetailToEditorState', () => {
   });
 });
 
-describe('buildRewardPayload', () => {
-  it('should build weekly reward payload with weekday patterns only', () => {
-    const payload = buildRewardPayload({
+describe('buildPlanWithRewardPayload', () => {
+  it('should build weekly plan payload with weekday patterns only', () => {
+    const payload = buildPlanWithRewardPayload({
       cycleType: 'weekly',
-      planId: 5,
+      plan: {
+        allowMakeupCountPerCycle: 1,
+        cycleType: 'weekly',
+        endDate: '2026-06-30',
+        id: 5,
+        planCode: 'test_plan',
+        planName: '测试计划',
+        startDate: '2026-05-01',
+        status: 1,
+      },
       reward: {
         baseRewardExperience: 5,
         baseRewardPoints: 10,
@@ -171,10 +180,12 @@ describe('buildRewardPayload', () => {
     });
 
     expect(payload).toEqual({
+      allowMakeupCountPerCycle: 1,
       baseRewardConfig: {
         experience: 5,
         points: 10,
       },
+      cycleType: 'weekly',
       dateRewardRules: [
         {
           rewardConfig: {
@@ -184,6 +195,7 @@ describe('buildRewardPayload', () => {
           rewardDate: '2026-05-03',
         },
       ],
+      endDate: '2026-06-30',
       id: 5,
       patternRewardRules: [
         {
@@ -194,6 +206,10 @@ describe('buildRewardPayload', () => {
           weekday: 1,
         },
       ],
+      planCode: 'test_plan',
+      planName: '测试计划',
+      startDate: '2026-05-01',
+      status: 1,
       streakRewardRules: [
         {
           repeatable: false,
@@ -209,10 +225,18 @@ describe('buildRewardPayload', () => {
     });
   });
 
-  it('should build monthly reward payload with both pattern and date rules', () => {
-    const payload = buildRewardPayload({
+  it('should build monthly plan payload with both pattern and date rules', () => {
+    const payload = buildPlanWithRewardPayload({
       cycleType: 'monthly',
-      planId: 7,
+      plan: {
+        allowMakeupCountPerCycle: 0,
+        cycleType: 'monthly',
+        id: 7,
+        planCode: 'monthly_test',
+        planName: '月度测试',
+        startDate: '2026-05-01',
+        status: 1,
+      },
       reward: {
         baseRewardExperience: undefined,
         baseRewardPoints: 12,
@@ -245,9 +269,11 @@ describe('buildRewardPayload', () => {
     });
 
     expect(payload).toEqual({
+      allowMakeupCountPerCycle: 0,
       baseRewardConfig: {
         points: 12,
       },
+      cycleType: 'monthly',
       dateRewardRules: [
         {
           rewardConfig: {
@@ -272,6 +298,10 @@ describe('buildRewardPayload', () => {
           },
         },
       ],
+      planCode: 'monthly_test',
+      planName: '月度测试',
+      startDate: '2026-05-01',
+      status: 1,
       streakRewardRules: [],
     });
   });
@@ -782,29 +812,20 @@ describe('reward preview state', () => {
   });
 });
 
-describe('submitPlanOnly', () => {
-  it('should call update api when plan id exists', async () => {
-    const updateApi = vi.fn().mockResolvedValue(true);
-    const createApi = vi.fn();
+describe('buildPlanSubmitPayload', () => {
+  it('should build update payload when plan id exists', () => {
+    const payload = buildPlanSubmitPayload({
+      allowMakeupCountPerCycle: 2,
+      cycleType: 'weekly',
+      endDate: '2026-05-31',
+      id: 9,
+      planCode: ' weekly_plan ',
+      planName: ' 每周签到 ',
+      startDate: '2026-05-04',
+      status: 1,
+    });
 
-    const result = await submitPlanOnly(
-      {
-        allowMakeupCountPerCycle: 2,
-        cycleType: 'weekly',
-        endDate: '2026-05-31',
-        id: 9,
-        planCode: ' weekly_plan ',
-        planName: ' 每周签到 ',
-        startDate: '2026-05-04',
-        status: 1,
-      },
-      {
-        createApi,
-        updateApi,
-      },
-    );
-
-    expect(updateApi).toHaveBeenCalledWith({
+    expect(payload).toEqual({
       allowMakeupCountPerCycle: 2,
       cycleType: 'weekly',
       endDate: '2026-05-31',
@@ -814,33 +835,19 @@ describe('submitPlanOnly', () => {
       startDate: '2026-05-04',
       status: 1,
     });
-    expect(createApi).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      planId: 9,
-      rewardConfigExists: true,
-    });
   });
 
-  it('should call create api when plan id does not exist', async () => {
-    const updateApi = vi.fn();
-    const createApi = vi.fn().mockResolvedValue({ id: 12 });
+  it('should build create payload when plan id does not exist', () => {
+    const payload = buildPlanSubmitPayload({
+      allowMakeupCountPerCycle: 0,
+      cycleType: 'monthly',
+      planCode: ' monthly_plan ',
+      planName: ' 月度签到 ',
+      startDate: '2026-05-01',
+      status: 0,
+    });
 
-    const result = await submitPlanOnly(
-      {
-        allowMakeupCountPerCycle: 0,
-        cycleType: 'monthly',
-        planCode: ' monthly_plan ',
-        planName: ' 月度签到 ',
-        startDate: '2026-05-01',
-        status: 0,
-      },
-      {
-        createApi,
-        updateApi,
-      },
-    );
-
-    expect(createApi).toHaveBeenCalledWith({
+    expect(payload).toEqual({
       allowMakeupCountPerCycle: 0,
       cycleType: 'monthly',
       endDate: undefined,
@@ -848,11 +855,6 @@ describe('submitPlanOnly', () => {
       planName: '月度签到',
       startDate: '2026-05-01',
       status: 0,
-    });
-    expect(updateApi).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      planId: 12,
-      rewardConfigExists: false,
     });
   });
 });

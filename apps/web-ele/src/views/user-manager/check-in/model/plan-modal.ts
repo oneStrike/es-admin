@@ -22,9 +22,7 @@ import type {
   CheckInRewardConfigDto,
   CreateCheckInDateRewardRuleDto,
   CreateCheckInPatternRewardRuleDto,
-  CreateCheckInPlanRewardConfigDto,
   CreateCheckInStreakRewardRuleDto,
-  UpdateCheckInPlanRewardConfigDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -643,7 +641,7 @@ export function mapPlanDetailToEditorState(
 }
 
 /**
- * 构建计划基础信息的提交载荷
+ * 构建计划基础信息的提交载荷（不含奖励配置）
  * 根据 model.id 是否存在自动区分为更新或创建请求
  */
 export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
@@ -668,50 +666,16 @@ export function buildPlanSubmitPayload(model: CheckInPlanFormModel) {
 }
 
 /**
- * 仅提交计划基础信息（不包含奖励配置）
- * 编辑场景直接复用已有 id；新建场景从创建响应中取回新 id
- * 返回的 rewardConfigExists 用于后续决定奖励配置走 create 还是 update
+ * 构建带奖励配置的计划提交载荷
+ * 将奖励配置字段合并到计划创建/更新 DTO 中，通过计划接口一并提交
  */
-export async function submitPlanOnly(
-  model: CheckInPlanFormModel,
-  deps: {
-    createApi: (params: CheckInPlanCreateRequest) => Promise<{ id: number }>;
-    updateApi: (params: CheckInPlanUpdateRequest) => Promise<unknown>;
-  },
-) {
-  if (model.id) {
-    await deps.updateApi(
-      buildPlanSubmitPayload(model) as CheckInPlanUpdateRequest,
-    );
-    return {
-      planId: model.id,
-      rewardConfigExists: true,
-    };
-  }
-
-  const created = await deps.createApi(
-    buildPlanSubmitPayload(model) as CheckInPlanCreateRequest,
-  );
-
-  return {
-    planId: created.id,
-    rewardConfigExists: false,
-  };
-}
-
-/**
- * 构建奖励配置的提交载荷
- * 处理逻辑：
- * 1. 过滤掉未填写有效奖励的规则
- * 2. 按周期类型过滤不匹配的模式规则（如周计划排除 MONTH_DAY）
- * 3. 各类规则分别排序后组装为 DTO
- */
-export function buildRewardPayload(params: {
+export function buildPlanWithRewardPayload(params: {
   cycleType: CheckInCycleType;
-  planId: number;
+  plan: CheckInPlanFormModel;
+  planId?: number;
   reward: CheckInRewardFormModel;
 }) {
-  const { cycleType, planId, reward } = params;
+  const { cycleType, planId, plan, reward } = params;
   const baseRewardConfig = buildRewardConfig(
     reward.baseRewardPoints,
     reward.baseRewardExperience,
@@ -780,14 +744,27 @@ export function buildRewardPayload(params: {
       } satisfies CreateCheckInStreakRewardRuleDto;
     });
 
-  return {
+  // 将奖励配置合并到计划载荷中
+  const basePayload = buildPlanSubmitPayload(plan);
+  const rewardFields = {
     baseRewardConfig: baseRewardConfig || undefined,
     dateRewardRules,
-    id: planId,
     patternRewardRules,
     streakRewardRules,
-  } satisfies CreateCheckInPlanRewardConfigDto &
-    UpdateCheckInPlanRewardConfigDto;
+  };
+
+  if (planId || plan.id) {
+    return {
+      ...basePayload,
+      id: (planId || plan.id)!,
+      ...rewardFields,
+    } satisfies CheckInPlanUpdateRequest;
+  }
+
+  return {
+    ...basePayload,
+    ...rewardFields,
+  } satisfies CheckInPlanCreateRequest;
 }
 
 // ======================== 日历构建函数 ========================
