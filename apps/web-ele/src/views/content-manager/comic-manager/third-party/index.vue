@@ -5,6 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { fromApiPageIndex } from '#/adapter/vxe-table';
+import { getApiErrorMessage } from '#/api/error';
 import {
   contentComicThirdPartyChapterContentDetailApi,
   contentComicThirdPartyChapterListApi,
@@ -178,7 +179,7 @@ async function loadPlatforms() {
       });
     }
   } catch (error: any) {
-    useMessage.error(error?.message || '加载平台列表失败');
+    useMessage.error(getApiErrorMessage(error, '加载平台列表失败'));
   }
 }
 
@@ -254,7 +255,7 @@ async function showDetail(item: SearchComicItemDto) {
       }
     }
   } catch (error: any) {
-    useMessage.error(error?.message || '加载资源详情失败');
+    useMessage.error(getApiErrorMessage(error, '加载资源详情失败'));
   } finally {
     detailLoading.value = false;
     chapterLoading.value = false;
@@ -280,7 +281,7 @@ async function loadChapterContent(chapter: ThirdPartyChapterItem) {
       platform: activePlatform.value,
     });
   } catch (error: any) {
-    useMessage.error(error?.message || '加载章节正文失败');
+    useMessage.error(getApiErrorMessage(error, '加载章节正文失败'));
   } finally {
     chapterContentLoading.value = false;
   }

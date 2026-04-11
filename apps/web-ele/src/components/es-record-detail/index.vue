@@ -5,6 +5,7 @@ import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { getApiErrorMessage } from '#/api/error';
 import { formatUTC } from '#/utils';
 
 defineOptions({
@@ -97,7 +98,7 @@ async function getDetail() {
 
     detail.value = await props.api({ id: recordId });
   } catch (error) {
-    console.error('获取详情失败:', error);
+    console.error('获取详情失败:', getApiErrorMessage(error, '获取详情失败'));
   } finally {
     loading.value = false;
   }

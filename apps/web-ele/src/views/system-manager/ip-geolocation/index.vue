@@ -9,6 +9,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
+import { getApiErrorMessage } from '#/api/error';
 import { systemIp2regionStatusApi } from '#/api/core';
 import { requestClient } from '#/api/request';
 import { useMessage } from '#/hooks/useFeedback';
@@ -99,9 +100,7 @@ async function handleUpload(options: UploadRequestOptions) {
     useMessage.success('IP 属地库上传并切换成功');
   } catch (error: any) {
     options.onError?.(error);
-    useMessage.error(
-      error?.message || error?.error || 'IP 属地库上传失败',
-    );
+    useMessage.error(getApiErrorMessage(error, 'IP 属地库上传失败'));
   } finally {
     uploading.value = false;
   }

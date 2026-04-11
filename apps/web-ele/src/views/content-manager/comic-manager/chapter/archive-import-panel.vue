@@ -11,6 +11,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { getApiErrorMessage } from '#/api/error';
 import {
   contentComicChapterContentArchiveConfirmApi,
   contentComicChapterContentArchiveDetailApi,
@@ -344,8 +345,10 @@ async function handleArchiveUpload(options: UploadRequestOptions) {
       useMessage.warning('预解析完成，但没有可导入的章节');
     }
   } catch (error: any) {
-    errorMessage.value =
-      error?.message || error?.error || '压缩包预解析失败，请稍后重试';
+    errorMessage.value = getApiErrorMessage(
+      error,
+      '压缩包预解析失败，请稍后重试',
+    );
     options.onError?.(error);
   } finally {
     uploading.value = false;

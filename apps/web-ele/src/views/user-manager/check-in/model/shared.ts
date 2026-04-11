@@ -411,7 +411,7 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> =
     actions: {
       show: true,
       slots: { default: 'planActions' },
-      width: 240,
+      width: 280,
     },
   });
 

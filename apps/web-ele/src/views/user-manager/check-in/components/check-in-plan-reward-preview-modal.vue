@@ -5,6 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { getApiErrorMessage } from '#/api/error';
 import { checkInPlanDetailApi } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
 import { dayjs } from '#/utils';
@@ -203,7 +204,7 @@ async function initializeModal() {
     previewState.value = createRewardPreviewState(detail);
   } catch (error: any) {
     previewState.value = null;
-    useMessage.error(error?.message || '加载周期奖励失败，请稍后重试');
+    useMessage.error(getApiErrorMessage(error, '加载周期奖励失败，请稍后重试'));
   } finally {
     loading.value = false;
   }
