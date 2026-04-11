@@ -20,6 +20,7 @@ export const formSchema: EsFormSchema = [
       placeholder: '请上传等级图标',
       accept: 'image/*',
       scene: 'levelRule',
+      maxCount: 1,
     },
     fieldName: 'icon',
     label: '等级图标',
@@ -42,16 +43,6 @@ export const formSchema: EsFormSchema = [
     fieldName: 'color',
     label: '专属颜色',
     rules: 'selectRequired',
-  },
-  {
-    component: 'Upload',
-    componentProps: {
-      placeholder: '请上传等级徽章',
-      accept: 'image/*',
-      scene: 'levelRule',
-    },
-    fieldName: 'badge',
-    label: '等级徽章',
   },
   {
     component: 'Input',
@@ -231,12 +222,6 @@ export const formSchema: EsFormSchema = [
 export const pageColumns =
   formSchemaTransform.toTableColumns<BaseUserLevelRuleDto>(formSchema, {
     icon: {
-      minWidth: 100,
-      cellRender: {
-        name: 'CellImage',
-      },
-    },
-    badge: {
       minWidth: 100,
       cellRender: {
         name: 'CellImage',

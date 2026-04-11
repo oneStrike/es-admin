@@ -34,9 +34,7 @@ const gridOptions: VxeGridProps<BaseUserLevelRuleDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) =>
-        await growthLevelRulesPageApi(
-          formatQuery({ page, formValues, sorts }),
-        ),
+        await growthLevelRulesPageApi(formatQuery({ page, formValues, sorts })),
     },
     sort: true,
   },

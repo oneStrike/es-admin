@@ -24,11 +24,6 @@ export function getDetailCards(detail: BaseUserLevelRuleDto) {
           type: 'color' as const,
         },
         {
-          label: '等级徽章',
-          value: detail?.badge,
-          type: 'image' as const,
-        },
-        {
           label: '等级描述',
           value: detail?.description || '-',
           type: 'text' as const,
