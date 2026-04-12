@@ -1,7 +1,7 @@
 /**
  *  类型定义 [CommentPageRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type CommentPageRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type CommentPageResponse = {
 /**
  *  类型定义 [CommentDetailRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type CommentDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type CommentDetailResponse = AdminCommentDetailDto
 /**
  *  类型定义 [CommentUpdateAuditStatusRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type CommentUpdateAuditStatusRequest = UpdateAdminCommentAuditStatusDto
 
@@ -94,7 +94,7 @@ export type CommentUpdateAuditStatusResponse = boolean
 /**
  *  类型定义 [CommentUpdateHiddenRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type CommentUpdateHiddenRequest = UpdateAdminCommentHiddenDto
 
@@ -103,7 +103,7 @@ export type CommentUpdateHiddenResponse = boolean
 /**
  *  类型定义 [AdminCommentPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type AdminCommentPageItemDto = {
   /** 任意合法数值 */
@@ -120,7 +120,7 @@ export type AdminCommentPageItemDto = {
   auditRole?: null | number
   /* 审核状态 */
   auditStatus: 0 | 1 | 2
-  /* 评论正文解析 token（EmojiParser 输出） */
+  /* 评论正文解析 token（表情与提及混合输出） */
   bodyTokens?: null | string
   /* 评论内容 */
   content: string
@@ -154,7 +154,7 @@ export type AdminCommentPageItemDto = {
 /**
  *  类型定义 [AdminCommentUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type AdminCommentUserDto = {
   /** 任意合法数值 */
@@ -175,7 +175,7 @@ export type AdminCommentUserDto = {
 /**
  *  类型定义 [AdminCommentDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type AdminCommentDetailDto = {
   /** 任意合法数值 */
@@ -192,7 +192,7 @@ export type AdminCommentDetailDto = {
   auditRole?: null | number
   /* 审核状态 */
   auditStatus: 0 | 1 | 2
-  /* 评论正文解析 token（EmojiParser 输出） */
+  /* 评论正文解析 token（表情与提及混合输出） */
   bodyTokens?: null | string
   /* 评论内容 */
   content: string
@@ -228,7 +228,7 @@ export type AdminCommentDetailDto = {
 /**
  *  类型定义 [AdminCommentReplyTargetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type AdminCommentReplyTargetDto = {
   /** 任意合法数值 */
@@ -257,7 +257,7 @@ export type AdminCommentReplyTargetDto = {
 /**
  *  类型定义 [UpdateAdminCommentAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type UpdateAdminCommentAuditStatusDto = {
   /** 任意合法数值 */
@@ -274,7 +274,7 @@ export type UpdateAdminCommentAuditStatusDto = {
 /**
  *  类型定义 [UpdateAdminCommentHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-11 04:06:08
+ *  @更新时间 2026-04-12 23:24:14
  */
 export type UpdateAdminCommentHiddenDto = {
   /** 任意合法数值 */

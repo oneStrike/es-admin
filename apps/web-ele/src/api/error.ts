@@ -1,19 +1,19 @@
 export const API_SUCCESS_CODE = 0;
 
-export const API_BAD_REQUEST_CODE = 10001;
-export const API_UNAUTHORIZED_CODE = 10002;
-export const API_FORBIDDEN_CODE = 10003;
-export const API_ROUTE_NOT_FOUND_CODE = 10004;
-export const API_PAYLOAD_TOO_LARGE_CODE = 10005;
-export const API_RATE_LIMITED_CODE = 10006;
+export const API_BAD_REQUEST_CODE = 10_001;
+export const API_UNAUTHORIZED_CODE = 10_002;
+export const API_FORBIDDEN_CODE = 10_003;
+export const API_ROUTE_NOT_FOUND_CODE = 10_004;
+export const API_PAYLOAD_TOO_LARGE_CODE = 10_005;
+export const API_RATE_LIMITED_CODE = 10_006;
 
-export const API_RESOURCE_NOT_FOUND_CODE = 20001;
-export const API_RESOURCE_ALREADY_EXISTS_CODE = 20002;
-export const API_STATE_CONFLICT_CODE = 20003;
-export const API_OPERATION_NOT_ALLOWED_CODE = 20004;
-export const API_QUOTA_NOT_ENOUGH_CODE = 20005;
+export const API_RESOURCE_NOT_FOUND_CODE = 20_001;
+export const API_RESOURCE_ALREADY_EXISTS_CODE = 20_002;
+export const API_STATE_CONFLICT_CODE = 20_003;
+export const API_OPERATION_NOT_ALLOWED_CODE = 20_004;
+export const API_QUOTA_NOT_ENOUGH_CODE = 20_005;
 
-export const API_INTERNAL_SERVER_ERROR_CODE = 50001;
+export const API_INTERNAL_SERVER_ERROR_CODE = 50_001;
 
 type ApiErrorKind = 'business' | 'transport';
 
@@ -32,21 +32,21 @@ interface NormalizedApiError extends Error {
 }
 
 const BUSINESS_ERROR_CODES = new Set([
-  API_RESOURCE_NOT_FOUND_CODE,
-  API_RESOURCE_ALREADY_EXISTS_CODE,
-  API_STATE_CONFLICT_CODE,
   API_OPERATION_NOT_ALLOWED_CODE,
   API_QUOTA_NOT_ENOUGH_CODE,
+  API_RESOURCE_ALREADY_EXISTS_CODE,
+  API_RESOURCE_NOT_FOUND_CODE,
+  API_STATE_CONFLICT_CODE,
 ]);
 
 const TRANSPORT_ERROR_CODES = new Set([
   API_BAD_REQUEST_CODE,
-  API_UNAUTHORIZED_CODE,
   API_FORBIDDEN_CODE,
-  API_ROUTE_NOT_FOUND_CODE,
+  API_INTERNAL_SERVER_ERROR_CODE,
   API_PAYLOAD_TOO_LARGE_CODE,
   API_RATE_LIMITED_CODE,
-  API_INTERNAL_SERVER_ERROR_CODE,
+  API_ROUTE_NOT_FOUND_CODE,
+  API_UNAUTHORIZED_CODE,
 ]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -214,9 +214,9 @@ function normalizeApiClientError(error: unknown): NormalizedApiError {
     const code =
       httpStatus === 200 && BUSINESS_ERROR_CODES.has(responseData.code)
         ? responseData.code
-        : isKnownApiCode(responseData.code)
+        : (isKnownApiCode(responseData.code)
           ? responseData.code
-          : mapHttpStatusToCode(httpStatus);
+          : mapHttpStatusToCode(httpStatus));
 
     return createApiError({
       code,
@@ -272,12 +272,12 @@ function isTransportApiError(error: unknown): error is NormalizedApiError {
 export type { ApiErrorKind, ApiResponse, NormalizedApiError };
 export {
   BUSINESS_ERROR_CODES,
-  TRANSPORT_ERROR_CODES,
   getApiErrorMessage,
   isBusinessApiError,
   isNormalizedApiError,
   isTransportApiError,
   mapHttpStatusToCode,
   normalizeApiClientError,
+  TRANSPORT_ERROR_CODES,
   unwrapApiResponse,
 };

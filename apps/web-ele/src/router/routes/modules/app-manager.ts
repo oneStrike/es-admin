@@ -46,6 +46,15 @@ const routes: RouteRecordRaw[] = [
           icon: 'codex:dot-circle',
         },
       },
+      {
+        name: 'AppUpdate',
+        path: '/app-manager/app-update',
+        component: () => import('#/views/app-manager/app-update/index.vue'),
+        meta: {
+          title: '版本更新',
+          icon: 'codex:dot-circle',
+        },
+      },
     ],
   },
 ];
