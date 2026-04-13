@@ -78,7 +78,7 @@ async function openFormModal(row?: AppUpdateReleaseListItemDto) {
 async function handleSubmit(
   values: CreateAppUpdateReleaseDto | UpdateAppUpdateReleaseDto,
 ) {
-  const raw = buildAppUpdateSubmitPayload(values as Record<string, any});
+  const raw = buildAppUpdateSubmitPayload(values as Record<string, any>);
 
   await ('id' in raw && typeof raw.id === 'number'
     ? appUpdateUpdateApi(raw as UpdateAppUpdateReleaseDto)
