@@ -15,7 +15,6 @@ import {
   appUpdatePageApi,
   appUpdateUpdateApi,
   appUpdateUpdateStatusApi,
-  dictionaryItemListApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -31,31 +30,7 @@ import {
   formSchema,
   mapAppUpdateDetailToFormValues,
   platformOptionsObj,
-  setAppUpdateChannelItems,
 } from './model/shared';
-import {
-  hasIncompleteStoreLinks,
-  normalizeDictionaryItemList,
-} from './model/store-links';
-
-const APP_UPDATE_CHANNEL_DICTIONARY_CODE = 'app_update_channel';
-
-let appUpdateChannelLoadingPromise: null | Promise<void> = null;
-
-async function ensureAppUpdateChannelItemsLoaded() {
-  if (!appUpdateChannelLoadingPromise) {
-    appUpdateChannelLoadingPromise = dictionaryItemListApi({
-      dictionaryCode: APP_UPDATE_CHANNEL_DICTIONARY_CODE,
-      isEnabled: true,
-    }).then((response) => {
-      setAppUpdateChannelItems(normalizeDictionaryItemList(response));
-    });
-  }
-
-  await appUpdateChannelLoadingPromise;
-}
-
-void ensureAppUpdateChannelItemsLoaded();
 
 const gridOptions: VxeGridProps<AppUpdateReleaseListItemDto> = {
   columns: appUpdateColumns,
@@ -91,8 +66,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 async function openFormModal(row?: AppUpdateReleaseListItemDto) {
-  await ensureAppUpdateChannelItemsLoaded();
-
   let record;
   if (row) {
     record = mapAppUpdateDetailToFormValues(
@@ -105,12 +78,7 @@ async function openFormModal(row?: AppUpdateReleaseListItemDto) {
 async function handleSubmit(
   values: CreateAppUpdateReleaseDto | UpdateAppUpdateReleaseDto,
 ) {
-  if (hasIncompleteStoreLinks((values as Record<string, any>)._storeLinks)) {
-    useMessage.error('应用商店地址需完整填写渠道和链接');
-    throw new Error('应用商店地址存在未填写完整的渠道或链接');
-  }
-
-  const raw = buildAppUpdateSubmitPayload(values as Record<string, any>);
+  const raw = buildAppUpdateSubmitPayload(values as Record<string, any});
 
   await ('id' in raw && typeof raw.id === 'number'
     ? appUpdateUpdateApi(raw as UpdateAppUpdateReleaseDto)
@@ -183,12 +151,6 @@ const [DetailModal, detailApi] = useVbenModal({
               ? formatUTC(row.publishedAt, 'YYYY-MM-DD HH:mm:ss')
               : '-'
           }}
-        </el-text>
-      </template>
-
-      <template #storeLinkCount="{ row }">
-        <el-text>
-          {{ row.storeLinkCount > 0 ? `${row.storeLinkCount} 个` : '-' }}
         </el-text>
       </template>
 

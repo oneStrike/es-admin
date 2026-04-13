@@ -107,16 +107,6 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
       ],
     },
     {
-      title: '应用商店地址',
-      show: !!(detail.storeLinks && detail.storeLinks.length > 0),
-      fields:
-        detail.storeLinks?.map((link) => ({
-          label: link.channelName,
-          value: link.storeUrl,
-          type: 'text' as const,
-        })) ?? [],
-    },
-    {
       title: '更新说明',
       show: !!detail.releaseNotes,
       type: 'html' as const,

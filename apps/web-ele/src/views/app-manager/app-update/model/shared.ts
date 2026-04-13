@@ -1,5 +1,3 @@
-import type { AppUpdateChannelDictionaryItem } from './store-links';
-
 import type {
   AppUpdateReleaseDetailDto,
   AppUpdateReleaseListItemDto,
@@ -7,18 +5,8 @@ import type {
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { h } from 'vue';
-
 import { UploadSceneEnum } from '#/enum/api';
 import { formSchemaTransform, safeParseJson } from '#/utils';
-
-import AppUpdateStoreLinksEditor from '../components/store-links-editor.vue';
-import {
-  filterChannelOptionsByPlatform,
-  mapStoreLinksToFormValues,
-  normalizeOptionalString,
-  sanitizeStoreLinks,
-} from './store-links';
 
 // 发布平台配置
 export const platformOptions = [
@@ -75,12 +63,13 @@ export const packageSourceTypeOptions = [
   },
 ];
 
-const appUpdateChannelItems: AppUpdateChannelDictionaryItem[] = [];
+function normalizeOptionalString(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
 
-export function setAppUpdateChannelItems(
-  items: AppUpdateChannelDictionaryItem[],
-) {
-  appUpdateChannelItems.splice(0, appUpdateChannelItems.length, ...items);
+  const trimmed = value.trim();
+  return trimmed || undefined;
 }
 
 // 表单配置
@@ -191,28 +180,6 @@ export const formSchema: EsFormSchema = [
     fieldName: 'releaseNotes',
     label: '更新说明',
   },
-  {
-    component: 'Divider',
-    fieldName: '_storeLinksDivider',
-    formItemClass: 'col-span-2',
-    renderComponentContent: () => ({
-      default: () => h('div', { class: 'text-base font-medium' }, '应用商店地址'),
-    }),
-  },
-  {
-    component: AppUpdateStoreLinksEditor,
-    componentProps: (values) => ({
-      options: filterChannelOptionsByPlatform(
-        appUpdateChannelItems,
-        values.platform,
-      ),
-      platform: values.platform,
-    }),
-    fieldName: '_storeLinks',
-    formItemClass: 'col-span-2',
-    label: '',
-    hideLabel: true,
-  },
 ];
 
 // 表格列配置
@@ -233,15 +200,6 @@ export const appUpdateColumns =
         hide: true,
       },
       releaseNotes: {
-        hide: true,
-      },
-      storeLinks: {
-        hide: true,
-      },
-      _storeLinksDivider: {
-        hide: true,
-      },
-      _storeLinks: {
         hide: true,
       },
       buildCode: {
@@ -293,12 +251,6 @@ export const appUpdateColumns =
         sort: 96,
         width: 160,
         slots: { default: 'publishedAt' },
-      },
-      storeLinkCount: {
-        title: '商店地址',
-        sort: 95,
-        width: 100,
-        slots: { default: 'storeLinkCount' },
       },
       actions: {
         show: true,
@@ -423,7 +375,6 @@ export function mapAppUpdateDetailToFormValues(
   return {
     ...detail,
     packageUpload: createPackageUploadValue(detail),
-    _storeLinks: mapStoreLinksToFormValues(detail.storeLinks),
   };
 }
 
@@ -437,8 +388,6 @@ export function buildAppUpdateSubmitPayload(
 
   payload.customDownloadUrl = normalizeOptionalString(payload.customDownloadUrl);
   payload.releaseNotes = normalizeOptionalString(payload.releaseNotes);
-  payload.storeLinks = sanitizeStoreLinks(payload._storeLinks ?? payload.storeLinks);
-
   if (payload.packageSourceType === 'upload') {
     payload.packageUrl = resolvePackageUrl({
       ...payload,
@@ -468,8 +417,6 @@ export function buildAppUpdateSubmitPayload(
 
   delete payload.packageUpload;
   delete payload.packageUrlUpload;
-  delete payload._storeLinks;
   delete payload._storeLinksDivider;
-
   return payload;
 }
