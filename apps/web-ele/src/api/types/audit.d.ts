@@ -1,17 +1,17 @@
 /**
  *  类型定义 [AuditPageRequest]
  *  @来源 系统管理/审计日志
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AuditPageRequest = {
   /** 任意合法数值 */
   [property: string]: any
 
-  /* 操作类型编码 */
-  actionType?: null | string
+  /* 操作类型（1=登录；2=登出；3=创建；4=更新；5=删除；6=上传；7=下载；8=导出；9=导入） */
+  actionType?: null | number
 
-  /* 接口类型（admin/app/system等） */
-  apiType?: null | string
+  /* 接口类型（1=管理端；2=应用端；3=系统端；4=公共端） */
+  apiType?: null | number
 
   /* 结束时间 */
   endDate?: null | string
@@ -67,17 +67,17 @@ export type AuditPageResponse = {
 /**
  *  类型定义 [AuditItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AuditItemDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 操作类型编码 */
-  actionType?: null | string
+  /* 操作类型（1=登录；2=登出；3=创建；4=更新；5=删除；6=上传；7=下载；8=导出；9=导入） */
+  actionType?: null | number
   /* 操作类型展示文案 */
   actionTypeLabel?: null | string
-  /* 接口类型（admin/app/system等） */
-  apiType?: null | string
+  /* 接口类型（1=管理端；2=应用端；3=系统端；4=公共端） */
+  apiType?: null | number
   /* 自定义日志内容 */
   content: string
   /* 创建时间 */

@@ -7,6 +7,8 @@ import {
   buildPlanSubmitPayload,
   buildPlanWithRewardPayload,
   buildWeekCalendar,
+  CHECK_IN_CYCLE_TYPE,
+  CHECK_IN_PATTERN_TYPE,
   createPlanDateDisableHandlers,
   getMonthlyRewardModeOptions,
   getPlanFormDisplayValues,
@@ -35,7 +37,7 @@ describe('mapPlanDetailToEditorState', () => {
         points: 10,
       },
       createdAt: '2026-04-10T00:00:00Z',
-      cycleType: 'monthly',
+      cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       dateRewardRules: [
         {
           id: 21,
@@ -51,14 +53,14 @@ describe('mapPlanDetailToEditorState', () => {
         {
           id: 11,
           monthDay: 15,
-          patternType: 'MONTH_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
           rewardConfig: {
             experience: 8,
           },
         },
         {
           id: 12,
-          patternType: 'MONTH_LAST_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
           rewardConfig: {
             points: 99,
           },
@@ -96,11 +98,11 @@ describe('mapPlanDetailToEditorState', () => {
         expect.objectContaining({
           key: 'MONTH_DAY:15',
           monthDay: 15,
-          patternType: 'MONTH_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
         }),
         expect.objectContaining({
           key: 'MONTH_LAST_DAY',
-          patternType: 'MONTH_LAST_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
         }),
       ]),
     );
@@ -123,10 +125,10 @@ describe('mapPlanDetailToEditorState', () => {
 describe('buildPlanWithRewardPayload', () => {
   it('should build weekly plan payload with weekday patterns only', () => {
     const payload = buildPlanWithRewardPayload({
-      cycleType: 'weekly',
+      cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
       plan: {
         allowMakeupCountPerCycle: 1,
-        cycleType: 'weekly',
+        cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
         endDate: '2026-06-30',
         id: 5,
         planCode: 'test_plan',
@@ -151,14 +153,14 @@ describe('buildPlanWithRewardPayload', () => {
           {
             experience: 0,
             key: 'WEEKDAY:1',
-            patternType: 'WEEKDAY',
+            patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
             points: 22,
             weekday: 1,
           },
           {
             key: 'MONTH_DAY:15',
             monthDay: 15,
-            patternType: 'MONTH_DAY',
+            patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
             points: 88,
           },
         ],
@@ -184,7 +186,7 @@ describe('buildPlanWithRewardPayload', () => {
         experience: 5,
         points: 10,
       },
-      cycleType: 'weekly',
+      cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
       dateRewardRules: [
         {
           rewardConfig: {
@@ -198,7 +200,7 @@ describe('buildPlanWithRewardPayload', () => {
       id: 5,
       patternRewardRules: [
         {
-          patternType: 'WEEKDAY',
+          patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
           rewardConfig: {
             points: 22,
           },
@@ -226,10 +228,10 @@ describe('buildPlanWithRewardPayload', () => {
 
   it('should build monthly plan payload with both pattern and date rules', () => {
     const payload = buildPlanWithRewardPayload({
-      cycleType: 'monthly',
+      cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       plan: {
         allowMakeupCountPerCycle: 0,
-        cycleType: 'monthly',
+        cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
         id: 7,
         planCode: 'monthly_test',
         planName: '月度测试',
@@ -253,11 +255,11 @@ describe('buildPlanWithRewardPayload', () => {
             experience: 8,
             key: 'MONTH_DAY:15',
             monthDay: 15,
-            patternType: 'MONTH_DAY',
+            patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
           },
           {
             key: 'MONTH_LAST_DAY',
-            patternType: 'MONTH_LAST_DAY',
+            patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
             points: 99,
           },
         ],
@@ -272,7 +274,7 @@ describe('buildPlanWithRewardPayload', () => {
       baseRewardConfig: {
         points: 12,
       },
-      cycleType: 'monthly',
+      cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       dateRewardRules: [
         {
           rewardConfig: {
@@ -285,13 +287,13 @@ describe('buildPlanWithRewardPayload', () => {
       patternRewardRules: [
         {
           monthDay: 15,
-          patternType: 'MONTH_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
           rewardConfig: {
             experience: 8,
           },
         },
         {
-          patternType: 'MONTH_LAST_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
           rewardConfig: {
             points: 99,
           },
@@ -309,7 +311,7 @@ describe('buildPlanWithRewardPayload', () => {
 describe('buildMonthCalendar', () => {
   it('should generate actual month cells and disable dates outside the plan window', () => {
     const cells = buildMonthCalendar({
-      cycleType: 'monthly',
+      cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       dateRules: [
         {
           localId: 'date-1',
@@ -324,7 +326,7 @@ describe('buildMonthCalendar', () => {
         {
           key: 'MONTH_DAY:15',
           monthDay: 15,
-          patternType: 'MONTH_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
           points: 88,
         },
       ],
@@ -351,7 +353,7 @@ describe('buildMonthCalendar', () => {
 
   it('should prefer date reward over monthly pattern and support month-last-day reward', () => {
     const cells = buildMonthCalendar({
-      cycleType: 'monthly',
+      cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       dateRules: [
         {
           localId: 'date-1',
@@ -366,12 +368,12 @@ describe('buildMonthCalendar', () => {
         {
           key: 'MONTH_DAY:3',
           monthDay: 3,
-          patternType: 'MONTH_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
           points: 33,
         },
         {
           key: 'MONTH_LAST_DAY',
-          patternType: 'MONTH_LAST_DAY',
+          patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
           points: 99,
         },
       ],
@@ -393,7 +395,7 @@ describe('buildMonthCalendar', () => {
 
   it('should only render the necessary number of calendar rows for a month', () => {
     const cells = buildMonthCalendar({
-      cycleType: 'monthly',
+      cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       dateRules: [],
       endDate: '2026-05-31',
       mode: 'date',
@@ -419,7 +421,7 @@ describe('buildWeekCalendar', () => {
       patternRules: [
         {
           key: 'WEEKDAY:2',
-          patternType: 'WEEKDAY',
+          patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
           points: 22,
           weekday: 2,
         },
@@ -489,33 +491,33 @@ describe('hasExistingRewardConfig', () => {
 
 describe('plan date constraints', () => {
   it('should only allow monday as weekly start date and first day as monthly start date', () => {
-    expect(isPlanStartDateDisabled(new Date('2026-05-04'), 'weekly')).toBe(false);
-    expect(isPlanStartDateDisabled(new Date('2026-05-05'), 'weekly')).toBe(true);
-    expect(isPlanStartDateDisabled(new Date('2026-05-01'), 'monthly')).toBe(false);
-    expect(isPlanStartDateDisabled(new Date('2026-05-02'), 'monthly')).toBe(true);
+    expect(isPlanStartDateDisabled(new Date('2026-05-04'), CHECK_IN_CYCLE_TYPE.WEEKLY)).toBe(false);
+    expect(isPlanStartDateDisabled(new Date('2026-05-05'), CHECK_IN_CYCLE_TYPE.WEEKLY)).toBe(true);
+    expect(isPlanStartDateDisabled(new Date('2026-05-01'), CHECK_IN_CYCLE_TYPE.MONTHLY)).toBe(false);
+    expect(isPlanStartDateDisabled(new Date('2026-05-02'), CHECK_IN_CYCLE_TYPE.MONTHLY)).toBe(true);
   });
 
   it('should only allow sunday or month-end as end date and block dates before start', () => {
     expect(
-      isPlanEndDateDisabled(new Date('2026-05-10'), 'weekly', '2026-05-04'),
+      isPlanEndDateDisabled(new Date('2026-05-10'), CHECK_IN_CYCLE_TYPE.WEEKLY, '2026-05-04'),
     ).toBe(false);
     expect(
-      isPlanEndDateDisabled(new Date('2026-05-09'), 'weekly', '2026-05-04'),
+      isPlanEndDateDisabled(new Date('2026-05-09'), CHECK_IN_CYCLE_TYPE.WEEKLY, '2026-05-04'),
     ).toBe(true);
     expect(
-      isPlanEndDateDisabled(new Date('2026-05-31'), 'monthly', '2026-05-01'),
+      isPlanEndDateDisabled(new Date('2026-05-31'), CHECK_IN_CYCLE_TYPE.MONTHLY, '2026-05-01'),
     ).toBe(false);
     expect(
-      isPlanEndDateDisabled(new Date('2026-05-30'), 'monthly', '2026-05-01'),
+      isPlanEndDateDisabled(new Date('2026-05-30'), CHECK_IN_CYCLE_TYPE.MONTHLY, '2026-05-01'),
     ).toBe(true);
     expect(
-      isPlanEndDateDisabled(new Date('2026-04-30'), 'monthly', '2026-05-01'),
+      isPlanEndDateDisabled(new Date('2026-04-30'), CHECK_IN_CYCLE_TYPE.MONTHLY, '2026-05-01'),
     ).toBe(true);
   });
 
   it('should use the latest cycle type when the same disabledDate handler is reused', () => {
     const state = {
-      cycleType: 'weekly' as 'monthly' | 'weekly',
+      cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY as 1 | 2,
       startDate: '2026-05-05',
     };
     const handlers = createPlanDateDisableHandlers(() => state);
@@ -523,7 +525,7 @@ describe('plan date constraints', () => {
     expect(handlers.isStartDateDisabled(new Date('2026-05-04'))).toBe(false);
     expect(handlers.isStartDateDisabled(new Date('2026-05-01'))).toBe(true);
 
-    state.cycleType = 'monthly';
+    state.cycleType = CHECK_IN_CYCLE_TYPE.MONTHLY;
     state.startDate = '2026-05-01';
 
     expect(handlers.isStartDateDisabled(new Date('2026-05-01'))).toBe(false);
@@ -538,7 +540,7 @@ describe('plan form date normalization', () => {
     expect(
       normalizePlanFormValues({
         allowMakeupCountPerCycle: 0,
-        cycleType: 'monthly',
+        cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
         endDate: '2026-07',
         planCode: 'A',
         planName: 'B',
@@ -557,7 +559,7 @@ describe('plan form date normalization', () => {
     expect(
       getPlanFormDisplayValues({
         allowMakeupCountPerCycle: 0,
-        cycleType: 'monthly',
+        cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
         endDate: '2026-07-31',
         planCode: 'A',
         planName: 'B',
@@ -599,12 +601,12 @@ describe('monthly reward mode selection', () => {
           {
             key: 'MONTH_DAY:31',
             monthDay: 31,
-            patternType: 'MONTH_DAY',
+            patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
             points: 33,
           },
           {
             key: 'MONTH_LAST_DAY',
-            patternType: 'MONTH_LAST_DAY',
+            patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
             points: 99,
           },
         ],
@@ -618,7 +620,7 @@ describe('monthly reward mode selection', () => {
         patternRules: [
           {
             key: 'MONTH_LAST_DAY',
-            patternType: 'MONTH_LAST_DAY',
+            patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
             points: 99,
           },
         ],
@@ -633,7 +635,7 @@ describe('monthly reward mode selection', () => {
           {
             key: 'MONTH_DAY:15',
             monthDay: 15,
-            patternType: 'MONTH_DAY',
+            patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
             points: 88,
           },
         ],
@@ -664,7 +666,7 @@ describe('weekly reward mode selection', () => {
         patternRules: [
           {
             key: 'WEEKDAY:2',
-            patternType: 'WEEKDAY',
+            patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
             points: 22,
             weekday: 2,
           },
@@ -679,7 +681,7 @@ describe('weekly reward mode selection', () => {
         patternRules: [
           {
             key: 'WEEKDAY:2',
-            patternType: 'WEEKDAY',
+            patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
             points: 22,
             weekday: 2,
           },
@@ -700,7 +702,7 @@ describe('reward preview state', () => {
         points: 18,
       },
       createdAt: '2026-04-10T00:00:00Z',
-      cycleType: 'weekly',
+      cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
       dateRewardRules: [
         {
           id: 201,
@@ -715,7 +717,7 @@ describe('reward preview state', () => {
       patternRewardRules: [
         {
           id: 202,
-          patternType: 'WEEKDAY',
+          patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
           rewardConfig: {
             experience: 10,
           },
@@ -814,7 +816,7 @@ describe('buildPlanSubmitPayload', () => {
   it('should build update payload when plan id exists', () => {
     const payload = buildPlanSubmitPayload({
       allowMakeupCountPerCycle: 2,
-      cycleType: 'weekly',
+      cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
       endDate: '2026-05-31',
       id: 9,
       planCode: ' weekly_plan ',
@@ -825,7 +827,7 @@ describe('buildPlanSubmitPayload', () => {
 
     expect(payload).toEqual({
       allowMakeupCountPerCycle: 2,
-      cycleType: 'weekly',
+      cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
       endDate: '2026-05-31',
       id: 9,
       planCode: 'weekly_plan',
@@ -838,7 +840,7 @@ describe('buildPlanSubmitPayload', () => {
   it('should build create payload when plan id does not exist', () => {
     const payload = buildPlanSubmitPayload({
       allowMakeupCountPerCycle: 0,
-      cycleType: 'monthly',
+      cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       planCode: ' monthly_plan ',
       planName: ' 月度签到 ',
       startDate: '2026-05-01',
@@ -847,7 +849,7 @@ describe('buildPlanSubmitPayload', () => {
 
     expect(payload).toEqual({
       allowMakeupCountPerCycle: 0,
-      cycleType: 'monthly',
+      cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       endDate: undefined,
       planCode: 'monthly_plan',
       planName: '月度签到',
@@ -856,3 +858,4 @@ describe('buildPlanSubmitPayload', () => {
     });
   });
 });
+

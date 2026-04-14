@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AnnouncementCreateRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AnnouncementCreateRequest = CreateAnnouncementDto
 
@@ -10,7 +10,7 @@ export type AnnouncementCreateResponse = boolean
 /**
  *  类型定义 [AnnouncementPageRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AnnouncementPageRequest = {
   /** 任意合法数值 */
@@ -82,7 +82,7 @@ export type AnnouncementPageResponse = {
 /**
  *  类型定义 [AnnouncementDetailRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AnnouncementDetailRequest = {
   /** 任意合法数值 */
@@ -97,7 +97,7 @@ export type AnnouncementDetailResponse = AnnouncementDetailDto
 /**
  *  类型定义 [AnnouncementUpdateRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AnnouncementUpdateRequest = UpdateAnnouncementDto
 
@@ -106,7 +106,7 @@ export type AnnouncementUpdateResponse = boolean
 /**
  *  类型定义 [AnnouncementUpdateStatusRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AnnouncementUpdateStatusRequest = UpdatePublishedStatusDto
 
@@ -115,7 +115,7 @@ export type AnnouncementUpdateStatusResponse = boolean
 /**
  *  类型定义 [AnnouncementDeleteRequest]
  *  @来源 APP管理/系统公告
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AnnouncementDeleteRequest = IdDto
 
@@ -124,7 +124,7 @@ export type AnnouncementDeleteResponse = boolean
 /**
  *  类型定义 [CreateAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CreateAnnouncementDto = {
   /** 任意合法数值 */
@@ -141,7 +141,7 @@ export type CreateAnnouncementDto = {
   pageId?: null | number
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string
-  /* 弹窗背景图片位置（支持 CSS background-position 多方位定位：center/top center/top left/top right/bottom center/bottom left/bottom right/left center/right center） */
+  /* 弹窗背景图片位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
   popupBackgroundPosition?: null | string
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel: 0 | 1 | 2 | 3
@@ -161,7 +161,7 @@ export type CreateAnnouncementDto = {
 /**
  *  类型定义 [BaseAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type BaseAnnouncementDto = {
   /** 任意合法数值 */
@@ -184,7 +184,7 @@ export type BaseAnnouncementDto = {
   pageId?: null | number
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string
-  /* 弹窗背景图片位置（支持 CSS background-position 多方位定位：center/top center/top left/top right/bottom center/bottom left/bottom right/left center/right center） */
+  /* 弹窗背景图片位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
   popupBackgroundPosition?: null | string
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel: 0 | 1 | 2 | 3
@@ -208,7 +208,7 @@ export type BaseAnnouncementDto = {
 /**
  *  类型定义 [AnnouncementDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AnnouncementDetailDto = {
   /** 任意合法数值 */
@@ -233,7 +233,7 @@ export type AnnouncementDetailDto = {
   pageId?: null | number
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string
-  /* 弹窗背景图片位置（支持 CSS background-position 多方位定位：center/top center/top left/top right/bottom center/bottom left/bottom right/left center/right center） */
+  /* 弹窗背景图片位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
   popupBackgroundPosition?: null | string
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel: 0 | 1 | 2 | 3
@@ -257,7 +257,7 @@ export type AnnouncementDetailDto = {
 /**
  *  类型定义 [AnnouncementRelatedPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AnnouncementRelatedPageDto = {
   /** 任意合法数值 */
@@ -276,7 +276,7 @@ export type AnnouncementRelatedPageDto = {
 /**
  *  类型定义 [UpdateAnnouncementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateAnnouncementDto = {
   /** 任意合法数值 */
@@ -295,7 +295,7 @@ export type UpdateAnnouncementDto = {
   pageId?: null | number
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string
-  /* 弹窗背景图片位置（支持 CSS background-position 多方位定位：center/top center/top left/top right/bottom center/bottom left/bottom right/left center/right center） */
+  /* 弹窗背景图片位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
   popupBackgroundPosition?: null | string
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel?: 0 | 1 | 2 | 3
@@ -315,7 +315,7 @@ export type UpdateAnnouncementDto = {
 /**
  *  类型定义 [UpdatePublishedStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdatePublishedStatusDto = {
   /** 任意合法数值 */
@@ -330,7 +330,7 @@ export type UpdatePublishedStatusDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type IdDto = {
   /** 任意合法数值 */

@@ -3,8 +3,8 @@ import type {
   MessageMonitorDeliveryPageResponse,
   MessageMonitorDeliveryRetryRequest,
   MessageMonitorDeliveryRetryResponse,
-  MessageMonitorOutboxSummaryRequest,
-  MessageMonitorOutboxSummaryResponse,
+  MessageMonitorDispatchPageRequest,
+  MessageMonitorDispatchPageResponse,
   MessageMonitorWsSummaryRequest,
   MessageMonitorWsSummaryResponse,
   MessageNotificationTemplatesCreateRequest,
@@ -33,7 +33,7 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 按 bizKey 重试失败的通知投递
+   * 按 dispatch ID 重试失败的通知投递
    */
   export async function messageMonitorDeliveryRetryApi(params: MessageMonitorDeliveryRetryRequest): Promise<MessageMonitorDeliveryRetryResponse> {
     return requestClient.post<MessageMonitorDeliveryRetryResponse>('/api/admin/message/monitor/delivery/retry', params);
@@ -41,10 +41,10 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 获取消息 outbox 监控摘要
+   * 分页查询通知 dispatch 调度结果
    */
-  export async function messageMonitorOutboxSummaryApi(params?: MessageMonitorOutboxSummaryRequest): Promise<MessageMonitorOutboxSummaryResponse> {
-    return requestClient.get<MessageMonitorOutboxSummaryResponse>('/api/admin/message/monitor/outbox/summary', { params });
+  export async function messageMonitorDispatchPageApi(params?: MessageMonitorDispatchPageRequest): Promise<MessageMonitorDispatchPageResponse> {
+    return requestClient.get<MessageMonitorDispatchPageResponse>('/api/admin/message/monitor/dispatch/page', { params });
   }
 
 

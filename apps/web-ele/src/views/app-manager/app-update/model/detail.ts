@@ -71,7 +71,7 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
       fields: [
         {
           label: '安装包来源',
-          value: detail.packageSourceType === 'url' ? '外部下载地址' : '后台上传',
+          value: detail.packageSourceType === 2 ? '外部下载地址' : '后台上传',
           type: 'text' as const,
           show: !!detail.packageSourceType,
         },

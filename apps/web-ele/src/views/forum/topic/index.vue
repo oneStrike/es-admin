@@ -201,6 +201,7 @@ function normalizeCreatePayload(values: Record<string, any>) {
 
   return {
     content: values.content.trim(),
+    mentions: [],
     sectionId: Number(values.sectionId),
     title: values.title.trim(),
     userId: Number(selectedUserIds[0]),
@@ -216,6 +217,7 @@ function normalizeEditPayload(values: Record<string, any>) {
   return {
     content: values.content.trim(),
     id: Number(values.id),
+    mentions: [],
     title: values.title.trim(),
   } satisfies ForumTopicUpdateRequest;
 }

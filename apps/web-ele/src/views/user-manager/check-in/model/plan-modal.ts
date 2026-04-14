@@ -157,6 +157,17 @@ export type CheckInWeekCalendarCell = {
   weekdayRuleKey?: string;
 };
 
+export const CHECK_IN_CYCLE_TYPE = {
+  WEEKLY: 1,
+  MONTHLY: 2,
+} as const;
+
+export const CHECK_IN_PATTERN_TYPE = {
+  WEEKDAY: 1,
+  MONTH_DAY: 2,
+  MONTH_LAST_DAY: 3,
+} as const;
+
 // ======================== 常量 ========================
 
 /** 周视图的星期标签，周一=1 ... 周日=7 */
@@ -218,12 +229,12 @@ export const planFormSchema: EsFormSchema = [
     componentProps: {
       class: 'w-full',
       options: [
-        { color: 'warning', label: '按周', value: 'weekly' },
-        { color: 'success', label: '按月', value: 'monthly' },
+        { color: 'warning', label: '按周', value: CHECK_IN_CYCLE_TYPE.WEEKLY },
+        { color: 'success', label: '按月', value: CHECK_IN_CYCLE_TYPE.MONTHLY },
       ],
       placeholder: '请选择周期类型',
     },
-    defaultValue: 'weekly',
+    defaultValue: CHECK_IN_CYCLE_TYPE.WEEKLY,
     fieldName: 'cycleType',
     label: '周期类型',
     rules: 'required',
@@ -273,10 +284,10 @@ export const planFormSchema: EsFormSchema = [
 export function createDefaultPlanFormModel(): CheckInPlanFormModel {
   return {
     allowMakeupCountPerCycle: 0,
-    cycleType: 'weekly',
+    cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
     planCode: '',
     planName: '',
-    startDate: getDefaultPlanStartDate('weekly'),
+    startDate: getDefaultPlanStartDate(CHECK_IN_CYCLE_TYPE.WEEKLY),
     status: 0,
   };
 }
@@ -312,10 +323,10 @@ export function createPatternRuleKey(rule: {
   weekday?: null | number;
 }) {
   switch (rule.patternType) {
-    case 'MONTH_DAY': {
+    case CHECK_IN_PATTERN_TYPE.MONTH_DAY: {
       return `MONTH_DAY:${rule.monthDay}`;
     }
-    case 'MONTH_LAST_DAY': {
+    case CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY: {
       return 'MONTH_LAST_DAY';
     }
     default: {
@@ -348,7 +359,7 @@ export function formatWeekCursor(value: string) {
 export function getDefaultPlanStartDate(cycleType: CheckInCycleType) {
   const now = dayjs();
 
-  if (cycleType === 'weekly') {
+  if (cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY) {
     return now
       .subtract(toMondayBasedWeekday(now) - 1, 'day')
       .format('YYYY-MM-DD');
@@ -372,7 +383,7 @@ export function normalizePlanBoundaryDate(
   }
 
   const date = dayjs(value);
-  if (cycleType === 'weekly') {
+  if (cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY) {
     const weekdayOffset = toMondayBasedWeekday(date) - 1;
     return boundary === 'start'
       ? date.subtract(weekdayOffset, 'day').format('YYYY-MM-DD')
@@ -404,7 +415,7 @@ export function normalizePlanFormValues(model: CheckInPlanFormModel) {
  * 月计划模式下，日期选择器使用 month 类型，需要将 YYYY-MM-DD 转为 YYYY-MM 显示
  */
 export function getPlanFormDisplayValues(model: CheckInPlanFormModel) {
-  if (model.cycleType !== 'monthly') {
+  if (model.cycleType !== CHECK_IN_CYCLE_TYPE.MONTHLY) {
     return model;
   }
 
@@ -471,7 +482,8 @@ export function resolveMonthlyRewardMode(params: {
   if (
     patternRules.some(
       (item) =>
-        item.patternType === 'MONTH_DAY' && item.monthDay === date.date(),
+        item.patternType === CHECK_IN_PATTERN_TYPE.MONTH_DAY &&
+        item.monthDay === date.date(),
     )
   ) {
     return 'month_day';
@@ -499,7 +511,7 @@ export function resolveWeeklyRewardMode(params: {
   if (
     patternRules.some(
       (item) =>
-        item.patternType === 'WEEKDAY' &&
+        item.patternType === CHECK_IN_PATTERN_TYPE.WEEKDAY &&
         item.weekday === toMondayBasedWeekday(date),
     )
   ) {
@@ -681,25 +693,20 @@ export function buildPlanWithRewardPayload(params: {
     reward.baseRewardExperience,
   );
   // 具体日期规则：仅保留有效奖励项，按日期升序排列
-  const dateRewardRules =
-    cycleType === 'weekly' || cycleType === 'monthly'
-      ? reward.dateRules
-          .filter((item) =>
-            hasConfiguredReward({
-              experience: item.experience,
-              points: item.points,
-            }),
-          )
-          .toSorted((left, right) =>
-            left.rewardDate.localeCompare(right.rewardDate),
-          )
-          .map((item) => {
-            return {
-              rewardConfig: buildRewardConfig(item.points, item.experience)!,
-              rewardDate: item.rewardDate,
-            } satisfies CreateCheckInDateRewardRuleDto;
-          })
-      : [];
+  const dateRewardRules = reward.dateRules
+    .filter((item) =>
+      hasConfiguredReward({
+        experience: item.experience,
+        points: item.points,
+      }),
+    )
+    .toSorted((left, right) => left.rewardDate.localeCompare(right.rewardDate))
+    .map((item) => {
+      return {
+        rewardConfig: buildRewardConfig(item.points, item.experience)!,
+        rewardDate: item.rewardDate,
+      } satisfies CreateCheckInDateRewardRuleDto;
+    });
   const patternRewardRules = reward.patternRules
     .filter((item) =>
       hasConfiguredReward({
@@ -708,18 +715,24 @@ export function buildPlanWithRewardPayload(params: {
       }),
     )
     .filter((item) =>
-      cycleType === 'weekly'
-        ? item.patternType === 'WEEKDAY'
-        : item.patternType === 'MONTH_DAY' ||
-          item.patternType === 'MONTH_LAST_DAY',
+      cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY
+        ? item.patternType === CHECK_IN_PATTERN_TYPE.WEEKDAY
+        : item.patternType === CHECK_IN_PATTERN_TYPE.MONTH_DAY ||
+          item.patternType === CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
     )
     .toSorted(comparePatternRuleDraft)
     .map((item) => {
       return {
-        monthDay: item.patternType === 'MONTH_DAY' ? item.monthDay : undefined,
+        monthDay:
+          item.patternType === CHECK_IN_PATTERN_TYPE.MONTH_DAY
+            ? item.monthDay
+            : undefined,
         patternType: item.patternType,
         rewardConfig: buildRewardConfig(item.points, item.experience)!,
-        weekday: item.patternType === 'WEEKDAY' ? item.weekday : undefined,
+        weekday:
+          item.patternType === CHECK_IN_PATTERN_TYPE.WEEKDAY
+            ? item.weekday
+            : undefined,
       } satisfies CreateCheckInPatternRewardRuleDto;
     });
   const streakRewardRules = reward.streakRules
@@ -883,7 +896,7 @@ export function getPlanBusinessRuleError(model: CheckInPlanFormModel) {
   }
 
   const startDate = dayjs(model.startDate);
-  if (model.cycleType === 'weekly') {
+  if (model.cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY) {
     if (toMondayBasedWeekday(startDate) !== 1) {
       return '周计划开始日期必须选择周一';
     }
@@ -916,7 +929,7 @@ export function isPlanStartDateDisabled(
   cycleType: CheckInCycleType,
 ) {
   const date = dayjs(current);
-  return cycleType === 'weekly'
+  return cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY
     ? toMondayBasedWeekday(date) !== 1
     : date.date() !== 1;
 }
@@ -936,7 +949,7 @@ export function isPlanEndDateDisabled(
     return true;
   }
 
-  return cycleType === 'weekly'
+  return cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY
     ? toMondayBasedWeekday(date) !== 7
     : date.date() !== date.daysInMonth();
 }
@@ -954,14 +967,14 @@ export function createPlanDateDisableHandlers(
   return {
     isEndDateDisabled(current: Date) {
       const state = getState();
-      if (state.cycleType === 'monthly') {
+      if (state.cycleType === CHECK_IN_CYCLE_TYPE.MONTHLY) {
         return isPlanEndMonthDisabled(current, state.startDate);
       }
       return isPlanEndDateDisabled(current, state.cycleType, state.startDate);
     },
     isStartDateDisabled(current: Date) {
       const state = getState();
-      if (state.cycleType === 'monthly') {
+      if (state.cycleType === CHECK_IN_CYCLE_TYPE.MONTHLY) {
         return isPlanStartMonthDisabled(current);
       }
       return isPlanStartDateDisabled(current, state.cycleType);
@@ -1051,9 +1064,10 @@ export function getRewardBusinessRuleError(
     streakDaysSet.add(streakDays);
   }
 
-  if (plan.cycleType === 'weekly') {
+  if (plan.cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY) {
     const invalidWeekdayPattern = reward.patternRules.find(
-      (item) => item.patternType === 'WEEKDAY' && !item.weekday,
+      (item) =>
+        item.patternType === CHECK_IN_PATTERN_TYPE.WEEKDAY && !item.weekday,
     );
     if (invalidWeekdayPattern) {
       return '周计划奖励必须绑定具体星期';
@@ -1137,10 +1151,10 @@ export function toWeeklyPatternDraft(
     experience: source?.experience,
     id: source?.id,
     key: createPatternRuleKey({
-      patternType: 'WEEKDAY',
+      patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
       weekday,
     }),
-    patternType: 'WEEKDAY' as const,
+    patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
     points: source?.points,
     weekday,
   } satisfies CheckInPatternRuleDraft;
@@ -1149,7 +1163,7 @@ export function toWeeklyPatternDraft(
 /** 根据模式类型和参数创建月计划的模式规则草稿（MONTH_DAY 或 MONTH_LAST_DAY） */
 export function toMonthlyPatternDraft(params: {
   monthDay?: number;
-  patternType: 'MONTH_DAY' | 'MONTH_LAST_DAY';
+  patternType: 2 | 3;
   source?: CheckInPatternRuleDraft;
 }) {
   const { monthDay, patternType, source } = params;
@@ -1161,7 +1175,8 @@ export function toMonthlyPatternDraft(params: {
       monthDay,
       patternType,
     }),
-    monthDay: patternType === 'MONTH_DAY' ? monthDay : undefined,
+    monthDay:
+      patternType === CHECK_IN_PATTERN_TYPE.MONTH_DAY ? monthDay : undefined,
     patternType,
     points: source?.points,
   } satisfies CheckInPatternRuleDraft;
@@ -1207,10 +1222,10 @@ function comparePatternRuleDraft(
 
 /** 获取周期模式规则的排序权重值 */
 function getPatternRuleSortWeight(rule: CheckInPatternRuleDraft) {
-  if (rule.patternType === 'WEEKDAY') {
+  if (rule.patternType === CHECK_IN_PATTERN_TYPE.WEEKDAY) {
     return Number(rule.weekday ?? 0);
   }
-  if (rule.patternType === 'MONTH_DAY') {
+  if (rule.patternType === CHECK_IN_PATTERN_TYPE.MONTH_DAY) {
     return Number(rule.monthDay ?? 0);
   }
   // MONTH_LAST_DAY 固定排在最后
@@ -1233,7 +1248,7 @@ function getPatternRuleForDate(
   // 月末日期优先匹配 MONTH_LAST_DAY 规则
   if (isLastDayOfMonth) {
     const monthLastDayRule = patternRules.find(
-      (item) => item.patternType === 'MONTH_LAST_DAY',
+      (item) => item.patternType === CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
     );
     if (monthLastDayRule) {
       return monthLastDayRule;
@@ -1241,10 +1256,10 @@ function getPatternRuleForDate(
   }
 
   return patternRules.find((item) => {
-    if (item.patternType === 'WEEKDAY') {
+    if (item.patternType === CHECK_IN_PATTERN_TYPE.WEEKDAY) {
       return item.weekday === weekday;
     }
-    if (item.patternType === 'MONTH_DAY') {
+    if (item.patternType === CHECK_IN_PATTERN_TYPE.MONTH_DAY) {
       return item.monthDay === day;
     }
     return false;

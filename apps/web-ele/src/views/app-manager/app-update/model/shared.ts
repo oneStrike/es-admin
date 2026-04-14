@@ -12,15 +12,15 @@ import { formSchemaTransform, safeParseJson } from '#/utils';
 export const platformOptions = [
   {
     label: '安卓端',
-    value: 'android',
+    value: 2,
   },
   {
     label: '苹果端',
-    value: 'ios',
+    value: 1,
   },
 ];
 
-export const platformOptionsObj: Record<string, { label: string }> = {};
+export const platformOptionsObj: Record<number, { label: string }> = {};
 for (const item of platformOptions) {
   platformOptionsObj[item.value] = {
     label: item.label,
@@ -55,11 +55,11 @@ export const publishedStatusOptions = [
 export const packageSourceTypeOptions = [
   {
     label: '后台上传',
-    value: 'upload',
+    value: 1,
   },
   {
     label: '外部下载地址',
-    value: 'url',
+    value: 2,
   },
 ];
 
@@ -142,7 +142,7 @@ export const formSchema: EsFormSchema = [
       placeholder: '请输入安装包地址（外部下载地址时填写）',
     },
     dependencies: {
-      show: ({ packageSourceType }) => packageSourceType === 'url',
+      show: ({ packageSourceType }) => packageSourceType === 2,
       triggerFields: ['packageSourceType'],
     },
     fieldName: 'packageUrl',
@@ -161,7 +161,7 @@ export const formSchema: EsFormSchema = [
       returnDataType: 'json',
     },
     dependencies: {
-      show: ({ packageSourceType }) => packageSourceType === 'upload',
+      show: ({ packageSourceType }) => packageSourceType === 1,
       triggerFields: ['packageSourceType'],
     },
     fieldName: 'packageUpload',
@@ -299,7 +299,7 @@ export const appUpdateFilter = formSchemaTransform.toSearchSchema(formSchema, {
 export function resolvePackageUrl(values: Record<string, any>): string | undefined {
   const directUrl = normalizeOptionalString(values.packageUrl);
 
-  if (values.packageSourceType === 'upload') {
+  if (values.packageSourceType === 1) {
     const uploadedFile = normalizeUploadValue(
       values.packageUpload ?? values.packageUrlUpload,
     );
@@ -347,7 +347,7 @@ function normalizeUploadValue(
   return undefined;
 }
 function createPackageUploadValue(detail: AppUpdateReleaseDetailDto) {
-  if (detail.packageSourceType !== 'upload' || !detail.packageUrl) {
+  if (detail.packageSourceType !== 1 || !detail.packageUrl) {
     return undefined;
   }
 
@@ -388,7 +388,7 @@ export function buildAppUpdateSubmitPayload(
 
   payload.customDownloadUrl = normalizeOptionalString(payload.customDownloadUrl);
   payload.releaseNotes = normalizeOptionalString(payload.releaseNotes);
-  if (payload.packageSourceType === 'upload') {
+  if (payload.packageSourceType === 1) {
     payload.packageUrl = resolvePackageUrl({
       ...payload,
       packageUpload: uploadedFile,

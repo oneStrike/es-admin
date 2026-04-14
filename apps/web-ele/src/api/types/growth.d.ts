@@ -1,7 +1,7 @@
 /**
  *  类型定义 [GrowthPointsRulesPageRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthPointsRulesPageRequest = {
   /** 任意合法数值 */
@@ -49,7 +49,7 @@ export type GrowthPointsRulesPageResponse = {
 /**
  *  类型定义 [GrowthPointsRulesDetailRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthPointsRulesDetailRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type GrowthPointsRulesDetailResponse = BaseUserPointRuleDto
 /**
  *  类型定义 [GrowthPointsRulesCreateRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthPointsRulesCreateRequest = CreateUserPointRuleDto
 
@@ -73,7 +73,7 @@ export type GrowthPointsRulesCreateResponse = boolean
 /**
  *  类型定义 [GrowthPointsRulesUpdateRequest]
  *  @来源 用户成长/积分管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthPointsRulesUpdateRequest = UpdateUserPointRuleDto
 
@@ -82,7 +82,7 @@ export type GrowthPointsRulesUpdateResponse = boolean
 /**
  *  类型定义 [GrowthExperienceRulesPageRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesPageRequest = {
   /** 任意合法数值 */
@@ -130,7 +130,7 @@ export type GrowthExperienceRulesPageResponse = {
 /**
  *  类型定义 [GrowthExperienceRulesDetailRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesDetailRequest = {
   /** 任意合法数值 */
@@ -145,7 +145,7 @@ export type GrowthExperienceRulesDetailResponse = BaseUserExperienceRuleDto
 /**
  *  类型定义 [GrowthExperienceRulesCreateRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesCreateRequest = CreateUserExperienceRuleDto
 
@@ -154,7 +154,7 @@ export type GrowthExperienceRulesCreateResponse = boolean
 /**
  *  类型定义 [GrowthExperienceRulesUpdateRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesUpdateRequest = UpdateUserExperienceRuleDto
 
@@ -163,7 +163,7 @@ export type GrowthExperienceRulesUpdateResponse = boolean
 /**
  *  类型定义 [GrowthExperienceRulesDeleteRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesDeleteRequest = IdDto
 
@@ -172,7 +172,7 @@ export type GrowthExperienceRulesDeleteResponse = boolean
 /**
  *  类型定义 [GrowthExperienceRulesGrantRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesGrantRequest = AddUserExperienceDto
 
@@ -181,7 +181,7 @@ export type GrowthExperienceRulesGrantResponse = boolean
 /**
  *  类型定义 [GrowthExperienceRulesRecordPageRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesRecordPageRequest = {
   /** 任意合法数值 */
@@ -229,7 +229,7 @@ export type GrowthExperienceRulesRecordPageResponse = {
 /**
  *  类型定义 [GrowthExperienceRulesRecordDetailRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesRecordDetailRequest = {
   /** 任意合法数值 */
@@ -244,7 +244,7 @@ export type GrowthExperienceRulesRecordDetailResponse = UserExperienceRecordDeta
 /**
  *  类型定义 [GrowthExperienceRulesStatsRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthExperienceRulesStatsRequest = {
   
@@ -259,7 +259,7 @@ export type GrowthExperienceRulesStatsResponse = UserExperienceStatsDto
 /**
  *  类型定义 [GrowthLevelRulesPageRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthLevelRulesPageRequest = {
   /** 任意合法数值 */
@@ -310,7 +310,7 @@ export type GrowthLevelRulesPageResponse = {
 /**
  *  类型定义 [GrowthLevelRulesDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthLevelRulesDetailRequest = {
   /** 任意合法数值 */
@@ -325,7 +325,7 @@ export type GrowthLevelRulesDetailResponse = BaseUserLevelRuleDto
 /**
  *  类型定义 [GrowthLevelRulesCreateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthLevelRulesCreateRequest = CreateUserLevelRuleDto
 
@@ -334,7 +334,7 @@ export type GrowthLevelRulesCreateResponse = boolean
 /**
  *  类型定义 [GrowthLevelRulesUpdateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthLevelRulesUpdateRequest = UpdateUserLevelRuleDto
 
@@ -343,7 +343,7 @@ export type GrowthLevelRulesUpdateResponse = boolean
 /**
  *  类型定义 [GrowthLevelRulesDeleteRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthLevelRulesDeleteRequest = IdDto
 
@@ -352,7 +352,7 @@ export type GrowthLevelRulesDeleteResponse = boolean
 /**
  *  类型定义 [GrowthLevelRulesUserDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthLevelRulesUserDetailRequest = {
   /** 任意合法数值 */
@@ -367,7 +367,7 @@ export type GrowthLevelRulesUserDetailResponse = UserLevelInfoDto
 /**
  *  类型定义 [GrowthLevelRulesPermissionCheckRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthLevelRulesPermissionCheckRequest = CheckUserLevelPermissionDto
 
@@ -378,7 +378,7 @@ export type GrowthLevelRulesStatsResponse = UserLevelStatisticsDto
 /**
  *  类型定义 [GrowthBadgesPageRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesPageRequest = {
   /** 任意合法数值 */
@@ -429,7 +429,7 @@ export type GrowthBadgesPageResponse = {
 /**
  *  类型定义 [GrowthBadgesDetailRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesDetailRequest = {
   /** 任意合法数值 */
@@ -444,7 +444,7 @@ export type GrowthBadgesDetailResponse = BaseUserBadgeDto
 /**
  *  类型定义 [GrowthBadgesCreateRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesCreateRequest = CreateUserBadgeDto
 
@@ -453,7 +453,7 @@ export type GrowthBadgesCreateResponse = boolean
 /**
  *  类型定义 [GrowthBadgesUpdateRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesUpdateRequest = UpdateUserBadgeDto
 
@@ -462,7 +462,7 @@ export type GrowthBadgesUpdateResponse = boolean
 /**
  *  类型定义 [GrowthBadgesDeleteRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesDeleteRequest = IdDto
 
@@ -471,7 +471,7 @@ export type GrowthBadgesDeleteResponse = boolean
 /**
  *  类型定义 [GrowthBadgesUpdateStatusRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesUpdateStatusRequest = UpdateUserBadgeStatusDto
 
@@ -480,7 +480,7 @@ export type GrowthBadgesUpdateStatusResponse = boolean
 /**
  *  类型定义 [GrowthBadgesAssignRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesAssignRequest = AssignUserBadgeDto
 
@@ -489,7 +489,7 @@ export type GrowthBadgesAssignResponse = boolean
 /**
  *  类型定义 [GrowthBadgesRevokeRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesRevokeRequest = AssignUserBadgeDto
 
@@ -498,7 +498,7 @@ export type GrowthBadgesRevokeResponse = boolean
 /**
  *  类型定义 [GrowthBadgesUserPageRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthBadgesUserPageRequest = {
   /** 任意合法数值 */
@@ -539,7 +539,7 @@ export type GrowthBadgesStatsResponse = UserBadgeStatisticsDto
 /**
  *  类型定义 [GrowthRuleEventsPageRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthRuleEventsPageRequest = {
   /** 任意合法数值 */
@@ -569,7 +569,7 @@ export type GrowthRuleEventsPageRequest = {
   /* 开始时间 */
   startDate?: null | string
 
-  /* 成长事件编码 */
+  /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
   type?: null | number
 }
 
@@ -593,7 +593,7 @@ export type GrowthRuleEventsPageResponse = {
 /**
  *  类型定义 [BaseUserPointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type BaseUserPointRuleDto = {
   /** 任意合法数值 */
@@ -622,7 +622,7 @@ export type BaseUserPointRuleDto = {
 /**
  *  类型定义 [CreateUserPointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CreateUserPointRuleDto = {
   /** 任意合法数值 */
@@ -645,7 +645,7 @@ export type CreateUserPointRuleDto = {
 /**
  *  类型定义 [UpdateUserPointRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateUserPointRuleDto = {
   /** 任意合法数值 */
@@ -670,7 +670,7 @@ export type UpdateUserPointRuleDto = {
 /**
  *  类型定义 [BaseUserExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type BaseUserExperienceRuleDto = {
   /** 任意合法数值 */
@@ -699,7 +699,7 @@ export type BaseUserExperienceRuleDto = {
 /**
  *  类型定义 [CreateUserExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CreateUserExperienceRuleDto = {
   /** 任意合法数值 */
@@ -722,7 +722,7 @@ export type CreateUserExperienceRuleDto = {
 /**
  *  类型定义 [UpdateUserExperienceRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateUserExperienceRuleDto = {
   /** 任意合法数值 */
@@ -747,7 +747,7 @@ export type UpdateUserExperienceRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -760,7 +760,7 @@ export type IdDto = {
 /**
  *  类型定义 [AddUserExperienceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AddUserExperienceDto = {
   /** 任意合法数值 */
@@ -777,7 +777,7 @@ export type AddUserExperienceDto = {
 /**
  *  类型定义 [UserExperienceRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserExperienceRecordDto = {
   /** 任意合法数值 */
@@ -818,7 +818,7 @@ export type UserExperienceRecordDto = {
 /**
  *  类型定义 [UserExperienceRecordDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserExperienceRecordDetailDto = {
   /** 任意合法数值 */
@@ -861,7 +861,7 @@ export type UserExperienceRecordDetailDto = {
 /**
  *  类型定义 [ForumAppUserInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type ForumAppUserInfoDto = {
   /** 任意合法数值 */
@@ -878,7 +878,7 @@ export type ForumAppUserInfoDto = {
   createdAt: string
   /* 邮箱 */
   emailAddress?: null | string
-  /* 性别（0=未知，1=男，2=女，3=其他，4=保密） */
+  /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
   genderType: 0 | 1 | 2 | 3 | 4
   /* 主键id */
   id: number
@@ -902,7 +902,7 @@ export type ForumAppUserInfoDto = {
 /**
  *  类型定义 [UserExperienceStatsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserExperienceStatsDto = {
   /** 任意合法数值 */
@@ -919,7 +919,7 @@ export type UserExperienceStatsDto = {
 /**
  *  类型定义 [UserExperienceLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserExperienceLevelDto = {
   /** 任意合法数值 */
@@ -936,7 +936,7 @@ export type UserExperienceLevelDto = {
 /**
  *  类型定义 [BaseUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type BaseUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -987,7 +987,7 @@ export type BaseUserLevelRuleDto = {
 /**
  *  类型定义 [CreateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CreateUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -1032,7 +1032,7 @@ export type CreateUserLevelRuleDto = {
 /**
  *  类型定义 [UpdateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -1079,7 +1079,7 @@ export type UpdateUserLevelRuleDto = {
 /**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserLevelInfoDto = {
   /** 任意合法数值 */
@@ -1108,7 +1108,7 @@ export type UserLevelInfoDto = {
 /**
  *  类型定义 [UserLevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserLevelPermissionsDto = {
   /** 任意合法数值 */
@@ -1129,12 +1129,12 @@ export type UserLevelPermissionsDto = {
 /**
  *  类型定义 [CheckUserLevelPermissionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CheckUserLevelPermissionDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 权限类型 */
+  /* 权限类型（dailyTopicLimit=每日发帖数量上限；dailyReplyCommentLimit=每日回复和评论数量上限；postInterval=发帖间隔秒数；dailyLikeLimit=每日点赞次数上限；dailyFavoriteLimit=每日收藏次数上限） */
   permissionType: 'dailyFavoriteLimit' | 'dailyLikeLimit' | 'dailyReplyCommentLimit' | 'dailyTopicLimit' | 'postInterval'
 
   /* 用户ID */
@@ -1144,7 +1144,7 @@ export type CheckUserLevelPermissionDto = {
 /**
  *  类型定义 [UserLevelPermissionResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserLevelPermissionResultDto = {
   /** 任意合法数值 */
@@ -1165,7 +1165,7 @@ export type UserLevelPermissionResultDto = {
 /**
  *  类型定义 [UserLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -1182,7 +1182,7 @@ export type UserLevelStatisticsDto = {
 /**
  *  类型定义 [UserLevelDistributionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserLevelDistributionItemDto = {
   /** 任意合法数值 */
@@ -1199,7 +1199,7 @@ export type UserLevelDistributionItemDto = {
 /**
  *  类型定义 [BaseUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type BaseUserBadgeDto = {
   /** 任意合法数值 */
@@ -1232,7 +1232,7 @@ export type BaseUserBadgeDto = {
 /**
  *  类型定义 [CreateUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CreateUserBadgeDto = {
   /** 任意合法数值 */
@@ -1259,7 +1259,7 @@ export type CreateUserBadgeDto = {
 /**
  *  类型定义 [UpdateUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateUserBadgeDto = {
   /** 任意合法数值 */
@@ -1288,7 +1288,7 @@ export type UpdateUserBadgeDto = {
 /**
  *  类型定义 [UpdateUserBadgeStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateUserBadgeStatusDto = {
   /** 任意合法数值 */
@@ -1303,7 +1303,7 @@ export type UpdateUserBadgeStatusDto = {
 /**
  *  类型定义 [AssignUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AssignUserBadgeDto = {
   /** 任意合法数值 */
@@ -1318,7 +1318,7 @@ export type AssignUserBadgeDto = {
 /**
  *  类型定义 [BadgeUserPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type BadgeUserPageItemDto = {
   /** 任意合法数值 */
@@ -1337,7 +1337,7 @@ export type BadgeUserPageItemDto = {
 /**
  *  类型定义 [BadgeUserInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type BadgeUserInfoDto = {
   /** 任意合法数值 */
@@ -1358,7 +1358,7 @@ export type BadgeUserInfoDto = {
 /**
  *  类型定义 [UserBadgeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserBadgeStatisticsDto = {
   /** 任意合法数值 */
@@ -1381,7 +1381,7 @@ export type UserBadgeStatisticsDto = {
 /**
  *  类型定义 [UserBadgeTypeDistributionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserBadgeTypeDistributionItemDto = {
   /** 任意合法数值 */
@@ -1396,7 +1396,7 @@ export type UserBadgeTypeDistributionItemDto = {
 /**
  *  类型定义 [UserBadgeTopBadgeItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserBadgeTopBadgeItemDto = {
   /** 任意合法数值 */
@@ -1411,24 +1411,24 @@ export type UserBadgeTopBadgeItemDto = {
 /**
  *  类型定义 [GrowthRuleEventPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthRuleEventPageItemDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 事件所属领域 */
+  /* 事件所属领域（forum=论坛；comment=评论；comic_work=漫画作品；novel_work=小说作品；comic_chapter=漫画章节；novel_chapter=小说章节；engagement=互动；badge=徽章；profile=资料；social=社交；report=举报；system=系统） */
   domain: 'badge' | 'comic_chapter' | 'comic_work' | 'comment' | 'engagement' | 'forum' | 'novel_chapter' | 'novel_work' | 'profile' | 'report' | 'social' | 'system'
   /* 成长事件名称 */
   eventName: string
   /* 经验基础奖励规则摘要 */
   experienceRule: GrowthRuleAssetSummaryDto
-  /* 治理闸门类型 */
+  /* 治理闸门类型（none=无闸门；topic_approval=主题审核；comment_approval=评论审核；report_judgement=举报裁决） */
   governanceGate: 'comment_approval' | 'none' | 'report_judgement' | 'topic_approval'
   /* 是否已配置任一基础奖励 */
   hasBaseReward: boolean
   /* 是否存在关联任务 */
   hasTask: boolean
-  /* 实现状态 */
+  /* 实现状态（declared=已声明；implemented=已实现；legacy_compat=历史兼容） */
   implStatus: 'declared' | 'implemented' | 'legacy_compat'
   /* 是否已正式接入 producer */
   isImplemented: boolean
@@ -1438,7 +1438,7 @@ export type GrowthRuleEventPageItemDto = {
   rewardPolicy: string
   /* 成长事件英文 key */
   ruleKey: string
-  /* 成长事件编码 */
+  /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
   ruleType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 16 | 100 | 101 | 102 | 103 | 104 | 200 | 201 | 202 | 203 | 204 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 600 | 601 | 602 | 700 | 701 | 702 | 703 | 800 | 801
   /* 是否支持任务消费 */
   supportsTaskObjective: boolean
@@ -1450,7 +1450,7 @@ export type GrowthRuleEventPageItemDto = {
 /**
  *  类型定义 [GrowthRuleAssetSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthRuleAssetSummaryDto = {
   /** 任意合法数值 */
@@ -1475,7 +1475,7 @@ export type GrowthRuleAssetSummaryDto = {
 /**
  *  类型定义 [GrowthRuleTaskBindingSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type GrowthRuleTaskBindingSummaryDto = {
   /** 任意合法数值 */
@@ -1488,7 +1488,7 @@ export type GrowthRuleTaskBindingSummaryDto = {
   publishedTaskCount: number
   /* 关联任务总数 */
   relatedTaskCount: number
-  /* 关联任务场景类型列表 */
+  /* 关联任务场景类型列表（1=新手引导任务；2=日常任务；4=活动任务） */
   sceneTypes: 1 | 2 | 4[]
 
   /* 关联任务 ID 列表 */

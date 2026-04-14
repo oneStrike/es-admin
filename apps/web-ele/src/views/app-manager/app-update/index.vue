@@ -128,7 +128,7 @@ const [DetailModal, detailApi] = useVbenModal({
         <el-tag
           class="ml-1"
           size="small"
-          :type="row.platform === 'ios' ? 'success' : 'warning'"
+          :type="row.platform === 1 ? 'success' : 'warning'"
         >
           {{ platformOptionsObj[row.platform]?.label ?? row.platform }}
         </el-tag>

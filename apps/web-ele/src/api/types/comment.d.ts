@@ -1,7 +1,7 @@
 /**
  *  类型定义 [CommentPageRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CommentPageRequest = {
   /** 任意合法数值 */
@@ -10,7 +10,7 @@ export type CommentPageRequest = {
   /* 实际回复的根评论 ID */
   actualReplyToId?: null | number
 
-  /* 审核状态 */
+  /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: number
 
   /* 结束时间 */
@@ -43,7 +43,7 @@ export type CommentPageRequest = {
   /* 目标 ID */
   targetId?: number
 
-  /* 目标类型 */
+  /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType?: number
 
   /* 评论用户 ID */
@@ -70,7 +70,7 @@ export type CommentPageResponse = {
 /**
  *  类型定义 [CommentDetailRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CommentDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type CommentDetailResponse = AdminCommentDetailDto
 /**
  *  类型定义 [CommentUpdateAuditStatusRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CommentUpdateAuditStatusRequest = UpdateAdminCommentAuditStatusDto
 
@@ -94,7 +94,7 @@ export type CommentUpdateAuditStatusResponse = boolean
 /**
  *  类型定义 [CommentUpdateHiddenRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type CommentUpdateHiddenRequest = UpdateAdminCommentHiddenDto
 
@@ -103,7 +103,7 @@ export type CommentUpdateHiddenResponse = boolean
 /**
  *  类型定义 [AdminCommentPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AdminCommentPageItemDto = {
   /** 任意合法数值 */
@@ -116,9 +116,9 @@ export type AdminCommentPageItemDto = {
   auditById?: null | number
   /* 审核原因 */
   auditReason?: null | string
-  /* 审核角色（0=版主, 1=管理员） */
+  /* 审核角色（0=版主；1=管理员） */
   auditRole?: null | number
-  /* 审核状态 */
+  /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2
   /* 评论正文解析 token（表情与提及混合输出） */
   bodyTokens?: null | string
@@ -140,7 +140,7 @@ export type AdminCommentPageItemDto = {
   sensitiveWordHits?: string[]
   /* 目标 ID */
   targetId: number
-  /* 目标类型 */
+  /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType: 1 | 2 | 3 | 4 | 5
   /* 更新时间 */
   updatedAt: string
@@ -154,7 +154,7 @@ export type AdminCommentPageItemDto = {
 /**
  *  类型定义 [AdminCommentUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AdminCommentUserDto = {
   /** 任意合法数值 */
@@ -168,14 +168,14 @@ export type AdminCommentUserDto = {
   /* 昵称 */
   nickname: string
 
-  /* 用户状态 */
+  /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
   status: 1 | 2 | 3 | 4 | 5
 }
 
 /**
  *  类型定义 [AdminCommentDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AdminCommentDetailDto = {
   /** 任意合法数值 */
@@ -188,9 +188,9 @@ export type AdminCommentDetailDto = {
   auditById?: null | number
   /* 审核原因 */
   auditReason?: null | string
-  /* 审核角色（0=版主, 1=管理员） */
+  /* 审核角色（0=版主；1=管理员） */
   auditRole?: null | number
-  /* 审核状态 */
+  /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2
   /* 评论正文解析 token（表情与提及混合输出） */
   bodyTokens?: null | string
@@ -214,7 +214,7 @@ export type AdminCommentDetailDto = {
   sensitiveWordHits?: string[]
   /* 目标 ID */
   targetId: number
-  /* 目标类型 */
+  /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType: 1 | 2 | 3 | 4 | 5
   /* 更新时间 */
   updatedAt: string
@@ -228,14 +228,14 @@ export type AdminCommentDetailDto = {
 /**
  *  类型定义 [AdminCommentReplyTargetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AdminCommentReplyTargetDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 实际回复的根评论 ID */
   actualReplyToId?: null | number
-  /* 审核状态 */
+  /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2
   /* 评论内容 */
   content: string
@@ -257,14 +257,14 @@ export type AdminCommentReplyTargetDto = {
 /**
  *  类型定义 [UpdateAdminCommentAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateAdminCommentAuditStatusDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 审核原因 */
   auditReason?: null | string
-  /* 审核状态 */
+  /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2
 
   /* 主键id */
@@ -274,7 +274,7 @@ export type UpdateAdminCommentAuditStatusDto = {
 /**
  *  类型定义 [UpdateAdminCommentHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateAdminCommentHiddenDto = {
   /** 任意合法数值 */

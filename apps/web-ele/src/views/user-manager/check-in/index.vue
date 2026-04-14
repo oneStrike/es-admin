@@ -285,7 +285,7 @@ function formatPlanBaseRewardSummary(row: CheckInPlanRow) {
     : getPlanBaseRewardSummary(row);
 }
 
-function formatRewardSourceLabel(sourceType?: null | string) {
+function formatRewardSourceLabel(sourceType?: null | number) {
   return (
     checkInRewardSourceOptions.find((item) => item.value === sourceType)
       ?.label || '未命中'

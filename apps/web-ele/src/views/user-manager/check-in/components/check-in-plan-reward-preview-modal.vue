@@ -13,6 +13,7 @@ import { dayjs } from '#/utils';
 import {
   buildMonthCalendar,
   buildWeekCalendar,
+  CHECK_IN_CYCLE_TYPE,
 } from '../model/plan-modal';
 import {
   clampRewardPreviewMonthCursor,
@@ -326,14 +327,14 @@ function goNextMonth() {
             </div>
             <div class="mt-1 text-sm text-slate-500">
               {{
-                previewState.cycleType === 'weekly'
+                previewState.cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY
                   ? '按周查看计划周期内每天实际命中的奖励。'
                   : '按月查看计划周期内每天实际命中的奖励。'
               }}
             </div>
           </div>
 
-          <template v-if="previewState.cycleType === 'weekly'">
+          <template v-if="previewState.cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY">
             <div
               class="mb-4 flex items-center justify-between gap-3 rounded-md border border-slate-200 bg-slate-50/80 px-4 py-3"
             >

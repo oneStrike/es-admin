@@ -52,6 +52,23 @@ const taskDetail =
 let pollTimer: null | number = null;
 let notifiedTaskId = '';
 
+const ARCHIVE_STATUS = {
+  DRAFT: 0,
+  PENDING: 1,
+  PROCESSING: 2,
+  SUCCESS: 3,
+  PARTIAL_FAILED: 4,
+  FAILED: 5,
+  EXPIRED: 6,
+  CANCELLED: 7,
+} as const;
+
+const ARCHIVE_RESULT_STATUS = {
+  PENDING: 0,
+  SUCCESS: 1,
+  FAILED: 2,
+} as const;
+
 const [Modal, modalApi] = useVbenModal({
   closeOnClickModal: false,
   closeOnPressEscape: false,
@@ -67,51 +84,52 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-const terminalStatuses = new Set([
-  'cancelled',
-  'expired',
-  'failed',
-  'partial_failed',
-  'success',
+const terminalStatuses: Set<number> = new Set([
+  ARCHIVE_STATUS.CANCELLED,
+  ARCHIVE_STATUS.EXPIRED,
+  ARCHIVE_STATUS.FAILED,
+  ARCHIVE_STATUS.PARTIAL_FAILED,
+  ARCHIVE_STATUS.SUCCESS,
 ]);
-const processingStatuses = new Set(['pending', 'processing']);
-const statusLabelMap: Record<string, string> = {
-  cancelled: '已取消',
-  draft: '等待确认',
-  expired: '已过期',
-  failed: '导入失败',
-  partial_failed: '部分失败',
-  pending: '等待处理',
-  processing: '处理中',
-  success: '导入成功',
+const processingStatuses: Set<number> = new Set([
+  ARCHIVE_STATUS.PENDING,
+  ARCHIVE_STATUS.PROCESSING,
+]);
+const statusLabelMap: Record<number, string> = {
+  [ARCHIVE_STATUS.CANCELLED]: '已取消',
+  [ARCHIVE_STATUS.DRAFT]: '等待确认',
+  [ARCHIVE_STATUS.EXPIRED]: '已过期',
+  [ARCHIVE_STATUS.FAILED]: '导入失败',
+  [ARCHIVE_STATUS.PARTIAL_FAILED]: '部分失败',
+  [ARCHIVE_STATUS.PENDING]: '等待处理',
+  [ARCHIVE_STATUS.PROCESSING]: '处理中',
+  [ARCHIVE_STATUS.SUCCESS]: '导入成功',
 };
 const statusTypeMap: Record<
-  string,
+  number,
   'danger' | 'info' | 'primary' | 'success' | 'warning'
 > = {
-  cancelled: 'info',
-  draft: 'primary',
-  expired: 'warning',
-  failed: 'danger',
-  partial_failed: 'warning',
-  pending: 'info',
-  processing: 'warning',
-  success: 'success',
+  [ARCHIVE_STATUS.CANCELLED]: 'info',
+  [ARCHIVE_STATUS.DRAFT]: 'primary',
+  [ARCHIVE_STATUS.EXPIRED]: 'warning',
+  [ARCHIVE_STATUS.FAILED]: 'danger',
+  [ARCHIVE_STATUS.PARTIAL_FAILED]: 'warning',
+  [ARCHIVE_STATUS.PENDING]: 'info',
+  [ARCHIVE_STATUS.PROCESSING]: 'warning',
+  [ARCHIVE_STATUS.SUCCESS]: 'success',
 };
-const resultStatusLabelMap: Record<string, string> = {
-  failed: '失败',
-  partial_failed: '部分失败',
-  skipped: '已跳过',
-  success: '成功',
+const resultStatusLabelMap: Record<number, string> = {
+  [ARCHIVE_RESULT_STATUS.PENDING]: '待处理',
+  [ARCHIVE_RESULT_STATUS.SUCCESS]: '成功',
+  [ARCHIVE_RESULT_STATUS.FAILED]: '失败',
 };
 const resultStatusTypeMap: Record<
-  string,
+  number,
   'danger' | 'info' | 'success' | 'warning'
 > = {
-  failed: 'danger',
-  partial_failed: 'warning',
-  skipped: 'info',
-  success: 'success',
+  [ARCHIVE_RESULT_STATUS.PENDING]: 'info',
+  [ARCHIVE_RESULT_STATUS.SUCCESS]: 'success',
+  [ARCHIVE_RESULT_STATUS.FAILED]: 'danger',
 };
 const ignoreReasonLabelMap: Record<number, string> = {
   1001: '目录名不是章节 ID',
@@ -132,15 +150,15 @@ const panelSubtitle = computed(() => {
 });
 
 const currentStatusLabel = computed(() =>
-  statusLabelMap[taskDetail.value?.status ?? 'draft'] ?? '等待上传',
+  statusLabelMap[taskDetail.value?.status ?? ARCHIVE_STATUS.DRAFT] ?? '等待上传',
 );
 const currentStatusType = computed(
-  () => statusTypeMap[taskDetail.value?.status ?? 'draft'] ?? 'primary',
+  () => statusTypeMap[taskDetail.value?.status ?? ARCHIVE_STATUS.DRAFT] ?? 'primary',
 );
 const showConfirmStage = computed(
   () =>
     !!taskDetail.value &&
-    taskDetail.value.status === 'draft' &&
+    taskDetail.value.status === ARCHIVE_STATUS.DRAFT &&
     taskDetail.value.requireConfirm,
 );
 const hasActiveTask = computed(
@@ -149,7 +167,7 @@ const hasActiveTask = computed(
 const canConfirm = computed(
   () =>
     !!taskDetail.value &&
-    taskDetail.value.status === 'draft' &&
+    taskDetail.value.status === ARCHIVE_STATUS.DRAFT &&
     selectedChapterIds.value.length > 0 &&
     !confirming.value,
 );
@@ -279,9 +297,9 @@ async function fetchTaskDetail(taskId: string) {
     if (terminalStatuses.has(detail.status) && notifiedTaskId !== detail.taskId) {
       notifiedTaskId = detail.taskId;
       emit('importFinished', detail);
-      if (detail.status === 'success') {
+      if (detail.status === ARCHIVE_STATUS.SUCCESS) {
         useMessage.success('压缩包导入完成');
-      } else if (detail.status === 'partial_failed') {
+      } else if (detail.status === ARCHIVE_STATUS.PARTIAL_FAILED) {
         useMessage.warning('压缩包导入完成，但有部分章节失败');
       } else {
         useMessage.error(detail.lastError || '压缩包导入失败');
@@ -368,7 +386,7 @@ async function handleConfirmImport() {
       ...taskDetail.value,
       lastError: null,
       resultItems: [],
-      status: 'pending',
+      status: ARCHIVE_STATUS.PENDING,
     };
     await fetchTaskDetail(taskDetail.value.taskId);
   } finally {

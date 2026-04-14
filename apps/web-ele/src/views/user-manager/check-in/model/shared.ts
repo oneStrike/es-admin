@@ -35,8 +35,8 @@ export const checkInPlanStatusOptions = [
 ];
 
 export const checkInCycleTypeOptions = [
-  { color: 'warning' as const, label: '按周', value: 'weekly' },
-  { color: 'success' as const, label: '按月', value: 'monthly' },
+  { color: 'warning' as const, label: '按周', value: 1 },
+  { color: 'success' as const, label: '按月', value: 2 },
 ];
 
 export const checkInRewardStatusOptions = [
@@ -52,15 +52,15 @@ export const checkInRewardResultOptions = [
 ];
 
 export const checkInRewardSourceOptions = [
-  { color: 'info' as const, label: '默认基础奖励', value: 'BASE_REWARD' },
-  { color: 'success' as const, label: '具体日期奖励', value: 'DATE_RULE' },
-  { color: 'warning' as const, label: '周期模式奖励', value: 'PATTERN_RULE' },
+  { color: 'info' as const, label: '默认基础奖励', value: 1 },
+  { color: 'success' as const, label: '具体日期奖励', value: 2 },
+  { color: 'warning' as const, label: '周期模式奖励', value: 3 },
 ];
 
 export const checkInPatternTypeOptions = [
-  { color: 'success' as const, label: '按周几', value: 'WEEKDAY' },
-  { color: 'warning' as const, label: '按每月几号', value: 'MONTH_DAY' },
-  { color: 'info' as const, label: '按月末', value: 'MONTH_LAST_DAY' },
+  { color: 'success' as const, label: '按周几', value: 1 },
+  { color: 'warning' as const, label: '按每月几号', value: 2 },
+  { color: 'info' as const, label: '按月末', value: 3 },
 ];
 
 export const checkInRecordTypeOptions = [

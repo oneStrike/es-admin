@@ -35,6 +35,8 @@ import {
   buildPlanSubmitPayload,
   buildPlanWithRewardPayload,
   buildWeekCalendar,
+  CHECK_IN_CYCLE_TYPE,
+  CHECK_IN_PATTERN_TYPE,
   createDefaultPlanFormModel,
   createDefaultRewardFormModel,
   createPlanDateDisableHandlers,
@@ -178,7 +180,7 @@ const monthLastDayRule = computed(() => {
     findPatternRuleByKey(rewardState.patternRules, 'MONTH_LAST_DAY') || {
       experience: undefined,
       key: 'MONTH_LAST_DAY',
-      patternType: 'MONTH_LAST_DAY' as const,
+      patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
       points: undefined,
     }
   );
@@ -287,7 +289,7 @@ const selectedWeeklyRuleDraft = computed(() => {
     ) || {
       experience: undefined,
       key: `WEEKDAY:${weeklySelectedWeekday.value}`,
-      patternType: 'WEEKDAY' as const,
+      patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
       points: undefined,
       weekday: weeklySelectedWeekday.value,
     }
@@ -350,8 +352,8 @@ const selectedMonthlyRuleDraft = computed(() => {
           : undefined,
       patternType:
         rewardState.monthlyRewardMode === 'month_last_day'
-          ? 'MONTH_LAST_DAY'
-          : 'MONTH_DAY',
+          ? CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY
+          : CHECK_IN_PATTERN_TYPE.MONTH_DAY,
       points: undefined,
     } satisfies CheckInPatternRuleDraft)
   );
@@ -606,11 +608,11 @@ function goBackToPlanStep() {
  */
 function syncPlanDateSchema(
   startDate?: string,
-  cycleType?: 'monthly' | 'weekly',
+  cycleType?: 1 | 2,
 ) {
   planState.cycleType = cycleType || planState.cycleType;
   planState.startDate = startDate || planState.startDate;
-  const isMonthly = planState.cycleType === 'monthly';
+  const isMonthly = planState.cycleType === CHECK_IN_CYCLE_TYPE.MONTHLY;
 
   planFormApi.updateSchema([
     {
@@ -900,7 +902,7 @@ function goNextWeek() {
  * 优先保持原选中日期；若已失效则回退到当月第一个有效日期
  */
 function ensureMonthlyDateSelection() {
-  if (planState.cycleType !== 'monthly') {
+  if (planState.cycleType !== CHECK_IN_CYCLE_TYPE.MONTHLY) {
     return;
   }
 
@@ -937,7 +939,7 @@ function syncSelectedMonthlyMode() {
  * 优先保持原选中日期；若已失效则回退到第一个有效日期
  */
 function ensureWeeklyDateSelection() {
-  if (planState.cycleType !== 'weekly') {
+  if (planState.cycleType !== CHECK_IN_CYCLE_TYPE.WEEKLY) {
     return;
   }
 
@@ -1068,7 +1070,7 @@ function normalizeCountInput(value?: number) {
       <div v-show="currentStep === 2" class="space-y-5">
         <div
           :class="
-            planState.cycleType === 'monthly'
+            planState.cycleType === CHECK_IN_CYCLE_TYPE.MONTHLY
               ? 'grid gap-4 lg:grid-cols-2'
               : 'grid gap-4'
           "
@@ -1115,7 +1117,7 @@ function normalizeCountInput(value?: number) {
           </div>
 
           <div
-            v-if="planState.cycleType === 'monthly'"
+            v-if="planState.cycleType === CHECK_IN_CYCLE_TYPE.MONTHLY"
             class="rounded-lg border border-amber-200 bg-amber-50/70 p-5 shadow-sm"
           >
             <div class="flex items-start justify-between gap-4">
@@ -1173,7 +1175,7 @@ function normalizeCountInput(value?: number) {
                 </div>
                 <div class="mt-1 text-sm text-slate-500">
                   {{
-                    planState.cycleType === 'weekly'
+                    planState.cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY
                       ? '周计划支持每周同日奖励，也支持针对某个具体日期设置例外奖励。'
                       : '月计划支持每月同日奖励、具体日期例外奖励，并单独配置每个月最后一天奖励。'
                   }}
@@ -1181,7 +1183,7 @@ function normalizeCountInput(value?: number) {
               </div>
             </div>
 
-            <template v-if="planState.cycleType === 'weekly'">
+            <template v-if="planState.cycleType === CHECK_IN_CYCLE_TYPE.WEEKLY">
               <div
                 class="mb-4 flex items-center justify-between gap-3 rounded-md border border-slate-200 bg-slate-50/80 px-4 py-3"
               >
@@ -1357,7 +1359,10 @@ function normalizeCountInput(value?: number) {
           </div>
 
           <div
-            v-if="planState.cycleType === 'monthly' && selectedMonthlyRuleDraft"
+            v-if="
+              planState.cycleType === CHECK_IN_CYCLE_TYPE.MONTHLY &&
+              selectedMonthlyRuleDraft
+            "
             class="rounded-lg border border-sky-200 bg-sky-50/60 p-4"
           >
             <div class="mb-3">

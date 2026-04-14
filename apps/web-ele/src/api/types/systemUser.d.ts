@@ -1,7 +1,7 @@
 /**
  *  类型定义 [SystemUserCreateRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type SystemUserCreateRequest = UserRegisterDto
 
@@ -10,7 +10,7 @@ export type SystemUserCreateResponse = boolean
 /**
  *  类型定义 [SystemUserProfileUpdateRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type SystemUserProfileUpdateRequest = UpdateUserDto
 
@@ -21,7 +21,7 @@ export type SystemUserProfileResponse = AdminUserResponseDto
 /**
  *  类型定义 [SystemUserDetailRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type SystemUserDetailRequest = {
   /** 任意合法数值 */
@@ -36,7 +36,7 @@ export type SystemUserDetailResponse = AdminUserResponseDto
 /**
  *  类型定义 [SystemUserPageRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type SystemUserPageRequest = {
   /** 任意合法数值 */
@@ -60,7 +60,7 @@ export type SystemUserPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number
 
-  /* 角色 0普通管理员 1超级管理员 */
+  /* 角色（0=普通管理员；1=超级管理员） */
   role?: number
 
   /* 开始时间 */
@@ -90,7 +90,7 @@ export type SystemUserPageResponse = {
 /**
  *  类型定义 [SystemUserPasswordChangeRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type SystemUserPasswordChangeRequest = ChangePasswordDto
 
@@ -99,7 +99,7 @@ export type SystemUserPasswordChangeResponse = boolean
 /**
  *  类型定义 [SystemUserPasswordResetRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type SystemUserPasswordResetRequest = IdDto
 
@@ -108,7 +108,7 @@ export type SystemUserPasswordResetResponse = boolean
 /**
  *  类型定义 [SystemUserUnlockRequest]
  *  @来源 认证与账号/管理员账号
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type SystemUserUnlockRequest = IdDto
 
@@ -117,7 +117,7 @@ export type SystemUserUnlockResponse = boolean
 /**
  *  类型定义 [UserRegisterDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UserRegisterDto = {
   /** 任意合法数值 */
@@ -130,7 +130,7 @@ export type UserRegisterDto = {
   mobile?: null | string
   /* 密码 */
   password: string
-  /* 角色 0普通管理员 1超级管理员 */
+  /* 角色（0=普通管理员；1=超级管理员） */
   role: 0 | 1
 
   /* 用户名 */
@@ -140,7 +140,7 @@ export type UserRegisterDto = {
 /**
  *  类型定义 [UpdateUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type UpdateUserDto = {
   /** 任意合法数值 */
@@ -153,7 +153,7 @@ export type UpdateUserDto = {
   isEnabled: boolean
   /* 手机号 */
   mobile?: null | string
-  /* 角色 0普通管理员 1超级管理员 */
+  /* 角色（0=普通管理员；1=超级管理员） */
   role: 0 | 1
 
   /* 用户名 */
@@ -163,7 +163,7 @@ export type UpdateUserDto = {
 /**
  *  类型定义 [AdminUserResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type AdminUserResponseDto = {
   /** 任意合法数值 */
@@ -182,7 +182,7 @@ export type AdminUserResponseDto = {
   lastLoginIp?: null | string
   /* 手机号 */
   mobile?: null | string
-  /* 角色 0普通管理员 1超级管理员 */
+  /* 角色（0=普通管理员；1=超级管理员） */
   role: 0 | 1
   /* 更新时间 */
   updatedAt: string
@@ -194,7 +194,7 @@ export type AdminUserResponseDto = {
 /**
  *  类型定义 [ChangePasswordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type ChangePasswordDto = {
   /** 任意合法数值 */
@@ -211,7 +211,7 @@ export type ChangePasswordDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-12 23:24:14
+ *  @更新时间 2026-04-14 17:17:49
  */
 export type IdDto = {
   /** 任意合法数值 */
