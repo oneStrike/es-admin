@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AppPageCreateRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppPageCreateRequest = CreateAppPageDto
 
@@ -10,7 +10,7 @@ export type AppPageCreateResponse = boolean
 /**
  *  类型定义 [AppPagePageRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppPagePageRequest = {
   /** 任意合法数值 */
@@ -67,7 +67,7 @@ export type AppPagePageResponse = {
 /**
  *  类型定义 [AppPageDetailRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppPageDetailRequest = {
   /** 任意合法数值 */
@@ -82,7 +82,7 @@ export type AppPageDetailResponse = BaseAppPageDto
 /**
  *  类型定义 [AppPageCodeDetailRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppPageCodeDetailRequest = {
   /** 任意合法数值 */
@@ -97,7 +97,7 @@ export type AppPageCodeDetailResponse = BaseAppPageDto
 /**
  *  类型定义 [AppPageUpdateRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppPageUpdateRequest = UpdateAppPageDto
 
@@ -106,7 +106,7 @@ export type AppPageUpdateResponse = boolean
 /**
  *  类型定义 [AppPageDeleteRequest]
  *  @来源 APP管理/页面管理
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppPageDeleteRequest = IdsDto
 
@@ -115,7 +115,7 @@ export type AppPageDeleteResponse = boolean
 /**
  *  类型定义 [CreateAppPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type CreateAppPageDto = {
   /** 任意合法数值 */
@@ -142,7 +142,7 @@ export type CreateAppPageDto = {
 /**
  *  类型定义 [BaseAppPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type BaseAppPageDto = {
   /** 任意合法数值 */
@@ -175,7 +175,7 @@ export type BaseAppPageDto = {
 /**
  *  类型定义 [UpdateAppPageDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type UpdateAppPageDto = {
   /** 任意合法数值 */
@@ -204,7 +204,7 @@ export type UpdateAppPageDto = {
 /**
  *  类型定义 [IdsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type IdsDto = {
   /** 任意合法数值 */

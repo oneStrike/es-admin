@@ -29,7 +29,6 @@ import {
   buildAppUpdateSubmitPayload,
   formSchema,
   mapAppUpdateDetailToFormValues,
-  platformOptionsObj,
 } from './model/shared';
 
 const gridOptions: VxeGridProps<AppUpdateReleaseListItemDto> = {
@@ -125,13 +124,6 @@ const [DetailModal, detailApi] = useVbenModal({
         >
           {{ row.versionName }}
         </el-text>
-        <el-tag
-          class="ml-1"
-          size="small"
-          :type="row.platform === 1 ? 'success' : 'warning'"
-        >
-          {{ platformOptionsObj[row.platform]?.label ?? row.platform }}
-        </el-tag>
       </template>
 
       <template #isPublished="{ row }">

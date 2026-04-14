@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AppUpdatePageRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppUpdatePageRequest = {
   /** 任意合法数值 */
@@ -58,7 +58,7 @@ export type AppUpdatePageResponse = {
 /**
  *  类型定义 [AppUpdateDetailRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppUpdateDetailRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type AppUpdateDetailResponse = AppUpdateReleaseDetailDto
 /**
  *  类型定义 [AppUpdateCreateRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppUpdateCreateRequest = CreateAppUpdateReleaseDto
 
@@ -82,7 +82,7 @@ export type AppUpdateCreateResponse = boolean
 /**
  *  类型定义 [AppUpdateUpdateRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppUpdateUpdateRequest = UpdateAppUpdateReleaseDto
 
@@ -91,7 +91,7 @@ export type AppUpdateUpdateResponse = boolean
 /**
  *  类型定义 [AppUpdateUpdateStatusRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppUpdateUpdateStatusRequest = UpdatePublishedStatusDto
 
@@ -100,7 +100,7 @@ export type AppUpdateUpdateStatusResponse = boolean
 /**
  *  类型定义 [AppUpdateReleaseListItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppUpdateReleaseListItemDto = {
   /** 任意合法数值 */
@@ -111,8 +111,6 @@ export type AppUpdateReleaseListItemDto = {
   createdAt: string
   /* 是否强制更新 */
   forceUpdate: boolean
-  /* 是否配置自定义下载页地址 */
-  hasCustomDownloadUrl: boolean
   /* 是否配置安装包地址 */
   hasPackageUrl: boolean
   /* 主键id */
@@ -123,8 +121,6 @@ export type AppUpdateReleaseListItemDto = {
   platform: 1 | 2
   /* 发布时间 */
   publishedAt?: null | string
-  /* 商店地址数量 */
-  storeLinkCount: number
   /* 更新时间 */
   updatedAt: string
 
@@ -135,7 +131,7 @@ export type AppUpdateReleaseListItemDto = {
 /**
  *  类型定义 [AppUpdateReleaseDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type AppUpdateReleaseDetailDto = {
   /** 任意合法数值 */
@@ -146,8 +142,6 @@ export type AppUpdateReleaseDetailDto = {
   createdAt: string
   /* 创建人 ID */
   createdById?: null | number
-  /* 自定义下载页地址 */
-  customDownloadUrl?: null | string
   /* 是否强制更新 */
   forceUpdate: boolean
   /* 主键id */
@@ -160,22 +154,20 @@ export type AppUpdateReleaseDetailDto = {
   packageMimeType?: null | string
   /* 上传安装包原始文件名 */
   packageOriginalName?: null | string
-  /* 安装包来源（1=后台上传；2=外部下载地址） */
+  /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
   packageSourceType?: null | number
-  /* 安装包地址 */
+  /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
   packageUrl?: null | string
   /* 发布平台（1=苹果端；2=安卓端） */
   platform: 1 | 2
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string
-  /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
+  /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
   popupBackgroundPosition?: null | string
   /* 发布时间 */
   publishedAt?: null | string
   /* 更新说明 */
   releaseNotes?: null | string
-  /* 应用商店地址列表 */
-  storeLinks?: AppUpdateStoreLinkSnapshotDto[]
   /* 更新时间 */
   updatedAt: string
   /* 更新人 ID */
@@ -186,34 +178,15 @@ export type AppUpdateReleaseDetailDto = {
 }
 
 /**
- *  类型定义 [AppUpdateStoreLinkSnapshotDto]
- *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
- */
-export type AppUpdateStoreLinkSnapshotDto = {
-  /** 任意合法数值 */
-  [property: string]: any
-  /* 渠道编码 */
-  channelCode: string
-  /* 渠道名称 */
-  channelName: string
-
-  /* 应用商店地址 */
-  storeUrl: string
-}
-
-/**
  *  类型定义 [CreateAppUpdateReleaseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type CreateAppUpdateReleaseDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 内部构建号 */
   buildCode: number
-  /* 自定义下载页地址 */
-  customDownloadUrl?: null | string
   /* 是否强制更新 */
   forceUpdate: boolean
   /* 上传安装包大小（字节） */
@@ -222,52 +195,33 @@ export type CreateAppUpdateReleaseDto = {
   packageMimeType?: null | string
   /* 上传安装包原始文件名 */
   packageOriginalName?: null | string
-  /* 安装包来源（1=后台上传；2=外部下载地址） */
+  /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
   packageSourceType?: null | number
-  /* 安装包地址 */
+  /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
   packageUrl?: null | string
   /* 发布平台（1=苹果端；2=安卓端） */
   platform: 1 | 2
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string
-  /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
+  /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
   popupBackgroundPosition?: null | string
   /* 更新说明 */
   releaseNotes?: null | string
-  /* 应用商店地址列表 */
-  storeLinks?: AppUpdateStoreLinkInputDto[]
 
   /* 展示版本号 */
   versionName: string
 }
 
 /**
- *  类型定义 [AppUpdateStoreLinkInputDto]
- *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
- */
-export type AppUpdateStoreLinkInputDto = {
-  /** 任意合法数值 */
-  [property: string]: any
-  /* 渠道编码 */
-  channelCode: string
-
-  /* 应用商店地址 */
-  storeUrl: string
-}
-
-/**
  *  类型定义 [UpdateAppUpdateReleaseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type UpdateAppUpdateReleaseDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 内部构建号 */
   buildCode: number
-  /* 自定义下载页地址 */
-  customDownloadUrl?: null | string
   /* 是否强制更新 */
   forceUpdate: boolean
   /* 主键id */
@@ -278,20 +232,18 @@ export type UpdateAppUpdateReleaseDto = {
   packageMimeType?: null | string
   /* 上传安装包原始文件名 */
   packageOriginalName?: null | string
-  /* 安装包来源（1=后台上传；2=外部下载地址） */
+  /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
   packageSourceType?: null | number
-  /* 安装包地址 */
+  /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
   packageUrl?: null | string
   /* 发布平台（1=苹果端；2=安卓端） */
   platform: 1 | 2
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string
-  /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
+  /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
   popupBackgroundPosition?: null | string
   /* 更新说明 */
   releaseNotes?: null | string
-  /* 应用商店地址列表 */
-  storeLinks?: AppUpdateStoreLinkInputDto[]
 
   /* 展示版本号 */
   versionName: string
@@ -300,7 +252,7 @@ export type UpdateAppUpdateReleaseDto = {
 /**
  *  类型定义 [UpdatePublishedStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-14 17:17:49
+ *  @更新时间 2026-04-14 22:15:59
  */
 export type UpdatePublishedStatusDto = {
   /** 任意合法数值 */

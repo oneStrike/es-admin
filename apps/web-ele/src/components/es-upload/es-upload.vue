@@ -326,7 +326,10 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
         <div
           class="flex size-full items-center justify-center text-gray-500 hover:text-primary"
         >
-          <UploadLoop class="size-7" />
+          <div v-if="listType === 'text'">
+            <el-button type="primary" class="text-base">点击上传</el-button>
+          </div>
+          <UploadLoop v-else class="size-7" />
         </div>
       </slot>
     </el-upload>

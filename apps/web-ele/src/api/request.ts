@@ -3,6 +3,8 @@
  */
 import type { RequestClientOptions, RequestResponse } from '@vben/request';
 
+import type { AuthTokenRefreshResponse } from '#/api/types';
+
 import { useAppConfig } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import {
@@ -12,7 +14,6 @@ import {
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 
-import { authTokenRefreshApi } from '#/api/core';
 import {
   getApiErrorMessage,
   normalizeApiClientError,
@@ -59,9 +60,13 @@ function createRequestClient(
    */
   async function doRefreshToken() {
     const accessStore = useAccessStore();
-    const resp = await authTokenRefreshApi({
-      refreshToken: accessStore.refreshToken as string,
-    });
+    // 刷新请求必须绕过鉴权拦截器，避免刷新接口自身的 401 再次进入刷新队列。
+    const resp = await authRequestClient.post<AuthTokenRefreshResponse>(
+      '/api/admin/auth/token/refresh',
+      {
+        refreshToken: accessStore.refreshToken as string,
+      },
+    );
     const { accessToken, refreshToken } = resp;
     accessStore.setAccessToken(accessToken);
     accessStore.setRefreshToken(refreshToken);

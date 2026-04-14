@@ -3,7 +3,9 @@ import type { AppUpdateReleaseDetailDto } from '#/api/types';
 import { formatUTC } from '#/utils';
 
 import {
+  packageSourceTypeOptions,
   platformOptionsObj,
+  popupBackgroundPositionOptions,
 } from './shared';
 
 /**
@@ -71,7 +73,10 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
       fields: [
         {
           label: '安装包来源',
-          value: detail.packageSourceType === 2 ? '外部下载地址' : '后台上传',
+          value:
+            packageSourceTypeOptions.find(
+              (opt) => opt.value === detail.packageSourceType,
+            )?.label ?? '-',
           type: 'text' as const,
           show: !!detail.packageSourceType,
         },
@@ -96,21 +101,34 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
       ].filter((field) => field.show !== false),
     },
     {
-      title: '自定义下载页',
-      show: !!detail.customDownloadUrl,
-      fields: [
-        {
-          label: '下载页地址',
-          value: detail.customDownloadUrl,
-          type: 'text' as const,
-        },
-      ],
-    },
-    {
       title: '更新说明',
       show: !!detail.releaseNotes,
       type: 'html' as const,
       content: detail.releaseNotes?.replaceAll('\n', '<br/>') || '-',
+    },
+    {
+      title: '弹窗背景设置',
+      show: !!(
+        detail.popupBackgroundImage || detail.popupBackgroundPosition
+      ),
+      fields: [
+        {
+          label: '背景图',
+          value: detail.popupBackgroundImage,
+          type: 'image' as const,
+          show: !!detail.popupBackgroundImage,
+        },
+        {
+          label: '背景图位置',
+          value: detail.popupBackgroundPosition
+            ? popupBackgroundPositionOptions.find(
+                (opt) => opt.value === detail.popupBackgroundPosition,
+              )?.label ?? detail.popupBackgroundPosition
+            : '-',
+          type: 'text' as const,
+          show: !!detail.popupBackgroundPosition,
+        },
+      ].filter((field) => field.show !== false),
     },
     {
       title: '时间信息',

@@ -1,5 +1,6 @@
 // 上传文件场景
 export enum UploadSceneEnum {
+  APP_PACKAGE = 'app_package',
   SHARED = 'shared',
   WORK = 'work',
 }
@@ -8,5 +9,6 @@ export enum UploadSceneEnum {
 export const UploadUrlMapEnum = {
   SHARED: '/api/admin/upload/file/upload',
   COMIC: '/api/admin/content/comic/chapter-content/upload',
-  COMIC_ARCHIVE_PREVIEW: '/api/admin/content/comic/chapter-content/archive/preview',
+  COMIC_ARCHIVE_PREVIEW:
+    '/api/admin/content/comic/chapter-content/archive/preview',
 };
