@@ -20,7 +20,7 @@ import { requestClient } from '#/api/request'
   /**
    * 更新系统配置
    */
-  export async function systemUpdateApi(params?: SystemUpdateRequest): Promise<SystemUpdateResponse> {
+  export async function systemUpdateApi(params: SystemUpdateRequest): Promise<SystemUpdateResponse> {
     return requestClient.post<SystemUpdateResponse>('/api/admin/system/update', params);
   }
 
