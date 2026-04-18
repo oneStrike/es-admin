@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AppUsersPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersPageRequest = {
   /** 任意合法数值 */
@@ -76,7 +76,7 @@ export type AppUsersPageResponse = {
 /**
  *  类型定义 [AppUsersDetailRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersDetailRequest = {
   /** 任意合法数值 */
@@ -91,7 +91,7 @@ export type AppUsersDetailResponse = AdminAppUserDetailDto
 /**
  *  类型定义 [AppUsersCreateRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersCreateRequest = CreateAdminAppUserDto
 
@@ -100,7 +100,7 @@ export type AppUsersCreateResponse = boolean
 /**
  *  类型定义 [AppUsersProfileUpdateRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersProfileUpdateRequest = UpdateAdminAppUserProfileDto
 
@@ -109,7 +109,7 @@ export type AppUsersProfileUpdateResponse = boolean
 /**
  *  类型定义 [AppUsersUpdateEnabledRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersUpdateEnabledRequest = UpdateAdminAppUserEnabledDto
 
@@ -118,7 +118,7 @@ export type AppUsersUpdateEnabledResponse = boolean
 /**
  *  类型定义 [AppUsersUpdateStatusRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersUpdateStatusRequest = UpdateAdminAppUserStatusDto
 
@@ -127,7 +127,7 @@ export type AppUsersUpdateStatusResponse = boolean
 /**
  *  类型定义 [AppUsersDeleteRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersDeleteRequest = IdDto
 
@@ -136,7 +136,7 @@ export type AppUsersDeleteResponse = boolean
 /**
  *  类型定义 [AppUsersRestoreRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersRestoreRequest = IdDto
 
@@ -145,7 +145,7 @@ export type AppUsersRestoreResponse = boolean
 /**
  *  类型定义 [AppUsersRebuildFollowCountRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersRebuildFollowCountRequest = UserIdDto
 
@@ -156,7 +156,7 @@ export type AppUsersRebuildFollowCountAllResponse = boolean
 /**
  *  类型定义 [AppUsersPasswordResetRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersPasswordResetRequest = ResetAdminAppUserPasswordDto
 
@@ -165,7 +165,7 @@ export type AppUsersPasswordResetResponse = boolean
 /**
  *  类型定义 [AppUsersPointsStatsRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersPointsStatsRequest = {
   /** 任意合法数值 */
@@ -175,12 +175,12 @@ export type AppUsersPointsStatsRequest = {
   userId: number
 }
 
-export type AppUsersPointsStatsResponse = AdminAppUserPointStatsDto
+export type AppUsersPointsStatsResponse = UserPointStatsFieldsDto
 
 /**
  *  类型定义 [AppUsersPointsRecordPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersPointsRecordPageRequest = {
   /** 任意合法数值 */
@@ -234,16 +234,16 @@ export type AppUsersPointsRecordPageResponse = {
 /**
  *  类型定义 [AppUsersPointsGrantRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
-export type AppUsersPointsGrantRequest = AddAdminAppUserPointsDto
+export type AppUsersPointsGrantRequest = AdminAppUserGrowthRuleActionDto
 
 export type AppUsersPointsGrantResponse = boolean
 
 /**
  *  类型定义 [AppUsersPointsConsumeRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersPointsConsumeRequest = ConsumeAdminAppUserPointsDto
 
@@ -252,7 +252,7 @@ export type AppUsersPointsConsumeResponse = boolean
 /**
  *  类型定义 [AppUsersExperienceStatsRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersExperienceStatsRequest = {
   /** 任意合法数值 */
@@ -267,7 +267,7 @@ export type AppUsersExperienceStatsResponse = AdminAppUserExperienceStatsDto
 /**
  *  类型定义 [AppUsersExperienceRecordPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersExperienceRecordPageRequest = {
   /** 任意合法数值 */
@@ -315,7 +315,7 @@ export type AppUsersExperienceRecordPageResponse = {
 /**
  *  类型定义 [AppUsersGrowthRecordPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersGrowthRecordPageRequest = {
   /** 任意合法数值 */
@@ -339,7 +339,7 @@ export type AppUsersGrowthRecordPageRequest = {
   /* 关联的规则ID */
   ruleId?: null | number
 
-  /* 成长规则类型。完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 账本与历史记录展示可能包含 implemented / declared / legacy_compat 三类事件编码。 */
+  /* 成长规则类型（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；10=发表评论；11=评论被点赞；12=评论举报；16=帖子被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） 完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 账本与历史记录展示可能包含 implemented / declared / legacy_compat 三类事件编码。 */
   ruleType?: null | number
 
   /* 开始时间 */
@@ -375,16 +375,16 @@ export type AppUsersGrowthRecordPageResponse = {
 /**
  *  类型定义 [AppUsersExperienceGrantRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
-export type AppUsersExperienceGrantRequest = AddAdminAppUserExperienceDto
+export type AppUsersExperienceGrantRequest = AdminAppUserGrowthRuleActionDto
 
 export type AppUsersExperienceGrantResponse = boolean
 
 /**
  *  类型定义 [AppUsersBadgesPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersBadgesPageRequest = {
   /** 任意合法数值 */
@@ -438,7 +438,7 @@ export type AppUsersBadgesPageResponse = {
 /**
  *  类型定义 [AppUsersBadgesAssignRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersBadgesAssignRequest = AssignUserBadgeDto
 
@@ -447,7 +447,7 @@ export type AppUsersBadgesAssignResponse = boolean
 /**
  *  类型定义 [AppUsersBadgesRevokeRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AppUsersBadgesRevokeRequest = AssignUserBadgeDto
 
@@ -456,7 +456,7 @@ export type AppUsersBadgesRevokeResponse = boolean
 /**
  *  类型定义 [AdminAppUserPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserPageItemDto = {
   /** 任意合法数值 */
@@ -513,7 +513,7 @@ export type AdminAppUserPageItemDto = {
 /**
  *  类型定义 [AdminAppUserCountDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserCountDto = {
   /** 任意合法数值 */
@@ -546,7 +546,7 @@ export type AdminAppUserCountDto = {
 /**
  *  类型定义 [AdminAppUserDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserDetailDto = {
   /** 任意合法数值 */
@@ -596,7 +596,7 @@ export type AdminAppUserDetailDto = {
   /* 积分 */
   points: number
   /* 积分统计 */
-  pointStats: AdminAppUserPointStatsDto
+  pointStats: UserPointStatsFieldsDto
   /* 个性签名 */
   signature?: null | string
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
@@ -609,7 +609,7 @@ export type AdminAppUserDetailDto = {
 /**
  *  类型定义 [AdminAppUserLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserLevelDto = {
   /** 任意合法数值 */
@@ -624,11 +624,11 @@ export type AdminAppUserLevelDto = {
 }
 
 /**
- *  类型定义 [AdminAppUserPointStatsDto]
+ *  类型定义 [UserPointStatsFieldsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
-export type AdminAppUserPointStatsDto = {
+export type UserPointStatsFieldsDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 当前积分 */
@@ -643,7 +643,7 @@ export type AdminAppUserPointStatsDto = {
 /**
  *  类型定义 [AdminAppUserExperienceStatsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserExperienceStatsDto = {
   /** 任意合法数值 */
@@ -664,7 +664,7 @@ export type AdminAppUserExperienceStatsDto = {
 /**
  *  类型定义 [CreateAdminAppUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateAdminAppUserDto = {
   /** 任意合法数值 */
@@ -697,7 +697,7 @@ export type CreateAdminAppUserDto = {
 /**
  *  类型定义 [UpdateAdminAppUserProfileDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateAdminAppUserProfileDto = {
   /** 任意合法数值 */
@@ -726,7 +726,7 @@ export type UpdateAdminAppUserProfileDto = {
 /**
  *  类型定义 [UpdateAdminAppUserEnabledDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateAdminAppUserEnabledDto = {
   /** 任意合法数值 */
@@ -741,7 +741,7 @@ export type UpdateAdminAppUserEnabledDto = {
 /**
  *  类型定义 [UpdateAdminAppUserStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateAdminAppUserStatusDto = {
   /** 任意合法数值 */
@@ -760,7 +760,7 @@ export type UpdateAdminAppUserStatusDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -773,7 +773,7 @@ export type IdDto = {
 /**
  *  类型定义 [UserIdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UserIdDto = {
   /** 任意合法数值 */
@@ -786,7 +786,7 @@ export type UserIdDto = {
 /**
  *  类型定义 [AdminAppUserFollowCountRepairResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserFollowCountRepairResultDto = {
   /** 任意合法数值 */
@@ -807,7 +807,7 @@ export type AdminAppUserFollowCountRepairResultDto = {
 /**
  *  类型定义 [ResetAdminAppUserPasswordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ResetAdminAppUserPasswordDto = {
   /** 任意合法数值 */
@@ -822,7 +822,7 @@ export type ResetAdminAppUserPasswordDto = {
 /**
  *  类型定义 [AdminAppUserPointRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserPointRecordDto = {
   /** 任意合法数值 */
@@ -843,7 +843,7 @@ export type AdminAppUserPointRecordDto = {
   remark?: null | string
   /* 关联的规则ID */
   ruleId?: null | number
-  /* 成长规则类型。完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 账本与历史记录展示可能包含 implemented / declared / legacy_compat 三类事件编码。 */
+  /* 成长规则类型（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；10=发表评论；11=评论被点赞；12=评论举报；16=帖子被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） 完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 账本与历史记录展示可能包含 implemented / declared / legacy_compat 三类事件编码。 */
   ruleType?: null | number
   /* 关联目标ID */
   targetId?: null | number
@@ -855,18 +855,18 @@ export type AdminAppUserPointRecordDto = {
 }
 
 /**
- *  类型定义 [AddAdminAppUserPointsDto]
+ *  类型定义 [AdminAppUserGrowthRuleActionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
-export type AddAdminAppUserPointsDto = {
+export type AdminAppUserGrowthRuleActionDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 人工操作稳定键，用于重试复用同一次补发请求 */
   operationKey: string
   /* 备注 */
   remark?: null | string
-  /* 成长规则类型。完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 管理端人工补发通常建议使用 ADMIN；若补录治理结果，请使用当前正式事件编码，而不要继续使用历史兼容 *_REPORT。 */
+  /* 成长规则类型（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；10=发表评论；11=评论被点赞；12=评论举报；16=帖子被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） 完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 管理端人工补发通常建议使用 ADMIN；若补录治理结果，请使用当前正式事件编码，而不要继续使用历史兼容 *_REPORT。 */
   ruleType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 16 | 100 | 101 | 102 | 103 | 104 | 200 | 201 | 202 | 203 | 204 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 600 | 601 | 602 | 700 | 701 | 702 | 703 | 800 | 801
 
   /* 用户id */
@@ -876,7 +876,7 @@ export type AddAdminAppUserPointsDto = {
 /**
  *  类型定义 [ConsumeAdminAppUserPointsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ConsumeAdminAppUserPointsDto = {
   /** 任意合法数值 */
@@ -901,7 +901,7 @@ export type ConsumeAdminAppUserPointsDto = {
 /**
  *  类型定义 [AdminAppUserExperienceRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserExperienceRecordDto = {
   /** 任意合法数值 */
@@ -922,7 +922,7 @@ export type AdminAppUserExperienceRecordDto = {
   remark?: null | string
   /* 关联的规则ID */
   ruleId?: null | number
-  /* 成长规则类型。完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 账本与历史记录展示可能包含 implemented / declared / legacy_compat 三类事件编码。 */
+  /* 成长规则类型（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；10=发表评论；11=评论被点赞；12=评论举报；16=帖子被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） 完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 账本与历史记录展示可能包含 implemented / declared / legacy_compat 三类事件编码。 */
   ruleType?: null | number
   /* 关联目标ID */
   targetId?: null | number
@@ -936,7 +936,7 @@ export type AdminAppUserExperienceRecordDto = {
 /**
  *  类型定义 [AdminAppUserGrowthLedgerRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminAppUserGrowthLedgerRecordDto = {
   /** 任意合法数值 */
@@ -944,7 +944,7 @@ export type AdminAppUserGrowthLedgerRecordDto = {
   /* 变更后余额 */
   afterValue: number
   /* 资产类型（1=积分；2=经验） */
-  assetType: 1 | 2
+  assetType: 1 | 2 | 3 | 4 | 5
   /* 变更前余额 */
   beforeValue: number
   /* 扩展上下文（仅返回白名单解释字段） */
@@ -959,40 +959,23 @@ export type AdminAppUserGrowthLedgerRecordDto = {
   remark?: null | string
   /* 关联的规则ID */
   ruleId?: null | number
-  /* 成长规则类型。完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 账本与历史记录展示可能包含 implemented / declared / legacy_compat 三类事件编码。 */
+  /* 成长规则类型（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；10=发表评论；11=评论被点赞；12=评论举报；16=帖子被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） 完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 账本与历史记录展示可能包含 implemented / declared / legacy_compat 三类事件编码。 */
   ruleType?: null | number
   /* 关联目标ID */
   targetId?: null | number
   /* 关联目标类型 */
   targetType?: null | number
+  /* 更新时间 */
+  updatedAt?: null | string
 
   /* 关联的用户ID */
   userId: number
 }
 
 /**
- *  类型定义 [AddAdminAppUserExperienceDto]
- *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
- */
-export type AddAdminAppUserExperienceDto = {
-  /** 任意合法数值 */
-  [property: string]: any
-  /* 人工操作稳定键，用于重试复用同一次补发请求 */
-  operationKey: string
-  /* 备注 */
-  remark?: null | string
-  /* 成长规则类型。完整编码、语义、治理态与实现状态以 EventDefinitionMap / EventDefinitionService 为唯一事实源。 管理端人工补发通常建议使用 ADMIN；若补录治理结果，请使用当前正式事件编码，而不要继续使用历史兼容 *_REPORT。 */
-  ruleType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 16 | 100 | 101 | 102 | 103 | 104 | 200 | 201 | 202 | 203 | 204 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 600 | 601 | 602 | 700 | 701 | 702 | 703 | 800 | 801
-
-  /* 用户id */
-  userId: number
-}
-
-/**
  *  类型定义 [UserBadgeItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UserBadgeItemDto = {
   /** 任意合法数值 */
@@ -1007,7 +990,7 @@ export type UserBadgeItemDto = {
 /**
  *  类型定义 [BaseUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type BaseUserBadgeDto = {
   /** 任意合法数值 */
@@ -1040,7 +1023,7 @@ export type BaseUserBadgeDto = {
 /**
  *  类型定义 [AssignUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AssignUserBadgeDto = {
   /** 任意合法数值 */

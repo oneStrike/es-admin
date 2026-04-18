@@ -3,10 +3,6 @@ import type {
   TaskAssignmentPageResponse,
   TaskAssignmentReconciliationPageRequest,
   TaskAssignmentReconciliationPageResponse,
-  TaskAssignmentRetryRewardBatchRequest,
-  TaskAssignmentRetryRewardBatchResponse,
-  TaskAssignmentRetryRewardRequest,
-  TaskAssignmentRetryRewardResponse,
   TaskCreateRequest,
   TaskCreateResponse,
   TaskDeleteRequest,
@@ -85,20 +81,4 @@ import { requestClient } from '#/api/request'
    */
   export async function taskAssignmentReconciliationPageApi(params?: TaskAssignmentReconciliationPageRequest): Promise<TaskAssignmentReconciliationPageResponse> {
     return requestClient.get<TaskAssignmentReconciliationPageResponse>('/api/admin/task/assignment/reconciliation/page', { params });
-  }
-
-
-  /**
-   * 重试单条任务奖励结算
-   */
-  export async function taskAssignmentRetryRewardApi(params: TaskAssignmentRetryRewardRequest): Promise<TaskAssignmentRetryRewardResponse> {
-    return requestClient.post<TaskAssignmentRetryRewardResponse>('/api/admin/task/assignment/retry-reward', params);
-  }
-
-
-  /**
-   * 批量扫描并重试待补偿任务奖励
-   */
-  export async function taskAssignmentRetryRewardBatchApi(params?: TaskAssignmentRetryRewardBatchRequest): Promise<TaskAssignmentRetryRewardBatchResponse> {
-    return requestClient.post<TaskAssignmentRetryRewardBatchResponse>('/api/admin/task/assignment/retry-reward/batch', params);
   }

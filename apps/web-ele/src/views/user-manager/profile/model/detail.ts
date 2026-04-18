@@ -11,7 +11,7 @@ import {
 } from './shared';
 
 export function getDetailCards(detail: AdminAppUserDetailDto) {
-  const forumProfile = detail.forumProfile;
+  const counts = detail.counts;
   const pointStats = detail.pointStats;
   const experienceStats = detail.experienceStats;
   const currentStatus = userStatusMap[detail.status];
@@ -169,32 +169,34 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
       fields: [
         {
           label: '主题数',
-          value: forumProfile?.topicCount ?? 0,
+          value: counts?.forumTopicCount ?? 0,
           type: 'text' as const,
         },
         {
           label: '回复数',
-          value: forumProfile?.replyCount ?? 0,
+          value: counts?.commentCount ?? 0,
           type: 'text' as const,
         },
         {
           label: '获赞数',
-          value: forumProfile?.likeCount ?? 0,
+          value:
+            (counts?.forumTopicReceivedLikeCount ?? 0) +
+            (counts?.commentReceivedLikeCount ?? 0),
           type: 'text' as const,
         },
         {
           label: '获收藏数',
-          value: forumProfile?.favoriteCount ?? 0,
+          value: counts?.forumTopicReceivedFavoriteCount ?? 0,
           type: 'text' as const,
         },
         {
           label: '论坛签名',
-          value: forumProfile?.signature || '-',
+          value: detail.signature || '-',
           type: 'text' as const,
         },
         {
           label: '论坛简介',
-          value: forumProfile?.bio || '-',
+          value: detail.bio || '-',
           type: 'text' as const,
         },
       ],

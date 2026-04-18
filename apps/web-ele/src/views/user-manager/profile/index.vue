@@ -256,12 +256,21 @@ function openPasswordModal(row: AdminAppUserPageItemDto) {
 }
 
 async function handleCreateSubmit(values: AppUsersCreateRequest) {
+  const publicKey = await authKeyPublicApi();
+  const publicKeyPem = forge.pki.publicKeyFromPem(publicKey.publicKey);
+  const encrypted = publicKeyPem.encrypt(values.password, 'RSA-OAEP', {
+    md: forge.md.sha256.create(),
+    mgf1: {
+      md: forge.md.sha256.create(),
+    },
+  });
+
   await appUsersCreateApi({
     ...values,
     avatarUrl: values.avatarUrl || undefined,
     emailAddress: values.emailAddress?.trim() || undefined,
     nickname: values.nickname?.trim(),
-    password: values.password,
+    password: forge.util.encode64(encrypted),
     phoneNumber: values.phoneNumber?.trim() || undefined,
     status: values.status ?? normalUserStatus,
   });
@@ -388,14 +397,14 @@ function mapDetailToEditRecord(
 ): AppUsersProfileUpdateRequest {
   return {
     avatarUrl: detail.avatarUrl ?? undefined,
-    bio: detail.forumProfile?.bio ?? undefined,
+    bio: detail.bio ?? undefined,
     birthDate: detail.birthDate ?? undefined,
     emailAddress: detail.emailAddress ?? undefined,
     genderType: detail.genderType,
     id: detail.id,
     nickname: detail.nickname,
     phoneNumber: detail.phoneNumber ?? undefined,
-    signature: detail.forumProfile?.signature ?? undefined,
+    signature: detail.signature ?? undefined,
   };
 }
 </script>

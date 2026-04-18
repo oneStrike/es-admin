@@ -18,6 +18,28 @@ function getOptionLabel(
   return options.find((item) => item.value === value)?.label || '-';
 }
 
+function formatTaskRewardItems(
+  rewardItems?: AdminTaskPageResponseDto['rewardItems'],
+) {
+  if (!rewardItems?.length) {
+    return '-';
+  }
+
+  return rewardItems
+    .map((item) => {
+      let assetLabel = `资产 ${item.assetType}`;
+
+      if (item.assetType === 1) {
+        assetLabel = '积分';
+      } else if (item.assetType === 2) {
+        assetLabel = '经验';
+      }
+
+      return `${assetLabel} ${item.amount}`;
+    })
+    .join(' / ');
+}
+
 export function getDetailCards(detail: AdminTaskPageResponseDto) {
   const taskStatus = taskStatusOptions.find((item) => item.value === detail.status);
   const eventCodeLabel =
@@ -131,7 +153,7 @@ export function getDetailCards(detail: AdminTaskPageResponseDto) {
         },
         {
           label: '奖励配置',
-          value: detail.rewardConfig || '-',
+          value: formatTaskRewardItems(detail.rewardItems),
           type: 'text',
         },
       ],

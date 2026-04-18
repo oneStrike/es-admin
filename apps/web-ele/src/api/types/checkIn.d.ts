@@ -1,7 +1,7 @@
 /**
  *  类型定义 [CheckInPlanPageRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInPlanPageRequest = {
   /** 任意合法数值 */
@@ -46,7 +46,7 @@ export type CheckInPlanPageResponse = {
 /**
  *  类型定义 [CheckInPlanDetailRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInPlanDetailRequest = {
   /** 任意合法数值 */
@@ -61,7 +61,7 @@ export type CheckInPlanDetailResponse = CheckInPlanDetailResponseDto
 /**
  *  类型定义 [CheckInPlanCreateRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInPlanCreateRequest = CreateCheckInPlanDto
 
@@ -70,7 +70,7 @@ export type CheckInPlanCreateResponse = IdDto
 /**
  *  类型定义 [CheckInPlanUpdateRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInPlanUpdateRequest = UpdateCheckInPlanDto
 
@@ -79,7 +79,7 @@ export type CheckInPlanUpdateResponse = boolean
 /**
  *  类型定义 [CheckInPlanUpdateStatusRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInPlanUpdateStatusRequest = UpdateCheckInPlanStatusDto
 
@@ -88,7 +88,7 @@ export type CheckInPlanUpdateStatusResponse = boolean
 /**
  *  类型定义 [CheckInReconciliationPageRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInReconciliationPageRequest = {
   /** 任意合法数值 */
@@ -100,8 +100,8 @@ export type CheckInReconciliationPageRequest = {
   /* 连续奖励发放事实 ID。 */
   grantId?: number
 
-  /* 连续奖励发放状态（0=待处理；1=已成功；2=已失败） */
-  grantStatus?: number
+  /* 连续奖励结算状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
+  grantSettlementStatus?: null | number
 
   /* 排序字段，json格式 */
   orderBy?: null | string
@@ -118,8 +118,8 @@ export type CheckInReconciliationPageRequest = {
   /* 签到记录 ID。 */
   recordId?: number
 
-  /* 基础奖励状态（0=待处理；1=已成功；2=已失败） */
-  rewardStatus?: null | number
+  /* 基础奖励结算状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
+  recordSettlementStatus?: null | number
 
   /* 用户 ID。 */
   userId?: number
@@ -145,7 +145,7 @@ export type CheckInReconciliationPageResponse = {
 /**
  *  类型定义 [CheckInReconciliationRepairRequest]
  *  @来源 签到管理/签到计划
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInReconciliationRepairRequest = RepairCheckInRewardDto
 
@@ -154,7 +154,7 @@ export type CheckInReconciliationRepairResponse = RepairCheckInRewardResponseDto
 /**
  *  类型定义 [CheckInPlanPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInPlanPageItemDto = {
   /** 任意合法数值 */
@@ -163,8 +163,8 @@ export type CheckInPlanPageItemDto = {
   activeCycleCount: number
   /* 每周期允许补签次数。 */
   allowMakeupCountPerCycle: number
-  /* 计划默认基础奖励配置；当天未命中具体日期奖励和周期模式奖励时回退到该配置。 */
-  baseRewardConfig?: CheckInRewardConfigDto
+  /* 计划默认基础奖励项；当天未命中具体日期奖励和周期模式奖励时回退到该配置。 */
+  baseRewardItems?: GrowthRewardItemDto[]
   /* 创建时间 */
   createdAt: string
   /* 周期类型（1=按周切周期；2=按月切周期） */
@@ -191,24 +191,26 @@ export type CheckInPlanPageItemDto = {
 }
 
 /**
- *  类型定义 [CheckInRewardConfigDto]
+ *  类型定义 [GrowthRewardItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
-export type CheckInRewardConfigDto = {
+export type GrowthRewardItemDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 奖励经验值；配置后表示本次签到或连续奖励会发放对应经验。 */
-  experience?: null | number
+  /* 奖励数量；必须为大于 0 的整数 */
+  amount: number
+  /* 奖励资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
+  assetKey?: null | string
 
-  /* 奖励积分；配置后表示本次签到或连续奖励会发放对应积分。 */
-  points?: null | number
+  /* 奖励资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
+  assetType: 1 | 2 | 3 | 4 | 5
 }
 
 /**
  *  类型定义 [CheckInPlanDetailResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInPlanDetailResponseDto = {
   /** 任意合法数值 */
@@ -217,8 +219,8 @@ export type CheckInPlanDetailResponseDto = {
   activeCycleCount: number
   /* 每周期允许补签次数。 */
   allowMakeupCountPerCycle: number
-  /* 计划默认基础奖励配置；当天未命中具体日期奖励和周期模式奖励时回退到该配置。 */
-  baseRewardConfig?: CheckInRewardConfigDto
+  /* 计划默认基础奖励项；当天未命中具体日期奖励和周期模式奖励时回退到该配置。 */
+  baseRewardItems?: GrowthRewardItemDto[]
   /* 创建时间 */
   createdAt: string
   /* 周期类型（1=按周切周期；2=按月切周期） */
@@ -253,22 +255,22 @@ export type CheckInPlanDetailResponseDto = {
 /**
  *  类型定义 [CheckInDateRewardRuleItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInDateRewardRuleItemDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 该自然日命中的基础奖励配置。 */
-  rewardConfig: CheckInRewardConfigDto
-
   /* 命中的具体自然日。 */
   rewardDate: string
+
+  /* 该自然日命中的奖励项列表。 */
+  rewardItems: GrowthRewardItemDto[]
 }
 
 /**
  *  类型定义 [CheckInPatternRewardRuleItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInPatternRewardRuleItemDto = {
   /** 任意合法数值 */
@@ -277,8 +279,8 @@ export type CheckInPatternRewardRuleItemDto = {
   monthDay?: null | number
   /* 周期模式类型（1=按周固定星期几；2=按月固定日期；3=按月最后一天） */
   patternType: 1 | 2 | 3
-  /* 命中后的基础奖励配置。 */
-  rewardConfig: CheckInRewardConfigDto
+  /* 命中后的奖励项列表。 */
+  rewardItems: GrowthRewardItemDto[]
 
   /* 星期值；仅在“每周固定星期几”模式下填写（1=周一；2=周二；3=周三；4=周四；5=周五；6=周六；7=周日）。 */
   weekday?: null | number
@@ -287,15 +289,15 @@ export type CheckInPatternRewardRuleItemDto = {
 /**
  *  类型定义 [CheckInStreakRewardRuleItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInStreakRewardRuleItemDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 是否允许重复领取；false=同周期同规则最多发放一次；true=命中阈值时可重复发放。 */
   repeatable: boolean
-  /* 连续奖励配置。 */
-  rewardConfig: CheckInRewardConfigDto
+  /* 连续奖励项列表。 */
+  rewardItems: GrowthRewardItemDto[]
   /* 规则编码。 */
   ruleCode: string
   /* 规则状态（0=已停用；1=已启用） */
@@ -308,15 +310,15 @@ export type CheckInStreakRewardRuleItemDto = {
 /**
  *  类型定义 [CreateCheckInPlanDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateCheckInPlanDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 每周期允许补签次数。 */
   allowMakeupCountPerCycle: number
-  /* 计划默认基础奖励配置；当天未命中具体日期奖励和周期模式奖励时回退到该配置。 */
-  baseRewardConfig?: CheckInRewardConfigDto
+  /* 计划默认基础奖励项；当天未命中具体日期奖励和周期模式奖励时回退到该配置。 */
+  baseRewardItems?: GrowthRewardItemDto[]
   /* 周期类型（1=按周切周期；2=按月切周期） */
   cycleType: 1 | 2
   /* 具体日期奖励规则列表。 */
@@ -341,22 +343,22 @@ export type CreateCheckInPlanDto = {
 /**
  *  类型定义 [CreateCheckInDateRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateCheckInDateRewardRuleDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 该自然日命中的基础奖励配置。 */
-  rewardConfig: CheckInRewardConfigDto
-
   /* 命中的具体自然日。 */
   rewardDate: string
+
+  /* 该自然日命中的奖励项列表。 */
+  rewardItems: GrowthRewardItemDto[]
 }
 
 /**
  *  类型定义 [CreateCheckInPatternRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateCheckInPatternRewardRuleDto = {
   /** 任意合法数值 */
@@ -365,8 +367,8 @@ export type CreateCheckInPatternRewardRuleDto = {
   monthDay?: null | number
   /* 周期模式类型（1=按周固定星期几；2=按月固定日期；3=按月最后一天） */
   patternType: 1 | 2 | 3
-  /* 命中后的基础奖励配置。 */
-  rewardConfig: CheckInRewardConfigDto
+  /* 命中后的奖励项列表。 */
+  rewardItems: GrowthRewardItemDto[]
 
   /* 星期值；仅在“每周固定星期几”模式下填写（1=周一；2=周二；3=周三；4=周四；5=周五；6=周六；7=周日）。 */
   weekday?: null | number
@@ -375,15 +377,15 @@ export type CreateCheckInPatternRewardRuleDto = {
 /**
  *  类型定义 [CreateCheckInStreakRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateCheckInStreakRewardRuleDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 是否允许重复领取；false=同周期同规则最多发放一次；true=命中阈值时可重复发放。 */
   repeatable: boolean
-  /* 连续奖励配置。 */
-  rewardConfig: CheckInRewardConfigDto
+  /* 连续奖励项列表。 */
+  rewardItems: GrowthRewardItemDto[]
   /* 规则编码。 */
   ruleCode: string
   /* 规则状态（0=已停用；1=已启用） */
@@ -396,7 +398,7 @@ export type CreateCheckInStreakRewardRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -409,15 +411,15 @@ export type IdDto = {
 /**
  *  类型定义 [UpdateCheckInPlanDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateCheckInPlanDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 每周期允许补签次数。 */
   allowMakeupCountPerCycle?: number
-  /* 计划默认基础奖励配置；当天未命中具体日期奖励和周期模式奖励时回退到该配置。 */
-  baseRewardConfig?: CheckInRewardConfigDto
+  /* 计划默认基础奖励项；当天未命中具体日期奖励和周期模式奖励时回退到该配置。 */
+  baseRewardItems?: GrowthRewardItemDto[]
   /* 周期类型（1=按周切周期；2=按月切周期） */
   cycleType?: 1 | 2
   /* 具体日期奖励规则列表。 */
@@ -444,7 +446,7 @@ export type UpdateCheckInPlanDto = {
 /**
  *  类型定义 [UpdateCheckInPlanStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateCheckInPlanStatusDto = {
   /** 任意合法数值 */
@@ -459,21 +461,17 @@ export type UpdateCheckInPlanStatusDto = {
 /**
  *  类型定义 [CheckInReconciliationItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInReconciliationItemDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 基础奖励账本记录 ID 列表。 */
-  baseRewardLedgerIds: number[]
   /* 创建时间 */
   createdAt: string
   /* 周期实例 ID。 */
   cycleId: number
   /* 关联的连续奖励发放列表。 */
   grants: CheckInGrantItemDto[]
-  /* 最近一次基础奖励失败原因。 */
-  lastRewardError?: null | string
   /* 签到计划 ID。 */
   planId: number
   /* 签到记录 ID。 */
@@ -481,15 +479,13 @@ export type CheckInReconciliationItemDto = {
   /* 签到类型（1=正常签到；2=补签） */
   recordType: 1 | 2
   /* 本次基础奖励解析结果快照；来源可能是具体日期奖励、周期模式奖励或计划默认基础奖励，为空表示该签到事实没有基础奖励。 */
-  resolvedRewardConfig?: CheckInRewardConfigDto
+  resolvedRewardItems?: GrowthRewardItemDto[]
   /* 本次基础奖励命中的规则键；命中默认基础奖励时为空。格式为 DATE:YYYY-MM-DD（具体日期）、WEEKDAY:n（按周星期）、MONTH_DAY:n（按月日期）或 MONTH_LAST_DAY（月末规则）。 */
   resolvedRewardRuleKey?: null | string
   /* 基础奖励来源（1=默认基础奖励；2=具体日期奖励；3=周期模式奖励） */
   resolvedRewardSourceType?: null | number
-  /* 基础奖励结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
-  rewardResultType?: null | number
-  /* 基础奖励状态（0=待处理；1=已成功；2=已失败） */
-  rewardStatus?: null | number
+  /* 关联的奖励结算事实 ID。 */
+  rewardSettlementId?: null | number
   /* 签到日期（date 语义）。 */
   signDate: string
 
@@ -500,23 +496,19 @@ export type CheckInReconciliationItemDto = {
 /**
  *  类型定义 [CheckInGrantItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CheckInGrantItemDto = {
   /** 任意合法数值 */
   [property: string]: any
-  /* 连续奖励发放结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
-  grantResultType?: null | number
-  /* 连续奖励发放状态（0=待处理；1=已成功；2=已失败） */
-  grantStatus: 0 | 1 | 2
   /* 主键id */
   id: number
-  /* 最近一次连续奖励失败原因。 */
-  lastGrantError?: null | string
-  /* 连续奖励账本记录 ID 列表。 */
-  ledgerIds: number[]
-  /* 连续奖励配置快照。 */
-  rewardConfig: CheckInRewardConfigDto
+  /* 连续奖励项快照。 */
+  rewardItems: GrowthRewardItemDto[]
+  /* 连续奖励结算摘要。 */
+  rewardSettlement?: CheckInRewardSettlementSummaryDto
+  /* 关联的奖励结算事实 ID。 */
+  rewardSettlementId?: null | number
   /* 连续奖励规则编码。 */
   ruleCode: string
   /* 连续签到阈值天数。 */
@@ -527,9 +519,36 @@ export type CheckInGrantItemDto = {
 }
 
 /**
+ *  类型定义 [CheckInRewardSettlementSummaryDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-04-18 11:53:53
+ */
+export type CheckInRewardSettlementSummaryDto = {
+  /** 任意合法数值 */
+  [property: string]: any
+  /* 主键id */
+  id: number
+  /* 最近一次失败原因 */
+  lastError?: null | string
+  /* 最近一次重试时间 */
+  lastRetryAt?: null | string
+  /* 本次补偿关联到账本记录 ID 列表 */
+  ledgerRecordIds: number[]
+  /* 已执行的补偿重试次数 */
+  retryCount: number
+  /* 最近一次补偿状态落定时间 */
+  settledAt?: null | string
+  /* 补偿结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
+  settlementResultType?: null | number
+
+  /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
+  settlementStatus: 0 | 1 | 2
+}
+
+/**
  *  类型定义 [RepairCheckInRewardDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type RepairCheckInRewardDto = {
   /** 任意合法数值 */
@@ -546,7 +565,7 @@ export type RepairCheckInRewardDto = {
 /**
  *  类型定义 [RepairCheckInRewardResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type RepairCheckInRewardResponseDto = {
   /** 任意合法数值 */

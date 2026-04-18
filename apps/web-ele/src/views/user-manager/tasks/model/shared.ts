@@ -238,13 +238,14 @@ export const formSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
-      placeholder: '请输入奖励配置；如使用 JSON，请保持格式正确',
+      placeholder: '请输入奖励项列表；如使用 JSON，请保持格式正确',
       rows: 4,
       type: 'textarea',
     },
-    fieldName: 'rewardConfig',
+    fieldName: 'rewardItems',
     formItemClass: 'col-span-2',
-    label: '奖励配置',
+    help: '请传入奖励项数组，当前仅支持积分与经验奖励项',
+    label: '奖励项列表',
   },
   {
     component: 'Input',
@@ -552,11 +553,13 @@ function normalizeJsonLikeField(value: unknown) {
   }
 }
 
-export function mapTaskToFormRecord(record: AdminTaskPageResponseDto) {
+export function mapTaskToFormRecord(
+  record: AdminTaskPageResponseDto,
+): Record<string, any> {
   return {
     ...record,
     objectiveConfig: normalizeJsonLikeField(record.objectiveConfig),
     repeatRule: normalizeJsonLikeField(record.repeatRule),
-    rewardConfig: normalizeJsonLikeField(record.rewardConfig),
+    rewardItems: normalizeJsonLikeField(record.rewardItems),
   };
 }

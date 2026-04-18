@@ -1,8 +1,8 @@
-import type { BaseUserExperienceRuleDto } from '#/api/types';
+import type { BaseGrowthRewardRuleDto } from '#/api/types';
 
 import { experienceTypeMap } from './constants';
 
-export function getDetailCards(detail: BaseUserExperienceRuleDto) {
+export function getDetailCards(detail: BaseGrowthRewardRuleDto) {
   return [
     {
       title: '基本信息',
@@ -15,12 +15,8 @@ export function getDetailCards(detail: BaseUserExperienceRuleDto) {
         },
         {
           label: '经验值变化',
-          tagText:
-            detail?.experience > 0
-              ? `+${detail?.experience}`
-              : detail?.experience,
-
-          tagType: detail?.experience > 0 ? 'success' : 'danger',
+          tagText: detail?.delta > 0 ? `+${detail?.delta}` : detail?.delta,
+          tagType: detail?.delta > 0 ? 'success' : 'danger',
           type: 'tag' as const,
         },
         {

@@ -1,4 +1,4 @@
-import type { BaseUserExperienceRuleDto } from '#/api/types';
+import type { BaseGrowthRewardRuleDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -19,14 +19,14 @@ export const formSchema: EsFormSchema = [
   {
     component: 'InputNumber',
     componentProps: {
-      placeholder: '请输入经验值变化',
-      min: -9999,
+      placeholder: '请输入经验值奖励',
+      min: 1,
       max: 9999,
     },
-    fieldName: 'experience',
-    label: '经验值变化',
+    fieldName: 'delta',
+    label: '经验值奖励',
     rules: 'required',
-    help: '正数为增加经验，负数为扣除经验',
+    help: '仅支持填写正整数奖励值',
   },
   {
     component: 'InputNumber',
@@ -85,7 +85,7 @@ export const formSchema: EsFormSchema = [
 ];
 
 export const pageColumns =
-  formSchemaTransform.toTableColumns<BaseUserExperienceRuleDto>(formSchema, {
+  formSchemaTransform.toTableColumns<BaseGrowthRewardRuleDto>(formSchema, {
     type: {
       minWidth: 120,
       cellRender: {
@@ -95,7 +95,7 @@ export const pageColumns =
         },
       },
     },
-    experience: {
+    delta: {
       minWidth: 120,
       cellRender: {
         name: 'CellTag',

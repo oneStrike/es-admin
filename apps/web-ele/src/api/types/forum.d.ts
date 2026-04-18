@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ForumModeratorsPageRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorsPageRequest = {
   /** 任意合法数值 */
@@ -55,7 +55,7 @@ export type ForumModeratorsPageResponse = {
 /**
  *  类型定义 [ForumModeratorsCreateRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorsCreateRequest = CreateForumModeratorDto
 
@@ -64,7 +64,7 @@ export type ForumModeratorsCreateResponse = boolean
 /**
  *  类型定义 [ForumModeratorsUpdateRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorsUpdateRequest = UpdateForumModeratorDto
 
@@ -73,7 +73,7 @@ export type ForumModeratorsUpdateResponse = boolean
 /**
  *  类型定义 [ForumModeratorsDeleteRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorsDeleteRequest = IdDto
 
@@ -82,7 +82,7 @@ export type ForumModeratorsDeleteResponse = boolean
 /**
  *  类型定义 [ForumModeratorsAssignSectionRequest]
  *  @来源 论坛管理/版主管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorsAssignSectionRequest = AssignForumModeratorSectionDto
 
@@ -91,7 +91,7 @@ export type ForumModeratorsAssignSectionResponse = boolean
 /**
  *  类型定义 [ForumModeratorApplicationPageRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorApplicationPageRequest = {
   /** 任意合法数值 */
@@ -145,7 +145,7 @@ export type ForumModeratorApplicationPageResponse = {
 /**
  *  类型定义 [ForumModeratorApplicationDetailRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorApplicationDetailRequest = {
   /** 任意合法数值 */
@@ -160,7 +160,7 @@ export type ForumModeratorApplicationDetailResponse = ForumModeratorApplicationD
 /**
  *  类型定义 [ForumModeratorApplicationAuditRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorApplicationAuditRequest = AuditForumModeratorApplicationDto
 
@@ -169,7 +169,7 @@ export type ForumModeratorApplicationAuditResponse = boolean
 /**
  *  类型定义 [ForumModeratorApplicationDeleteRequest]
  *  @来源 论坛管理/版主申请
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorApplicationDeleteRequest = IdDto
 
@@ -178,7 +178,7 @@ export type ForumModeratorApplicationDeleteResponse = boolean
 /**
  *  类型定义 [ForumSearchPageRequest]
  *  @来源 论坛管理/搜索
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSearchPageRequest = {
   /** 任意合法数值 */
@@ -235,7 +235,7 @@ export type ForumSearchPageResponse = {
 /**
  *  类型定义 [ForumSensitiveWordPageRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordPageRequest = {
   /** 任意合法数值 */
@@ -292,7 +292,7 @@ export type ForumSensitiveWordPageResponse = {
 /**
  *  类型定义 [ForumSensitiveWordCreateRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordCreateRequest = CreateSensitiveWordDto
 
@@ -301,7 +301,7 @@ export type ForumSensitiveWordCreateResponse = boolean
 /**
  *  类型定义 [ForumSensitiveWordUpdateRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordUpdateRequest = UpdateSensitiveWordDto
 
@@ -310,7 +310,7 @@ export type ForumSensitiveWordUpdateResponse = boolean
 /**
  *  类型定义 [ForumSensitiveWordDeleteRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordDeleteRequest = IdDto
 
@@ -319,7 +319,7 @@ export type ForumSensitiveWordDeleteResponse = boolean
 /**
  *  类型定义 [ForumSensitiveWordUpdateStatusRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordUpdateStatusRequest = UpdateEnabledStatusDto
 
@@ -328,7 +328,7 @@ export type ForumSensitiveWordUpdateStatusResponse = boolean
 /**
  *  类型定义 [ForumSensitiveWordDetectRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordDetectRequest = SensitiveWordDetectDto
 
@@ -337,13 +337,13 @@ export type ForumSensitiveWordDetectResponse = SensitiveWordDetectResponseDto
 /**
  *  类型定义 [ForumSensitiveWordStatsRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordStatsRequest = {
   /** 任意合法数值 */
   [property: string]: any
 
-  /* 统计类型 */
+  /* 统计类型（按级别统计；按类型统计；热门敏感词统计；最近命中统计） */
   type?: null | string
 }
 
@@ -354,7 +354,7 @@ export type ForumSensitiveWordStatsFullResponse = SensitiveWordStatisticsDataDto
 /**
  *  类型定义 [ForumSensitiveWordReplaceRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordReplaceRequest = SensitiveWordReplaceDto
 
@@ -363,7 +363,7 @@ export type ForumSensitiveWordReplaceResponse = SensitiveWordReplaceResponseDto
 /**
  *  类型定义 [ForumSensitiveWordDetectHighestLevelRequest]
  *  @来源 论坛管理/敏感词管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSensitiveWordDetectHighestLevelRequest = SensitiveWordDetectDto
 
@@ -376,7 +376,7 @@ export type ForumSensitiveWordCountResponse = SensitiveWordCountResponseDto
 /**
  *  类型定义 [ForumTopicPageRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicPageRequest = {
   /** 任意合法数值 */
@@ -442,7 +442,7 @@ export type ForumTopicPageResponse = {
 /**
  *  类型定义 [ForumTopicDetailRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicDetailRequest = {
   /** 任意合法数值 */
@@ -457,7 +457,7 @@ export type ForumTopicDetailResponse = AdminForumTopicDetailDto
 /**
  *  类型定义 [ForumTopicCreateRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicCreateRequest = CreateForumTopicDto
 
@@ -466,7 +466,7 @@ export type ForumTopicCreateResponse = boolean
 /**
  *  类型定义 [ForumTopicUpdateRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicUpdateRequest = UpdateForumTopicDto
 
@@ -475,7 +475,7 @@ export type ForumTopicUpdateResponse = boolean
 /**
  *  类型定义 [ForumTopicDeleteRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicDeleteRequest = IdDto
 
@@ -484,7 +484,7 @@ export type ForumTopicDeleteResponse = boolean
 /**
  *  类型定义 [ForumTopicUpdatePinnedRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicUpdatePinnedRequest = UpdateForumTopicPinnedDto
 
@@ -493,7 +493,7 @@ export type ForumTopicUpdatePinnedResponse = boolean
 /**
  *  类型定义 [ForumTopicUpdateFeaturedRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicUpdateFeaturedRequest = UpdateForumTopicFeaturedDto
 
@@ -502,7 +502,7 @@ export type ForumTopicUpdateFeaturedResponse = boolean
 /**
  *  类型定义 [ForumTopicUpdateLockedRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicUpdateLockedRequest = UpdateForumTopicLockedDto
 
@@ -511,7 +511,7 @@ export type ForumTopicUpdateLockedResponse = boolean
 /**
  *  类型定义 [ForumTopicUpdateHiddenRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicUpdateHiddenRequest = UpdateForumTopicHiddenDto
 
@@ -520,7 +520,7 @@ export type ForumTopicUpdateHiddenResponse = boolean
 /**
  *  类型定义 [ForumTopicUpdateAuditStatusRequest]
  *  @来源 论坛管理/主题管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTopicUpdateAuditStatusRequest = UpdateForumTopicAuditStatusDto
 
@@ -529,7 +529,7 @@ export type ForumTopicUpdateAuditStatusResponse = boolean
 /**
  *  类型定义 [ForumSectionsPageRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionsPageRequest = {
   /** 任意合法数值 */
@@ -583,7 +583,7 @@ export type ForumSectionsPageResponse = {
 /**
  *  类型定义 [ForumSectionsDetailRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionsDetailRequest = {
   /** 任意合法数值 */
@@ -609,7 +609,7 @@ export type ForumSectionsTreeResponse = {
 /**
  *  类型定义 [ForumSectionsCreateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionsCreateRequest = CreateForumSectionDto
 
@@ -618,7 +618,7 @@ export type ForumSectionsCreateResponse = boolean
 /**
  *  类型定义 [ForumSectionsUpdateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionsUpdateRequest = UpdateForumSectionDto
 
@@ -627,7 +627,7 @@ export type ForumSectionsUpdateResponse = boolean
 /**
  *  类型定义 [ForumSectionsDeleteRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionsDeleteRequest = IdDto
 
@@ -636,7 +636,7 @@ export type ForumSectionsDeleteResponse = boolean
 /**
  *  类型定义 [ForumSectionsUpdateEnabledRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionsUpdateEnabledRequest = UpdateForumSectionEnabledDto
 
@@ -645,7 +645,7 @@ export type ForumSectionsUpdateEnabledResponse = boolean
 /**
  *  类型定义 [ForumSectionsRebuildFollowCountRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionsRebuildFollowCountRequest = IdDto
 
@@ -656,7 +656,7 @@ export type ForumSectionsRebuildFollowCountAllResponse = boolean
 /**
  *  类型定义 [ForumSectionsSwapSortOrderRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionsSwapSortOrderRequest = SwapForumSectionSortDto
 
@@ -665,7 +665,7 @@ export type ForumSectionsSwapSortOrderResponse = boolean
 /**
  *  类型定义 [ForumSectionGroupsPageRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionGroupsPageRequest = {
   /** 任意合法数值 */
@@ -713,7 +713,7 @@ export type ForumSectionGroupsPageResponse = {
 /**
  *  类型定义 [ForumSectionGroupsDetailRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionGroupsDetailRequest = {
   /** 任意合法数值 */
@@ -728,7 +728,7 @@ export type ForumSectionGroupsDetailResponse = BaseForumSectionGroupDto
 /**
  *  类型定义 [ForumSectionGroupsCreateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionGroupsCreateRequest = CreateForumSectionGroupDto
 
@@ -737,7 +737,7 @@ export type ForumSectionGroupsCreateResponse = boolean
 /**
  *  类型定义 [ForumSectionGroupsUpdateRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionGroupsUpdateRequest = UpdateForumSectionGroupDto
 
@@ -746,7 +746,7 @@ export type ForumSectionGroupsUpdateResponse = boolean
 /**
  *  类型定义 [ForumSectionGroupsDeleteRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionGroupsDeleteRequest = IdDto
 
@@ -755,7 +755,7 @@ export type ForumSectionGroupsDeleteResponse = boolean
 /**
  *  类型定义 [ForumSectionGroupsUpdateEnabledRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionGroupsUpdateEnabledRequest = UpdateForumSectionGroupEnabledDto
 
@@ -764,7 +764,7 @@ export type ForumSectionGroupsUpdateEnabledResponse = boolean
 /**
  *  类型定义 [ForumSectionGroupsSwapSortOrderRequest]
  *  @来源 论坛管理/板块管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionGroupsSwapSortOrderRequest = SwapForumSectionGroupSortDto
 
@@ -773,7 +773,7 @@ export type ForumSectionGroupsSwapSortOrderResponse = boolean
 /**
  *  类型定义 [ForumTagsPageRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsPageRequest = {
   /** 任意合法数值 */
@@ -821,7 +821,7 @@ export type ForumTagsPageResponse = {
 /**
  *  类型定义 [ForumTagsDetailRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsDetailRequest = {
   /** 任意合法数值 */
@@ -836,7 +836,7 @@ export type ForumTagsDetailResponse = ForumTagDetailResponseDto
 /**
  *  类型定义 [ForumTagsPopularListRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsPopularListRequest = {
   
@@ -853,7 +853,7 @@ export type ForumTagsEnabledListResponse = BaseForumTagDto[]
 /**
  *  类型定义 [ForumTagsTopicTagListRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsTopicTagListRequest = {
   
@@ -868,7 +868,7 @@ export type ForumTagsTopicTagListResponse = BaseForumTagDto[]
 /**
  *  类型定义 [ForumTagsCreateRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsCreateRequest = CreateForumTagDto
 
@@ -877,7 +877,7 @@ export type ForumTagsCreateResponse = boolean
 /**
  *  类型定义 [ForumTagsUpdateRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsUpdateRequest = UpdateForumTagDto
 
@@ -886,7 +886,7 @@ export type ForumTagsUpdateResponse = boolean
 /**
  *  类型定义 [ForumTagsDeleteRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsDeleteRequest = IdDto
 
@@ -895,7 +895,7 @@ export type ForumTagsDeleteResponse = boolean
 /**
  *  类型定义 [ForumTagsAssignTopicRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsAssignTopicRequest = AssignForumTagToTopicDto
 
@@ -904,7 +904,7 @@ export type ForumTagsAssignTopicResponse = boolean
 /**
  *  类型定义 [ForumTagsUnassignTopicRequest]
  *  @来源 论坛管理/标签管理
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagsUnassignTopicRequest = AssignForumTagToTopicDto
 
@@ -913,7 +913,7 @@ export type ForumTagsUnassignTopicResponse = boolean
 /**
  *  类型定义 [ForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorDto = {
   /** 任意合法数值 */
@@ -952,7 +952,7 @@ export type ForumModeratorDto = {
 /**
  *  类型定义 [ForumModeratorGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorGroupDto = {
   /** 任意合法数值 */
@@ -967,7 +967,7 @@ export type ForumModeratorGroupDto = {
 /**
  *  类型定义 [ForumModeratorSectionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorSectionItemDto = {
   /** 任意合法数值 */
@@ -988,7 +988,7 @@ export type ForumModeratorSectionItemDto = {
 /**
  *  类型定义 [CreateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateForumModeratorDto = {
   /** 任意合法数值 */
@@ -1013,7 +1013,7 @@ export type CreateForumModeratorDto = {
 /**
  *  类型定义 [UpdateForumModeratorDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumModeratorDto = {
   /** 任意合法数值 */
@@ -1038,7 +1038,7 @@ export type UpdateForumModeratorDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -1051,7 +1051,7 @@ export type IdDto = {
 /**
  *  类型定义 [AssignForumModeratorSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AssignForumModeratorSectionDto = {
   /** 任意合法数值 */
@@ -1068,7 +1068,7 @@ export type AssignForumModeratorSectionDto = {
 /**
  *  类型定义 [ForumModeratorApplicationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorApplicationDto = {
   /** 任意合法数值 */
@@ -1111,7 +1111,7 @@ export type ForumModeratorApplicationDto = {
 /**
  *  类型定义 [ForumModeratorApplicationUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorApplicationUserDto = {
   /** 任意合法数值 */
@@ -1128,7 +1128,7 @@ export type ForumModeratorApplicationUserDto = {
 /**
  *  类型定义 [ForumModeratorApplicationSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumModeratorApplicationSectionDto = {
   /** 任意合法数值 */
@@ -1149,7 +1149,7 @@ export type ForumModeratorApplicationSectionDto = {
 /**
  *  类型定义 [AuditForumModeratorApplicationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AuditForumModeratorApplicationDto = {
   /** 任意合法数值 */
@@ -1168,7 +1168,7 @@ export type AuditForumModeratorApplicationDto = {
 /**
  *  类型定义 [ForumSearchResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSearchResultDto = {
   /** 任意合法数值 */
@@ -1211,7 +1211,7 @@ export type ForumSearchResultDto = {
 /**
  *  类型定义 [BaseSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type BaseSensitiveWordDto = {
   /** 任意合法数值 */
@@ -1252,7 +1252,7 @@ export type BaseSensitiveWordDto = {
 /**
  *  类型定义 [CreateSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateSensitiveWordDto = {
   /** 任意合法数值 */
@@ -1277,7 +1277,7 @@ export type CreateSensitiveWordDto = {
 /**
  *  类型定义 [UpdateSensitiveWordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateSensitiveWordDto = {
   /** 任意合法数值 */
@@ -1304,7 +1304,7 @@ export type UpdateSensitiveWordDto = {
 /**
  *  类型定义 [UpdateEnabledStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateEnabledStatusDto = {
   /** 任意合法数值 */
@@ -1319,7 +1319,7 @@ export type UpdateEnabledStatusDto = {
 /**
  *  类型定义 [SensitiveWordDetectDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordDetectDto = {
   /** 任意合法数值 */
@@ -1332,7 +1332,7 @@ export type SensitiveWordDetectDto = {
 /**
  *  类型定义 [SensitiveWordDetectResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordDetectResponseDto = {
   /** 任意合法数值 */
@@ -1347,7 +1347,7 @@ export type SensitiveWordDetectResponseDto = {
 /**
  *  类型定义 [BaseSensitiveWordHitDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type BaseSensitiveWordHitDto = {
   /** 任意合法数值 */
@@ -1370,7 +1370,7 @@ export type BaseSensitiveWordHitDto = {
 /**
  *  类型定义 [SensitiveWordStatisticsResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordStatisticsResponseDto = {
   /** 任意合法数值 */
@@ -1378,14 +1378,14 @@ export type SensitiveWordStatisticsResponseDto = {
   /* 统计结果 */
   data: Record<string, any>[]
 
-  /* 统计类型 */
+  /* 统计类型（按级别统计；按类型统计；热门敏感词统计；最近命中统计） */
   type: 'level' | 'recentHits' | 'topHits' | 'type'
 }
 
 /**
  *  类型定义 [SensitiveWordStatisticsDataDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordStatisticsDataDto = {
   /** 任意合法数值 */
@@ -1418,7 +1418,7 @@ export type SensitiveWordStatisticsDataDto = {
 /**
  *  类型定义 [SensitiveWordLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -1437,7 +1437,7 @@ export type SensitiveWordLevelStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordTypeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordTypeStatisticsDto = {
   /** 任意合法数值 */
@@ -1456,7 +1456,7 @@ export type SensitiveWordTypeStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordTopHitStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordTopHitStatisticsDto = {
   /** 任意合法数值 */
@@ -1477,7 +1477,7 @@ export type SensitiveWordTopHitStatisticsDto = {
 /**
  *  类型定义 [SensitiveWordReplaceDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordReplaceDto = {
   /** 任意合法数值 */
@@ -1492,7 +1492,7 @@ export type SensitiveWordReplaceDto = {
 /**
  *  类型定义 [SensitiveWordReplaceResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordReplaceResponseDto = {
   /** 任意合法数值 */
@@ -1505,20 +1505,20 @@ export type SensitiveWordReplaceResponseDto = {
 /**
  *  类型定义 [SensitiveWordHighestLevelResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordHighestLevelResponseDto = {
   /** 任意合法数值 */
   [property: string]: any
 
-  /* 敏感词最高等级 */
+  /* 敏感词最高等级（1=严重；2=一般；3=轻微） */
   highestLevel?: null | number
 }
 
 /**
  *  类型定义 [SensitiveWordDetectStatusResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordDetectStatusResponseDto = {
   /** 任意合法数值 */
@@ -1533,7 +1533,7 @@ export type SensitiveWordDetectStatusResponseDto = {
 /**
  *  类型定义 [SensitiveWordCountResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SensitiveWordCountResponseDto = {
   /** 任意合法数值 */
@@ -1546,7 +1546,7 @@ export type SensitiveWordCountResponseDto = {
 /**
  *  类型定义 [AdminForumTopicPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminForumTopicPageItemDto = {
   /** 任意合法数值 */
@@ -1601,7 +1601,7 @@ export type AdminForumTopicPageItemDto = {
 /**
  *  类型定义 [AdminForumTopicDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminForumTopicDetailDto = {
   /** 任意合法数值 */
@@ -1666,7 +1666,7 @@ export type AdminForumTopicDetailDto = {
 /**
  *  类型定义 [AdminForumTopicTagRelationDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminForumTopicTagRelationDto = {
   /** 任意合法数值 */
@@ -1685,7 +1685,7 @@ export type AdminForumTopicTagRelationDto = {
 /**
  *  类型定义 [AdminForumTopicSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminForumTopicSectionDto = {
   /** 任意合法数值 */
@@ -1710,7 +1710,7 @@ export type AdminForumTopicSectionDto = {
 /**
  *  类型定义 [AdminForumTopicUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminForumTopicUserDto = {
   /** 任意合法数值 */
@@ -1747,7 +1747,7 @@ export type AdminForumTopicUserDto = {
 /**
  *  类型定义 [AdminForumTopicUserCountDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminForumTopicUserCountDto = {
   /** 任意合法数值 */
@@ -1772,7 +1772,7 @@ export type AdminForumTopicUserCountDto = {
 /**
  *  类型定义 [AdminForumTopicUserLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AdminForumTopicUserLevelDto = {
   /** 任意合法数值 */
@@ -1791,7 +1791,7 @@ export type AdminForumTopicUserLevelDto = {
 /**
  *  类型定义 [CreateForumTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateForumTopicDto = {
   /** 任意合法数值 */
@@ -1816,7 +1816,7 @@ export type CreateForumTopicDto = {
 /**
  *  类型定义 [MentionDraftDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type MentionDraftDto = {
   /** 任意合法数值 */
@@ -1835,7 +1835,7 @@ export type MentionDraftDto = {
 /**
  *  类型定义 [UpdateForumTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumTopicDto = {
   /** 任意合法数值 */
@@ -1858,7 +1858,7 @@ export type UpdateForumTopicDto = {
 /**
  *  类型定义 [UpdateForumTopicPinnedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumTopicPinnedDto = {
   /** 任意合法数值 */
@@ -1873,7 +1873,7 @@ export type UpdateForumTopicPinnedDto = {
 /**
  *  类型定义 [UpdateForumTopicFeaturedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumTopicFeaturedDto = {
   /** 任意合法数值 */
@@ -1888,7 +1888,7 @@ export type UpdateForumTopicFeaturedDto = {
 /**
  *  类型定义 [UpdateForumTopicLockedDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumTopicLockedDto = {
   /** 任意合法数值 */
@@ -1903,7 +1903,7 @@ export type UpdateForumTopicLockedDto = {
 /**
  *  类型定义 [UpdateForumTopicHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumTopicHiddenDto = {
   /** 任意合法数值 */
@@ -1918,7 +1918,7 @@ export type UpdateForumTopicHiddenDto = {
 /**
  *  类型定义 [UpdateForumTopicAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumTopicAuditStatusDto = {
   /** 任意合法数值 */
@@ -1935,7 +1935,7 @@ export type UpdateForumTopicAuditStatusDto = {
 /**
  *  类型定义 [BaseForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type BaseForumSectionDto = {
   /** 任意合法数值 */
@@ -1982,7 +1982,7 @@ export type BaseForumSectionDto = {
 /**
  *  类型定义 [CreateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateForumSectionDto = {
   /** 任意合法数值 */
@@ -2015,7 +2015,7 @@ export type CreateForumSectionDto = {
 /**
  *  类型定义 [UpdateForumSectionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumSectionDto = {
   /** 任意合法数值 */
@@ -2050,7 +2050,7 @@ export type UpdateForumSectionDto = {
 /**
  *  类型定义 [UpdateForumSectionEnabledDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumSectionEnabledDto = {
   /** 任意合法数值 */
@@ -2065,7 +2065,7 @@ export type UpdateForumSectionEnabledDto = {
 /**
  *  类型定义 [ForumSectionFollowCountRepairResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumSectionFollowCountRepairResultDto = {
   /** 任意合法数值 */
@@ -2080,7 +2080,7 @@ export type ForumSectionFollowCountRepairResultDto = {
 /**
  *  类型定义 [SwapForumSectionSortDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SwapForumSectionSortDto = {
   /** 任意合法数值 */
@@ -2095,7 +2095,7 @@ export type SwapForumSectionSortDto = {
 /**
  *  类型定义 [BaseForumSectionGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type BaseForumSectionGroupDto = {
   /** 任意合法数值 */
@@ -2122,7 +2122,7 @@ export type BaseForumSectionGroupDto = {
 /**
  *  类型定义 [CreateForumSectionGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateForumSectionGroupDto = {
   /** 任意合法数值 */
@@ -2143,7 +2143,7 @@ export type CreateForumSectionGroupDto = {
 /**
  *  类型定义 [UpdateForumSectionGroupDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumSectionGroupDto = {
   /** 任意合法数值 */
@@ -2166,7 +2166,7 @@ export type UpdateForumSectionGroupDto = {
 /**
  *  类型定义 [UpdateForumSectionGroupEnabledDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumSectionGroupEnabledDto = {
   /** 任意合法数值 */
@@ -2181,7 +2181,7 @@ export type UpdateForumSectionGroupEnabledDto = {
 /**
  *  类型定义 [SwapForumSectionGroupSortDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type SwapForumSectionGroupSortDto = {
   /** 任意合法数值 */
@@ -2196,7 +2196,7 @@ export type SwapForumSectionGroupSortDto = {
 /**
  *  类型定义 [BaseForumTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type BaseForumTagDto = {
   /** 任意合法数值 */
@@ -2225,7 +2225,7 @@ export type BaseForumTagDto = {
 /**
  *  类型定义 [ForumTagDetailResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagDetailResponseDto = {
   /** 任意合法数值 */
@@ -2256,7 +2256,7 @@ export type ForumTagDetailResponseDto = {
 /**
  *  类型定义 [ForumTagTopicSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type ForumTagTopicSummaryDto = {
   /** 任意合法数值 */
@@ -2273,7 +2273,7 @@ export type ForumTagTopicSummaryDto = {
 /**
  *  类型定义 [CreateForumTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type CreateForumTagDto = {
   /** 任意合法数值 */
@@ -2294,7 +2294,7 @@ export type CreateForumTagDto = {
 /**
  *  类型定义 [UpdateForumTagDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type UpdateForumTagDto = {
   /** 任意合法数值 */
@@ -2317,7 +2317,7 @@ export type UpdateForumTagDto = {
 /**
  *  类型定义 [AssignForumTagToTopicDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AssignForumTagToTopicDto = {
   /** 任意合法数值 */

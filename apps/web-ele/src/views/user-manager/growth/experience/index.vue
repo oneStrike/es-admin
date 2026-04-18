@@ -2,20 +2,20 @@
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
-  BaseUserExperienceRuleDto,
-  GrowthExperienceRulesCreateRequest,
-  GrowthExperienceRulesUpdateRequest,
+  BaseGrowthRewardRuleDto,
+  GrowthRewardRulesCreateRequest,
+  GrowthRewardRulesUpdateRequest,
 } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  growthExperienceRulesCreateApi,
-  growthExperienceRulesDeleteApi,
-  growthExperienceRulesDetailApi,
-  growthExperienceRulesPageApi,
-  growthExperienceRulesUpdateApi,
+  growthRewardRulesCreateApi,
+  growthRewardRulesDeleteApi,
+  growthRewardRulesDetailApi,
+  growthRewardRulesPageApi,
+  growthRewardRulesUpdateApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -29,15 +29,30 @@ import {
   searchFormSchema,
 } from './modules/model/shared';
 
-const gridOptions: VxeGridProps<BaseUserExperienceRuleDto> = {
+const EXPERIENCE_ASSET_TYPE = 2 as const;
+
+function normalizeRewardRulePayload(
+  values: GrowthRewardRulesCreateRequest | GrowthRewardRulesUpdateRequest,
+) {
+  return {
+    ...values,
+    assetKey: '',
+    assetType: EXPERIENCE_ASSET_TYPE,
+  };
+}
+
+const gridOptions: VxeGridProps<BaseGrowthRewardRuleDto> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await growthExperienceRulesPageApi(
+        return await growthRewardRulesPageApi(
           formatQuery({
             page,
-            formValues,
+            formValues: {
+              ...formValues,
+              assetType: EXPERIENCE_ASSET_TYPE,
+            },
             sorts,
           }),
         );
@@ -61,40 +76,49 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '经验规则详情',
 });
 
-async function openFormModal(row?: BaseUserExperienceRuleDto) {
+async function openFormModal(row?: BaseGrowthRewardRuleDto) {
   let record;
   if (row) {
-    record = await growthExperienceRulesDetailApi({ id: row.id });
+    record = await growthRewardRulesDetailApi({ id: row.id });
   }
   formApi.setData({ title: '经验规则', record, schema: formSchema }).open();
 }
 
 async function handleSubmit(
-  values: GrowthExperienceRulesCreateRequest | GrowthExperienceRulesUpdateRequest,
+  values: GrowthRewardRulesCreateRequest | GrowthRewardRulesUpdateRequest,
 ) {
-  await (values?.id
-    ? growthExperienceRulesUpdateApi(values as GrowthExperienceRulesUpdateRequest)
-    : growthExperienceRulesCreateApi(values as GrowthExperienceRulesCreateRequest));
+  const isUpdate = 'id' in values && !!values.id;
+  const payload = normalizeRewardRulePayload(values);
+
+  await (isUpdate
+    ? growthRewardRulesUpdateApi(payload as GrowthRewardRulesUpdateRequest)
+    : growthRewardRulesCreateApi(payload as GrowthRewardRulesCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function deleteExperienceRule(record: BaseUserExperienceRuleDto) {
-  await growthExperienceRulesDeleteApi({ id: record.id });
+async function deleteExperienceRule(record: BaseGrowthRewardRuleDto) {
+  await growthRewardRulesDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
 async function toggleEnableStatus(
-  row: BaseUserExperienceRuleDto & { loading?: boolean },
+  row: BaseGrowthRewardRuleDto & { loading?: boolean },
 ) {
   row.loading = true;
   try {
-    await growthExperienceRulesUpdateApi({
+    await growthRewardRulesUpdateApi({
+      assetKey: row.assetKey ?? '',
+      assetType: EXPERIENCE_ASSET_TYPE,
+      dailyLimit: row.dailyLimit,
+      delta: row.delta,
       id: row.id,
-      type: row.type,
       isEnabled: !row.isEnabled,
+      remark: row.remark,
+      totalLimit: row.totalLimit,
+      type: row.type,
     });
     useMessage.success('操作成功');
     gridApi.reload();
@@ -153,7 +177,7 @@ async function toggleEnableStatus(
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
-      :api="growthExperienceRulesDetailApi"
+      :api="growthRewardRulesDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"
     />

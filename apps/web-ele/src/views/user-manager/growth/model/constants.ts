@@ -3,93 +3,52 @@
  */
 
 export const growthTypeOptions = [
-  // 论坛相关
-  {
-    label: '发表主题',
-    value: 1,
-  },
-  {
-    label: '发表回复',
-    value: 2,
-  },
-  {
-    label: '主题被点赞',
-    value: 3,
-  },
-  {
-    label: '回复被点赞',
-    value: 4,
-  },
-  {
-    label: '主题被收藏',
-    value: 5,
-  },
-  {
-    label: '每日签到',
-    value: 6,
-  },
-  {
-    label: '管理员操作',
-    value: 7,
-  },
-  {
-    label: '主题浏览',
-    value: 8,
-  },
-  {
-    label: '举报',
-    value: 9,
-  },
-
-  // 漫画作品相关
-  {
-    label: '漫画浏览',
-    value: 100,
-  },
-  {
-    label: '漫画点赞',
-    value: 101,
-  },
-  {
-    label: '漫画收藏',
-    value: 102,
-  },
-
-  // 小说作品相关
-  {
-    label: '小说浏览',
-    value: 200,
-  },
-  {
-    label: '小说点赞',
-    value: 201,
-  },
-  {
-    label: '小说收藏',
-    value: 202,
-  },
-
-  // 漫画章节相关
-  {
-    label: '章节阅读',
-    value: 300,
-  },
-  {
-    label: '章节点赞',
-    value: 301,
-  },
-  {
-    label: '章节购买',
-    value: 302,
-  },
-  {
-    label: '章节下载',
-    value: 303,
-  },
-  {
-    label: '章节兑换',
-    value: 304,
-  },
+  { label: '发表主题', value: 1 },
+  { label: '发表回复', value: 2 },
+  { label: '主题被点赞', value: 3 },
+  { label: '回复被点赞', value: 4 },
+  { label: '主题被收藏', value: 5 },
+  { label: '每日签到', value: 6 },
+  { label: '管理员操作', value: 7 },
+  { label: '主题被浏览', value: 8 },
+  { label: '主题举报', value: 9 },
+  { label: '发表评论', value: 10 },
+  { label: '评论被点赞', value: 11 },
+  { label: '评论举报', value: 12 },
+  { label: '帖子被评论', value: 16 },
+  { label: '漫画作品浏览', value: 100 },
+  { label: '漫画作品点赞', value: 101 },
+  { label: '漫画作品收藏', value: 102 },
+  { label: '漫画作品举报', value: 103 },
+  { label: '漫画作品评论', value: 104 },
+  { label: '小说作品浏览', value: 200 },
+  { label: '小说作品点赞', value: 201 },
+  { label: '小说作品收藏', value: 202 },
+  { label: '小说作品举报', value: 203 },
+  { label: '小说作品评论', value: 204 },
+  { label: '漫画章节阅读', value: 300 },
+  { label: '漫画章节点赞', value: 301 },
+  { label: '漫画章节购买', value: 302 },
+  { label: '漫画章节下载', value: 303 },
+  { label: '漫画章节兑换', value: 304 },
+  { label: '漫画章节举报', value: 305 },
+  { label: '漫画章节评论', value: 306 },
+  { label: '小说章节阅读', value: 400 },
+  { label: '小说章节点赞', value: 401 },
+  { label: '小说章节购买', value: 402 },
+  { label: '小说章节下载', value: 403 },
+  { label: '小说章节兑换', value: 404 },
+  { label: '小说章节举报', value: 405 },
+  { label: '小说章节评论', value: 406 },
+  { label: '获得徽章', value: 600 },
+  { label: '资料完善', value: 601 },
+  { label: '头像上传', value: 602 },
+  { label: '关注用户', value: 700 },
+  { label: '被关注', value: 701 },
+  { label: '分享内容', value: 702 },
+  { label: '邀请用户', value: 703 },
+  { label: '举报有效', value: 800 },
+  { label: '举报无效', value: 801 },
 ];
 
 export const growthTypeMap = Object.fromEntries(

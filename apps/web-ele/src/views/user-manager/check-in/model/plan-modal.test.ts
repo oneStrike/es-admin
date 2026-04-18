@@ -1,4 +1,7 @@
-import type { CheckInPlanDetailResponseDto } from '#/api/types';
+import type {
+  CheckInPlanDetailResponseDto,
+  GrowthRewardItemDto,
+} from '#/api/types';
 
 import { describe, expect, it } from 'vitest';
 
@@ -27,65 +30,97 @@ import {
   createRewardPreviewState,
 } from './reward-preview';
 
+function createRewardItems(params: {
+  experience?: number;
+  points?: number;
+} = {}): GrowthRewardItemDto[] {
+  const rewardItems: GrowthRewardItemDto[] = [];
+
+  if (params.points) {
+    rewardItems.push({
+      amount: params.points,
+      assetKey: '',
+      assetType: 1,
+    });
+  }
+
+  if (params.experience) {
+    rewardItems.push({
+      amount: params.experience,
+      assetKey: '',
+      assetType: 2,
+    });
+  }
+
+  return rewardItems;
+}
+
+function createPlanDetail(
+  overrides: Partial<CheckInPlanDetailResponseDto> = {},
+): CheckInPlanDetailResponseDto {
+  return {
+    activeCycleCount: 1,
+    allowMakeupCountPerCycle: 0,
+    baseRewardItems: createRewardItems(),
+    createdAt: '2026-04-10T00:00:00Z',
+    cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
+    dateRewardRules: [],
+    id: 1,
+    patternRewardRules: [],
+    pendingRewardCount: 0,
+    planCode: 'check_in_plan',
+    planName: '签到计划',
+    ruleCount: 0,
+    startDate: '2026-05-04',
+    status: 1,
+    streakRewardRules: [],
+    updatedAt: '2026-04-10T01:00:00Z',
+    ...overrides,
+  };
+}
+
 describe('mapPlanDetailToEditorState', () => {
-  it('should map latest reward config fields to editor state', () => {
-    const detail = {
-      activeCycleCount: 1,
+  it('should map latest reward items fields to editor state', () => {
+    const detail = createPlanDetail({
       allowMakeupCountPerCycle: 2,
-      baseRewardConfig: {
+      baseRewardItems: createRewardItems({
         experience: 5,
         points: 10,
-      },
-      createdAt: '2026-04-10T00:00:00Z',
+      }),
       cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       dateRewardRules: [
         {
-          id: 21,
-          rewardConfig: {
-            points: 66,
-          },
           rewardDate: '2026-05-03',
+          rewardItems: createRewardItems({ points: 66 }),
         },
       ],
       endDate: '2026-07-31',
       id: 9,
       patternRewardRules: [
         {
-          id: 11,
           monthDay: 15,
           patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
-          rewardConfig: {
-            experience: 8,
-          },
+          rewardItems: createRewardItems({ experience: 8 }),
         },
         {
-          id: 12,
           patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
-          rewardConfig: {
-            points: 99,
-          },
+          rewardItems: createRewardItems({ points: 99 }),
         },
       ],
-      pendingRewardCount: 0,
       planCode: 'check_in_2026',
       planName: '2026 签到',
       ruleCount: 2,
       startDate: '2026-05-01',
-      status: 1,
       streakRewardRules: [
         {
-          id: 31,
           repeatable: false,
-          rewardConfig: {
-            points: 20,
-          },
+          rewardItems: createRewardItems({ points: 20 }),
           ruleCode: 'STREAK_3',
           status: 1,
           streakDays: 3,
         },
       ],
-      updatedAt: '2026-04-10T01:00:00Z',
-    } satisfies CheckInPlanDetailResponseDto;
+    });
 
     const state = mapPlanDetailToEditorState(detail);
 
@@ -108,11 +143,13 @@ describe('mapPlanDetailToEditorState', () => {
     );
     expect(state.reward.dateRules).toEqual([
       expect.objectContaining({
+        localId: 'date-2026-05-03',
         rewardDate: '2026-05-03',
       }),
     ]);
     expect(state.reward.streakRules).toEqual([
       expect.objectContaining({
+        localId: 'streak-STREAK_3',
         ruleCode: 'STREAK_3',
         streakDays: 3,
       }),
@@ -182,18 +219,18 @@ describe('buildPlanWithRewardPayload', () => {
 
     expect(payload).toEqual({
       allowMakeupCountPerCycle: 1,
-      baseRewardConfig: {
+      baseRewardItems: createRewardItems({
         experience: 5,
         points: 10,
-      },
+      }),
       cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
       dateRewardRules: [
         {
-          rewardConfig: {
+          rewardDate: '2026-05-03',
+          rewardItems: createRewardItems({
             experience: 1,
             points: 2,
-          },
-          rewardDate: '2026-05-03',
+          }),
         },
       ],
       endDate: '2026-06-30',
@@ -201,9 +238,7 @@ describe('buildPlanWithRewardPayload', () => {
       patternRewardRules: [
         {
           patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
-          rewardConfig: {
-            points: 22,
-          },
+          rewardItems: createRewardItems({ points: 22 }),
           weekday: 1,
         },
       ],
@@ -214,10 +249,10 @@ describe('buildPlanWithRewardPayload', () => {
       streakRewardRules: [
         {
           repeatable: false,
-          rewardConfig: {
+          rewardItems: createRewardItems({
             experience: 9,
             points: 30,
-          },
+          }),
           ruleCode: 'STREAK_3',
           status: 1,
           streakDays: 3,
@@ -271,16 +306,12 @@ describe('buildPlanWithRewardPayload', () => {
 
     expect(payload).toEqual({
       allowMakeupCountPerCycle: 0,
-      baseRewardConfig: {
-        points: 12,
-      },
+      baseRewardItems: createRewardItems({ points: 12 }),
       cycleType: CHECK_IN_CYCLE_TYPE.MONTHLY,
       dateRewardRules: [
         {
-          rewardConfig: {
-            points: 66,
-          },
           rewardDate: '2026-05-03',
+          rewardItems: createRewardItems({ points: 66 }),
         },
       ],
       id: 7,
@@ -288,15 +319,11 @@ describe('buildPlanWithRewardPayload', () => {
         {
           monthDay: 15,
           patternType: CHECK_IN_PATTERN_TYPE.MONTH_DAY,
-          rewardConfig: {
-            experience: 8,
-          },
+          rewardItems: createRewardItems({ experience: 8 }),
         },
         {
           patternType: CHECK_IN_PATTERN_TYPE.MONTH_LAST_DAY,
-          rewardConfig: {
-            points: 99,
-          },
+          rewardItems: createRewardItems({ points: 99 }),
         },
       ],
       planCode: 'monthly_test',
@@ -447,18 +474,14 @@ describe('hasExistingRewardConfig', () => {
   it('should detect any configured reward bucket', () => {
     expect(
       hasExistingRewardConfig({
-        baseRewardConfig: {
-          points: 1,
-        },
+        baseRewardItems: createRewardItems({ points: 1 }),
       }),
     ).toBe(true);
     expect(
       hasExistingRewardConfig({
         dateRewardRules: [
           {
-            rewardConfig: {
-              points: 2,
-            },
+            rewardItems: createRewardItems({ points: 2 }),
           },
         ],
       }),
@@ -467,9 +490,7 @@ describe('hasExistingRewardConfig', () => {
       hasExistingRewardConfig({
         patternRewardRules: [
           {
-            rewardConfig: {
-              points: 3,
-            },
+            rewardItems: createRewardItems({ points: 3 }),
           },
         ],
       }),
@@ -478,9 +499,7 @@ describe('hasExistingRewardConfig', () => {
       hasExistingRewardConfig({
         streakRewardRules: [
           {
-            rewardConfig: {
-              points: 4,
-            },
+            rewardItems: createRewardItems({ points: 4 }),
           },
         ],
       }),
@@ -491,27 +510,67 @@ describe('hasExistingRewardConfig', () => {
 
 describe('plan date constraints', () => {
   it('should only allow monday as weekly start date and first day as monthly start date', () => {
-    expect(isPlanStartDateDisabled(new Date('2026-05-04'), CHECK_IN_CYCLE_TYPE.WEEKLY)).toBe(false);
-    expect(isPlanStartDateDisabled(new Date('2026-05-05'), CHECK_IN_CYCLE_TYPE.WEEKLY)).toBe(true);
-    expect(isPlanStartDateDisabled(new Date('2026-05-01'), CHECK_IN_CYCLE_TYPE.MONTHLY)).toBe(false);
-    expect(isPlanStartDateDisabled(new Date('2026-05-02'), CHECK_IN_CYCLE_TYPE.MONTHLY)).toBe(true);
+    expect(
+      isPlanStartDateDisabled(
+        new Date('2026-05-04'),
+        CHECK_IN_CYCLE_TYPE.WEEKLY,
+      ),
+    ).toBe(false);
+    expect(
+      isPlanStartDateDisabled(
+        new Date('2026-05-05'),
+        CHECK_IN_CYCLE_TYPE.WEEKLY,
+      ),
+    ).toBe(true);
+    expect(
+      isPlanStartDateDisabled(
+        new Date('2026-05-01'),
+        CHECK_IN_CYCLE_TYPE.MONTHLY,
+      ),
+    ).toBe(false);
+    expect(
+      isPlanStartDateDisabled(
+        new Date('2026-05-02'),
+        CHECK_IN_CYCLE_TYPE.MONTHLY,
+      ),
+    ).toBe(true);
   });
 
   it('should only allow sunday or month-end as end date and block dates before start', () => {
     expect(
-      isPlanEndDateDisabled(new Date('2026-05-10'), CHECK_IN_CYCLE_TYPE.WEEKLY, '2026-05-04'),
+      isPlanEndDateDisabled(
+        new Date('2026-05-10'),
+        CHECK_IN_CYCLE_TYPE.WEEKLY,
+        '2026-05-04',
+      ),
     ).toBe(false);
     expect(
-      isPlanEndDateDisabled(new Date('2026-05-09'), CHECK_IN_CYCLE_TYPE.WEEKLY, '2026-05-04'),
+      isPlanEndDateDisabled(
+        new Date('2026-05-09'),
+        CHECK_IN_CYCLE_TYPE.WEEKLY,
+        '2026-05-04',
+      ),
     ).toBe(true);
     expect(
-      isPlanEndDateDisabled(new Date('2026-05-31'), CHECK_IN_CYCLE_TYPE.MONTHLY, '2026-05-01'),
+      isPlanEndDateDisabled(
+        new Date('2026-05-31'),
+        CHECK_IN_CYCLE_TYPE.MONTHLY,
+        '2026-05-01',
+      ),
     ).toBe(false);
     expect(
-      isPlanEndDateDisabled(new Date('2026-05-30'), CHECK_IN_CYCLE_TYPE.MONTHLY, '2026-05-01'),
+      isPlanEndDateDisabled(
+        new Date('2026-05-30'),
+        CHECK_IN_CYCLE_TYPE.MONTHLY,
+        '2026-05-01',
+      ),
     ).toBe(true);
     expect(
-      isPlanEndDateDisabled(new Date('2026-04-30'), CHECK_IN_CYCLE_TYPE.MONTHLY, '2026-05-01'),
+      isPlanEndDateDisabled(
+        new Date('2026-04-30'),
+        CHECK_IN_CYCLE_TYPE.MONTHLY,
+        '2026-05-01',
+      ),
     ).toBe(true);
   });
 
@@ -694,66 +753,47 @@ describe('weekly reward mode selection', () => {
 
 describe('reward preview state', () => {
   it('should create readonly preview state from plan detail', () => {
-    const detail = {
-      activeCycleCount: 1,
+    const detail = createPlanDetail({
       allowMakeupCountPerCycle: 1,
-      baseRewardConfig: {
+      baseRewardItems: createRewardItems({
         experience: 8,
         points: 18,
-      },
-      createdAt: '2026-04-10T00:00:00Z',
-      cycleType: CHECK_IN_CYCLE_TYPE.WEEKLY,
+      }),
       dateRewardRules: [
         {
-          id: 201,
-          rewardConfig: {
-            points: 66,
-          },
           rewardDate: '2026-05-06',
+          rewardItems: createRewardItems({ points: 66 }),
         },
       ],
       endDate: '2026-05-24',
       id: 12,
       patternRewardRules: [
         {
-          id: 202,
           patternType: CHECK_IN_PATTERN_TYPE.WEEKDAY,
-          rewardConfig: {
-            experience: 10,
-          },
+          rewardItems: createRewardItems({ experience: 10 }),
           weekday: 3,
         },
       ],
-      pendingRewardCount: 0,
       planCode: 'weekly-preview',
       planName: '签到周计划',
       ruleCount: 2,
-      startDate: '2026-05-04',
-      status: 1,
       streakRewardRules: [
         {
-          id: 204,
           repeatable: false,
-          rewardConfig: {
-            points: 12,
-          },
+          rewardItems: createRewardItems({ points: 12 }),
           ruleCode: 'STREAK_7',
           status: 1,
           streakDays: 7,
         },
         {
-          id: 203,
           repeatable: true,
-          rewardConfig: {
-            experience: 6,
-          },
+          rewardItems: createRewardItems({ experience: 6 }),
           ruleCode: 'STREAK_3',
           status: 1,
           streakDays: 3,
         },
       ],
-      updatedAt: '2026-04-10T01:00:00Z',
-    } satisfies CheckInPlanDetailResponseDto;
+    });
 
     const previewState = createRewardPreviewState(detail);
 
@@ -858,4 +898,3 @@ describe('buildPlanSubmitPayload', () => {
     });
   });
 });
-

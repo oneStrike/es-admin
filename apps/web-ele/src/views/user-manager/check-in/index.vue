@@ -183,7 +183,7 @@ async function changePlanStatus(row: CheckInPlanRow, status: 0 | 1 | 2) {
 }
 
 async function repairRecordReward(row: CheckInReconciliationRow) {
-  if (row.rewardStatus === null || row.rewardStatus === 1) {
+  if (row.recordSettlementStatus === null || row.recordSettlementStatus === 1) {
     return;
   }
 
@@ -208,7 +208,7 @@ async function repairRecordReward(row: CheckInReconciliationRow) {
 }
 
 async function repairGrantReward(grant: CheckInGrantItemDto) {
-  if (grant.grantStatus === 1) {
+  if (grant.rewardSettlement?.settlementStatus === 1) {
     return;
   }
 
@@ -265,11 +265,14 @@ async function confirmAction(
 }
 
 function hasRepairableBaseReward(row: CheckInReconciliationRow) {
-  return row.rewardStatus === 0 || row.rewardStatus === 2;
+  return row.recordSettlementStatus === 0 || row.recordSettlementStatus === 2;
 }
 
 function hasRepairableGrant(grant: CheckInGrantItemDto) {
-  return grant.grantStatus === 0 || grant.grantStatus === 2;
+  return (
+    grant.rewardSettlement?.settlementStatus === 0 ||
+    grant.rewardSettlement?.settlementStatus === 2
+  );
 }
 
 function renderRewardTagType(status?: null | number) {
@@ -280,7 +283,7 @@ function renderRewardTagType(status?: null | number) {
 }
 
 function formatPlanBaseRewardSummary(row: CheckInPlanRow) {
-  return row.baseRewardConfig === undefined
+  return row.baseRewardItems === undefined
     ? '查看详情'
     : getPlanBaseRewardSummary(row);
 }
@@ -315,7 +318,7 @@ function formatRewardSourceLabel(sourceType?: null | number) {
               </el-text>
             </template>
 
-            <template #baseRewardConfig="{ row }">
+            <template #baseRewardItems="{ row }">
               <div class="w-full flex justify-center">
                 <div class="flex min-h-10 items-center">
                   <el-tag effect="light" round type="info">
@@ -424,34 +427,34 @@ function formatRewardSourceLabel(sourceType?: null | number) {
 
             <template #baseRewardStatus="{ row }">
               <div class="flex min-h-12 flex-wrap items-center gap-2">
-                <template v-if="row.rewardStatus === null">
+                <template v-if="row.recordSettlementStatus === null">
                   <el-tag effect="light" round type="info">无基础奖励</el-tag>
                 </template>
                 <template v-else>
                   <el-tag
-                    :type="renderRewardTagType(row.rewardStatus)"
+                    :type="renderRewardTagType(row.recordSettlementStatus)"
                     effect="light"
                     round
                   >
                     {{
                       checkInRewardStatusOptions.find(
-                        (item) => item.value === row.rewardStatus,
+                        (item) => item.value === row.recordSettlementStatus,
                       )?.label
                     }}
                   </el-tag>
                   <el-tag
-                    v-if="row.rewardResultType"
+                    v-if="row.recordSettlementResultType"
                     effect="plain"
                     round
                     :type="
                       checkInRewardResultOptions.find(
-                        (item) => item.value === row.rewardResultType,
+                        (item) => item.value === row.recordSettlementResultType,
                       )?.color || 'info'
                     "
                   >
                     {{
                       checkInRewardResultOptions.find(
-                        (item) => item.value === row.rewardResultType,
+                        (item) => item.value === row.recordSettlementResultType,
                       )?.label
                     }}
                   </el-tag>
@@ -463,9 +466,9 @@ function formatRewardSourceLabel(sourceType?: null | number) {
               <div class="flex min-h-10 items-center">
                 <el-tag effect="light" round type="primary">
                   {{
-                    row.rewardStatus === null
+                    row.recordSettlementStatus === null
                       ? '无基础奖励'
-                      : formatRewardSummary(row.resolvedRewardConfig)
+                      : formatRewardSummary(row.resolvedRewardItems)
                   }}
                 </el-tag>
               </div>
@@ -474,7 +477,7 @@ function formatRewardSourceLabel(sourceType?: null | number) {
             <template #baseRewardLedgerIds="{ row }">
               <div class="flex min-h-10 items-center">
                 <el-tag effect="light" round type="info">
-                  {{ formatLedgerIds(row.baseRewardLedgerIds) }}
+                  {{ row.rewardSettlementId ?? '-' }}
                 </el-tag>
               </div>
             </template>
@@ -496,27 +499,36 @@ function formatRewardSourceLabel(sourceType?: null | number) {
                       <el-tag
                         effect="light"
                         round
-                        :type="renderRewardTagType(grant.grantStatus)"
+                        :type="
+                          renderRewardTagType(
+                            grant.rewardSettlement?.settlementStatus,
+                          )
+                        "
                       >
                         {{
                           checkInRewardStatusOptions.find(
-                            (item) => item.value === grant.grantStatus,
+                            (item) =>
+                              item.value === grant.rewardSettlement?.settlementStatus,
                           )?.label
                         }}
                       </el-tag>
                       <el-tag
-                        v-if="grant.grantResultType"
+                        v-if="grant.rewardSettlement?.settlementResultType"
                         effect="plain"
                         round
                         :type="
                           checkInRewardResultOptions.find(
-                            (item) => item.value === grant.grantResultType,
+                            (item) =>
+                              item.value ===
+                              grant.rewardSettlement?.settlementResultType,
                           )?.color || 'info'
                         "
                       >
                         {{
                           checkInRewardResultOptions.find(
-                            (item) => item.value === grant.grantResultType,
+                            (item) =>
+                              item.value ===
+                              grant.rewardSettlement?.settlementResultType,
                           )?.label
                         }}
                       </el-tag>
@@ -532,15 +544,19 @@ function formatRewardSourceLabel(sourceType?: null | number) {
                     </el-button>
                   </div>
                   <div class="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
-                    <span>规则ID：{{ grant.ruleId }}</span>
+                    <span>规则编码：{{ grant.ruleCode }}</span>
                     <span>触发日：{{ grant.triggerSignDate }}</span>
-                    <span>账本：{{ formatLedgerIds(grant.ledgerIds) }}</span>
+                    <span>
+                      账本：{{
+                        formatLedgerIds(grant.rewardSettlement?.ledgerRecordIds)
+                      }}
+                    </span>
                   </div>
                   <div
-                    v-if="grant.lastGrantError"
+                    v-if="grant.rewardSettlement?.lastError"
                     class="mt-2 rounded-xl bg-rose-50 px-3 py-2 text-xs text-rose-600"
                   >
-                    {{ grant.lastGrantError }}
+                    {{ grant.rewardSettlement?.lastError }}
                   </div>
                 </div>
               </div>

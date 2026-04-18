@@ -37,9 +37,9 @@ export const enabledOptions = [
 ];
 
 export const deletedScopeOptions = [
-  { label: '未删除', value: 'active' },
-  { label: '已删除', value: 'deleted' },
-  { label: '全部', value: 'all' },
+  { label: '未删除', value: 0 },
+  { label: '已删除', value: 1 },
+  { label: '全部', value: 2 },
 ];
 
 export const userStatusOptions: Array<{
@@ -488,7 +488,7 @@ export const userColumns: VxeGridPropTypes.Columns<AdminAppUserPageItemDto> = [
     field: 'levelName',
     minWidth: 120,
     title: '等级',
-    formatter: ({ cellValue }) => cellValue || '-',
+    formatter: ({ row, cellValue }) => cellValue || row.level?.name || '-',
   },
   {
     field: 'points',
@@ -507,12 +507,14 @@ export const userColumns: VxeGridPropTypes.Columns<AdminAppUserPageItemDto> = [
     sortable: true,
     title: '主题数',
     width: 100,
+    formatter: ({ row }) => row.counts?.forumTopicCount ?? 0,
   },
   {
     field: 'replyCount',
     sortable: true,
     title: '回复数',
     width: 100,
+    formatter: ({ row }) => row.counts?.commentCount ?? 0,
   },
   {
     field: 'isEnabled',

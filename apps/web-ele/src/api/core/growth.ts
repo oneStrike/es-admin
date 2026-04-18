@@ -18,24 +18,12 @@ import type {
   GrowthBadgesUpdateStatusResponse,
   GrowthBadgesUserPageRequest,
   GrowthBadgesUserPageResponse,
-  GrowthExperienceRulesCreateRequest,
-  GrowthExperienceRulesCreateResponse,
-  GrowthExperienceRulesDeleteRequest,
-  GrowthExperienceRulesDeleteResponse,
-  GrowthExperienceRulesDetailRequest,
-  GrowthExperienceRulesDetailResponse,
-  GrowthExperienceRulesGrantRequest,
-  GrowthExperienceRulesGrantResponse,
-  GrowthExperienceRulesPageRequest,
-  GrowthExperienceRulesPageResponse,
-  GrowthExperienceRulesRecordDetailRequest,
-  GrowthExperienceRulesRecordDetailResponse,
-  GrowthExperienceRulesRecordPageRequest,
-  GrowthExperienceRulesRecordPageResponse,
-  GrowthExperienceRulesStatsRequest,
-  GrowthExperienceRulesStatsResponse,
-  GrowthExperienceRulesUpdateRequest,
-  GrowthExperienceRulesUpdateResponse,
+  GrowthExperienceRecordDetailRequest,
+  GrowthExperienceRecordDetailResponse,
+  GrowthExperienceRecordPageRequest,
+  GrowthExperienceRecordPageResponse,
+  GrowthExperienceStatsRequest,
+  GrowthExperienceStatsResponse,
   GrowthLevelRulesCreateRequest,
   GrowthLevelRulesCreateResponse,
   GrowthLevelRulesDeleteRequest,
@@ -51,14 +39,22 @@ import type {
   GrowthLevelRulesUpdateResponse,
   GrowthLevelRulesUserDetailRequest,
   GrowthLevelRulesUserDetailResponse,
-  GrowthPointsRulesCreateRequest,
-  GrowthPointsRulesCreateResponse,
-  GrowthPointsRulesDetailRequest,
-  GrowthPointsRulesDetailResponse,
-  GrowthPointsRulesPageRequest,
-  GrowthPointsRulesPageResponse,
-  GrowthPointsRulesUpdateRequest,
-  GrowthPointsRulesUpdateResponse,
+  GrowthRewardRulesCreateRequest,
+  GrowthRewardRulesCreateResponse,
+  GrowthRewardRulesDeleteRequest,
+  GrowthRewardRulesDeleteResponse,
+  GrowthRewardRulesDetailRequest,
+  GrowthRewardRulesDetailResponse,
+  GrowthRewardRulesPageRequest,
+  GrowthRewardRulesPageResponse,
+  GrowthRewardRulesUpdateRequest,
+  GrowthRewardRulesUpdateResponse,
+  GrowthRewardSettlementPageRequest,
+  GrowthRewardSettlementPageResponse,
+  GrowthRewardSettlementRetryPendingBatchRequest,
+  GrowthRewardSettlementRetryPendingBatchResponse,
+  GrowthRewardSettlementRetryRequest,
+  GrowthRewardSettlementRetryResponse,
   GrowthRuleEventsPageRequest,
   GrowthRuleEventsPageResponse
 } from '../types/growth.d'
@@ -67,106 +63,26 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 获取积分规则分页
-   */
-  export async function growthPointsRulesPageApi(params?: GrowthPointsRulesPageRequest): Promise<GrowthPointsRulesPageResponse> {
-    return requestClient.get<GrowthPointsRulesPageResponse>('/api/admin/growth/points-rules/page', { params });
-  }
-
-
-  /**
-   * 获取积分规则详情
-   */
-  export async function growthPointsRulesDetailApi(params: GrowthPointsRulesDetailRequest): Promise<GrowthPointsRulesDetailResponse> {
-    return requestClient.get<GrowthPointsRulesDetailResponse>('/api/admin/growth/points-rules/detail', { params });
-  }
-
-
-  /**
-   * 创建积分规则
-   */
-  export async function growthPointsRulesCreateApi(params: GrowthPointsRulesCreateRequest): Promise<GrowthPointsRulesCreateResponse> {
-    return requestClient.post<GrowthPointsRulesCreateResponse>('/api/admin/growth/points-rules/create', params);
-  }
-
-
-  /**
-   * 更新积分规则
-   */
-  export async function growthPointsRulesUpdateApi(params: GrowthPointsRulesUpdateRequest): Promise<GrowthPointsRulesUpdateResponse> {
-    return requestClient.post<GrowthPointsRulesUpdateResponse>('/api/admin/growth/points-rules/update', params);
-  }
-
-
-  /**
-   * 获取用户经验规则分页
-   */
-  export async function growthExperienceRulesPageApi(params?: GrowthExperienceRulesPageRequest): Promise<GrowthExperienceRulesPageResponse> {
-    return requestClient.get<GrowthExperienceRulesPageResponse>('/api/admin/growth/experience-rules/page', { params });
-  }
-
-
-  /**
-   * 获取用户经验规则详情
-   */
-  export async function growthExperienceRulesDetailApi(params: GrowthExperienceRulesDetailRequest): Promise<GrowthExperienceRulesDetailResponse> {
-    return requestClient.get<GrowthExperienceRulesDetailResponse>('/api/admin/growth/experience-rules/detail', { params });
-  }
-
-
-  /**
-   * 创建用户经验规则
-   */
-  export async function growthExperienceRulesCreateApi(params: GrowthExperienceRulesCreateRequest): Promise<GrowthExperienceRulesCreateResponse> {
-    return requestClient.post<GrowthExperienceRulesCreateResponse>('/api/admin/growth/experience-rules/create', params);
-  }
-
-
-  /**
-   * 更新用户经验规则
-   */
-  export async function growthExperienceRulesUpdateApi(params: GrowthExperienceRulesUpdateRequest): Promise<GrowthExperienceRulesUpdateResponse> {
-    return requestClient.post<GrowthExperienceRulesUpdateResponse>('/api/admin/growth/experience-rules/update', params);
-  }
-
-
-  /**
-   * 删除用户经验规则
-   */
-  export async function growthExperienceRulesDeleteApi(params: GrowthExperienceRulesDeleteRequest): Promise<GrowthExperienceRulesDeleteResponse> {
-    return requestClient.post<GrowthExperienceRulesDeleteResponse>('/api/admin/growth/experience-rules/delete', params);
-  }
-
-
-  /**
-   * 增加用户经验
-   */
-  export async function growthExperienceRulesGrantApi(params: GrowthExperienceRulesGrantRequest): Promise<GrowthExperienceRulesGrantResponse> {
-    return requestClient.post<GrowthExperienceRulesGrantResponse>('/api/admin/growth/experience-rules/grant', params);
-  }
-
-
-  /**
    * 获取用户经验记录分页
    */
-  export async function growthExperienceRulesRecordPageApi(params: GrowthExperienceRulesRecordPageRequest): Promise<GrowthExperienceRulesRecordPageResponse> {
-    return requestClient.get<GrowthExperienceRulesRecordPageResponse>('/api/admin/growth/experience-rules/record/page', { params });
+  export async function growthExperienceRecordPageApi(params: GrowthExperienceRecordPageRequest): Promise<GrowthExperienceRecordPageResponse> {
+    return requestClient.get<GrowthExperienceRecordPageResponse>('/api/admin/growth/experience/record/page', { params });
   }
 
 
   /**
    * 获取用户经验记录详情
    */
-  export async function growthExperienceRulesRecordDetailApi(params: GrowthExperienceRulesRecordDetailRequest): Promise<GrowthExperienceRulesRecordDetailResponse> {
-    return requestClient.get<GrowthExperienceRulesRecordDetailResponse>('/api/admin/growth/experience-rules/record/detail', { params });
+  export async function growthExperienceRecordDetailApi(params: GrowthExperienceRecordDetailRequest): Promise<GrowthExperienceRecordDetailResponse> {
+    return requestClient.get<GrowthExperienceRecordDetailResponse>('/api/admin/growth/experience/record/detail', { params });
   }
 
 
   /**
    * 获取用户经验统计信息
    */
-  export async function growthExperienceRulesStatsApi(params: GrowthExperienceRulesStatsRequest): Promise<GrowthExperienceRulesStatsResponse> {
-    return requestClient.get<GrowthExperienceRulesStatsResponse>('/api/admin/growth/experience-rules/stats', { params });
+  export async function growthExperienceStatsApi(params: GrowthExperienceStatsRequest): Promise<GrowthExperienceStatsResponse> {
+    return requestClient.get<GrowthExperienceStatsResponse>('/api/admin/growth/experience/stats', { params });
   }
 
 
@@ -319,4 +235,68 @@ import { requestClient } from '#/api/request'
    */
   export async function growthRuleEventsPageApi(params?: GrowthRuleEventsPageRequest): Promise<GrowthRuleEventsPageResponse> {
     return requestClient.get<GrowthRuleEventsPageResponse>('/api/admin/growth/rule-events/page', { params });
+  }
+
+
+  /**
+   * 分页查询通用成长奖励补偿记录
+   */
+  export async function growthRewardSettlementPageApi(params?: GrowthRewardSettlementPageRequest): Promise<GrowthRewardSettlementPageResponse> {
+    return requestClient.get<GrowthRewardSettlementPageResponse>('/api/admin/growth/reward-settlement/page', { params });
+  }
+
+
+  /**
+   * 重试单条通用成长奖励补偿
+   */
+  export async function growthRewardSettlementRetryApi(params: GrowthRewardSettlementRetryRequest): Promise<GrowthRewardSettlementRetryResponse> {
+    return requestClient.post<GrowthRewardSettlementRetryResponse>('/api/admin/growth/reward-settlement/retry', params);
+  }
+
+
+  /**
+   * 批量重试待补偿的通用成长奖励记录
+   */
+  export async function growthRewardSettlementRetryPendingBatchApi(params?: GrowthRewardSettlementRetryPendingBatchRequest): Promise<GrowthRewardSettlementRetryPendingBatchResponse> {
+    return requestClient.post<GrowthRewardSettlementRetryPendingBatchResponse>('/api/admin/growth/reward-settlement/retry-pending/batch', params);
+  }
+
+
+  /**
+   * 分页查询成长奖励规则
+   */
+  export async function growthRewardRulesPageApi(params?: GrowthRewardRulesPageRequest): Promise<GrowthRewardRulesPageResponse> {
+    return requestClient.get<GrowthRewardRulesPageResponse>('/api/admin/growth/reward-rules/page', { params });
+  }
+
+
+  /**
+   * 查询成长奖励规则详情
+   */
+  export async function growthRewardRulesDetailApi(params: GrowthRewardRulesDetailRequest): Promise<GrowthRewardRulesDetailResponse> {
+    return requestClient.get<GrowthRewardRulesDetailResponse>('/api/admin/growth/reward-rules/detail', { params });
+  }
+
+
+  /**
+   * 创建成长奖励规则
+   */
+  export async function growthRewardRulesCreateApi(params: GrowthRewardRulesCreateRequest): Promise<GrowthRewardRulesCreateResponse> {
+    return requestClient.post<GrowthRewardRulesCreateResponse>('/api/admin/growth/reward-rules/create', params);
+  }
+
+
+  /**
+   * 更新成长奖励规则
+   */
+  export async function growthRewardRulesUpdateApi(params: GrowthRewardRulesUpdateRequest): Promise<GrowthRewardRulesUpdateResponse> {
+    return requestClient.post<GrowthRewardRulesUpdateResponse>('/api/admin/growth/reward-rules/update', params);
+  }
+
+
+  /**
+   * 删除成长奖励规则
+   */
+  export async function growthRewardRulesDeleteApi(params: GrowthRewardRulesDeleteRequest): Promise<GrowthRewardRulesDeleteResponse> {
+    return requestClient.post<GrowthRewardRulesDeleteResponse>('/api/admin/growth/reward-rules/delete', params);
   }

@@ -2,19 +2,19 @@
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
-  BaseUserPointRuleDto,
-  GrowthPointsRulesCreateRequest,
-  GrowthPointsRulesUpdateRequest,
+  BaseGrowthRewardRuleDto,
+  GrowthRewardRulesCreateRequest,
+  GrowthRewardRulesUpdateRequest,
 } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  growthPointsRulesCreateApi,
-  growthPointsRulesDetailApi,
-  growthPointsRulesPageApi,
-  growthPointsRulesUpdateApi,
+  growthRewardRulesCreateApi,
+  growthRewardRulesDetailApi,
+  growthRewardRulesPageApi,
+  growthRewardRulesUpdateApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
@@ -28,15 +28,30 @@ import {
   searchFormSchema,
 } from './modules/model/shared';
 
-const gridOptions: VxeGridProps<BaseUserPointRuleDto> = {
+const POINTS_ASSET_TYPE = 1 as const;
+
+function normalizeRewardRulePayload(
+  values: GrowthRewardRulesCreateRequest | GrowthRewardRulesUpdateRequest,
+) {
+  return {
+    ...values,
+    assetKey: '',
+    assetType: POINTS_ASSET_TYPE,
+  };
+}
+
+const gridOptions: VxeGridProps<BaseGrowthRewardRuleDto> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await growthPointsRulesPageApi(
+        return await growthRewardRulesPageApi(
           formatQuery({
             page,
-            formValues,
+            formValues: {
+              ...formValues,
+              assetType: POINTS_ASSET_TYPE,
+            },
             sorts,
           }),
         );
@@ -60,38 +75,43 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '积分规则详情',
 });
 
-async function openFormModal(row?: BaseUserPointRuleDto) {
+async function openFormModal(row?: BaseGrowthRewardRuleDto) {
   let record;
   if (row) {
-    record = await growthPointsRulesDetailApi({ id: row.id });
+    record = await growthRewardRulesDetailApi({ id: row.id });
   }
   formApi.setData({ title: '积分规则', record, schema: formSchema }).open();
 }
 
 async function handleSubmit(
-  values: GrowthPointsRulesCreateRequest | GrowthPointsRulesUpdateRequest,
+  values: GrowthRewardRulesCreateRequest | GrowthRewardRulesUpdateRequest,
 ) {
-  await (values?.id
-    ? growthPointsRulesUpdateApi(values as GrowthPointsRulesUpdateRequest)
-    : growthPointsRulesCreateApi(values as GrowthPointsRulesCreateRequest));
+  const isUpdate = 'id' in values && !!values.id;
+  const payload = normalizeRewardRulePayload(values);
+
+  await (isUpdate
+    ? growthRewardRulesUpdateApi(payload as GrowthRewardRulesUpdateRequest)
+    : growthRewardRulesCreateApi(payload as GrowthRewardRulesCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
 async function toggleEnableStatus(
-  row: BaseUserPointRuleDto & { loading?: boolean },
+  row: BaseGrowthRewardRuleDto & { loading?: boolean },
 ) {
   row.loading = true;
   try {
-    await growthPointsRulesUpdateApi({
-      id: row.id,
-      type: row.type,
-      points: row.points,
+    await growthRewardRulesUpdateApi({
+      assetKey: row.assetKey ?? '',
+      assetType: POINTS_ASSET_TYPE,
       dailyLimit: row.dailyLimit,
-      totalLimit: row.totalLimit,
-      remark: row.remark,
+      delta: row.delta,
+      id: row.id,
       isEnabled: !row.isEnabled,
+      remark: row.remark,
+      totalLimit: row.totalLimit,
+      type: row.type,
     });
     useMessage.success('操作成功');
     gridApi.reload();
@@ -139,7 +159,7 @@ async function toggleEnableStatus(
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
-      :api="growthPointsRulesDetailApi"
+      :api="growthRewardRulesDetailApi"
       :cards="getDetailCards"
       class="!min-w-[800px]"
     />

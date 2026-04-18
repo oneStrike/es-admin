@@ -88,7 +88,7 @@ const [AssignmentModal, assignmentApi] = useVbenModal({
 });
 
 async function openFormModal(row?: TaskRow) {
-  let record: TaskDetailResponse | undefined;
+  let record: Record<string, any> | TaskDetailResponse | undefined;
   if (row) {
     record = mapTaskToFormRecord(await taskDetailApi({ id: row.id }));
   }
@@ -115,6 +115,7 @@ function normalizeTaskPayload(values: Record<string, any>) {
 
   const publishStartAt = values.publishStartAt || undefined;
   const publishEndAt = values.publishEndAt || undefined;
+  const rewardItems = parseTaskRewardItems(values.rewardItems);
 
   if (
     publishStartAt &&
@@ -140,12 +141,38 @@ function normalizeTaskPayload(values: Record<string, any>) {
     publishEndAt,
     publishStartAt,
     repeatRule: values.repeatRule?.trim?.() || undefined,
-    rewardConfig: values.rewardConfig?.trim?.() || undefined,
+    rewardItems,
     status: Number(values.status) as 0 | 1 | 2,
     targetCount: Number(values.targetCount ?? 1),
     title,
     type: Number(values.type) as 1 | 2 | 4,
   };
+}
+
+function parseTaskRewardItems(value: unknown) {
+  if (!value) {
+    return undefined;
+  }
+
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (typeof value !== 'string') {
+    useMessage.warning('奖励配置必须是奖励项数组');
+    throw new Error('invalid reward items');
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    if (!Array.isArray(parsed)) {
+      throw new TypeError('rewardItems is not an array');
+    }
+    return parsed;
+  } catch {
+    useMessage.warning('奖励配置请填写合法的 JSON 数组');
+    throw new Error('invalid reward items');
+  }
 }
 
 async function handleSubmit(values: Record<string, any>) {

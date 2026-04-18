@@ -1,11 +1,10 @@
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
-  CheckInGrantItemDto,
   CheckInPatternRewardRuleItemDto,
   CheckInPlanDetailResponseDto,
   CheckInPlanPageItemDto,
   CheckInReconciliationItemDto,
-  CheckInRewardConfigDto,
+  GrowthRewardItemDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -19,7 +18,10 @@ import {
 
 export { formatRewardSummary } from './plan-modal';
 
-export type CheckInRewardConfigValue = CheckInRewardConfigDto;
+export type CheckInRewardConfigValue = {
+  experience?: number;
+  points?: number;
+};
 export type CheckInPlanRow = CheckInPlanPageItemDto & {
   enableLoading?: boolean;
   publishLoading?: boolean;
@@ -132,7 +134,7 @@ const planTableSchema: EsFormSchema = [
     componentProps: {
       placeholder: '基础奖励',
     },
-    fieldName: 'baseRewardConfig',
+    fieldName: 'baseRewardItems',
     label: '基础奖励',
   },
 ];
@@ -195,7 +197,7 @@ const reconciliationSearchBaseSchema: EsFormSchema = [
       options: checkInRewardStatusOptions,
       placeholder: '基础奖励状态',
     },
-    fieldName: 'rewardStatus',
+    fieldName: 'recordSettlementStatus',
     label: '基础奖励状态',
   },
   {
@@ -205,7 +207,7 @@ const reconciliationSearchBaseSchema: EsFormSchema = [
       options: checkInRewardStatusOptions,
       placeholder: '连续奖励状态',
     },
-    fieldName: 'grantStatus',
+    fieldName: 'grantSettlementStatus',
     label: '连续奖励状态',
   },
 ];
@@ -275,7 +277,7 @@ const reconciliationTableFormSchema: EsFormSchema = [
       options: checkInRewardStatusOptions,
       placeholder: '基础奖励',
     },
-    fieldName: 'rewardStatus',
+    fieldName: 'recordSettlementStatus',
     label: '基础奖励',
   },
   {
@@ -283,16 +285,16 @@ const reconciliationTableFormSchema: EsFormSchema = [
     componentProps: {
       placeholder: '奖励快照',
     },
-    fieldName: 'resolvedRewardConfig',
+    fieldName: 'resolvedRewardItems',
     label: '奖励快照',
   },
   {
     component: 'Input',
     componentProps: {
-      placeholder: '基础账本',
+      placeholder: '结算事实',
     },
-    fieldName: 'baseRewardLedgerIds',
-    label: '基础账本',
+    fieldName: 'rewardSettlementId',
+    label: '结算事实',
   },
   {
     component: 'Input',
@@ -305,10 +307,10 @@ const reconciliationTableFormSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
-      placeholder: '基础奖励错误',
+      placeholder: '最近错误',
     },
-    fieldName: 'lastRewardError',
-    label: '基础奖励错误',
+    fieldName: 'recordSettlementLastError',
+    label: '最近错误',
   },
 ];
 
@@ -344,10 +346,10 @@ export const reconciliationSearchFormSchema =
     grantId: {
       show: true,
     },
-    rewardStatus: {
+    recordSettlementStatus: {
       show: true,
     },
-    grantStatus: {
+    grantSettlementStatus: {
       show: true,
     },
   });
@@ -398,10 +400,10 @@ export const planColumns: VxeGridPropTypes.Columns<CheckInPlanRow> =
       minWidth: 110,
       title: '补签次数',
     },
-    baseRewardConfig: {
+    baseRewardItems: {
       minWidth: 190,
       showOverflow: false,
-      slots: { default: 'baseRewardConfig' },
+      slots: { default: 'baseRewardItems' },
       title: '默认奖励',
     },
     updatedAt: {
@@ -444,18 +446,18 @@ export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliati
         slots: { default: 'resolvedRewardSourceType' },
         title: '解析来源',
       },
-      rewardStatus: {
+      recordSettlementStatus: {
         minWidth: 150,
         showOverflow: false,
         slots: { default: 'baseRewardStatus' },
       },
-      resolvedRewardConfig: {
+      resolvedRewardItems: {
         minWidth: 220,
         showOverflow: false,
         slots: { default: 'resolvedRewardConfig' },
         title: '奖励快照',
       },
-      baseRewardLedgerIds: {
+      rewardSettlementId: {
         minWidth: 180,
         showOverflow: false,
         slots: { default: 'baseRewardLedgerIds' },
@@ -465,7 +467,7 @@ export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliati
         showOverflow: false,
         slots: { default: 'grants' },
       },
-      lastRewardError: {
+      recordSettlementLastError: {
         minWidth: 220,
         showOverflow: 'tooltip',
       },
@@ -482,24 +484,24 @@ export const reconciliationColumns: VxeGridPropTypes.Columns<CheckInReconciliati
   );
 
 export function formatLedgerIds(
-  ids?: CheckInGrantItemDto['ledgerIds'] | null  ,
+  ids?: null | number[],
 ) {
   return ids && ids.length > 0 ? ids.join(', ') : '-';
 }
 
 export function getPlanBaseRewardSummary(source: {
-  baseRewardConfig?: CheckInRewardConfigValue | null;
+  baseRewardItems?: GrowthRewardItemDto[] | null;
   dateRewardRules?: Array<
     Pick<
       CheckInPlanDetailResponseDto['dateRewardRules'][number],
-      'rewardConfig'
+      'rewardItems'
     >
   > | null;
   patternRewardRules?: Array<
-    Pick<CheckInPatternRewardRuleItemDto, 'rewardConfig'>
+    Pick<CheckInPatternRewardRuleItemDto, 'rewardItems'>
   > | null;
 }) {
-  const baseRewardConfig = parseRewardConfig(source.baseRewardConfig);
+  const baseRewardConfig = parseRewardConfig(source.baseRewardItems);
   if (hasConfiguredReward(baseRewardConfig)) {
     return formatRewardSummary(baseRewardConfig);
   }

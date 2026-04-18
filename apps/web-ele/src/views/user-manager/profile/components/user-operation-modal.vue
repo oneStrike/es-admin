@@ -6,11 +6,11 @@ import type {
   AdminAppUserExperienceStatsDto,
   AdminAppUserPageItemDto,
   AdminAppUserPointRecordDto,
-  AdminAppUserPointStatsDto,
   AppUsersExperienceGrantRequest,
   AppUsersPointsConsumeRequest,
   AppUsersPointsGrantRequest,
   UserBadgeItemDto,
+  UserPointStatsFieldsDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -60,7 +60,7 @@ const activeTab = ref('points');
 const currentUser = ref<AdminAppUserPageItemDto | null>(null);
 const loading = ref(false);
 const userDetail = ref<AdminAppUserDetailDto | null>(null);
-const pointStats = ref<AdminAppUserPointStatsDto | null>(null);
+const pointStats = ref<null | UserPointStatsFieldsDto>(null);
 const experienceStats = ref<AdminAppUserExperienceStatsDto | null>(null);
 const sharedData = ref<null | OperationModalData>(null);
 const pointsGrantOperationKey = ref('');

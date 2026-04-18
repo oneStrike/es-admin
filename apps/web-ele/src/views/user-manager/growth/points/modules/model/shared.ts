@@ -1,4 +1,4 @@
-import type { BaseUserPointRuleDto } from '#/api/types';
+import type { BaseGrowthRewardRuleDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -19,14 +19,14 @@ export const formSchema: EsFormSchema = [
   {
     component: 'InputNumber',
     componentProps: {
-      placeholder: '请输入积分变化',
-      min: -9999,
+      placeholder: '请输入积分奖励',
+      min: 1,
       max: 9999,
     },
-    fieldName: 'points',
-    label: '积分变化',
+    fieldName: 'delta',
+    label: '积分奖励',
     rules: 'required',
-    help: '正数为获得积分，负数为消费积分',
+    help: '仅支持填写正整数奖励值',
   },
   {
     component: 'InputNumber',
@@ -85,7 +85,7 @@ export const formSchema: EsFormSchema = [
 ];
 
 export const pageColumns =
-  formSchemaTransform.toTableColumns<BaseUserPointRuleDto>(formSchema, {
+  formSchemaTransform.toTableColumns<BaseGrowthRewardRuleDto>(formSchema, {
     type: {
       minWidth: 120,
       cellRender: {
@@ -95,7 +95,7 @@ export const pageColumns =
         },
       },
     },
-    points: {
+    delta: {
       minWidth: 120,
       cellRender: {
         name: 'CellTag',

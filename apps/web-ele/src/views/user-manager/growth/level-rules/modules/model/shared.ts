@@ -100,11 +100,11 @@ export const formSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
-      placeholder: '请输入积分购买折扣（0-1）',
+      placeholder: '请输入积分支付比例（0-1）',
     },
     defaultValue: '1',
-    fieldName: 'discount',
-    label: '积分购买折扣',
+    fieldName: 'purchasePayableRate',
+    label: '积分支付比例',
     rules: 'required',
   },
   {
@@ -234,7 +234,7 @@ export const pageColumns =
     description: {
       hide: true,
     },
-    discount: {
+    purchasePayableRate: {
       hide: true,
     },
     loginDays: {

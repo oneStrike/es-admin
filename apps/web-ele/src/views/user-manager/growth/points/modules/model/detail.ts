@@ -1,8 +1,8 @@
-import type { BaseUserPointRuleDto } from '#/api/types';
+import type { BaseGrowthRewardRuleDto } from '#/api/types';
 
 import { pointsTypeMap } from './constants';
 
-export function getDetailCards(detail: BaseUserPointRuleDto) {
+export function getDetailCards(detail: BaseGrowthRewardRuleDto) {
   return [
     {
       title: '基本信息',
@@ -15,8 +15,8 @@ export function getDetailCards(detail: BaseUserPointRuleDto) {
         },
         {
           label: '积分变化',
-          tagText: detail?.points > 0 ? `+${detail?.points}` : detail?.points,
-          tagType: detail?.points > 0 ? 'success' : 'danger',
+          tagText: detail?.delta > 0 ? `+${detail?.delta}` : detail?.delta,
+          tagType: detail?.delta > 0 ? 'success' : 'danger',
           type: 'tag' as const,
         },
         {

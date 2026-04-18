@@ -51,6 +51,11 @@ export function getDetailCards(detail: BaseUserLevelRuleDto) {
           value: detail?.sortOrder || 0,
           type: 'text' as const,
         },
+        {
+          label: '积分支付比例',
+          value: detail?.purchasePayableRate || '-',
+          type: 'text' as const,
+        },
       ],
     },
     {

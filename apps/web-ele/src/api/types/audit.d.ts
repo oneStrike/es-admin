@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AuditPageRequest]
  *  @来源 系统管理/审计日志
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AuditPageRequest = {
   /** 任意合法数值 */
@@ -22,7 +22,7 @@ export type AuditPageRequest = {
   /* 操作是否成功 */
   isSuccess?: boolean
 
-  /* 请求方法 */
+  /* 请求方法（GET；POST；PUT；DELETE；PATCH；HEAD；OPTIONS） */
   method?: string
 
   /* 排序字段，json格式 */
@@ -67,7 +67,7 @@ export type AuditPageResponse = {
 /**
  *  类型定义 [AuditItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-16 21:43:02
+ *  @更新时间 2026-04-18 11:53:53
  */
 export type AuditItemDto = {
   /** 任意合法数值 */
@@ -90,7 +90,7 @@ export type AuditItemDto = {
   ip?: null | string
   /* 操作是否成功 */
   isSuccess: boolean
-  /* 请求方法 */
+  /* 请求方法（GET；POST；PUT；DELETE；PATCH；HEAD；OPTIONS） */
   method: 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT'
   /* 请求参数（JSON格式） */
   params?: null | string

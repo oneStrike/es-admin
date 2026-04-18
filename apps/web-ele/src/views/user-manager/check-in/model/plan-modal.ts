@@ -19,10 +19,10 @@ import type {
   CheckInPlanCreateRequest,
   CheckInPlanDetailResponseDto,
   CheckInPlanUpdateRequest,
-  CheckInRewardConfigDto,
   CreateCheckInDateRewardRuleDto,
   CreateCheckInPatternRewardRuleDto,
   CreateCheckInStreakRewardRuleDto,
+  GrowthRewardItemDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -31,7 +31,15 @@ import { dayjs } from '#/utils';
 // ======================== 类型定义 ========================
 
 /** 奖励配置值类型，包含积分和经验两个字段 */
-export type CheckInRewardConfigValue = CheckInRewardConfigDto;
+export type CheckInRewardConfigValue = {
+  experience?: number;
+  points?: number;
+};
+
+const CHECK_IN_REWARD_ASSET_TYPE = {
+  POINTS: 1,
+  EXPERIENCE: 2,
+} as const;
 /** 签到周期类型：按周(weekly) / 按月(monthly) */
 export type CheckInCycleType = CheckInPlanDetailResponseDto['cycleType'];
 /** 周期模式规则类型：星期几(WEEKDAY) / 每月几号(MONTH_DAY) / 月末(MONTH_LAST_DAY) */
@@ -523,10 +531,38 @@ export function resolveWeeklyRewardMode(params: {
 
 /** 安全地解析奖励配置对象，非对象类型返回空对象 */
 export function parseRewardConfig(value: unknown): CheckInRewardConfigValue {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+  if (!value) {
     return {};
   }
-  return value as CheckInRewardConfigValue;
+
+  if (Array.isArray(value)) {
+    return parseRewardItems(value);
+  }
+
+  if (typeof value !== 'object') {
+    return {};
+  }
+
+  const candidate = value as {
+    baseRewardItems?: GrowthRewardItemDto[];
+    experience?: number;
+    points?: number;
+    rewardItems?: GrowthRewardItemDto[];
+  };
+
+  if (Array.isArray(candidate.rewardItems)) {
+    return parseRewardItems(candidate.rewardItems);
+  }
+
+  if (Array.isArray(candidate.baseRewardItems)) {
+    return parseRewardItems(candidate.baseRewardItems);
+  }
+
+  return {
+    experience:
+      typeof candidate.experience === 'number' ? candidate.experience : undefined,
+    points: typeof candidate.points === 'number' ? candidate.points : undefined,
+  };
 }
 
 /** 判断奖励配置中是否至少填写了积分或经验的一项（大于 0 视为有效） */
@@ -542,27 +578,27 @@ export function hasConfiguredReward(value: {
  * 用于区分新建（需调 create 接口）和编辑（需调 update 接口）场景
  */
 export function hasExistingRewardConfig(source: {
-  baseRewardConfig?: CheckInRewardConfigValue | null;
+  baseRewardItems?: GrowthRewardItemDto[] | null;
   dateRewardRules?: Array<{
-    rewardConfig?: CheckInRewardConfigValue | null;
+    rewardItems?: GrowthRewardItemDto[] | null;
   }> | null;
   patternRewardRules?: Array<{
-    rewardConfig?: CheckInRewardConfigValue | null;
+    rewardItems?: GrowthRewardItemDto[] | null;
   }> | null;
   streakRewardRules?: Array<{
-    rewardConfig?: CheckInRewardConfigValue | null;
+    rewardItems?: GrowthRewardItemDto[] | null;
   }> | null;
 }) {
   return (
-    hasConfiguredReward(parseRewardConfig(source.baseRewardConfig)) ||
+    hasConfiguredReward(parseRewardConfig(source.baseRewardItems)) ||
     !!source.dateRewardRules?.some((item) =>
-      hasConfiguredReward(parseRewardConfig(item.rewardConfig)),
+      hasConfiguredReward(parseRewardConfig(item.rewardItems)),
     ) ||
     !!source.patternRewardRules?.some((item) =>
-      hasConfiguredReward(parseRewardConfig(item.rewardConfig)),
+      hasConfiguredReward(parseRewardConfig(item.rewardItems)),
     ) ||
     !!source.streakRewardRules?.some((item) =>
-      hasConfiguredReward(parseRewardConfig(item.rewardConfig)),
+      hasConfiguredReward(parseRewardConfig(item.rewardItems)),
     )
   );
 }
@@ -579,7 +615,7 @@ export function hasExistingRewardConfig(source: {
 export function mapPlanDetailToEditorState(
   detail: CheckInPlanDetailResponseDto,
 ): CheckInPlanEditorState {
-  const baseRewardConfig = parseRewardConfig(detail.baseRewardConfig);
+  const baseRewardConfig = parseRewardConfig(detail.baseRewardItems);
 
   return {
     plan: {
@@ -599,11 +635,10 @@ export function mapPlanDetailToEditorState(
       baseRewardPoints: baseRewardConfig.points ?? undefined,
       dateRules: detail.dateRewardRules
         .map((item) => {
-          const rewardConfig = parseRewardConfig(item.rewardConfig);
+          const rewardConfig = parseRewardConfig(item.rewardItems);
           return {
             experience: rewardConfig.experience ?? undefined,
-            id: item.id,
-            localId: `date-${item.id}`,
+            localId: `date-${item.rewardDate}`,
             points: rewardConfig.points ?? undefined,
             rewardDate: item.rewardDate,
           } satisfies CheckInDateRuleDraft;
@@ -617,10 +652,9 @@ export function mapPlanDetailToEditorState(
       weeklyRewardMode: 'weekday',
       patternRules: detail.patternRewardRules
         .map((item) => {
-          const rewardConfig = parseRewardConfig(item.rewardConfig);
+          const rewardConfig = parseRewardConfig(item.rewardItems);
           return {
             experience: rewardConfig.experience ?? undefined,
-            id: item.id,
             key: createPatternRuleKey(item),
             monthDay: item.monthDay ?? undefined,
             patternType: item.patternType,
@@ -631,11 +665,10 @@ export function mapPlanDetailToEditorState(
         .toSorted(comparePatternRuleDraft),
       streakRules: detail.streakRewardRules
         .map((item) => {
-          const rewardConfig = parseRewardConfig(item.rewardConfig);
+          const rewardConfig = parseRewardConfig(item.rewardItems);
           return {
             experience: rewardConfig.experience ?? undefined,
-            id: item.id,
-            localId: `streak-${item.id}`,
+            localId: `streak-${item.ruleCode}`,
             points: rewardConfig.points ?? undefined,
             repeatable: item.repeatable,
             ruleCode: item.ruleCode,
@@ -688,7 +721,7 @@ export function buildPlanWithRewardPayload(params: {
   reward: CheckInRewardFormModel;
 }) {
   const { cycleType, planId, plan, reward } = params;
-  const baseRewardConfig = buildRewardConfig(
+  const baseRewardItems = buildRewardItems(
     reward.baseRewardPoints,
     reward.baseRewardExperience,
   );
@@ -703,7 +736,7 @@ export function buildPlanWithRewardPayload(params: {
     .toSorted((left, right) => left.rewardDate.localeCompare(right.rewardDate))
     .map((item) => {
       return {
-        rewardConfig: buildRewardConfig(item.points, item.experience)!,
+        rewardItems: buildRewardItems(item.points, item.experience) || [],
         rewardDate: item.rewardDate,
       } satisfies CreateCheckInDateRewardRuleDto;
     });
@@ -728,7 +761,7 @@ export function buildPlanWithRewardPayload(params: {
             ? item.monthDay
             : undefined,
         patternType: item.patternType,
-        rewardConfig: buildRewardConfig(item.points, item.experience)!,
+        rewardItems: buildRewardItems(item.points, item.experience) || [],
         weekday:
           item.patternType === CHECK_IN_PATTERN_TYPE.WEEKDAY
             ? item.weekday
@@ -750,7 +783,7 @@ export function buildPlanWithRewardPayload(params: {
     .map((item) => {
       return {
         repeatable: item.repeatable,
-        rewardConfig: buildRewardConfig(item.points, item.experience)!,
+        rewardItems: buildRewardItems(item.points, item.experience) || [],
         ruleCode: item.ruleCode.trim(),
         status: item.status,
         streakDays: Number(item.streakDays),
@@ -760,7 +793,7 @@ export function buildPlanWithRewardPayload(params: {
   // 将奖励配置合并到计划载荷中
   const basePayload = buildPlanSubmitPayload(plan);
   const rewardFields = {
-    baseRewardConfig: baseRewardConfig || undefined,
+    baseRewardItems: baseRewardItems || undefined,
     dateRewardRules,
     patternRewardRules,
     streakRewardRules,
@@ -1193,23 +1226,45 @@ export function findPatternRuleByKey(
 // ======================== 内部辅助函数 ========================
 
 /**
-* 构建奖励配置对象，只有值大于 0 的字段才会被包含
-* 若两个字段都无效则返回 null（表示无需提交该配置）
-*/
-function buildRewardConfig(
+ * 构建奖励项数组，当前只桥接积分与经验两类资产。
+ */
+function buildRewardItems(
   points?: CheckInRewardConfigValue['points'],
   experience?: CheckInRewardConfigValue['experience'],
 ) {
-  const rewardConfig: CheckInRewardConfigValue = {};
+  const rewardItems: GrowthRewardItemDto[] = [];
 
   if (points && Number(points) > 0) {
-    rewardConfig.points = Number(points);
+    rewardItems.push({
+      amount: Number(points),
+      assetKey: '',
+      assetType: CHECK_IN_REWARD_ASSET_TYPE.POINTS,
+    });
   }
   if (experience && Number(experience) > 0) {
-    rewardConfig.experience = Number(experience);
+    rewardItems.push({
+      amount: Number(experience),
+      assetKey: '',
+      assetType: CHECK_IN_REWARD_ASSET_TYPE.EXPERIENCE,
+    });
   }
 
-  return Object.keys(rewardConfig).length > 0 ? rewardConfig : null;
+  return rewardItems.length > 0 ? rewardItems : null;
+}
+
+function parseRewardItems(items: GrowthRewardItemDto[]) {
+  const rewardConfig: CheckInRewardConfigValue = {};
+
+  for (const item of items) {
+    if (item.assetType === CHECK_IN_REWARD_ASSET_TYPE.POINTS) {
+      rewardConfig.points = Number(item.amount);
+    }
+    if (item.assetType === CHECK_IN_REWARD_ASSET_TYPE.EXPERIENCE) {
+      rewardConfig.experience = Number(item.amount);
+    }
+  }
+
+  return rewardConfig;
 }
 
 /** 周期模式规则排序比较器：WEEKDAY 按星期排，MONTH_DAY 按日期排，MONTH_LAST_DAY 排最后 */
