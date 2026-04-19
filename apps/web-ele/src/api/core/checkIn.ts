@@ -1,60 +1,62 @@
 import type {
-  CheckInPlanCreateRequest,
-  CheckInPlanCreateResponse,
-  CheckInPlanDetailRequest,
-  CheckInPlanDetailResponse,
-  CheckInPlanPageRequest,
-  CheckInPlanPageResponse,
-  CheckInPlanUpdateRequest,
-  CheckInPlanUpdateResponse,
-  CheckInPlanUpdateStatusRequest,
-  CheckInPlanUpdateStatusResponse,
+  CheckInConfigDetailResponse,
+  CheckInConfigUpdateEnabledRequest,
+  CheckInConfigUpdateEnabledResponse,
+  CheckInConfigUpdateRequest,
+  CheckInConfigUpdateResponse,
   CheckInReconciliationPageRequest,
   CheckInReconciliationPageResponse,
   CheckInReconciliationRepairRequest,
-  CheckInReconciliationRepairResponse
+  CheckInReconciliationRepairResponse,
+  CheckInStreakRoundDetailResponse,
+  CheckInStreakRoundHistoryDetailRequest,
+  CheckInStreakRoundHistoryDetailResponse,
+  CheckInStreakRoundHistoryPageRequest,
+  CheckInStreakRoundHistoryPageResponse,
+  CheckInStreakRoundUpdateRequest,
+  CheckInStreakRoundUpdateResponse
 } from '../types/checkIn.d'
 
 import { requestClient } from '#/api/request'
 
 
   /**
-   * 分页查询签到计划
+   * 查询签到配置详情
    */
-  export async function checkInPlanPageApi(params?: CheckInPlanPageRequest): Promise<CheckInPlanPageResponse> {
-    return requestClient.get<CheckInPlanPageResponse>('/api/admin/check-in/plan/page', { params });
+  export async function checkInConfigDetailApi(): Promise<CheckInConfigDetailResponse> {
+    return requestClient.get<CheckInConfigDetailResponse>('/api/admin/check-in/config/detail');
   }
 
 
   /**
-   * 查询签到计划详情
+   * 更新签到配置
    */
-  export async function checkInPlanDetailApi(params: CheckInPlanDetailRequest): Promise<CheckInPlanDetailResponse> {
-    return requestClient.get<CheckInPlanDetailResponse>('/api/admin/check-in/plan/detail', { params });
+  export async function checkInConfigUpdateApi(params: CheckInConfigUpdateRequest): Promise<CheckInConfigUpdateResponse> {
+    return requestClient.post<CheckInConfigUpdateResponse>('/api/admin/check-in/config/update', params);
   }
 
 
   /**
-   * 创建签到计划
+   * 更新签到开关
    */
-  export async function checkInPlanCreateApi(params: CheckInPlanCreateRequest): Promise<CheckInPlanCreateResponse> {
-    return requestClient.post<CheckInPlanCreateResponse>('/api/admin/check-in/plan/create', params);
+  export async function checkInConfigUpdateEnabledApi(params: CheckInConfigUpdateEnabledRequest): Promise<CheckInConfigUpdateEnabledResponse> {
+    return requestClient.post<CheckInConfigUpdateEnabledResponse>('/api/admin/check-in/config/update-enabled', params);
   }
 
 
   /**
-   * 更新签到计划
+   * 查询当前连续奖励轮次详情
    */
-  export async function checkInPlanUpdateApi(params: CheckInPlanUpdateRequest): Promise<CheckInPlanUpdateResponse> {
-    return requestClient.post<CheckInPlanUpdateResponse>('/api/admin/check-in/plan/update', params);
+  export async function checkInStreakRoundDetailApi(): Promise<CheckInStreakRoundDetailResponse> {
+    return requestClient.get<CheckInStreakRoundDetailResponse>('/api/admin/check-in/streak-round/detail');
   }
 
 
   /**
-   * 更新签到计划状态
+   * 更新连续奖励轮次配置
    */
-  export async function checkInPlanUpdateStatusApi(params: CheckInPlanUpdateStatusRequest): Promise<CheckInPlanUpdateStatusResponse> {
-    return requestClient.post<CheckInPlanUpdateStatusResponse>('/api/admin/check-in/plan/update-status', params);
+  export async function checkInStreakRoundUpdateApi(params: CheckInStreakRoundUpdateRequest): Promise<CheckInStreakRoundUpdateResponse> {
+    return requestClient.post<CheckInStreakRoundUpdateResponse>('/api/admin/check-in/streak-round/update', params);
   }
 
 
@@ -71,4 +73,20 @@ import { requestClient } from '#/api/request'
    */
   export async function checkInReconciliationRepairApi(params: CheckInReconciliationRepairRequest): Promise<CheckInReconciliationRepairResponse> {
     return requestClient.post<CheckInReconciliationRepairResponse>('/api/admin/check-in/reconciliation/repair', params);
+  }
+
+
+  /**
+   * 分页查询连续奖励轮次历史
+   */
+  export async function checkInStreakRoundHistoryPageApi(params?: CheckInStreakRoundHistoryPageRequest): Promise<CheckInStreakRoundHistoryPageResponse> {
+    return requestClient.get<CheckInStreakRoundHistoryPageResponse>('/api/admin/check-in/streak-round/history/page', { params });
+  }
+
+
+  /**
+   * 查询连续奖励轮次历史详情
+   */
+  export async function checkInStreakRoundHistoryDetailApi(params: CheckInStreakRoundHistoryDetailRequest): Promise<CheckInStreakRoundHistoryDetailResponse> {
+    return requestClient.get<CheckInStreakRoundHistoryDetailResponse>('/api/admin/check-in/streak-round/history/detail', { params });
   }

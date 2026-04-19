@@ -1,7 +1,7 @@
 /**
  *  类型定义 [GrowthExperienceRecordPageRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthExperienceRecordPageRequest = {
   /** 任意合法数值 */
@@ -49,7 +49,7 @@ export type GrowthExperienceRecordPageResponse = {
 /**
  *  类型定义 [GrowthExperienceRecordDetailRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthExperienceRecordDetailRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type GrowthExperienceRecordDetailResponse = UserExperienceRecordDetailDto
 /**
  *  类型定义 [GrowthExperienceStatsRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthExperienceStatsRequest = {
   
@@ -79,7 +79,7 @@ export type GrowthExperienceStatsResponse = UserExperienceStatsDto
 /**
  *  类型定义 [GrowthLevelRulesPageRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthLevelRulesPageRequest = {
   /** 任意合法数值 */
@@ -130,7 +130,7 @@ export type GrowthLevelRulesPageResponse = {
 /**
  *  类型定义 [GrowthLevelRulesDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthLevelRulesDetailRequest = {
   /** 任意合法数值 */
@@ -145,7 +145,7 @@ export type GrowthLevelRulesDetailResponse = BaseUserLevelRuleDto
 /**
  *  类型定义 [GrowthLevelRulesCreateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthLevelRulesCreateRequest = CreateUserLevelRuleDto
 
@@ -154,7 +154,7 @@ export type GrowthLevelRulesCreateResponse = boolean
 /**
  *  类型定义 [GrowthLevelRulesUpdateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthLevelRulesUpdateRequest = UpdateUserLevelRuleDto
 
@@ -163,7 +163,7 @@ export type GrowthLevelRulesUpdateResponse = boolean
 /**
  *  类型定义 [GrowthLevelRulesDeleteRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthLevelRulesDeleteRequest = IdDto
 
@@ -172,7 +172,7 @@ export type GrowthLevelRulesDeleteResponse = boolean
 /**
  *  类型定义 [GrowthLevelRulesUserDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthLevelRulesUserDetailRequest = {
   /** 任意合法数值 */
@@ -187,7 +187,7 @@ export type GrowthLevelRulesUserDetailResponse = UserLevelInfoDto
 /**
  *  类型定义 [GrowthLevelRulesPermissionCheckRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthLevelRulesPermissionCheckRequest = CheckUserLevelPermissionDto
 
@@ -198,7 +198,7 @@ export type GrowthLevelRulesStatsResponse = UserLevelStatisticsDto
 /**
  *  类型定义 [GrowthBadgesPageRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesPageRequest = {
   /** 任意合法数值 */
@@ -249,7 +249,7 @@ export type GrowthBadgesPageResponse = {
 /**
  *  类型定义 [GrowthBadgesDetailRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesDetailRequest = {
   /** 任意合法数值 */
@@ -264,7 +264,7 @@ export type GrowthBadgesDetailResponse = BaseUserBadgeDto
 /**
  *  类型定义 [GrowthBadgesCreateRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesCreateRequest = CreateUserBadgeDto
 
@@ -273,7 +273,7 @@ export type GrowthBadgesCreateResponse = boolean
 /**
  *  类型定义 [GrowthBadgesUpdateRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesUpdateRequest = UpdateUserBadgeDto
 
@@ -282,7 +282,7 @@ export type GrowthBadgesUpdateResponse = boolean
 /**
  *  类型定义 [GrowthBadgesDeleteRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesDeleteRequest = IdDto
 
@@ -291,7 +291,7 @@ export type GrowthBadgesDeleteResponse = boolean
 /**
  *  类型定义 [GrowthBadgesUpdateStatusRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesUpdateStatusRequest = UpdateUserBadgeStatusDto
 
@@ -300,7 +300,7 @@ export type GrowthBadgesUpdateStatusResponse = boolean
 /**
  *  类型定义 [GrowthBadgesAssignRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesAssignRequest = AssignUserBadgeDto
 
@@ -309,7 +309,7 @@ export type GrowthBadgesAssignResponse = boolean
 /**
  *  类型定义 [GrowthBadgesRevokeRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesRevokeRequest = AssignUserBadgeDto
 
@@ -318,7 +318,7 @@ export type GrowthBadgesRevokeResponse = boolean
 /**
  *  类型定义 [GrowthBadgesUserPageRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthBadgesUserPageRequest = {
   /** 任意合法数值 */
@@ -359,7 +359,7 @@ export type GrowthBadgesStatsResponse = UserBadgeStatisticsDto
 /**
  *  类型定义 [GrowthRuleEventsPageRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRuleEventsPageRequest = {
   /** 任意合法数值 */
@@ -413,7 +413,7 @@ export type GrowthRuleEventsPageResponse = {
 /**
  *  类型定义 [GrowthRewardSettlementPageRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardSettlementPageRequest = {
   /** 任意合法数值 */
@@ -467,7 +467,7 @@ export type GrowthRewardSettlementPageResponse = {
 /**
  *  类型定义 [GrowthRewardSettlementRetryRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardSettlementRetryRequest = RetryGrowthRewardSettlementDto
 
@@ -476,7 +476,7 @@ export type GrowthRewardSettlementRetryResponse = boolean
 /**
  *  类型定义 [GrowthRewardSettlementRetryPendingBatchRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardSettlementRetryPendingBatchRequest = RetryGrowthRewardSettlementBatchDto
 
@@ -485,7 +485,7 @@ export type GrowthRewardSettlementRetryPendingBatchResponse = GrowthRewardSettle
 /**
  *  类型定义 [GrowthRewardRulesPageRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardRulesPageRequest = {
   /** 任意合法数值 */
@@ -536,7 +536,7 @@ export type GrowthRewardRulesPageResponse = {
 /**
  *  类型定义 [GrowthRewardRulesDetailRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardRulesDetailRequest = {
   /** 任意合法数值 */
@@ -551,7 +551,7 @@ export type GrowthRewardRulesDetailResponse = BaseGrowthRewardRuleDto
 /**
  *  类型定义 [GrowthRewardRulesCreateRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardRulesCreateRequest = CreateGrowthRewardRuleDto
 
@@ -560,7 +560,7 @@ export type GrowthRewardRulesCreateResponse = boolean
 /**
  *  类型定义 [GrowthRewardRulesUpdateRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardRulesUpdateRequest = UpdateGrowthRewardRuleDto
 
@@ -569,7 +569,7 @@ export type GrowthRewardRulesUpdateResponse = boolean
 /**
  *  类型定义 [GrowthRewardRulesDeleteRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardRulesDeleteRequest = IdDto
 
@@ -578,7 +578,7 @@ export type GrowthRewardRulesDeleteResponse = boolean
 /**
  *  类型定义 [UserExperienceRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserExperienceRecordDto = {
   /** 任意合法数值 */
@@ -619,7 +619,7 @@ export type UserExperienceRecordDto = {
 /**
  *  类型定义 [UserExperienceRecordDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserExperienceRecordDetailDto = {
   /** 任意合法数值 */
@@ -662,7 +662,7 @@ export type UserExperienceRecordDetailDto = {
 /**
  *  类型定义 [ForumAppUserInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type ForumAppUserInfoDto = {
   /** 任意合法数值 */
@@ -703,7 +703,7 @@ export type ForumAppUserInfoDto = {
 /**
  *  类型定义 [UserExperienceStatsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserExperienceStatsDto = {
   /** 任意合法数值 */
@@ -720,7 +720,7 @@ export type UserExperienceStatsDto = {
 /**
  *  类型定义 [UserExperienceLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserExperienceLevelDto = {
   /** 任意合法数值 */
@@ -737,7 +737,7 @@ export type UserExperienceLevelDto = {
 /**
  *  类型定义 [BaseUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type BaseUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -788,7 +788,7 @@ export type BaseUserLevelRuleDto = {
 /**
  *  类型定义 [CreateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type CreateUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -833,7 +833,7 @@ export type CreateUserLevelRuleDto = {
 /**
  *  类型定义 [UpdateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdateUserLevelRuleDto = {
   /** 任意合法数值 */
@@ -880,7 +880,7 @@ export type UpdateUserLevelRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -893,7 +893,7 @@ export type IdDto = {
 /**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserLevelInfoDto = {
   /** 任意合法数值 */
@@ -922,7 +922,7 @@ export type UserLevelInfoDto = {
 /**
  *  类型定义 [UserLevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserLevelPermissionsDto = {
   /** 任意合法数值 */
@@ -943,7 +943,7 @@ export type UserLevelPermissionsDto = {
 /**
  *  类型定义 [CheckUserLevelPermissionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type CheckUserLevelPermissionDto = {
   /** 任意合法数值 */
@@ -958,7 +958,7 @@ export type CheckUserLevelPermissionDto = {
 /**
  *  类型定义 [UserLevelPermissionResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserLevelPermissionResultDto = {
   /** 任意合法数值 */
@@ -979,7 +979,7 @@ export type UserLevelPermissionResultDto = {
 /**
  *  类型定义 [UserLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserLevelStatisticsDto = {
   /** 任意合法数值 */
@@ -996,7 +996,7 @@ export type UserLevelStatisticsDto = {
 /**
  *  类型定义 [UserLevelDistributionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserLevelDistributionItemDto = {
   /** 任意合法数值 */
@@ -1013,7 +1013,7 @@ export type UserLevelDistributionItemDto = {
 /**
  *  类型定义 [BaseUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type BaseUserBadgeDto = {
   /** 任意合法数值 */
@@ -1046,7 +1046,7 @@ export type BaseUserBadgeDto = {
 /**
  *  类型定义 [CreateUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type CreateUserBadgeDto = {
   /** 任意合法数值 */
@@ -1073,7 +1073,7 @@ export type CreateUserBadgeDto = {
 /**
  *  类型定义 [UpdateUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdateUserBadgeDto = {
   /** 任意合法数值 */
@@ -1102,7 +1102,7 @@ export type UpdateUserBadgeDto = {
 /**
  *  类型定义 [UpdateUserBadgeStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdateUserBadgeStatusDto = {
   /** 任意合法数值 */
@@ -1117,7 +1117,7 @@ export type UpdateUserBadgeStatusDto = {
 /**
  *  类型定义 [AssignUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AssignUserBadgeDto = {
   /** 任意合法数值 */
@@ -1132,7 +1132,7 @@ export type AssignUserBadgeDto = {
 /**
  *  类型定义 [BadgeUserPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type BadgeUserPageItemDto = {
   /** 任意合法数值 */
@@ -1151,7 +1151,7 @@ export type BadgeUserPageItemDto = {
 /**
  *  类型定义 [BadgeUserInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type BadgeUserInfoDto = {
   /** 任意合法数值 */
@@ -1172,7 +1172,7 @@ export type BadgeUserInfoDto = {
 /**
  *  类型定义 [UserBadgeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserBadgeStatisticsDto = {
   /** 任意合法数值 */
@@ -1195,7 +1195,7 @@ export type UserBadgeStatisticsDto = {
 /**
  *  类型定义 [UserBadgeTypeDistributionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserBadgeTypeDistributionItemDto = {
   /** 任意合法数值 */
@@ -1210,7 +1210,7 @@ export type UserBadgeTypeDistributionItemDto = {
 /**
  *  类型定义 [UserBadgeTopBadgeItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UserBadgeTopBadgeItemDto = {
   /** 任意合法数值 */
@@ -1225,7 +1225,7 @@ export type UserBadgeTopBadgeItemDto = {
 /**
  *  类型定义 [GrowthRuleEventPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRuleEventPageItemDto = {
   /** 任意合法数值 */
@@ -1262,7 +1262,7 @@ export type GrowthRuleEventPageItemDto = {
 /**
  *  类型定义 [GrowthRuleAssetSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRuleAssetSummaryDto = {
   /** 任意合法数值 */
@@ -1291,7 +1291,7 @@ export type GrowthRuleAssetSummaryDto = {
 /**
  *  类型定义 [GrowthRuleTaskBindingSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRuleTaskBindingSummaryDto = {
   /** 任意合法数值 */
@@ -1314,7 +1314,7 @@ export type GrowthRuleTaskBindingSummaryDto = {
 /**
  *  类型定义 [GrowthRewardSettlementPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardSettlementPageItemDto = {
   /** 任意合法数值 */
@@ -1367,7 +1367,7 @@ export type GrowthRewardSettlementPageItemDto = {
 /**
  *  类型定义 [RetryGrowthRewardSettlementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type RetryGrowthRewardSettlementDto = {
   /** 任意合法数值 */
@@ -1380,7 +1380,7 @@ export type RetryGrowthRewardSettlementDto = {
 /**
  *  类型定义 [RetryGrowthRewardSettlementBatchDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type RetryGrowthRewardSettlementBatchDto = {
   /** 任意合法数值 */
@@ -1393,7 +1393,7 @@ export type RetryGrowthRewardSettlementBatchDto = {
 /**
  *  类型定义 [GrowthRewardSettlementRetryBatchResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type GrowthRewardSettlementRetryBatchResultDto = {
   /** 任意合法数值 */
@@ -1410,7 +1410,7 @@ export type GrowthRewardSettlementRetryBatchResultDto = {
 /**
  *  类型定义 [BaseGrowthRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type BaseGrowthRewardRuleDto = {
   /** 任意合法数值 */
@@ -1443,7 +1443,7 @@ export type BaseGrowthRewardRuleDto = {
 /**
  *  类型定义 [CreateGrowthRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type CreateGrowthRewardRuleDto = {
   /** 任意合法数值 */
@@ -1470,7 +1470,7 @@ export type CreateGrowthRewardRuleDto = {
 /**
  *  类型定义 [UpdateGrowthRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdateGrowthRewardRuleDto = {
   /** 任意合法数值 */

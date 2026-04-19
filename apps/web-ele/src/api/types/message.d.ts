@@ -1,7 +1,7 @@
 /**
  *  类型定义 [MessageMonitorDeliveryPageRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageMonitorDeliveryPageRequest = {
   /** 任意合法数值 */
@@ -31,7 +31,7 @@ export type MessageMonitorDeliveryPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number
 
-  /* 通知投影键模糊匹配 */
+  /* 通知投影键精确匹配 */
   projectionKey?: null | string
 
   /* 接收用户 ID */
@@ -64,7 +64,7 @@ export type MessageMonitorDeliveryPageResponse = {
 /**
  *  类型定义 [MessageMonitorDeliveryRetryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageMonitorDeliveryRetryRequest = RetryMessageNotificationDeliveryDto
 
@@ -73,7 +73,7 @@ export type MessageMonitorDeliveryRetryResponse = boolean
 /**
  *  类型定义 [MessageMonitorDispatchPageRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageMonitorDispatchPageRequest = {
   /** 任意合法数值 */
@@ -109,7 +109,7 @@ export type MessageMonitorDispatchPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number
 
-  /* 通知投影键模糊匹配 */
+  /* 通知投影键精确匹配 */
   projectionKey?: null | string
 
   /* 接收用户 ID */
@@ -139,7 +139,7 @@ export type MessageMonitorDispatchPageResponse = {
 /**
  *  类型定义 [MessageMonitorWsSummaryRequest]
  *  @来源 消息中心/监控
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageMonitorWsSummaryRequest = {
   /** 任意合法数值 */
@@ -154,7 +154,7 @@ export type MessageMonitorWsSummaryResponse = MessageWsMonitorSummaryDto
 /**
  *  类型定义 [MessageNotificationTemplatesPageRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageNotificationTemplatesPageRequest = {
   /** 任意合法数值 */
@@ -202,7 +202,7 @@ export type MessageNotificationTemplatesPageResponse = {
 /**
  *  类型定义 [MessageNotificationTemplatesDetailRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageNotificationTemplatesDetailRequest = {
   /** 任意合法数值 */
@@ -217,7 +217,7 @@ export type MessageNotificationTemplatesDetailResponse = AdminMessageNotificatio
 /**
  *  类型定义 [MessageNotificationTemplatesCreateRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageNotificationTemplatesCreateRequest = CreateNotificationTemplateDto
 
@@ -226,7 +226,7 @@ export type MessageNotificationTemplatesCreateResponse = boolean
 /**
  *  类型定义 [MessageNotificationTemplatesUpdateRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageNotificationTemplatesUpdateRequest = UpdateNotificationTemplateDto
 
@@ -235,7 +235,7 @@ export type MessageNotificationTemplatesUpdateResponse = boolean
 /**
  *  类型定义 [MessageNotificationTemplatesUpdateEnabledRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageNotificationTemplatesUpdateEnabledRequest = UpdateNotificationTemplateEnabledDto
 
@@ -244,7 +244,7 @@ export type MessageNotificationTemplatesUpdateEnabledResponse = boolean
 /**
  *  类型定义 [MessageNotificationTemplatesDeleteRequest]
  *  @来源 消息中心/通知模板
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageNotificationTemplatesDeleteRequest = IdDto
 
@@ -253,7 +253,7 @@ export type MessageNotificationTemplatesDeleteResponse = boolean
 /**
  *  类型定义 [MessageNotificationDeliveryItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageNotificationDeliveryItemDto = {
   /** 任意合法数值 */
@@ -300,7 +300,7 @@ export type MessageNotificationDeliveryItemDto = {
 /**
  *  类型定义 [RetryMessageNotificationDeliveryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type RetryMessageNotificationDeliveryDto = {
   /** 任意合法数值 */
@@ -313,7 +313,7 @@ export type RetryMessageNotificationDeliveryDto = {
 /**
  *  类型定义 [MessageDispatchPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageDispatchPageItemDto = {
   /** 任意合法数值 */
@@ -350,7 +350,7 @@ export type MessageDispatchPageItemDto = {
 /**
  *  类型定义 [MessageWsMonitorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MessageWsMonitorSummaryDto = {
   /** 任意合法数值 */
@@ -385,7 +385,7 @@ export type MessageWsMonitorSummaryDto = {
 /**
  *  类型定义 [AdminMessageNotificationTemplateDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AdminMessageNotificationTemplateDto = {
   /** 任意合法数值 */
@@ -394,7 +394,7 @@ export type AdminMessageNotificationTemplateDto = {
   categoryKey: string
   /* 通知分类中文标签 */
   categoryLabel: string
-  /* 正文模板；支持 {{content}}、{{payload.subject.title}}、{{payload.replyExcerpt}} 等占位符 */
+  /* 正文模板；支持 {{content}}、{{data.object.title}}、{{data.object.snippet}} 等占位符 */
   contentTemplate: string
   /* 创建时间 */
   createdAt: string
@@ -404,7 +404,7 @@ export type AdminMessageNotificationTemplateDto = {
   isEnabled: boolean
   /* 备注 */
   remark?: null | string
-  /* 标题模板；支持 {{title}}、{{payload.subject.title}}、{{payload.actorNickname}} 等占位符 */
+  /* 标题模板；支持 {{title}}、{{actor.nickname}}、{{data.object.title}} 等占位符 */
   titleTemplate: string
 
   /* 更新时间 */
@@ -414,35 +414,35 @@ export type AdminMessageNotificationTemplateDto = {
 /**
  *  类型定义 [CreateNotificationTemplateDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type CreateNotificationTemplateDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 通知分类键 */
   categoryKey: string
-  /* 正文模板；支持 {{content}}、{{payload.subject.title}}、{{payload.replyExcerpt}} 等占位符 */
+  /* 正文模板；支持 {{content}}、{{data.object.title}}、{{data.object.snippet}} 等占位符 */
   contentTemplate: string
   /* 是否启用 */
   isEnabled?: boolean
   /* 备注 */
   remark?: null | string
 
-  /* 标题模板；支持 {{title}}、{{payload.subject.title}}、{{payload.actorNickname}} 等占位符 */
+  /* 标题模板；支持 {{title}}、{{actor.nickname}}、{{data.object.title}} 等占位符 */
   titleTemplate: string
 }
 
 /**
  *  类型定义 [UpdateNotificationTemplateDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdateNotificationTemplateDto = {
   /** 任意合法数值 */
   [property: string]: any
   /* 通知分类键 */
   categoryKey?: string
-  /* 正文模板；支持 {{content}}、{{payload.subject.title}}、{{payload.replyExcerpt}} 等占位符 */
+  /* 正文模板；支持 {{content}}、{{data.object.title}}、{{data.object.snippet}} 等占位符 */
   contentTemplate?: string
   /* 主键id */
   id: number
@@ -451,14 +451,14 @@ export type UpdateNotificationTemplateDto = {
   /* 备注 */
   remark?: null | string
 
-  /* 标题模板；支持 {{title}}、{{payload.subject.title}}、{{payload.actorNickname}} 等占位符 */
+  /* 标题模板；支持 {{title}}、{{actor.nickname}}、{{data.object.title}} 等占位符 */
   titleTemplate?: string
 }
 
 /**
  *  类型定义 [UpdateNotificationTemplateEnabledDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdateNotificationTemplateEnabledDto = {
   /** 任意合法数值 */
@@ -473,7 +473,7 @@ export type UpdateNotificationTemplateEnabledDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type IdDto = {
   /** 任意合法数值 */

@@ -3,7 +3,7 @@ export type SystemConfigResponse = BaseSystemConfigDto
 /**
  *  类型定义 [SystemUpdateRequest]
  *  @来源 系统管理/系统配置
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type SystemUpdateRequest = UpdateSystemConfigDto
 
@@ -16,7 +16,7 @@ export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto
 /**
  *  类型定义 [BaseSystemConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type BaseSystemConfigDto = {
   /** 任意合法数值 */
@@ -45,7 +45,7 @@ export type BaseSystemConfigDto = {
 /**
  *  类型定义 [AliyunConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AliyunConfigDto = {
   /** 任意合法数值 */
@@ -62,7 +62,7 @@ export type AliyunConfigDto = {
 /**
  *  类型定义 [AliyunSmsConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AliyunSmsConfigDto = {
   /** 任意合法数值 */
@@ -81,7 +81,7 @@ export type AliyunSmsConfigDto = {
 /**
  *  类型定义 [SiteConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type SiteConfigDto = {
   /** 任意合法数值 */
@@ -106,7 +106,7 @@ export type SiteConfigDto = {
 /**
  *  类型定义 [MaintenanceConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type MaintenanceConfigDto = {
   /** 任意合法数值 */
@@ -121,7 +121,7 @@ export type MaintenanceConfigDto = {
 /**
  *  类型定义 [ContentReviewPolicyDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type ContentReviewPolicyDto = {
   /** 任意合法数值 */
@@ -140,7 +140,7 @@ export type ContentReviewPolicyDto = {
 /**
  *  类型定义 [ContentReviewActionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type ContentReviewActionDto = {
   /** 任意合法数值 */
@@ -155,7 +155,7 @@ export type ContentReviewActionDto = {
 /**
  *  类型定义 [UploadConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UploadConfigDto = {
   /** 任意合法数值 */
@@ -174,7 +174,7 @@ export type UploadConfigDto = {
 /**
  *  类型定义 [QiniuUploadConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type QiniuUploadConfigDto = {
   /** 任意合法数值 */
@@ -201,7 +201,7 @@ export type QiniuUploadConfigDto = {
 /**
  *  类型定义 [SuperbedUploadConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type SuperbedUploadConfigDto = {
   /** 任意合法数值 */
@@ -222,7 +222,7 @@ export type SuperbedUploadConfigDto = {
 /**
  *  类型定义 [UpdateSystemConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdateSystemConfigDto = {
   /** 任意合法数值 */
@@ -245,7 +245,7 @@ export type UpdateSystemConfigDto = {
 /**
  *  类型定义 [Ip2regionRuntimeStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type Ip2regionRuntimeStatusDto = {
   /** 任意合法数值 */

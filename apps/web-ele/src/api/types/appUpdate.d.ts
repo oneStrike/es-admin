@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AppUpdatePageRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AppUpdatePageRequest = {
   /** 任意合法数值 */
@@ -58,7 +58,7 @@ export type AppUpdatePageResponse = {
 /**
  *  类型定义 [AppUpdateDetailRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AppUpdateDetailRequest = {
   /** 任意合法数值 */
@@ -73,7 +73,7 @@ export type AppUpdateDetailResponse = AppUpdateReleaseDetailDto
 /**
  *  类型定义 [AppUpdateCreateRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AppUpdateCreateRequest = CreateAppUpdateReleaseDto
 
@@ -82,7 +82,7 @@ export type AppUpdateCreateResponse = boolean
 /**
  *  类型定义 [AppUpdateUpdateRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AppUpdateUpdateRequest = UpdateAppUpdateReleaseDto
 
@@ -91,7 +91,7 @@ export type AppUpdateUpdateResponse = boolean
 /**
  *  类型定义 [AppUpdateUpdateStatusRequest]
  *  @来源 APP管理/版本更新
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AppUpdateUpdateStatusRequest = UpdatePublishedStatusDto
 
@@ -100,7 +100,7 @@ export type AppUpdateUpdateStatusResponse = boolean
 /**
  *  类型定义 [AppUpdateReleaseListItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AppUpdateReleaseListItemDto = {
   /** 任意合法数值 */
@@ -131,7 +131,7 @@ export type AppUpdateReleaseListItemDto = {
 /**
  *  类型定义 [AppUpdateReleaseDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type AppUpdateReleaseDetailDto = {
   /** 任意合法数值 */
@@ -180,7 +180,7 @@ export type AppUpdateReleaseDetailDto = {
 /**
  *  类型定义 [CreateAppUpdateReleaseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type CreateAppUpdateReleaseDto = {
   /** 任意合法数值 */
@@ -215,7 +215,7 @@ export type CreateAppUpdateReleaseDto = {
 /**
  *  类型定义 [UpdateAppUpdateReleaseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdateAppUpdateReleaseDto = {
   /** 任意合法数值 */
@@ -252,7 +252,7 @@ export type UpdateAppUpdateReleaseDto = {
 /**
  *  类型定义 [UpdatePublishedStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-18 11:53:53
+ *  @更新时间 2026-04-19 15:54:06
  */
 export type UpdatePublishedStatusDto = {
   /** 任意合法数值 */
