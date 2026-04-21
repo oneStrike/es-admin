@@ -28,10 +28,18 @@ export const checkInPatternTypeOptions = [
   { label: '按月最后一天', value: 3 },
 ];
 
-export const checkInRoundStatusOptions = [
-  { color: 'success' as const, label: '当前生效', value: 1 },
-  { color: 'info' as const, label: '历史归档', value: 2 },
+export const checkInStreakConfigStatusOptions = [
   { color: 'warning' as const, label: '草稿', value: 0 },
+  { color: 'primary' as const, label: '已排期', value: 1 },
+  { color: 'success' as const, label: '生效中', value: 2 },
+  { color: 'info' as const, label: '已过期', value: 3 },
+  { color: 'danger' as const, label: '已终止', value: 4 },
+];
+
+export const checkInStreakPublishStrategyOptions = [
+  { label: '立即生效', value: 1 },
+  { label: '次日生效', value: 2 },
+  { label: '指定时间生效', value: 3 },
 ];
 
 export const checkInRewardStatusOptions = [
@@ -147,12 +155,19 @@ export function formatLedgerIds(ids?: null | number[]) {
   return ids && ids.length > 0 ? ids.join(', ') : '-';
 }
 
-export function getRoundStatusMeta(status?: null | number) {
+export function getStreakConfigStatusMeta(status?: null | number) {
   return (
-    checkInRoundStatusOptions.find((item) => item.value === status) || {
+    checkInStreakConfigStatusOptions.find((item) => item.value === status) || {
       color: 'info' as const,
       label: '未知状态',
     }
+  );
+}
+
+export function getStreakPublishStrategyLabel(strategy?: null | number) {
+  return (
+    checkInStreakPublishStrategyOptions.find((item) => item.value === strategy)
+      ?.label || '未知策略'
   );
 }
 
@@ -184,7 +199,7 @@ export function getRewardSourceLabel(sourceType?: null | number) {
 export function sortStreakRules<
   T extends Pick<CheckInStreakRewardRuleItemDto, 'ruleCode' | 'streakDays'>,
 >(rules: T[]) {
-  return [...rules].sort((left, right) => {
+  return rules.toSorted((left, right) => {
     const streakDiff = left.streakDays - right.streakDays;
     return streakDiff === 0
       ? left.ruleCode.localeCompare(right.ruleCode)
@@ -198,7 +213,7 @@ export function sortPatternRules<
     'monthDay' | 'patternType' | 'weekday'
   >,
 >(rules: T[]) {
-  return [...rules].sort((left, right) => {
+  return rules.toSorted((left, right) => {
     if (left.patternType !== right.patternType) {
       return left.patternType - right.patternType;
     }

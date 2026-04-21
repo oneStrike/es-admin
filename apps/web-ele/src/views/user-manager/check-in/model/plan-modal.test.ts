@@ -1,6 +1,7 @@
+import type { CheckInStreakRuleDetail } from './streak-config';
+
 import type {
   CheckInConfigDetailResponse,
-  CheckInStreakRoundDetailResponse,
 } from '#/api/types';
 
 import { describe, expect, it } from 'vitest';
@@ -26,10 +27,10 @@ import {
   validateConfigForm,
 } from './config';
 import {
-  buildRoundUpdatePayload,
-  mapRoundDetailToForm,
-  validateRoundForm,
-} from './streak-round';
+  buildStreakPublishPayload,
+  mapStreakDetailToForm,
+  validateStreakForm,
+} from './streak-config';
 
 function createConfigDetail(
   overrides: Partial<CheckInConfigDetailResponse> = {},
@@ -62,25 +63,21 @@ function createConfigDetail(
   };
 }
 
-function createRoundDetail(
-  overrides: Partial<CheckInStreakRoundDetailResponse> = {},
-): CheckInStreakRoundDetailResponse {
+function createStreakDetail(
+  overrides: Partial<CheckInStreakRuleDetail> = {},
+): CheckInStreakRuleDetail {
   return {
     createdAt: '2026-04-19T00:00:00.000Z',
+    effectiveFrom: '2026-04-19T00:00:00.000Z',
+    effectiveTo: null,
     id: 8,
-    nextRoundConfigId: null,
-    nextRoundStrategy: 1,
-    rewardRules: [
-      {
-        repeatable: false,
-        rewardItems: [{ amount: 10, assetKey: '', assetType: 1 }],
-        ruleCode: 'STREAK_3',
-        status: 1,
-        streakDays: 3,
-      },
-    ],
-    roundCode: 'default-round',
-    status: 1,
+    isCurrent: true,
+    publishStrategy: 1,
+    repeatable: false,
+    rewardItems: [{ amount: 10, assetKey: '', assetType: 1 }],
+    ruleCode: 'streak-day-3',
+    status: 2,
+    streakDays: 3,
     updatedAt: '2026-04-19T01:00:00.000Z',
     version: 3,
     ...overrides,
@@ -344,67 +341,58 @@ describe('check-in config model', () => {
   });
 });
 
-describe('check-in round model', () => {
-  it('maps active round detail to editable current-round state', () => {
-    const state = mapRoundDetailToForm(createRoundDetail());
+describe('check-in streak config model', () => {
+  it('maps current streak config detail to publish form state', () => {
+    const state = mapStreakDetailToForm(createStreakDetail());
 
-    expect(state.roundCode).toBe('default-round');
-    expect(state.version).toBe(3);
-    expect(state.rewardRules[0]).toMatchObject({
-      ruleCode: 'STREAK_3',
-      streakDays: 3,
-      points: 10,
-    });
+    expect(state.sourceId).toBe(8);
+    expect(state.sourceRuleCode).toBe('streak-day-3');
+    expect(state.sourceVersion).toBe(3);
+    expect(state.publishStrategy).toBe(1);
+    expect(state.effectiveFrom).toBeUndefined();
+    expect(state.streakDays).toBe(3);
+    expect(state.points).toBe(10);
+    expect(state.repeatable).toBe(false);
   });
 
-  it('builds round update payload with fixed transport fields', () => {
-    const payload = buildRoundUpdatePayload(
-      mapRoundDetailToForm(createRoundDetail()),
+  it('builds publish payload for a single streak-day record', () => {
+    const payload = buildStreakPublishPayload(
+      mapStreakDetailToForm(createStreakDetail()),
     );
 
     expect(payload).toEqual({
-      nextRoundStrategy: 1,
-      rewardRules: [
-        {
-          repeatable: false,
-          rewardItems: [{ amount: 10, assetKey: '', assetType: 1 }],
-          ruleCode: 'STREAK_3',
-          status: 1,
-          streakDays: 3,
-        },
-      ],
-      roundCode: 'default-round',
-      status: 1,
+      publishStrategy: 1,
+      repeatable: false,
+      rewardItems: [{ amount: 10, assetKey: '', assetType: 1 }],
+      streakDays: 3,
     });
   });
 
-  it('rejects duplicate streak thresholds', () => {
-    const error = validateRoundForm({
-      roundCode: 'default-round',
-      rewardRules: [
-        {
-          experience: undefined,
-          localId: 'rule-1',
-          points: 10,
-          repeatable: false,
-          ruleCode: 'A',
-          status: 1,
-          streakDays: 3,
-        },
-        {
-          experience: undefined,
-          localId: 'rule-2',
-          points: 12,
-          repeatable: false,
-          ruleCode: 'B',
-          status: 1,
-          streakDays: 3,
-        },
-      ],
-      status: 1,
-      version: 1,
+  it('requires explicit effective time when using scheduled publish', () => {
+    const error = validateStreakForm({
+      effectiveFrom: undefined,
+      experience: undefined,
+      points: 10,
+      publishStrategy: 3,
+      repeatable: false,
+      sourceVersion: 1,
+      streakDays: 3,
     });
 
-    expect(error).toContain('连续奖励阈值重复');
+    expect(error).toContain('指定生效时间');
+  });
+
+  it('rejects empty reward payloads', () => {
+    const error = validateStreakForm({
+      effectiveFrom: undefined,
+      experience: undefined,
+      points: undefined,
+      publishStrategy: 1,
+      repeatable: false,
+      sourceVersion: 1,
+      streakDays: 3,
+    });
+
+    expect(error).toContain('连续奖励项不能为空');
   });
 });

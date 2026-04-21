@@ -66,23 +66,23 @@ async function repairRecordReward(row: any) {
     return;
   }
 
-  baseRepairingMap[row.recordId] = true;
+  baseRepairingMap[row.id] = true;
   try {
     const confirmed = await confirmRepair({
-      recordId: row.recordId,
+      recordId: row.id,
       targetType: 1,
     });
     if (!confirmed) {
       return;
     }
     await checkInReconciliationRepairApi({
-      recordId: row.recordId,
+      recordId: row.id,
       targetType: 1,
     } satisfies CheckInReconciliationRepairRequest);
     useMessage.success('基础奖励补偿已触发');
     await reconciliationGridApi.reload();
   } finally {
-    baseRepairingMap[row.recordId] = false;
+    baseRepairingMap[row.id] = false;
   }
 }
 
@@ -275,7 +275,7 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
           </div>
           <div class="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
             <span>规则编码：{{ grant.ruleCode }}</span>
-            <span>轮次ID：{{ grant.roundConfigId }}</span>
+            <span>规则ID：{{ grant.ruleId }}</span>
             <span>触发日：{{ grant.triggerSignDate }}</span>
             <span>
               账本：{{ formatLedgerIds(grant.rewardSettlement?.ledgerRecordIds) }}
@@ -298,7 +298,7 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
       <div class="flex min-h-12 items-center">
         <el-button
           v-if="hasRepairableBaseReward(row)"
-          :loading="baseRepairingMap[row.recordId]"
+          :loading="baseRepairingMap[row.id]"
           link
           type="primary"
           @click="repairRecordReward(row)"

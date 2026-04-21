@@ -25,10 +25,10 @@ const reconciliationSearchBaseSchema: EsFormSchema = [
     componentProps: {
       class: '!w-full',
       min: 1,
-      placeholder: '轮次ID',
+      placeholder: '规则ID',
     },
-    fieldName: 'roundConfigId',
-    label: '轮次ID',
+    fieldName: 'ruleId',
+    label: '规则ID',
   },
   {
     component: 'InputNumber',
@@ -80,7 +80,7 @@ const reconciliationTableSchema: EsFormSchema = [
       min: 1,
       placeholder: '签到记录ID',
     },
-    fieldName: 'recordId',
+    fieldName: 'id',
     label: '签到记录ID',
   },
   {
@@ -146,7 +146,7 @@ const reconciliationTableSchema: EsFormSchema = [
 export const reconciliationSearchFormSchema =
   formSchemaTransform.toSearchSchema(reconciliationSearchBaseSchema, {
     userId: { show: true },
-    roundConfigId: { show: true },
+    ruleId: { show: true },
     recordId: { show: true },
     grantId: { show: true },
     recordSettlementStatus: { show: true },
@@ -155,7 +155,7 @@ export const reconciliationSearchFormSchema =
 
 export const reconciliationColumns: VxeGridPropTypes.Columns<any> =
   formSchemaTransform.toTableColumns<any>(reconciliationTableSchema, {
-    recordId: {
+    id: {
       fixed: 'left',
       minWidth: 110,
     },

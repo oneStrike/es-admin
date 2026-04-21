@@ -8,13 +8,18 @@ import type {
   CheckInReconciliationPageResponse,
   CheckInReconciliationRepairRequest,
   CheckInReconciliationRepairResponse,
-  CheckInStreakRoundDetailResponse,
-  CheckInStreakRoundHistoryDetailRequest,
-  CheckInStreakRoundHistoryDetailResponse,
-  CheckInStreakRoundHistoryPageRequest,
-  CheckInStreakRoundHistoryPageResponse,
-  CheckInStreakRoundUpdateRequest,
-  CheckInStreakRoundUpdateResponse
+  CheckInStreakDetailRequest,
+  CheckInStreakDetailResponse,
+  CheckInStreakHistoryDetailRequest,
+  CheckInStreakHistoryDetailResponse,
+  CheckInStreakHistoryPageRequest,
+  CheckInStreakHistoryPageResponse,
+  CheckInStreakPageRequest,
+  CheckInStreakPageResponse,
+  CheckInStreakPublishRequest,
+  CheckInStreakPublishResponse,
+  CheckInStreakTerminateRequest,
+  CheckInStreakTerminateResponse
 } from '../types/checkIn.d'
 
 import { requestClient } from '#/api/request'
@@ -45,18 +50,42 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 查询当前连续奖励轮次详情
+   * 查询连续签到记录详情
    */
-  export async function checkInStreakRoundDetailApi(): Promise<CheckInStreakRoundDetailResponse> {
-    return requestClient.get<CheckInStreakRoundDetailResponse>('/api/admin/check-in/streak-round/detail');
+  export async function checkInStreakDetailApi(params: CheckInStreakDetailRequest): Promise<CheckInStreakDetailResponse> {
+    return requestClient.get<CheckInStreakDetailResponse>('/api/admin/check-in/streak/detail', { params });
   }
 
 
   /**
-   * 更新连续奖励轮次配置
+   * 分页查询连续签到记录历史
    */
-  export async function checkInStreakRoundUpdateApi(params: CheckInStreakRoundUpdateRequest): Promise<CheckInStreakRoundUpdateResponse> {
-    return requestClient.post<CheckInStreakRoundUpdateResponse>('/api/admin/check-in/streak-round/update', params);
+  export async function checkInStreakHistoryPageApi(params: CheckInStreakHistoryPageRequest): Promise<CheckInStreakHistoryPageResponse> {
+    return requestClient.get<CheckInStreakHistoryPageResponse>('/api/admin/check-in/streak/history/page', { params });
+  }
+
+
+  /**
+   * 查询连续签到记录历史详情
+   */
+  export async function checkInStreakHistoryDetailApi(params: CheckInStreakHistoryDetailRequest): Promise<CheckInStreakHistoryDetailResponse> {
+    return requestClient.get<CheckInStreakHistoryDetailResponse>('/api/admin/check-in/streak/history/detail', { params });
+  }
+
+
+  /**
+   * 发布连续签到记录
+   */
+  export async function checkInStreakPublishApi(params: CheckInStreakPublishRequest): Promise<CheckInStreakPublishResponse> {
+    return requestClient.post<CheckInStreakPublishResponse>('/api/admin/check-in/streak/publish', params);
+  }
+
+
+  /**
+   * 终止连续签到记录
+   */
+  export async function checkInStreakTerminateApi(params: CheckInStreakTerminateRequest): Promise<CheckInStreakTerminateResponse> {
+    return requestClient.post<CheckInStreakTerminateResponse>('/api/admin/check-in/streak/terminate', params);
   }
 
 
@@ -77,16 +106,8 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 分页查询连续奖励轮次历史
+   * 分页查询连续签到记录
    */
-  export async function checkInStreakRoundHistoryPageApi(params?: CheckInStreakRoundHistoryPageRequest): Promise<CheckInStreakRoundHistoryPageResponse> {
-    return requestClient.get<CheckInStreakRoundHistoryPageResponse>('/api/admin/check-in/streak-round/history/page', { params });
-  }
-
-
-  /**
-   * 查询连续奖励轮次历史详情
-   */
-  export async function checkInStreakRoundHistoryDetailApi(params: CheckInStreakRoundHistoryDetailRequest): Promise<CheckInStreakRoundHistoryDetailResponse> {
-    return requestClient.get<CheckInStreakRoundHistoryDetailResponse>('/api/admin/check-in/streak-round/history/detail', { params });
+  export async function checkInStreakPageApi(params?: CheckInStreakPageRequest): Promise<CheckInStreakPageResponse> {
+    return requestClient.get<CheckInStreakPageResponse>('/api/admin/check-in/streak/page', { params });
   }

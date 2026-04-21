@@ -3,13 +3,13 @@ import { Page } from '@vben/common-ui';
 
 import CheckInConfigPanel from './components/check-in-config-panel.vue';
 import CheckInReconciliationPanel from './components/check-in-reconciliation-panel.vue';
-import CheckInRoundPanel from './components/check-in-round-panel.vue';
+import CheckInStreakPanel from './components/check-in-streak-panel.vue';
 
 defineOptions({
   name: 'CheckInManager',
 });
 
-type TabKey = 'config' | 'reconciliation' | 'round';
+type TabKey = 'config' | 'reconciliation' | 'streak';
 
 const activeTab = ref<TabKey>('config');
 </script>
@@ -22,8 +22,8 @@ const activeTab = ref<TabKey>('config');
           <CheckInConfigPanel />
         </el-tab-pane>
 
-        <el-tab-pane label="连续奖励轮次" name="round">
-          <CheckInRoundPanel />
+        <el-tab-pane label="连续签到记录" name="streak">
+          <CheckInStreakPanel />
         </el-tab-pane>
 
         <el-tab-pane label="奖励对账" name="reconciliation">
