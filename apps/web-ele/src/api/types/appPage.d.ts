@@ -3,9 +3,9 @@
  *  @来源 APP管理/页面管理
  *  @更新时间 2026-04-23 18:08:35
  */
-export type AppPageCreateRequest = CreateAppPageDto
+export type AppPageCreateRequest = CreateAppPageDto;
 
-export type AppPageCreateResponse = boolean
+export type AppPageCreateResponse = boolean;
 
 /**
  *  类型定义 [AppPagePageRequest]
@@ -14,55 +14,55 @@ export type AppPageCreateResponse = boolean
  */
 export type AppPagePageRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel?: number
+  accessLevel?: number;
 
   /* 页面编码（唯一标识） */
-  code?: string
+  code?: string;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
-  enablePlatform?: null | string
+  enablePlatform?: null | string;
 
   /* 结束时间 */
-  endDate?: null | string
+  endDate?: null | string;
 
   /* 页面启用状态 */
-  isEnabled?: boolean
+  isEnabled?: boolean;
 
   /* 页面名称 */
-  name?: string
+  name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: null | string
-}
+  startDate?: null | string;
+};
 
 export type AppPagePageResponse = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 列表数据 */
-  list?: BaseAppPageDto[]
+  list?: BaseAppPageDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: number
+  pageIndex?: number;
 
   /* 每页条数 */
-  pageSize?: number
+  pageSize?: number;
 
   /* 总条数 */
-  total?: number
-}
+  total?: number;
+};
 
 /**
  *  类型定义 [AppPageDetailRequest]
@@ -71,13 +71,13 @@ export type AppPagePageResponse = {
  */
 export type AppPageDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 主键id */
-  id: number
-}
+  id: number;
+};
 
-export type AppPageDetailResponse = BaseAppPageDto
+export type AppPageDetailResponse = BaseAppPageDto;
 
 /**
  *  类型定义 [AppPageCodeDetailRequest]
@@ -86,31 +86,31 @@ export type AppPageDetailResponse = BaseAppPageDto
  */
 export type AppPageCodeDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 页面编码（唯一标识） */
-  code: string
-}
+  code: string;
+};
 
-export type AppPageCodeDetailResponse = BaseAppPageDto
+export type AppPageCodeDetailResponse = BaseAppPageDto;
 
 /**
  *  类型定义 [AppPageUpdateRequest]
  *  @来源 APP管理/页面管理
  *  @更新时间 2026-04-23 18:08:35
  */
-export type AppPageUpdateRequest = UpdateAppPageDto
+export type AppPageUpdateRequest = UpdateAppPageDto;
 
-export type AppPageUpdateResponse = boolean
+export type AppPageUpdateResponse = boolean;
 
 /**
  *  类型定义 [AppPageDeleteRequest]
  *  @来源 APP管理/页面管理
  *  @更新时间 2026-04-23 18:08:35
  */
-export type AppPageDeleteRequest = IdsDto
+export type AppPageDeleteRequest = IdsDto;
 
-export type AppPageDeleteResponse = boolean
+export type AppPageDeleteResponse = boolean;
 
 /**
  *  类型定义 [CreateAppPageDto]
@@ -119,25 +119,25 @@ export type AppPageDeleteResponse = boolean
  */
 export type CreateAppPageDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel: 0 | 1 | 2 | 3
+  accessLevel: 0 | 1 | 2 | 3;
   /* 页面编码（唯一标识） */
-  code: string
+  code: string;
   /* 页面描述信息 */
-  description?: null | string
+  description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[]
+  enablePlatform?: 1 | 2 | 3[];
   /* 页面启用状态 */
-  isEnabled: boolean
+  isEnabled: boolean;
   /* 页面名称 */
-  name: string
+  name: string;
   /* 页面路径（URL 路径） */
-  path: string
+  path: string;
 
   /* 页面标题 */
-  title: string
-}
+  title: string;
+};
 
 /**
  *  类型定义 [BaseAppPageDto]
@@ -146,31 +146,31 @@ export type CreateAppPageDto = {
  */
 export type BaseAppPageDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel: 0 | 1 | 2 | 3
+  accessLevel: 0 | 1 | 2 | 3;
   /* 页面编码（唯一标识） */
-  code: string
+  code: string;
   /* 创建时间 */
-  createdAt: string
+  createdAt: string;
   /* 页面描述信息 */
-  description?: null | string
+  description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[]
+  enablePlatform?: 1 | 2 | 3[];
   /* 主键id */
-  id: number
+  id: number;
   /* 页面启用状态 */
-  isEnabled: boolean
+  isEnabled: boolean;
   /* 页面名称 */
-  name: string
+  name: string;
   /* 页面路径（URL 路径） */
-  path: string
+  path: string;
   /* 页面标题 */
-  title: string
+  title: string;
 
   /* 更新时间 */
-  updatedAt: string
-}
+  updatedAt: string;
+};
 
 /**
  *  类型定义 [UpdateAppPageDto]
@@ -179,27 +179,27 @@ export type BaseAppPageDto = {
  */
 export type UpdateAppPageDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel?: 0 | 1 | 2 | 3
+  accessLevel?: 0 | 1 | 2 | 3;
   /* 页面编码（唯一标识） */
-  code?: string
+  code?: string;
   /* 页面描述信息 */
-  description?: null | string
+  description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[]
+  enablePlatform?: 1 | 2 | 3[];
   /* 主键id */
-  id: number
+  id: number;
   /* 页面启用状态 */
-  isEnabled?: boolean
+  isEnabled?: boolean;
   /* 页面名称 */
-  name?: string
+  name?: string;
   /* 页面路径（URL 路径） */
-  path?: string
+  path?: string;
 
   /* 页面标题 */
-  title?: string
-}
+  title?: string;
+};
 
 /**
  *  类型定义 [IdsDto]
@@ -208,8 +208,8 @@ export type UpdateAppPageDto = {
  */
 export type IdsDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 主键id集合 */
-  ids: number[]
-}
+  ids: number[];
+};

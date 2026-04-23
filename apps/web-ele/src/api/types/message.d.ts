@@ -5,70 +5,71 @@
  */
 export type MessageMonitorDeliveryPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 通知分类键，表示通知所属业务分类 */
-  categoryKey?: null | string
+  categoryKey?: null | string;
 
   /* dispatch ID（正整数字符串） */
-  dispatchId?: null | string
+  dispatchId?: null | string;
 
   /* 结束时间 */
-  endDate?: null | string
+  endDate?: null | string;
 
   /* 领域事件 ID（正整数字符串） */
-  eventId?: null | string
+  eventId?: null | string;
 
   /* 领域事件键 */
-  eventKey?: null | string
+  eventKey?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number
+  pageSize?: null | number;
 
   /* 通知投影键精确匹配 */
-  projectionKey?: null | string
+  projectionKey?: null | string;
 
   /* 接收用户 ID */
-  receiverUserId?: null | number
+  receiverUserId?: null | number;
 
   /* 开始时间 */
-  startDate?: null | string
+  startDate?: null | string;
 
   /* 业务投递状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
-  status?: null | number
-}
+  status?: null | number;
+};
 
 export type MessageMonitorDeliveryPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 列表数据 */
-  list?: MessageNotificationDeliveryItemDto[]
+  list?: MessageNotificationDeliveryItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: number
+  pageIndex?: number;
 
   /* 每页条数 */
-  pageSize?: number
+  pageSize?: number;
 
   /* 总条数 */
-  total?: number
-}
+  total?: number;
+};
 
 /**
  *  类型定义 [MessageMonitorDeliveryRetryRequest]
  *  @来源 消息中心/监控
  *  @更新时间 2026-04-23 18:08:35
  */
-export type MessageMonitorDeliveryRetryRequest = RetryMessageNotificationDeliveryDto
+export type MessageMonitorDeliveryRetryRequest =
+  RetryMessageNotificationDeliveryDto;
 
-export type MessageMonitorDeliveryRetryResponse = boolean
+export type MessageMonitorDeliveryRetryResponse = boolean;
 
 /**
  *  类型定义 [MessageMonitorDispatchPageRequest]
@@ -77,64 +78,64 @@ export type MessageMonitorDeliveryRetryResponse = boolean
  */
 export type MessageMonitorDispatchPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 通知投影业务状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
-  deliveryStatus?: null | number
+  deliveryStatus?: null | number;
 
   /* dispatch ID（正整数字符串） */
-  dispatchId?: null | string
+  dispatchId?: null | string;
 
   /* 领域事件 dispatch 技术状态（0=待处理；1=处理中；2=成功；3=失败） */
-  dispatchStatus?: null | number
+  dispatchStatus?: null | number;
 
   /* 事件域 */
-  domain?: null | string
+  domain?: null | string;
 
   /* 结束时间 */
-  endDate?: null | string
+  endDate?: null | string;
 
   /* 领域事件 ID（正整数字符串） */
-  eventId?: null | string
+  eventId?: null | string;
 
   /* 领域事件键 */
-  eventKey?: null | string
+  eventKey?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number
+  pageSize?: null | number;
 
   /* 通知投影键精确匹配 */
-  projectionKey?: null | string
+  projectionKey?: null | string;
 
   /* 接收用户 ID */
-  receiverUserId?: null | number
+  receiverUserId?: null | number;
 
   /* 开始时间 */
-  startDate?: null | string
-}
+  startDate?: null | string;
+};
 
 export type MessageMonitorDispatchPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 列表数据 */
-  list?: MessageDispatchPageItemDto[]
+  list?: MessageDispatchPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: number
+  pageIndex?: number;
 
   /* 每页条数 */
-  pageSize?: number
+  pageSize?: number;
 
   /* 总条数 */
-  total?: number
-}
+  total?: number;
+};
 
 /**
  *  类型定义 [MessageMonitorWsSummaryRequest]
@@ -143,13 +144,13 @@ export type MessageMonitorDispatchPageResponse = {
  */
 export type MessageMonitorWsSummaryRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 统计窗口（小时） */
-  windowHours?: null | number
-}
+  windowHours?: null | number;
+};
 
-export type MessageMonitorWsSummaryResponse = MessageWsMonitorSummaryDto
+export type MessageMonitorWsSummaryResponse = MessageWsMonitorSummaryDto;
 
 /**
  *  类型定义 [MessageNotificationTemplatesPageRequest]
@@ -158,46 +159,46 @@ export type MessageMonitorWsSummaryResponse = MessageWsMonitorSummaryDto
  */
 export type MessageNotificationTemplatesPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 通知分类键，表示模板所属通知业务分类 */
-  categoryKey?: string
+  categoryKey?: string;
 
   /* 结束时间 */
-  endDate?: null | string
+  endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: null | string
-}
+  startDate?: null | string;
+};
 
 export type MessageNotificationTemplatesPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 列表数据 */
-  list?: AdminMessageNotificationTemplateDto[]
+  list?: AdminMessageNotificationTemplateDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: number
+  pageIndex?: number;
 
   /* 每页条数 */
-  pageSize?: number
+  pageSize?: number;
 
   /* 总条数 */
-  total?: number
-}
+  total?: number;
+};
 
 /**
  *  类型定义 [MessageNotificationTemplatesDetailRequest]
@@ -206,49 +207,53 @@ export type MessageNotificationTemplatesPageResponse = {
  */
 export type MessageNotificationTemplatesDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 主键id */
-  id: number
-}
+  id: number;
+};
 
-export type MessageNotificationTemplatesDetailResponse = AdminMessageNotificationTemplateDto
+export type MessageNotificationTemplatesDetailResponse =
+  AdminMessageNotificationTemplateDto;
 
 /**
  *  类型定义 [MessageNotificationTemplatesCreateRequest]
  *  @来源 消息中心/通知模板
  *  @更新时间 2026-04-23 18:08:35
  */
-export type MessageNotificationTemplatesCreateRequest = CreateNotificationTemplateDto
+export type MessageNotificationTemplatesCreateRequest =
+  CreateNotificationTemplateDto;
 
-export type MessageNotificationTemplatesCreateResponse = boolean
+export type MessageNotificationTemplatesCreateResponse = boolean;
 
 /**
  *  类型定义 [MessageNotificationTemplatesUpdateRequest]
  *  @来源 消息中心/通知模板
  *  @更新时间 2026-04-23 18:08:35
  */
-export type MessageNotificationTemplatesUpdateRequest = UpdateNotificationTemplateDto
+export type MessageNotificationTemplatesUpdateRequest =
+  UpdateNotificationTemplateDto;
 
-export type MessageNotificationTemplatesUpdateResponse = boolean
+export type MessageNotificationTemplatesUpdateResponse = boolean;
 
 /**
  *  类型定义 [MessageNotificationTemplatesUpdateEnabledRequest]
  *  @来源 消息中心/通知模板
  *  @更新时间 2026-04-23 18:08:35
  */
-export type MessageNotificationTemplatesUpdateEnabledRequest = UpdateNotificationTemplateEnabledDto
+export type MessageNotificationTemplatesUpdateEnabledRequest =
+  UpdateNotificationTemplateEnabledDto;
 
-export type MessageNotificationTemplatesUpdateEnabledResponse = boolean
+export type MessageNotificationTemplatesUpdateEnabledResponse = boolean;
 
 /**
  *  类型定义 [MessageNotificationTemplatesDeleteRequest]
  *  @来源 消息中心/通知模板
  *  @更新时间 2026-04-23 18:08:35
  */
-export type MessageNotificationTemplatesDeleteRequest = IdDto
+export type MessageNotificationTemplatesDeleteRequest = IdDto;
 
-export type MessageNotificationTemplatesDeleteResponse = boolean
+export type MessageNotificationTemplatesDeleteResponse = boolean;
 
 /**
  *  类型定义 [MessageNotificationDeliveryItemDto]
@@ -257,45 +262,45 @@ export type MessageNotificationTemplatesDeleteResponse = boolean
  */
 export type MessageNotificationDeliveryItemDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 通知分类键 */
-  categoryKey?: null | string
+  categoryKey?: null | string;
   /* 通知分类中文标签 */
-  categoryLabel?: null | string
+  categoryLabel?: null | string;
   /* 创建时间 */
-  createdAt: string
+  createdAt: string;
   /* dispatch ID */
-  dispatchId: string
+  dispatchId: string;
   /* 关联的领域事件 ID */
-  eventId: string
+  eventId: string;
   /* 领域事件键 */
-  eventKey?: null | string
+  eventKey?: null | string;
   /* 最近一次失败原因 */
-  failureReason?: null | string
+  failureReason?: null | string;
   /* 模板回退原因 */
-  fallbackReason?: null | string
+  fallbackReason?: null | string;
   /* 投递结果 ID */
-  id: number
+  id: number;
   /* 最近一次业务投递尝试时间 */
-  lastAttemptAt: string
+  lastAttemptAt: string;
   /* 关联的站内通知 ID */
-  notificationId?: null | number
+  notificationId?: null | number;
   /* 通知投影键 */
-  projectionKey?: null | string
+  projectionKey?: null | string;
   /* 接收用户 ID */
-  receiverUserId?: null | number
+  receiverUserId?: null | number;
   /* 业务投递状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
-  status: 1 | 2 | 3 | 4
+  status: 1 | 2 | 3 | 4;
   /* 业务投递结果中文标签 */
-  statusLabel: string
+  statusLabel: string;
   /* 命中的模板 ID */
-  templateId?: null | number
+  templateId?: null | number;
   /* 更新时间 */
-  updatedAt: string
+  updatedAt: string;
 
   /* 是否命中启用模板 */
-  usedTemplate: boolean
-}
+  usedTemplate: boolean;
+};
 
 /**
  *  类型定义 [RetryMessageNotificationDeliveryDto]
@@ -304,11 +309,11 @@ export type MessageNotificationDeliveryItemDto = {
  */
 export type RetryMessageNotificationDeliveryDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 通知 dispatch ID */
-  dispatchId: string
-}
+  dispatchId: string;
+};
 
 /**
  *  类型定义 [MessageDispatchPageItemDto]
@@ -317,35 +322,35 @@ export type RetryMessageNotificationDeliveryDto = {
  */
 export type MessageDispatchPageItemDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* consumer */
-  consumer: string
+  consumer: string;
   /* 通知投影业务状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
-  deliveryStatus?: null | number
+  deliveryStatus?: null | number;
   /* dispatch ID */
-  dispatchId: string
+  dispatchId: string;
   /* 领域事件 dispatch 技术状态（0=待处理；1=处理中；2=成功；3=失败） */
-  dispatchStatus: 0 | 1 | 2 | 3
+  dispatchStatus: 0 | 1 | 2 | 3;
   /* 领域事件域 */
-  domain: string
+  domain: string;
   /* 领域事件 ID */
-  eventId: string
+  eventId: string;
   /* 领域事件键 */
-  eventKey: string
+  eventKey: string;
   /* 最后一次技术失败原因 */
-  lastError?: null | string
+  lastError?: null | string;
   /* 下次重试时间 */
-  nextRetryAt?: null | string
+  nextRetryAt?: null | string;
   /* 处理完成时间 */
-  processedAt?: null | string
+  processedAt?: null | string;
   /* 通知投影键 */
-  projectionKey?: null | string
+  projectionKey?: null | string;
   /* 接收用户 ID */
-  receiverUserId?: null | number
+  receiverUserId?: null | number;
 
   /* 重试次数 */
-  retryCount: number
-}
+  retryCount: number;
+};
 
 /**
  *  类型定义 [MessageWsMonitorSummaryDto]
@@ -354,33 +359,33 @@ export type MessageDispatchPageItemDto = {
  */
 export type MessageWsMonitorSummaryDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* ack 失败数量 */
-  ackErrorCount: number
+  ackErrorCount: number;
   /* ack 成功数量 */
-  ackSuccessCount: number
+  ackSuccessCount: number;
   /* ack 成功率（0~1） */
-  ackSuccessRate: number
+  ackSuccessRate: number;
   /* 平均 ack 延迟（毫秒） */
-  avgAckLatencyMs: number
+  avgAckLatencyMs: number;
   /* 连接/重连次数 */
-  reconnectCount: number
+  reconnectCount: number;
   /* WS 请求总数 */
-  requestCount: number
+  requestCount: number;
   /* 补偿成功次数 */
-  resyncSuccessCount: number
+  resyncSuccessCount: number;
   /* 补偿成功率（0~1） */
-  resyncSuccessRate: number
+  resyncSuccessRate: number;
   /* 补偿触发次数 */
-  resyncTriggerCount: number
+  resyncTriggerCount: number;
   /* 快照时间 */
-  snapshotAt: string
+  snapshotAt: string;
   /* 统计窗口（小时） */
-  windowHours: number
+  windowHours: number;
 
   /* 统计窗口起始时间 */
-  windowStartAt: string
-}
+  windowStartAt: string;
+};
 
 /**
  *  类型定义 [AdminMessageNotificationTemplateDto]
@@ -389,27 +394,27 @@ export type MessageWsMonitorSummaryDto = {
  */
 export type AdminMessageNotificationTemplateDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 通知分类键，表示模板所属通知业务分类 */
-  categoryKey: string
+  categoryKey: string;
   /* 通知分类中文标签 */
-  categoryLabel: string
+  categoryLabel: string;
   /* 正文模板；支持 {{content}}、{{data.object.title}}、{{data.object.snippet}} 等占位符 */
-  contentTemplate: string
+  contentTemplate: string;
   /* 创建时间 */
-  createdAt: string
+  createdAt: string;
   /* 主键id */
-  id: number
+  id: number;
   /* 是否启用 */
-  isEnabled: boolean
+  isEnabled: boolean;
   /* 备注 */
-  remark?: null | string
+  remark?: null | string;
   /* 标题模板；支持 {{title}}、{{actor.nickname}}、{{data.object.title}} 等占位符 */
-  titleTemplate: string
+  titleTemplate: string;
 
   /* 更新时间 */
-  updatedAt: string
-}
+  updatedAt: string;
+};
 
 /**
  *  类型定义 [CreateNotificationTemplateDto]
@@ -418,19 +423,19 @@ export type AdminMessageNotificationTemplateDto = {
  */
 export type CreateNotificationTemplateDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 通知分类键，表示模板所属通知业务分类 */
-  categoryKey: string
+  categoryKey: string;
   /* 正文模板；支持 {{content}}、{{data.object.title}}、{{data.object.snippet}} 等占位符 */
-  contentTemplate: string
+  contentTemplate: string;
   /* 是否启用 */
-  isEnabled?: boolean
+  isEnabled?: boolean;
   /* 备注 */
-  remark?: null | string
+  remark?: null | string;
 
   /* 标题模板；支持 {{title}}、{{actor.nickname}}、{{data.object.title}} 等占位符 */
-  titleTemplate: string
-}
+  titleTemplate: string;
+};
 
 /**
  *  类型定义 [UpdateNotificationTemplateDto]
@@ -439,21 +444,21 @@ export type CreateNotificationTemplateDto = {
  */
 export type UpdateNotificationTemplateDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 通知分类键，表示模板所属通知业务分类 */
-  categoryKey?: string
+  categoryKey?: string;
   /* 正文模板；支持 {{content}}、{{data.object.title}}、{{data.object.snippet}} 等占位符 */
-  contentTemplate?: string
+  contentTemplate?: string;
   /* 主键id */
-  id: number
+  id: number;
   /* 是否启用 */
-  isEnabled?: boolean
+  isEnabled?: boolean;
   /* 备注 */
-  remark?: null | string
+  remark?: null | string;
 
   /* 标题模板；支持 {{title}}、{{actor.nickname}}、{{data.object.title}} 等占位符 */
-  titleTemplate?: string
-}
+  titleTemplate?: string;
+};
 
 /**
  *  类型定义 [UpdateNotificationTemplateEnabledDto]
@@ -462,13 +467,13 @@ export type UpdateNotificationTemplateDto = {
  */
 export type UpdateNotificationTemplateEnabledDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
   /* 主键id */
-  id: number
+  id: number;
 
   /* 是否启用 */
-  isEnabled: boolean
-}
+  isEnabled: boolean;
+};
 
 /**
  *  类型定义 [IdDto]
@@ -477,8 +482,8 @@ export type UpdateNotificationTemplateEnabledDto = {
  */
 export type IdDto = {
   /** 任意合法数值 */
-  [property: string]: any
+  [property: string]: any;
 
   /* 主键id */
-  id: number
-}
+  id: number;
+};
