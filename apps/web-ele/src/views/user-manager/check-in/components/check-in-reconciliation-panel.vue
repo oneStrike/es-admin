@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { CheckInGrantItemDto, CheckInReconciliationRepairRequest } from '#/api/types';
+import type {
+  CheckInGrantItemDto,
+  CheckInReconciliationPageItemDto,
+  CheckInReconciliationRepairRequest,
+} from '#/api/types';
 
 import { reactive } from 'vue';
 
@@ -34,24 +38,25 @@ defineOptions({
 const baseRepairingMap = reactive<Record<number, boolean>>({});
 const grantRepairingMap = reactive<Record<number, boolean>>({});
 
-const reconciliationGridOptions: VxeGridProps<any> = {
-  columns: reconciliationColumns,
-  height: 'auto',
-  proxyConfig: {
-    ajax: {
-      query: async ({ page, sorts }, formValues) => {
-        return await checkInReconciliationPageApi(
-          formatQuery({
-            page,
-            formValues,
-            sorts,
-          }),
-        );
+const reconciliationGridOptions: VxeGridProps<CheckInReconciliationPageItemDto> =
+  {
+    columns: reconciliationColumns,
+    height: 'auto',
+    proxyConfig: {
+      ajax: {
+        query: async ({ page, sorts }, formValues) => {
+          return await checkInReconciliationPageApi(
+            formatQuery({
+              page,
+              formValues,
+              sorts,
+            }),
+          );
+        },
       },
+      sort: true,
     },
-    sort: true,
-  },
-};
+  };
 
 const [ReconciliationGrid, reconciliationGridApi] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(reconciliationSearchFormSchema, {
@@ -61,28 +66,31 @@ const [ReconciliationGrid, reconciliationGridApi] = useVbenVxeGrid({
   gridOptions: reconciliationGridOptions,
 });
 
-async function repairRecordReward(row: any) {
-  if (row.rewardSettlement?.settlementStatus === 1 || row.rewardSettlementId == null) {
+async function repairRecordReward(row: CheckInReconciliationPageItemDto) {
+  if (
+    row.rewardSettlement?.settlementStatus === 1 ||
+    !hasBaseRewardSettlement(row)
+  ) {
     return;
   }
 
-  baseRepairingMap[row.id] = true;
+  baseRepairingMap[row.recordId] = true;
   try {
     const confirmed = await confirmRepair({
-      recordId: row.id,
+      recordId: row.recordId,
       targetType: 1,
     });
     if (!confirmed) {
       return;
     }
     await checkInReconciliationRepairApi({
-      recordId: row.id,
+      recordId: row.recordId,
       targetType: 1,
     } satisfies CheckInReconciliationRepairRequest);
     useMessage.success('基础奖励补偿已触发');
     await reconciliationGridApi.reload();
   } finally {
-    baseRepairingMap[row.id] = false;
+    baseRepairingMap[row.recordId] = false;
   }
 }
 
@@ -135,10 +143,16 @@ async function confirmRepair(params: {
   }
 }
 
-function hasRepairableBaseReward(row: any) {
+function hasRepairableBaseReward(row: CheckInReconciliationPageItemDto) {
   return (
     row.rewardSettlement?.settlementStatus === 0 ||
     row.rewardSettlement?.settlementStatus === 2
+  );
+}
+
+function hasBaseRewardSettlement(row: CheckInReconciliationPageItemDto) {
+  return (
+    row.rewardSettlementId !== null && row.rewardSettlementId !== undefined
   );
 }
 
@@ -162,8 +176,9 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
             round
           >
             {{
-              checkInRecordTypeOptions.find((item) => item.value === row.recordType)
-                ?.label
+              checkInRecordTypeOptions.find(
+                (item) => item.value === row.recordType,
+              )?.label
             }}
           </el-tag>
           <el-tag
@@ -194,24 +209,34 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
 
     <template #baseRewardStatus="{ row }">
       <div class="flex min-h-12 flex-wrap items-center gap-2">
-        <template v-if="row.rewardSettlementId == null">
+        <template v-if="!hasBaseRewardSettlement(row)">
           <el-tag effect="light" round type="info">无基础奖励</el-tag>
         </template>
         <template v-else>
           <el-tag
-            :type="getRewardStatusMeta(row.rewardSettlement?.settlementStatus).color"
+            :type="
+              getRewardStatusMeta(row.rewardSettlement?.settlementStatus).color
+            "
             effect="light"
             round
           >
-            {{ getRewardStatusMeta(row.rewardSettlement?.settlementStatus).label }}
+            {{
+              getRewardStatusMeta(row.rewardSettlement?.settlementStatus).label
+            }}
           </el-tag>
           <el-tag
             v-if="row.rewardSettlement?.settlementResultType"
-            :type="getRewardResultMeta(row.rewardSettlement?.settlementResultType).color"
+            :type="
+              getRewardResultMeta(row.rewardSettlement?.settlementResultType)
+                .color
+            "
             effect="plain"
             round
           >
-            {{ getRewardResultMeta(row.rewardSettlement?.settlementResultType).label }}
+            {{
+              getRewardResultMeta(row.rewardSettlement?.settlementResultType)
+                .label
+            }}
           </el-tag>
         </template>
       </div>
@@ -221,7 +246,7 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
       <div class="flex min-h-10 items-center">
         <el-tag effect="light" round type="primary">
           {{
-            row.rewardSettlementId == null
+            !hasBaseRewardSettlement(row)
               ? '无基础奖励'
               : formatRewardSummary(row.resolvedRewardItems)
           }}
@@ -242,24 +267,32 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
                 发放 #{{ grant.id }}
               </el-tag>
               <el-tag
-                :type="getRewardStatusMeta(grant.rewardSettlement?.settlementStatus).color"
+                :type="
+                  getRewardStatusMeta(grant.rewardSettlement?.settlementStatus)
+                    .color
+                "
                 effect="light"
                 round
               >
-                {{ getRewardStatusMeta(grant.rewardSettlement?.settlementStatus).label }}
+                {{
+                  getRewardStatusMeta(grant.rewardSettlement?.settlementStatus)
+                    .label
+                }}
               </el-tag>
               <el-tag
                 v-if="grant.rewardSettlement?.settlementResultType"
                 :type="
-                  getRewardResultMeta(grant.rewardSettlement?.settlementResultType)
-                    .color
+                  getRewardResultMeta(
+                    grant.rewardSettlement?.settlementResultType,
+                  ).color
                 "
                 effect="plain"
                 round
               >
                 {{
-                  getRewardResultMeta(grant.rewardSettlement?.settlementResultType)
-                    .label
+                  getRewardResultMeta(
+                    grant.rewardSettlement?.settlementResultType,
+                  ).label
                 }}
               </el-tag>
             </div>
@@ -278,7 +311,9 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
             <span>规则ID：{{ grant.ruleId }}</span>
             <span>触发日：{{ grant.triggerSignDate }}</span>
             <span>
-              账本：{{ formatLedgerIds(grant.rewardSettlement?.ledgerRecordIds) }}
+              账本：{{
+                formatLedgerIds(grant.rewardSettlement?.ledgerRecordIds)
+              }}
             </span>
           </div>
           <div
@@ -298,7 +333,7 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
       <div class="flex min-h-12 items-center">
         <el-button
           v-if="hasRepairableBaseReward(row)"
-          :loading="baseRepairingMap[row.id]"
+          :loading="baseRepairingMap[row.recordId]"
           link
           type="primary"
           @click="repairRecordReward(row)"

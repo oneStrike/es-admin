@@ -1,4 +1,7 @@
-import type { GrowthRewardItemDto } from '#/api/types';
+import type {
+  CheckInStreakDetailResponse,
+  GrowthRewardItemDto,
+} from '#/api/types';
 
 import {
   buildRewardItems,
@@ -7,21 +10,7 @@ import {
   parseRewardItems,
 } from './shared';
 
-export type CheckInStreakRuleDetail = {
-  createdAt: string;
-  effectiveFrom: string;
-  effectiveTo?: null | string;
-  id: number;
-  isCurrent: boolean;
-  publishStrategy: 1 | 2 | 3;
-  repeatable: boolean;
-  rewardItems: GrowthRewardItemDto[];
-  ruleCode: string;
-  status: 0 | 1 | 2 | 3 | 4;
-  streakDays: number;
-  updatedAt: string;
-  version: number;
-};
+export type CheckInStreakRuleDetail = CheckInStreakDetailResponse;
 
 export type CheckInStreakPublishPayload = {
   effectiveFrom?: string;

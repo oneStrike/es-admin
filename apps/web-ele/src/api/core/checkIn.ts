@@ -50,6 +50,14 @@ import { requestClient } from '#/api/request'
 
 
   /**
+   * 分页查询连续签到记录
+   */
+  export async function checkInStreakPageApi(params?: CheckInStreakPageRequest): Promise<CheckInStreakPageResponse> {
+    return requestClient.get<CheckInStreakPageResponse>('/api/admin/check-in/streak/page', { params });
+  }
+
+
+  /**
    * 查询连续签到记录详情
    */
   export async function checkInStreakDetailApi(params: CheckInStreakDetailRequest): Promise<CheckInStreakDetailResponse> {
@@ -102,12 +110,4 @@ import { requestClient } from '#/api/request'
    */
   export async function checkInReconciliationRepairApi(params: CheckInReconciliationRepairRequest): Promise<CheckInReconciliationRepairResponse> {
     return requestClient.post<CheckInReconciliationRepairResponse>('/api/admin/check-in/reconciliation/repair', params);
-  }
-
-
-  /**
-   * 分页查询连续签到记录
-   */
-  export async function checkInStreakPageApi(params?: CheckInStreakPageRequest): Promise<CheckInStreakPageResponse> {
-    return requestClient.get<CheckInStreakPageResponse>('/api/admin/check-in/streak/page', { params });
   }

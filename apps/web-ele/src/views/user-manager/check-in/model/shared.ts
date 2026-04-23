@@ -1,7 +1,7 @@
 import type {
-  CheckInPatternRewardRuleItemDto,
-  CheckInReconciliationItemDto,
-  CheckInStreakRewardRuleItemDto,
+  BaseCheckInPatternRewardRuleDto,
+  CheckInReconciliationPageItemDto,
+  CheckInStreakRuleDetailResponseDto,
   GrowthRewardItemDto,
 } from '#/api/types';
 
@@ -10,7 +10,7 @@ export type RewardValue = {
   points?: number;
 };
 
-export type CheckInReconciliationRow = CheckInReconciliationItemDto;
+export type CheckInReconciliationRow = CheckInReconciliationPageItemDto;
 
 export const CHECK_IN_REWARD_ASSET_TYPE = {
   EXPERIENCE: 2,
@@ -197,7 +197,7 @@ export function getRewardSourceLabel(sourceType?: null | number) {
 }
 
 export function sortStreakRules<
-  T extends Pick<CheckInStreakRewardRuleItemDto, 'ruleCode' | 'streakDays'>,
+  T extends Pick<CheckInStreakRuleDetailResponseDto, 'ruleCode' | 'streakDays'>,
 >(rules: T[]) {
   return rules.toSorted((left, right) => {
     const streakDiff = left.streakDays - right.streakDays;
@@ -209,7 +209,7 @@ export function sortStreakRules<
 
 export function sortPatternRules<
   T extends Pick<
-    CheckInPatternRewardRuleItemDto,
+    BaseCheckInPatternRewardRuleDto,
     'monthDay' | 'patternType' | 'weekday'
   >,
 >(rules: T[]) {

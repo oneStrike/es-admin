@@ -1,8 +1,6 @@
 import type { CheckInStreakRuleDetail } from './streak-config';
 
-import type {
-  CheckInConfigDetailResponse,
-} from '#/api/types';
+import type { CheckInConfigDetailResponse } from '#/api/types';
 
 import { describe, expect, it } from 'vitest';
 
@@ -47,7 +45,7 @@ function createConfigDetail(
         rewardItems: [{ amount: 66, assetKey: '', assetType: 1 }],
       },
     ],
-    enabled: true,
+    isEnabled: true,
     id: 1,
     makeupPeriodType: 1,
     patternRewardRules: [
@@ -139,7 +137,7 @@ describe('check-in config model', () => {
           rewardItems: [{ amount: 66, assetKey: '', assetType: 1 }],
         },
       ],
-      enabled: true,
+      isEnabled: true,
       makeupPeriodType: 1,
       patternRewardRules: [
         {

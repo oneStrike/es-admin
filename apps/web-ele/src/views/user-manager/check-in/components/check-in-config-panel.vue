@@ -68,7 +68,7 @@ type RewardEditorState = {
 const loading = ref(false);
 const saving = ref(false);
 const toggleLoading = ref(false);
-const enabled = ref(false);
+const isEnabled = ref(false);
 const formState = reactive<CheckInConfigFormState>(
   createDefaultConfigFormState(),
 );
@@ -128,12 +128,7 @@ const dateRuleSummaryGroups = computed(() =>
 const patternRuleSummaries = computed(() =>
   formState.patternRules.map((rule) => ({
     key: rule.localId,
-    label:
-      rule.patternType === 1
-        ? `每周星期${rule.weekday}`
-        : (rule.patternType === 2
-          ? `每月 ${rule.monthDay} 号`
-          : '每月最后一天'),
+    label: formatPatternRuleLabel(rule),
     rewardSummary: formatRewardSummary(rule.rewardItems),
   })),
 );
@@ -175,7 +170,7 @@ async function loadConfig() {
   loading.value = true;
   try {
     const detail = await checkInConfigDetailApi();
-    enabled.value = detail.enabled;
+    isEnabled.value = detail.isEnabled;
     Object.assign(formState, mapConfigDetailToForm(detail));
   } finally {
     loading.value = false;
@@ -184,14 +179,14 @@ async function loadConfig() {
 
 async function handleToggleEnabled(nextValue: boolean | number | string) {
   const nextEnabled = !!nextValue;
-  const previousEnabled = enabled.value;
-  enabled.value = nextEnabled;
+  const previousEnabled = isEnabled.value;
+  isEnabled.value = nextEnabled;
   toggleLoading.value = true;
   try {
-    await checkInConfigUpdateEnabledApi({ enabled: nextEnabled });
+    await checkInConfigUpdateEnabledApi({ isEnabled: nextEnabled });
     useMessage.success(nextEnabled ? '签到功能已开启' : '签到功能已关闭');
   } catch (error) {
-    enabled.value = previousEnabled;
+    isEnabled.value = previousEnabled;
     throw error;
   } finally {
     toggleLoading.value = false;
@@ -208,7 +203,7 @@ async function handleSave() {
   saving.value = true;
   try {
     await checkInConfigUpdateApi(
-      buildConfigUpdatePayload(enabled.value, formState),
+      buildConfigUpdatePayload(isEnabled.value, formState),
     );
     useMessage.success('签到基础配置已保存');
     await loadConfig();
@@ -448,6 +443,18 @@ function isDateRuleMonthExpanded(monthKey: string) {
   return expandedDateRuleMonths.value.includes(monthKey);
 }
 
+function formatPatternRuleLabel(
+  rule: CheckInConfigFormState['patternRules'][number],
+) {
+  if (rule.patternType === 1) {
+    return `每周星期${rule.weekday}`;
+  }
+  if (rule.patternType === 2) {
+    return `每月 ${rule.monthDay} 号`;
+  }
+  return '每月最后一天';
+}
+
 function resolveDefaultScope(
   cell: CheckInConfigPreviewDay,
 ): CheckInConfigEditorKind {
@@ -559,7 +566,7 @@ onMounted(async () => {
           <div class="flex items-center gap-3">
             <span class="text-sm text-slate-500">签到开关</span>
             <el-switch
-              :model-value="enabled"
+              :model-value="isEnabled"
               :loading="toggleLoading"
               @change="handleToggleEnabled"
             />
@@ -778,7 +785,10 @@ onMounted(async () => {
                 <div class="mt-1 text-xs text-slate-500">
                   {{ rule.rewardSummary }}
                 </div>
-                <div v-if="!rule.editable" class="mt-2 text-[11px] text-slate-400">
+                <div
+                  v-if="!rule.editable"
+                  class="mt-2 text-[11px] text-slate-400"
+                >
                   历史日期只读
                 </div>
               </button>

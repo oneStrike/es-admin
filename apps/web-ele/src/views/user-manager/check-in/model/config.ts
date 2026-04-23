@@ -81,7 +81,9 @@ export function mapConfigDetailToForm(
         rewardDate: rule.rewardDate,
         rewardItems: cloneRewardItems(rule.rewardItems),
       }))
-      .toSorted((left, right) => left.rewardDate.localeCompare(right.rewardDate)),
+      .toSorted((left, right) =>
+        left.rewardDate.localeCompare(right.rewardDate),
+      ),
     makeupPeriodType: detail.makeupPeriodType,
     patternRules: sortPatternRules(
       (detail.patternRewardRules || []).map((rule, index) => ({
@@ -97,7 +99,7 @@ export function mapConfigDetailToForm(
 }
 
 export function buildConfigUpdatePayload(
-  enabled: boolean,
+  isEnabled: boolean,
   state: CheckInConfigFormState,
 ): CheckInConfigUpdateRequest {
   const compatiblePatternRules = state.patternRules.filter((rule) =>
@@ -110,12 +112,14 @@ export function buildConfigUpdatePayload(
     baseRewardItems: cloneRewardItems(state.baseRewardItems),
     dateRewardRules: state.dateRules
       .filter((rule) => !!rule.rewardDate && hasRewardItems(rule.rewardItems))
-      .toSorted((left, right) => left.rewardDate.localeCompare(right.rewardDate))
+      .toSorted((left, right) =>
+        left.rewardDate.localeCompare(right.rewardDate),
+      )
       .map((rule) => ({
         rewardDate: rule.rewardDate,
         rewardItems: cloneRewardItems(rule.rewardItems),
       })),
-    enabled,
+    isEnabled,
     makeupPeriodType: state.makeupPeriodType,
     patternRewardRules: sortPatternRules(compatiblePatternRules)
       .filter((rule) => hasValidPatternRule(rule))

@@ -80,7 +80,7 @@ const reconciliationTableSchema: EsFormSchema = [
       min: 1,
       placeholder: '签到记录ID',
     },
-    fieldName: 'id',
+    fieldName: 'recordId',
     label: '签到记录ID',
   },
   {
@@ -155,7 +155,7 @@ export const reconciliationSearchFormSchema =
 
 export const reconciliationColumns: VxeGridPropTypes.Columns<any> =
   formSchemaTransform.toTableColumns<any>(reconciliationTableSchema, {
-    id: {
+    recordId: {
       fixed: 'left',
       minWidth: 110,
     },

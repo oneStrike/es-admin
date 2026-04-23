@@ -1,7 +1,7 @@
 /**
  *  类型定义 [CommentPageRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type CommentPageRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type CommentPageResponse = {
 /**
  *  类型定义 [CommentDetailRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type CommentDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type CommentDetailResponse = AdminCommentDetailDto
 /**
  *  类型定义 [CommentUpdateAuditStatusRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type CommentUpdateAuditStatusRequest = UpdateAdminCommentAuditStatusDto
 
@@ -94,7 +94,7 @@ export type CommentUpdateAuditStatusResponse = boolean
 /**
  *  类型定义 [CommentUpdateHiddenRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type CommentUpdateHiddenRequest = UpdateAdminCommentHiddenDto
 
@@ -103,7 +103,7 @@ export type CommentUpdateHiddenResponse = boolean
 /**
  *  类型定义 [AdminCommentPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type AdminCommentPageItemDto = {
   /** 任意合法数值 */
@@ -137,7 +137,7 @@ export type AdminCommentPageItemDto = {
   /* 回复的评论 ID */
   replyToId?: null | number
   /* 敏感词命中记录 */
-  sensitiveWordHits?: string[]
+  sensitiveWordHits?: SensitiveWordHitDto[]
   /* 目标 ID */
   targetId: number
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
@@ -152,9 +152,34 @@ export type AdminCommentPageItemDto = {
 }
 
 /**
+ *  类型定义 [SensitiveWordHitDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-04-23 18:08:35
+ */
+export type SensitiveWordHitDto = {
+  /** 任意合法数值 */
+  [property: string]: any
+  /* 结束位置 */
+  end: number
+  /* 命中字段（title=标题；content=正文） */
+  field?: null | string
+  /* 敏感词级别（1=严重；2=一般；3=轻微） */
+  level: 1 | 2 | 3
+  /* 替换词 */
+  replaceWord?: null | string
+  /* 起始位置 */
+  start: number
+  /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
+  type: 1 | 2 | 3 | 4 | 5
+
+  /* 敏感词 */
+  word: string
+}
+
+/**
  *  类型定义 [AdminCommentUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type AdminCommentUserDto = {
   /** 任意合法数值 */
@@ -175,7 +200,7 @@ export type AdminCommentUserDto = {
 /**
  *  类型定义 [AdminCommentDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type AdminCommentDetailDto = {
   /** 任意合法数值 */
@@ -211,7 +236,7 @@ export type AdminCommentDetailDto = {
   /* 回复的评论 ID */
   replyToId?: null | number
   /* 敏感词命中记录 */
-  sensitiveWordHits?: string[]
+  sensitiveWordHits?: SensitiveWordHitDto[]
   /* 目标 ID */
   targetId: number
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
@@ -228,7 +253,7 @@ export type AdminCommentDetailDto = {
 /**
  *  类型定义 [AdminCommentReplyTargetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type AdminCommentReplyTargetDto = {
   /** 任意合法数值 */
@@ -257,7 +282,7 @@ export type AdminCommentReplyTargetDto = {
 /**
  *  类型定义 [UpdateAdminCommentAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type UpdateAdminCommentAuditStatusDto = {
   /** 任意合法数值 */
@@ -274,7 +299,7 @@ export type UpdateAdminCommentAuditStatusDto = {
 /**
  *  类型定义 [UpdateAdminCommentHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-21 10:24:13
+ *  @更新时间 2026-04-23 18:08:35
  */
 export type UpdateAdminCommentHiddenDto = {
   /** 任意合法数值 */

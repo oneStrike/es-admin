@@ -1,171 +1,137 @@
-import type { AdminTaskPageResponseDto } from '#/api/types';
+import type { TaskDetailResponse } from '#/api/types';
 
 import { formatUTC } from '#/utils';
-import { growthTypeOptions } from '#/views/user-manager/growth/model/constants';
 
 import {
-  claimModeOptions,
-  completeModeOptions,
-  objectiveTypeOptions,
-  taskStatusOptions,
-  taskTypeOptions,
-} from './shared';
+  formatCompletionPolicy,
+  formatCountingMode,
+  formatFilterSummary,
+  formatRewardItems,
+  getOptionLabel,
+  taskClaimModeOptions,
+  taskDefinitionStatusOptions,
+  taskRepeatTypeOptions,
+  taskSceneTypeOptions,
+  taskStepDedupeScopeOptions,
+  taskStepTriggerModeOptions,
+} from './options';
 
-function getOptionLabel(
-  options: Array<{ label: string; value: number }>,
-  value?: number,
-) {
-  return options.find((item) => item.value === value)?.label || '-';
-}
-
-function formatTaskRewardItems(
-  rewardItems?: AdminTaskPageResponseDto['rewardItems'],
-) {
-  if (!rewardItems?.length) {
-    return '-';
-  }
-
-  return rewardItems
-    .map((item) => {
-      let assetLabel = `资产 ${item.assetType}`;
-
-      if (item.assetType === 1) {
-        assetLabel = '积分';
-      } else if (item.assetType === 2) {
-        assetLabel = '经验';
-      }
-
-      return `${assetLabel} ${item.amount}`;
-    })
-    .join(' / ');
-}
-
-export function getDetailCards(detail: AdminTaskPageResponseDto) {
-  const taskStatus = taskStatusOptions.find((item) => item.value === detail.status);
-  const eventCodeLabel =
-    growthTypeOptions.find((item) => item.value === detail.eventCode)?.label || '-';
+export function getTaskDefinitionDetailCards(detail: TaskDetailResponse) {
+  const step = detail.steps?.[0];
 
   return [
     {
-      title: '',
+      title: '基本信息',
       show: true,
       fields: [
+        { label: '任务标题', type: 'title' as const, value: detail.title },
+        { label: '任务编码', type: 'text' as const, value: detail.code || '-' },
         {
-          label: '任务标题',
-          value: detail.title,
-          type: 'title',
-        },
-        {
-          label: '任务编码',
-          value: detail.code || '-',
-          type: 'text',
-        },
-        {
-          label: '任务类型',
-          value: getOptionLabel(taskTypeOptions, detail.type),
-          type: 'text',
+          label: '任务场景',
+          type: 'text' as const,
+          value: getOptionLabel(taskSceneTypeOptions, detail.sceneType),
         },
         {
           label: '任务状态',
+          type: 'tag' as const,
           value: detail.status,
-          type: 'tag',
-          tagText: taskStatus?.label || '-',
-          tagType: taskStatus?.color || 'info',
+          tagText: getOptionLabel(taskDefinitionStatusOptions, detail.status),
+          tagType:
+            taskDefinitionStatusOptions.find(
+              (item) => item.value === detail.status,
+            )?.color || 'info',
+        },
+        {
+          label: '步骤数量',
+          type: 'text' as const,
+          value: detail.stepCount ?? 0,
+        },
+        {
+          label: '活跃实例',
+          type: 'text' as const,
+          value: detail.activeInstanceCount ?? 0,
+        },
+        {
+          label: '待补偿奖励',
+          type: 'text' as const,
+          value: detail.pendingRewardCompensationCount ?? 0,
         },
       ],
     },
     {
-      title: '配置概览',
+      title: '任务配置',
       show: true,
       fields: [
         {
-          label: '启用状态',
-          value: detail.isEnabled,
-          type: 'tag',
-          tagText: detail.isEnabled ? '启用' : '禁用',
-          tagType: detail.isEnabled ? 'success' : 'danger',
+          label: '领取方式',
+          type: 'text' as const,
+          value: getOptionLabel(taskClaimModeOptions, detail.claimMode),
         },
         {
-          label: '领取模式',
-          value: getOptionLabel(claimModeOptions, detail.claimMode),
-          type: 'text',
+          label: '重复周期',
+          type: 'text' as const,
+          value: getOptionLabel(taskRepeatTypeOptions, detail.repeatType),
         },
         {
-          label: '完成模式',
-          value: getOptionLabel(completeModeOptions, detail.completeMode),
-          type: 'text',
+          label: '完成策略',
+          type: 'text' as const,
+          value: formatCompletionPolicy(detail.completionPolicy),
         },
         {
-          label: '目标次数',
-          value: detail.targetCount ?? 0,
-          type: 'text',
-        },
-        {
-          label: '目标类型',
-          value: getOptionLabel(objectiveTypeOptions, detail.objectiveType),
-          type: 'text',
-        },
-        {
-          label: '优先级',
-          value: detail.priority ?? 0,
-          type: 'text',
-        },
-      ],
-    },
-    {
-      title: '发布时间',
-      show: true,
-      fields: [
-        {
-          label: '开始时间',
-          value: detail.publishStartAt
-            ? formatUTC(detail.publishStartAt, 'YYYY-MM-DD HH:mm:ss')
-            : '-',
-          type: 'text',
-        },
-        {
-          label: '结束时间',
-          value: detail.publishEndAt
-            ? formatUTC(detail.publishEndAt, 'YYYY-MM-DD HH:mm:ss')
-            : '-',
-          type: 'text',
-        },
-      ],
-    },
-    {
-      title: '规则配置',
-      show: true,
-      fields: [
-        {
-          label: '事件编码',
-          value: detail.eventCode ? eventCodeLabel : '-',
-          type: 'text',
-        },
-        {
-          label: '目标配置',
-          value: detail.objectiveConfig || '-',
-          type: 'text',
-        },
-        {
-          label: '周期规则',
-          value: detail.repeatRule || '-',
-          type: 'text',
+          label: '排序值',
+          type: 'text' as const,
+          value: detail.sortOrder ?? 0,
         },
         {
           label: '奖励配置',
-          value: formatTaskRewardItems(detail.rewardItems),
-          type: 'text',
+          type: 'text' as const,
+          value: formatRewardItems(detail.rewardItems),
         },
       ],
     },
     {
-      title: '任务说明',
+      title: '完成条件',
       show: true,
       fields: [
         {
-          label: '任务说明',
-          value: detail.description || '-',
-          type: 'text',
+          label: '完成条件说明',
+          type: 'text' as const,
+          value: step?.description || '-',
+        },
+        {
+          label: '步骤标题',
+          type: 'text' as const,
+          value: step?.title || '-',
+        },
+        {
+          label: '触发方式',
+          type: 'text' as const,
+          value: getOptionLabel(taskStepTriggerModeOptions, step?.triggerMode),
+        },
+        {
+          label: '累计口径',
+          type: 'text' as const,
+          value: formatCountingMode(step?.dedupeScope),
+        },
+        {
+          label: '完成次数',
+          type: 'text' as const,
+          value: step?.targetValue ?? '-',
+        },
+        {
+          label: '事件模板',
+          type: 'text' as const,
+          value: step?.templateKey || '-',
+        },
+        {
+          label: '去重范围',
+          type: 'text' as const,
+          value: getOptionLabel(taskStepDedupeScopeOptions, step?.dedupeScope),
+        },
+        {
+          label: '过滤条件',
+          type: 'text' as const,
+          value: formatFilterSummary(step?.filters),
         },
       ],
     },
@@ -174,18 +140,39 @@ export function getDetailCards(detail: AdminTaskPageResponseDto) {
       show: true,
       fields: [
         {
-          label: '创建时间',
-          value: detail.createdAt
-            ? formatUTC(detail.createdAt, 'YYYY-MM-DD HH:mm:ss')
+          label: '开始时间',
+          type: 'text' as const,
+          value: detail.startAt
+            ? formatUTC(detail.startAt, 'YYYY-MM-DD HH:mm:ss')
             : '-',
-          type: 'text',
+        },
+        {
+          label: '结束时间',
+          type: 'text' as const,
+          value: detail.endAt
+            ? formatUTC(detail.endAt, 'YYYY-MM-DD HH:mm:ss')
+            : '-',
+        },
+        {
+          label: '创建时间',
+          type: 'date' as const,
+          value: detail.createdAt,
         },
         {
           label: '更新时间',
-          value: detail.updatedAt
-            ? formatUTC(detail.updatedAt, 'YYYY-MM-DD HH:mm:ss')
-            : '-',
-          type: 'text',
+          type: 'date' as const,
+          value: detail.updatedAt,
+        },
+      ],
+    },
+    {
+      title: '说明',
+      show: true,
+      fields: [
+        {
+          label: '任务说明',
+          type: 'text' as const,
+          value: detail.description || '-',
         },
       ],
     },

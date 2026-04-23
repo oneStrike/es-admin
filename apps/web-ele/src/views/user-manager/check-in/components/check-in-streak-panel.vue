@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import type { CheckInStreakRuleDetailResponse } from '../model/streak-api';
+import type { CheckInStreakDetailResponse } from '#/api/types';
 
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { ElMessageBox } from 'element-plus';
 
+import {
+  checkInStreakHistoryPageApi,
+  checkInStreakPageApi,
+  checkInStreakPublishApi,
+  checkInStreakTerminateApi,
+} from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
 
 import {
@@ -13,12 +19,6 @@ import {
   getStreakConfigStatusMeta,
   getStreakPublishStrategyLabel,
 } from '../model/shared';
-import {
-  checkInStreakRuleHistoryPageApi,
-  checkInStreakRulePageApi,
-  checkInStreakRulePublishApi,
-  checkInStreakRuleTerminateApi,
-} from '../model/streak-api';
 import {
   buildStreakPublishPayload,
   createDefaultStreakFormState,
@@ -35,9 +35,9 @@ const saving = ref(false);
 const historyLoading = ref(false);
 const editorVisible = ref(false);
 const historyVisible = ref(false);
-const historyRules = ref<CheckInStreakRuleDetailResponse[]>([]);
-const ruleList = ref<CheckInStreakRuleDetailResponse[]>([]);
-const currentHistoryTarget = ref<CheckInStreakRuleDetailResponse | null>(null);
+const historyRules = ref<CheckInStreakDetailResponse[]>([]);
+const ruleList = ref<CheckInStreakDetailResponse[]>([]);
+const currentHistoryTarget = ref<CheckInStreakDetailResponse | null>(null);
 const terminatingMap = reactive<Record<number, boolean>>({});
 const formState = reactive(createDefaultStreakFormState());
 
@@ -64,7 +64,7 @@ const publishButtonLabel = computed(() => {
 async function loadRules() {
   loading.value = true;
   try {
-    const page = await checkInStreakRulePageApi({
+    const page = await checkInStreakPageApi({
       pageIndex: 1,
       pageSize: 100,
     });
@@ -79,7 +79,7 @@ function openCreateEditor() {
   editorVisible.value = true;
 }
 
-function openEditEditor(rule: CheckInStreakRuleDetailResponse) {
+function openEditEditor(rule: CheckInStreakDetailResponse) {
   Object.assign(formState, mapStreakDetailToForm(rule));
   editorVisible.value = true;
 }
@@ -93,7 +93,7 @@ async function handlePublish() {
 
   saving.value = true;
   try {
-    await checkInStreakRulePublishApi(buildStreakPublishPayload(formState));
+    await checkInStreakPublishApi(buildStreakPublishPayload(formState));
     useMessage.success('连续签到记录已发布');
     editorVisible.value = false;
     await loadRules();
@@ -109,7 +109,7 @@ async function handlePublish() {
   }
 }
 
-async function terminateRule(rule: CheckInStreakRuleDetailResponse) {
+async function terminateRule(rule: CheckInStreakDetailResponse) {
   try {
     await ElMessageBox.confirm(
       `确认终止连续签到 ${rule.streakDays} 天的版本 V${rule.version} 吗？`,
@@ -126,7 +126,7 @@ async function terminateRule(rule: CheckInStreakRuleDetailResponse) {
 
   terminatingMap[rule.id] = true;
   try {
-    await checkInStreakRuleTerminateApi({ id: rule.id });
+    await checkInStreakTerminateApi({ id: rule.id });
     useMessage.success('连续签到记录版本已终止');
     await loadRules();
 
@@ -138,12 +138,12 @@ async function terminateRule(rule: CheckInStreakRuleDetailResponse) {
   }
 }
 
-async function openHistory(rule: CheckInStreakRuleDetailResponse) {
+async function openHistory(rule: CheckInStreakDetailResponse) {
   currentHistoryTarget.value = rule;
   historyVisible.value = true;
   historyLoading.value = true;
   try {
-    const page = await checkInStreakRuleHistoryPageApi({
+    const page = await checkInStreakHistoryPageApi({
       pageIndex: 1,
       pageSize: 100,
       streakDays: rule.streakDays,
@@ -154,10 +154,9 @@ async function openHistory(rule: CheckInStreakRuleDetailResponse) {
   }
 }
 
-function formatEffectiveWindow(rule: Pick<
-  CheckInStreakRuleDetailResponse,
-  'effectiveFrom' | 'effectiveTo'
->) {
+function formatEffectiveWindow(
+  rule: Pick<CheckInStreakDetailResponse, 'effectiveFrom' | 'effectiveTo'>,
+) {
   return rule.effectiveTo
     ? `${rule.effectiveFrom} 至 ${rule.effectiveTo}`
     : `${rule.effectiveFrom} 起长期有效`;
@@ -173,9 +172,7 @@ onMounted(async () => {
     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div class="flex items-center justify-between gap-4">
         <div>
-          <div class="text-base font-semibold text-slate-900">
-            连续签到记录
-          </div>
+          <div class="text-base font-semibold text-slate-900">连续签到记录</div>
           <div class="mt-1 text-sm text-slate-500">
             每一条记录对应一个连续天数阈值。发布、终止、历史都只针对该条记录本身。
           </div>
@@ -273,7 +270,11 @@ onMounted(async () => {
           <div class="flex items-center justify-between gap-3">
             <span>基线版本</span>
             <span class="font-medium text-slate-900">
-              {{ formState.sourceVersion ? `V${formState.sourceVersion}` : '新记录' }}
+              {{
+                formState.sourceVersion
+                  ? `V${formState.sourceVersion}`
+                  : '新记录'
+              }}
             </span>
           </div>
         </div>
@@ -329,7 +330,9 @@ onMounted(async () => {
         </div>
 
         <div v-if="formState.publishStrategy === 3">
-          <div class="mb-2 text-sm font-medium text-slate-700">指定生效时间</div>
+          <div class="mb-2 text-sm font-medium text-slate-700">
+            指定生效时间
+          </div>
           <el-date-picker
             v-model="formState.effectiveFrom"
             class="!w-full"

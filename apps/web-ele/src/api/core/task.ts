@@ -1,16 +1,17 @@
 import type {
-  TaskAssignmentPageRequest,
-  TaskAssignmentPageResponse,
-  TaskAssignmentReconciliationPageRequest,
-  TaskAssignmentReconciliationPageResponse,
   TaskCreateRequest,
   TaskCreateResponse,
   TaskDeleteRequest,
   TaskDeleteResponse,
   TaskDetailRequest,
   TaskDetailResponse,
+  TaskInstancePageRequest,
+  TaskInstancePageResponse,
+  TaskInstanceReconciliationPageRequest,
+  TaskInstanceReconciliationPageResponse,
   TaskPageRequest,
   TaskPageResponse,
+  TaskTemplateOptionsResponse,
   TaskUpdateRequest,
   TaskUpdateResponse,
   TaskUpdateStatusRequest,
@@ -53,6 +54,14 @@ import { requestClient } from '#/api/request'
 
 
   /**
+   * 查询 task 可消费事件模板选项
+   */
+  export async function taskTemplateOptionsApi(): Promise<TaskTemplateOptionsResponse> {
+    return requestClient.get<TaskTemplateOptionsResponse>('/api/admin/task/template-options');
+  }
+
+
+  /**
    * 分页查询任务
    */
   export async function taskPageApi(params?: TaskPageRequest): Promise<TaskPageResponse> {
@@ -69,16 +78,16 @@ import { requestClient } from '#/api/request'
 
 
   /**
-   * 分页查询任务领取记录
+   * 分页查询任务实例记录
    */
-  export async function taskAssignmentPageApi(params?: TaskAssignmentPageRequest): Promise<TaskAssignmentPageResponse> {
-    return requestClient.get<TaskAssignmentPageResponse>('/api/admin/task/assignment/page', { params });
+  export async function taskInstancePageApi(params?: TaskInstancePageRequest): Promise<TaskInstancePageResponse> {
+    return requestClient.get<TaskInstancePageResponse>('/api/admin/task/instance/page', { params });
   }
 
 
   /**
    * 分页查询任务奖励与通知对账视图
    */
-  export async function taskAssignmentReconciliationPageApi(params?: TaskAssignmentReconciliationPageRequest): Promise<TaskAssignmentReconciliationPageResponse> {
-    return requestClient.get<TaskAssignmentReconciliationPageResponse>('/api/admin/task/assignment/reconciliation/page', { params });
+  export async function taskInstanceReconciliationPageApi(params?: TaskInstanceReconciliationPageRequest): Promise<TaskInstanceReconciliationPageResponse> {
+    return requestClient.get<TaskInstanceReconciliationPageResponse>('/api/admin/task/instance/reconciliation/page', { params });
   }
