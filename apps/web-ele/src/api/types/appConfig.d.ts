@@ -1,80 +1,80 @@
-export type AppConfigActiveResponse = BaseAppConfigDto;
+export type AppConfigActiveResponse = BaseAppConfigDto
 
 /**
  *  类型定义 [AppConfigUpdateRequest]
  *  @来源 APP管理/应用配置
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppConfigUpdateRequest = UpdateAppConfigDto;
+export type AppConfigUpdateRequest = UpdateAppConfigDto
 
-export type AppConfigUpdateResponse = boolean;
+export type AppConfigUpdateResponse = boolean
 
 /**
  *  类型定义 [BaseAppConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type BaseAppConfigDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 应用描述 */
-  appDesc?: null | string;
+  appDesc?: null | string
   /* 应用 Logo URL */
-  appLogo?: null | string;
+  appLogo?: null | string
   /* 应用名称 */
-  appName: string;
+  appName: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 是否启用维护模式 */
-  enableMaintenanceMode: boolean;
+  enableMaintenanceMode: boolean
   /* 主键id */
-  id: number;
+  id: number
   /* 维护模式提示信息 */
-  maintenanceMessage?: null | string;
+  maintenanceMessage?: null | string
   /* 引导页图片 URL */
-  onboardingImage?: null | string;
+  onboardingImage?: null | string
   /* 可选的主题色 */
-  optionalThemeColors?: null | string;
+  optionalThemeColors?: null | string
   /* 第二主题色 */
-  secondaryColor?: null | string;
+  secondaryColor?: null | string
   /* 主题色 */
-  themeColor: string;
+  themeColor: string
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
   /* 最后修改人ID */
-  updatedById?: null | number;
+  updatedById?: null | number
 
   /* 配置版本号 */
-  version: string;
-};
+  version: string
+}
 
 /**
  *  类型定义 [UpdateAppConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateAppConfigDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 应用描述 */
-  appDesc?: null | string;
+  appDesc?: null | string
   /* 应用 Logo URL */
-  appLogo?: null | string;
+  appLogo?: null | string
   /* 应用名称 */
-  appName: string;
+  appName: string
   /* 是否启用维护模式 */
-  enableMaintenanceMode: boolean;
+  enableMaintenanceMode: boolean
   /* 维护模式提示信息 */
-  maintenanceMessage?: null | string;
+  maintenanceMessage?: null | string
   /* 引导页图片 URL */
-  onboardingImage?: null | string;
+  onboardingImage?: null | string
   /* 可选的主题色 */
-  optionalThemeColors?: null | string;
+  optionalThemeColors?: null | string
   /* 第二主题色 */
-  secondaryColor?: null | string;
+  secondaryColor?: null | string
   /* 主题色 */
-  themeColor: string;
+  themeColor: string
 
   /* 配置版本号 */
-  version: string;
-};
+  version: string
+}

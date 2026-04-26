@@ -1,13 +1,11 @@
 import type {
+  CheckInRewardItemDto,
   CheckInStreakDetailResponse,
-  GrowthRewardItemDto,
 } from '#/api/types';
 
 import {
-  buildRewardItems,
-  hasRewardValue,
-  normalizeRewardValue,
-  parseRewardItems,
+  cloneRewardItems,
+  hasRewardItems,
 } from './shared';
 
 export type CheckInStreakRuleDetail = CheckInStreakDetailResponse;
@@ -16,16 +14,15 @@ export type CheckInStreakPublishPayload = {
   effectiveFrom?: string;
   publishStrategy: 1 | 2 | 3;
   repeatable?: boolean;
-  rewardItems: GrowthRewardItemDto[];
+  rewardItems: CheckInRewardItemDto[];
   streakDays: number;
 };
 
 export type CheckInStreakFormState = {
   effectiveFrom?: string;
-  experience?: number;
-  points?: number;
   publishStrategy: 1 | 2 | 3;
   repeatable: boolean;
+  rewardItems: CheckInRewardItemDto[];
   sourceId?: number;
   sourceRuleCode?: string;
   sourceVersion: number;
@@ -35,10 +32,9 @@ export type CheckInStreakFormState = {
 export function createDefaultStreakFormState(): CheckInStreakFormState {
   return {
     effectiveFrom: undefined,
-    experience: undefined,
-    points: undefined,
     publishStrategy: 1,
     repeatable: false,
+    rewardItems: [],
     sourceId: undefined,
     sourceRuleCode: undefined,
     sourceVersion: 0,
@@ -49,14 +45,11 @@ export function createDefaultStreakFormState(): CheckInStreakFormState {
 export function mapStreakDetailToForm(
   detail: CheckInStreakRuleDetail,
 ): CheckInStreakFormState {
-  const rewardValue = parseRewardItems(detail.rewardItems);
-
   return {
     effectiveFrom: undefined,
-    experience: rewardValue.experience,
-    points: rewardValue.points,
     publishStrategy: 1,
     repeatable: !!detail.repeatable,
+    rewardItems: cloneRewardItems(detail.rewardItems),
     sourceId: detail.id,
     sourceRuleCode: detail.ruleCode,
     sourceVersion: detail.version,
@@ -73,7 +66,7 @@ export function buildStreakPublishPayload(
       : {}),
     publishStrategy: state.publishStrategy,
     repeatable: state.repeatable,
-    rewardItems: buildRewardItems(state.points, state.experience) || [],
+    rewardItems: cloneRewardItems(state.rewardItems),
     streakDays: Number(state.streakDays),
   };
 }
@@ -98,12 +91,7 @@ export function validateStreakForm(state: CheckInStreakFormState) {
     }
   }
 
-  if (
-    !hasRewardValue({
-      experience: normalizeRewardValue(state.experience),
-      points: normalizeRewardValue(state.points),
-    })
-  ) {
+  if (!hasRewardItems(state.rewardItems)) {
     return '连续奖励项不能为空';
   }
 

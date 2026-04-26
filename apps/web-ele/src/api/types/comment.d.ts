@@ -1,312 +1,312 @@
 /**
  *  类型定义 [CommentPageRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type CommentPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 实际回复的根评论 ID */
-  actualReplyToId?: null | number;
+  actualReplyToId?: null | number
 
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: number;
+  auditStatus?: number
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 主键id */
-  id?: number;
+  id?: number
 
   /* 是否隐藏 */
-  isHidden?: boolean;
+  isHidden?: boolean
 
   /* 关键词搜索（评论内容） */
-  keyword?: null | string;
+  keyword?: null | string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 回复的评论 ID */
-  replyToId?: null | number;
+  replyToId?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 目标 ID */
-  targetId?: number;
+  targetId?: number
 
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
-  targetType?: number;
+  targetType?: number
 
   /* 评论用户 ID */
-  userId?: number;
-};
+  userId?: number
+}
 
 export type CommentPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: AdminCommentPageItemDto[];
+  list?: AdminCommentPageItemDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [CommentDetailRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type CommentDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type CommentDetailResponse = AdminCommentDetailDto;
+export type CommentDetailResponse = AdminCommentDetailDto
 
 /**
  *  类型定义 [CommentUpdateAuditStatusRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type CommentUpdateAuditStatusRequest = UpdateAdminCommentAuditStatusDto;
+export type CommentUpdateAuditStatusRequest = UpdateAdminCommentAuditStatusDto
 
-export type CommentUpdateAuditStatusResponse = boolean;
+export type CommentUpdateAuditStatusResponse = boolean
 
 /**
  *  类型定义 [CommentUpdateHiddenRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type CommentUpdateHiddenRequest = UpdateAdminCommentHiddenDto;
+export type CommentUpdateHiddenRequest = UpdateAdminCommentHiddenDto
 
-export type CommentUpdateHiddenResponse = boolean;
+export type CommentUpdateHiddenResponse = boolean
 
 /**
  *  类型定义 [AdminCommentPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminCommentPageItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 实际回复的根评论 ID */
-  actualReplyToId?: null | number;
+  actualReplyToId?: null | number
   /* 审核时间 */
-  auditAt?: null | string;
+  auditAt?: null | string
   /* 审核人 ID */
-  auditById?: null | number;
+  auditById?: null | number
   /* 审核原因 */
-  auditReason?: null | string;
+  auditReason?: null | string
   /* 审核角色（0=版主；1=管理员） */
-  auditRole?: null | number;
+  auditRole?: null | number
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: 0 | 1 | 2
   /* 评论正文解析 token（表情与提及混合输出） */
-  bodyTokens?: null | string;
+  bodyTokens?: null | string
   /* 评论内容 */
-  content: string;
+  content: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 楼层号 */
-  floor?: null | number;
+  floor?: null | number
   /* 主键id */
-  id: number;
+  id: number
   /* 是否隐藏 */
-  isHidden: boolean;
+  isHidden: boolean
   /* 点赞数 */
-  likeCount: number;
+  likeCount: number
   /* 回复的评论 ID */
-  replyToId?: null | number;
+  replyToId?: null | number
   /* 敏感词命中记录 */
-  sensitiveWordHits?: SensitiveWordHitDto[];
+  sensitiveWordHits?: SensitiveWordHitDto[]
   /* 目标 ID */
-  targetId: number;
+  targetId: number
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
-  targetType: 1 | 2 | 3 | 4 | 5;
+  targetType: 1 | 2 | 3 | 4 | 5
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
   /* 评论作者信息 */
-  user?: AdminCommentUserDto;
+  user?: AdminCommentUserDto
 
   /* 评论用户 ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [SensitiveWordHitDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type SensitiveWordHitDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 结束位置 */
-  end: number;
+  end: number
   /* 命中字段（title=标题；content=正文） */
-  field?: null | string;
+  field?: null | string
   /* 敏感词级别（1=严重；2=一般；3=轻微） */
-  level: 1 | 2 | 3;
+  level: 1 | 2 | 3
   /* 替换词 */
-  replaceWord?: null | string;
+  replaceWord?: null | string
   /* 起始位置 */
-  start: number;
+  start: number
   /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: 1 | 2 | 3 | 4 | 5
 
   /* 敏感词 */
-  word: string;
-};
+  word: string
+}
 
 /**
  *  类型定义 [AdminCommentUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminCommentUserDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 昵称 */
-  nickname: string;
+  nickname: string
 
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status: 1 | 2 | 3 | 4 | 5;
-};
+  status: 1 | 2 | 3 | 4 | 5
+}
 
 /**
  *  类型定义 [AdminCommentDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminCommentDetailDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 实际回复的根评论 ID */
-  actualReplyToId?: null | number;
+  actualReplyToId?: null | number
   /* 审核时间 */
-  auditAt?: null | string;
+  auditAt?: null | string
   /* 审核人 ID */
-  auditById?: null | number;
+  auditById?: null | number
   /* 审核原因 */
-  auditReason?: null | string;
+  auditReason?: null | string
   /* 审核角色（0=版主；1=管理员） */
-  auditRole?: null | number;
+  auditRole?: null | number
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: 0 | 1 | 2
   /* 评论正文解析 token（表情与提及混合输出） */
-  bodyTokens?: null | string;
+  bodyTokens?: null | string
   /* 评论内容 */
-  content: string;
+  content: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 楼层号 */
-  floor?: null | number;
+  floor?: null | number
   /* 主键id */
-  id: number;
+  id: number
   /* 是否隐藏 */
-  isHidden: boolean;
+  isHidden: boolean
   /* 点赞数 */
-  likeCount: number;
+  likeCount: number
   /* 被回复评论简要信息 */
-  replyTo?: AdminCommentReplyTargetDto;
+  replyTo?: AdminCommentReplyTargetDto
   /* 回复的评论 ID */
-  replyToId?: null | number;
+  replyToId?: null | number
   /* 敏感词命中记录 */
-  sensitiveWordHits?: SensitiveWordHitDto[];
+  sensitiveWordHits?: SensitiveWordHitDto[]
   /* 目标 ID */
-  targetId: number;
+  targetId: number
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
-  targetType: 1 | 2 | 3 | 4 | 5;
+  targetType: 1 | 2 | 3 | 4 | 5
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
   /* 评论作者信息 */
-  user?: AdminCommentUserDto;
+  user?: AdminCommentUserDto
 
   /* 评论用户 ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [AdminCommentReplyTargetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminCommentReplyTargetDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 实际回复的根评论 ID */
-  actualReplyToId?: null | number;
+  actualReplyToId?: null | number
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: 0 | 1 | 2
   /* 评论内容 */
-  content: string;
+  content: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否隐藏 */
-  isHidden: boolean;
+  isHidden: boolean
   /* 回复的评论 ID */
-  replyToId?: null | number;
+  replyToId?: null | number
   /* 被回复评论的作者信息 */
-  user?: AdminCommentUserDto;
+  user?: AdminCommentUserDto
 
   /* 评论用户 ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [UpdateAdminCommentAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateAdminCommentAuditStatusDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 审核原因 */
-  auditReason?: null | string;
+  auditReason?: null | string
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: 0 | 1 | 2
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
 /**
  *  类型定义 [UpdateAdminCommentHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateAdminCommentHiddenDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 是否隐藏 */
-  isHidden: boolean;
-};
+  isHidden: boolean
+}

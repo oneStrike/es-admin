@@ -1,26 +1,25 @@
 import type {
   BaseCheckInPatternRewardRuleDto,
   CheckInReconciliationPageItemDto,
+  CheckInRewardItemDto,
   CheckInStreakRuleDetailResponseDto,
-  GrowthRewardItemDto,
 } from '#/api/types';
 
-export type RewardValue = {
-  experience?: number;
-  points?: number;
-};
+import {
+  cloneRewardItems as cloneSharedRewardItems,
+  defaultRewardAssetOptions,
+  formatRewardSummary as formatSharedRewardSummary,
+  hasRewardItems as hasSharedRewardItems,
+} from '../../shared/reward-config/reward-config';
 
 export type CheckInReconciliationRow = CheckInReconciliationPageItemDto;
-
-export const CHECK_IN_REWARD_ASSET_TYPE = {
-  EXPERIENCE: 2,
-  POINTS: 1,
-} as const;
 
 export const checkInMakeupPeriodTypeOptions = [
   { color: 'warning' as const, label: '按自然周', value: 1 },
   { color: 'success' as const, label: '按自然月', value: 2 },
 ];
+
+export const checkInRewardAssetOptions = defaultRewardAssetOptions;
 
 export const checkInPatternTypeOptions = [
   { label: '按周固定星期', value: 1 },
@@ -75,80 +74,16 @@ export const weeklyCalendarLabels = [
   { label: '周日', value: 7 },
 ];
 
-export function normalizeRewardValue(value?: null | number) {
-  return typeof value === 'number' && value > 0 ? Number(value) : undefined;
+export function cloneRewardItems(rewardItems?: CheckInRewardItemDto[] | null) {
+  return cloneSharedRewardItems(rewardItems);
 }
 
-export function buildRewardItems(
-  points?: null | number,
-  experience?: null | number,
-) {
-  const rewardItems: GrowthRewardItemDto[] = [];
-
-  if (normalizeRewardValue(points)) {
-    rewardItems.push({
-      amount: Number(points),
-      assetKey: '',
-      assetType: CHECK_IN_REWARD_ASSET_TYPE.POINTS,
-    });
-  }
-
-  if (normalizeRewardValue(experience)) {
-    rewardItems.push({
-      amount: Number(experience),
-      assetKey: '',
-      assetType: CHECK_IN_REWARD_ASSET_TYPE.EXPERIENCE,
-    });
-  }
-
-  return rewardItems.length > 0 ? rewardItems : undefined;
+export function hasRewardItems(rewardItems?: CheckInRewardItemDto[] | null) {
+  return hasSharedRewardItems(rewardItems);
 }
 
-export function cloneRewardItems(rewardItems?: GrowthRewardItemDto[] | null) {
-  return (rewardItems || []).map((item) => ({
-    amount: Number(item.amount),
-    assetKey: item.assetKey || '',
-    assetType: item.assetType,
-  }));
-}
-
-export function parseRewardItems(
-  rewardItems?: GrowthRewardItemDto[] | null,
-): RewardValue {
-  const result: RewardValue = {};
-
-  for (const item of rewardItems || []) {
-    if (item.assetType === CHECK_IN_REWARD_ASSET_TYPE.POINTS) {
-      result.points = Number(item.amount);
-    }
-    if (item.assetType === CHECK_IN_REWARD_ASSET_TYPE.EXPERIENCE) {
-      result.experience = Number(item.amount);
-    }
-  }
-
-  return result;
-}
-
-export function hasRewardValue(value: RewardValue) {
-  return Number(value.points ?? 0) > 0 || Number(value.experience ?? 0) > 0;
-}
-
-export function hasRewardItems(rewardItems?: GrowthRewardItemDto[] | null) {
-  return (rewardItems || []).length > 0;
-}
-
-export function formatRewardSummary(
-  rewardItems?: GrowthRewardItemDto[] | null | RewardValue,
-) {
-  const rewardValue = Array.isArray(rewardItems)
-    ? parseRewardItems(rewardItems)
-    : (rewardItems ?? {});
-  const parts = [
-    rewardValue.points ? `积分 ${rewardValue.points}` : '',
-    rewardValue.experience ? `经验 ${rewardValue.experience}` : '',
-  ].filter(Boolean);
-
-  return parts.length > 0 ? parts.join(' / ') : '未配置';
+export function formatRewardSummary(rewardItems?: CheckInRewardItemDto[] | null) {
+  return formatSharedRewardSummary(rewardItems, checkInRewardAssetOptions);
 }
 
 export function formatLedgerIds(ids?: null | number[]) {

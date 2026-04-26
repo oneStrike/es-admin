@@ -5,7 +5,8 @@ import type {
   CheckInConfigPreviewDay,
 } from '../model/config';
 
-import type { GrowthRewardItemDto } from '#/api/types';
+import type { CheckInRewardItemDto } from '#/api/types';
+import type { RewardConfigValue } from '../../shared/reward-config/reward-config.types';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
@@ -14,8 +15,11 @@ import {
   checkInConfigUpdateApi,
   checkInConfigUpdateEnabledApi,
 } from '#/api/core';
+import EsUpload from '#/components/es-upload/es-upload.vue';
+import { UploadSceneEnum } from '#/enum/api';
 import { useMessage } from '#/hooks/useFeedback';
 import { dayjs } from '#/utils';
+import RewardConfigModal from '../../shared/reward-config/reward-config-modal.vue';
 
 import {
   applyMakeupPeriodTypeChange,
@@ -38,11 +42,10 @@ import {
   validateConfigForm,
 } from '../model/config';
 import {
-  buildRewardItems,
   checkInMakeupPeriodTypeOptions,
+  checkInRewardAssetOptions,
   cloneRewardItems,
   formatRewardSummary,
-  parseRewardItems,
   weeklyCalendarLabels,
 } from '../model/shared';
 
@@ -50,13 +53,9 @@ defineOptions({
   name: 'CheckInConfigPanel',
 });
 
-type RewardQuickForm = {
-  experience?: number;
-  points?: number;
-};
-
 type RewardEditorState = {
-  rewardItems: GrowthRewardItemDto[];
+  rewardItems: CheckInRewardItemDto[];
+  rewardOverviewIconUrl?: string;
   scope: CheckInConfigEditorKind;
   scopeOptions: Array<{ label: string; value: CheckInConfigEditorKind }>;
   targetDate?: string;
@@ -79,16 +78,13 @@ const monthCursor = ref(dayjs().format('YYYY-MM'));
 const rewardDrawerVisible = ref(false);
 const rewardEditor = reactive<RewardEditorState>({
   rewardItems: [],
+  rewardOverviewIconUrl: undefined,
   scope: 'date',
   scopeOptions: [],
   targetDate: undefined,
   targetMonthDay: undefined,
   targetWeekday: undefined,
   title: '',
-});
-const rewardQuickForm = reactive<RewardQuickForm>({
-  experience: undefined,
-  points: undefined,
 });
 
 const previewDays = computed(() =>
@@ -120,6 +116,7 @@ const dateRuleSummaryGroups = computed(() =>
       key: rule.localId,
       label: dayjs(rule.rewardDate).format('M 月 D 日'),
       rewardDate: rule.rewardDate,
+      rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
       rewardSummary: formatRewardSummary(rule.rewardItems),
     })),
   })),
@@ -129,6 +126,7 @@ const patternRuleSummaries = computed(() =>
   formState.patternRules.map((rule) => ({
     key: rule.localId,
     label: formatPatternRuleLabel(rule),
+    rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
     rewardSummary: formatRewardSummary(rule.rewardItems),
   })),
 );
@@ -239,7 +237,7 @@ function openBaseRewardEditor() {
   rewardEditor.targetMonthDay = undefined;
   rewardEditor.targetWeekday = undefined;
   rewardEditor.rewardItems = cloneRewardItems(formState.baseRewardItems);
-  syncQuickFormFromRewardItems();
+  rewardEditor.rewardOverviewIconUrl = formState.rewardOverviewIconUrl;
   rewardDrawerVisible.value = true;
 }
 
@@ -259,8 +257,7 @@ function openPreviewEditor(cell: CheckInConfigPreviewDay) {
 
   rewardEditor.scope = resolveDefaultScope(cell);
   rewardEditor.title = resolveEditorTitle(cell, rewardEditor.scope);
-  syncRewardItemsFromScope();
-  syncQuickFormFromRewardItems();
+  syncRewardEditorFromScope();
   rewardDrawerVisible.value = true;
 }
 
@@ -282,32 +279,21 @@ function openRuleSummaryEditor(target: {
   rewardEditor.scope = target.kind;
   rewardEditor.scopeOptions = [{ label: target.label, value: target.kind }];
   rewardEditor.title = `编辑${target.label}`;
-  syncRewardItemsFromScope();
-  syncQuickFormFromRewardItems();
+  syncRewardEditorFromScope();
   rewardDrawerVisible.value = true;
 }
 
 function handleScopeChange(nextScope: CheckInConfigEditorKind) {
   rewardEditor.scope = nextScope;
   rewardEditor.title = resolveEditorTitleFromCurrentState();
-  syncRewardItemsFromScope();
-  syncQuickFormFromRewardItems();
+  syncRewardEditorFromScope();
 }
 
-function updateQuickReward(
-  field: keyof RewardQuickForm,
-  value?: null | number,
-) {
-  rewardQuickForm[field] =
-    typeof value === 'number' && value > 0 ? Number(value) : undefined;
-  rewardEditor.rewardItems =
-    buildRewardItems(rewardQuickForm.points, rewardQuickForm.experience) || [];
-}
-
-function handleSaveRewardEditor() {
+function handleSaveRewardEditor(value: RewardConfigValue) {
   switch (rewardEditor.scope) {
     case 'base': {
-      formState.baseRewardItems = cloneRewardItems(rewardEditor.rewardItems);
+      formState.baseRewardItems = cloneRewardItems(value.rewardItems);
+      formState.rewardOverviewIconUrl = value.rewardOverviewIconUrl;
       break;
     }
     case 'date': {
@@ -316,7 +302,8 @@ function handleSaveRewardEditor() {
       }
       upsertDateRule({
         rewardDate: rewardEditor.targetDate,
-        rewardItems: rewardEditor.rewardItems,
+        rewardItems: cloneRewardItems(value.rewardItems),
+        rewardOverviewIconUrl: value.rewardOverviewIconUrl,
         state: formState,
       });
       break;
@@ -328,7 +315,8 @@ function handleSaveRewardEditor() {
       upsertPatternRule({
         monthDay: rewardEditor.targetMonthDay,
         patternType: 2,
-        rewardItems: rewardEditor.rewardItems,
+        rewardItems: cloneRewardItems(value.rewardItems),
+        rewardOverviewIconUrl: value.rewardOverviewIconUrl,
         state: formState,
       });
       break;
@@ -336,7 +324,8 @@ function handleSaveRewardEditor() {
     case 'monthLastDay': {
       upsertPatternRule({
         patternType: 3,
-        rewardItems: rewardEditor.rewardItems,
+        rewardItems: cloneRewardItems(value.rewardItems),
+        rewardOverviewIconUrl: value.rewardOverviewIconUrl,
         state: formState,
       });
       break;
@@ -347,7 +336,8 @@ function handleSaveRewardEditor() {
       }
       upsertPatternRule({
         patternType: 1,
-        rewardItems: rewardEditor.rewardItems,
+        rewardItems: cloneRewardItems(value.rewardItems),
+        rewardOverviewIconUrl: value.rewardOverviewIconUrl,
         state: formState,
         weekday: rewardEditor.targetWeekday,
       });
@@ -362,6 +352,7 @@ function handleRemoveCurrentRule() {
   switch (rewardEditor.scope) {
     case 'base': {
       formState.baseRewardItems = [];
+      formState.rewardOverviewIconUrl = undefined;
       break;
     }
     case 'date': {
@@ -403,7 +394,7 @@ function handleRemoveCurrentRule() {
   }
 
   rewardEditor.rewardItems = [];
-  syncQuickFormFromRewardItems();
+  rewardEditor.rewardOverviewIconUrl = undefined;
 }
 
 function goPrevWeek() {
@@ -510,46 +501,44 @@ function resolveEditorTitleFromCurrentState() {
   return `编辑 ${rewardEditor.targetDate} 奖励`;
 }
 
-function syncRewardItemsFromScope() {
+function syncRewardEditorFromScope() {
   switch (rewardEditor.scope) {
     case 'base': {
       rewardEditor.rewardItems = cloneRewardItems(formState.baseRewardItems);
+      rewardEditor.rewardOverviewIconUrl = formState.rewardOverviewIconUrl;
       break;
     }
     case 'date': {
-      rewardEditor.rewardItems = cloneRewardItems(
-        getDateRuleByDate(formState, rewardEditor.targetDate || '')
-          ?.rewardItems,
-      );
+      const rule = getDateRuleByDate(formState, rewardEditor.targetDate || '');
+      rewardEditor.rewardItems = cloneRewardItems(rule?.rewardItems);
+      rewardEditor.rewardOverviewIconUrl = rule?.rewardOverviewIconUrl;
       break;
     }
     case 'monthDay': {
-      rewardEditor.rewardItems = cloneRewardItems(
-        getPatternRuleByMonthDay(formState, rewardEditor.targetMonthDay || 1)
-          ?.rewardItems,
+      const rule = getPatternRuleByMonthDay(
+        formState,
+        rewardEditor.targetMonthDay || 1,
       );
+      rewardEditor.rewardItems = cloneRewardItems(rule?.rewardItems);
+      rewardEditor.rewardOverviewIconUrl = rule?.rewardOverviewIconUrl;
       break;
     }
     case 'monthLastDay': {
-      rewardEditor.rewardItems = cloneRewardItems(
-        getMonthLastDayRule(formState)?.rewardItems,
-      );
+      const rule = getMonthLastDayRule(formState);
+      rewardEditor.rewardItems = cloneRewardItems(rule?.rewardItems);
+      rewardEditor.rewardOverviewIconUrl = rule?.rewardOverviewIconUrl;
       break;
     }
     case 'weekday': {
-      rewardEditor.rewardItems = cloneRewardItems(
-        getPatternRuleByWeekday(formState, rewardEditor.targetWeekday || 1)
-          ?.rewardItems,
+      const rule = getPatternRuleByWeekday(
+        formState,
+        rewardEditor.targetWeekday || 1,
       );
+      rewardEditor.rewardItems = cloneRewardItems(rule?.rewardItems);
+      rewardEditor.rewardOverviewIconUrl = rule?.rewardOverviewIconUrl;
       break;
     }
   }
-}
-
-function syncQuickFormFromRewardItems() {
-  const rewardValue = parseRewardItems(rewardEditor.rewardItems);
-  rewardQuickForm.points = rewardValue.points;
-  rewardQuickForm.experience = rewardValue.experience;
 }
 
 onMounted(async () => {
@@ -603,6 +592,21 @@ onMounted(async () => {
             />
           </div>
         </div>
+
+        <div class="mt-4">
+          <div class="mb-2 text-sm font-medium text-slate-700">补签图标</div>
+          <EsUpload
+            :model-value="formState.makeupIconUrl || ''"
+            :max-count="1"
+            accept="image/*"
+            list-type="picture-card"
+            return-data-type="url"
+            :scene="UploadSceneEnum.SHARED"
+            @update:model-value="
+              (value) => (formState.makeupIconUrl = value as string)
+            "
+          />
+        </div>
       </div>
 
       <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -611,6 +615,17 @@ onMounted(async () => {
             <div class="text-sm font-medium text-slate-500">默认基础奖励</div>
             <div class="mt-2 text-lg font-semibold text-slate-900">
               {{ formatRewardSummary(formState.baseRewardItems) }}
+            </div>
+            <div
+              v-if="formState.rewardOverviewIconUrl"
+              class="mt-3 flex items-center gap-3"
+            >
+              <span class="text-xs text-slate-500">总览图标</span>
+              <img
+                :src="formState.rewardOverviewIconUrl"
+                alt="默认奖励总览图标"
+                class="h-12 w-12 rounded-lg border border-slate-200 object-cover"
+              />
             </div>
             <div class="mt-2 text-sm text-slate-500">
               当具体日期奖励和周期模式奖励都未命中时，默认发放这里的奖励。
@@ -660,6 +675,12 @@ onMounted(async () => {
             <div class="mt-2 text-xs leading-5 text-slate-500">
               {{ cell.rewardSummary }}
             </div>
+            <img
+              v-if="cell.rewardOverviewIconUrl"
+              :src="cell.rewardOverviewIconUrl"
+              alt="奖励总览图标"
+              class="mt-3 h-10 w-10 rounded-lg border border-slate-200 object-cover"
+            />
             <div
               v-if="!cell.isEditable"
               class="mt-2 text-[11px] text-slate-400"
@@ -705,6 +726,12 @@ onMounted(async () => {
           >
             <div class="text-sm font-semibold">{{ cell.dayLabel }}</div>
             <div class="mt-3 text-xs leading-5">{{ cell.rewardSummary }}</div>
+            <img
+              v-if="cell.rewardOverviewIconUrl"
+              :src="cell.rewardOverviewIconUrl"
+              alt="奖励总览图标"
+              class="mt-3 h-8 w-8 rounded-lg border border-slate-200 object-cover"
+            />
             <div
               v-if="cell.isCurrentMonth && !cell.isEditable"
               class="mt-2 text-[11px] text-slate-400"
@@ -782,6 +809,12 @@ onMounted(async () => {
                 <div class="text-sm font-semibold text-slate-900">
                   {{ rule.label }}
                 </div>
+                <img
+                  v-if="rule.rewardOverviewIconUrl"
+                  :src="rule.rewardOverviewIconUrl"
+                  alt="日期奖励总览图标"
+                  class="mt-2 h-10 w-10 rounded-lg border border-slate-200 object-cover"
+                />
                 <div class="mt-1 text-xs text-slate-500">
                   {{ rule.rewardSummary }}
                 </div>
@@ -844,6 +877,12 @@ onMounted(async () => {
             <div class="text-sm font-semibold text-slate-900">
               {{ rule.label }}
             </div>
+            <img
+              v-if="rule.rewardOverviewIconUrl"
+              :src="rule.rewardOverviewIconUrl"
+              alt="周期奖励总览图标"
+              class="mt-2 h-10 w-10 rounded-lg border border-slate-200 object-cover"
+            />
             <div class="mt-1 text-xs text-slate-500">
               {{ rule.rewardSummary }}
             </div>
@@ -858,12 +897,23 @@ onMounted(async () => {
       </el-button>
     </div>
 
-    <el-drawer
-      v-model="rewardDrawerVisible"
-      size="35%"
+    <RewardConfigModal
+      v-model:visible="rewardDrawerVisible"
+      :allow-clear="true"
+      :asset-options="checkInRewardAssetOptions"
+      clear-button-text="清除当前规则"
+      confirm-text="应用到当前配置"
+      :model-value="{
+        rewardItems: rewardEditor.rewardItems,
+        rewardOverviewIconUrl: rewardEditor.rewardOverviewIconUrl,
+      }"
+      overview-icon-label="奖励总览图标"
+      :show-overview-icon="true"
       :title="rewardEditor.title"
+      @clear="handleRemoveCurrentRule"
+      @confirm="handleSaveRewardEditor"
     >
-      <div class="space-y-5">
+      <template #prepend>
         <div
           v-if="rewardEditor.scopeOptions.length > 1"
           class="rounded-lg border border-slate-200 bg-slate-50/70 p-4"
@@ -886,46 +936,7 @@ onMounted(async () => {
             </el-radio-button>
           </el-radio-group>
         </div>
-
-        <div class="rounded-lg border border-slate-200 bg-white p-4">
-          <div class="mb-3 text-base font-semibold text-slate-900">
-            快捷编辑
-          </div>
-          <div class="grid gap-3 md:grid-cols-2">
-            <el-input-number
-              :model-value="rewardQuickForm.points"
-              class="!w-full"
-              :min="0"
-              placeholder="积分"
-              @update:model-value="
-                (value) => updateQuickReward('points', value as number | null)
-              "
-            />
-            <el-input-number
-              :model-value="rewardQuickForm.experience"
-              class="!w-full"
-              :min="0"
-              placeholder="经验"
-              @update:model-value="
-                (value) =>
-                  updateQuickReward('experience', value as number | null)
-              "
-            />
-          </div>
-        </div>
-
-        <div class="flex justify-between gap-3">
-          <el-button type="danger" @click="handleRemoveCurrentRule">
-            清除当前规则
-          </el-button>
-          <div class="flex gap-3">
-            <el-button @click="rewardDrawerVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleSaveRewardEditor">
-              应用到当前配置
-            </el-button>
-          </div>
-        </div>
-      </div>
-    </el-drawer>
+      </template>
+    </RewardConfigModal>
   </div>
 </template>

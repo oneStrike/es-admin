@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { CheckInStreakDetailResponse } from '#/api/types';
+import type { RewardConfigValue } from '../../shared/reward-config/reward-config.types';
 
 import { computed, onMounted, reactive, ref } from 'vue';
 
@@ -12,9 +13,12 @@ import {
   checkInStreakTerminateApi,
 } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
+import RewardConfigModal from '../../shared/reward-config/reward-config-modal.vue';
 
 import {
+  checkInRewardAssetOptions,
   checkInStreakPublishStrategyOptions,
+  cloneRewardItems,
   formatRewardSummary,
   getStreakConfigStatusMeta,
   getStreakPublishStrategyLabel,
@@ -34,6 +38,7 @@ const loading = ref(false);
 const saving = ref(false);
 const historyLoading = ref(false);
 const editorVisible = ref(false);
+const rewardConfigVisible = ref(false);
 const historyVisible = ref(false);
 const historyRules = ref<CheckInStreakDetailResponse[]>([]);
 const ruleList = ref<CheckInStreakDetailResponse[]>([]);
@@ -82,6 +87,14 @@ function openCreateEditor() {
 function openEditEditor(rule: CheckInStreakDetailResponse) {
   Object.assign(formState, mapStreakDetailToForm(rule));
   editorVisible.value = true;
+}
+
+function openRewardConfigEditor() {
+  rewardConfigVisible.value = true;
+}
+
+function handleRewardConfigConfirm(value: RewardConfigValue) {
+  formState.rewardItems = cloneRewardItems(value.rewardItems);
 }
 
 async function handlePublish() {
@@ -296,23 +309,19 @@ onMounted(async () => {
               <el-radio :value="true">允许</el-radio>
             </el-radio-group>
           </div>
-          <div>
-            <div class="mb-2 text-sm font-medium text-slate-700">奖励积分</div>
-            <el-input-number
-              v-model="formState.points"
-              class="!w-full"
-              :min="0"
-              placeholder="奖励积分"
-            />
-          </div>
-          <div>
-            <div class="mb-2 text-sm font-medium text-slate-700">奖励经验</div>
-            <el-input-number
-              v-model="formState.experience"
-              class="!w-full"
-              :min="0"
-              placeholder="奖励经验"
-            />
+        </div>
+
+        <div class="rounded-lg border border-slate-200 bg-white p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-sm font-medium text-slate-500">连续奖励配置</div>
+              <div class="mt-2 text-base font-semibold text-slate-900">
+                {{ formatRewardSummary(formState.rewardItems) }}
+              </div>
+            </div>
+            <el-button type="primary" @click="openRewardConfigEditor">
+              编辑奖励配置
+            </el-button>
           </div>
         </div>
 
@@ -357,6 +366,16 @@ onMounted(async () => {
         </div>
       </div>
     </el-drawer>
+
+    <RewardConfigModal
+      v-model:visible="rewardConfigVisible"
+      :asset-options="checkInRewardAssetOptions"
+      confirm-text="应用奖励配置"
+      :model-value="{ rewardItems: formState.rewardItems }"
+      :show-overview-icon="false"
+      title="编辑连续奖励"
+      @confirm="handleRewardConfigConfirm"
+    />
 
     <el-drawer
       v-model="historyVisible"

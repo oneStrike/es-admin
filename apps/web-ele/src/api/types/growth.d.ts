@@ -1,1693 +1,1484 @@
 /**
  *  类型定义 [GrowthExperienceRecordPageRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthExperienceRecordPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 用户 ID */
-  userId: number;
-};
+  userId: number
+}
 
 export type GrowthExperienceRecordPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: UserExperienceRecordDto[];
+  list?: UserExperienceRecordDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [GrowthExperienceRecordDetailRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthExperienceRecordDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type GrowthExperienceRecordDetailResponse =
-  UserExperienceRecordDetailDto;
+export type GrowthExperienceRecordDetailResponse = UserExperienceRecordDetailDto
 
 /**
  *  类型定义 [GrowthExperienceStatsRequest]
  *  @来源 用户成长/经验管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthExperienceStatsRequest = {
+  
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
-  userId: number;
-};
+  userId: number
+}
 
-export type GrowthExperienceStatsResponse = UserExperienceStatsDto;
+export type GrowthExperienceStatsResponse = UserExperienceStatsDto
 
 /**
  *  类型定义 [GrowthLevelRulesPageRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthLevelRulesPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 等级名称 */
-  name?: string;
+  name?: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
-};
+  startDate?: null | string
+}
 
 export type GrowthLevelRulesPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BaseUserLevelRuleDto[];
+  list?: BaseUserLevelRuleDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [GrowthLevelRulesDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthLevelRulesDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type GrowthLevelRulesDetailResponse = BaseUserLevelRuleDto;
+export type GrowthLevelRulesDetailResponse = BaseUserLevelRuleDto
 
 /**
  *  类型定义 [GrowthLevelRulesCreateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthLevelRulesCreateRequest = CreateUserLevelRuleDto;
+export type GrowthLevelRulesCreateRequest = CreateUserLevelRuleDto
 
-export type GrowthLevelRulesCreateResponse = boolean;
+export type GrowthLevelRulesCreateResponse = boolean
 
 /**
  *  类型定义 [GrowthLevelRulesUpdateRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthLevelRulesUpdateRequest = UpdateUserLevelRuleDto;
+export type GrowthLevelRulesUpdateRequest = UpdateUserLevelRuleDto
 
-export type GrowthLevelRulesUpdateResponse = boolean;
+export type GrowthLevelRulesUpdateResponse = boolean
 
 /**
  *  类型定义 [GrowthLevelRulesDeleteRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthLevelRulesDeleteRequest = IdDto;
+export type GrowthLevelRulesDeleteRequest = IdDto
 
-export type GrowthLevelRulesDeleteResponse = boolean;
+export type GrowthLevelRulesDeleteResponse = boolean
 
 /**
  *  类型定义 [GrowthLevelRulesUserDetailRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthLevelRulesUserDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type GrowthLevelRulesUserDetailResponse = UserLevelInfoDto;
+export type GrowthLevelRulesUserDetailResponse = UserLevelInfoDto
 
 /**
  *  类型定义 [GrowthLevelRulesPermissionCheckRequest]
  *  @来源 用户成长/等级规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthLevelRulesPermissionCheckRequest =
-  CheckUserLevelPermissionDto;
+export type GrowthLevelRulesPermissionCheckRequest = CheckUserLevelPermissionDto
 
-export type GrowthLevelRulesPermissionCheckResponse =
-  UserLevelPermissionResultDto;
+export type GrowthLevelRulesPermissionCheckResponse = UserLevelPermissionResultDto
 
-export type GrowthLevelRulesStatsResponse = UserLevelStatisticsDto;
+export type GrowthLevelRulesStatsResponse = UserLevelStatisticsDto
 
 /**
  *  类型定义 [GrowthBadgesPageRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthBadgesPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
 
   /* 事件键 */
-  eventKey?: null | string;
+  eventKey?: null | string
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 徽章名称 */
-  name?: string;
+  name?: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type?: number;
-};
+  type?: number
+}
 
 export type GrowthBadgesPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BaseUserBadgeDto[];
+  list?: BaseUserBadgeDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [GrowthBadgesDetailRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthBadgesDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type GrowthBadgesDetailResponse = BaseUserBadgeDto;
+export type GrowthBadgesDetailResponse = BaseUserBadgeDto
 
 /**
  *  类型定义 [GrowthBadgesCreateRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthBadgesCreateRequest = CreateUserBadgeDto;
+export type GrowthBadgesCreateRequest = CreateUserBadgeDto
 
-export type GrowthBadgesCreateResponse = boolean;
+export type GrowthBadgesCreateResponse = boolean
 
 /**
  *  类型定义 [GrowthBadgesUpdateRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthBadgesUpdateRequest = UpdateUserBadgeDto;
+export type GrowthBadgesUpdateRequest = UpdateUserBadgeDto
 
-export type GrowthBadgesUpdateResponse = boolean;
+export type GrowthBadgesUpdateResponse = boolean
 
 /**
  *  类型定义 [GrowthBadgesDeleteRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthBadgesDeleteRequest = IdDto;
+export type GrowthBadgesDeleteRequest = IdDto
 
-export type GrowthBadgesDeleteResponse = boolean;
+export type GrowthBadgesDeleteResponse = boolean
 
 /**
  *  类型定义 [GrowthBadgesUpdateStatusRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthBadgesUpdateStatusRequest = UpdateUserBadgeStatusDto;
+export type GrowthBadgesUpdateStatusRequest = UpdateUserBadgeStatusDto
 
-export type GrowthBadgesUpdateStatusResponse = boolean;
+export type GrowthBadgesUpdateStatusResponse = boolean
 
 /**
  *  类型定义 [GrowthBadgesAssignRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthBadgesAssignRequest = AssignUserBadgeDto;
+export type GrowthBadgesAssignRequest = AssignUserBadgeDto
 
-export type GrowthBadgesAssignResponse = boolean;
+export type GrowthBadgesAssignResponse = boolean
 
 /**
  *  类型定义 [GrowthBadgesRevokeRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthBadgesRevokeRequest = AssignUserBadgeDto;
+export type GrowthBadgesRevokeRequest = AssignUserBadgeDto
 
-export type GrowthBadgesRevokeResponse = boolean;
+export type GrowthBadgesRevokeResponse = boolean
 
 /**
  *  类型定义 [GrowthBadgesUserPageRequest]
  *  @来源 用户成长/徽章管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthBadgesUserPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 徽章ID */
-  badgeId: number;
+  badgeId: number
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
-};
+  pageSize?: null | number
+}
 
 export type GrowthBadgesUserPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BadgeUserPageItemDto[];
+  list?: BadgeUserPageItemDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
-export type GrowthBadgesStatsResponse = UserBadgeStatisticsDto;
+export type GrowthBadgesStatsResponse = UserBadgeStatisticsDto
 
 /**
  *  类型定义 [GrowthRuleEventsPageRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRuleEventsPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否只看已配置任一基础奖励资产的事件 */
-  hasBaseReward?: boolean | null;
+  hasBaseReward?: boolean | null
 
   /* 是否只看存在关联任务的事件 */
-  hasTask?: boolean | null;
+  hasTask?: boolean | null
 
   /* 是否只看已正式接入 producer 的事件 */
-  isImplemented?: boolean | null;
+  isImplemented?: boolean | null
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  type?: null | number;
-};
+  type?: null | number
+}
 
 export type GrowthRuleEventsPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: GrowthRuleEventPageItemDto[];
+  list?: GrowthRuleEventPageItemDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [GrowthRewardSettlementPageRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRewardSettlementPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  eventCode?: null | number;
+  eventCode?: null | number
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
-  settlementStatus?: number;
+  settlementStatus?: number
 
   /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */
-  settlementType?: number;
+  settlementType?: number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 用户id */
-  userId?: number;
-};
+  userId?: number
+}
 
 export type GrowthRewardSettlementPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: GrowthRewardSettlementPageItemDto[];
+  list?: GrowthRewardSettlementPageItemDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [GrowthRewardSettlementRetryRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthRewardSettlementRetryRequest = IdDto;
+export type GrowthRewardSettlementRetryRequest = IdDto
 
-export type GrowthRewardSettlementRetryResponse = boolean;
+export type GrowthRewardSettlementRetryResponse = boolean
 
 /**
  *  类型定义 [GrowthRewardSettlementRetryPendingBatchRequest]
  *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthRewardSettlementRetryPendingBatchRequest =
-  RetryGrowthRewardSettlementBatchDto;
+export type GrowthRewardSettlementRetryPendingBatchRequest = RetryGrowthRewardSettlementBatchDto
 
-export type GrowthRewardSettlementRetryPendingBatchResponse =
-  GrowthRewardSettlementRetryBatchResultDto;
+export type GrowthRewardSettlementRetryPendingBatchResponse = GrowthRewardSettlementRetryBatchResultDto
 
 /**
  *  类型定义 [GrowthRewardRulesPageRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRewardRulesPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType?: number;
+  assetType?: number
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 成长规则类型，直接复用统一事件定义编码。 */
-  type?: number;
-};
+  type?: number
+}
 
 export type GrowthRewardRulesPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: BaseGrowthRewardRuleDto[];
+  list?: BaseGrowthRewardRuleDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [GrowthRewardRulesDetailRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRewardRulesDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type GrowthRewardRulesDetailResponse = BaseGrowthRewardRuleDto;
+export type GrowthRewardRulesDetailResponse = BaseGrowthRewardRuleDto
 
 /**
  *  类型定义 [GrowthRewardRulesCreateRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthRewardRulesCreateRequest = CreateGrowthRewardRuleDto;
+export type GrowthRewardRulesCreateRequest = CreateGrowthRewardRuleDto
 
-export type GrowthRewardRulesCreateResponse = boolean;
+export type GrowthRewardRulesCreateResponse = boolean
 
 /**
  *  类型定义 [GrowthRewardRulesUpdateRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthRewardRulesUpdateRequest = UpdateGrowthRewardRuleDto;
+export type GrowthRewardRulesUpdateRequest = UpdateGrowthRewardRuleDto
 
-export type GrowthRewardRulesUpdateResponse = boolean;
+export type GrowthRewardRulesUpdateResponse = boolean
 
 /**
  *  类型定义 [GrowthRewardRulesDeleteRequest]
  *  @来源 用户成长/奖励规则管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type GrowthRewardRulesDeleteRequest = IdDto;
+export type GrowthRewardRulesDeleteRequest = IdDto
 
-export type GrowthRewardRulesDeleteResponse = boolean;
+export type GrowthRewardRulesDeleteResponse = boolean
 
 /**
  *  类型定义 [UserExperienceRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserExperienceRecordDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 变化后经验值 */
-  afterExperience: number;
+  afterExperience: number
   /* 变化前经验值 */
-  beforeExperience: number;
+  beforeExperience: number
   /* 幂等业务键 */
-  bizKey: string;
+  bizKey: string
   /* 扩展上下文（仅返回白名单解释字段） */
-  context?: null | string;
+  context?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 经验值变化 */
-  experience: number;
+  experience: number
   /* 主键id */
-  id: number;
+  id: number
   /* 账本说明文案 */
-  remark?: null | string;
+  remark?: null | string
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?: null | number
   /* 账本来源（如 growth_rule、task_bonus、purchase） */
-  source?: null | string;
+  source?: null | string
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: null | number
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: null | number
   /* 更新时间 */
-  updatedAt?: null | string;
+  updatedAt?: null | string
 
   /* 关联的用户ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [UserExperienceRecordDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserExperienceRecordDetailDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 变化后经验值 */
-  afterExperience: number;
+  afterExperience: number
   /* 变化前经验值 */
-  beforeExperience: number;
+  beforeExperience: number
   /* 幂等业务键 */
-  bizKey: string;
+  bizKey: string
   /* 扩展上下文（仅返回白名单解释字段） */
-  context?: null | string;
+  context?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 经验值变化 */
-  experience: number;
+  experience: number
   /* 主键id */
-  id: number;
+  id: number
   /* 账本说明文案 */
-  remark?: null | string;
+  remark?: null | string
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?: null | number
   /* 账本来源（如 growth_rule、task_bonus、purchase） */
-  source?: null | string;
+  source?: null | string
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: null | number
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: null | number
   /* 更新时间 */
-  updatedAt?: null | string;
+  updatedAt?: null | string
   /* 经验所属用户 */
-  user: ForumAppUserInfoDto;
+  user: ForumAppUserInfoDto
 
   /* 关联的用户ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [ForumAppUserInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type ForumAppUserInfoDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 账号 */
-  account: string;
+  account: string
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl?: null | string
   /* 个人简介 */
-  bio?: null | string;
+  bio?: null | string
   /* 出生日期 */
-  birthDate?: null | string;
+  birthDate?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 邮箱 */
-  emailAddress?: null | string;
+  emailAddress?: null | string
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType: 0 | 1 | 2 | 3 | 4;
+  genderType: 0 | 1 | 2 | 3 | 4
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 最后登录时间 */
-  lastLoginAt?: null | string;
+  lastLoginAt?: null | string
   /* 最后登录IP */
-  lastLoginIp?: null | string;
+  lastLoginIp?: null | string
   /* 昵称 */
-  nickname: string;
+  nickname: string
   /* 手机号 */
-  phoneNumber?: null | string;
+  phoneNumber?: null | string
   /* 个性签名 */
-  signature?: null | string;
+  signature?: null | string
 
   /* 更新时间 */
-  updatedAt: string;
-};
+  updatedAt: string
+}
 
 /**
  *  类型定义 [UserExperienceStatsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserExperienceStatsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 当前经验值 */
-  currentExperience: number;
+  currentExperience: number
   /* 当前等级信息 */
-  level?: UserExperienceLevelDto;
+  level?: UserExperienceLevelDto
 
   /* 今日获得经验值 */
-  todayEarned: number;
-};
+  todayEarned: number
+}
 
 /**
  *  类型定义 [UserExperienceLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserExperienceLevelDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
   /* 等级名称 */
-  name: string;
+  name: string
 
   /* 所需经验值 */
-  requiredExperience: number;
-};
+  requiredExperience: number
+}
 
 /**
  *  类型定义 [BaseUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type BaseUserLevelRuleDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 黑名单上限（默认值 10） */
-  blacklistLimit: number;
+  blacklistLimit: number
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
   /* 等级专属颜色（十六进制） */
-  color?: null | string;
+  color?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 每日收藏次数上限（0=不限制） */
-  dailyFavoriteLimit: number;
+  dailyFavoriteLimit: number
   /* 每日点赞次数上限（0=不限制） */
-  dailyLikeLimit: number;
+  dailyLikeLimit: number
   /* 每日回复和评论数量上限（0=不限制） */
-  dailyReplyCommentLimit: number;
+  dailyReplyCommentLimit: number
   /* 每日发帖数量上限（0=不限制） */
-  dailyTopicLimit: number;
+  dailyTopicLimit: number
   /* 等级描述 */
-  description?: null | string;
+  description?: null | string
   /* 等级图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 所需登录天数（0=无登录天数要求） */
-  loginDays: number;
+  loginDays: number
   /* 等级名称 */
-  name: string;
+  name: string
   /* 发帖间隔秒数（0=不限制） */
-  postInterval: number;
+  postInterval: number
   /* 积分支付比例（0-1之间的小数，1表示原价支付） */
-  purchasePayableRate: string;
+  purchasePayableRate: string
   /* 所需经验值 */
-  requiredExperience: number;
+  requiredExperience: number
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder: number;
+  sortOrder: number
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
 
   /* 作品收藏上限（默认值 100） */
-  workCollectionLimit: number;
-};
+  workCollectionLimit: number
+}
 
 /**
  *  类型定义 [CreateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type CreateUserLevelRuleDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 黑名单上限（默认值 10） */
-  blacklistLimit: number;
+  blacklistLimit: number
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
   /* 等级专属颜色（十六进制） */
-  color?: null | string;
+  color?: null | string
   /* 每日收藏次数上限（0=不限制） */
-  dailyFavoriteLimit: number;
+  dailyFavoriteLimit: number
   /* 每日点赞次数上限（0=不限制） */
-  dailyLikeLimit: number;
+  dailyLikeLimit: number
   /* 每日回复和评论数量上限（0=不限制） */
-  dailyReplyCommentLimit: number;
+  dailyReplyCommentLimit: number
   /* 每日发帖数量上限（0=不限制） */
-  dailyTopicLimit: number;
+  dailyTopicLimit: number
   /* 等级描述 */
-  description?: null | string;
+  description?: null | string
   /* 等级图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 所需登录天数（0=无登录天数要求） */
-  loginDays: number;
+  loginDays: number
   /* 等级名称 */
-  name: string;
+  name: string
   /* 发帖间隔秒数（0=不限制） */
-  postInterval: number;
+  postInterval: number
   /* 积分支付比例（0-1之间的小数，1表示原价支付） */
-  purchasePayableRate: string;
+  purchasePayableRate: string
   /* 所需经验值 */
-  requiredExperience: number;
+  requiredExperience: number
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder: number;
+  sortOrder: number
 
   /* 作品收藏上限（默认值 100） */
-  workCollectionLimit: number;
-};
+  workCollectionLimit: number
+}
 
 /**
  *  类型定义 [UpdateUserLevelRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateUserLevelRuleDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 黑名单上限（默认值 10） */
-  blacklistLimit?: number;
+  blacklistLimit?: number
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
   /* 等级专属颜色（十六进制） */
-  color?: null | string;
+  color?: null | string
   /* 每日收藏次数上限（0=不限制） */
-  dailyFavoriteLimit?: number;
+  dailyFavoriteLimit?: number
   /* 每日点赞次数上限（0=不限制） */
-  dailyLikeLimit?: number;
+  dailyLikeLimit?: number
   /* 每日回复和评论数量上限（0=不限制） */
-  dailyReplyCommentLimit?: number;
+  dailyReplyCommentLimit?: number
   /* 每日发帖数量上限（0=不限制） */
-  dailyTopicLimit?: number;
+  dailyTopicLimit?: number
   /* 等级描述 */
-  description?: null | string;
+  description?: null | string
   /* 等级图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
   /* 所需登录天数（0=无登录天数要求） */
-  loginDays?: number;
+  loginDays?: number
   /* 等级名称 */
-  name?: string;
+  name?: string
   /* 发帖间隔秒数（0=不限制） */
-  postInterval?: number;
+  postInterval?: number
   /* 积分支付比例（0-1之间的小数，1表示原价支付） */
-  purchasePayableRate?: string;
+  purchasePayableRate?: string
   /* 所需经验值 */
-  requiredExperience?: number;
+  requiredExperience?: number
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder?: number;
+  sortOrder?: number
 
   /* 作品收藏上限（默认值 100） */
-  workCollectionLimit?: number;
-};
+  workCollectionLimit?: number
+}
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type IdDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
 /**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserLevelInfoDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 当前经验值 */
-  currentExperience: number;
+  currentExperience: number
   /* 等级专属颜色（十六进制） */
-  levelColor?: null | string;
+  levelColor?: null | string
   /* 等级描述 */
-  levelDescription?: null | string;
+  levelDescription?: null | string
   /* 等级图标URL */
-  levelIcon?: null | string;
+  levelIcon?: null | string
   /* 等级ID */
-  levelId: number;
+  levelId: number
   /* 等级名称 */
-  levelName: string;
+  levelName: string
   /* 下一等级所需经验值 */
-  nextLevelExperience?: null | number;
+  nextLevelExperience?: null | number
   /* 等级权限 */
-  permissions: UserLevelPermissionsDto;
+  permissions: UserLevelPermissionsDto
 
   /* 升级进度百分比 */
-  progressPercentage?: null | number;
-};
+  progressPercentage?: null | number
+}
 
 /**
  *  类型定义 [UserLevelPermissionsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserLevelPermissionsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 每日收藏次数上限（0=不限制） */
-  dailyFavoriteLimit: number;
+  dailyFavoriteLimit: number
   /* 每日点赞次数上限（0=不限制） */
-  dailyLikeLimit: number;
+  dailyLikeLimit: number
   /* 每日回复和评论数量上限（0=不限制） */
-  dailyReplyCommentLimit: number;
+  dailyReplyCommentLimit: number
   /* 每日发帖数量上限（0=不限制） */
-  dailyTopicLimit: number;
+  dailyTopicLimit: number
 
   /* 发帖间隔秒数（0=不限制） */
-  postInterval: number;
-};
+  postInterval: number
+}
 
 /**
  *  类型定义 [CheckUserLevelPermissionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type CheckUserLevelPermissionDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 权限类型（dailyTopicLimit=每日发帖数量上限；dailyReplyCommentLimit=每日回复和评论数量上限；postInterval=发帖间隔秒数；dailyLikeLimit=每日点赞次数上限；dailyFavoriteLimit=每日收藏次数上限） */
-  permissionType:
-    | 'dailyFavoriteLimit'
-    | 'dailyLikeLimit'
-    | 'dailyReplyCommentLimit'
-    | 'dailyTopicLimit'
-    | 'postInterval';
+  permissionType: 'dailyFavoriteLimit' | 'dailyLikeLimit' | 'dailyReplyCommentLimit' | 'dailyTopicLimit' | 'postInterval'
 
   /* 用户ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [UserLevelPermissionResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserLevelPermissionResultDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 当前等级名称 */
-  currentLevel: string;
+  currentLevel: string
   /* 是否有权限 */
-  hasPermission: boolean;
+  hasPermission: boolean
   /* 限制数量 */
-  limit?: null | number;
+  limit?: null | number
   /* 剩余数量 */
-  remaining?: null | number;
+  remaining?: null | number
 
   /* 已使用数量 */
-  used?: null | number;
-};
+  used?: null | number
+}
 
 /**
  *  类型定义 [UserLevelStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserLevelStatisticsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 启用的等级数量 */
-  enabledLevels: number;
+  enabledLevels: number
   /* 等级分布 */
-  levelDistribution: UserLevelDistributionItemDto[];
+  levelDistribution: UserLevelDistributionItemDto[]
 
   /* 总等级数量 */
-  totalLevels: number;
-};
+  totalLevels: number
+}
 
 /**
  *  类型定义 [UserLevelDistributionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserLevelDistributionItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 等级ID */
-  levelId: number;
+  levelId: number
   /* 等级名称 */
-  levelName: string;
+  levelName: string
 
   /* 该等级用户数量 */
-  userCount: number;
-};
+  userCount: number
+}
 
 /**
  *  类型定义 [BaseUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type BaseUserBadgeDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 徽章描述 */
-  description?: null | string;
+  description?: null | string
   /* 事件键 */
-  eventKey?: null | string;
+  eventKey?: null | string
   /* 徽章图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 徽章名称 */
-  name: string;
+  name: string
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder: number;
+  sortOrder: number
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type: 1 | 2 | 3;
+  type: 1 | 2 | 3
 
   /* 更新时间 */
-  updatedAt: string;
-};
+  updatedAt: string
+}
 
 /**
  *  类型定义 [CreateUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type CreateUserBadgeDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
   /* 徽章描述 */
-  description?: null | string;
+  description?: null | string
   /* 事件键 */
-  eventKey?: null | string;
+  eventKey?: null | string
   /* 徽章图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 徽章名称 */
-  name: string;
+  name: string
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder: number;
+  sortOrder: number
 
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type: 1 | 2 | 3;
-};
+  type: 1 | 2 | 3
+}
 
 /**
  *  类型定义 [UpdateUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateUserBadgeDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
   /* 徽章描述 */
-  description?: null | string;
+  description?: null | string
   /* 事件键 */
-  eventKey?: null | string;
+  eventKey?: null | string
   /* 徽章图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 徽章名称 */
-  name: string;
+  name: string
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder: number;
+  sortOrder: number
 
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type: 1 | 2 | 3;
-};
+  type: 1 | 2 | 3
+}
 
 /**
  *  类型定义 [UpdateUserBadgeStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateUserBadgeStatusDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 是否启用 */
-  isEnabled: boolean;
-};
+  isEnabled: boolean
+}
 
 /**
  *  类型定义 [AssignUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AssignUserBadgeDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 徽章ID */
-  badgeId: number;
+  badgeId: number
 
   /* 用户ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [BadgeUserPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type BadgeUserPageItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 徽章ID */
-  badgeId: number;
+  badgeId: number
   /* 获得时间 */
-  createdAt: string;
+  createdAt: string
   /* 用户信息 */
-  user: BadgeUserInfoDto;
+  user: BadgeUserInfoDto
 
   /* 用户ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [BadgeUserInfoDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type BadgeUserInfoDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 头像地址 */
-  avatar?: null | string;
+  avatar?: null | string
   /* 用户ID */
-  id: number;
+  id: number
   /* 等级名称 */
-  level?: null | string;
+  level?: null | string
   /* 昵称 */
-  nickname?: null | string;
+  nickname?: null | string
 
   /* 当前积分 */
-  point: number;
-};
+  point: number
+}
 
 /**
  *  类型定义 [UserBadgeStatisticsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserBadgeStatisticsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 停用数 */
-  disabledCount: number;
+  disabledCount: number
   /* 启用数 */
-  enabledCount: number;
+  enabledCount: number
   /* 热门徽章 */
-  topBadges: UserBadgeTopBadgeItemDto[];
+  topBadges: UserBadgeTopBadgeItemDto[]
   /* 总分配次数 */
-  totalAssignments: number;
+  totalAssignments: number
   /* 总徽章数 */
-  totalBadges: number;
+  totalBadges: number
 
   /* 类型分布 */
-  typeDistribution: UserBadgeTypeDistributionItemDto[];
-};
+  typeDistribution: UserBadgeTypeDistributionItemDto[]
+}
 
 /**
  *  类型定义 [UserBadgeTypeDistributionItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserBadgeTypeDistributionItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 数量 */
-  count: number;
+  count: number
 
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type: 1 | 2 | 3;
-};
+  type: 1 | 2 | 3
+}
 
 /**
  *  类型定义 [UserBadgeTopBadgeItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserBadgeTopBadgeItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 徽章信息 */
-  badge?: BaseUserBadgeDto;
+  badge?: BaseUserBadgeDto
 
   /* 分配次数 */
-  count: number;
-};
+  count: number
+}
 
 /**
  *  类型定义 [GrowthRuleEventPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRuleEventPageItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 基础奖励资产规则摘要列表 */
-  assetRules: GrowthRuleAssetSummaryDto[];
+  assetRules: GrowthRuleAssetSummaryDto[]
   /* 事件所属领域（forum=论坛；comment=评论；comic_work=漫画作品；novel_work=小说作品；comic_chapter=漫画章节；novel_chapter=小说章节；engagement=互动；badge=徽章；profile=资料；social=社交；report=举报；system=系统） */
-  domain:
-    | 'badge'
-    | 'comic_chapter'
-    | 'comic_work'
-    | 'comment'
-    | 'engagement'
-    | 'forum'
-    | 'novel_chapter'
-    | 'novel_work'
-    | 'profile'
-    | 'report'
-    | 'social'
-    | 'system';
+  domain: 'badge' | 'comic_chapter' | 'comic_work' | 'comment' | 'engagement' | 'forum' | 'novel_chapter' | 'novel_work' | 'profile' | 'report' | 'social' | 'system'
   /* 成长事件名称 */
-  eventName: string;
+  eventName: string
   /* 治理闸门类型（none=无闸门；topic_approval=主题审核；comment_approval=评论审核；report_judgement=举报裁决） */
-  governanceGate:
-    | 'comment_approval'
-    | 'none'
-    | 'report_judgement'
-    | 'topic_approval';
+  governanceGate: 'comment_approval' | 'none' | 'report_judgement' | 'topic_approval'
   /* 是否已配置任一基础奖励 */
-  hasBaseReward: boolean;
+  hasBaseReward: boolean
   /* 是否存在关联任务 */
-  hasTask: boolean;
+  hasTask: boolean
   /* 实现状态（declared=已声明；implemented=已实现；legacy_compat=历史兼容） */
-  implStatus: 'declared' | 'implemented' | 'legacy_compat';
+  implStatus: 'declared' | 'implemented' | 'legacy_compat'
   /* 是否已正式接入 producer */
-  isImplemented: boolean;
+  isImplemented: boolean
   /* 基础奖励与任务 bonus 的默认叠加策略说明 */
-  rewardPolicy: string;
+  rewardPolicy: string
   /* 成长事件英文 key */
-  ruleKey: string;
+  ruleKey: string
   /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  ruleType:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801;
+  ruleType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 16 | 100 | 101 | 102 | 103 | 104 | 200 | 201 | 202 | 203 | 204 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 600 | 601 | 602 | 700 | 701 | 702 | 703 | 800 | 801
   /* 是否支持任务消费 */
-  supportsTaskObjective: boolean;
+  supportsTaskObjective: boolean
 
   /* 关联任务摘要 */
-  taskBinding: GrowthRuleTaskBindingSummaryDto;
-};
+  taskBinding: GrowthRuleTaskBindingSummaryDto
+}
 
 /**
  *  类型定义 [GrowthRuleAssetSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRuleAssetSummaryDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 奖励值 */
-  amount?: null | number;
+  amount?: null | number
   /* 资产键；积分/经验为空字符串，扩展资产使用稳定业务键 */
-  assetKey?: null | string;
+  assetKey?: null | string
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType: 1 | 2 | 3 | 4 | 5;
+  assetType: 1 | 2 | 3 | 4 | 5
   /* 每日上限（0=无限制） */
-  dailyLimit?: null | number;
+  dailyLimit?: null | number
   /* 该资产规则是否存在 */
-  exists: boolean;
+  exists: boolean
   /* 规则 ID */
-  id?: null | number;
+  id?: null | number
   /* 规则是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean | null
   /* 规则备注 */
-  remark?: null | string;
+  remark?: null | string
 
   /* 总上限（0=无限制） */
-  totalLimit?: null | number;
-};
+  totalLimit?: null | number
+}
 
 /**
  *  类型定义 [GrowthRuleTaskBindingSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRuleTaskBindingSummaryDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 启用中的任务数 */
-  enabledTaskCount: number;
+  enabledTaskCount: number
   /* 是否存在关联任务 */
-  exists: boolean;
+  exists: boolean
   /* 已发布任务数 */
-  publishedTaskCount: number;
+  publishedTaskCount: number
   /* 关联任务总数 */
-  relatedTaskCount: number;
+  relatedTaskCount: number
   /* 关联任务场景类型列表（1=新手引导任务；2=日常任务；4=活动任务） */
-  sceneTypes: 1 | 2 | 4[];
+  sceneTypes: 1 | 2 | 4[]
 
   /* 关联任务 ID 列表 */
-  taskIds: number[];
-};
+  taskIds: number[]
+}
 
 /**
  *  类型定义 [GrowthRewardSettlementPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRewardSettlementPageItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 奖励幂等业务键 */
-  bizKey: string;
+  bizKey: string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  eventCode?: null | number;
+  eventCode?: null | number
   /* 成长事件 key */
-  eventKey?: null | string;
+  eventKey?: null | string
   /* 原始事件发生时间 */
-  eventOccurredAt: string;
+  eventOccurredAt: string
   /* 主键id */
-  id: number;
+  id: number
   /* 最近一次失败原因 */
-  lastError?: null | string;
+  lastError?: null | string
   /* 最近一次重试时间 */
-  lastRetryAt?: null | string;
+  lastRetryAt?: null | string
   /* 本次补偿关联到账本记录 ID 列表 */
-  ledgerRecordIds: number[];
+  ledgerRecordIds: number[]
   /* 补偿重放用的原始载荷快照；通用成长事件、任务奖励、签到基础奖励、签到连续奖励会分别写入各自结构 */
-  requestPayload: string;
+  requestPayload: string
   /* 已执行的补偿重试次数 */
-  retryCount: number;
+  retryCount: number
   /* 最近一次补偿状态落定时间 */
-  settledAt?: null | string;
+  settledAt?: null | string
   /* 补偿结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
-  settlementResultType?: null | number;
+  settlementResultType?: null | number
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
-  settlementStatus: 0 | 1 | 2;
+  settlementStatus: 0 | 1 | 2
   /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */
-  settlementType: 1 | 2 | 3 | 4;
+  settlementType: 1 | 2 | 3 | 4
   /* 奖励来源 */
-  source: string;
+  source: string
   /* 来源事实主键（任务奖励通常为 instanceId） */
-  sourceRecordId?: null | number;
+  sourceRecordId?: null | number
   /* 目标 ID */
-  targetId?: null | number;
+  targetId?: null | number
   /* 目标类型 */
-  targetType?: null | number;
+  targetType?: null | number
   /* 更新时间 */
-  updatedAt: string;
+  updatedAt: string
 
   /* 归属用户 ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [RetryGrowthRewardSettlementBatchDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type RetryGrowthRewardSettlementBatchDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 本次最多扫描的待补偿记录数 */
-  limit?: null | number;
-};
+  limit?: null | number
+}
 
 /**
  *  类型定义 [GrowthRewardSettlementRetryBatchResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type GrowthRewardSettlementRetryBatchResultDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 本次补偿后仍未成功的记录数 */
-  failedCount: number;
+  failedCount: number
   /* 本次扫描到的补偿记录数 */
-  scannedCount: number;
+  scannedCount: number
 
   /* 本次补偿成功数 */
-  succeededCount: number;
-};
+  succeededCount: number
+}
 
 /**
  *  类型定义 [BaseGrowthRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type BaseGrowthRewardRuleDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
-  assetKey?: null | string;
+  assetKey?: null | string
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType: 1 | 2 | 3 | 4 | 5;
+  assetType: 1 | 2 | 3 | 4 | 5
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 每日上限（0=无限制） */
-  dailyLimit: number;
+  dailyLimit: number
   /* 规则变动值；必须为正整数 */
-  delta: number;
+  delta: number
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 总上限（0=无限制） */
-  totalLimit: number;
+  totalLimit: number
   /* 成长规则类型，直接复用统一事件定义编码。 */
-  type:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801;
+  type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 16 | 100 | 101 | 102 | 103 | 104 | 200 | 201 | 202 | 203 | 204 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 600 | 601 | 602 | 700 | 701 | 702 | 703 | 800 | 801
 
   /* 更新时间 */
-  updatedAt: string;
-};
+  updatedAt: string
+}
 
 /**
  *  类型定义 [CreateGrowthRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type CreateGrowthRewardRuleDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
-  assetKey?: null | string;
+  assetKey?: null | string
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType: 1 | 2 | 3 | 4 | 5;
+  assetType: 1 | 2 | 3 | 4 | 5
   /* 每日上限（0=无限制） */
-  dailyLimit: number;
+  dailyLimit: number
   /* 规则变动值；必须为正整数 */
-  delta: number;
+  delta: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 总上限（0=无限制） */
-  totalLimit: number;
+  totalLimit: number
 
   /* 成长规则类型，直接复用统一事件定义编码。 */
-  type:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801;
-};
+  type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 16 | 100 | 101 | 102 | 103 | 104 | 200 | 201 | 202 | 203 | 204 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 600 | 601 | 602 | 700 | 701 | 702 | 703 | 800 | 801
+}
 
 /**
  *  类型定义 [UpdateGrowthRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateGrowthRewardRuleDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
-  assetKey?: null | string;
+  assetKey?: null | string
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType?: 1 | 2 | 3 | 4 | 5;
+  assetType?: 1 | 2 | 3 | 4 | 5
   /* 每日上限（0=无限制） */
-  dailyLimit?: number;
+  dailyLimit?: number
   /* 规则变动值；必须为正整数 */
-  delta?: number;
+  delta?: number
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
   /* 备注 */
-  remark?: null | string;
+  remark?: null | string
   /* 总上限（0=无限制） */
-  totalLimit?: number;
+  totalLimit?: number
 
   /* 成长规则类型，直接复用统一事件定义编码。 */
-  type?:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801;
-};
+  type?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 16 | 100 | 101 | 102 | 103 | 104 | 200 | 201 | 202 | 203 | 204 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 600 | 601 | 602 | 700 | 701 | 702 | 703 | 800 | 801
+}

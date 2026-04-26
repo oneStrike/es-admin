@@ -35,7 +35,12 @@ function createConfigDetail(
 ): CheckInConfigDetailResponse {
   return {
     baseRewardItems: [
-      { amount: 10, assetKey: '', assetType: 1 },
+      {
+        amount: 10,
+        assetKey: '',
+        assetType: 1,
+        iconUrl: 'https://cdn.example.com/check-in/base-points.png',
+      },
       { amount: 5, assetKey: '', assetType: 2 },
     ],
     createdAt: '2026-04-19T00:00:00.000Z',
@@ -43,19 +48,25 @@ function createConfigDetail(
       {
         rewardDate: '2026-04-21',
         rewardItems: [{ amount: 66, assetKey: '', assetType: 1 }],
+        rewardOverviewIconUrl:
+          'https://cdn.example.com/check-in/date-overview.png',
       },
     ],
     isEnabled: true,
     id: 1,
+    makeupIconUrl: 'https://cdn.example.com/check-in/makeup.png',
     makeupPeriodType: 1,
     patternRewardRules: [
       {
         patternType: 1,
         rewardItems: [{ amount: 22, assetKey: '', assetType: 1 }],
+        rewardOverviewIconUrl:
+          'https://cdn.example.com/check-in/weekday-overview.png',
         weekday: 1,
       },
     ],
     periodicAllowance: 2,
+    rewardOverviewIconUrl: 'https://cdn.example.com/check-in/base-overview.png',
     updatedAt: '2026-04-19T01:00:00.000Z',
     ...overrides,
   };
@@ -67,12 +78,19 @@ function createStreakDetail(
   return {
     createdAt: '2026-04-19T00:00:00.000Z',
     effectiveFrom: '2026-04-19T00:00:00.000Z',
-    effectiveTo: null,
+    effectiveTo: undefined,
     id: 8,
     isCurrent: true,
     publishStrategy: 1,
     repeatable: false,
-    rewardItems: [{ amount: 10, assetKey: '', assetType: 1 }],
+    rewardItems: [
+      {
+        amount: 10,
+        assetKey: '',
+        assetType: 1,
+        iconUrl: 'https://cdn.example.com/check-in/streak.png',
+      },
+    ],
     ruleCode: 'streak-day-3',
     status: 2,
     streakDays: 3,
@@ -87,16 +105,31 @@ describe('check-in config model', () => {
     const state = mapConfigDetailToForm(createConfigDetail());
 
     expect(state.baseRewardItems).toEqual([
-      { amount: 10, assetKey: '', assetType: 1 },
+      {
+        amount: 10,
+        assetKey: '',
+        assetType: 1,
+        iconUrl: 'https://cdn.example.com/check-in/base-points.png',
+      },
       { amount: 5, assetKey: '', assetType: 2 },
     ]);
+    expect(state.makeupIconUrl).toBe(
+      'https://cdn.example.com/check-in/makeup.png',
+    );
+    expect(state.rewardOverviewIconUrl).toBe(
+      'https://cdn.example.com/check-in/base-overview.png',
+    );
     expect(state.dateRules[0]).toMatchObject({
       rewardDate: '2026-04-21',
       rewardItems: [{ amount: 66, assetKey: '', assetType: 1 }],
+      rewardOverviewIconUrl:
+        'https://cdn.example.com/check-in/date-overview.png',
     });
     expect(state.patternRules[0]).toMatchObject({
       patternType: 1,
       rewardItems: [{ amount: 22, assetKey: '', assetType: 1 }],
+      rewardOverviewIconUrl:
+        'https://cdn.example.com/check-in/weekday-overview.png',
       weekday: 1,
     });
   });
@@ -112,18 +145,24 @@ describe('check-in config model', () => {
           localId: 'date-1',
           rewardDate: '2026-04-21',
           rewardItems: [{ amount: 66, assetKey: '', assetType: 1 }],
+          rewardOverviewIconUrl:
+            'https://cdn.example.com/check-in/date-overview.png',
         },
       ],
+      makeupIconUrl: 'https://cdn.example.com/check-in/makeup.png',
       makeupPeriodType: 1,
       patternRules: [
         {
           localId: 'pattern-1',
           patternType: 1,
           rewardItems: [{ amount: 22, assetKey: '', assetType: 1 }],
+          rewardOverviewIconUrl:
+            'https://cdn.example.com/check-in/weekday-overview.png',
           weekday: 1,
         },
       ],
       periodicAllowance: 2,
+      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/base-overview.png',
     });
 
     expect(payload).toEqual({
@@ -135,19 +174,25 @@ describe('check-in config model', () => {
         {
           rewardDate: '2026-04-21',
           rewardItems: [{ amount: 66, assetKey: '', assetType: 1 }],
+          rewardOverviewIconUrl:
+            'https://cdn.example.com/check-in/date-overview.png',
         },
       ],
       isEnabled: true,
+      makeupIconUrl: 'https://cdn.example.com/check-in/makeup.png',
       makeupPeriodType: 1,
       patternRewardRules: [
         {
           monthDay: undefined,
           patternType: 1,
           rewardItems: [{ amount: 22, assetKey: '', assetType: 1 }],
+          rewardOverviewIconUrl:
+            'https://cdn.example.com/check-in/weekday-overview.png',
           weekday: 1,
         },
       ],
       periodicAllowance: 2,
+      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/base-overview.png',
     });
   });
 
@@ -160,9 +205,13 @@ describe('check-in config model', () => {
     expect(days).toHaveLength(7);
     expect(days[0]).toMatchObject({
       dayLabel: '周一 04-20',
+      rewardOverviewIconUrl:
+        'https://cdn.example.com/check-in/weekday-overview.png',
       rewardSummary: '积分 22',
     });
     expect(days[1]).toMatchObject({
+      rewardOverviewIconUrl:
+        'https://cdn.example.com/check-in/date-overview.png',
       rewardSummary: '积分 66',
     });
   });
@@ -196,9 +245,11 @@ describe('check-in config model', () => {
           rewardItems: [{ amount: 2, assetKey: '', assetType: 1 }],
         },
       ],
+      makeupIconUrl: undefined,
       makeupPeriodType: 1,
       patternRules: [],
       periodicAllowance: 1,
+      rewardOverviewIconUrl: undefined,
     });
 
     expect(error).toContain('具体日期奖励重复');
@@ -208,6 +259,7 @@ describe('check-in config model', () => {
     const error = validateConfigForm({
       baseRewardItems: [{ amount: 10, assetKey: '', assetType: 1 }],
       dateRules: [],
+      makeupIconUrl: undefined,
       makeupPeriodType: 2,
       patternRules: [
         {
@@ -218,6 +270,7 @@ describe('check-in config model', () => {
         },
       ],
       periodicAllowance: 1,
+      rewardOverviewIconUrl: undefined,
     });
 
     expect(error).toContain('按自然月模式下不支持按周固定星期奖励规则');
@@ -234,17 +287,23 @@ describe('check-in config model', () => {
     upsertDateRule({
       rewardDate: '2026-04-22',
       rewardItems: [{ amount: 88, assetKey: '', assetType: 1 }],
+      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/date-22.png',
       state,
     });
-    expect(getDateRuleByDate(state, '2026-04-22')).toBeTruthy();
+    expect(getDateRuleByDate(state, '2026-04-22')).toMatchObject({
+      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/date-22.png',
+    });
 
     upsertPatternRule({
       monthDay: 15,
       patternType: 2,
       rewardItems: [{ amount: 99, assetKey: '', assetType: 1 }],
+      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/month-15.png',
       state,
     });
-    expect(getPatternRuleByMonthDay(state, 15)).toBeTruthy();
+    expect(getPatternRuleByMonthDay(state, 15)).toMatchObject({
+      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/month-15.png',
+    });
 
     upsertPatternRule({
       patternType: 3,
@@ -349,7 +408,14 @@ describe('check-in streak config model', () => {
     expect(state.publishStrategy).toBe(1);
     expect(state.effectiveFrom).toBeUndefined();
     expect(state.streakDays).toBe(3);
-    expect(state.points).toBe(10);
+    expect(state.rewardItems).toEqual([
+      {
+        amount: 10,
+        assetKey: '',
+        assetType: 1,
+        iconUrl: 'https://cdn.example.com/check-in/streak.png',
+      },
+    ]);
     expect(state.repeatable).toBe(false);
   });
 
@@ -361,7 +427,14 @@ describe('check-in streak config model', () => {
     expect(payload).toEqual({
       publishStrategy: 1,
       repeatable: false,
-      rewardItems: [{ amount: 10, assetKey: '', assetType: 1 }],
+      rewardItems: [
+        {
+          amount: 10,
+          assetKey: '',
+          assetType: 1,
+          iconUrl: 'https://cdn.example.com/check-in/streak.png',
+        },
+      ],
       streakDays: 3,
     });
   });
@@ -369,10 +442,9 @@ describe('check-in streak config model', () => {
   it('requires explicit effective time when using scheduled publish', () => {
     const error = validateStreakForm({
       effectiveFrom: undefined,
-      experience: undefined,
-      points: 10,
       publishStrategy: 3,
       repeatable: false,
+      rewardItems: [{ amount: 10, assetKey: '', assetType: 1 }],
       sourceVersion: 1,
       streakDays: 3,
     });
@@ -383,10 +455,9 @@ describe('check-in streak config model', () => {
   it('rejects empty reward payloads', () => {
     const error = validateStreakForm({
       effectiveFrom: undefined,
-      experience: undefined,
-      points: undefined,
       publishStrategy: 1,
       repeatable: false,
+      rewardItems: [],
       sourceVersion: 1,
       streakDays: 3,
     });

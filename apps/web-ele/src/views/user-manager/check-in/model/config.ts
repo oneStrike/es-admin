@@ -1,7 +1,7 @@
 import type {
   CheckInConfigDetailResponse,
+  CheckInRewardItemDto,
   CheckInConfigUpdateRequest,
-  GrowthRewardItemDto,
 } from '#/api/types';
 
 import { dayjs } from '#/utils';
@@ -17,23 +17,27 @@ import {
 export type CheckInConfigDateRuleDraft = {
   localId: string;
   rewardDate: string;
-  rewardItems: GrowthRewardItemDto[];
+  rewardItems: CheckInRewardItemDto[];
+  rewardOverviewIconUrl?: string;
 };
 
 export type CheckInConfigPatternRuleDraft = {
   localId: string;
   monthDay?: number;
   patternType: 1 | 2 | 3;
-  rewardItems: GrowthRewardItemDto[];
+  rewardItems: CheckInRewardItemDto[];
+  rewardOverviewIconUrl?: string;
   weekday?: number;
 };
 
 export type CheckInConfigFormState = {
-  baseRewardItems: GrowthRewardItemDto[];
+  baseRewardItems: CheckInRewardItemDto[];
   dateRules: CheckInConfigDateRuleDraft[];
+  makeupIconUrl?: string;
   makeupPeriodType: 1 | 2;
   patternRules: CheckInConfigPatternRuleDraft[];
   periodicAllowance: number;
+  rewardOverviewIconUrl?: string;
 };
 
 export type CheckInConfigDateRuleSummaryGroup = {
@@ -49,6 +53,7 @@ export type CheckInConfigPreviewDay = {
   isEditable: boolean;
   isLastDayOfMonth?: boolean;
   monthDay?: number;
+  rewardOverviewIconUrl?: string;
   rewardSummary: string;
   weekday?: number;
 };
@@ -64,9 +69,11 @@ export function createDefaultConfigFormState(): CheckInConfigFormState {
   return {
     baseRewardItems: [],
     dateRules: [],
+    makeupIconUrl: undefined,
     makeupPeriodType: 1,
     patternRules: [],
     periodicAllowance: 0,
+    rewardOverviewIconUrl: undefined,
   };
 }
 
@@ -80,10 +87,12 @@ export function mapConfigDetailToForm(
         localId: `date-${rule.rewardDate}`,
         rewardDate: rule.rewardDate,
         rewardItems: cloneRewardItems(rule.rewardItems),
+        rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
       }))
       .toSorted((left, right) =>
         left.rewardDate.localeCompare(right.rewardDate),
       ),
+    makeupIconUrl: detail.makeupIconUrl,
     makeupPeriodType: detail.makeupPeriodType,
     patternRules: sortPatternRules(
       (detail.patternRewardRules || []).map((rule, index) => ({
@@ -91,10 +100,12 @@ export function mapConfigDetailToForm(
         monthDay: rule.monthDay ?? undefined,
         patternType: rule.patternType,
         rewardItems: cloneRewardItems(rule.rewardItems),
+        rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
         weekday: rule.weekday ?? undefined,
       })),
     ),
     periodicAllowance: detail.periodicAllowance,
+    rewardOverviewIconUrl: detail.rewardOverviewIconUrl,
   };
 }
 
@@ -118,8 +129,10 @@ export function buildConfigUpdatePayload(
       .map((rule) => ({
         rewardDate: rule.rewardDate,
         rewardItems: cloneRewardItems(rule.rewardItems),
+        rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
       })),
     isEnabled,
+    makeupIconUrl: state.makeupIconUrl,
     makeupPeriodType: state.makeupPeriodType,
     patternRewardRules: sortPatternRules(compatiblePatternRules)
       .filter((rule) => hasValidPatternRule(rule))
@@ -127,9 +140,11 @@ export function buildConfigUpdatePayload(
         monthDay: rule.patternType === 2 ? rule.monthDay : undefined,
         patternType: rule.patternType,
         rewardItems: cloneRewardItems(rule.rewardItems),
+        rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
         weekday: rule.patternType === 1 ? rule.weekday : undefined,
       })),
     periodicAllowance: Number(state.periodicAllowance || 0),
+    rewardOverviewIconUrl: state.rewardOverviewIconUrl,
   };
 }
 
@@ -314,7 +329,8 @@ export function getMonthLastDayRule(state: CheckInConfigFormState) {
 
 export function upsertDateRule(params: {
   rewardDate: string;
-  rewardItems: GrowthRewardItemDto[];
+  rewardItems: CheckInRewardItemDto[];
+  rewardOverviewIconUrl?: string;
   state: CheckInConfigFormState;
 }) {
   params.state.dateRules = params.state.dateRules.filter(
@@ -329,6 +345,7 @@ export function upsertDateRule(params: {
     localId: `date-${params.rewardDate}`,
     rewardDate: params.rewardDate,
     rewardItems: cloneRewardItems(params.rewardItems),
+    rewardOverviewIconUrl: params.rewardOverviewIconUrl,
   });
   params.state.dateRules = params.state.dateRules.toSorted((left, right) =>
     left.rewardDate.localeCompare(right.rewardDate),
@@ -347,7 +364,8 @@ export function removeDateRule(params: {
 export function upsertPatternRule(params: {
   monthDay?: number;
   patternType: 1 | 2 | 3;
-  rewardItems: GrowthRewardItemDto[];
+  rewardItems: CheckInRewardItemDto[];
+  rewardOverviewIconUrl?: string;
   state: CheckInConfigFormState;
   weekday?: number;
 }) {
@@ -365,6 +383,7 @@ export function upsertPatternRule(params: {
     monthDay: params.patternType === 2 ? params.monthDay : undefined,
     patternType: params.patternType,
     rewardItems: cloneRewardItems(params.rewardItems),
+    rewardOverviewIconUrl: params.rewardOverviewIconUrl,
     weekday: params.patternType === 1 ? params.weekday : undefined,
   });
   params.state.patternRules = sortPatternRules(params.state.patternRules);
@@ -392,15 +411,18 @@ export function buildWeekPreview(
 
   return weeklyCalendarLabels.map((item, index) => {
     const current = weekStart.add(index, 'day');
-    const rewardSummary =
-      resolveRewardSummaryForDate(current.format('YYYY-MM-DD'), state) ||
-      baseRewardSummary;
+  const rewardSummary =
+      resolveRewardPreviewForDate(current.format('YYYY-MM-DD'), state) ?? {
+        rewardOverviewIconUrl: state.rewardOverviewIconUrl,
+        rewardSummary: baseRewardSummary,
+      };
 
     return {
       date: current.format('YYYY-MM-DD'),
       dayLabel: `${item.label} ${current.format('MM-DD')}`,
       isEditable: current.valueOf() >= today.valueOf(),
-      rewardSummary,
+      rewardOverviewIconUrl: rewardSummary.rewardOverviewIconUrl,
+      rewardSummary: rewardSummary.rewardSummary,
       weekday: item.value,
     };
   });
@@ -420,9 +442,11 @@ export function buildMonthPreview(
 
   return Array.from({ length: totalCells }, (_, index) => {
     const current = gridStart.add(index, 'day');
-    const rewardSummary =
-      resolveRewardSummaryForDate(current.format('YYYY-MM-DD'), state) ||
-      baseRewardSummary;
+  const rewardSummary =
+      resolveRewardPreviewForDate(current.format('YYYY-MM-DD'), state) ?? {
+        rewardOverviewIconUrl: state.rewardOverviewIconUrl,
+        rewardSummary: baseRewardSummary,
+      };
 
     return {
       date: current.format('YYYY-MM-DD'),
@@ -433,7 +457,8 @@ export function buildMonthPreview(
       isCurrentMonth: current.month() === monthStart.month(),
       isLastDayOfMonth: current.date() === current.daysInMonth(),
       monthDay: current.date(),
-      rewardSummary,
+      rewardOverviewIconUrl: rewardSummary.rewardOverviewIconUrl,
+      rewardSummary: rewardSummary.rewardSummary,
     };
   });
 }
@@ -444,13 +469,16 @@ export function isEditableRewardDate(date: string) {
   );
 }
 
-function resolveRewardSummaryForDate(
+function resolveRewardPreviewForDate(
   date: string,
   state: CheckInConfigFormState,
 ) {
   const dateRule = getDateRuleByDate(state, date);
   if (dateRule) {
-    return formatRewardSummary(dateRule.rewardItems);
+    return {
+      rewardOverviewIconUrl: dateRule.rewardOverviewIconUrl,
+      rewardSummary: formatRewardSummary(dateRule.rewardItems),
+    };
   }
 
   const targetDate = dayjs(date);
@@ -474,7 +502,10 @@ function resolveRewardSummaryForDate(
     return null;
   }
 
-  return formatRewardSummary(matchedPattern.rewardItems);
+  return {
+    rewardOverviewIconUrl: matchedPattern.rewardOverviewIconUrl,
+    rewardSummary: formatRewardSummary(matchedPattern.rewardItems),
+  };
 }
 
 function hasPatternIdentity(

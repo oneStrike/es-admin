@@ -1,1083 +1,1036 @@
 /**
  *  类型定义 [AppUsersPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AppUsersPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 账号 */
-  account?: string;
+  account?: string
 
   /* 删除态筛选（0=未删除；1=已删除；2=全部） */
-  deletedScope?: null | number;
+  deletedScope?: null | number
 
   /* 邮箱 */
-  emailAddress?: null | string;
+  emailAddress?: null | string
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 主键id */
-  id?: number;
+  id?: number
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 最后登录结束时间 */
-  lastLoginEndDate?: null | string;
+  lastLoginEndDate?: null | string
 
   /* 最后登录开始时间 */
-  lastLoginStartDate?: null | string;
+  lastLoginStartDate?: null | string
 
   /* 等级ID */
-  levelId?: null | number;
+  levelId?: null | number
 
   /* 昵称 */
-  nickname?: string;
+  nickname?: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 手机号 */
-  phoneNumber?: null | string;
+  phoneNumber?: null | string
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status?: number;
-};
+  status?: number
+}
 
 export type AppUsersPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: AdminAppUserPageItemDto[];
+  list?: AdminAppUserPageItemDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [AppUsersDetailRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AppUsersDetailRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
-export type AppUsersDetailResponse = AdminAppUserDetailDto;
+export type AppUsersDetailResponse = AdminAppUserDetailDto
 
 /**
  *  类型定义 [AppUsersCreateRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersCreateRequest = CreateAdminAppUserDto;
+export type AppUsersCreateRequest = CreateAdminAppUserDto
 
-export type AppUsersCreateResponse = boolean;
+export type AppUsersCreateResponse = boolean
 
 /**
  *  类型定义 [AppUsersProfileUpdateRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersProfileUpdateRequest = UpdateAdminAppUserProfileDto;
+export type AppUsersProfileUpdateRequest = UpdateAdminAppUserProfileDto
 
-export type AppUsersProfileUpdateResponse = boolean;
+export type AppUsersProfileUpdateResponse = boolean
 
 /**
  *  类型定义 [AppUsersUpdateEnabledRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersUpdateEnabledRequest = UpdateAdminAppUserEnabledDto;
+export type AppUsersUpdateEnabledRequest = UpdateAdminAppUserEnabledDto
 
-export type AppUsersUpdateEnabledResponse = boolean;
+export type AppUsersUpdateEnabledResponse = boolean
 
 /**
  *  类型定义 [AppUsersUpdateStatusRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersUpdateStatusRequest = UpdateAdminAppUserStatusDto;
+export type AppUsersUpdateStatusRequest = UpdateAdminAppUserStatusDto
 
-export type AppUsersUpdateStatusResponse = boolean;
+export type AppUsersUpdateStatusResponse = boolean
 
 /**
  *  类型定义 [AppUsersDeleteRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersDeleteRequest = IdDto;
+export type AppUsersDeleteRequest = IdDto
 
-export type AppUsersDeleteResponse = boolean;
+export type AppUsersDeleteResponse = boolean
 
 /**
  *  类型定义 [AppUsersRestoreRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersRestoreRequest = IdDto;
+export type AppUsersRestoreRequest = IdDto
 
-export type AppUsersRestoreResponse = boolean;
+export type AppUsersRestoreResponse = boolean
 
 /**
  *  类型定义 [AppUsersRebuildFollowCountRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersRebuildFollowCountRequest = UserIdDto;
+export type AppUsersRebuildFollowCountRequest = UserIdDto
 
-export type AppUsersRebuildFollowCountResponse =
-  AdminAppUserFollowCountRepairResultDto;
+export type AppUsersRebuildFollowCountResponse = AdminAppUserFollowCountRepairResultDto
 
-export type AppUsersRebuildFollowCountAllResponse = boolean;
+export type AppUsersRebuildFollowCountAllResponse = boolean
 
 /**
  *  类型定义 [AppUsersPasswordResetRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersPasswordResetRequest = ResetAdminAppUserPasswordDto;
+export type AppUsersPasswordResetRequest = ResetAdminAppUserPasswordDto
 
-export type AppUsersPasswordResetResponse = boolean;
+export type AppUsersPasswordResetResponse = boolean
 
 /**
  *  类型定义 [AppUsersPointsStatsRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AppUsersPointsStatsRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
-export type AppUsersPointsStatsResponse = UserPointStatsFieldsDto;
+export type AppUsersPointsStatsResponse = UserPointStatsFieldsDto
 
 /**
  *  类型定义 [AppUsersPointsRecordPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AppUsersPointsRecordPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: null | number
 
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: null | number
 
   /* 用户 ID */
-  userId: number;
-};
+  userId: number
+}
 
 export type AppUsersPointsRecordPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: AdminAppUserPointRecordDto[];
+  list?: AdminAppUserPointRecordDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [AppUsersPointsGrantRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersPointsGrantRequest = AdminAppUserGrowthRuleActionDto;
+export type AppUsersPointsGrantRequest = AdminAppUserGrowthRuleActionDto
 
-export type AppUsersPointsGrantResponse = boolean;
+export type AppUsersPointsGrantResponse = boolean
 
 /**
  *  类型定义 [AppUsersPointsConsumeRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersPointsConsumeRequest = ConsumeAdminAppUserPointsDto;
+export type AppUsersPointsConsumeRequest = ConsumeAdminAppUserPointsDto
 
-export type AppUsersPointsConsumeResponse = boolean;
+export type AppUsersPointsConsumeResponse = boolean
 
 /**
  *  类型定义 [AppUsersExperienceStatsRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AppUsersExperienceStatsRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
-export type AppUsersExperienceStatsResponse = AdminAppUserExperienceStatsDto;
+export type AppUsersExperienceStatsResponse = AdminAppUserExperienceStatsDto
 
 /**
  *  类型定义 [AppUsersExperienceRecordPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AppUsersExperienceRecordPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 用户 ID */
-  userId: number;
-};
+  userId: number
+}
 
 export type AppUsersExperienceRecordPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: AdminAppUserExperienceRecordDto[];
+  list?: AdminAppUserExperienceRecordDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [AppUsersGrowthRecordPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AppUsersGrowthRecordPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 资产类型（1=积分；2=经验） */
-  assetType?: number;
+  assetType?: number
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: null | string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
 
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?: null | number
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: null | string
 
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: null | number
 
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: null | number
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
 export type AppUsersGrowthRecordPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: AdminAppUserGrowthLedgerRecordDto[];
+  list?: AdminAppUserGrowthLedgerRecordDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [AppUsersExperienceGrantRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersExperienceGrantRequest = AdminAppUserGrowthRuleActionDto;
+export type AppUsersExperienceGrantRequest = AdminAppUserGrowthRuleActionDto
 
-export type AppUsersExperienceGrantResponse = boolean;
+export type AppUsersExperienceGrantResponse = boolean
 
 /**
  *  类型定义 [AppUsersBadgesPageRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AppUsersBadgesPageRequest = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
 
   /* 事件键 */
-  eventKey?: null | string;
+  eventKey?: null | string
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
 
   /* 徽章名称 */
-  name?: string;
+  name?: string
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: null | string
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: null | number
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: null | number
 
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type?: number;
+  type?: number
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
 export type AppUsersBadgesPageResponse = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 列表数据 */
-  list?: UserBadgeItemDto[];
+  list?: UserBadgeItemDto[]
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: number
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: number
 
   /* 总条数 */
-  total?: number;
-};
+  total?: number
+}
 
 /**
  *  类型定义 [AppUsersBadgesAssignRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersBadgesAssignRequest = AssignUserBadgeDto;
+export type AppUsersBadgesAssignRequest = AssignUserBadgeDto
 
-export type AppUsersBadgesAssignResponse = boolean;
+export type AppUsersBadgesAssignResponse = boolean
 
 /**
  *  类型定义 [AppUsersBadgesRevokeRequest]
  *  @来源 APP管理/用户管理
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
-export type AppUsersBadgesRevokeRequest = AssignUserBadgeDto;
+export type AppUsersBadgesRevokeRequest = AssignUserBadgeDto
 
-export type AppUsersBadgesRevokeResponse = boolean;
+export type AppUsersBadgesRevokeResponse = boolean
 
 /**
  *  类型定义 [AdminAppUserPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserPageItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 账号 */
-  account: string;
+  account: string
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl?: null | string
   /* 封禁原因 */
-  banReason?: null | string;
+  banReason?: null | string
   /* 封禁到期时间 */
-  banUntil?: null | string;
+  banUntil?: null | string
   /* 个人简介 */
-  bio?: null | string;
+  bio?: null | string
   /* 出生日期 */
-  birthDate?: null | string;
+  birthDate?: null | string
   /* 用户计数 */
-  counts: AdminAppUserCountDto;
+  counts: AdminAppUserCountDto
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 邮箱 */
-  emailAddress?: null | string;
+  emailAddress?: null | string
   /* 经验值 */
-  experience: number;
+  experience: number
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType: 0 | 1 | 2 | 3 | 4;
+  genderType: 0 | 1 | 2 | 3 | 4
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 最后登录时间 */
-  lastLoginAt?: null | string;
+  lastLoginAt?: null | string
   /* 最后登录IP */
-  lastLoginIp?: null | string;
+  lastLoginIp?: null | string
   /* 等级ID */
-  levelId?: null | number;
+  levelId?: null | number
   /* 等级名称 */
-  levelName?: null | string;
+  levelName?: null | string
   /* 昵称 */
-  nickname: string;
+  nickname: string
   /* 手机号 */
-  phoneNumber?: null | string;
+  phoneNumber?: null | string
   /* 积分 */
-  points: number;
+  points: number
   /* 个性签名 */
-  signature?: null | string;
+  signature?: null | string
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status: 1 | 2 | 3 | 4 | 5;
+  status: 1 | 2 | 3 | 4 | 5
 
   /* 更新时间 */
-  updatedAt: string;
-};
+  updatedAt: string
+}
 
 /**
  *  类型定义 [AdminAppUserCountDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserCountDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 发出的评论总数 */
-  commentCount: number;
+  commentCount: number
   /* 评论收到的点赞总数 */
-  commentReceivedLikeCount: number;
+  commentReceivedLikeCount: number
   /* 发出的收藏总数 */
-  favoriteCount: number;
+  favoriteCount: number
   /* 用户粉丝总数 */
-  followersCount: number;
+  followersCount: number
   /* 关注作者总数 */
-  followingAuthorCount: number;
+  followingAuthorCount: number
   /* 关注板块总数 */
-  followingSectionCount: number;
+  followingSectionCount: number
   /* 关注用户总数 */
-  followingUserCount: number;
+  followingUserCount: number
   /* 论坛主题数 */
-  forumTopicCount: number;
+  forumTopicCount: number
   /* 论坛主题收到的收藏总数 */
-  forumTopicReceivedFavoriteCount: number;
+  forumTopicReceivedFavoriteCount: number
   /* 论坛主题收到的点赞总数 */
-  forumTopicReceivedLikeCount: number;
+  forumTopicReceivedLikeCount: number
 
   /* 发出的点赞总数 */
-  likeCount: number;
-};
+  likeCount: number
+}
 
 /**
  *  类型定义 [AdminAppUserDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserDetailDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 账号 */
-  account: string;
+  account: string
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl?: null | string
   /* 已拥有徽章数量 */
-  badgeCount: number;
+  badgeCount: number
   /* 封禁原因 */
-  banReason?: null | string;
+  banReason?: null | string
   /* 封禁到期时间 */
-  banUntil?: null | string;
+  banUntil?: null | string
   /* 个人简介 */
-  bio?: null | string;
+  bio?: null | string
   /* 出生日期 */
-  birthDate?: null | string;
+  birthDate?: null | string
   /* 用户计数 */
-  counts?: AdminAppUserCountDto;
+  counts?: AdminAppUserCountDto
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 邮箱 */
-  emailAddress?: null | string;
+  emailAddress?: null | string
   /* 经验值 */
-  experience: number;
+  experience: number
   /* 经验统计 */
-  experienceStats: AdminAppUserExperienceStatsDto;
+  experienceStats: AdminAppUserExperienceStatsDto
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType: 0 | 1 | 2 | 3 | 4;
+  genderType: 0 | 1 | 2 | 3 | 4
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 最后登录时间 */
-  lastLoginAt?: null | string;
+  lastLoginAt?: null | string
   /* 最后登录IP */
-  lastLoginIp?: null | string;
+  lastLoginIp?: null | string
   /* 等级信息 */
-  level?: AdminAppUserLevelDto;
+  level?: AdminAppUserLevelDto
   /* 等级ID */
-  levelId?: null | number;
+  levelId?: null | number
   /* 昵称 */
-  nickname: string;
+  nickname: string
   /* 手机号 */
-  phoneNumber?: null | string;
+  phoneNumber?: null | string
   /* 积分 */
-  points: number;
+  points: number
   /* 积分统计 */
-  pointStats: UserPointStatsFieldsDto;
+  pointStats: UserPointStatsFieldsDto
   /* 个性签名 */
-  signature?: null | string;
+  signature?: null | string
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status: 1 | 2 | 3 | 4 | 5;
+  status: 1 | 2 | 3 | 4 | 5
 
   /* 更新时间 */
-  updatedAt: string;
-};
+  updatedAt: string
+}
 
 /**
  *  类型定义 [AdminAppUserLevelDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserLevelDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
   /* 等级名称 */
-  name: string;
+  name: string
 
   /* 所需经验值 */
-  requiredExperience: number;
-};
+  requiredExperience: number
+}
 
 /**
  *  类型定义 [UserPointStatsFieldsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserPointStatsFieldsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 当前积分 */
-  currentPoints: number;
+  currentPoints: number
   /* 今日消耗积分 */
-  todayConsumed: number;
+  todayConsumed: number
 
   /* 今日获得积分 */
-  todayEarned: number;
-};
+  todayEarned: number
+}
 
 /**
  *  类型定义 [AdminAppUserExperienceStatsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserExperienceStatsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 当前经验值 */
-  currentExperience: number;
+  currentExperience: number
   /* 距离下一等级的经验差值 */
-  gapToNextLevel?: null | number;
+  gapToNextLevel?: null | number
   /* 当前等级信息 */
-  level?: AdminAppUserLevelDto;
+  level?: AdminAppUserLevelDto
   /* 下一等级信息 */
-  nextLevel?: AdminAppUserLevelDto;
+  nextLevel?: AdminAppUserLevelDto
 
   /* 今日获得经验值 */
-  todayEarned: number;
-};
+  todayEarned: number
+}
 
 /**
  *  类型定义 [CreateAdminAppUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type CreateAdminAppUserDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl?: null | string
   /* 个人简介 */
-  bio?: null | string;
+  bio?: null | string
   /* 出生日期 */
-  birthDate?: null | string;
+  birthDate?: null | string
   /* 邮箱 */
-  emailAddress?: null | string;
+  emailAddress?: null | string
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType?: 0 | 1 | 2 | 3 | 4;
+  genderType?: 0 | 1 | 2 | 3 | 4
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean
   /* 昵称 */
-  nickname: string;
+  nickname: string
   /* 前端 RSA 加密后的密码 */
-  password: string;
+  password: string
   /* 手机号 */
-  phoneNumber?: null | string;
+  phoneNumber?: null | string
   /* 个性签名 */
-  signature?: null | string;
+  signature?: null | string
 
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status?: 1 | 2 | 3 | 4 | 5;
-};
+  status?: 1 | 2 | 3 | 4 | 5
+}
 
 /**
  *  类型定义 [UpdateAdminAppUserProfileDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateAdminAppUserProfileDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl?: null | string
   /* 个人简介 */
-  bio?: null | string;
+  bio?: null | string
   /* 出生日期 */
-  birthDate?: null | string;
+  birthDate?: null | string
   /* 邮箱 */
-  emailAddress?: null | string;
+  emailAddress?: null | string
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType?: 0 | 1 | 2 | 3 | 4;
+  genderType?: 0 | 1 | 2 | 3 | 4
   /* 主键id */
-  id: number;
+  id: number
   /* 昵称 */
-  nickname?: string;
+  nickname?: string
   /* 手机号 */
-  phoneNumber?: null | string;
+  phoneNumber?: null | string
 
   /* 个性签名 */
-  signature?: null | string;
-};
+  signature?: null | string
+}
 
 /**
  *  类型定义 [UpdateAdminAppUserEnabledDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateAdminAppUserEnabledDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 是否启用 */
-  isEnabled: boolean;
-};
+  isEnabled: boolean
+}
 
 /**
  *  类型定义 [UpdateAdminAppUserStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UpdateAdminAppUserStatusDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 封禁或禁言原因 */
-  banReason?: null | string;
+  banReason?: null | string
   /* 封禁或禁言截止时间 */
-  banUntil?: null | string;
+  banUntil?: null | string
   /* 主键id */
-  id: number;
+  id: number
 
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status: 1 | 2 | 3 | 4 | 5;
-};
+  status: 1 | 2 | 3 | 4 | 5
+}
 
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type IdDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 主键id */
-  id: number;
-};
+  id: number
+}
 
 /**
  *  类型定义 [UserIdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserIdDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [AdminAppUserFollowCountRepairResultDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserFollowCountRepairResultDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 用户粉丝总数 */
-  followersCount: number;
+  followersCount: number
   /* 关注作者总数 */
-  followingAuthorCount: number;
+  followingAuthorCount: number
   /* 关注板块总数 */
-  followingSectionCount: number;
+  followingSectionCount: number
   /* 关注用户总数 */
-  followingUserCount: number;
+  followingUserCount: number
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [ResetAdminAppUserPasswordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type ResetAdminAppUserPasswordDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 主键id */
-  id: number;
+  id: number
 
   /* 前端 RSA 加密后的新密码 */
-  password: string;
-};
+  password: string
+}
 
 /**
  *  类型定义 [AdminAppUserPointRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserPointRecordDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 变化后积分 */
-  afterPoints: number;
+  afterPoints: number
   /* 变化前积分 */
-  beforePoints: number;
+  beforePoints: number
   /* 扩展上下文（仅返回白名单解释字段） */
-  context?: null | string;
+  context?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 主键id */
-  id: number;
+  id: number
   /* 积分变化（正数为获得，负数为消费） */
-  points: number;
+  points: number
   /* 账本说明文案 */
-  remark?: null | string;
+  remark?: null | string
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?: null | number
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: null | number
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: null | number
 
   /* 关联的用户ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [AdminAppUserGrowthRuleActionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserGrowthRuleActionDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 人工操作稳定键，用于重试复用同一次补发请求 */
-  operationKey: string;
+  operationKey: string
   /* 内部操作备注，仅用于审计与排障，不会作为用户账本说明文案 */
-  operationNote?: null | string;
+  operationNote?: null | string
   /* 人工操作目标规则类型，直接复用统一事件定义编码。 */
-  ruleType:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801;
+  ruleType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 16 | 100 | 101 | 102 | 103 | 104 | 200 | 201 | 202 | 203 | 204 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 600 | 601 | 602 | 700 | 701 | 702 | 703 | 800 | 801
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [ConsumeAdminAppUserPointsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type ConsumeAdminAppUserPointsDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 关联兑换ID */
-  exchangeId?: null | number;
+  exchangeId?: null | number
   /* 人工操作稳定键，用于重试复用同一次补发请求 */
-  operationKey: string;
+  operationKey: string
   /* 内部操作备注，仅用于审计与排障，不会作为用户账本说明文案 */
-  operationNote?: null | string;
+  operationNote?: null | string
   /* 消费积分数量 */
-  points: number;
+  points: number
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: null | number
   /* 关联目标类型（1=漫画；2=小说；3=漫画章节；4=小说章节；5=论坛主题） */
-  targetType?: null | number;
+  targetType?: null | number
 
   /* 用户id */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [AdminAppUserExperienceRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserExperienceRecordDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 变化后经验值 */
-  afterExperience: number;
+  afterExperience: number
   /* 变化前经验值 */
-  beforeExperience: number;
+  beforeExperience: number
   /* 扩展上下文（仅返回白名单解释字段） */
-  context?: null | string;
+  context?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 经验值变化 */
-  experience: number;
+  experience: number
   /* 主键id */
-  id: number;
+  id: number
   /* 账本说明文案 */
-  remark?: null | string;
+  remark?: null | string
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?: null | number
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: null | number
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: null | number
 
   /* 关联的用户ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [AdminAppUserGrowthLedgerRecordDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AdminAppUserGrowthLedgerRecordDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 变更后余额 */
-  afterValue: number;
+  afterValue: number
   /* 资产类型（1=积分；2=经验） */
-  assetType: 1 | 2 | 3 | 4 | 5;
+  assetType: 1 | 2 | 3 | 4 | 5
   /* 变更前余额 */
-  beforeValue: number;
+  beforeValue: number
   /* 扩展上下文（仅返回白名单解释字段） */
-  context?: null | string;
+  context?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 变更值（正数为发放，负数为扣减） */
-  delta: number;
+  delta: number
   /* 主键id */
-  id: number;
+  id: number
   /* 账本说明文案 */
-  remark?: null | string;
+  remark?: null | string
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: null | number
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?: null | number
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: null | number
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: null | number
   /* 更新时间 */
-  updatedAt?: null | string;
+  updatedAt?: null | string
 
   /* 关联的用户ID */
-  userId: number;
-};
+  userId: number
+}
 
 /**
  *  类型定义 [UserBadgeItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type UserBadgeItemDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 徽章详情 */
-  badge: BaseUserBadgeDto;
+  badge: BaseUserBadgeDto
 
   /* 获得时间 */
-  createdAt: string;
-};
+  createdAt: string
+}
 
 /**
  *  类型定义 [BaseUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type BaseUserBadgeDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 业务域标识 */
-  business?: null | string;
+  business?: null | string
   /* 创建时间 */
-  createdAt: string;
+  createdAt: string
   /* 徽章描述 */
-  description?: null | string;
+  description?: null | string
   /* 事件键 */
-  eventKey?: null | string;
+  eventKey?: null | string
   /* 徽章图标URL */
-  icon?: null | string;
+  icon?: null | string
   /* 主键id */
-  id: number;
+  id: number
   /* 是否启用 */
-  isEnabled: boolean;
+  isEnabled: boolean
   /* 徽章名称 */
-  name: string;
+  name: string
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder: number;
+  sortOrder: number
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type: 1 | 2 | 3;
+  type: 1 | 2 | 3
 
   /* 更新时间 */
-  updatedAt: string;
-};
+  updatedAt: string
+}
 
 /**
  *  类型定义 [AssignUserBadgeDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-23 18:08:35
+ *  @更新时间 2026-04-26 22:06:58
  */
 export type AssignUserBadgeDto = {
   /** 任意合法数值 */
-  [property: string]: any;
+  [property: string]: any
   /* 徽章ID */
-  badgeId: number;
+  badgeId: number
 
   /* 用户ID */
-  userId: number;
-};
+  userId: number
+}
