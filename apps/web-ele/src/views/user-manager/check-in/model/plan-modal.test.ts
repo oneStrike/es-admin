@@ -20,10 +20,12 @@ import {
   mapConfigDetailToForm,
   removeDateRule,
   removePatternRule,
+  removeRewardRuleByScope,
   upsertDateRule,
   upsertPatternRule,
   validateConfigForm,
 } from './config';
+import { buildBaseRewardItems, parseBaseRewardItems } from './shared';
 import {
   buildStreakPublishPayload,
   mapStreakDetailToForm,
@@ -91,6 +93,7 @@ function createStreakDetail(
         iconUrl: 'https://cdn.example.com/check-in/streak.png',
       },
     ],
+    rewardOverviewIconUrl: 'https://cdn.example.com/check-in/streak-overview.png',
     ruleCode: 'streak-day-3',
     status: 2,
     streakDays: 3,
@@ -207,12 +210,32 @@ describe('check-in config model', () => {
       dayLabel: '周一 04-20',
       rewardOverviewIconUrl:
         'https://cdn.example.com/check-in/weekday-overview.png',
+      rewardSourceType: 3,
       rewardSummary: '积分 22',
     });
     expect(days[1]).toMatchObject({
       rewardOverviewIconUrl:
         'https://cdn.example.com/check-in/date-overview.png',
+      rewardSourceType: 2,
       rewardSummary: '积分 66',
+    });
+  });
+
+  it('falls back to fixed base rewards without carrying the old overview icon', () => {
+    const days = buildConfigPreviewDays({
+      cursor: '2026-04-20',
+      state: mapConfigDetailToForm(
+        createConfigDetail({
+          dateRewardRules: [],
+          patternRewardRules: [],
+        }),
+      ),
+    });
+
+    expect(days[0]).toMatchObject({
+      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/base-overview.png',
+      rewardSourceType: 1,
+      rewardSummary: '积分 10 / 经验 5',
     });
   });
 
@@ -326,6 +349,38 @@ describe('check-in config model', () => {
     expect(getPatternRuleByWeekday(state, 1)).toBeFalsy();
   });
 
+  it('removes previous monthly pattern rule without affecting explicit date overrides', () => {
+    const state = mapConfigDetailToForm(
+      createConfigDetail({
+        dateRewardRules: [
+          {
+            rewardDate: '2026-05-15',
+            rewardItems: [{ amount: 77, assetKey: '', assetType: 1 }],
+          },
+        ],
+        makeupPeriodType: 2,
+        patternRewardRules: [
+          {
+            monthDay: 15,
+            patternType: 2,
+            rewardItems: [{ amount: 22, assetKey: '', assetType: 1 }],
+          },
+        ],
+      }),
+    );
+
+    removeRewardRuleByScope({
+      scope: 'monthDay',
+      state,
+      targetMonthDay: 15,
+    });
+
+    expect(getPatternRuleByMonthDay(state, 15)).toBeFalsy();
+    expect(getDateRuleByDate(state, '2026-05-15')).toMatchObject({
+      rewardItems: [{ amount: 77, assetKey: '', assetType: 1 }],
+    });
+  });
+
   it('builds weekly and monthly scope options for drawer editing', () => {
     expect(buildWeeklyScopeOptions()).toEqual([
       { label: '仅当前日期生效', value: 'date' },
@@ -342,6 +397,24 @@ describe('check-in config model', () => {
       { label: '应用到每月这一天', value: 'monthDay' },
       { label: '应用到每月最后一天', value: 'monthLastDay' },
     ]);
+  });
+
+  it('builds and parses fixed base rewards for inline editing', () => {
+    expect(buildBaseRewardItems(12, 8)).toEqual([
+      { amount: 12, assetKey: '', assetType: 1 },
+      { amount: 8, assetKey: '', assetType: 2 },
+    ]);
+
+    expect(
+      parseBaseRewardItems([
+        { amount: 12, assetKey: '', assetType: 1 },
+        { amount: 8, assetKey: '', assetType: 2 },
+        { amount: 99, assetKey: 'ignored', assetType: 3 },
+      ]),
+    ).toEqual({
+      experience: 8,
+      points: 12,
+    });
   });
 
   it('clears periodic pattern rules when makeup period type changes', () => {
@@ -408,6 +481,9 @@ describe('check-in streak config model', () => {
     expect(state.publishStrategy).toBe(1);
     expect(state.effectiveFrom).toBeUndefined();
     expect(state.streakDays).toBe(3);
+    expect(state.rewardOverviewIconUrl).toBe(
+      'https://cdn.example.com/check-in/streak-overview.png',
+    );
     expect(state.rewardItems).toEqual([
       {
         amount: 10,
@@ -435,6 +511,7 @@ describe('check-in streak config model', () => {
           iconUrl: 'https://cdn.example.com/check-in/streak.png',
         },
       ],
+      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/streak-overview.png',
       streakDays: 3,
     });
   });

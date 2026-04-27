@@ -30,6 +30,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<{
     allowClear?: boolean;
+    allowEmptyConfirm?: boolean;
     assetOptions?: RewardConfigAssetOption[];
     clearButtonText?: string;
     confirmText?: string;
@@ -41,6 +42,7 @@ const props = withDefaults(
   }>(),
   {
     allowClear: false,
+    allowEmptyConfirm: false,
     assetOptions: () => defaultRewardAssetOptions,
     clearButtonText: '清空当前配置',
     confirmText: '应用配置',
@@ -116,7 +118,7 @@ function handleConfirm() {
     }
   }
 
-  if (!hasRewardItems(normalizedItems)) {
+  if (!props.allowEmptyConfirm && !hasRewardItems(normalizedItems)) {
     useMessage.warning('至少配置一项奖励');
     return;
   }
@@ -131,8 +133,8 @@ function handleConfirm() {
 }
 
 function handleClear() {
-  emit('clear');
-  useDialogVisible.value = false;
+  draft.rewardItems = [];
+  draft.rewardOverviewIconUrl = undefined;
 }
 </script>
 
@@ -144,7 +146,7 @@ function handleClear() {
     destroy-on-close
   >
     <div class="space-y-5">
-      <slot name="prepend" />
+      <slot name="prepend"></slot>
 
       <div
         v-if="showOverviewIcon"

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import type { CheckInStreakDetailResponse } from '#/api/types';
 import type { RewardConfigValue } from '../../shared/reward-config/reward-config.types';
+
+import type { CheckInStreakDetailResponse } from '#/api/types';
 
 import { computed, onMounted, reactive, ref } from 'vue';
 
@@ -13,8 +14,8 @@ import {
   checkInStreakTerminateApi,
 } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
-import RewardConfigModal from '../../shared/reward-config/reward-config-modal.vue';
 
+import RewardConfigModal from '../../shared/reward-config/reward-config-modal.vue';
 import {
   checkInRewardAssetOptions,
   checkInStreakPublishStrategyOptions,
@@ -66,6 +67,10 @@ const publishButtonLabel = computed(() => {
   }
 });
 
+function getRewardIconItems(rewardItems?: Array<{ iconUrl?: null | string }> | null) {
+  return (rewardItems || []).filter((item) => !!item.iconUrl);
+}
+
 async function loadRules() {
   loading.value = true;
   try {
@@ -95,6 +100,7 @@ function openRewardConfigEditor() {
 
 function handleRewardConfigConfirm(value: RewardConfigValue) {
   formState.rewardItems = cloneRewardItems(value.rewardItems);
+  formState.rewardOverviewIconUrl = value.rewardOverviewIconUrl;
 }
 
 async function handlePublish() {
@@ -181,8 +187,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-loading="loading" class="space-y-5">
-    <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+  <div v-loading="loading" class="check-in-theme space-y-5">
+    <el-card shadow="never">
       <div class="flex items-center justify-between gap-4">
         <div>
           <div class="text-base font-semibold text-slate-900">连续签到记录</div>
@@ -194,21 +200,14 @@ onMounted(async () => {
           新增连续天记录
         </el-button>
       </div>
-    </div>
+    </el-card>
 
-    <div
-      v-if="ruleList.length === 0"
-      class="rounded-lg border border-dashed border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-400 shadow-sm"
-    >
-      暂无连续签到记录
-    </div>
+    <el-card v-if="ruleList.length === 0" class="text-center text-sm text-slate-400" shadow="never">
+      <div class="px-4 py-10">暂无连续签到记录</div>
+    </el-card>
 
     <div v-else class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-      <div
-        v-for="rule in ruleList"
-        :key="rule.id"
-        class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-      >
+      <el-card v-for="rule in ruleList" :key="rule.id" shadow="never">
         <div class="flex items-start justify-between gap-3">
           <div>
             <div class="text-base font-semibold text-slate-900">
@@ -250,6 +249,32 @@ onMounted(async () => {
               {{ formatRewardSummary(rule.rewardItems) }}
             </span>
           </div>
+          <div
+            v-if="rule.rewardOverviewIconUrl"
+            class="flex items-center justify-between gap-3"
+          >
+            <span>概览图标</span>
+            <img
+              :src="rule.rewardOverviewIconUrl"
+              alt="连续奖励概览图标"
+              class="h-10 w-10 rounded-md border border-slate-200 object-cover"
+            />
+          </div>
+          <div
+            v-if="getRewardIconItems(rule.rewardItems).length > 0"
+            class="flex items-center justify-between gap-3"
+          >
+            <span>奖励图标</span>
+            <div class="flex flex-wrap justify-end gap-2">
+              <img
+                v-for="(item, index) in getRewardIconItems(rule.rewardItems)"
+                :key="`${rule.id}-${index}`"
+                :src="item.iconUrl ?? undefined"
+                alt="连续奖励图标"
+                class="h-8 w-8 rounded-md border border-slate-200 object-cover"
+              />
+            </div>
+          </div>
           <div class="flex items-center justify-between gap-3">
             <span>重复发放</span>
             <span class="font-medium text-slate-900">
@@ -272,14 +297,12 @@ onMounted(async () => {
             终止当前版本
           </el-button>
         </div>
-      </div>
+      </el-card>
     </div>
 
     <el-drawer v-model="editorVisible" size="35%" :title="editorTitle">
       <div class="space-y-5">
-        <div
-          class="rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-600"
-        >
+        <el-card class="text-sm text-slate-600" shadow="never">
           <div class="flex items-center justify-between gap-3">
             <span>基线版本</span>
             <span class="font-medium text-slate-900">
@@ -290,7 +313,7 @@ onMounted(async () => {
               }}
             </span>
           </div>
-        </div>
+        </el-card>
 
         <div class="grid gap-4 md:grid-cols-2">
           <div>
@@ -311,19 +334,42 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="rounded-lg border border-slate-200 bg-white p-4">
+        <el-card shadow="never">
           <div class="flex items-start justify-between gap-3">
             <div>
               <div class="text-sm font-medium text-slate-500">连续奖励配置</div>
               <div class="mt-2 text-base font-semibold text-slate-900">
                 {{ formatRewardSummary(formState.rewardItems) }}
               </div>
+              <div
+                v-if="formState.rewardOverviewIconUrl"
+                class="mt-3 flex items-center gap-3"
+              >
+                <span class="text-xs text-slate-500">概览图标</span>
+                <img
+                  :src="formState.rewardOverviewIconUrl"
+                  alt="连续奖励概览图标"
+                  class="h-10 w-10 rounded-md border border-slate-200 object-cover"
+                />
+              </div>
+              <div
+                v-if="getRewardIconItems(formState.rewardItems).length > 0"
+                class="mt-3 flex flex-wrap gap-2"
+              >
+                <img
+                  v-for="(item, index) in getRewardIconItems(formState.rewardItems)"
+                  :key="`editor-${index}`"
+                  :src="item.iconUrl ?? undefined"
+                  alt="连续奖励图标"
+                  class="h-8 w-8 rounded-md border border-slate-200 object-cover"
+                />
+              </div>
             </div>
             <el-button type="primary" @click="openRewardConfigEditor">
               编辑奖励配置
             </el-button>
           </div>
-        </div>
+        </el-card>
 
         <div>
           <div class="mb-2 text-sm font-medium text-slate-700">发布策略</div>
@@ -352,11 +398,9 @@ onMounted(async () => {
           />
         </div>
 
-        <div
-          class="rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-4 text-xs leading-6 text-slate-500"
-        >
+        <el-card class="text-xs leading-6 text-slate-500" shadow="never">
           这次发布只会生成当前连续天数的一条新版本，不会影响其他连续天记录。
-        </div>
+        </el-card>
 
         <div class="flex justify-end gap-3">
           <el-button @click="editorVisible = false">取消</el-button>
@@ -371,8 +415,12 @@ onMounted(async () => {
       v-model:visible="rewardConfigVisible"
       :asset-options="checkInRewardAssetOptions"
       confirm-text="应用奖励配置"
-      :model-value="{ rewardItems: formState.rewardItems }"
-      :show-overview-icon="false"
+      :model-value="{
+        rewardItems: formState.rewardItems,
+        rewardOverviewIconUrl: formState.rewardOverviewIconUrl,
+      }"
+      overview-icon-label="连续奖励概览图标"
+      :show-overview-icon="true"
       title="编辑连续奖励"
       @confirm="handleRewardConfigConfirm"
     />
@@ -395,11 +443,7 @@ onMounted(async () => {
         </div>
 
         <div v-else class="space-y-3">
-          <div
-            v-for="rule in historyRules"
-            :key="rule.id"
-            class="rounded-lg border border-slate-200 bg-slate-50/70 p-4"
-          >
+          <el-card v-for="rule in historyRules" :key="rule.id" shadow="never">
             <div class="flex items-start justify-between gap-3">
               <div>
                 <div class="text-sm font-semibold text-slate-900">
@@ -431,6 +475,32 @@ onMounted(async () => {
                   {{ formatRewardSummary(rule.rewardItems) }}
                 </span>
               </div>
+              <div
+                v-if="rule.rewardOverviewIconUrl"
+                class="flex items-center justify-between gap-3"
+              >
+                <span>概览图标</span>
+                <img
+                  :src="rule.rewardOverviewIconUrl"
+                  alt="连续奖励概览图标"
+                  class="h-10 w-10 rounded-md border border-slate-200 object-cover"
+                />
+              </div>
+              <div
+                v-if="getRewardIconItems(rule.rewardItems).length > 0"
+                class="flex items-center justify-between gap-3"
+              >
+                <span>奖励图标</span>
+                <div class="flex flex-wrap justify-end gap-2">
+                  <img
+                    v-for="(item, index) in getRewardIconItems(rule.rewardItems)"
+                    :key="`${rule.id}-history-${index}`"
+                    :src="item.iconUrl ?? undefined"
+                    alt="连续奖励图标"
+                    class="h-8 w-8 rounded-md border border-slate-200 object-cover"
+                  />
+                </div>
+              </div>
               <div class="flex items-center justify-between gap-3">
                 <span>重复发放</span>
                 <span class="font-medium text-slate-900">
@@ -452,9 +522,35 @@ onMounted(async () => {
                 终止此版本
               </el-button>
             </div>
-          </div>
+          </el-card>
         </div>
       </div>
     </el-drawer>
   </div>
 </template>
+
+<style>
+.check-in-theme [class*='text-slate-900'] {
+  color: var(--el-text-color-primary) !important;
+}
+
+.check-in-theme [class*='text-slate-700'],
+.check-in-theme [class*='text-slate-600'],
+.check-in-theme [class*='text-slate-500'],
+.check-in-theme [class*='text-slate-400'] {
+  color: var(--el-text-color-regular) !important;
+}
+
+.check-in-theme [class*='border-slate-200'] {
+  border-color: var(--el-border-color) !important;
+}
+
+.check-in-theme [class*='bg-white'] {
+  background-color: var(--el-bg-color) !important;
+}
+
+.check-in-theme [class*='bg-slate-50'] {
+  background-color: var(--el-fill-color-light) !important;
+}
+
+</style>

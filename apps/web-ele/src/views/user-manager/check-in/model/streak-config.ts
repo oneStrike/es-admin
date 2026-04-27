@@ -1,7 +1,6 @@
-import type {
-  CheckInRewardItemDto,
-  CheckInStreakDetailResponse,
-} from '#/api/types';
+import type { CheckInRewardItemDto } from './shared';
+
+import type { CheckInStreakDetailResponse } from '#/api/types';
 
 import {
   cloneRewardItems,
@@ -15,6 +14,7 @@ export type CheckInStreakPublishPayload = {
   publishStrategy: 1 | 2 | 3;
   repeatable?: boolean;
   rewardItems: CheckInRewardItemDto[];
+  rewardOverviewIconUrl?: string;
   streakDays: number;
 };
 
@@ -23,11 +23,17 @@ export type CheckInStreakFormState = {
   publishStrategy: 1 | 2 | 3;
   repeatable: boolean;
   rewardItems: CheckInRewardItemDto[];
+  rewardOverviewIconUrl?: string;
   sourceId?: number;
   sourceRuleCode?: string;
   sourceVersion: number;
   streakDays?: number;
 };
+
+function normalizeOptionalText(value?: string) {
+  const text = typeof value === 'string' ? value.trim() : '';
+  return text || undefined;
+}
 
 export function createDefaultStreakFormState(): CheckInStreakFormState {
   return {
@@ -35,6 +41,7 @@ export function createDefaultStreakFormState(): CheckInStreakFormState {
     publishStrategy: 1,
     repeatable: false,
     rewardItems: [],
+    rewardOverviewIconUrl: undefined,
     sourceId: undefined,
     sourceRuleCode: undefined,
     sourceVersion: 0,
@@ -50,6 +57,7 @@ export function mapStreakDetailToForm(
     publishStrategy: 1,
     repeatable: !!detail.repeatable,
     rewardItems: cloneRewardItems(detail.rewardItems),
+    rewardOverviewIconUrl: normalizeOptionalText(detail.rewardOverviewIconUrl ?? undefined),
     sourceId: detail.id,
     sourceRuleCode: detail.ruleCode,
     sourceVersion: detail.version,
@@ -67,6 +75,7 @@ export function buildStreakPublishPayload(
     publishStrategy: state.publishStrategy,
     repeatable: state.repeatable,
     rewardItems: cloneRewardItems(state.rewardItems),
+    rewardOverviewIconUrl: normalizeOptionalText(state.rewardOverviewIconUrl),
     streakDays: Number(state.streakDays),
   };
 }

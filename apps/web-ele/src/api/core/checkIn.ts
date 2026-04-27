@@ -1,4 +1,10 @@
 import type {
+  CheckInCalendarDetailRequest,
+  CheckInCalendarDetailResponse,
+  CheckInCalendarSignedUserPageRequest,
+  CheckInCalendarSignedUserPageResponse,
+  CheckInCalendarUserDetailRequest,
+  CheckInCalendarUserDetailResponse,
   CheckInConfigDetailResponse,
   CheckInConfigUpdateEnabledRequest,
   CheckInConfigUpdateEnabledResponse,
@@ -30,6 +36,30 @@ import { requestClient } from '#/api/request'
    */
   export async function checkInConfigDetailApi(): Promise<CheckInConfigDetailResponse> {
     return requestClient.get<CheckInConfigDetailResponse>('/api/admin/check-in/config/detail');
+  }
+
+
+  /**
+   * 查询目标周期全局签到日历
+   */
+  export async function checkInCalendarDetailApi(params: CheckInCalendarDetailRequest): Promise<CheckInCalendarDetailResponse> {
+    return requestClient.get<CheckInCalendarDetailResponse>('/api/admin/check-in/calendar/detail', { params });
+  }
+
+
+  /**
+   * 查询指定用户目标周期签到日历
+   */
+  export async function checkInCalendarUserDetailApi(params: CheckInCalendarUserDetailRequest): Promise<CheckInCalendarUserDetailResponse> {
+    return requestClient.get<CheckInCalendarUserDetailResponse>('/api/admin/check-in/calendar/user/detail', { params });
+  }
+
+
+  /**
+   * 分页查询某日已签用户列表
+   */
+  export async function checkInCalendarSignedUserPageApi(params: CheckInCalendarSignedUserPageRequest): Promise<CheckInCalendarSignedUserPageResponse> {
+    return requestClient.get<CheckInCalendarSignedUserPageResponse>('/api/admin/check-in/calendar/signed-user/page', { params });
   }
 
 

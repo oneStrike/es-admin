@@ -6,7 +6,7 @@ import type {
   CheckInReconciliationRepairRequest,
 } from '#/api/types';
 
-import { reactive } from 'vue';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
 
 import { ElMessageBox } from 'element-plus';
 
@@ -37,11 +37,12 @@ defineOptions({
 
 const baseRepairingMap = reactive<Record<number, boolean>>({});
 const grantRepairingMap = reactive<Record<number, boolean>>({});
+const panelRef = ref<HTMLElement>();
 
-const reconciliationGridOptions: VxeGridProps<CheckInReconciliationPageItemDto> =
-  {
+const reconciliationGridOptions =
+  reactive<VxeGridProps<CheckInReconciliationPageItemDto>>({
     columns: reconciliationColumns,
-    height: 'auto',
+    height: 560,
     proxyConfig: {
       ajax: {
         query: async ({ page, sorts }, formValues) => {
@@ -56,7 +57,7 @@ const reconciliationGridOptions: VxeGridProps<CheckInReconciliationPageItemDto> 
       },
       sort: true,
     },
-  };
+  });
 
 const [ReconciliationGrid, reconciliationGridApi] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(reconciliationSearchFormSchema, {
@@ -65,6 +66,12 @@ const [ReconciliationGrid, reconciliationGridApi] = useVbenVxeGrid({
   }),
   gridOptions: reconciliationGridOptions,
 });
+
+function syncGridHeight() {
+  const top = panelRef.value?.getBoundingClientRect().top ?? 0;
+  const nextHeight = Math.max(window.innerHeight - top - 32, 360);
+  reconciliationGridOptions.height = nextHeight;
+}
 
 async function repairRecordReward(row: CheckInReconciliationPageItemDto) {
   if (
@@ -162,10 +169,20 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
     grant.rewardSettlement?.settlementStatus === 2
   );
 }
+
+onMounted(() => {
+  syncGridHeight();
+  window.addEventListener('resize', syncGridHeight);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', syncGridHeight);
+});
 </script>
 
 <template>
-  <ReconciliationGrid>
+  <div ref="panelRef" class="check-in-theme">
+    <ReconciliationGrid>
     <template #signInfo="{ row }">
       <div class="space-y-1">
         <div class="font-medium text-slate-900">{{ row.signDate }}</div>
@@ -256,11 +273,7 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
 
     <template #grants="{ row }">
       <div v-if="row.grants?.length" class="space-y-2 py-1">
-        <div
-          v-for="grant in row.grants"
-          :key="grant.id"
-          class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3"
-        >
+        <el-card v-for="grant in row.grants" :key="grant.id" shadow="never">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-2">
               <el-tag effect="light" round type="primary">
@@ -322,7 +335,7 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
           >
             {{ grant.rewardSettlement.lastError }}
           </div>
-        </div>
+        </el-card>
       </div>
       <div v-else class="flex min-h-10 items-center">
         <el-tag effect="light" round type="info">未触发连续奖励</el-tag>
@@ -343,5 +356,36 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
         <el-text v-else class="text-xs text-slate-400">无需补偿</el-text>
       </div>
     </template>
-  </ReconciliationGrid>
+    </ReconciliationGrid>
+  </div>
 </template>
+
+<style>
+.check-in-theme [class*='text-slate-900'] {
+  color: var(--el-text-color-primary) !important;
+}
+
+.check-in-theme [class*='text-slate-500'],
+.check-in-theme [class*='text-slate-400'] {
+  color: var(--el-text-color-regular) !important;
+}
+
+.check-in-theme [class*='border-slate-200'],
+.check-in-theme [class*='border-slate-100'] {
+  border-color: var(--el-border-color) !important;
+}
+
+.check-in-theme [class*='bg-slate-50'],
+.check-in-theme [class*='bg-slate-100'] {
+  background-color: var(--el-fill-color-light) !important;
+}
+
+.check-in-theme [class*='bg-rose-50'] {
+  background-color: var(--el-color-danger-light-9) !important;
+}
+
+.check-in-theme [class*='text-rose-600'] {
+  color: var(--el-color-danger) !important;
+}
+
+</style>

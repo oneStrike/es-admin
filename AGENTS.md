@@ -83,6 +83,9 @@
   - `cspell`
   - `vitest`
   - `vue-tsc`
+- Vue 样式禁止使用 `:deep`、`::v-deep`、`/deep/`。
+- 需要覆盖组件库或子组件样式时，优先使用组件暴露的 `class`、`body-class`、`style`、CSS 变量，或使用带明确业务前缀的非 scoped 选择器，避免深度穿透。
+- 默认不覆盖 Element Plus 的内建视觉样式；如无明确需求，直接使用组件默认样式，仅在业务容器、布局层和自有元素上补充样式。
 - 根目录已接入 `lefthook`，提交前会自动执行对应检查：
   - Markdown：`oxfmt`
   - Vue：`oxfmt + oxlint + eslint + stylelint`

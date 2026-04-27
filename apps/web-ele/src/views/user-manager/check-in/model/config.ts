@@ -1,6 +1,7 @@
+import type { CheckInRewardItemDto } from './shared';
+
 import type {
   CheckInConfigDetailResponse,
-  CheckInRewardItemDto,
   CheckInConfigUpdateRequest,
 } from '#/api/types';
 
@@ -54,6 +55,7 @@ export type CheckInConfigPreviewDay = {
   isLastDayOfMonth?: boolean;
   monthDay?: number;
   rewardOverviewIconUrl?: string;
+  rewardSourceType: 1 | 2 | 3;
   rewardSummary: string;
   weekday?: number;
 };
@@ -87,12 +89,12 @@ export function mapConfigDetailToForm(
         localId: `date-${rule.rewardDate}`,
         rewardDate: rule.rewardDate,
         rewardItems: cloneRewardItems(rule.rewardItems),
-        rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
+        rewardOverviewIconUrl: rule.rewardOverviewIconUrl ?? undefined,
       }))
       .toSorted((left, right) =>
         left.rewardDate.localeCompare(right.rewardDate),
       ),
-    makeupIconUrl: detail.makeupIconUrl,
+    makeupIconUrl: detail.makeupIconUrl ?? undefined,
     makeupPeriodType: detail.makeupPeriodType,
     patternRules: sortPatternRules(
       (detail.patternRewardRules || []).map((rule, index) => ({
@@ -100,12 +102,12 @@ export function mapConfigDetailToForm(
         monthDay: rule.monthDay ?? undefined,
         patternType: rule.patternType,
         rewardItems: cloneRewardItems(rule.rewardItems),
-        rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
+        rewardOverviewIconUrl: rule.rewardOverviewIconUrl ?? undefined,
         weekday: rule.weekday ?? undefined,
       })),
     ),
     periodicAllowance: detail.periodicAllowance,
-    rewardOverviewIconUrl: detail.rewardOverviewIconUrl,
+    rewardOverviewIconUrl: detail.rewardOverviewIconUrl ?? undefined,
   };
 }
 
@@ -401,6 +403,53 @@ export function removePatternRule(params: {
   );
 }
 
+export function removeRewardRuleByScope(params: {
+  scope: Exclude<CheckInConfigEditorKind, 'base'>;
+  state: CheckInConfigFormState;
+  targetDate?: string;
+  targetMonthDay?: number;
+  targetWeekday?: number;
+}) {
+  switch (params.scope) {
+    case 'date': {
+      if (params.targetDate) {
+        removeDateRule({
+          rewardDate: params.targetDate,
+          state: params.state,
+        });
+      }
+      break;
+    }
+    case 'monthDay': {
+      if (params.targetMonthDay) {
+        removePatternRule({
+          monthDay: params.targetMonthDay,
+          patternType: 2,
+          state: params.state,
+        });
+      }
+      break;
+    }
+    case 'monthLastDay': {
+      removePatternRule({
+        patternType: 3,
+        state: params.state,
+      });
+      break;
+    }
+    case 'weekday': {
+      if (params.targetWeekday) {
+        removePatternRule({
+          patternType: 1,
+          state: params.state,
+          weekday: params.targetWeekday,
+        });
+      }
+      break;
+    }
+  }
+}
+
 export function buildWeekPreview(
   cursor: string,
   state: CheckInConfigFormState,
@@ -411,17 +460,21 @@ export function buildWeekPreview(
 
   return weeklyCalendarLabels.map((item, index) => {
     const current = weekStart.add(index, 'day');
-  const rewardSummary =
-      resolveRewardPreviewForDate(current.format('YYYY-MM-DD'), state) ?? {
-        rewardOverviewIconUrl: state.rewardOverviewIconUrl,
-        rewardSummary: baseRewardSummary,
-      };
+    const rewardSummary = resolveRewardPreviewForDate(
+      current.format('YYYY-MM-DD'),
+      state,
+    ) ?? {
+      rewardOverviewIconUrl: state.rewardOverviewIconUrl,
+      rewardSourceType: 1 as const,
+      rewardSummary: baseRewardSummary,
+    };
 
     return {
       date: current.format('YYYY-MM-DD'),
       dayLabel: `${item.label} ${current.format('MM-DD')}`,
       isEditable: current.valueOf() >= today.valueOf(),
       rewardOverviewIconUrl: rewardSummary.rewardOverviewIconUrl,
+      rewardSourceType: rewardSummary.rewardSourceType,
       rewardSummary: rewardSummary.rewardSummary,
       weekday: item.value,
     };
@@ -442,11 +495,14 @@ export function buildMonthPreview(
 
   return Array.from({ length: totalCells }, (_, index) => {
     const current = gridStart.add(index, 'day');
-  const rewardSummary =
-      resolveRewardPreviewForDate(current.format('YYYY-MM-DD'), state) ?? {
-        rewardOverviewIconUrl: state.rewardOverviewIconUrl,
-        rewardSummary: baseRewardSummary,
-      };
+    const rewardSummary = resolveRewardPreviewForDate(
+      current.format('YYYY-MM-DD'),
+      state,
+    ) ?? {
+      rewardOverviewIconUrl: state.rewardOverviewIconUrl,
+      rewardSourceType: 1 as const,
+      rewardSummary: baseRewardSummary,
+    };
 
     return {
       date: current.format('YYYY-MM-DD'),
@@ -458,6 +514,7 @@ export function buildMonthPreview(
       isLastDayOfMonth: current.date() === current.daysInMonth(),
       monthDay: current.date(),
       rewardOverviewIconUrl: rewardSummary.rewardOverviewIconUrl,
+      rewardSourceType: rewardSummary.rewardSourceType,
       rewardSummary: rewardSummary.rewardSummary,
     };
   });
@@ -477,6 +534,7 @@ function resolveRewardPreviewForDate(
   if (dateRule) {
     return {
       rewardOverviewIconUrl: dateRule.rewardOverviewIconUrl,
+      rewardSourceType: 2 as const,
       rewardSummary: formatRewardSummary(dateRule.rewardItems),
     };
   }
@@ -504,6 +562,7 @@ function resolveRewardPreviewForDate(
 
   return {
     rewardOverviewIconUrl: matchedPattern.rewardOverviewIconUrl,
+    rewardSourceType: 3 as const,
     rewardSummary: formatRewardSummary(matchedPattern.rewardItems),
   };
 }

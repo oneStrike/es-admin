@@ -1,7 +1,7 @@
 /**
  *  类型定义 [TaskCreateRequest]
  *  @来源 任务管理/任务配置
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskCreateRequest = CreateTaskDefinitionDto
 
@@ -10,7 +10,7 @@ export type TaskCreateResponse = boolean
 /**
  *  类型定义 [TaskUpdateRequest]
  *  @来源 任务管理/任务配置
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskUpdateRequest = UpdateTaskDefinitionDto
 
@@ -19,7 +19,7 @@ export type TaskUpdateResponse = boolean
 /**
  *  类型定义 [TaskUpdateStatusRequest]
  *  @来源 任务管理/任务配置
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskUpdateStatusRequest = UpdateTaskDefinitionStatusDto
 
@@ -28,7 +28,7 @@ export type TaskUpdateStatusResponse = boolean
 /**
  *  类型定义 [TaskDeleteRequest]
  *  @来源 任务管理/任务配置
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskDeleteRequest = IdDto
 
@@ -39,7 +39,7 @@ export type TaskTemplateOptionsResponse = TaskTemplateOptionsResponseDto
 /**
  *  类型定义 [TaskPageRequest]
  *  @来源 任务管理/任务配置
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskPageRequest = {
   /** 任意合法数值 */
@@ -90,7 +90,7 @@ export type TaskPageResponse = {
 /**
  *  类型定义 [TaskDetailRequest]
  *  @来源 任务管理/任务配置
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskDetailRequest = {
   
@@ -105,7 +105,7 @@ export type TaskDetailResponse = AdminTaskDefinitionDetailDto
 /**
  *  类型定义 [TaskInstancePageRequest]
  *  @来源 任务管理/任务配置
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskInstancePageRequest = {
   /** 任意合法数值 */
@@ -159,7 +159,7 @@ export type TaskInstancePageResponse = {
 /**
  *  类型定义 [TaskInstanceReconciliationPageRequest]
  *  @来源 任务管理/任务配置
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskInstanceReconciliationPageRequest = {
   /** 任意合法数值 */
@@ -216,7 +216,7 @@ export type TaskInstanceReconciliationPageResponse = {
 /**
  *  类型定义 [CreateTaskDefinitionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type CreateTaskDefinitionDto = {
   /** 任意合法数值 */
@@ -253,7 +253,7 @@ export type CreateTaskDefinitionDto = {
 /**
  *  类型定义 [GrowthRewardItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type GrowthRewardItemDto = {
   /** 任意合法数值 */
@@ -270,7 +270,7 @@ export type GrowthRewardItemDto = {
 /**
  *  类型定义 [CreateTaskStepDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type CreateTaskStepDto = {
   /** 任意合法数值 */
@@ -293,7 +293,7 @@ export type CreateTaskStepDto = {
 /**
  *  类型定义 [TaskTemplateFilterValueDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskTemplateFilterValueDto = {
   /** 任意合法数值 */
@@ -310,7 +310,7 @@ export type TaskTemplateFilterValueDto = {
 /**
  *  类型定义 [UpdateTaskDefinitionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type UpdateTaskDefinitionDto = {
   /** 任意合法数值 */
@@ -349,7 +349,7 @@ export type UpdateTaskDefinitionDto = {
 /**
  *  类型定义 [UpdateTaskDefinitionStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type UpdateTaskDefinitionStatusDto = {
   /** 任意合法数值 */
@@ -364,7 +364,7 @@ export type UpdateTaskDefinitionStatusDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -377,7 +377,7 @@ export type IdDto = {
 /**
  *  类型定义 [TaskTemplateOptionsResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskTemplateOptionsResponseDto = {
   /** 任意合法数值 */
@@ -390,7 +390,7 @@ export type TaskTemplateOptionsResponseDto = {
 /**
  *  类型定义 [TaskEventTemplateOptionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskEventTemplateOptionDto = {
   /** 任意合法数值 */
@@ -417,7 +417,7 @@ export type TaskEventTemplateOptionDto = {
 /**
  *  类型定义 [TaskTemplateFilterFieldDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskTemplateFilterFieldDto = {
   /** 任意合法数值 */
@@ -436,7 +436,7 @@ export type TaskTemplateFilterFieldDto = {
 /**
  *  类型定义 [AdminTaskDefinitionListItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type AdminTaskDefinitionListItemDto = {
   /** 任意合法数值 */
@@ -485,7 +485,7 @@ export type AdminTaskDefinitionListItemDto = {
 /**
  *  类型定义 [AdminTaskDefinitionDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type AdminTaskDefinitionDetailDto = {
   /** 任意合法数值 */
@@ -536,7 +536,7 @@ export type AdminTaskDefinitionDetailDto = {
 /**
  *  类型定义 [TaskStepSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskStepSummaryDto = {
   /** 任意合法数值 */
@@ -571,7 +571,7 @@ export type TaskStepSummaryDto = {
 /**
  *  类型定义 [TaskInstanceViewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskInstanceViewDto = {
   /** 任意合法数值 */
@@ -612,7 +612,7 @@ export type TaskInstanceViewDto = {
 /**
  *  类型定义 [TaskInstanceStepViewDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskInstanceStepViewDto = {
   /** 任意合法数值 */
@@ -639,7 +639,7 @@ export type TaskInstanceStepViewDto = {
 /**
  *  类型定义 [TaskRewardSettlementSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskRewardSettlementSummaryDto = {
   /** 任意合法数值 */
@@ -666,7 +666,7 @@ export type TaskRewardSettlementSummaryDto = {
 /**
  *  类型定义 [AdminTaskReconciliationItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type AdminTaskReconciliationItemDto = {
   /** 任意合法数值 */
@@ -713,7 +713,7 @@ export type AdminTaskReconciliationItemDto = {
 /**
  *  类型定义 [TaskLatestEventSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskLatestEventSummaryDto = {
   /** 任意合法数值 */
@@ -736,7 +736,7 @@ export type TaskLatestEventSummaryDto = {
 /**
  *  类型定义 [TaskUniqueFactSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-04-26 22:06:58
+ *  @更新时间 2026-04-27 19:00:08
  */
 export type TaskUniqueFactSummaryDto = {
   /** 任意合法数值 */
