@@ -4,8 +4,8 @@ import type {
   GroupedPaths,
   MethodInfo,
   ModuleCodeResult,
-  OperationContext,
   OpenAPISpec,
+  OperationContext,
 } from './types';
 
 import { mergeOpenAPIGeneratorConfig, TEMPLATES } from './config';
@@ -75,6 +75,7 @@ export class OpenAPIGenerator {
       } catch (parseError) {
         throw new Error(
           `JSON 解析失败: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+          { cause: parseError },
         );
       }
     } catch (error) {
@@ -210,7 +211,7 @@ export class OpenAPIGenerator {
       : `../${this.config.typesDirName}/${typeFileName}.d`;
 
     const importStatements =
-      [...imports].length > 0
+      imports.size > 0
         ? `import type {
   ${[...imports].join(',\n  ')}
 } from '${typeImportPath}'\n\n`
@@ -287,24 +288,6 @@ export class OpenAPIGenerator {
     return contexts;
   }
 
-  private resolveUniqueNames(
-    operationContexts: OperationContext[],
-  ): OperationContext[] {
-    const usedMethodNames = new Set<string>();
-    const usedTypeNames = new Set<string>();
-
-    return operationContexts.map((context) => ({
-      ...context,
-      methodInfo: this.resolveMethodInfo(
-        context.path,
-        context.method,
-        context.namingSegments,
-        usedMethodNames,
-        usedTypeNames,
-      ),
-    }));
-  }
-
   /**
    * 递归收集所有依赖的类型
    */
@@ -340,6 +323,26 @@ export class OpenAPIGenerator {
   }
 
   /**
+   * 生成方法信息
+   */
+  private createMethodInfo(segments: string[]): MethodInfo {
+    const { naming } = this.config;
+    const methodNameBase = segments.join('-');
+    const methodName = naming.useCamelCase
+      ? toCamelCase(methodNameBase)
+      : methodNameBase;
+
+    const typeNameBase = naming.usePascalCase
+      ? toPascalCase(methodNameBase)
+      : methodNameBase;
+
+    const requestType = `${typeNameBase}${naming.requestTypeSuffix}`;
+    const responseType = `${typeNameBase}${naming.responseTypeSuffix}`;
+
+    return { methodName, requestType, responseType };
+  }
+
+  /**
    * 生成 API 方法
    */
   private generateAPIMethod(
@@ -357,7 +360,7 @@ export class OpenAPIGenerator {
     const responseType = resolvedResponseType;
 
     // 根据 HTTP 方法生成不同的调用方式
-    let httpCall = '';
+    let httpCall: string;
     const upperMethod = method.toUpperCase();
 
     if (upperMethod === 'GET' || upperMethod === 'DELETE') {
@@ -395,139 +398,6 @@ export class OpenAPIGenerator {
   export async function ${finalMethodName}(${paramSignature}): Promise<${responseType}> {
     ${httpCall}
   }`;
-  }
-
-  /**
-   * 生成方法信息
-   */
-  private createMethodInfo(segments: string[]): MethodInfo {
-    const { naming } = this.config;
-    const methodNameBase = segments.join('-');
-    const methodName = naming.useCamelCase
-      ? toCamelCase(methodNameBase)
-      : methodNameBase;
-
-    const typeNameBase = naming.usePascalCase
-      ? toPascalCase(methodNameBase)
-      : methodNameBase;
-
-    const requestType = `${typeNameBase}${naming.requestTypeSuffix}`;
-    const responseType = `${typeNameBase}${naming.responseTypeSuffix}`;
-
-    return { methodName, requestType, responseType };
-  }
-
-  private resolveMethodInfo(
-    path: string,
-    method: string,
-    namingSegments = this.getNamingSegments(path),
-    usedMethodNames = new Set<string>(),
-    usedTypeNames = new Set<string>(),
-  ): MethodInfo {
-    const baseSegments =
-      namingSegments.length > 0 ? namingSegments : this.normalizePathSegments(path);
-    const candidateGroups = [
-      baseSegments,
-      [...baseSegments, method.toLowerCase()],
-    ];
-
-    for (const candidate of candidateGroups) {
-      const methodInfo = this.createMethodInfo(candidate);
-      if (
-        !usedMethodNames.has(methodInfo.methodName) &&
-        !usedTypeNames.has(methodInfo.requestType) &&
-        !usedTypeNames.has(methodInfo.responseType)
-      ) {
-        usedMethodNames.add(methodInfo.methodName);
-        usedTypeNames.add(methodInfo.requestType);
-        usedTypeNames.add(methodInfo.responseType);
-        return methodInfo;
-      }
-    }
-
-    let suffix = 2;
-    while (true) {
-      const methodInfo = this.createMethodInfo([
-        ...baseSegments,
-        method.toLowerCase(),
-        `${suffix}`,
-      ]);
-      if (
-        !usedMethodNames.has(methodInfo.methodName) &&
-        !usedTypeNames.has(methodInfo.requestType) &&
-        !usedTypeNames.has(methodInfo.responseType)
-      ) {
-        usedMethodNames.add(methodInfo.methodName);
-        usedTypeNames.add(methodInfo.requestType);
-        usedTypeNames.add(methodInfo.responseType);
-        return methodInfo;
-      }
-      suffix += 1;
-    }
-  }
-
-  private normalizePathSegments(value: string): string[] {
-    return value.split('/').filter(Boolean);
-  }
-
-  private getModuleFileName(namingSegments: string[]): string {
-    return toCamelCase(namingSegments[0] || '') || 'default';
-  }
-
-  private getModuleDirectory(
-    path: string,
-    fileName: string,
-    namingSegments = this.getNamingSegments(path),
-  ): string {
-    const rawDirectory = this.config.directoryResolver(path);
-    const normalizedDirectory = toCamelCase(
-      this.normalizePathSegments(rawDirectory).join('-'),
-    );
-    const normalizedFileName = toCamelCase(fileName);
-    const primarySegment = toCamelCase(namingSegments[0] || '');
-
-    if (
-      !normalizedDirectory ||
-      normalizedDirectory === normalizedFileName ||
-      normalizedDirectory === primarySegment
-    ) {
-      return '';
-    }
-
-    return rawDirectory;
-  }
-
-  private stripExcludedNamingContext(path: string): string[] {
-    const pathSegments = this.normalizePathSegments(path);
-    const excludedContexts = [...this.config.naming.excludedUrlContexts].sort(
-      (left, right) => right.length - left.length,
-    );
-
-    for (const context of excludedContexts) {
-      const contextSegments = this.normalizePathSegments(context);
-      if (
-        contextSegments.length === 0 ||
-        contextSegments.length > pathSegments.length
-      ) {
-        continue;
-      }
-
-      const matched = contextSegments.every(
-        (segment, index) => segment === pathSegments[index],
-      );
-      if (matched) {
-        return pathSegments.slice(contextSegments.length);
-      }
-    }
-
-    return pathSegments;
-  }
-
-  private getNamingSegments(path: string): string[] {
-    const strippedSegments = this.stripExcludedNamingContext(path);
-    return strippedSegments.length > 0
-      ? strippedSegments
-      : this.normalizePathSegments(path);
   }
 
   /**
@@ -571,8 +441,14 @@ export class OpenAPIGenerator {
           ? (resolveRef(prop.$ref) as string)
           : mapSchemaToType(prop);
 
-        const description = prop.description ? `/* ${prop.description} */` : '';
-        properties.push(`  ${description}\n  ${propName}${required}: ${type}`);
+        const description = prop.description
+          ? `  /* ${prop.description} */`
+          : '';
+        properties.push(
+          [description, `  ${propName}${required}: ${type}`]
+            .filter(Boolean)
+            .join('\n'),
+        );
       }
     } else if (schema.type === 'array') {
       // 处理数组类型
@@ -590,73 +466,6 @@ export class OpenAPIGenerator {
   }
 
   /**
-   * 获取请求参数
-   */
-  private getRequestParameters(operation: any): any[] {
-    if (!Array.isArray(operation.parameters)) {
-      return [];
-    }
-
-    return operation.parameters.filter(
-      (param: any) => param.in === 'query' || param.in === 'path',
-    );
-  }
-
-  /**
-   * 获取优先使用的内容 schema
-   */
-  private getPreferredContentSchema(content?: Record<string, any>): any {
-    if (!content) {
-      return null;
-    }
-
-    if (content['application/json']?.schema) {
-      return content['application/json'].schema;
-    }
-
-    const firstContent = Object.values(content)[0] as
-      | { schema?: any }
-      | undefined;
-    return firstContent?.schema || null;
-  }
-
-  /**
-   * 获取请求体 schema
-   */
-  private getRequestBodySchema(operation: any): any {
-    return this.getPreferredContentSchema(operation.requestBody?.content);
-  }
-
-  /**
-   * 获取成功响应定义
-   */
-  private getSuccessResponse(responses: any): any {
-    if (!responses || typeof responses !== 'object') {
-      return null;
-    }
-
-    for (const [statusCode, response] of Object.entries(responses)) {
-      if (/^2\d\d$/.test(statusCode)) {
-        return response;
-      }
-    }
-
-    return responses.default || null;
-  }
-
-  /**
-   * 获取响应 schema
-   */
-  private getResponseSchema(response: any): any {
-    const schema = this.getPreferredContentSchema(response?.content);
-    if (!schema) {
-      return null;
-    }
-
-    return schema.properties?.data || schema;
-  }
-
-  /**
    * 生成请求类型
    */
   private generateRequestType(typeName: string, operation: any): null | string {
@@ -669,8 +478,14 @@ export class OpenAPIGenerator {
         param.schema?.type || 'string',
         param.schema?.format,
       );
-      const description = param.description ? `/* ${param.description} */` : '';
-      properties.push(`  ${description}\n  ${param.name}${required}: ${type}`);
+      const description = param.description
+        ? `  /* ${param.description} */`
+        : '';
+      properties.push(
+        [description, `  ${param.name}${required}: ${type}`]
+          .filter(Boolean)
+          .join('\n'),
+      );
     }
 
     const schema = this.getRequestBodySchema(operation);
@@ -901,6 +716,107 @@ ${properties.join('\n')}
 }`;
   }
 
+  private getModuleDirectory(
+    path: string,
+    fileName: string,
+    namingSegments = this.getNamingSegments(path),
+  ): string {
+    const rawDirectory = this.config.directoryResolver(path);
+    const normalizedDirectory = toCamelCase(
+      this.normalizePathSegments(rawDirectory).join('-'),
+    );
+    const normalizedFileName = toCamelCase(fileName);
+    const primarySegment = toCamelCase(namingSegments[0] || '');
+
+    if (
+      !normalizedDirectory ||
+      normalizedDirectory === normalizedFileName ||
+      normalizedDirectory === primarySegment
+    ) {
+      return '';
+    }
+
+    return rawDirectory;
+  }
+
+  private getModuleFileName(namingSegments: string[]): string {
+    return toCamelCase(namingSegments[0] || '') || 'default';
+  }
+
+  private getNamingSegments(path: string): string[] {
+    const strippedSegments = this.stripExcludedNamingContext(path);
+    return strippedSegments.length > 0
+      ? strippedSegments
+      : this.normalizePathSegments(path);
+  }
+
+  /**
+   * 获取优先使用的内容 schema
+   */
+  private getPreferredContentSchema(content?: Record<string, any>): any {
+    if (!content) {
+      return null;
+    }
+
+    if (content['application/json']?.schema) {
+      return content['application/json'].schema;
+    }
+
+    const firstContent = Object.values(content)[0] as
+      | undefined
+      | { schema?: any };
+    return firstContent?.schema || null;
+  }
+
+  /**
+   * 获取请求体 schema
+   */
+  private getRequestBodySchema(operation: any): any {
+    return this.getPreferredContentSchema(operation.requestBody?.content);
+  }
+
+  /**
+   * 获取请求参数
+   */
+  private getRequestParameters(operation: any): any[] {
+    if (!Array.isArray(operation.parameters)) {
+      return [];
+    }
+
+    return operation.parameters.filter(
+      (param: any) => param.in === 'query' || param.in === 'path',
+    );
+  }
+
+  /**
+   * 获取响应 schema
+   */
+  private getResponseSchema(response: any): any {
+    const schema = this.getPreferredContentSchema(response?.content);
+    if (!schema) {
+      return null;
+    }
+
+    return schema.properties?.data || schema;
+  }
+
+  /**
+   * 获取成功响应定义
+   */
+  private getSuccessResponse(responses: any): any {
+    if (!responses || typeof responses !== 'object') {
+      return null;
+    }
+
+    for (const [statusCode, response] of Object.entries(responses)) {
+      if (/^2\d\d$/.test(statusCode)) {
+        return response;
+      }
+    }
+
+    return responses.default || null;
+  }
+
   /**
    * 检查接口是否需要参数
    */
@@ -971,5 +887,104 @@ ${properties.join('\n')}
 
     // 数组/基础类型等：在生成中会作为必填单字段(items/value)输出
     return false;
+  }
+
+  private normalizePathSegments(value: string): string[] {
+    return value.split('/').filter(Boolean);
+  }
+
+  private resolveMethodInfo(
+    path: string,
+    method: string,
+    namingSegments = this.getNamingSegments(path),
+    usedMethodNames = new Set<string>(),
+    usedTypeNames = new Set<string>(),
+  ): MethodInfo {
+    const baseSegments =
+      namingSegments.length > 0
+        ? namingSegments
+        : this.normalizePathSegments(path);
+    const candidateGroups = [
+      baseSegments,
+      [...baseSegments, method.toLowerCase()],
+    ];
+
+    for (const candidate of candidateGroups) {
+      const methodInfo = this.createMethodInfo(candidate);
+      if (
+        !usedMethodNames.has(methodInfo.methodName) &&
+        !usedTypeNames.has(methodInfo.requestType) &&
+        !usedTypeNames.has(methodInfo.responseType)
+      ) {
+        usedMethodNames.add(methodInfo.methodName);
+        usedTypeNames.add(methodInfo.requestType);
+        usedTypeNames.add(methodInfo.responseType);
+        return methodInfo;
+      }
+    }
+
+    let suffix = 2;
+    while (true) {
+      const methodInfo = this.createMethodInfo([
+        ...baseSegments,
+        method.toLowerCase(),
+        `${suffix}`,
+      ]);
+      if (
+        !usedMethodNames.has(methodInfo.methodName) &&
+        !usedTypeNames.has(methodInfo.requestType) &&
+        !usedTypeNames.has(methodInfo.responseType)
+      ) {
+        usedMethodNames.add(methodInfo.methodName);
+        usedTypeNames.add(methodInfo.requestType);
+        usedTypeNames.add(methodInfo.responseType);
+        return methodInfo;
+      }
+      suffix += 1;
+    }
+  }
+
+  private resolveUniqueNames(
+    operationContexts: OperationContext[],
+  ): OperationContext[] {
+    const usedMethodNames = new Set<string>();
+    const usedTypeNames = new Set<string>();
+
+    return operationContexts.map((context) => ({
+      ...context,
+      methodInfo: this.resolveMethodInfo(
+        context.path,
+        context.method,
+        context.namingSegments,
+        usedMethodNames,
+        usedTypeNames,
+      ),
+    }));
+  }
+
+  private stripExcludedNamingContext(path: string): string[] {
+    const pathSegments = this.normalizePathSegments(path);
+    const excludedContexts = [
+      ...this.config.naming.excludedUrlContexts,
+    ].toSorted((left, right) => right.length - left.length);
+
+    for (const context of excludedContexts) {
+      const contextSegments = this.normalizePathSegments(context);
+      if (
+        contextSegments.length === 0 ||
+        contextSegments.length > pathSegments.length
+      ) {
+        continue;
+      }
+
+      const matched = contextSegments.every(
+        (segment, index) => segment === pathSegments[index],
+      );
+      if (matched) {
+        return pathSegments.slice(contextSegments.length);
+      }
+    }
+
+    return pathSegments;
   }
 }

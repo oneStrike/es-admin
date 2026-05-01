@@ -3,7 +3,7 @@ export type SystemConfigResponse = BaseSystemConfigDto;
 /**
  *  类型定义 [SystemUpdateRequest]
  *  @来源 系统管理/系统配置
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type SystemUpdateRequest = UpdateSystemConfigDto;
 
@@ -16,7 +16,7 @@ export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto;
 /**
  *  类型定义 [BaseSystemConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type BaseSystemConfigDto = {
   /** 任意合法数值 */
@@ -27,12 +27,12 @@ export type BaseSystemConfigDto = {
   contentReviewPolicy?: ContentReviewPolicyDto;
   /* 创建时间 */
   createdAt: string;
-  /* forum 话题配置 */
-  forumHashtagConfig?: ForumHashtagConfigDto;
   /* 主键id */
   id: number;
   /* 维护配置 */
   maintenanceConfig?: MaintenanceConfigDto;
+  /* 运营配置 */
+  operationConfig?: OperationConfigDto;
   /* 站点配置 */
   siteConfig?: SiteConfigDto;
   /* 更新时间 */
@@ -47,7 +47,7 @@ export type BaseSystemConfigDto = {
 /**
  *  类型定义 [AliyunConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type AliyunConfigDto = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type AliyunConfigDto = {
 /**
  *  类型定义 [AliyunSmsConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type AliyunSmsConfigDto = {
   /** 任意合法数值 */
@@ -83,7 +83,7 @@ export type AliyunSmsConfigDto = {
 /**
  *  类型定义 [SiteConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type SiteConfigDto = {
   /** 任意合法数值 */
@@ -106,9 +106,35 @@ export type SiteConfigDto = {
 };
 
 /**
+ *  类型定义 [OperationConfigDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-02 02:19:03
+ */
+export type OperationConfigDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* forum 话题配置 */
+  forumHashtagConfig?: ForumHashtagConfigDto;
+};
+
+/**
+ *  类型定义 [ForumHashtagConfigDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-02 02:19:03
+ */
+export type ForumHashtagConfigDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 话题创建模式（1=仅引用已存在且可用话题；2=正文中允许自动创建话题） */
+  creationMode?: null | number;
+};
+
+/**
  *  类型定义 [MaintenanceConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type MaintenanceConfigDto = {
   /** 任意合法数值 */
@@ -123,7 +149,7 @@ export type MaintenanceConfigDto = {
 /**
  *  类型定义 [ContentReviewPolicyDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type ContentReviewPolicyDto = {
   /** 任意合法数值 */
@@ -142,7 +168,7 @@ export type ContentReviewPolicyDto = {
 /**
  *  类型定义 [ContentReviewActionDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type ContentReviewActionDto = {
   /** 任意合法数值 */
@@ -155,22 +181,9 @@ export type ContentReviewActionDto = {
 };
 
 /**
- *  类型定义 [ForumHashtagConfigDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
- */
-export type ForumHashtagConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 话题创建模式（1=仅引用已存在且可用话题；2=正文中允许自动创建话题） */
-  creationMode?: null | number;
-};
-
-/**
  *  类型定义 [UploadConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type UploadConfigDto = {
   /** 任意合法数值 */
@@ -189,7 +202,7 @@ export type UploadConfigDto = {
 /**
  *  类型定义 [QiniuUploadConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type QiniuUploadConfigDto = {
   /** 任意合法数值 */
@@ -216,7 +229,7 @@ export type QiniuUploadConfigDto = {
 /**
  *  类型定义 [SuperbedUploadConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type SuperbedUploadConfigDto = {
   /** 任意合法数值 */
@@ -237,7 +250,7 @@ export type SuperbedUploadConfigDto = {
 /**
  *  类型定义 [UpdateSystemConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type UpdateSystemConfigDto = {
   /** 任意合法数值 */
@@ -246,12 +259,12 @@ export type UpdateSystemConfigDto = {
   aliyunConfig?: AliyunConfigDto;
   /* 内容审核策略 */
   contentReviewPolicy?: ContentReviewPolicyDto;
-  /* forum 话题配置 */
-  forumHashtagConfig?: ForumHashtagConfigDto;
   /* 主键id */
   id: number;
   /* 维护配置 */
   maintenanceConfig?: MaintenanceConfigDto;
+  /* 运营配置 */
+  operationConfig?: OperationConfigDto;
   /* 站点配置 */
   siteConfig?: SiteConfigDto;
 
@@ -262,7 +275,7 @@ export type UpdateSystemConfigDto = {
 /**
  *  类型定义 [Ip2regionRuntimeStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-01 19:28:32
+ *  @更新时间 2026-05-02 02:19:03
  */
 export type Ip2regionRuntimeStatusDto = {
   /** 任意合法数值 */

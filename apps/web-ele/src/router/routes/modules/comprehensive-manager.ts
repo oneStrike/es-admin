@@ -21,12 +21,40 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'MessageNotificationTemplates',
+        path: '/message/notification-templates',
+        component: () =>
+          import('#/views/message/notification-templates/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '通知模板',
+        },
+      },
+      {
+        name: 'MessageMonitor',
+        path: '/message/monitor',
+        component: () => import('#/views/message/monitor/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '消息监控',
+        },
+      },
+      {
         name: 'ForumReports',
         path: '/forum/reports',
         component: () => import('#/views/forum/reports/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '举报管理',
+        },
+      },
+      {
+        name: 'ForumComments',
+        path: '/forum/comments',
+        component: () => import('#/views/forum/comments/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '评论管理',
         },
       },
       {

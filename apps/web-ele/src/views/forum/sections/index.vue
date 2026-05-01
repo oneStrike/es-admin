@@ -16,13 +16,17 @@ import {
   forumSectionGroupsCreateApi,
   forumSectionGroupsDeleteApi,
   forumSectionGroupsDetailApi,
-  forumSectionGroupsPageApi,
   forumSectionGroupsSwapSortOrderApi,
   forumSectionGroupsUpdateApi,
+  forumSectionGroupsUpdateEnabledApi,
   forumSectionsCreateApi,
   forumSectionsDeleteApi,
   forumSectionsDetailApi,
   forumSectionsPageApi,
+  forumSectionsRebuildFollowCountAllApi,
+  forumSectionsRebuildFollowCountApi,
+  forumSectionsSwapSortOrderApi,
+  forumSectionsTreeApi,
   forumSectionsUpdateApi,
   forumSectionsUpdateEnabledApi,
 } from '#/api/core';
@@ -47,10 +51,24 @@ import {
   sectionFilter,
 } from './modules/model/shared';
 
+type SectionGroupNode = Partial<BaseForumSectionGroupDto> & {
+  id?: number;
+  isEnabled?: boolean;
+  isUngrouped: boolean;
+  loading?: boolean;
+  name: string;
+  sectionCount: number;
+  treeKey: string;
+};
+
+type ForumSectionRow = BaseForumSectionDto & {
+  rebuildLoading?: boolean;
+};
+
 // 当前板块分组
-const currentSectionGroup = ref<BaseForumSectionGroupDto | null>(null);
+const currentSectionGroup = ref<null | SectionGroupNode>(null);
 // 板块列表
-const sections = ref<BaseForumSectionGroupDto[]>([]);
+const sections = ref<SectionGroupNode[]>([]);
 // 搜索关键词
 const searchKeyword = ref('');
 
@@ -64,14 +82,20 @@ const filteredSections = computed(() => {
   );
 });
 
-const gridOptions: VxeGridProps<BaseForumSectionDto> = {
+const gridOptions: VxeGridProps<ForumSectionRow> = {
   columns: sectionColumns,
   height: '100%',
   proxyConfig: {
     autoLoad: false,
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        formValues.groupId = currentSectionGroup.value?.id;
+        if (currentSectionGroup.value?.isUngrouped) {
+          formValues.isUngrouped = true;
+          formValues.groupId = undefined;
+        } else {
+          formValues.groupId = currentSectionGroup.value?.id;
+          formValues.isUngrouped = undefined;
+        }
         return await forumSectionsPageApi(
           formatQuery({
             page,
@@ -83,6 +107,26 @@ const gridOptions: VxeGridProps<BaseForumSectionDto> = {
     },
     sort: true,
   },
+  rowConfig: {
+    drag: true,
+  },
+  rowDragConfig: {
+    async dragEndMethod(params) {
+      if (!params.dragRow?.id || !params.newRow?.id) {
+        return true;
+      }
+      if (params.dragRow.id === params.newRow.id) {
+        return true;
+      }
+      await forumSectionsSwapSortOrderApi({
+        dragId: params.dragRow.id,
+        targetId: params.newRow.id,
+      });
+      useMessage.success('排序成功');
+      await gridApi.reload();
+      return true;
+    },
+  },
 };
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(sectionFilter),
@@ -90,12 +134,41 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 async function loadSectionGroups() {
-  const data = await forumSectionGroupsPageApi({ pageSize: 500 });
-  if (!currentSectionGroup.value) {
-    currentSectionGroup.value = data?.list?.[0] || null;
+  const data = await forumSectionsTreeApi();
+  const nodes = (data || []).map<SectionGroupNode>((item) => {
+    if (item.isUngrouped || !item.group) {
+      return {
+        isEnabled: true,
+        isUngrouped: true,
+        name: '未分组',
+        sectionCount: item.sections?.length ?? 0,
+        treeKey: 'ungrouped',
+      };
+    }
+
+    return {
+      ...item.group,
+      isUngrouped: false,
+      sectionCount: item.sections?.length ?? 0,
+      treeKey: `group-${item.group.id}`,
+    };
+  });
+
+  const currentKey = currentSectionGroup.value?.treeKey;
+  const nextCurrent = currentKey
+    ? nodes.find((item) => item.treeKey === currentKey)
+    : nodes[0];
+
+  currentSectionGroup.value = nextCurrent || nodes[0] || null;
+  sections.value = nodes;
+  await gridApi.reload();
+}
+
+function getCurrentGroupId() {
+  if (currentSectionGroup.value?.isUngrouped) {
+    return undefined;
   }
-  sections.value = data?.list || [];
-  gridApi.reload();
+  return currentSectionGroup.value?.id;
 }
 loadSectionGroups();
 
@@ -133,7 +206,7 @@ async function handleSubmit(
     : forumSectionsCreateApi(buildSectionCreatePayload(values)));
   formApi.close();
   useMessage.success('操作成功');
-  gridApi.reload();
+  await loadSectionGroups();
 }
 
 function isSectionUpdate(
@@ -145,7 +218,7 @@ function isSectionUpdate(
 function resolveSectionGroupId(
   values: Pick<ForumSectionsCreateRequest, 'groupId'>,
 ) {
-  return values.groupId ?? currentSectionGroup.value?.id;
+  return values.groupId ?? getCurrentGroupId();
 }
 
 function buildSectionCreatePayload(
@@ -197,7 +270,7 @@ async function handleSectionGroupSubmit(
 async function deleteSection(record: BaseForumSectionDto) {
   await forumSectionsDeleteApi({ id: record.id });
   useMessage.success('操作成功');
-  gridApi.reload();
+  await loadSectionGroups();
 }
 
 const [DetailModal, detailApi] = useVbenModal({
@@ -218,18 +291,20 @@ async function toggleEnableStatus(record: BaseForumSectionDto) {
       isEnabled: !record.isEnabled,
     });
     useMessage.success('操作成功');
-    gridApi.reload();
+    await gridApi.reload();
   } finally {
     record.loading = false;
   }
 }
 
-function handleNodeClick(node: BaseForumSectionGroupDto) {
+function handleNodeClick(node: SectionGroupNode) {
   currentSectionGroup.value = node;
   gridApi.reload();
 }
 
-async function deleteSectionGroup(record: BaseForumSectionGroupDto) {
+async function deleteSectionGroup(record: SectionGroupNode) {
+  if (!record.id) return;
+
   await forumSectionGroupsDeleteApi({ id: record.id });
   useMessage.success('操作成功');
 
@@ -241,17 +316,58 @@ async function deleteSectionGroup(record: BaseForumSectionGroupDto) {
   await loadSectionGroups();
 }
 
-function allowDrop(__dragNode: any, __dropNode: any, type: string) {
+function allowDrop(dragNode: any, dropNode: any, type: string) {
+  if (dragNode.data?.isUngrouped || dropNode.data?.isUngrouped) {
+    return false;
+  }
+
   return type !== 'inner';
 }
 
 async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
+  if (dragNode.data?.isUngrouped || dropNode.data?.isUngrouped) {
+    return;
+  }
+
   await forumSectionGroupsSwapSortOrderApi({
     dragId: dragNode.data.id,
     targetId: dropNode.data.id,
   });
   useMessage.success('排序成功');
   await loadSectionGroups();
+}
+
+async function toggleSectionGroupEnableStatus(record: SectionGroupNode) {
+  if (!record.id) return;
+
+  record.loading = true;
+  try {
+    await forumSectionGroupsUpdateEnabledApi({
+      id: record.id,
+      isEnabled: !record.isEnabled,
+    });
+    useMessage.success('操作成功');
+    await loadSectionGroups();
+  } finally {
+    record.loading = false;
+  }
+}
+
+async function rebuildSectionFollowCount(record: ForumSectionRow) {
+  record.rebuildLoading = true;
+  try {
+    const result = await forumSectionsRebuildFollowCountApi({ id: record.id });
+    useMessage.success(`关注数已重建：${result.followersCount}`);
+    await gridApi.reload();
+  } finally {
+    record.rebuildLoading = false;
+  }
+}
+
+async function rebuildAllSectionFollowCount() {
+  await forumSectionsRebuildFollowCountAllApi();
+  useMessage.success('已提交全量重建关注数');
+  await gridApi.reload();
 }
 </script>
 
@@ -283,15 +399,33 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
             draggable
             :allow-drop="allowDrop"
             :props="{ label: 'name' }"
-            :current-node-key="currentSectionGroup?.id"
+            :current-node-key="currentSectionGroup?.treeKey"
             @node-click="handleNodeClick"
             @node-drop="handleSectionGroupDrop"
           >
             <template #default="{ node, data }">
-              <div class="flex w-full items-center justify-between">
-                <span>{{ node.label }}</span>
+              <div class="flex w-full items-center justify-between gap-2">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1">
+                    <span class="truncate">{{ node.label }}</span>
+                    <el-tag size="small" type="info">
+                      {{ data.sectionCount }}
+                    </el-tag>
+                  </div>
+                </div>
                 <el-space>
+                  <el-switch
+                    v-if="!data.isUngrouped"
+                    :active-value="true"
+                    :inactive-value="false"
+                    :loading="data.loading"
+                    :model-value="data.isEnabled"
+                    size="small"
+                    @click.stop
+                    @change="toggleSectionGroupEnableStatus(data)"
+                  />
                   <el-tooltip
+                    v-if="!data.isUngrouped"
                     content="查看详情"
                     placement="top"
                     :show-after="300"
@@ -308,7 +442,12 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
                       />
                     </div>
                   </el-tooltip>
-                  <el-tooltip content="编辑" placement="top" :show-after="300">
+                  <el-tooltip
+                    v-if="!data.isUngrouped"
+                    content="编辑"
+                    placement="top"
+                    :show-after="300"
+                  >
                     <div @click.stop="openSectionGroupFormModal(data)">
                       <EditIcon
                         class="cursor-pointer text-base hover:text-primary"
@@ -320,13 +459,21 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
                     placement="top"
                     :show-after="300"
                   >
-                    <div @click.stop="openFormModal(undefined, data.id)">
+                    <div
+                      @click.stop="
+                        openFormModal(
+                          undefined,
+                          data.isUngrouped ? undefined : data.id,
+                        )
+                      "
+                    >
                       <PlusIcon
                         class="cursor-pointer text-base hover:text-primary"
                       />
                     </div>
                   </el-tooltip>
                   <el-popconfirm
+                    v-if="!data.isUngrouped"
                     title="确认删除当前项?"
                     confirm-button-text="确认"
                     cancel-button-text="取消"
@@ -357,6 +504,16 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
           <el-button class="ml-2" type="primary" @click="openFormModal()">
             添加
           </el-button>
+          <el-popconfirm
+            title="确认全量重建所有板块关注数?"
+            confirm-button-text="确认"
+            cancel-button-text="取消"
+            @confirm="rebuildAllSectionFollowCount"
+          >
+            <template #reference>
+              <el-button class="ml-2">全量重建关注数</el-button>
+            </template>
+          </el-popconfirm>
         </template>
 
         <template #isEnabled="{ row }">
@@ -380,6 +537,15 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
             <el-divider direction="vertical" />
             <el-button link type="primary" @click="openFormModal(row)">
               编辑
+            </el-button>
+            <el-divider direction="vertical" />
+            <el-button
+              link
+              :loading="row.rebuildLoading"
+              type="primary"
+              @click="rebuildSectionFollowCount(row)"
+            >
+              重建关注数
             </el-button>
             <el-divider direction="vertical" />
             <el-popconfirm

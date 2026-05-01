@@ -129,7 +129,8 @@ async function updateFormValues() {
       break;
     }
     case 'forumHashtag': {
-      const forumHashtagConfig = configData.value?.forumHashtagConfig || {};
+      const forumHashtagConfig =
+        configData.value?.operationConfig?.forumHashtagConfig || {};
       values.forumHashtagCreationMode = forumHashtagConfig.creationMode ?? 1;
       break;
     }
@@ -250,11 +251,15 @@ async function handleSaveConfig(values: Record<string, any>) {
         break;
       }
       case 'forumHashtag': {
+        const currentOperationConfig = currentConfig.operationConfig || {};
         const currentForumHashtagConfig =
-          currentConfig.forumHashtagConfig || {};
-        submitData.forumHashtagConfig = {
-          ...currentForumHashtagConfig,
-          creationMode: values.forumHashtagCreationMode ?? 1,
+          currentOperationConfig.forumHashtagConfig || {};
+        submitData.operationConfig = {
+          ...currentOperationConfig,
+          forumHashtagConfig: {
+            ...currentForumHashtagConfig,
+            creationMode: values.forumHashtagCreationMode ?? 1,
+          },
         };
         break;
       }

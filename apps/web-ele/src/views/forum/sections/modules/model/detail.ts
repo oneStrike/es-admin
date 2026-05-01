@@ -16,7 +16,7 @@ export function getDetailCards(detail: ForumSectionsDetailResponse) {
       ?.label || '-';
 
   return [
-     {
+    {
       title: '图标',
       show: !!detail.icon,
       type: 'image' as const,
@@ -44,6 +44,34 @@ export function getDetailCards(detail: ForumSectionsDetailResponse) {
         {
           label: '审核策略',
           value: reviewPolicyLabel,
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '数据统计',
+      show: true,
+      fields: [
+        {
+          label: '关注人数',
+          value: detail?.followersCount,
+          type: 'text' as const,
+        },
+        {
+          label: '主题数',
+          value: detail?.topicCount,
+          type: 'text' as const,
+        },
+        {
+          label: '评论数',
+          value: detail?.commentCount,
+          type: 'text' as const,
+        },
+        {
+          label: '最后发表时间',
+          value: detail?.lastPostAt
+            ? formatUTC(detail.lastPostAt, 'YYYY-MM-DD HH:mm:ss')
+            : '-',
           type: 'text' as const,
         },
       ],

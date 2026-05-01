@@ -16,9 +16,9 @@ function toPlainTextFromRichText(content?: null | string) {
   }
 
   const text = content
-    .replace(HTML_TAG_REGEX, ' ')
-    .replace(HTML_SPACE_ENTITY_REGEX, ' ')
-    .replace(EXTRA_WHITESPACE_REGEX, ' ')
+    .replaceAll(HTML_TAG_REGEX, ' ')
+    .replaceAll(HTML_SPACE_ENTITY_REGEX, ' ')
+    .replaceAll(EXTRA_WHITESPACE_REGEX, ' ')
     .trim();
 
   return text || '-';
@@ -128,6 +128,7 @@ export const sectionColumns =
     },
     actions: {
       show: true,
+      width: 260,
     },
     description: {
       formatter: ({ cellValue }) => toPlainTextFromRichText(cellValue),
@@ -142,6 +143,21 @@ export const sectionColumns =
       width: 100,
       sortable: true,
     },
+    followersCount: {
+      show: true,
+      width: 100,
+      sortable: true,
+    },
+    topicCount: {
+      show: true,
+      width: 100,
+      sortable: true,
+    },
+    commentCount: {
+      show: true,
+      width: 100,
+      sortable: true,
+    },
     topicReviewPolicy: {
       width: 100,
     },
@@ -150,6 +166,9 @@ export const sectionColumns =
     },
     updatedAt: {
       show: true,
+    },
+    seq: {
+      dragSort: true,
     },
   });
 

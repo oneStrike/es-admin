@@ -31,6 +31,11 @@ export function getDetailCards(detail: BaseForumSectionGroupDto) {
           type: 'text' as const,
         },
         {
+          label: '版主数量上限',
+          value: detail?.maxModerators,
+          type: 'text' as const,
+        },
+        {
           label: '分组描述',
           value: detail?.description || '-',
           type: 'text' as const,
