@@ -1,8 +1,17 @@
-import type { ForumTagsDetailResponse } from '#/api/types';
+import type { ForumHashtagsDetailResponse } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
-export function getDetailCards(detail: ForumTagsDetailResponse) {
+import { auditRoleMap, auditStatusMap, createSourceTypeMap } from './shared';
+
+export function getDetailCards(detail: ForumHashtagsDetailResponse) {
+  const auditStatus = auditStatusMap[detail.auditStatus];
+  const createSourceType = createSourceTypeMap[detail.createSourceType];
+  const auditRole =
+    detail.auditRole === null || detail.auditRole === undefined
+      ? undefined
+      : auditRoleMap[detail.auditRole];
+
   return [
     {
       title: '基本信息',
@@ -10,42 +19,114 @@ export function getDetailCards(detail: ForumTagsDetailResponse) {
       fields: [
         {
           label: '话题名称',
-          value: detail.name,
+          value: detail.displayName,
           type: 'text' as const,
         },
         {
-          label: '启用状态',
-          value: detail.isEnabled,
-          type: 'tag' as const,
-          tagText: detail.isEnabled ? '启用' : '禁用',
-          tagType: detail.isEnabled ? 'success' : 'danger',
-        },
-        {
-          label: '排序权重',
-          value: detail.sortOrder,
+          label: 'Slug',
+          value: detail.slug,
           type: 'text' as const,
         },
         {
-          label: '使用次数',
-          value: detail.useCount,
+          label: '创建来源',
+          value: createSourceType?.label || '-',
           type: 'text' as const,
         },
         {
-          label: '描述',
+          label: '运营描述',
           value: detail.description || '-',
           type: 'text' as const,
         },
       ],
     },
     {
-      title: '关联帖子',
+      title: '状态信息',
       show: true,
       fields: [
         {
-          label: '最近关联帖子',
-          value: detail.topics?.length
-            ? detail.topics.map((item) => `${item.title}(ID:${item.id})`).join('；')
+          label: '审核状态',
+          value: auditStatus?.label || '-',
+          type: 'tag' as const,
+          tagText: auditStatus?.label || '-',
+          tagType: auditStatus?.color || 'info',
+        },
+        {
+          label: '隐藏',
+          value: detail.isHidden,
+          type: 'tag' as const,
+          tagText: detail.isHidden ? '是' : '否',
+          tagType: detail.isHidden ? 'danger' : 'info',
+        },
+        {
+          label: '人工热度',
+          value: detail.manualBoost,
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '引用统计',
+      show: true,
+      fields: [
+        {
+          label: '关注人数',
+          value: detail.followerCount,
+          type: 'text' as const,
+        },
+        {
+          label: '主题引用数',
+          value: detail.topicRefCount,
+          type: 'text' as const,
+        },
+        {
+          label: '评论引用数',
+          value: detail.commentRefCount,
+          type: 'text' as const,
+        },
+        {
+          label: '最近引用时间',
+          value: detail.lastReferencedAt
+            ? formatUTC(detail.lastReferencedAt, 'YYYY-MM-DD HH:mm:ss')
             : '-',
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '审核信息',
+      show: true,
+      fields: [
+        {
+          label: '审核原因',
+          value: detail.auditReason || '-',
+          type: 'text' as const,
+        },
+        {
+          label: '审核角色',
+          value: auditRole?.label || '-',
+          type: 'text' as const,
+        },
+        {
+          label: '审核人 ID',
+          value: detail.auditById ?? '-',
+          type: 'text' as const,
+        },
+        {
+          label: '审核时间',
+          value: detail.auditAt
+            ? formatUTC(detail.auditAt, 'YYYY-MM-DD HH:mm:ss')
+            : '-',
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '敏感词',
+      show: true,
+      fields: [
+        {
+          label: '命中数量',
+          value: detail.sensitiveWordHits?.length ?? 0,
           type: 'text' as const,
         },
       ],

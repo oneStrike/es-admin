@@ -5,6 +5,8 @@ import TaskDefinitionPanel from './components/task-definition-panel.vue';
 import TaskInstancePanel from './components/task-instance-panel.vue';
 import TaskReconciliationPanel from './components/task-reconciliation-panel.vue';
 
+import '../styles/full-height-tabs.css';
+
 defineOptions({
   name: 'TaskManager',
 });
@@ -15,8 +17,15 @@ const activeTab = ref<TabKey>('definition');
 </script>
 
 <template>
-  <Page auto-content-height title="任务管理">
-    <el-tabs v-model="activeTab" class="task-tabs">
+  <Page
+    auto-content-height
+    content-class="user-manager-page-content"
+    title="任务管理"
+  >
+    <el-tabs
+      v-model="activeTab"
+      class="user-manager-full-height-tabs task-manager-tabs"
+    >
       <el-tab-pane label="任务定义" name="definition">
         <TaskDefinitionPanel />
       </el-tab-pane>
@@ -31,15 +40,3 @@ const activeTab = ref<TabKey>('definition');
     </el-tabs>
   </Page>
 </template>
-
-<style scoped>
-:deep(.task-tabs .el-tabs__header) {
-  margin-bottom: 20px;
-}
-
-:deep(.task-tabs .el-tabs__item) {
-  padding: 0 18px;
-  font-weight: 600;
-  border-radius: 9999px;
-}
-</style>

@@ -67,7 +67,9 @@ const publishButtonLabel = computed(() => {
   }
 });
 
-function getRewardIconItems(rewardItems?: Array<{ iconUrl?: null | string }> | null) {
+function getRewardIconItems(
+  rewardItems?: Array<{ iconUrl?: null | string }> | null,
+) {
   return (rewardItems || []).filter((item) => !!item.iconUrl);
 }
 
@@ -187,7 +189,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-loading="loading" class="check-in-theme space-y-5">
+  <div
+    v-loading="loading"
+    class="check-in-theme user-manager-scroll-pane space-y-5"
+  >
     <el-card shadow="never">
       <div class="flex items-center justify-between gap-4">
         <div>
@@ -202,7 +207,11 @@ onMounted(async () => {
       </div>
     </el-card>
 
-    <el-card v-if="ruleList.length === 0" class="text-center text-sm text-slate-400" shadow="never">
+    <el-card
+      v-if="ruleList.length === 0"
+      class="text-center text-sm text-slate-400"
+      shadow="never"
+    >
       <div class="px-4 py-10">暂无连续签到记录</div>
     </el-card>
 
@@ -357,7 +366,9 @@ onMounted(async () => {
                 class="mt-3 flex flex-wrap gap-2"
               >
                 <img
-                  v-for="(item, index) in getRewardIconItems(formState.rewardItems)"
+                  v-for="(item, index) in getRewardIconItems(
+                    formState.rewardItems,
+                  )"
                   :key="`editor-${index}`"
                   :src="item.iconUrl ?? undefined"
                   alt="连续奖励图标"
@@ -493,7 +504,9 @@ onMounted(async () => {
                 <span>奖励图标</span>
                 <div class="flex flex-wrap justify-end gap-2">
                   <img
-                    v-for="(item, index) in getRewardIconItems(rule.rewardItems)"
+                    v-for="(item, index) in getRewardIconItems(
+                      rule.rewardItems,
+                    )"
                     :key="`${rule.id}-history-${index}`"
                     :src="item.iconUrl ?? undefined"
                     alt="连续奖励图标"
@@ -552,5 +565,4 @@ onMounted(async () => {
 .check-in-theme [class*='bg-slate-50'] {
   background-color: var(--el-fill-color-light) !important;
 }
-
 </style>

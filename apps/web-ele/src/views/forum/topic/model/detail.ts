@@ -99,7 +99,7 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
       ],
     },
     {
-      title: '审核与标签',
+      title: '审核与话题',
       show: true,
       fields: [
         {
@@ -113,9 +113,11 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
           type: 'text' as const,
         },
         {
-          label: '关联标签',
-          value: detail.topicTags?.length
-            ? detail.topicTags.map((item) => `#${item.tagId}`).join('、')
+          label: '关联话题',
+          value: detail.hashtags?.length
+            ? detail.hashtags
+                .map((item) => `${item.displayName}(#${item.slug})`)
+                .join('、')
             : '-',
           type: 'text' as const,
         },
@@ -158,13 +160,8 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
     {
       title: '帖子内容',
       show: true,
-      fields: [
-        {
-          label: '内容',
-          value: detail.content || '-',
-          type: 'text' as const,
-        },
-      ],
+      type: 'html' as const,
+      content: detail.html || '-',
     },
   ];
 }

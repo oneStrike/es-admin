@@ -2,8 +2,6 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminForumTopicPageItemDto,
-  BaseForumTagDto,
-  ForumTagsPageRequest,
   ForumTopicCreateRequest,
   ForumTopicUpdateAuditStatusRequest,
   ForumTopicUpdateRequest,
@@ -13,10 +11,6 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  forumTagsAssignTopicApi,
-  forumTagsPageApi,
-  forumTagsTopicTagListApi,
-  forumTagsUnassignTopicApi,
   forumTopicCreateApi,
   forumTopicDeleteApi,
   forumTopicDetailApi,
@@ -29,7 +23,6 @@ import {
   forumTopicUpdatePinnedApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsModalTable from '#/components/es-modal-table';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
@@ -41,8 +34,6 @@ import {
   editFormSchema,
   fetchTopicSectionOptions,
   searchFormSchema,
-  tagSelectionColumns,
-  tagSelectionSearchSchema,
   topicColumns,
 } from './model/shared';
 
@@ -56,9 +47,6 @@ type ForumTopicRow = AdminForumTopicPageItemDto & {
   lockedLoading?: boolean;
   pinnedLoading?: boolean;
 };
-
-const currentTopic = ref<ForumTopicRow | null>(null);
-const currentTopicTags = ref<BaseForumTagDto[]>([]);
 
 void fetchTopicSectionOptions();
 
@@ -109,10 +97,6 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '帖子详情',
 });
 
-const [TagModal, tagApi] = useVbenModal({
-  connectedComponent: EsModalTable,
-});
-
 function openCreateModal() {
   createFormApi
     .setData({
@@ -130,7 +114,7 @@ async function openEditModal(row: ForumTopicRow) {
     .setData({
       cols: 2,
       record: {
-        content: detail.content,
+        content: detail.html,
         id: detail.id,
         title: detail.title,
       },
@@ -158,27 +142,6 @@ async function openAuditModal(row: ForumTopicRow) {
     .open();
 }
 
-async function openTagModal(row: ForumTopicRow) {
-  currentTopic.value = row;
-  const selectedRows = await forumTagsTopicTagListApi({ topicId: row.id });
-  currentTopicTags.value = selectedRows;
-
-  tagApi
-    .setData({
-      api: (params: ForumTagsPageRequest) => forumTagsPageApi(params),
-      columns: tagSelectionColumns,
-      multipleLimit: 20,
-      searchSchema: createSearchFormOptions(tagSelectionSearchSchema, {
-        showCollapseButton: false,
-      }),
-      selectedRows,
-      selectionMode: 'multiple',
-      title: `标签关联 - ${row.title}`,
-      width: 1200,
-    })
-    .open();
-}
-
 function normalizeCreatePayload(values: Record<string, any>) {
   const selectedUserIds = Array.isArray(values.selectedUserIds)
     ? values.selectedUserIds
@@ -200,8 +163,7 @@ function normalizeCreatePayload(values: Record<string, any>) {
   }
 
   return {
-    content: values.content.trim(),
-    mentions: [],
+    html: values.content.trim(),
     sectionId: Number(values.sectionId),
     title: values.title.trim(),
     userId: Number(selectedUserIds[0]),
@@ -215,9 +177,8 @@ function normalizeEditPayload(values: Record<string, any>) {
   }
 
   return {
-    content: values.content.trim(),
+    html: values.content.trim(),
     id: Number(values.id),
-    mentions: [],
     title: values.title.trim(),
   } satisfies ForumTopicUpdateRequest;
 }
@@ -255,36 +216,15 @@ async function deleteTopic(row: ForumTopicRow) {
   await gridApi.reload();
 }
 
-async function handleTagConfirm(rows: BaseForumTagDto[]) {
-  if (!currentTopic.value) return;
-
-  const topicId = currentTopic.value.id;
-  const previousIds = new Set(currentTopicTags.value.map((item) => item.id));
-  const nextIds = new Set(rows.map((item) => item.id));
-
-  const assignTasks = rows
-    .filter((item) => !previousIds.has(item.id))
-    .map((item) => forumTagsAssignTopicApi({ tagId: item.id, topicId }));
-  const unassignTasks = currentTopicTags.value
-    .filter((item) => !nextIds.has(item.id))
-    .map((item) => forumTagsUnassignTopicApi({ tagId: item.id, topicId }));
-
-  if (assignTasks.length === 0 && unassignTasks.length === 0) {
-    useMessage.info('标签未发生变化');
-    return;
-  }
-
-  await Promise.all([...assignTasks, ...unassignTasks]);
-  currentTopicTags.value = rows;
-  useMessage.success('标签关联已更新');
-  await gridApi.reload();
-}
-
 async function toggleTopicBoolean(
   row: ForumTopicRow,
   field: 'isFeatured' | 'isHidden' | 'isLocked' | 'isPinned',
   api: (params: any) => Promise<any>,
-  loadingKey: 'featuredLoading' | 'hiddenLoading' | 'lockedLoading' | 'pinnedLoading',
+  loadingKey:
+    | 'featuredLoading'
+    | 'hiddenLoading'
+    | 'lockedLoading'
+    | 'pinnedLoading',
 ) {
   row[loadingKey] = true;
   try {
@@ -405,10 +345,6 @@ async function toggleTopicBoolean(
             审核
           </el-button>
           <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openTagModal(row)">
-            标签
-          </el-button>
-          <el-divider direction="vertical" />
           <el-popconfirm
             title="确认删除当前帖子?"
             confirm-button-text="确认"
@@ -426,8 +362,6 @@ async function toggleTopicBoolean(
     <CreateForm :schema="createFormSchema" :on-submit="handleCreateSubmit" />
     <EditForm :schema="editFormSchema" :on-submit="handleEditSubmit" />
     <AuditForm :schema="auditFormSchema" :on-submit="handleAuditSubmit" />
-
-    <TagModal @confirm="handleTagConfirm" />
 
     <DetailModal
       :api="forumTopicDetailApi"

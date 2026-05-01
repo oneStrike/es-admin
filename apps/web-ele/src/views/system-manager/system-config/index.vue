@@ -16,6 +16,7 @@ import { useAuthStore } from '#/store';
 import {
   aliyunFormSchema,
   contentReviewFormSchema,
+  forumHashtagFormSchema,
   maintenanceFormSchema,
   siteFormSchema,
   uploadFormSchema,
@@ -34,6 +35,7 @@ const menuItems = [
   { key: 'maintenance', label: '维护模式' },
   { key: 'aliyun', label: '阿里云配置' },
   { key: 'contentReview', label: '内容审核' },
+  { key: 'forumHashtag', label: '话题配置' },
   { key: 'upload', label: '上传配置' },
 ];
 
@@ -44,6 +46,9 @@ const currentSchema = computed(() => {
     }
     case 'contentReview': {
       return contentReviewFormSchema;
+    }
+    case 'forumHashtag': {
+      return forumHashtagFormSchema;
     }
     case 'maintenance': {
       return maintenanceFormSchema;
@@ -74,7 +79,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 // 缓存完整配置数据
-const configData = ref<null | BaseSystemConfigDto>(null);
+const configData = ref<BaseSystemConfigDto | null>(null);
 
 // 当切换菜单时更新表单
 watch(activeMenu, async () => {
@@ -121,6 +126,11 @@ async function updateFormValues() {
       const severe = policy.severeAction || {};
       values.severeActionIsHidden = severe.isHidden;
       values.severeActionAuditStatus = severe.auditStatus;
+      break;
+    }
+    case 'forumHashtag': {
+      const forumHashtagConfig = configData.value?.forumHashtagConfig || {};
+      values.forumHashtagCreationMode = forumHashtagConfig.creationMode ?? 1;
       break;
     }
     case 'maintenance': {
@@ -239,6 +249,15 @@ async function handleSaveConfig(values: Record<string, any>) {
         };
         break;
       }
+      case 'forumHashtag': {
+        const currentForumHashtagConfig =
+          currentConfig.forumHashtagConfig || {};
+        submitData.forumHashtagConfig = {
+          ...currentForumHashtagConfig,
+          creationMode: values.forumHashtagCreationMode ?? 1,
+        };
+        break;
+      }
       case 'maintenance': {
         const currentMaintenanceConfig = currentConfig.maintenanceConfig || {};
         submitData.maintenanceConfig = {
@@ -251,7 +270,10 @@ async function handleSaveConfig(values: Record<string, any>) {
       case 'upload': {
         const currentUploadConfig = currentConfig.uploadConfig || {};
         const publicKey = await authStore.getRsaPublicKey();
-        const provider = values.uploadProvider as 'local' | 'qiniu' | 'superbed';
+        const provider = values.uploadProvider as
+          | 'local'
+          | 'qiniu'
+          | 'superbed';
         const currentQiniu = currentUploadConfig.qiniu || {};
         const currentSuperbed = currentUploadConfig.superbed || {};
         submitData.uploadConfig = {

@@ -364,6 +364,33 @@ export const contentReviewFormSchema: EsFormSchema = [
   },
 ];
 
+// ========== forum 话题配置 ==========
+export const forumHashtagFormSchema: EsFormSchema = [
+  {
+    component: 'Divider',
+    fieldName: 'divider_forum_hashtag',
+    hideLabel: true,
+    formItemClass: 'w-full',
+    renderComponentContent: () => {
+      return {
+        default: () => h('div', { class: 'text-lg font-bold' }, '话题配置'),
+      };
+    },
+  },
+  {
+    component: 'RadioGroup',
+    fieldName: 'forumHashtagCreationMode',
+    label: '话题创建模式',
+    defaultValue: 1,
+    componentProps: {
+      options: [
+        { label: '仅引用已存在且可用话题', value: 1 },
+        { label: '正文中允许自动创建话题', value: 2 },
+      ],
+    },
+  },
+];
+
 // ========== 上传配置 ==========
 export const uploadFormSchema: EsFormSchema = [
   {
@@ -412,7 +439,12 @@ export const uploadFormSchema: EsFormSchema = [
     },
     renderComponentContent: () => {
       return {
-        default: () => h('div', { class: 'text-base font-medium text-gray-600' }, '七牛配置'),
+        default: () =>
+          h(
+            'div',
+            { class: 'text-base font-medium text-gray-600' },
+            '七牛配置',
+          ),
       };
     },
   },
@@ -530,7 +562,11 @@ export const uploadFormSchema: EsFormSchema = [
     renderComponentContent: () => {
       return {
         default: () =>
-          h('div', { class: 'text-base font-medium text-gray-600' }, 'Superbed 配置'),
+          h(
+            'div',
+            { class: 'text-base font-medium text-gray-600' },
+            'Superbed 配置',
+          ),
       };
     },
   },

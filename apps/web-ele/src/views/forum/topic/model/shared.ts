@@ -3,7 +3,6 @@ import type {
   AdminAppUserPageItemDto,
   AdminForumTopicPageItemDto,
   BaseForumSectionDto,
-  BaseForumTagDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -274,167 +273,112 @@ export const searchFormSchema: EsFormSchema = [
   },
 ];
 
-export const tagSelectionSearchSchema: EsFormSchema = [
-  {
-    component: 'Input',
-    fieldName: 'name',
-    componentProps: {
-      clearable: true,
-      placeholder: '标签名称',
+export const topicColumns: VxeGridPropTypes.Columns<AdminForumTopicPageItemDto> =
+  [
+    {
+      field: 'title',
+      fixed: 'left',
+      minWidth: 260,
+      showOverflow: 'tooltip',
+      slots: { default: 'title' },
+      title: '帖子标题',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'isEnabled',
-    componentProps: {
-      clearable: true,
-      options: booleanFilterOptions,
-      placeholder: '启用状态',
+    {
+      field: 'sectionId',
+      minWidth: 140,
+      formatter: ({ cellValue }) => getTopicSectionLabel(cellValue),
+      title: '所属板块',
     },
-  },
-];
-
-export const tagSelectionColumns: VxeGridPropTypes.Columns<BaseForumTagDto> = [
-  {
-    field: 'name',
-    title: '标签名称',
-    minWidth: 140,
-  },
-  {
-    field: 'useCount',
-    title: '使用次数',
-    minWidth: 100,
-    sortable: true,
-  },
-  {
-    field: 'isEnabled',
-    title: '启用状态',
-    minWidth: 100,
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        map: {
-          false: '禁用',
-          true: '启用',
+    {
+      field: 'userId',
+      minWidth: 100,
+      title: '用户ID',
+    },
+    {
+      field: 'auditStatus',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          mapOptions: auditStatusOptions,
         },
       },
+      title: '审核状态',
     },
-  },
-  {
-    field: 'createdAt',
-    title: '创建时间',
-    minWidth: 160,
-    cellRender: {
-      name: 'CellDate',
+    {
+      field: 'isPinned',
+      minWidth: 100,
+      slots: { default: 'isPinned' },
+      title: '置顶',
     },
-  },
-];
-
-export const topicColumns: VxeGridPropTypes.Columns<AdminForumTopicPageItemDto> = [
-  {
-    field: 'title',
-    fixed: 'left',
-    minWidth: 260,
-    showOverflow: 'tooltip',
-    slots: { default: 'title' },
-    title: '帖子标题',
-  },
-  {
-    field: 'sectionId',
-    minWidth: 140,
-    formatter: ({ cellValue }) => getTopicSectionLabel(cellValue),
-    title: '所属板块',
-  },
-  {
-    field: 'userId',
-    minWidth: 100,
-    title: '用户ID',
-  },
-  {
-    field: 'auditStatus',
-    minWidth: 120,
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        mapOptions: auditStatusOptions,
+    {
+      field: 'isFeatured',
+      minWidth: 100,
+      slots: { default: 'isFeatured' },
+      title: '精华',
+    },
+    {
+      field: 'isLocked',
+      minWidth: 100,
+      slots: { default: 'isLocked' },
+      title: '锁定',
+    },
+    {
+      field: 'isHidden',
+      minWidth: 100,
+      slots: { default: 'isHidden' },
+      title: '隐藏',
+    },
+    {
+      field: 'viewCount',
+      minWidth: 100,
+      sortable: true,
+      title: '浏览数',
+    },
+    {
+      field: 'commentCount',
+      minWidth: 100,
+      sortable: true,
+      title: '评论数',
+    },
+    {
+      field: 'likeCount',
+      minWidth: 100,
+      sortable: true,
+      title: '点赞数',
+    },
+    {
+      field: 'favoriteCount',
+      minWidth: 100,
+      sortable: true,
+      title: '收藏数',
+    },
+    {
+      field: 'createdAt',
+      minWidth: 160,
+      sortable: true,
+      cellRender: {
+        name: 'CellDate',
       },
+      title: '创建时间',
     },
-    title: '审核状态',
-  },
-  {
-    field: 'isPinned',
-    minWidth: 100,
-    slots: { default: 'isPinned' },
-    title: '置顶',
-  },
-  {
-    field: 'isFeatured',
-    minWidth: 100,
-    slots: { default: 'isFeatured' },
-    title: '精华',
-  },
-  {
-    field: 'isLocked',
-    minWidth: 100,
-    slots: { default: 'isLocked' },
-    title: '锁定',
-  },
-  {
-    field: 'isHidden',
-    minWidth: 100,
-    slots: { default: 'isHidden' },
-    title: '隐藏',
-  },
-  {
-    field: 'viewCount',
-    minWidth: 100,
-    sortable: true,
-    title: '浏览数',
-  },
-  {
-    field: 'commentCount',
-    minWidth: 100,
-    sortable: true,
-    title: '评论数',
-  },
-  {
-    field: 'likeCount',
-    minWidth: 100,
-    sortable: true,
-    title: '点赞数',
-  },
-  {
-    field: 'favoriteCount',
-    minWidth: 100,
-    sortable: true,
-    title: '收藏数',
-  },
-  {
-    field: 'createdAt',
-    minWidth: 160,
-    sortable: true,
-    cellRender: {
-      name: 'CellDate',
+    {
+      field: 'updatedAt',
+      minWidth: 160,
+      sortable: true,
+      cellRender: {
+        name: 'CellDate',
+      },
+      title: '更新时间',
     },
-    title: '创建时间',
-  },
-  {
-    field: 'updatedAt',
-    minWidth: 160,
-    sortable: true,
-    cellRender: {
-      name: 'CellDate',
+    {
+      field: 'actions',
+      fixed: 'right',
+      minWidth: 290,
+      slots: { default: 'actions' },
+      title: '操作',
     },
-    title: '更新时间',
-  },
-  {
-    field: 'actions',
-    fixed: 'right',
-    minWidth: 290,
-    slots: { default: 'actions' },
-    title: '操作',
-  },
-];
+  ];
 
 export function syncTopicSectionOptions(sections: BaseForumSectionDto[] = []) {
   sectionOptions.splice(

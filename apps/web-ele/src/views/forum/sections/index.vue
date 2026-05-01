@@ -107,8 +107,6 @@ const [SectionGroupForm, sectionGroupFormApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-const currentSectionRecord = ref<null | Partial<BaseForumSectionDto>>(null);
-
 async function openFormModal(row?: BaseForumSectionDto, groupId?: number) {
   let record;
   if (row) {
@@ -116,9 +114,6 @@ async function openFormModal(row?: BaseForumSectionDto, groupId?: number) {
   } else if (groupId) {
     record = { groupId };
   }
-  currentSectionRecord.value = row
-    ? record ?? { followersCount: 0 }
-    : { followersCount: 0 };
   formApi.setData({ title: '板块', record }).open();
 }
 
@@ -133,19 +128,59 @@ async function openSectionGroupFormModal(row?: BaseForumSectionGroupDto) {
 async function handleSubmit(
   values: ForumSectionsCreateRequest | ForumSectionsUpdateRequest,
 ) {
-  const payload = {
-    ...(values as Record<string, any>),
-    followersCount:
-      values.followersCount ?? currentSectionRecord.value?.followersCount ?? 0,
-    groupId: values.groupId ?? currentSectionGroup.value?.id,
-  } as ForumSectionsCreateRequest | ForumSectionsUpdateRequest;
-
-  await (('id' in payload && payload.id)
-    ? forumSectionsUpdateApi(payload as ForumSectionsUpdateRequest)
-    : forumSectionsCreateApi(payload as ForumSectionsCreateRequest));
+  await (isSectionUpdate(values)
+    ? forumSectionsUpdateApi(buildSectionUpdatePayload(values))
+    : forumSectionsCreateApi(buildSectionCreatePayload(values)));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
+}
+
+function isSectionUpdate(
+  values: ForumSectionsCreateRequest | ForumSectionsUpdateRequest,
+): values is ForumSectionsUpdateRequest {
+  return 'id' in values && Boolean(values.id);
+}
+
+function resolveSectionGroupId(
+  values: Pick<ForumSectionsCreateRequest, 'groupId'>,
+) {
+  return values.groupId ?? currentSectionGroup.value?.id;
+}
+
+function buildSectionCreatePayload(
+  values: ForumSectionsCreateRequest,
+): ForumSectionsCreateRequest {
+  return {
+    cover: values.cover,
+    description: values.description,
+    groupId: resolveSectionGroupId(values),
+    icon: values.icon,
+    isEnabled: values.isEnabled,
+    name: values.name,
+    remark: values.remark,
+    sortOrder: values.sortOrder,
+    topicReviewPolicy: values.topicReviewPolicy,
+    userLevelRuleId: values.userLevelRuleId,
+  };
+}
+
+function buildSectionUpdatePayload(
+  values: ForumSectionsUpdateRequest,
+): ForumSectionsUpdateRequest {
+  return {
+    cover: values.cover,
+    description: values.description,
+    groupId: resolveSectionGroupId(values),
+    icon: values.icon,
+    id: values.id,
+    isEnabled: values.isEnabled,
+    name: values.name,
+    remark: values.remark,
+    sortOrder: values.sortOrder,
+    topicReviewPolicy: values.topicReviewPolicy,
+    userLevelRuleId: values.userLevelRuleId,
+  };
 }
 
 async function handleSectionGroupSubmit(
@@ -241,6 +276,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
           </div>
           <el-tree
             :data="filteredSections"
+            class="forum-section-group-tree"
             node-key="id"
             highlight-current
             check-on-click-node
@@ -261,8 +297,8 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
                     :show-after="300"
                   >
                     <div
-                        @click.stop="
-                          sectionGroupDetailApi
+                      @click.stop="
+                        sectionGroupDetailApi
                           .setData({ recordId: data.id })
                           .open()
                       "
@@ -337,11 +373,7 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
             <el-button
               link
               type="primary"
-              @click="
-                detailApi
-                  .setData({ recordId: row.id })
-                  .open()
-              "
+              @click="detailApi.setData({ recordId: row.id }).open()"
             >
               详情
             </el-button>
@@ -386,14 +418,16 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
   </Page>
 </template>
 
-<style scoped>
-:deep(.el-tree-node.is-current > .el-tree-node__content) {
+<style>
+.forum-section-group-tree .el-tree-node.is-current > .el-tree-node__content {
   font-weight: 600;
   color: var(--el-color-primary);
   background-color: var(--el-color-primary-light-9);
 }
 
-:deep(.el-tree-node.is-current > .el-tree-node__content:hover) {
+.forum-section-group-tree
+  .el-tree-node.is-current
+  > .el-tree-node__content:hover {
   background-color: var(--el-color-primary-light-8);
 }
 </style>

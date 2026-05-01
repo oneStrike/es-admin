@@ -17,6 +17,7 @@ import {
 
 const gridOptions: VxeGridProps<AdminTaskReconciliationItemDto> = {
   columns: taskReconciliationColumns,
+  height: '100%',
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
@@ -50,41 +51,45 @@ const [Grid] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Grid>
-    <template #settlementStatus="{ row }">
-      <el-tag
-        v-if="typeof row.rewardSettlement?.settlementStatus === 'number'"
-        :type="
-          taskRewardSettlementStatusOptions.find(
-            (item) => item.value === row.rewardSettlement?.settlementStatus,
-          )?.color || 'info'
-        "
-      >
-        {{
-          taskRewardSettlementStatusOptions.find(
-            (item) => item.value === row.rewardSettlement?.settlementStatus,
-          )?.label || '-'
-        }}
-      </el-tag>
-      <span v-else>-</span>
-    </template>
+  <div class="user-manager-full-height-pane">
+    <Grid class="user-manager-full-height-grid">
+      <template #settlementStatus="{ row }">
+        <el-tag
+          v-if="typeof row.rewardSettlement?.settlementStatus === 'number'"
+          :type="
+            taskRewardSettlementStatusOptions.find(
+              (item) => item.value === row.rewardSettlement?.settlementStatus,
+            )?.color || 'info'
+          "
+        >
+          {{
+            taskRewardSettlementStatusOptions.find(
+              (item) => item.value === row.rewardSettlement?.settlementStatus,
+            )?.label || '-'
+          }}
+        </el-tag>
+        <span v-else>-</span>
+      </template>
 
-    <template #settlementResult="{ row }">
-      <el-tag
-        v-if="typeof row.rewardSettlement?.settlementResultType === 'number'"
-        :type="
-          taskRewardSettlementResultOptions.find(
-            (item) => item.value === row.rewardSettlement?.settlementResultType,
-          )?.color || 'info'
-        "
-      >
-        {{
-          taskRewardSettlementResultOptions.find(
-            (item) => item.value === row.rewardSettlement?.settlementResultType,
-          )?.label || '-'
-        }}
-      </el-tag>
-      <span v-else>-</span>
-    </template>
-  </Grid>
+      <template #settlementResult="{ row }">
+        <el-tag
+          v-if="typeof row.rewardSettlement?.settlementResultType === 'number'"
+          :type="
+            taskRewardSettlementResultOptions.find(
+              (item) =>
+                item.value === row.rewardSettlement?.settlementResultType,
+            )?.color || 'info'
+          "
+        >
+          {{
+            taskRewardSettlementResultOptions.find(
+              (item) =>
+                item.value === row.rewardSettlement?.settlementResultType,
+            )?.label || '-'
+          }}
+        </el-tag>
+        <span v-else>-</span>
+      </template>
+    </Grid>
+  </div>
 </template>

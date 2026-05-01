@@ -13,6 +13,7 @@ import {
 
 const gridOptions: VxeGridProps<TaskInstanceViewDto> = {
   columns: taskInstanceColumns,
+  height: '100%',
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
@@ -46,5 +47,7 @@ const [Grid] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Grid />
+  <div class="user-manager-full-height-pane">
+    <Grid class="user-manager-full-height-grid" />
+  </div>
 </template>

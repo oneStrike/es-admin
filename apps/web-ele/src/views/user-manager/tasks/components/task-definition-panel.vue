@@ -36,7 +36,6 @@ import {
 import { getTaskDefinitionDetailCards } from '../model/detail';
 import {
   buildTaskRewardItems,
-  formatTemplateFilterFieldHints,
   formatTemplateWarningHints,
   normalizeTaskTemplateFilters,
   parseJsonArrayText,
@@ -48,6 +47,7 @@ const editingTemplateKey = ref<string>();
 
 const gridOptions: VxeGridProps<TaskDefinitionRow> = {
   columns: taskDefinitionColumns,
+  height: '100%',
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
@@ -296,14 +296,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="user-manager-full-height-pane">
     <div
       class="mb-4 rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm leading-6 text-slate-600"
     >
       事件模板下拉仅保留当前允许创建的模板；
       过滤条件需使用模板声明的字段键和值类型。 具体字段请参考模板返回的说明。
     </div>
-    <Grid>
+    <Grid class="user-manager-full-height-grid">
       <template #toolbar-actions>
         <el-button class="ml-2" type="primary" @click="openFormModal()">
           添加任务
@@ -371,26 +371,6 @@ onMounted(async () => {
       :schema="createTaskDefinitionFormSchema(templateOptions)"
       :on-submit="handleSubmit"
     />
-
-    <details
-      v-if="templateOptions.length > 0"
-      class="mt-4 rounded-lg border border-dashed border-slate-200 bg-white px-4 py-4 text-xs leading-6 text-slate-500"
-    >
-      <summary class="cursor-pointer font-medium text-slate-700">
-        查看事件模板字段参考
-      </summary>
-      <div
-        v-for="template in templateOptions"
-        :key="template.templateKey"
-        class="pt-3"
-      >
-        <div class="font-medium text-slate-700">
-          {{ template.label }} ({{ template.templateKey }})
-        </div>
-        <div>过滤字段：{{ formatTemplateFilterFieldHints(template) }}</div>
-        <div>提醒：{{ formatTemplateWarningHints(template) }}</div>
-      </div>
-    </details>
 
     <DetailModal
       :api="taskDetailApi"

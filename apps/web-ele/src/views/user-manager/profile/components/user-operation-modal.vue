@@ -14,9 +14,9 @@ import type {
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { z } from '#/adapter/form';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -457,8 +457,9 @@ const [PointGrid, pointGridApi] = useVbenVxeGrid({
     showCollapseButton: false,
   }),
   gridOptions: {
+    autoResize: true,
     columns: pointRecordColumns,
-    height: 420,
+    height: 'auto',
     proxyConfig: {
       autoLoad: false,
       ajax: {
@@ -494,8 +495,9 @@ const [ExperienceGrid, experienceGridApi] = useVbenVxeGrid({
     showCollapseButton: false,
   }),
   gridOptions: {
+    autoResize: true,
     columns: experienceRecordColumns,
-    height: 420,
+    height: 'auto',
     proxyConfig: {
       autoLoad: false,
       ajax: {
@@ -531,8 +533,9 @@ const [BadgeGrid, badgeGridApi] = useVbenVxeGrid({
     showCollapseButton: false,
   }),
   gridOptions: {
+    autoResize: true,
     columns: userBadgeColumns,
-    height: 420,
+    height: 'auto',
     proxyConfig: {
       autoLoad: false,
       ajax: {
@@ -591,6 +594,23 @@ const [Modal, modalApi] = useVbenModal({
       void refreshAll();
     }
   },
+  onOpened() {
+    recalculateOperationGrids();
+  },
+});
+
+function recalculateOperationGrids() {
+  void nextTick(() => {
+    requestAnimationFrame(() => {
+      void pointGridApi.grid?.recalculate?.(true);
+      void experienceGridApi.grid?.recalculate?.(true);
+      void badgeGridApi.grid?.recalculate?.(true);
+    });
+  });
+}
+
+watch(activeTab, () => {
+  recalculateOperationGrids();
 });
 
 async function refreshUserDetail() {
@@ -629,6 +649,7 @@ async function refreshAll() {
     experienceGridApi.reload(),
     badgeGridApi.reload(),
   ]);
+  recalculateOperationGrids();
 }
 
 async function notifyParentUpdated() {
@@ -776,7 +797,9 @@ async function handleExperienceGrantSubmit(
 }
 
 async function handleAssignBadgeConfirm(rows: Array<{ id: number }>) {
-  if (!currentUser.value || rows.length === 0) {
+  const userId = currentUser.value?.id;
+
+  if (!userId || rows.length === 0) {
     return;
   }
 
@@ -784,7 +807,7 @@ async function handleAssignBadgeConfirm(rows: Array<{ id: number }>) {
     rows.map((row) =>
       appUsersBadgesAssignApi({
         badgeId: row.id,
-        userId: currentUser.value!.id,
+        userId,
       }),
     ),
   );
@@ -814,98 +837,104 @@ async function revokeBadge(row: Record<string, any>) {
 </script>
 
 <template>
-  <Modal class="!w-[1400px]">
-    <Page auto-content-height>
-      <div v-loading="loading" class="space-y-4">
+  <Modal
+    class="user-operation-modal !h-[80vh] !w-[1400px]"
+    content-class="user-operation-modal__content"
+  >
+    <div v-loading="loading" class="user-operation-modal__body">
+      <div
+        v-if="currentUser && userDetail"
+        class="user-operation-modal__summary rounded-lg border border-border bg-background p-4"
+      >
         <div
-          v-if="currentUser && userDetail"
-          class="rounded-lg border border-border bg-background p-4"
+          class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
         >
-          <div
-            class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
-          >
-            <div class="flex items-center gap-4">
-              <el-avatar :size="64" :src="currentUser.avatarUrl || undefined">
-                {{
-                  (currentUser.nickname || currentUser.account)
-                    ?.slice(0, 1)
-                    ?.toUpperCase()
-                }}
-              </el-avatar>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-lg font-semibold text-foreground">
-                    {{ currentUser.nickname || currentUser.account }}
-                  </span>
-                  <el-tag
-                    :type="userStatusMap[currentUser.status]?.tagType || 'info'"
-                  >
-                    {{ getUserStatusText(currentUser.status) }}
-                  </el-tag>
-                  <el-tag :type="currentUser.isEnabled ? 'success' : 'danger'">
-                    {{ currentUser.isEnabled ? '启用' : '禁用' }}
-                  </el-tag>
-                  <el-tag v-if="currentUser.deletedAt" type="danger">
-                    已删除
-                  </el-tag>
-                </div>
-                <div class="mt-2 text-sm text-muted-foreground">
-                  账号：{{ currentUser.account }}
-                </div>
-                <div class="mt-1 text-sm text-muted-foreground">
-                  最后登录：{{ currentUser.lastLoginAt || '-' }}
-                </div>
+          <div class="flex items-center gap-4">
+            <el-avatar :size="64" :src="currentUser.avatarUrl || undefined">
+              {{
+                (currentUser.nickname || currentUser.account)
+                  ?.slice(0, 1)
+                  ?.toUpperCase()
+              }}
+            </el-avatar>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-semibold text-foreground">
+                  {{ currentUser.nickname || currentUser.account }}
+                </span>
+                <el-tag
+                  :type="userStatusMap[currentUser.status]?.tagType || 'info'"
+                >
+                  {{ getUserStatusText(currentUser.status) }}
+                </el-tag>
+                <el-tag :type="currentUser.isEnabled ? 'success' : 'danger'">
+                  {{ currentUser.isEnabled ? '启用' : '禁用' }}
+                </el-tag>
+                <el-tag v-if="currentUser.deletedAt" type="danger">
+                  已删除
+                </el-tag>
               </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-              <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
-                <div class="text-xs text-muted-foreground">当前积分</div>
-                <div class="mt-1 text-lg font-semibold">
-                  {{ pointStats?.currentPoints ?? userDetail.points }}
-                </div>
+              <div class="mt-2 text-sm text-muted-foreground">
+                账号：{{ currentUser.account }}
               </div>
-              <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
-                <div class="text-xs text-muted-foreground">当前经验</div>
-                <div class="mt-1 text-lg font-semibold">
-                  {{
-                    experienceStats?.currentExperience ?? userDetail.experience
-                  }}
-                </div>
-              </div>
-              <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
-                <div class="text-xs text-muted-foreground">今日积分</div>
-                <div class="mt-1 text-lg font-semibold">
-                  {{ pointStats?.todayEarned ?? 0 }}
-                </div>
-              </div>
-              <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
-                <div class="text-xs text-muted-foreground">已获徽章</div>
-                <div class="mt-1 text-lg font-semibold">
-                  {{ userDetail.badgeCount ?? 0 }}
-                </div>
+              <div class="mt-1 text-sm text-muted-foreground">
+                最后登录：{{ currentUser.lastLoginAt || '-' }}
               </div>
             </div>
           </div>
 
-          <div
-            v-if="userDetail.banReason || isPermanentStatus(userDetail.status)"
-            class="mt-4 rounded-md border border-warning/30 bg-warning/10 px-4 py-3 text-sm"
-          >
-            处理原因：{{ userDetail.banReason || '-' }}
-            <span class="ml-4">
-              状态截止：{{
-                isPermanentStatus(userDetail.status)
-                  ? '永久'
-                  : userDetail.banUntil || '-'
-              }}
-            </span>
+          <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
+              <div class="text-xs text-muted-foreground">当前积分</div>
+              <div class="mt-1 text-lg font-semibold">
+                {{ pointStats?.currentPoints ?? userDetail.points }}
+              </div>
+            </div>
+            <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
+              <div class="text-xs text-muted-foreground">当前经验</div>
+              <div class="mt-1 text-lg font-semibold">
+                {{
+                  experienceStats?.currentExperience ?? userDetail.experience
+                }}
+              </div>
+            </div>
+            <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
+              <div class="text-xs text-muted-foreground">今日积分</div>
+              <div class="mt-1 text-lg font-semibold">
+                {{ pointStats?.todayEarned ?? 0 }}
+              </div>
+            </div>
+            <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
+              <div class="text-xs text-muted-foreground">已获徽章</div>
+              <div class="mt-1 text-lg font-semibold">
+                {{ userDetail.badgeCount ?? 0 }}
+              </div>
+            </div>
           </div>
         </div>
 
-        <el-tabs v-model="activeTab">
-          <el-tab-pane label="积分记录" name="points">
-            <div v-if="canOperate" class="mb-3 flex justify-end gap-2">
+        <div
+          v-if="userDetail.banReason || isPermanentStatus(userDetail.status)"
+          class="mt-4 rounded-md border border-warning/30 bg-warning/10 px-4 py-3 text-sm"
+        >
+          处理原因：{{ userDetail.banReason || '-' }}
+          <span class="ml-4">
+            状态截止：{{
+              isPermanentStatus(userDetail.status)
+                ? '永久'
+                : userDetail.banUntil || '-'
+            }}
+          </span>
+        </div>
+      </div>
+
+      <el-tabs v-model="activeTab" class="user-operation-modal__tabs">
+        <el-tab-pane label="积分记录" name="points">
+          <div class="user-operation-modal__tab-pane">
+            <div
+              v-if="canOperate"
+              class="user-operation-modal__tab-actions flex justify-end gap-2"
+            >
               <el-button type="primary" @click="openPointsGrantModal">
                 增加积分
               </el-button>
@@ -914,23 +943,28 @@ async function revokeBadge(row: Record<string, any>) {
               </el-button>
             </div>
 
-            <PointGrid>
+            <PointGrid class="user-operation-modal__grid">
               <template #pointsDelta="{ row }">
                 <el-text :type="row.points >= 0 ? 'success' : 'danger'">
                   {{ row.points > 0 ? `+${row.points}` : row.points }}
                 </el-text>
               </template>
             </PointGrid>
-          </el-tab-pane>
+          </div>
+        </el-tab-pane>
 
-          <el-tab-pane label="经验记录" name="experience">
-            <div v-if="canOperate" class="mb-3 flex justify-end gap-2">
+        <el-tab-pane label="经验记录" name="experience">
+          <div class="user-operation-modal__tab-pane">
+            <div
+              v-if="canOperate"
+              class="user-operation-modal__tab-actions flex justify-end gap-2"
+            >
               <el-button type="primary" @click="openExperienceGrantModal">
                 增加经验
               </el-button>
             </div>
 
-            <ExperienceGrid>
+            <ExperienceGrid class="user-operation-modal__grid">
               <template #experienceDelta="{ row }">
                 <el-text :type="row.experience >= 0 ? 'success' : 'danger'">
                   {{
@@ -939,16 +973,21 @@ async function revokeBadge(row: Record<string, any>) {
                 </el-text>
               </template>
             </ExperienceGrid>
-          </el-tab-pane>
+          </div>
+        </el-tab-pane>
 
-          <el-tab-pane label="用户徽章" name="badges">
-            <div v-if="canOperate" class="mb-3 flex justify-end gap-2">
+        <el-tab-pane label="用户徽章" name="badges">
+          <div class="user-operation-modal__tab-pane">
+            <div
+              v-if="canOperate"
+              class="user-operation-modal__tab-actions flex justify-end gap-2"
+            >
               <el-button type="primary" @click="openAssignBadgeModal">
                 分配徽章
               </el-button>
             </div>
 
-            <BadgeGrid>
+            <BadgeGrid class="user-operation-modal__grid">
               <template #badgeInfo="{ row }">
                 <div class="flex items-center gap-3 text-left">
                   <el-image
@@ -987,10 +1026,10 @@ async function revokeBadge(row: Record<string, any>) {
                 </el-popconfirm>
               </template>
             </BadgeGrid>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </Page>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
 
     <PointsGrantForm
       :schema="pointsGrantFormSchema"
@@ -1007,3 +1046,77 @@ async function revokeBadge(row: Record<string, any>) {
     <AssignBadgeModal @confirm="handleAssignBadgeConfirm" />
   </Modal>
 </template>
+
+<style lang="scss">
+.user-operation-modal {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden !important;
+  }
+
+  &__body {
+    display: grid;
+    flex: 1 1 auto;
+    grid-template-areas:
+      'summary'
+      'tabs';
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 1rem;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__summary {
+    grid-area: summary;
+  }
+
+  &__tabs {
+    display: flex;
+    flex-direction: column;
+    grid-area: tabs;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__tab-pane {
+    display: grid;
+    grid-template-areas:
+      'actions'
+      'grid';
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__tab-actions {
+    grid-area: actions;
+  }
+
+  &__grid {
+    grid-area: grid;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__tabs > .el-tabs__header {
+    flex: 0 0 auto;
+  }
+
+  &__tabs > .el-tabs__content {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__tabs > .el-tabs__content > .el-tab-pane {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+</style>

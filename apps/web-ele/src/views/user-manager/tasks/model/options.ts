@@ -113,18 +113,6 @@ export function formatTaskTemplateOptionLabel(
   return parts.join(' · ');
 }
 
-export function formatTemplateFilterFieldHints(
-  template?: null | TaskEventTemplateOptionDto,
-) {
-  if (!template?.availableFilterFields?.length) {
-    return '当前模板无可选过滤字段';
-  }
-
-  return template.availableFilterFields
-    .map((field) => formatTemplateFilterFieldLabel(field))
-    .join(' / ');
-}
-
 export function formatTemplateWarningHints(
   template?: null | TaskEventTemplateOptionDto,
 ) {
@@ -360,26 +348,6 @@ function getTaskTemplateImplStatusLabel(
     }
     default: {
       return '仅声明';
-    }
-  }
-}
-
-function formatTemplateFilterFieldLabel(field: TaskTemplateFilterFieldDto) {
-  return `${field.label} (${field.key} / ${formatTemplateValueType(field.valueType)})`;
-}
-
-function formatTemplateValueType(
-  valueType: TaskTemplateFilterFieldDto['valueType'],
-) {
-  switch (valueType) {
-    case 'boolean': {
-      return '布尔';
-    }
-    case 'number': {
-      return '数值';
-    }
-    default: {
-      return '字符串';
     }
   }
 }
