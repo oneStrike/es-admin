@@ -1,6 +1,7 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { TaskInstanceViewDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { formSchemaTransform } from '#/utils';
 
 import {
   formatInstanceStepSummary,
@@ -61,82 +62,106 @@ export const taskInstanceSearchFormSchema: EsFormSchema = [
   },
 ];
 
-export const taskInstanceColumns: VxeGridPropTypes.Columns<TaskInstanceViewDto> =
-  [
-    { field: 'id', minWidth: 90, title: '实例 ID' },
-    { field: 'taskId', minWidth: 100, title: '任务头 ID' },
-    { field: 'userId', minWidth: 100, title: '用户 ID' },
+const taskInstanceTableSchema: EsFormSchema = [
+  { component: 'InputNumber', fieldName: 'id', label: '实例 ID' },
+  { component: 'InputNumber', fieldName: 'taskId', label: '任务头 ID' },
+  { component: 'InputNumber', fieldName: 'userId', label: '用户 ID' },
+  { component: 'Select', fieldName: 'status', label: '实例状态' },
+  { component: 'Select', fieldName: 'visibleStatus', label: '可见状态' },
+  { component: 'Input', fieldName: 'steps', label: '步骤摘要' },
+  { component: 'Input', fieldName: 'cycleKey', label: '周期键' },
+  {
+    component: 'Select',
+    fieldName: 'rewardSettlement',
+    label: '奖励补偿',
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'rewardSettlementId',
+    label: '结算事实 ID',
+  },
+  { component: 'DatePicker', fieldName: 'claimedAt', label: '领取时间' },
+  { component: 'DatePicker', fieldName: 'completedAt', label: '完成时间' },
+  { component: 'DatePicker', fieldName: 'expiredAt', label: '过期时间' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
+  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
+];
+
+export const taskInstanceColumns =
+  formSchemaTransform.toTableColumns<TaskInstanceViewDto>(
+    taskInstanceTableSchema,
     {
-      field: 'status',
-      minWidth: 120,
-      title: '实例状态',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: taskInstanceStatusOptions,
+      id: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 90,
+      },
+      taskId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+      },
+      userId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+      },
+      status: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: taskInstanceStatusOptions,
+          },
         },
+        minWidth: 120,
+      },
+      visibleStatus: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: taskVisibleStatusOptions,
+          },
+        },
+        minWidth: 140,
+      },
+      steps: {
+        formatter: ({ cellValue }) => formatInstanceStepSummary(cellValue),
+        minWidth: 260,
+        showOverflow: 'tooltip',
+      },
+      cycleKey: {
+        minWidth: 140,
+      },
+      rewardSettlement: {
+        formatter: ({ cellValue, row }) =>
+          row.rewardApplicable === 0
+            ? '无奖励'
+            : getOptionLabel(
+                taskRewardSettlementStatusOptions,
+                cellValue?.settlementStatus,
+              ),
+        minWidth: 140,
+      },
+      rewardSettlementId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 120,
+      },
+      claimedAt: {
+        cellRender: { name: 'CellDate' },
+        minWidth: 170,
+      },
+      completedAt: {
+        cellRender: { name: 'CellDate' },
+        minWidth: 170,
+      },
+      expiredAt: {
+        cellRender: { name: 'CellDate' },
+        minWidth: 170,
+      },
+      createdAt: {
+        cellRender: { name: 'CellDate' },
+        minWidth: 170,
+      },
+      updatedAt: {
+        cellRender: { name: 'CellDate' },
+        minWidth: 170,
       },
     },
-    {
-      field: 'visibleStatus',
-      minWidth: 140,
-      title: '可见状态',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: taskVisibleStatusOptions,
-        },
-      },
-    },
-    {
-      field: 'steps',
-      minWidth: 260,
-      showOverflow: 'tooltip',
-      title: '步骤摘要',
-      formatter: ({ cellValue }) => formatInstanceStepSummary(cellValue),
-    },
-    { field: 'cycleKey', minWidth: 140, title: '周期键' },
-    {
-      field: 'rewardSettlement',
-      minWidth: 140,
-      title: '奖励补偿',
-      formatter: ({ cellValue, row }) =>
-        row.rewardApplicable === 0
-          ? '无奖励'
-          : getOptionLabel(
-              taskRewardSettlementStatusOptions,
-              cellValue?.settlementStatus,
-            ),
-    },
-    { field: 'rewardSettlementId', minWidth: 120, title: '结算事实 ID' },
-    {
-      field: 'claimedAt',
-      minWidth: 170,
-      title: '领取时间',
-      cellRender: { name: 'CellDate' },
-    },
-    {
-      field: 'completedAt',
-      minWidth: 170,
-      title: '完成时间',
-      cellRender: { name: 'CellDate' },
-    },
-    {
-      field: 'expiredAt',
-      minWidth: 170,
-      title: '过期时间',
-      cellRender: { name: 'CellDate' },
-    },
-    {
-      field: 'createdAt',
-      minWidth: 170,
-      title: '创建时间',
-      cellRender: { name: 'CellDate' },
-    },
-    {
-      field: 'updatedAt',
-      minWidth: 170,
-      title: '更新时间',
-      cellRender: { name: 'CellDate' },
-    },
-  ];
+  );

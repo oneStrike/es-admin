@@ -1,4 +1,3 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
   AdminAppUserPageItemDto,
   BaseForumSectionDto,
@@ -7,7 +6,12 @@ import type {
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { appUsersPageApi, forumSectionGroupsPageApi, forumSectionsPageApi } from '#/api/core';
+import {
+  appUsersPageApi,
+  forumSectionGroupsPageApi,
+  forumSectionsPageApi,
+} from '#/api/core';
+import { formSchemaTransform } from '#/utils';
 
 const ACTIVE_DELETED_SCOPE = 0;
 
@@ -57,43 +61,46 @@ export const moderatorUserSearchSchema: EsFormSchema = [
   },
 ];
 
-export const moderatorUserColumns: VxeGridPropTypes.Columns<AdminAppUserPageItemDto> = [
-  {
-    field: 'id',
-    title: '用户ID',
-    minWidth: 100,
-  },
-  {
-    field: 'nickname',
-    title: '昵称',
-    minWidth: 140,
-  },
-  {
-    field: 'phoneNumber',
-    title: '手机号',
-    minWidth: 140,
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'levelName',
-    title: '等级',
-    minWidth: 120,
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'status',
-    title: '社区状态',
-    minWidth: 120,
-    formatter: ({ cellValue }) => {
-      if (cellValue === 1) return '正常';
-      if (cellValue === 2) return '禁言';
-      if (cellValue === 3) return '永久禁言';
-      if (cellValue === 4) return '封禁';
-      if (cellValue === 5) return '永久封禁';
-      return '-';
-    },
-  },
+const moderatorUserTableSchema: EsFormSchema = [
+  { component: 'InputNumber', fieldName: 'id', label: '用户ID' },
+  { component: 'Input', fieldName: 'nickname', label: '昵称' },
+  { component: 'Input', fieldName: 'phoneNumber', label: '手机号' },
+  { component: 'Input', fieldName: 'levelName', label: '等级' },
+  { component: 'Select', fieldName: 'status', label: '社区状态' },
 ];
+
+export const moderatorUserColumns =
+  formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(
+    moderatorUserTableSchema,
+    {
+      id: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+      },
+      nickname: {
+        minWidth: 140,
+      },
+      phoneNumber: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 140,
+      },
+      levelName: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 120,
+      },
+      status: {
+        formatter: ({ cellValue }) => {
+          if (cellValue === 1) return '正常';
+          if (cellValue === 2) return '禁言';
+          if (cellValue === 3) return '永久禁言';
+          if (cellValue === 4) return '封禁';
+          if (cellValue === 5) return '永久封禁';
+          return '-';
+        },
+        minWidth: 120,
+      },
+    },
+  );
 
 const userSelectComponentProps = () => ({
   api: async (params: Record<string, any>) =>
@@ -262,95 +269,90 @@ export const searchFormSchema: EsFormSchema = [
   },
 ];
 
-export const moderatorColumns: VxeGridPropTypes.Columns<ForumModeratorDto> = [
-  {
-    field: 'avatar',
-    title: '头像',
-    minWidth: 90,
-    cellRender: {
-      name: 'CellImage',
-    },
-  },
-  {
-    field: 'nickname',
-    title: '昵称',
-    minWidth: 140,
-  },
-  {
-    field: 'userId',
-    title: '用户ID',
-    minWidth: 100,
-  },
-  {
-    field: 'roleType',
-    title: '角色类型',
-    minWidth: 120,
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        mapOptions: moderatorRoleOptions,
-      },
-    },
-  },
-  {
-    field: 'group',
-    title: '所属分组',
-    minWidth: 140,
-    formatter: ({ row }) => row.group?.name || '-',
-  },
-  {
-    field: 'sections',
-    title: '管理板块',
-    minWidth: 220,
-    showOverflow: 'tooltip',
-    formatter: ({ row }) =>
-      row.sections?.length
-        ? row.sections.map((item) => item.name).join(' / ')
-        : '-',
-  },
-  {
-    field: 'permissionNames',
-    title: '权限',
-    minWidth: 220,
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        type: 'info',
-      },
-    },
-  },
-  {
-    field: 'isEnabled',
-    title: '启用状态',
-    minWidth: 110,
-    slots: { default: 'isEnabled' },
-  },
-  {
-    field: 'createdAt',
-    title: '创建时间',
-    minWidth: 160,
-    sortable: true,
-    cellRender: {
-      name: 'CellDate',
-    },
-  },
-  {
-    field: 'updatedAt',
-    title: '更新时间',
-    minWidth: 160,
-    sortable: true,
-    cellRender: {
-      name: 'CellDate',
-    },
-  },
-  {
-    field: 'actions',
-    title: '操作',
-    fixed: 'right',
-    minWidth: 260,
-    slots: { default: 'actions' },
-  },
+const moderatorTableSchema: EsFormSchema = [
+  { component: 'Upload', fieldName: 'avatar', label: '头像' },
+  { component: 'Input', fieldName: 'nickname', label: '昵称' },
+  { component: 'InputNumber', fieldName: 'userId', label: '用户ID' },
+  { component: 'RadioGroup', fieldName: 'roleType', label: '角色类型' },
+  { component: 'Select', fieldName: 'group', label: '所属分组' },
+  { component: 'Select', fieldName: 'sections', label: '管理板块' },
+  { component: 'Select', fieldName: 'permissionNames', label: '权限' },
+  { component: 'RadioGroup', fieldName: 'isEnabled', label: '启用状态' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
+  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
+
+export const moderatorColumns =
+  formSchemaTransform.toTableColumns<ForumModeratorDto>(moderatorTableSchema, {
+    avatar: {
+      cellRender: {
+        name: 'CellImage',
+      },
+      minWidth: 90,
+    },
+    nickname: {
+      minWidth: 140,
+    },
+    userId: {
+      formatter: ({ cellValue }) => cellValue ?? '-',
+      minWidth: 100,
+    },
+    roleType: {
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          mapOptions: moderatorRoleOptions,
+        },
+      },
+      minWidth: 120,
+    },
+    group: {
+      formatter: ({ row }) => row.group?.name || '-',
+      minWidth: 140,
+    },
+    sections: {
+      formatter: ({ row }) =>
+        row.sections?.length
+          ? row.sections.map((item) => item.name).join(' / ')
+          : '-',
+      minWidth: 220,
+      showOverflow: 'tooltip',
+    },
+    permissionNames: {
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          type: 'info',
+        },
+      },
+      minWidth: 220,
+    },
+    isEnabled: {
+      formatter: undefined,
+      minWidth: 110,
+      slots: { default: 'isEnabled' },
+    },
+    createdAt: {
+      cellRender: {
+        name: 'CellDate',
+      },
+      minWidth: 160,
+      sortable: true,
+    },
+    updatedAt: {
+      cellRender: {
+        name: 'CellDate',
+      },
+      minWidth: 160,
+      sortable: true,
+    },
+    actions: {
+      show: true,
+      fixed: 'right',
+      minWidth: 260,
+      slots: { default: 'actions' },
+    },
+  });
 
 export function syncModeratorOptions(
   groups: BaseForumSectionGroupDto[] = [],

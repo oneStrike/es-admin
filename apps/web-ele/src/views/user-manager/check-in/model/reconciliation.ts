@@ -1,4 +1,3 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -153,8 +152,9 @@ export const reconciliationSearchFormSchema =
     grantSettlementStatus: { show: true },
   });
 
-export const reconciliationColumns: VxeGridPropTypes.Columns<any> =
-  formSchemaTransform.toTableColumns<any>(reconciliationTableSchema, {
+export const reconciliationColumns = formSchemaTransform.toTableColumns<any>(
+  reconciliationTableSchema,
+  {
     recordId: {
       fixed: 'left',
       minWidth: 110,
@@ -203,7 +203,8 @@ export const reconciliationColumns: VxeGridPropTypes.Columns<any> =
       title: '操作',
       width: 140,
     },
-  });
+  },
+);
 
 export {
   checkInRecordTypeOptions,

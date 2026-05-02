@@ -2,11 +2,30 @@ import type { ReportDetailResponse } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
-import { reasonTypeMap, reportStatusMap } from './shared';
+import {
+  formatActorSummary,
+  formatCommentLevel,
+  formatReportCommentSummary,
+  formatReporterSummary,
+  formatReportTargetExtra,
+  formatReportTargetSummary,
+  formatReportTargetTitle,
+  formatSceneExtra,
+  formatSceneSummary,
+  formatSceneTitle,
+  reasonTypeMap,
+  reportStatusMap,
+  resolveReportCommentState,
+  resolveReporterState,
+  resolveReportTargetState,
+} from './shared';
 
 export function getDetailCards(detail: ReportDetailResponse) {
   const status = reportStatusMap[detail.status];
   const reasonType = reasonTypeMap[detail.reasonType];
+  const reporterState = resolveReporterState(detail.reporterSummary);
+  const targetState = resolveReportTargetState(detail.targetSummary);
+  const commentState = resolveReportCommentState(detail.commentSummary);
 
   return [
     {
@@ -20,11 +39,6 @@ export function getDetailCards(detail: ReportDetailResponse) {
       show: true,
       fields: [
         {
-          label: '举报 ID',
-          value: detail.id,
-          type: 'text' as const,
-        },
-        {
           label: '举报原因',
           value: reasonType?.label || detail.reasonType,
           type: 'text' as const,
@@ -35,6 +49,111 @@ export function getDetailCards(detail: ReportDetailResponse) {
           type: 'tag' as const,
           tagText: status?.label || '-',
           tagType: status?.color || 'info',
+        },
+        {
+          label: '评论层级',
+          value: formatCommentLevel(detail.commentLevel),
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '举报人',
+      show: !!detail.reporterSummary,
+      fields: [
+        {
+          label: '昵称',
+          value: formatReporterSummary(detail.reporterSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '用户状态',
+          value: reporterState.label,
+          type: 'tag' as const,
+          tagText: reporterState.label,
+          tagType: reporterState.color,
+        },
+      ],
+    },
+    {
+      title: '业务场景',
+      show: !!detail.sceneSummary,
+      fields: [
+        {
+          label: '场景类型',
+          value: detail.sceneSummary?.sceneTypeName || '-',
+          type: 'text' as const,
+        },
+        {
+          label: '场景标题',
+          value: formatSceneTitle(detail.sceneSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '场景摘要',
+          value: formatSceneSummary(detail.sceneSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '上级信息',
+          value: formatSceneExtra(detail.sceneSummary),
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '举报目标',
+      show: !!detail.targetSummary,
+      fields: [
+        {
+          label: '目标类型',
+          value: detail.targetSummary?.targetTypeName || '-',
+          type: 'text' as const,
+        },
+        {
+          label: '目标标题',
+          value: formatReportTargetTitle(detail.targetSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '目标摘要',
+          value: formatReportTargetSummary(detail.targetSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '关联信息',
+          value: formatReportTargetExtra(detail.targetSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '目标状态',
+          value: targetState.label,
+          type: 'tag' as const,
+          tagText: targetState.label,
+          tagType: targetState.color,
+        },
+      ],
+    },
+    {
+      title: '被举报评论',
+      show: !!detail.commentSummary,
+      fields: [
+        {
+          label: '评论摘要',
+          value: formatReportCommentSummary(detail.commentSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '评论层级',
+          value: formatCommentLevel(detail.commentSummary?.commentLevel),
+          type: 'text' as const,
+        },
+        {
+          label: '评论状态',
+          value: commentState.label,
+          type: 'tag' as const,
+          tagText: commentState.label,
+          tagType: commentState.color,
         },
       ],
     },
@@ -53,6 +172,16 @@ export function getDetailCards(detail: ReportDetailResponse) {
       title: '处理信息',
       show: true,
       fields: [
+        {
+          label: '处理人',
+          value: formatActorSummary(detail.handlerSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '处理人角色',
+          value: detail.handlerSummary?.roleName || '-',
+          type: 'text' as const,
+        },
         {
           label: '处理备注',
           value: detail.handlingNote || '-',

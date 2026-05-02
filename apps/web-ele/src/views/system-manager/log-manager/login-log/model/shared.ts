@@ -1,56 +1,53 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { AuditItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { formatUTC } from '#/utils';
+import { formatUTC, formSchemaTransform } from '#/utils';
 
 // 登录日志表格列配置
-export const loginLogColumns: VxeGridPropTypes.Columns<AuditItemDto> = [
-  {
-    title: '序号',
-    type: 'seq',
-    width: 60,
-    fixed: 'left',
-  },
-  {
-    field: 'username',
-    title: '用户名',
-    width: 120,
-    showOverflow: 'tooltip',
-  },
-  {
-    field: 'ip',
-    title: '登录IP',
-    width: 140,
-  },
-  {
-    field: 'userAgent',
-    title: '用户代理',
-    minWidth: 250,
-    showOverflow: 'tooltip',
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'createdAt',
-    title: '登录时间',
-    width: 160,
-    formatter: ({ cellValue }) => formatUTC(cellValue),
-    sortable: true,
-  },
-  {
-    field: 'isSuccess',
-    title: '登录结果',
-    width: 120,
-    slots: { default: 'isSuccess' },
-  },
-  {
-    field: 'content',
-    title: '日志内容',
-    minWidth: 200,
-    showOverflow: 'tooltip',
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
+const loginLogTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'username', label: '用户名' },
+  { component: 'Input', fieldName: 'ip', label: '登录IP' },
+  { component: 'Input', fieldName: 'userAgent', label: '用户代理' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '登录时间' },
+  { component: 'Select', fieldName: 'isSuccess', label: '登录结果' },
+  { component: 'Input', fieldName: 'content', label: '日志内容' },
 ];
+
+export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
+  loginLogTableSchema,
+  {
+    seq: { width: 60 },
+    username: {
+      formatter: undefined,
+      showOverflow: 'tooltip',
+      width: 120,
+    },
+    ip: {
+      formatter: undefined,
+      width: 140,
+    },
+    userAgent: {
+      formatter: ({ cellValue }) => cellValue || '-',
+      minWidth: 250,
+      showOverflow: 'tooltip',
+    },
+    createdAt: {
+      formatter: ({ cellValue }) => formatUTC(cellValue),
+      sortable: true,
+      width: 160,
+    },
+    isSuccess: {
+      formatter: undefined,
+      slots: { default: 'isSuccess' },
+      width: 120,
+    },
+    content: {
+      formatter: ({ cellValue }) => cellValue || '-',
+      minWidth: 200,
+      showOverflow: 'tooltip',
+    },
+  },
+);
 
 // 搜索表单配置
 export const searchFormSchema: EsFormSchema = [

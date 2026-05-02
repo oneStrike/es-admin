@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminAppUserDetailDto,
   AdminAppUserExperienceRecordDto,
@@ -9,6 +8,7 @@ import type {
   AppUsersExperienceGrantRequest,
   AppUsersPointsConsumeRequest,
   AppUsersPointsGrantRequest,
+  BaseUserBadgeDto,
   UserBadgeItemDto,
   UserPointStatsFieldsDto,
 } from '#/api/types';
@@ -37,6 +37,7 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsModalTable from '#/components/es-modal-table';
 import { useMessage } from '#/hooks/useFeedback';
+import { formSchemaTransform } from '#/utils';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
   badgeTypeMap,
@@ -287,170 +288,180 @@ const experienceGrantFormSchema: EsFormSchema = [
   },
 ];
 
-const pointRecordColumns: VxeGridProps<AdminAppUserPointRecordDto>['columns'] =
-  [
-    {
-      title: '序号',
-      type: 'seq',
-      width: 60,
-    },
-    {
-      field: 'createdAt',
-      title: '操作时间',
-      minWidth: 170,
-      cellRender: {
-        name: 'CellDate',
-      },
-    },
-    {
-      field: 'points',
-      title: '积分变化',
-      width: 110,
-      slots: { default: 'pointsDelta' },
-    },
-    {
-      field: 'beforePoints',
-      title: '变化前',
-      width: 100,
-    },
-    {
-      field: 'afterPoints',
-      title: '变化后',
-      width: 100,
-    },
-    {
-      field: 'targetType',
-      title: '目标类型',
-      minWidth: 100,
-      formatter: ({ cellValue }) => cellValue ?? '-',
-    },
-    {
-      field: 'targetId',
-      title: '目标 ID',
-      minWidth: 100,
-      formatter: ({ cellValue }) => cellValue ?? '-',
-    },
-    {
-      field: 'remark',
-      title: '备注',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      formatter: ({ cellValue }) => cellValue || '-',
-    },
-  ];
-
-const experienceRecordColumns: VxeGridProps<AdminAppUserExperienceRecordDto>['columns'] =
-  [
-    {
-      title: '序号',
-      type: 'seq',
-      width: 60,
-    },
-    {
-      field: 'createdAt',
-      title: '操作时间',
-      minWidth: 170,
-      cellRender: {
-        name: 'CellDate',
-      },
-    },
-    {
-      field: 'experience',
-      title: '经验变化',
-      width: 110,
-      slots: { default: 'experienceDelta' },
-    },
-    {
-      field: 'beforeExperience',
-      title: '变化前',
-      width: 100,
-    },
-    {
-      field: 'afterExperience',
-      title: '变化后',
-      width: 100,
-    },
-    {
-      field: 'remark',
-      title: '备注',
-      minWidth: 240,
-      showOverflow: 'tooltip',
-      formatter: ({ cellValue }) => cellValue || '-',
-    },
-  ];
-
-const userBadgeColumns: VxeGridProps<UserBadgeItemDto>['columns'] = [
-  {
-    title: '序号',
-    type: 'seq',
-    width: 60,
-  },
-  {
-    field: 'badge',
-    title: '徽章信息',
-    minWidth: 260,
-    slots: { default: 'badgeInfo' },
-  },
-  {
-    field: 'createdAt',
-    title: '获得时间',
-    minWidth: 170,
-    cellRender: {
-      name: 'CellDate',
-    },
-  },
-  {
-    field: 'actions',
-    title: '操作',
-    width: 120,
-    slots: { default: 'badgeActions' },
-  },
+const pointRecordTableSchema: EsFormSchema = [
+  { component: 'DatePicker', fieldName: 'createdAt', label: '操作时间' },
+  { component: 'InputNumber', fieldName: 'points', label: '积分变化' },
+  { component: 'InputNumber', fieldName: 'beforePoints', label: '变化前' },
+  { component: 'InputNumber', fieldName: 'afterPoints', label: '变化后' },
+  { component: 'InputNumber', fieldName: 'targetType', label: '目标类型' },
+  { component: 'InputNumber', fieldName: 'targetId', label: '目标 ID' },
+  { component: 'Input', fieldName: 'remark', label: '备注' },
 ];
 
-const availableBadgeColumns: VxeGridProps['columns'] = [
-  {
-    field: 'name',
-    title: '徽章名称',
-    minWidth: 180,
-  },
-  {
-    field: 'type',
-    title: '徽章类型',
-    minWidth: 120,
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        mapOptions: badgeTypeOptions,
+const pointRecordColumns =
+  formSchemaTransform.toTableColumns<AdminAppUserPointRecordDto>(
+    pointRecordTableSchema,
+    {
+      seq: {
+        width: 60,
       },
-    },
-  },
-  {
-    field: 'business',
-    title: '业务域',
-    minWidth: 120,
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'eventKey',
-    title: '事件键',
-    minWidth: 140,
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'isEnabled',
-    title: '状态',
-    minWidth: 100,
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        map: {
-          false: '禁用',
-          true: '启用',
+      createdAt: {
+        cellRender: {
+          name: 'CellDate',
         },
+        minWidth: 170,
+      },
+      points: {
+        formatter: undefined,
+        slots: { default: 'pointsDelta' },
+        width: 110,
+      },
+      beforePoints: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        width: 100,
+      },
+      afterPoints: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        width: 100,
+      },
+      targetType: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+      },
+      targetId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+      },
+      remark: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 220,
+        showOverflow: 'tooltip',
       },
     },
+  );
+
+const experienceRecordTableSchema: EsFormSchema = [
+  { component: 'DatePicker', fieldName: 'createdAt', label: '操作时间' },
+  { component: 'InputNumber', fieldName: 'experience', label: '经验变化' },
+  {
+    component: 'InputNumber',
+    fieldName: 'beforeExperience',
+    label: '变化前',
   },
+  { component: 'InputNumber', fieldName: 'afterExperience', label: '变化后' },
+  { component: 'Input', fieldName: 'remark', label: '备注' },
 ];
+
+const experienceRecordColumns =
+  formSchemaTransform.toTableColumns<AdminAppUserExperienceRecordDto>(
+    experienceRecordTableSchema,
+    {
+      seq: {
+        width: 60,
+      },
+      createdAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 170,
+      },
+      experience: {
+        formatter: undefined,
+        slots: { default: 'experienceDelta' },
+        width: 110,
+      },
+      beforeExperience: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        width: 100,
+      },
+      afterExperience: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        width: 100,
+      },
+      remark: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 240,
+        showOverflow: 'tooltip',
+      },
+    },
+  );
+
+const userBadgeTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'badge', label: '徽章信息' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '获得时间' },
+];
+
+const userBadgeColumns = formSchemaTransform.toTableColumns<UserBadgeItemDto>(
+  userBadgeTableSchema,
+  {
+    seq: {
+      width: 60,
+    },
+    badge: {
+      formatter: undefined,
+      minWidth: 260,
+      slots: { default: 'badgeInfo' },
+    },
+    createdAt: {
+      cellRender: {
+        name: 'CellDate',
+      },
+      minWidth: 170,
+    },
+    actions: {
+      show: true,
+      slots: { default: 'badgeActions' },
+      width: 120,
+    },
+  },
+);
+
+const availableBadgeTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'name', label: '徽章名称' },
+  { component: 'Select', fieldName: 'type', label: '徽章类型' },
+  { component: 'Input', fieldName: 'business', label: '业务域' },
+  { component: 'Input', fieldName: 'eventKey', label: '事件键' },
+  { component: 'Select', fieldName: 'isEnabled', label: '状态' },
+];
+
+const availableBadgeColumns =
+  formSchemaTransform.toTableColumns<BaseUserBadgeDto>(
+    availableBadgeTableSchema,
+    {
+      name: {
+        minWidth: 180,
+      },
+      type: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: badgeTypeOptions,
+          },
+        },
+        minWidth: 120,
+      },
+      business: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 120,
+      },
+      eventKey: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 140,
+      },
+      isEnabled: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            map: {
+              false: '禁用',
+              true: '启用',
+            },
+          },
+        },
+        minWidth: 100,
+      },
+    },
+  );
 
 const [PointGrid, pointGridApi] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(pointRecordSearchSchema, {

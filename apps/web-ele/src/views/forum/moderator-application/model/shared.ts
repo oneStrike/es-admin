@@ -1,4 +1,3 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
   BaseForumSectionDto,
   ForumModeratorApplicationDto,
@@ -6,6 +5,7 @@ import type {
 import type { EsFormSchema } from '#/types';
 
 import { forumSectionsPageApi } from '#/api/core';
+import { formSchemaTransform } from '#/utils';
 
 export const applicationStatusOptions = [
   { label: '待审核', value: 0, color: 'warning' as const },
@@ -111,88 +111,85 @@ export const auditFormSchema: EsFormSchema = [
   },
 ];
 
-export const applicationColumns: VxeGridPropTypes.Columns<ForumModeratorApplicationDto> =
-  [
+const applicationTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'applicant', label: '申请人' },
+  { component: 'InputNumber', fieldName: 'applicantId', label: '申请人ID' },
+  { component: 'Select', fieldName: 'sectionId', label: '申请板块' },
+  { component: 'Select', fieldName: 'permissionNames', label: '申请权限' },
+  { component: 'Input', fieldName: 'reason', label: '申请理由' },
+  { component: 'Select', fieldName: 'status', label: '审核状态' },
+  { component: 'Input', fieldName: 'auditReason', label: '审核意见' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '申请时间' },
+  { component: 'DatePicker', fieldName: 'auditAt', label: '审核时间' },
+];
+
+export const applicationColumns =
+  formSchemaTransform.toTableColumns<ForumModeratorApplicationDto>(
+    applicationTableSchema,
     {
-      field: 'applicant',
-      fixed: 'left',
-      minWidth: 180,
-      title: '申请人',
-      formatter: ({ row }) => row.applicant?.nickname || '-',
-    },
-    {
-      field: 'applicantId',
-      minWidth: 100,
-      title: '申请人ID',
-    },
-    {
-      field: 'sectionId',
-      minWidth: 160,
-      title: '申请板块',
-      formatter: ({ cellValue }) => getSectionLabel(cellValue),
-    },
-    {
-      field: 'permissionNames',
-      minWidth: 220,
-      title: '申请权限',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          type: 'info',
+      applicant: {
+        fixed: 'left',
+        formatter: ({ row }) => row.applicant?.nickname || '-',
+        minWidth: 180,
+      },
+      applicantId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+      },
+      sectionId: {
+        formatter: ({ cellValue }) => getSectionLabel(cellValue),
+        minWidth: 160,
+      },
+      permissionNames: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            type: 'info',
+          },
         },
+        minWidth: 220,
       },
-    },
-    {
-      field: 'reason',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      title: '申请理由',
-      formatter: ({ cellValue }) => cellValue || '-',
-    },
-    {
-      field: 'status',
-      minWidth: 120,
-      title: '审核状态',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: applicationStatusOptions,
+      reason: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 220,
+        showOverflow: 'tooltip',
+      },
+      status: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: applicationStatusOptions,
+          },
         },
+        minWidth: 120,
+      },
+      auditReason: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 220,
+        showOverflow: 'tooltip',
+      },
+      createdAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      auditAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      actions: {
+        show: true,
+        fixed: 'right',
+        minWidth: 220,
+        slots: { default: 'actions' },
       },
     },
-    {
-      field: 'auditReason',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      title: '审核意见',
-      formatter: ({ cellValue }) => cellValue || '-',
-    },
-    {
-      field: 'createdAt',
-      minWidth: 160,
-      sortable: true,
-      title: '申请时间',
-      cellRender: {
-        name: 'CellDate',
-      },
-    },
-    {
-      field: 'auditAt',
-      minWidth: 160,
-      sortable: true,
-      title: '审核时间',
-      cellRender: {
-        name: 'CellDate',
-      },
-    },
-    {
-      field: 'actions',
-      fixed: 'right',
-      minWidth: 220,
-      slots: { default: 'actions' },
-      title: '操作',
-    },
-  ];
+  );
 
 export function syncSectionOptions(sections: BaseForumSectionDto[] = []) {
   sectionOptions.splice(

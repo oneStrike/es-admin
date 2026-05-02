@@ -8,6 +8,7 @@ import type {
   ContentEmojiPackCreateRequest,
   ContentEmojiPackUpdateRequest,
 } from '#/api/types';
+import type { EsFormSchema } from '#/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -31,7 +32,7 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
-import { createSearchFormOptions } from '#/utils';
+import { createSearchFormOptions, formSchemaTransform } from '#/utils';
 
 import {
   createEmojiAssetColumns,
@@ -69,36 +70,34 @@ const filteredPacks = computed(() => {
 
 const packOptions = computed(() => buildEmojiPackOptions(packs.value));
 
+const packTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'name', label: '表情包' },
+  { component: 'Switch', fieldName: 'isEnabled', label: '状态' },
+];
+
 const packGridOptions: VxeGridProps<BaseEmojiPackDto> = {
-  columns: [
+  columns: formSchemaTransform.toTableColumns<BaseEmojiPackDto>(
+    packTableSchema,
     {
-      title: '序号',
-      type: 'seq',
-      width: 70,
-      fixed: 'left',
+      seq: { width: 70 },
+      name: {
+        formatter: undefined,
+        headerAlign: 'center',
+        minWidth: 220,
+        slots: { default: 'packName' },
+      },
+      isEnabled: {
+        formatter: undefined,
+        minWidth: 110,
+        slots: { default: 'packStatus' },
+      },
+      actions: {
+        minWidth: 150,
+        show: true,
+        slots: { default: 'packActions' },
+      },
     },
-    {
-      align: 'center',
-      field: 'name',
-      headerAlign: 'center',
-      minWidth: 220,
-      slots: { default: 'packName' },
-      title: '表情包',
-    },
-    {
-      field: 'isEnabled',
-      minWidth: 110,
-      slots: { default: 'packStatus' },
-      title: '状态',
-    },
-    {
-      field: 'actions',
-      fixed: 'right',
-      minWidth: 150,
-      slots: { default: 'packActions' },
-      title: '操作',
-    },
-  ],
+  ),
   data: [],
   height: '100%',
   rowConfig: {
@@ -405,8 +404,7 @@ async function openAssetFormModal(row?: BaseEmojiAssetDto, packId?: number) {
     return;
   }
 
-  let record: Record<string, any> | undefined;
-  record = row
+  const record: Record<string, any> | undefined = row
     ? await contentEmojiAssetDetailApi({ id: row.id })
     : {
         isEnabled: true,

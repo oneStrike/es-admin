@@ -1,7 +1,7 @@
 /**
  *  类型定义 [ReportPageRequest]
  *  @来源 内容治理/举报处理
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type ReportPageRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type ReportPageResponse = {
 /**
  *  类型定义 [ReportDetailRequest]
  *  @来源 内容治理/举报处理
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type ReportDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type ReportDetailResponse = AdminReportDetailDto;
 /**
  *  类型定义 [ReportHandleRequest]
  *  @来源 内容治理/举报处理
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type ReportHandleRequest = HandleAdminReportDto;
 
@@ -94,7 +94,7 @@ export type ReportHandleResponse = boolean;
 /**
  *  类型定义 [AdminReportPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type AdminReportPageItemDto = {
   /** 任意合法数值 */
@@ -145,7 +145,7 @@ export type AdminReportPageItemDto = {
 /**
  *  类型定义 [InteractionAppUserSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type InteractionAppUserSummaryDto = {
   /** 任意合法数值 */
@@ -166,7 +166,7 @@ export type InteractionAppUserSummaryDto = {
 /**
  *  类型定义 [InteractionActorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type InteractionActorSummaryDto = {
   /** 任意合法数值 */
@@ -187,7 +187,7 @@ export type InteractionActorSummaryDto = {
 /**
  *  类型定义 [InteractionReportTargetSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type InteractionReportTargetSummaryDto = {
   /** 任意合法数值 */
@@ -226,7 +226,7 @@ export type InteractionReportTargetSummaryDto = {
 /**
  *  类型定义 [InteractionSceneSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type InteractionSceneSummaryDto = {
   /** 任意合法数值 */
@@ -249,7 +249,7 @@ export type InteractionSceneSummaryDto = {
 /**
  *  类型定义 [AdminReportDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type AdminReportDetailDto = {
   /** 任意合法数值 */
@@ -302,7 +302,7 @@ export type AdminReportDetailDto = {
 /**
  *  类型定义 [InteractionReportCommentSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type InteractionReportCommentSummaryDto = {
   /** 任意合法数值 */
@@ -331,7 +331,7 @@ export type InteractionReportCommentSummaryDto = {
 /**
  *  类型定义 [HandleAdminReportDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 02:19:03
+ *  @更新时间 2026-05-02 16:37:14
  */
 export type HandleAdminReportDto = {
   /** 任意合法数值 */

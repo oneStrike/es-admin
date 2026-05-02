@@ -5,8 +5,13 @@ import { formatUTC } from '#/utils';
 import {
   auditRoleMap,
   auditStatusMap,
+  formatActorSummary,
+  formatCommentTargetExtra,
+  formatCommentTargetSummary,
+  formatCommentTargetTitle,
   formatCommentUser,
   formatSensitiveWordHit,
+  resolveCommentTargetState,
   toPlainTextFromHtml,
   userStatusMap,
 } from './shared';
@@ -23,17 +28,20 @@ export function getDetailCards(detail: CommentDetailResponse) {
     detail.auditRole === null || detail.auditRole === undefined
       ? undefined
       : auditRoleMap[detail.auditRole];
+  const targetState = resolveCommentTargetState(detail.targetSummary);
+  let userEnabledTagText = '-';
+  let userEnabledTagType = 'info';
+
+  if (detail.user) {
+    userEnabledTagText = detail.user.isEnabled ? '启用' : '禁用';
+    userEnabledTagType = detail.user.isEnabled ? 'success' : 'danger';
+  }
 
   return [
     {
       title: '基本信息',
       show: true,
       fields: [
-        {
-          label: '评论 ID',
-          value: detail.id,
-          type: 'text' as const,
-        },
         {
           label: '评论用户',
           value: formatCommentUser(detail.user),
@@ -50,8 +58,8 @@ export function getDetailCards(detail: CommentDetailResponse) {
           label: '用户启用',
           value: detail.user?.isEnabled,
           type: 'tag' as const,
-          tagText: detail.user?.isEnabled ? '启用' : '禁用',
-          tagType: detail.user?.isEnabled ? 'success' : 'danger',
+          tagText: userEnabledTagText,
+          tagType: userEnabledTagType,
         },
         {
           label: '楼层',
@@ -89,6 +97,16 @@ export function getDetailCards(detail: CommentDetailResponse) {
           type: 'text' as const,
         },
         {
+          label: '审核人',
+          value: formatActorSummary(detail.auditorSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '审核人角色',
+          value: detail.auditorSummary?.roleName || '-',
+          type: 'text' as const,
+        },
+        {
           label: '审核时间',
           value: detail.auditAt
             ? formatUTC(detail.auditAt, 'YYYY-MM-DD HH:mm:ss')
@@ -99,6 +117,43 @@ export function getDetailCards(detail: CommentDetailResponse) {
           label: '审核原因',
           value: detail.auditReason || '-',
           type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '评论对象',
+      show: !!detail.targetSummary,
+      fields: [
+        {
+          label: '对象类型',
+          value:
+            detail.targetSummary?.targetTypeName ||
+            (detail.targetSummary
+              ? `类型 ${detail.targetSummary.targetType}`
+              : '-'),
+          type: 'text' as const,
+        },
+        {
+          label: '对象标题',
+          value: formatCommentTargetTitle(detail.targetSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '对象摘要',
+          value: formatCommentTargetSummary(detail.targetSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '所属信息',
+          value: formatCommentTargetExtra(detail.targetSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '对象状态',
+          value: targetState.label,
+          type: 'tag' as const,
+          tagText: targetState.label,
+          tagType: targetState.color,
         },
       ],
     },

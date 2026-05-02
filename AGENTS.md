@@ -53,6 +53,14 @@
 - 如需调整接口定义、类型结构或生成结果，必须修改生成源、生成模板或脚本输入后重新生成，不允许直接编辑生成产物。
 - 业务逻辑、页面交互、页面级适配优先放在 `apps/web-ele/src/**` 内完成。
 
+### 5.1 表单、筛选与表格字段复用
+
+- 业务表单、查询筛选和表格列应优先复用同一份 `EsFormSchema` 字段定义，避免为同一业务字段重复维护多套 label、field、组件语义和枚举映射。
+- 表格列默认通过 `formSchemaTransform.toTableColumns(...)` 从业务 `formSchema` 生成；查询筛选默认通过 `formSchemaTransform.toSearchSchema(...)` 从同一份或同源 schema 派生。
+- 表格列的序号列应由 `formSchemaTransform.toTableColumns(...)` 统一生成；不要在业务列表中手写重复的序号列，除非该表格确实无法用 schema 表达。
+- 表格、筛选或展示字段只在以下情况允许手写补充：字段不属于表单语义、是纯展示/操作列、统计聚合列、弹窗选择器的临时列，或需要特殊 slot/formatter/cellRender。此时也应优先通过 `toTableColumns` 的 `extra` 参数追加或覆盖；只有无法映射到 schema 字段时才保留手写 columns。
+- 新增或改造业务列表时，应先检查是否已有可复用的 `formSchema`、`searchSchema` 或同域 model/shared 定义；确需新增 schema 时，应放在对应业务模块的 `model` 层并与现有命名方式保持一致。
+
 ## 6. 包管理与运行方式
 
 - 统一使用 `pnpm`，不要混用 `npm`、`yarn` 作为日常开发命令。

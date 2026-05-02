@@ -1,6 +1,7 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { BaseForumHashtagDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { formSchemaTransform } from '#/utils';
 
 export const auditStatusOptions = [
   { label: '待审核', value: 0, color: 'warning' as const },
@@ -173,105 +174,110 @@ export const searchFormSchema: EsFormSchema = [
   },
 ];
 
-export const pageColumns: VxeGridPropTypes.Columns<BaseForumHashtagDto> = [
+const pageTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'displayName', label: '话题名称' },
+  { component: 'Input', fieldName: 'slug', label: 'Slug' },
+  { component: 'Select', fieldName: 'auditStatus', label: '审核状态' },
+  { component: 'Select', fieldName: 'isHidden', label: '隐藏' },
+  { component: 'InputNumber', fieldName: 'manualBoost', label: '人工热度' },
+  { component: 'InputNumber', fieldName: 'followerCount', label: '关注人数' },
+  { component: 'InputNumber', fieldName: 'topicRefCount', label: '主题引用数' },
   {
-    field: 'displayName',
-    fixed: 'left',
-    minWidth: 180,
-    showOverflow: 'tooltip',
-    slots: { default: 'displayName' },
-    title: '话题名称',
+    component: 'InputNumber',
+    fieldName: 'commentRefCount',
+    label: '评论引用数',
   },
+  { component: 'Select', fieldName: 'createSourceType', label: '创建来源' },
   {
-    field: 'slug',
-    minWidth: 160,
-    showOverflow: 'tooltip',
-    title: 'Slug',
+    component: 'DatePicker',
+    fieldName: 'lastReferencedAt',
+    label: '最近引用时间',
   },
-  {
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        mapOptions: auditStatusOptions,
-      },
-    },
-    field: 'auditStatus',
-    minWidth: 120,
-    title: '审核状态',
-  },
-  {
-    field: 'isHidden',
-    minWidth: 100,
-    slots: { default: 'isHidden' },
-    title: '隐藏',
-  },
-  {
-    field: 'manualBoost',
-    minWidth: 110,
-    sortable: true,
-    title: '人工热度',
-  },
-  {
-    field: 'followerCount',
-    minWidth: 110,
-    sortable: true,
-    title: '关注人数',
-  },
-  {
-    field: 'topicRefCount',
-    minWidth: 120,
-    sortable: true,
-    title: '主题引用数',
-  },
-  {
-    field: 'commentRefCount',
-    minWidth: 120,
-    sortable: true,
-    title: '评论引用数',
-  },
-  {
-    cellRender: {
-      name: 'CellTag',
-      props: {
-        mapOptions: createSourceTypeOptions,
-      },
-    },
-    field: 'createSourceType',
-    minWidth: 150,
-    title: '创建来源',
-  },
-  {
-    cellRender: {
-      name: 'CellDate',
-    },
-    field: 'lastReferencedAt',
-    minWidth: 170,
-    sortable: true,
-    title: '最近引用时间',
-  },
-  {
-    cellRender: {
-      name: 'CellDate',
-    },
-    field: 'createdAt',
-    minWidth: 160,
-    sortable: true,
-    title: '创建时间',
-  },
-  {
-    cellRender: {
-      name: 'CellDate',
-    },
-    field: 'updatedAt',
-    minWidth: 160,
-    sortable: true,
-    title: '更新时间',
-  },
-  {
-    field: 'actions',
-    fixed: 'right',
-    slots: { default: 'actions' },
-    title: '操作',
-    width: 180,
-  },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
+  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
+
+export const pageColumns =
+  formSchemaTransform.toTableColumns<BaseForumHashtagDto>(pageTableSchema, {
+    displayName: {
+      fixed: 'left',
+      formatter: undefined,
+      minWidth: 180,
+      showOverflow: 'tooltip',
+      slots: { default: 'displayName' },
+    },
+    slug: {
+      minWidth: 160,
+      showOverflow: 'tooltip',
+    },
+    auditStatus: {
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          mapOptions: auditStatusOptions,
+        },
+      },
+      minWidth: 120,
+    },
+    isHidden: {
+      formatter: undefined,
+      minWidth: 100,
+      slots: { default: 'isHidden' },
+    },
+    manualBoost: {
+      formatter: ({ cellValue }) => cellValue ?? '-',
+      minWidth: 110,
+      sortable: true,
+    },
+    followerCount: {
+      formatter: ({ cellValue }) => cellValue ?? '-',
+      minWidth: 110,
+      sortable: true,
+    },
+    topicRefCount: {
+      formatter: ({ cellValue }) => cellValue ?? '-',
+      minWidth: 120,
+      sortable: true,
+    },
+    commentRefCount: {
+      formatter: ({ cellValue }) => cellValue ?? '-',
+      minWidth: 120,
+      sortable: true,
+    },
+    createSourceType: {
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          mapOptions: createSourceTypeOptions,
+        },
+      },
+      minWidth: 150,
+    },
+    lastReferencedAt: {
+      cellRender: {
+        name: 'CellDate',
+      },
+      minWidth: 170,
+      sortable: true,
+    },
+    createdAt: {
+      cellRender: {
+        name: 'CellDate',
+      },
+      minWidth: 160,
+      sortable: true,
+    },
+    updatedAt: {
+      cellRender: {
+        name: 'CellDate',
+      },
+      minWidth: 160,
+      sortable: true,
+    },
+    actions: {
+      show: true,
+      fixed: 'right',
+      slots: { default: 'actions' },
+      width: 180,
+    },
+  });

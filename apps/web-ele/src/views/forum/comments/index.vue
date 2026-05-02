@@ -23,8 +23,14 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 import { getDetailCards } from './model/detail';
 import {
   auditFormSchema,
+  formatCommentTargetExtra,
+  formatCommentTargetTitle,
+  formatReplyCommentSummary,
   pageColumns,
+  resolveCommentTargetState,
+  resolveReplyCommentState,
   searchFormSchema,
+  targetTypeMap,
   userStatusMap,
 } from './model/shared';
 
@@ -159,6 +165,70 @@ async function toggleHiddenStatus(row: CommentRow) {
             </div>
           </div>
         </div>
+      </template>
+
+      <template #targetType="{ row }">
+        <el-tag v-if="row.targetSummary" size="small">
+          {{
+            row.targetSummary.targetTypeName ||
+            targetTypeMap[row.targetSummary.targetType]?.label ||
+            '目标'
+          }}
+        </el-tag>
+        <span v-else>-</span>
+      </template>
+
+      <template #targetTitle="{ row }">
+        <div v-if="row.targetSummary" class="min-w-0">
+          <div class="truncate text-sm">
+            {{ formatCommentTargetTitle(row.targetSummary) }}
+          </div>
+          <div class="mt-1 flex flex-wrap items-center gap-1 text-xs">
+            <el-tag
+              :type="resolveCommentTargetState(row.targetSummary).color"
+              size="small"
+            >
+              {{ resolveCommentTargetState(row.targetSummary).label }}
+            </el-tag>
+          </div>
+        </div>
+        <span v-else>-</span>
+      </template>
+
+      <template #targetExtra="{ row }">
+        <span v-if="row.targetSummary" class="text-sm text-gray-500">
+          {{ formatCommentTargetExtra(row.targetSummary) }}
+        </span>
+        <span v-else>-</span>
+      </template>
+
+      <template #replyToSummary="{ row }">
+        <div v-if="row.replyToSummary" class="min-w-0">
+          <div class="truncate text-sm">
+            {{ formatReplyCommentSummary(row.replyToSummary) }}
+          </div>
+          <div class="mt-1 flex flex-wrap items-center gap-1 text-xs">
+            <el-tag
+              :type="resolveReplyCommentState(row.replyToSummary).color"
+              size="small"
+            >
+              {{ resolveReplyCommentState(row.replyToSummary).label }}
+            </el-tag>
+            <el-tag
+              v-if="row.replyToSummary.userStatus"
+              :type="
+                userStatusMap[row.replyToSummary.userStatus]?.color || 'info'
+              "
+              size="small"
+            >
+              {{
+                userStatusMap[row.replyToSummary.userStatus]?.label ||
+                '未知用户状态'
+              }}
+            </el-tag>
+          </div>
+        </div>
+        <span v-else>-</span>
       </template>
 
       <template #sensitiveWords="{ row }">

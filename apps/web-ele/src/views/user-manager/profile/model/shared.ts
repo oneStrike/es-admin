@@ -1,4 +1,3 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
   AdminAppUserPageItemDto,
   AppUsersCreateRequest,
@@ -9,7 +8,7 @@ import type { EsFormSchema } from '#/types';
 
 import { z } from '#/adapter/form';
 import { UploadSceneEnum } from '#/enum/api';
-import { formatUTC } from '#/utils';
+import { formatUTC, formSchemaTransform } from '#/utils';
 
 type UserStatusValue = AppUsersUpdateStatusRequest['status'];
 type GenderValue = NonNullable<AppUsersProfileUpdateRequest['genderType']>;
@@ -213,7 +212,11 @@ export const createFormSchema: EsFormSchema = [
     component: 'Input',
     fieldName: 'nickname',
     label: '昵称',
-    rules: z.string().trim().min(1, '昵称不能为空').max(30, '昵称不能超过30个字符'),
+    rules: z
+      .string()
+      .trim()
+      .min(1, '昵称不能为空')
+      .max(30, '昵称不能超过30个字符'),
     componentProps: {
       maxlength: 30,
       placeholder: '请输入昵称',
@@ -224,7 +227,10 @@ export const createFormSchema: EsFormSchema = [
     component: 'Input',
     fieldName: 'password',
     label: '密码',
-    rules: z.string().min(6, '密码长度不能少于6位').max(32, '密码长度不能超过32位'),
+    rules: z
+      .string()
+      .min(6, '密码长度不能少于6位')
+      .max(32, '密码长度不能超过32位'),
     componentProps: {
       autocomplete: 'new-password',
       placeholder: '请输入密码',
@@ -318,7 +324,11 @@ export const editFormSchema: EsFormSchema = [
     component: 'Input',
     fieldName: 'nickname',
     label: '昵称',
-    rules: z.string().trim().min(1, '昵称不能为空').max(30, '昵称不能超过30个字符'),
+    rules: z
+      .string()
+      .trim()
+      .min(1, '昵称不能为空')
+      .max(30, '昵称不能超过30个字符'),
     componentProps: {
       maxlength: 30,
       placeholder: '请输入昵称',
@@ -440,134 +450,122 @@ export const statusFormSchema: EsFormSchema = [
   },
 ];
 
-export const userColumns: VxeGridPropTypes.Columns<AdminAppUserPageItemDto> = [
-  {
-    fixed: 'left',
-    title: '序号',
-    type: 'seq',
-    width: 60,
-  },
-  {
-    field: 'avatarUrl',
-    title: '头像',
-    width: 80,
-    slots: { default: 'avatarUrl' },
-  },
-  {
-    field: 'account',
-    minWidth: 140,
-    showOverflow: 'tooltip',
-    title: '账号',
-  },
-  {
-    field: 'nickname',
-    minWidth: 140,
-    showOverflow: 'tooltip',
-    title: '昵称',
-  },
-  {
-    field: 'phoneNumber',
-    minWidth: 140,
-    title: '手机号',
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'emailAddress',
-    minWidth: 200,
-    showOverflow: 'tooltip',
-    title: '邮箱',
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'genderType',
-    title: '性别',
-    width: 90,
-    slots: { default: 'genderType' },
-  },
-  {
-    field: 'levelName',
-    minWidth: 120,
-    title: '等级',
-    formatter: ({ row, cellValue }) => cellValue || row.level?.name || '-',
-  },
-  {
-    field: 'points',
-    sortable: true,
-    title: '积分',
-    width: 100,
-  },
-  {
-    field: 'experience',
-    sortable: true,
-    title: '经验',
-    width: 100,
-  },
-  {
-    field: 'topicCount',
-    sortable: true,
-    title: '主题数',
-    width: 100,
-    formatter: ({ row }) => row.counts?.forumTopicCount ?? 0,
-  },
-  {
-    field: 'replyCount',
-    sortable: true,
-    title: '回复数',
-    width: 100,
-    formatter: ({ row }) => row.counts?.commentCount ?? 0,
-  },
-  {
-    field: 'isEnabled',
-    title: '启用状态',
-    width: 110,
-    slots: { default: 'isEnabled' },
-  },
-  {
-    field: 'status',
-    minWidth: 120,
-    title: '社区状态',
-    slots: { default: 'status' },
-  },
-  {
-    field: 'banUntil',
-    minWidth: 160,
-    title: '状态截止',
-    slots: { default: 'banUntil' },
-  },
-  {
-    field: 'lastLoginAt',
-    minWidth: 170,
-    sortable: true,
-    title: '最后登录',
-    formatter: ({ cellValue }) =>
-      cellValue ? formatUTC(cellValue, 'YYYY-MM-DD HH:mm:ss') : '-',
-  },
-  {
-    field: 'lastLoginIp',
-    minWidth: 140,
-    title: '登录 IP',
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'createdAt',
-    minWidth: 170,
-    sortable: true,
-    title: '注册时间',
-    formatter: ({ cellValue }) =>
-      cellValue ? formatUTC(cellValue, 'YYYY-MM-DD HH:mm:ss') : '-',
-  },
-  {
-    field: 'deletedAt',
-    minWidth: 170,
-    title: '删除时间',
-    formatter: ({ cellValue }) =>
-      cellValue ? formatUTC(cellValue, 'YYYY-MM-DD HH:mm:ss') : '-',
-  },
-  {
-    field: 'actions',
-    fixed: 'right',
-    title: '操作',
-    width: 260,
-    slots: { default: 'actions' },
-  },
+const userTableSchema: EsFormSchema = [
+  { component: 'Upload', fieldName: 'avatarUrl', label: '头像' },
+  { component: 'Input', fieldName: 'account', label: '账号' },
+  { component: 'Input', fieldName: 'nickname', label: '昵称' },
+  { component: 'Input', fieldName: 'phoneNumber', label: '手机号' },
+  { component: 'Input', fieldName: 'emailAddress', label: '邮箱' },
+  { component: 'Select', fieldName: 'genderType', label: '性别' },
+  { component: 'Input', fieldName: 'levelName', label: '等级' },
+  { component: 'InputNumber', fieldName: 'points', label: '积分' },
+  { component: 'InputNumber', fieldName: 'experience', label: '经验' },
+  { component: 'InputNumber', fieldName: 'topicCount', label: '主题数' },
+  { component: 'InputNumber', fieldName: 'replyCount', label: '回复数' },
+  { component: 'Switch', fieldName: 'isEnabled', label: '启用状态' },
+  { component: 'Select', fieldName: 'status', label: '社区状态' },
+  { component: 'DatePicker', fieldName: 'banUntil', label: '状态截止' },
+  { component: 'DatePicker', fieldName: 'lastLoginAt', label: '最后登录' },
+  { component: 'Input', fieldName: 'lastLoginIp', label: '登录 IP' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '注册时间' },
+  { component: 'DatePicker', fieldName: 'deletedAt', label: '删除时间' },
 ];
+
+export const userColumns =
+  formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(userTableSchema, {
+    seq: { width: 60 },
+    avatarUrl: {
+      formatter: undefined,
+      slots: { default: 'avatarUrl' },
+      width: 80,
+    },
+    account: {
+      formatter: undefined,
+      minWidth: 140,
+      showOverflow: 'tooltip',
+    },
+    nickname: {
+      formatter: undefined,
+      minWidth: 140,
+      showOverflow: 'tooltip',
+    },
+    phoneNumber: {
+      formatter: ({ cellValue }) => cellValue || '-',
+      minWidth: 140,
+    },
+    emailAddress: {
+      formatter: ({ cellValue }) => cellValue || '-',
+      minWidth: 200,
+      showOverflow: 'tooltip',
+    },
+    genderType: {
+      formatter: undefined,
+      slots: { default: 'genderType' },
+      width: 90,
+    },
+    levelName: {
+      formatter: ({ cellValue, row }) => cellValue || row.level?.name || '-',
+      minWidth: 120,
+    },
+    points: {
+      formatter: undefined,
+      sortable: true,
+      width: 100,
+    },
+    experience: {
+      formatter: undefined,
+      sortable: true,
+      width: 100,
+    },
+    topicCount: {
+      formatter: ({ row }) => row.counts?.forumTopicCount ?? 0,
+      sortable: true,
+      width: 100,
+    },
+    replyCount: {
+      formatter: ({ row }) => row.counts?.commentCount ?? 0,
+      sortable: true,
+      width: 100,
+    },
+    isEnabled: {
+      formatter: undefined,
+      slots: { default: 'isEnabled' },
+      width: 110,
+    },
+    status: {
+      formatter: undefined,
+      minWidth: 120,
+      slots: { default: 'status' },
+    },
+    banUntil: {
+      formatter: undefined,
+      minWidth: 160,
+      slots: { default: 'banUntil' },
+    },
+    lastLoginAt: {
+      formatter: ({ cellValue }) =>
+        cellValue ? formatUTC(cellValue, 'YYYY-MM-DD HH:mm:ss') : '-',
+      minWidth: 170,
+      sortable: true,
+    },
+    lastLoginIp: {
+      formatter: ({ cellValue }) => cellValue || '-',
+      minWidth: 140,
+    },
+    createdAt: {
+      formatter: ({ cellValue }) =>
+        cellValue ? formatUTC(cellValue, 'YYYY-MM-DD HH:mm:ss') : '-',
+      minWidth: 170,
+      sortable: true,
+    },
+    deletedAt: {
+      formatter: ({ cellValue }) =>
+        cellValue ? formatUTC(cellValue, 'YYYY-MM-DD HH:mm:ss') : '-',
+      minWidth: 170,
+    },
+    actions: {
+      show: true,
+      slots: { default: 'actions' },
+      width: 260,
+    },
+  });

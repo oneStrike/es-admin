@@ -193,6 +193,19 @@ function resolveOptions(props: Recordable<any>, attrs: Recordable<any>) {
   return Array.isArray(options) ? options : [];
 }
 
+function normalizeRadioOption(option: Recordable<any>) {
+  if (
+    option &&
+    typeof option === 'object' &&
+    !Array.isArray(option) &&
+    option.value === undefined &&
+    option.label !== undefined
+  ) {
+    return { ...option, value: option.label };
+  }
+  return option;
+}
+
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
 export type ComponentType =
   | 'ApiSelect'
@@ -278,7 +291,9 @@ async function initComponentAdapter() {
         defaultSlot = slots.default;
       } else {
         const isButton = props.isButton ?? attrs.isButton;
-        const options = resolveOptions(props, attrs);
+        const options = resolveOptions(props, attrs).map((option) =>
+          normalizeRadioOption(option),
+        );
         if (options.length > 0) {
           defaultSlot = () =>
             options.map((option) =>

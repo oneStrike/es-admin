@@ -1,6 +1,7 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { AdminTaskReconciliationItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { formSchemaTransform } from '#/utils';
 
 import {
   formatInstanceStepSummary,
@@ -69,80 +70,99 @@ export const taskReconciliationSearchFormSchema: EsFormSchema = [
   },
 ];
 
-export const taskReconciliationColumns: VxeGridPropTypes.Columns<AdminTaskReconciliationItemDto> =
-  [
-    { field: 'id', minWidth: 90, title: '实例 ID' },
+const taskReconciliationTableSchema: EsFormSchema = [
+  { component: 'InputNumber', fieldName: 'id', label: '实例 ID' },
+  { component: 'Input', fieldName: 'task', label: '任务' },
+  { component: 'InputNumber', fieldName: 'userId', label: '用户 ID' },
+  { component: 'Select', fieldName: 'visibleStatus', label: '可见状态' },
+  {
+    component: 'InputNumber',
+    fieldName: 'rewardSettlementId',
+    label: '结算事实 ID',
+  },
+  { component: 'Select', fieldName: 'settlementStatus', label: '补偿状态' },
+  { component: 'Select', fieldName: 'settlementResult', label: '补偿结果' },
+  { component: 'Input', fieldName: 'steps', label: '步骤摘要' },
+  { component: 'Input', fieldName: 'cycleKey', label: '周期键' },
+  { component: 'Input', fieldName: 'uniqueFacts', label: '唯一事实摘要' },
+  { component: 'Input', fieldName: 'latestEvent', label: '最近事件' },
+  { component: 'DatePicker', fieldName: 'claimedAt', label: '领取时间' },
+  { component: 'DatePicker', fieldName: 'completedAt', label: '完成时间' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
+];
+
+export const taskReconciliationColumns =
+  formSchemaTransform.toTableColumns<AdminTaskReconciliationItemDto>(
+    taskReconciliationTableSchema,
     {
-      field: 'task',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      title: '任务',
-      formatter: ({ cellValue }) =>
-        cellValue?.title || `任务 ${cellValue?.id || '-'}`,
-    },
-    { field: 'userId', minWidth: 100, title: '用户 ID' },
-    {
-      field: 'visibleStatus',
-      minWidth: 140,
-      title: '可见状态',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: taskVisibleStatusOptions,
+      id: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 90,
+      },
+      task: {
+        formatter: ({ cellValue }) =>
+          cellValue?.title || `任务 ${cellValue?.id || '-'}`,
+        minWidth: 220,
+        showOverflow: 'tooltip',
+      },
+      userId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+      },
+      visibleStatus: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: taskVisibleStatusOptions,
+          },
         },
+        minWidth: 140,
+      },
+      rewardSettlementId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 120,
+      },
+      settlementStatus: {
+        field: 'rewardSettlement',
+        formatter: undefined,
+        minWidth: 140,
+        slots: { default: 'settlementStatus' },
+      },
+      settlementResult: {
+        field: 'rewardSettlement',
+        formatter: undefined,
+        minWidth: 140,
+        slots: { default: 'settlementResult' },
+      },
+      steps: {
+        formatter: ({ cellValue }) => formatInstanceStepSummary(cellValue),
+        minWidth: 220,
+        showOverflow: 'tooltip',
+      },
+      cycleKey: {
+        minWidth: 140,
+      },
+      uniqueFacts: {
+        formatter: ({ cellValue }) => formatUniqueFacts(cellValue),
+        minWidth: 220,
+        showOverflow: 'tooltip',
+      },
+      latestEvent: {
+        formatter: ({ cellValue }) => formatLatestEvent(cellValue),
+        minWidth: 260,
+        showOverflow: 'tooltip',
+      },
+      claimedAt: {
+        cellRender: { name: 'CellDate' },
+        minWidth: 170,
+      },
+      completedAt: {
+        cellRender: { name: 'CellDate' },
+        minWidth: 170,
+      },
+      createdAt: {
+        cellRender: { name: 'CellDate' },
+        minWidth: 170,
       },
     },
-    { field: 'rewardSettlementId', minWidth: 120, title: '结算事实 ID' },
-    {
-      field: 'rewardSettlement',
-      minWidth: 140,
-      title: '补偿状态',
-      slots: { default: 'settlementStatus' },
-    },
-    {
-      field: 'rewardSettlement',
-      minWidth: 140,
-      title: '补偿结果',
-      slots: { default: 'settlementResult' },
-    },
-    {
-      field: 'steps',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      title: '步骤摘要',
-      formatter: ({ cellValue }) => formatInstanceStepSummary(cellValue),
-    },
-    { field: 'cycleKey', minWidth: 140, title: '周期键' },
-    {
-      field: 'uniqueFacts',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      title: '唯一事实摘要',
-      formatter: ({ cellValue }) => formatUniqueFacts(cellValue),
-    },
-    {
-      field: 'latestEvent',
-      minWidth: 260,
-      showOverflow: 'tooltip',
-      title: '最近事件',
-      formatter: ({ cellValue }) => formatLatestEvent(cellValue),
-    },
-    {
-      field: 'claimedAt',
-      minWidth: 170,
-      title: '领取时间',
-      cellRender: { name: 'CellDate' },
-    },
-    {
-      field: 'completedAt',
-      minWidth: 170,
-      title: '完成时间',
-      cellRender: { name: 'CellDate' },
-    },
-    {
-      field: 'createdAt',
-      minWidth: 170,
-      title: '创建时间',
-      cellRender: { name: 'CellDate' },
-    },
-  ];
+  );

@@ -30,7 +30,7 @@ import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsModalTable from '#/components/es-modal-table';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
-import { createSearchFormOptions } from '#/utils';
+import { createSearchFormOptions, formSchemaTransform } from '#/utils';
 
 import { getDetailCards } from './modules/model/detail';
 import {
@@ -47,33 +47,38 @@ const currentBadge = ref<BaseUserBadgeDto | null>(null);
 
 const userSearchSchema: EsFormSchema = [];
 
-const userColumns: VxeGridProps<BadgeUserPageItemDto>['columns'] = [
+const userTableSchema: EsFormSchema = [
+  { component: 'InputNumber', fieldName: 'userId', label: '用户ID' },
+  { component: 'Input', fieldName: 'nickname', label: '昵称' },
+  { component: 'Input', fieldName: 'level', label: '等级' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '获得时间' },
+];
+
+const userColumns = formSchemaTransform.toTableColumns<BadgeUserPageItemDto>(
+  userTableSchema,
   {
-    field: 'userId',
-    title: '用户ID',
-    minWidth: 100,
-  },
-  {
-    field: 'user',
-    title: '昵称',
-    minWidth: 140,
-    formatter: ({ row }) => row.user?.nickname || '-',
-  },
-  {
-    field: 'user',
-    title: '等级',
-    minWidth: 140,
-    formatter: ({ row }) => row.user?.level || '-',
-  },
-  {
-    field: 'createdAt',
-    title: '获得时间',
-    minWidth: 160,
-    cellRender: {
-      name: 'CellDate',
+    userId: {
+      formatter: ({ cellValue }) => cellValue ?? '-',
+      minWidth: 100,
+    },
+    nickname: {
+      field: 'user',
+      formatter: ({ row }) => row.user?.nickname || '-',
+      minWidth: 140,
+    },
+    level: {
+      field: 'user',
+      formatter: ({ row }) => row.user?.level || '-',
+      minWidth: 140,
+    },
+    createdAt: {
+      cellRender: {
+        name: 'CellDate',
+      },
+      minWidth: 160,
     },
   },
-];
+);
 
 const gridOptions: VxeGridProps<BaseUserBadgeDto> = {
   columns: pageColumns,
@@ -197,16 +202,15 @@ function openRevokeModal(record: BaseUserBadgeDto) {
 }
 
 async function handleAssignSubmit(values: { userIds: string }) {
-  if (!currentBadge.value) return;
+  const badgeId = currentBadge.value?.id;
+  if (!badgeId) return;
   const ids = values.userIds
     .split(/[,，\s]+/)
-    .map((value) => Number(value))
+    .map(Number)
     .filter((value) => Number.isFinite(value) && value > 0);
   if (ids.length === 0) return;
   await Promise.all(
-    ids.map((userId) =>
-      growthBadgesAssignApi({ badgeId: currentBadge.value!.id, userId }),
-    ),
+    ids.map((userId) => growthBadgesAssignApi({ badgeId, userId })),
   );
   useMessage.success('操作成功');
   assignFormApi.close();
@@ -214,11 +218,12 @@ async function handleAssignSubmit(values: { userIds: string }) {
 }
 
 async function handleRevokeConfirm(rows: BadgeUserPageItemDto[]) {
-  if (!currentBadge.value || rows.length === 0) return;
+  const badgeId = currentBadge.value?.id;
+  if (!badgeId || rows.length === 0) return;
   await Promise.all(
     rows.map((row) =>
       growthBadgesRevokeApi({
-        badgeId: currentBadge.value!.id,
+        badgeId,
         userId: row.userId,
       }),
     ),

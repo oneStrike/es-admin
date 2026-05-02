@@ -1,6 +1,7 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { AdminMessageNotificationTemplateDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { formSchemaTransform } from '#/utils';
 
 import {
   getNotificationCategoryLabel,
@@ -131,69 +132,69 @@ export const searchFormSchema: EsFormSchema = [
   },
 ];
 
-export const pageColumns: VxeGridPropTypes.Columns<AdminMessageNotificationTemplateDto> =
-  [
+const templateTableSchema: EsFormSchema = [
+  { component: 'InputNumber', fieldName: 'id', label: '模板 ID' },
+  { component: 'Select', fieldName: 'categoryLabel', label: '通知分类' },
+  { component: 'Input', fieldName: 'titleTemplate', label: '标题模板' },
+  { component: 'Input', fieldName: 'contentTemplate', label: '正文模板' },
+  { component: 'RadioGroup', fieldName: 'isEnabled', label: '启用状态' },
+  { component: 'Input', fieldName: 'remark', label: '备注' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
+  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
+];
+
+export const pageColumns =
+  formSchemaTransform.toTableColumns<AdminMessageNotificationTemplateDto>(
+    templateTableSchema,
     {
-      field: 'id',
-      fixed: 'left',
-      minWidth: 90,
-      sortable: true,
-      title: '模板 ID',
-    },
-    {
-      field: 'categoryLabel',
-      minWidth: 180,
-      slots: { default: 'category' },
-      title: '通知分类',
-    },
-    {
-      field: 'titleTemplate',
-      minWidth: 240,
-      showOverflow: 'tooltip',
-      title: '标题模板',
-    },
-    {
-      field: 'contentTemplate',
-      minWidth: 320,
-      showOverflow: 'tooltip',
-      title: '正文模板',
-    },
-    {
-      field: 'isEnabled',
-      minWidth: 110,
-      slots: { default: 'isEnabled' },
-      title: '启用状态',
-    },
-    {
-      field: 'remark',
-      formatter: ({ cellValue }) => cellValue || '-',
-      minWidth: 180,
-      showOverflow: 'tooltip',
-      title: '备注',
-    },
-    {
-      cellRender: {
-        name: 'CellDate',
+      id: {
+        fixed: 'left',
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 90,
+        sortable: true,
       },
-      field: 'createdAt',
-      minWidth: 160,
-      sortable: true,
-      title: '创建时间',
-    },
-    {
-      cellRender: {
-        name: 'CellDate',
+      categoryLabel: {
+        formatter: undefined,
+        minWidth: 180,
+        slots: { default: 'category' },
       },
-      field: 'updatedAt',
-      minWidth: 160,
-      sortable: true,
-      title: '更新时间',
+      titleTemplate: {
+        minWidth: 240,
+        showOverflow: 'tooltip',
+      },
+      contentTemplate: {
+        minWidth: 320,
+        showOverflow: 'tooltip',
+      },
+      isEnabled: {
+        formatter: undefined,
+        minWidth: 110,
+        slots: { default: 'isEnabled' },
+      },
+      remark: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 180,
+        showOverflow: 'tooltip',
+      },
+      createdAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      updatedAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      actions: {
+        show: true,
+        fixed: 'right',
+        slots: { default: 'actions' },
+        width: 170,
+      },
     },
-    {
-      field: 'actions',
-      fixed: 'right',
-      slots: { default: 'actions' },
-      title: '操作',
-      width: 170,
-    },
-  ];
+  );

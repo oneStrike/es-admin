@@ -33,6 +33,13 @@ import {
   createFormSchema,
   editFormSchema,
   fetchTopicSectionOptions,
+  formatTopicReviewPolicy,
+  formatTopicSectionExtra,
+  formatTopicSectionSummary,
+  formatTopicUserLevel,
+  formatTopicUserSummary,
+  resolveTopicSectionState,
+  resolveTopicUserState,
   searchFormSchema,
   topicColumns,
 } from './model/shared';
@@ -257,6 +264,63 @@ async function toggleTopicBoolean(
         >
           {{ row.title }}
         </el-text>
+      </template>
+
+      <template #userSummary="{ row }">
+        <div v-if="row.userSummary" class="flex min-w-0 items-center gap-2">
+          <el-avatar
+            v-if="row.userSummary.avatarUrl"
+            :size="28"
+            :src="row.userSummary.avatarUrl"
+          />
+          <div class="min-w-0">
+            <div class="truncate text-sm">
+              {{ formatTopicUserSummary(row.userSummary) }}
+            </div>
+            <div class="mt-1 flex flex-wrap items-center gap-1 text-xs">
+              <el-tag
+                v-if="formatTopicUserLevel(row.userSummary) !== '-'"
+                size="small"
+                type="info"
+              >
+                {{ formatTopicUserLevel(row.userSummary) }}
+              </el-tag>
+              <el-tag
+                :type="resolveTopicUserState(row.userSummary).color"
+                size="small"
+              >
+                {{ resolveTopicUserState(row.userSummary).label }}
+              </el-tag>
+            </div>
+          </div>
+        </div>
+        <span v-else>-</span>
+      </template>
+
+      <template #sectionSummary="{ row }">
+        <div v-if="row.sectionSummary" class="min-w-0">
+          <div class="truncate text-sm">
+            {{ formatTopicSectionSummary(row.sectionSummary) }}
+          </div>
+          <div class="mt-1 flex flex-wrap items-center gap-1 text-xs">
+            <span
+              v-if="formatTopicSectionExtra(row.sectionSummary) !== '-'"
+              class="text-gray-400"
+            >
+              {{ formatTopicSectionExtra(row.sectionSummary) }}
+            </span>
+            <el-tag
+              :type="resolveTopicSectionState(row.sectionSummary).color"
+              size="small"
+            >
+              {{ resolveTopicSectionState(row.sectionSummary).label }}
+            </el-tag>
+            <el-tag size="small" type="info">
+              {{ formatTopicReviewPolicy(row.sectionSummary) }}
+            </el-tag>
+          </div>
+        </div>
+        <span v-else>-</span>
       </template>
 
       <template #isPinned="{ row }">

@@ -17,8 +17,6 @@ declare module 'vue' {
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCol: typeof import('element-plus/es')['ElCol']
-    ElCollapse: typeof import('element-plus/es')['ElCollapse']
-    ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
     ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
@@ -30,8 +28,6 @@ declare module 'vue' {
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
     ElDropdownMenu: typeof import('element-plus/es')['ElDropdownMenu']
     ElEmpty: typeof import('element-plus/es')['ElEmpty']
-    ElForm: typeof import('element-plus/es')['ElForm']
-    ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElImage: typeof import('element-plus/es')['ElImage']
     ElImageViewer: typeof import('element-plus/es')['ElImageViewer']
     ElInput: typeof import('element-plus/es')['ElInput']
@@ -47,11 +43,7 @@ declare module 'vue' {
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSpace: typeof import('element-plus/es')['ElSpace']
-    ElStep: typeof import('element-plus/es')['ElStep']
-    ElSteps: typeof import('element-plus/es')['ElSteps']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
-    ElTable: typeof import('element-plus/es')['ElTable']
-    ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
@@ -83,8 +75,6 @@ declare global {
   const ElCard: (typeof import('element-plus/es'))['ElCard'];
   const ElCheckbox: (typeof import('element-plus/es'))['ElCheckbox'];
   const ElCol: (typeof import('element-plus/es'))['ElCol'];
-  const ElCollapse: (typeof import('element-plus/es'))['ElCollapse'];
-  const ElCollapseItem: (typeof import('element-plus/es'))['ElCollapseItem'];
   const ElColorPicker: (typeof import('element-plus/es'))['ElColorPicker'];
   const ElDatePicker: (typeof import('element-plus/es'))['ElDatePicker'];
   const ElDescriptions: (typeof import('element-plus/es'))['ElDescriptions'];
@@ -96,8 +86,6 @@ declare global {
   const ElDropdownItem: (typeof import('element-plus/es'))['ElDropdownItem'];
   const ElDropdownMenu: (typeof import('element-plus/es'))['ElDropdownMenu'];
   const ElEmpty: (typeof import('element-plus/es'))['ElEmpty'];
-  const ElForm: (typeof import('element-plus/es'))['ElForm'];
-  const ElFormItem: (typeof import('element-plus/es'))['ElFormItem'];
   const ElImage: (typeof import('element-plus/es'))['ElImage'];
   const ElImageViewer: (typeof import('element-plus/es'))['ElImageViewer'];
   const ElInput: (typeof import('element-plus/es'))['ElInput'];
@@ -113,11 +101,7 @@ declare global {
   const ElRow: (typeof import('element-plus/es'))['ElRow'];
   const ElSelect: (typeof import('element-plus/es'))['ElSelect'];
   const ElSpace: (typeof import('element-plus/es'))['ElSpace'];
-  const ElStep: (typeof import('element-plus/es'))['ElStep'];
-  const ElSteps: (typeof import('element-plus/es'))['ElSteps'];
   const ElSwitch: (typeof import('element-plus/es'))['ElSwitch'];
-  const ElTable: (typeof import('element-plus/es'))['ElTable'];
-  const ElTableColumn: (typeof import('element-plus/es'))['ElTableColumn'];
   const ElTabPane: (typeof import('element-plus/es'))['ElTabPane'];
   const ElTabs: (typeof import('element-plus/es'))['ElTabs'];
   const ElTag: (typeof import('element-plus/es'))['ElTag'];

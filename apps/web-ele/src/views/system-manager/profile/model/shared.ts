@@ -1,40 +1,37 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { AuditItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { formatUTC } from '#/utils';
+import { formatUTC, formSchemaTransform } from '#/utils';
 
-export const loginHistortColumn: VxeGridPropTypes.Columns<AuditItemDto> = [
-  {
-    title: '序号',
-    type: 'seq',
-    width: 50,
-    fixed: 'left',
-  },
-  {
-    field: 'ip',
-    title: '登录IP',
-    width: 140,
-  },
-  {
-    field: 'device',
-    title: '浏览器',
-    minWidth: 200,
-    showOverflow: 'tooltip',
-  },
-  {
-    field: 'createdAt',
-    title: '登录时间',
-    width: 160,
-    formatter: ({ cellValue }) => formatUTC(cellValue),
-  },
-  {
-    field: 'isSuccess',
-    title: '登录结果',
-    width: 120,
-    slots: { default: 'isSuccess' },
-  },
+const loginHistoryTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'ip', label: '登录IP' },
+  { component: 'Input', fieldName: 'device', label: '浏览器' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '登录时间' },
+  { component: 'Select', fieldName: 'isSuccess', label: '登录结果' },
 ];
+
+export const loginHistortColumn =
+  formSchemaTransform.toTableColumns<AuditItemDto>(loginHistoryTableSchema, {
+    seq: { width: 50 },
+    ip: {
+      formatter: undefined,
+      width: 140,
+    },
+    device: {
+      formatter: undefined,
+      minWidth: 200,
+      showOverflow: 'tooltip',
+    },
+    createdAt: {
+      formatter: ({ cellValue }) => formatUTC(cellValue),
+      width: 160,
+    },
+    isSuccess: {
+      formatter: undefined,
+      slots: { default: 'isSuccess' },
+      width: 120,
+    },
+  });
 
 // 编辑用户信息表单配置
 export const editFormSchema: EsFormSchema = [

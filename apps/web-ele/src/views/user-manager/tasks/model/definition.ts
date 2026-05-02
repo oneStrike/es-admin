@@ -1,10 +1,11 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
   AdminTaskDefinitionDetailDto,
   AdminTaskDefinitionListItemDto,
   TaskEventTemplateOptionDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { formSchemaTransform } from '#/utils';
 
 import {
   buildTemplateKeyOptions,
@@ -287,128 +288,132 @@ export function createTaskDefinitionFormSchema(
   ];
 }
 
-export const taskDefinitionColumns: VxeGridPropTypes.Columns<TaskDefinitionRow> =
-  [
+const taskDefinitionTableSchema: EsFormSchema = [
+  { component: 'Upload', fieldName: 'cover', label: '封面' },
+  { component: 'Input', fieldName: 'title', label: '任务标题' },
+  { component: 'Input', fieldName: 'code', label: '任务编码' },
+  { component: 'Select', fieldName: 'sceneType', label: '任务场景' },
+  { component: 'RadioGroup', fieldName: 'status', label: '任务状态' },
+  { component: 'RadioGroup', fieldName: 'claimMode', label: '领取方式' },
+  { component: 'Select', fieldName: 'repeatType', label: '重复周期' },
+  { component: 'InputNumber', fieldName: 'stepCount', label: '步骤数' },
+  {
+    component: 'InputNumber',
+    fieldName: 'activeInstanceCount',
+    label: '活跃实例',
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'pendingRewardCompensationCount',
+    label: '待补偿奖励',
+  },
+  { component: 'InputNumber', fieldName: 'sortOrder', label: '排序值' },
+  { component: 'DatePicker', fieldName: 'startAt', label: '开始时间' },
+  { component: 'DatePicker', fieldName: 'endAt', label: '结束时间' },
+  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
+];
+
+export const taskDefinitionColumns =
+  formSchemaTransform.toTableColumns<TaskDefinitionRow>(
+    taskDefinitionTableSchema,
     {
-      field: 'cover',
-      fixed: 'left',
-      minWidth: 90,
-      title: '封面',
-      cellRender: {
-        name: 'CellImage',
-      },
-    },
-    {
-      field: 'title',
-      fixed: 'left',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      slots: { default: 'title' },
-      title: '任务标题',
-    },
-    {
-      field: 'code',
-      minWidth: 160,
-      title: '任务编码',
-    },
-    {
-      field: 'sceneType',
-      minWidth: 120,
-      title: '任务场景',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: taskSceneTypeOptions,
+      cover: {
+        cellRender: {
+          name: 'CellImage',
         },
+        fixed: 'left',
+        minWidth: 90,
       },
-    },
-    {
-      field: 'status',
-      minWidth: 120,
-      title: '任务状态',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: taskDefinitionStatusOptions,
+      title: {
+        fixed: 'left',
+        formatter: undefined,
+        minWidth: 220,
+        showOverflow: 'tooltip',
+        slots: { default: 'title' },
+      },
+      code: {
+        minWidth: 160,
+      },
+      sceneType: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: taskSceneTypeOptions,
+          },
         },
+        minWidth: 120,
       },
-    },
-    {
-      field: 'claimMode',
-      minWidth: 120,
-      title: '领取方式',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: taskClaimModeOptions,
+      status: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: taskDefinitionStatusOptions,
+          },
         },
+        minWidth: 120,
       },
-    },
-    {
-      field: 'repeatType',
-      minWidth: 120,
-      title: '重复周期',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: taskRepeatTypeOptions,
+      claimMode: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: taskClaimModeOptions,
+          },
         },
+        minWidth: 120,
+      },
+      repeatType: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: taskRepeatTypeOptions,
+          },
+        },
+        minWidth: 120,
+      },
+      stepCount: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+      },
+      activeInstanceCount: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 120,
+      },
+      pendingRewardCompensationCount: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 120,
+      },
+      sortOrder: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+        sortable: true,
+      },
+      startAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 170,
+      },
+      endAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 170,
+      },
+      updatedAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 170,
+        sortable: true,
+      },
+      actions: {
+        show: true,
+        fixed: 'right',
+        minWidth: 260,
+        slots: { default: 'actions' },
       },
     },
-    {
-      field: 'stepCount',
-      minWidth: 100,
-      title: '步骤数',
-    },
-    {
-      field: 'activeInstanceCount',
-      minWidth: 120,
-      title: '活跃实例',
-    },
-    {
-      field: 'pendingRewardCompensationCount',
-      minWidth: 120,
-      title: '待补偿奖励',
-    },
-    {
-      field: 'sortOrder',
-      minWidth: 100,
-      sortable: true,
-      title: '排序值',
-    },
-    {
-      field: 'startAt',
-      minWidth: 170,
-      title: '开始时间',
-      cellRender: {
-        name: 'CellDate',
-      },
-    },
-    {
-      field: 'endAt',
-      minWidth: 170,
-      title: '结束时间',
-      cellRender: {
-        name: 'CellDate',
-      },
-    },
-    {
-      field: 'updatedAt',
-      minWidth: 170,
-      sortable: true,
-      title: '更新时间',
-      cellRender: {
-        name: 'CellDate',
-      },
-    },
-    {
-      field: 'actions',
-      fixed: 'right',
-      minWidth: 260,
-      slots: { default: 'actions' },
-      title: '操作',
-    },
-  ];
+  );
 
 export function mapTaskDefinitionDetailToFormRecord(
   detail: AdminTaskDefinitionDetailDto,

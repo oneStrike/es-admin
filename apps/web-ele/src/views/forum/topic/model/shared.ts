@@ -1,12 +1,16 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type {
   AdminAppUserPageItemDto,
   AdminForumTopicPageItemDto,
+  AdminForumTopicSectionSummaryDto,
+  AdminForumTopicUserSummaryDto,
   BaseForumSectionDto,
+  ForumTopicContentPreviewDto,
+  InteractionActorSummaryDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { appUsersPageApi, forumSectionsPageApi } from '#/api/core';
+import { formSchemaTransform } from '#/utils';
 
 const ACTIVE_DELETED_SCOPE = 0;
 
@@ -21,11 +25,115 @@ export const booleanFilterOptions = [
   { label: '否', value: false },
 ];
 
+export const userStatusOptions = [
+  { label: '正常', value: 1, color: 'success' as const },
+  { label: '禁言', value: 2, color: 'warning' as const },
+  { label: '永久禁言', value: 3, color: 'warning' as const },
+  { label: '封禁', value: 4, color: 'danger' as const },
+  { label: '永久封禁', value: 5, color: 'danger' as const },
+];
+
+export const topicReviewPolicyOptions = [
+  { label: '无需审核', value: 0 },
+  { label: '严重敏感词审核', value: 1 },
+  { label: '一般敏感词审核', value: 2 },
+  { label: '轻度敏感词审核', value: 3 },
+  { label: '人工审核', value: 4 },
+];
+
 export const sectionOptions: Array<{ label: string; value: number }> = [];
 
 export const auditStatusMap = Object.fromEntries(
   auditStatusOptions.map((item) => [item.value, item]),
 ) as Record<number, (typeof auditStatusOptions)[number]>;
+
+export const userStatusMap = Object.fromEntries(
+  userStatusOptions.map((item) => [item.value, item]),
+) as Record<number, (typeof userStatusOptions)[number]>;
+
+export const topicReviewPolicyMap = Object.fromEntries(
+  topicReviewPolicyOptions.map((item) => [item.value, item]),
+) as Record<number, (typeof topicReviewPolicyOptions)[number]>;
+
+export function formatTopicContentPreview(
+  preview?: ForumTopicContentPreviewDto | null,
+) {
+  return preview?.plainText?.trim() || '-';
+}
+
+export function formatTopicUserSummary(
+  user?: AdminForumTopicUserSummaryDto | null,
+) {
+  return user?.nickname || '-';
+}
+
+export function formatTopicUserLevel(
+  user?: AdminForumTopicUserSummaryDto | null,
+) {
+  return user?.levelName || '-';
+}
+
+export function resolveTopicUserState(
+  user?: AdminForumTopicUserSummaryDto | null,
+) {
+  if (!user) {
+    return { color: 'info' as const, label: '-' };
+  }
+
+  if (!user.isEnabled) {
+    return { color: 'danger' as const, label: '禁用' };
+  }
+
+  return (
+    userStatusMap[user.status] || {
+      color: 'info' as const,
+      label: '未知状态',
+    }
+  );
+}
+
+export function formatTopicSectionSummary(
+  section?: AdminForumTopicSectionSummaryDto | null,
+) {
+  return section?.name || '-';
+}
+
+export function formatTopicSectionExtra(
+  section?: AdminForumTopicSectionSummaryDto | null,
+) {
+  return section?.groupName || '-';
+}
+
+export function formatTopicReviewPolicy(
+  section?: AdminForumTopicSectionSummaryDto | null,
+) {
+  if (!section) {
+    return '-';
+  }
+
+  return (
+    topicReviewPolicyMap[section.topicReviewPolicy]?.label ||
+    String(section.topicReviewPolicy)
+  );
+}
+
+export function resolveTopicSectionState(
+  section?: AdminForumTopicSectionSummaryDto | null,
+) {
+  if (!section) {
+    return { color: 'info' as const, label: '-' };
+  }
+
+  return section.isEnabled
+    ? { color: 'success' as const, label: '启用' }
+    : { color: 'danger' as const, label: '禁用' };
+}
+
+export function formatTopicActorSummary(
+  actor?: InteractionActorSummaryDto | null,
+) {
+  return actor?.nickname || actor?.username || '-';
+}
 
 const userSearchSchema: EsFormSchema = [
   {
@@ -46,30 +154,33 @@ const userSearchSchema: EsFormSchema = [
   },
 ];
 
-const userColumns: VxeGridPropTypes.Columns<AdminAppUserPageItemDto> = [
-  {
-    field: 'id',
-    title: '用户ID',
-    minWidth: 100,
-  },
-  {
-    field: 'nickname',
-    title: '昵称',
-    minWidth: 140,
-  },
-  {
-    field: 'phoneNumber',
-    title: '手机号',
-    minWidth: 140,
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
-  {
-    field: 'levelName',
-    title: '等级',
-    minWidth: 120,
-    formatter: ({ cellValue }) => cellValue || '-',
-  },
+const userTableSchema: EsFormSchema = [
+  { component: 'InputNumber', fieldName: 'id', label: '用户ID' },
+  { component: 'Input', fieldName: 'nickname', label: '昵称' },
+  { component: 'Input', fieldName: 'phoneNumber', label: '手机号' },
+  { component: 'Input', fieldName: 'levelName', label: '等级' },
 ];
+
+const userColumns = formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(
+  userTableSchema,
+  {
+    id: {
+      formatter: ({ cellValue }) => cellValue ?? '-',
+      minWidth: 100,
+    },
+    nickname: {
+      minWidth: 140,
+    },
+    phoneNumber: {
+      formatter: ({ cellValue }) => cellValue || '-',
+      minWidth: 140,
+    },
+    levelName: {
+      formatter: ({ cellValue }) => cellValue || '-',
+      minWidth: 120,
+    },
+  },
+);
 
 const userSelectComponentProps = () => ({
   api: async (params: Record<string, any>) =>
@@ -188,6 +299,16 @@ export const auditFormSchema: EsFormSchema = [
 
 export const searchFormSchema: EsFormSchema = [
   {
+    component: 'Select',
+    fieldName: 'auditStatus',
+    defaultValue: 0,
+    componentProps: {
+      clearable: true,
+      options: auditStatusOptions,
+      placeholder: '审核状态',
+    },
+  },
+  {
     component: 'Input',
     fieldName: 'keyword',
     componentProps: {
@@ -204,24 +325,6 @@ export const searchFormSchema: EsFormSchema = [
       filterable: true,
       options: sectionOptions,
       placeholder: '所属板块',
-    },
-  },
-  {
-    component: 'InputNumber',
-    fieldName: 'userId',
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '用户ID',
-    },
-  },
-  {
-    component: 'Select',
-    fieldName: 'auditStatus',
-    componentProps: {
-      clearable: true,
-      options: auditStatusOptions,
-      placeholder: '审核状态',
     },
   },
   {
@@ -271,114 +374,133 @@ export const searchFormSchema: EsFormSchema = [
       valueFormat: 'YYYY-MM-DD',
     },
   },
+  {
+    component: 'InputNumber',
+    fieldName: 'userId',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '用户ID',
+    },
+  },
 ];
 
-export const topicColumns: VxeGridPropTypes.Columns<AdminForumTopicPageItemDto> =
-  [
+const topicTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'title', label: '帖子标题' },
+  { component: 'Input', fieldName: 'contentPreview', label: '正文摘要' },
+  { component: 'Input', fieldName: 'userSummary', label: '发帖用户' },
+  { component: 'Input', fieldName: 'sectionSummary', label: '所属板块' },
+  { component: 'RadioGroup', fieldName: 'auditStatus', label: '审核状态' },
+  { component: 'Select', fieldName: 'isPinned', label: '置顶' },
+  { component: 'Select', fieldName: 'isFeatured', label: '精华' },
+  { component: 'Select', fieldName: 'isLocked', label: '锁定' },
+  { component: 'Select', fieldName: 'isHidden', label: '隐藏' },
+  { component: 'InputNumber', fieldName: 'viewCount', label: '浏览数' },
+  { component: 'InputNumber', fieldName: 'commentCount', label: '评论数' },
+  { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },
+  { component: 'InputNumber', fieldName: 'favoriteCount', label: '收藏数' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
+  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
+];
+
+export const topicColumns =
+  formSchemaTransform.toTableColumns<AdminForumTopicPageItemDto>(
+    topicTableSchema,
     {
-      field: 'title',
-      fixed: 'left',
-      minWidth: 260,
-      showOverflow: 'tooltip',
-      slots: { default: 'title' },
-      title: '帖子标题',
-    },
-    {
-      field: 'sectionId',
-      minWidth: 140,
-      formatter: ({ cellValue }) => getTopicSectionLabel(cellValue),
-      title: '所属板块',
-    },
-    {
-      field: 'userId',
-      minWidth: 100,
-      title: '用户ID',
-    },
-    {
-      field: 'auditStatus',
-      minWidth: 120,
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: auditStatusOptions,
+      seq: { width: 60 },
+      title: {
+        fixed: 'left',
+        formatter: undefined,
+        minWidth: 260,
+        showOverflow: 'tooltip',
+        slots: { default: 'title' },
+      },
+      contentPreview: {
+        formatter: ({ cellValue }) => formatTopicContentPreview(cellValue),
+        minWidth: 220,
+        showOverflow: 'tooltip',
+      },
+      userSummary: {
+        formatter: undefined,
+        minWidth: 180,
+        slots: { default: 'userSummary' },
+      },
+      sectionSummary: {
+        formatter: undefined,
+        minWidth: 180,
+        slots: { default: 'sectionSummary' },
+      },
+      auditStatus: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: auditStatusOptions,
+          },
         },
+        minWidth: 120,
       },
-      title: '审核状态',
-    },
-    {
-      field: 'isPinned',
-      minWidth: 100,
-      slots: { default: 'isPinned' },
-      title: '置顶',
-    },
-    {
-      field: 'isFeatured',
-      minWidth: 100,
-      slots: { default: 'isFeatured' },
-      title: '精华',
-    },
-    {
-      field: 'isLocked',
-      minWidth: 100,
-      slots: { default: 'isLocked' },
-      title: '锁定',
-    },
-    {
-      field: 'isHidden',
-      minWidth: 100,
-      slots: { default: 'isHidden' },
-      title: '隐藏',
-    },
-    {
-      field: 'viewCount',
-      minWidth: 100,
-      sortable: true,
-      title: '浏览数',
-    },
-    {
-      field: 'commentCount',
-      minWidth: 100,
-      sortable: true,
-      title: '评论数',
-    },
-    {
-      field: 'likeCount',
-      minWidth: 100,
-      sortable: true,
-      title: '点赞数',
-    },
-    {
-      field: 'favoriteCount',
-      minWidth: 100,
-      sortable: true,
-      title: '收藏数',
-    },
-    {
-      field: 'createdAt',
-      minWidth: 160,
-      sortable: true,
-      cellRender: {
-        name: 'CellDate',
+      isPinned: {
+        formatter: undefined,
+        minWidth: 100,
+        slots: { default: 'isPinned' },
       },
-      title: '创建时间',
-    },
-    {
-      field: 'updatedAt',
-      minWidth: 160,
-      sortable: true,
-      cellRender: {
-        name: 'CellDate',
+      isFeatured: {
+        formatter: undefined,
+        minWidth: 100,
+        slots: { default: 'isFeatured' },
       },
-      title: '更新时间',
+      isLocked: {
+        formatter: undefined,
+        minWidth: 100,
+        slots: { default: 'isLocked' },
+      },
+      isHidden: {
+        formatter: undefined,
+        minWidth: 100,
+        slots: { default: 'isHidden' },
+      },
+      viewCount: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+        sortable: true,
+      },
+      commentCount: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+        sortable: true,
+      },
+      likeCount: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+        sortable: true,
+      },
+      favoriteCount: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+        sortable: true,
+      },
+      createdAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      updatedAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      actions: {
+        show: true,
+        fixed: 'right',
+        minWidth: 290,
+        slots: { default: 'actions' },
+      },
     },
-    {
-      field: 'actions',
-      fixed: 'right',
-      minWidth: 290,
-      slots: { default: 'actions' },
-      title: '操作',
-    },
-  ];
+  );
 
 export function syncTopicSectionOptions(sections: BaseForumSectionDto[] = []) {
   sectionOptions.splice(
@@ -394,12 +516,4 @@ export function syncTopicSectionOptions(sections: BaseForumSectionDto[] = []) {
 export async function fetchTopicSectionOptions() {
   const sectionResp = await forumSectionsPageApi({ pageSize: 500 });
   syncTopicSectionOptions(sectionResp.list ?? []);
-}
-
-export function getTopicSectionLabel(sectionId?: null | number) {
-  if (!sectionId) return '-';
-  return (
-    sectionOptions.find((item) => item.value === sectionId)?.label ||
-    `ID:${sectionId}`
-  );
 }

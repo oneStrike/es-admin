@@ -1,6 +1,7 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { MessageNotificationDeliveryItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { formSchemaTransform } from '#/utils';
 
 import { notificationCategoryOptions } from '../../model/notification';
 import { deliveryStatusOptions } from './shared';
@@ -80,123 +81,116 @@ export const deliverySearchFormSchema: EsFormSchema = [
   },
 ];
 
-export const deliveryColumns: VxeGridPropTypes.Columns<MessageNotificationDeliveryItemDto> =
-  [
+const deliveryTableSchema: EsFormSchema = [
+  { component: 'InputNumber', fieldName: 'id', label: '投递 ID' },
+  { component: 'Input', fieldName: 'dispatchId', label: 'Dispatch ID' },
+  { component: 'Input', fieldName: 'eventId', label: '事件 ID' },
+  { component: 'Input', fieldName: 'eventKey', label: '事件 key' },
+  { component: 'Select', fieldName: 'categoryLabel', label: '通知分类' },
+  { component: 'Select', fieldName: 'status', label: '投递状态' },
+  { component: 'Select', fieldName: 'usedTemplate', label: '命中模板' },
+  { component: 'InputNumber', fieldName: 'templateId', label: '模板 ID' },
+  { component: 'InputNumber', fieldName: 'notificationId', label: '通知 ID' },
+  { component: 'Input', fieldName: 'projectionKey', label: '投影 key' },
+  { component: 'InputNumber', fieldName: 'receiverUserId', label: '接收用户' },
+  { component: 'DatePicker', fieldName: 'lastAttemptAt', label: '最近尝试' },
+  { component: 'Input', fieldName: 'failureReason', label: '失败原因' },
+  { component: 'Input', fieldName: 'fallbackReason', label: '回退原因' },
+  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
+  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
+];
+
+export const deliveryColumns =
+  formSchemaTransform.toTableColumns<MessageNotificationDeliveryItemDto>(
+    deliveryTableSchema,
     {
-      field: 'id',
-      fixed: 'left',
-      minWidth: 100,
-      sortable: true,
-      title: '投递 ID',
-    },
-    {
-      field: 'dispatchId',
-      minWidth: 190,
-      showOverflow: 'tooltip',
-      title: 'Dispatch ID',
-    },
-    {
-      field: 'eventId',
-      minWidth: 160,
-      showOverflow: 'tooltip',
-      title: '事件 ID',
-    },
-    {
-      field: 'eventKey',
-      minWidth: 180,
-      showOverflow: 'tooltip',
-      title: '事件 key',
-    },
-    {
-      field: 'categoryLabel',
-      minWidth: 160,
-      slots: { default: 'category' },
-      title: '通知分类',
-    },
-    {
-      field: 'status',
-      minWidth: 130,
-      slots: { default: 'deliveryStatus' },
-      title: '投递状态',
-    },
-    {
-      field: 'usedTemplate',
-      minWidth: 130,
-      slots: { default: 'usedTemplate' },
-      title: '命中模板',
-    },
-    {
-      field: 'templateId',
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 110,
-      title: '模板 ID',
-    },
-    {
-      field: 'notificationId',
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 120,
-      title: '通知 ID',
-    },
-    {
-      field: 'projectionKey',
-      formatter: ({ cellValue }) => cellValue || '-',
-      minWidth: 170,
-      showOverflow: 'tooltip',
-      title: '投影 key',
-    },
-    {
-      field: 'receiverUserId',
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 120,
-      sortable: true,
-      title: '接收用户',
-    },
-    {
-      cellRender: {
-        name: 'CellDate',
+      id: {
+        fixed: 'left',
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 100,
+        sortable: true,
       },
-      field: 'lastAttemptAt',
-      minWidth: 160,
-      sortable: true,
-      title: '最近尝试',
-    },
-    {
-      field: 'failureReason',
-      formatter: ({ cellValue }) => cellValue || '-',
-      minWidth: 240,
-      showOverflow: 'tooltip',
-      title: '失败原因',
-    },
-    {
-      field: 'fallbackReason',
-      formatter: ({ cellValue }) => cellValue || '-',
-      minWidth: 220,
-      showOverflow: 'tooltip',
-      title: '回退原因',
-    },
-    {
-      cellRender: {
-        name: 'CellDate',
+      dispatchId: {
+        minWidth: 190,
+        showOverflow: 'tooltip',
       },
-      field: 'createdAt',
-      minWidth: 160,
-      sortable: true,
-      title: '创建时间',
-    },
-    {
-      cellRender: {
-        name: 'CellDate',
+      eventId: {
+        minWidth: 160,
+        showOverflow: 'tooltip',
       },
-      field: 'updatedAt',
-      minWidth: 160,
-      sortable: true,
-      title: '更新时间',
+      eventKey: {
+        minWidth: 180,
+        showOverflow: 'tooltip',
+      },
+      categoryLabel: {
+        formatter: undefined,
+        minWidth: 160,
+        slots: { default: 'category' },
+      },
+      status: {
+        formatter: undefined,
+        minWidth: 130,
+        slots: { default: 'deliveryStatus' },
+      },
+      usedTemplate: {
+        formatter: undefined,
+        minWidth: 130,
+        slots: { default: 'usedTemplate' },
+      },
+      templateId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 110,
+      },
+      notificationId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 120,
+      },
+      projectionKey: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 170,
+        showOverflow: 'tooltip',
+      },
+      receiverUserId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 120,
+        sortable: true,
+      },
+      lastAttemptAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      failureReason: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 240,
+        showOverflow: 'tooltip',
+      },
+      fallbackReason: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 220,
+        showOverflow: 'tooltip',
+      },
+      createdAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      updatedAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+        sortable: true,
+      },
+      actions: {
+        show: true,
+        fixed: 'right',
+        slots: { default: 'actions' },
+        width: 100,
+      },
     },
-    {
-      field: 'actions',
-      fixed: 'right',
-      slots: { default: 'actions' },
-      title: '操作',
-      width: 100,
-    },
-  ];
+  );

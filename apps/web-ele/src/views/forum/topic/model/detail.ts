@@ -2,9 +2,25 @@ import type { ForumTopicDetailResponse } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
-import { auditStatusMap } from './shared';
+import {
+  auditStatusMap,
+  formatTopicActorSummary,
+  userStatusMap,
+} from './shared';
 
 export function getDetailCards(detail: ForumTopicDetailResponse) {
+  const auditStatus = auditStatusMap[detail.auditStatus];
+  const userStatus = detail.user
+    ? userStatusMap[detail.user.status]
+    : undefined;
+  let accountStatusText = '-';
+  let accountStatusType = 'info';
+
+  if (detail.user) {
+    accountStatusText = detail.user.isEnabled ? '启用' : '禁用';
+    accountStatusType = detail.user.isEnabled ? 'success' : 'danger';
+  }
+
   return [
     {
       title: '基本信息',
@@ -17,25 +33,39 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
         },
         {
           label: '所属板块',
-          value: detail.section?.name || `ID:${detail.sectionId}`,
+          value: detail.section?.name || '-',
           type: 'text' as const,
         },
         {
           label: '发帖用户',
-          value: detail.user?.nickname || `ID:${detail.userId}`,
+          value: detail.user?.nickname || '-',
+          type: 'text' as const,
+        },
+        {
+          label: '用户等级',
+          value: detail.user?.level?.name || '-',
           type: 'text' as const,
         },
         {
           label: '用户状态',
+          value: detail.user?.status,
+          type: 'tag' as const,
+          tagText: userStatus?.label || '-',
+          tagType: userStatus?.color || 'info',
+        },
+        {
+          label: '账号状态',
           value: detail.user?.isEnabled,
           type: 'tag' as const,
-          tagText: detail.user?.isEnabled ? '启用' : '禁用',
-          tagType: detail.user?.isEnabled ? 'success' : 'danger',
+          tagText: accountStatusText,
+          tagType: accountStatusType,
         },
         {
           label: '审核状态',
-          value: auditStatusMap[detail.auditStatus]?.label || '-',
-          type: 'text' as const,
+          value: detail.auditStatus,
+          type: 'tag' as const,
+          tagText: auditStatus?.label || '-',
+          tagType: auditStatus?.color || 'info',
         },
       ],
     },
@@ -82,11 +112,6 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
           type: 'text' as const,
         },
         {
-          label: '评论数',
-          value: detail.commentCount,
-          type: 'text' as const,
-        },
-        {
           label: '点赞数',
           value: detail.likeCount,
           type: 'text' as const,
@@ -102,6 +127,16 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
       title: '审核与话题',
       show: true,
       fields: [
+        {
+          label: '审核人',
+          value: formatTopicActorSummary(detail.auditorSummary),
+          type: 'text' as const,
+        },
+        {
+          label: '审核角色',
+          value: detail.auditorSummary?.roleName || '-',
+          type: 'text' as const,
+        },
         {
           label: '审核拒绝原因',
           value: detail.auditReason || '-',

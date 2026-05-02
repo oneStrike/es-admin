@@ -1,6 +1,7 @@
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { MessageDispatchPageItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { formSchemaTransform } from '#/utils';
 
 import { deliveryStatusOptions, dispatchStatusOptions } from './shared';
 
@@ -86,101 +87,96 @@ export const dispatchSearchFormSchema: EsFormSchema = [
   },
 ];
 
-export const dispatchColumns: VxeGridPropTypes.Columns<MessageDispatchPageItemDto> =
-  [
+const dispatchTableSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'dispatchId', label: 'Dispatch ID' },
+  { component: 'Input', fieldName: 'eventId', label: '事件 ID' },
+  { component: 'Input', fieldName: 'eventKey', label: '事件 key' },
+  { component: 'Input', fieldName: 'domain', label: '事件域' },
+  { component: 'Input', fieldName: 'consumer', label: 'Consumer' },
+  { component: 'Select', fieldName: 'dispatchStatus', label: '技术状态' },
+  { component: 'Select', fieldName: 'deliveryStatus', label: '投递状态' },
+  { component: 'Input', fieldName: 'projectionKey', label: '投影 key' },
+  { component: 'InputNumber', fieldName: 'receiverUserId', label: '接收用户' },
+  { component: 'InputNumber', fieldName: 'retryCount', label: '重试次数' },
+  { component: 'DatePicker', fieldName: 'nextRetryAt', label: '下次重试' },
+  { component: 'DatePicker', fieldName: 'processedAt', label: '处理完成' },
+  { component: 'Input', fieldName: 'lastError', label: '最后错误' },
+];
+
+export const dispatchColumns =
+  formSchemaTransform.toTableColumns<MessageDispatchPageItemDto>(
+    dispatchTableSchema,
     {
-      field: 'dispatchId',
-      fixed: 'left',
-      minWidth: 190,
-      showOverflow: 'tooltip',
-      sortable: true,
-      title: 'Dispatch ID',
-    },
-    {
-      field: 'eventId',
-      minWidth: 160,
-      showOverflow: 'tooltip',
-      title: '事件 ID',
-    },
-    {
-      field: 'eventKey',
-      minWidth: 180,
-      showOverflow: 'tooltip',
-      title: '事件 key',
-    },
-    {
-      field: 'domain',
-      minWidth: 130,
-      showOverflow: 'tooltip',
-      title: '事件域',
-    },
-    {
-      field: 'consumer',
-      minWidth: 150,
-      showOverflow: 'tooltip',
-      title: 'Consumer',
-    },
-    {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: dispatchStatusOptions,
+      dispatchId: {
+        fixed: 'left',
+        minWidth: 190,
+        showOverflow: 'tooltip',
+        sortable: true,
+      },
+      eventId: {
+        minWidth: 160,
+        showOverflow: 'tooltip',
+      },
+      eventKey: {
+        minWidth: 180,
+        showOverflow: 'tooltip',
+      },
+      domain: {
+        minWidth: 130,
+        showOverflow: 'tooltip',
+      },
+      consumer: {
+        minWidth: 150,
+        showOverflow: 'tooltip',
+      },
+      dispatchStatus: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: dispatchStatusOptions,
+          },
         },
+        minWidth: 110,
       },
-      field: 'dispatchStatus',
-      minWidth: 110,
-      title: '技术状态',
-    },
-    {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: deliveryStatusOptions,
+      deliveryStatus: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: deliveryStatusOptions,
+          },
         },
+        minWidth: 140,
       },
-      field: 'deliveryStatus',
-      minWidth: 140,
-      title: '投递状态',
-    },
-    {
-      field: 'projectionKey',
-      minWidth: 170,
-      showOverflow: 'tooltip',
-      title: '投影 key',
-    },
-    {
-      field: 'receiverUserId',
-      minWidth: 120,
-      sortable: true,
-      title: '接收用户',
-    },
-    {
-      field: 'retryCount',
-      minWidth: 110,
-      sortable: true,
-      title: '重试次数',
-    },
-    {
-      cellRender: {
-        name: 'CellDate',
+      projectionKey: {
+        minWidth: 170,
+        showOverflow: 'tooltip',
       },
-      field: 'nextRetryAt',
-      minWidth: 160,
-      title: '下次重试',
-    },
-    {
-      cellRender: {
-        name: 'CellDate',
+      receiverUserId: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 120,
+        sortable: true,
       },
-      field: 'processedAt',
-      minWidth: 160,
-      title: '处理完成',
+      retryCount: {
+        formatter: ({ cellValue }) => cellValue ?? '-',
+        minWidth: 110,
+        sortable: true,
+      },
+      nextRetryAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+      },
+      processedAt: {
+        cellRender: {
+          name: 'CellDate',
+        },
+        minWidth: 160,
+      },
+      lastError: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 260,
+        showOverflow: 'tooltip',
+      },
     },
-    {
-      field: 'lastError',
-      minWidth: 260,
-      showOverflow: 'tooltip',
-      title: '最后错误',
-      formatter: ({ cellValue }) => cellValue || '-',
-    },
-  ];
+  );

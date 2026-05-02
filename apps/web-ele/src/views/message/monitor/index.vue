@@ -30,6 +30,8 @@ import {
 } from './model/shared';
 import { getWsSummaryItems, windowHourOptions } from './model/ws';
 
+import '../../user-manager/styles/full-height-tabs.css';
+
 defineOptions({
   name: 'MessageMonitor',
 });
@@ -43,7 +45,7 @@ const wsSummaryItems = computed(() => getWsSummaryItems(wsSummary.value));
 
 const dispatchGridOptions: VxeGridProps<MessageDispatchPageItemDto> = {
   columns: dispatchColumns,
-  height: 'auto',
+  height: '100%',
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
@@ -62,7 +64,7 @@ const dispatchGridOptions: VxeGridProps<MessageDispatchPageItemDto> = {
 
 const deliveryGridOptions: VxeGridProps<MessageNotificationDeliveryItemDto> = {
   columns: deliveryColumns,
-  height: 'auto',
+  height: '100%',
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
@@ -134,8 +136,8 @@ onMounted(fetchWsSummary);
 </script>
 
 <template>
-  <Page auto-content-height>
-    <div class="flex h-full min-h-0 flex-col gap-4">
+  <Page auto-content-height content-class="user-manager-page-content">
+    <div class="flex h-full min-h-0 flex-col gap-4 overflow-hidden">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div class="text-base font-medium">WS 监控摘要</div>
@@ -156,7 +158,7 @@ onMounted(fetchWsSummary);
             <el-radio-button
               v-for="item in windowHourOptions"
               :key="item.value"
-              :label="item.value"
+              :value="item.value"
             >
               {{ item.label }}
             </el-radio-button>
@@ -173,7 +175,7 @@ onMounted(fetchWsSummary);
 
       <div
         v-loading="wsLoading"
-        class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+        class="grid shrink-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5"
       >
         <el-card
           v-for="item in wsSummaryItems"
@@ -190,56 +192,63 @@ onMounted(fetchWsSummary);
         </el-card>
       </div>
 
-      <el-tabs v-model="activeTab" class="min-h-0 flex-1">
+      <el-tabs
+        v-model="activeTab"
+        class="user-manager-full-height-tabs min-h-0 flex-1"
+      >
         <el-tab-pane label="调度记录" name="dispatch">
-          <DispatchGrid />
+          <div class="user-manager-full-height-pane">
+            <DispatchGrid class="user-manager-full-height-grid" />
+          </div>
         </el-tab-pane>
         <el-tab-pane label="投递结果" name="delivery">
-          <DeliveryGrid>
-            <template #category="{ row }">
-              <div class="min-w-0">
-                <div class="truncate">
-                  {{ row.categoryLabel || row.categoryKey || '-' }}
+          <div class="user-manager-full-height-pane">
+            <DeliveryGrid class="user-manager-full-height-grid">
+              <template #category="{ row }">
+                <div class="min-w-0">
+                  <div class="truncate">
+                    {{ row.categoryLabel || row.categoryKey || '-' }}
+                  </div>
+                  <div
+                    v-if="row.categoryKey"
+                    class="truncate text-xs text-gray-400"
+                  >
+                    {{ row.categoryKey }}
+                  </div>
                 </div>
-                <div
-                  v-if="row.categoryKey"
-                  class="truncate text-xs text-gray-400"
+              </template>
+
+              <template #deliveryStatus="{ row }">
+                <el-tag :type="getDeliveryStatus(row).color" size="small">
+                  {{ getDeliveryStatus(row).label }}
+                </el-tag>
+              </template>
+
+              <template #usedTemplate="{ row }">
+                <el-tag
+                  :type="row.usedTemplate ? 'success' : 'info'"
+                  size="small"
                 >
-                  {{ row.categoryKey }}
-                </div>
-              </div>
-            </template>
+                  {{ row.usedTemplate ? '是' : '否' }}
+                </el-tag>
+              </template>
 
-            <template #deliveryStatus="{ row }">
-              <el-tag :type="getDeliveryStatus(row).color" size="small">
-                {{ getDeliveryStatus(row).label }}
-              </el-tag>
-            </template>
-
-            <template #usedTemplate="{ row }">
-              <el-tag
-                :type="row.usedTemplate ? 'success' : 'info'"
-                size="small"
-              >
-                {{ row.usedTemplate ? '是' : '否' }}
-              </el-tag>
-            </template>
-
-            <template #actions="{ row }">
-              <el-popconfirm
-                v-if="canRetryDelivery(row)"
-                :title="`确认重试 Dispatch ${formatNullable(row.dispatchId)} ?`"
-                cancel-button-text="取消"
-                confirm-button-text="确认"
-                @confirm="retryDelivery(row)"
-              >
-                <template #reference>
-                  <el-button link type="primary">重试</el-button>
-                </template>
-              </el-popconfirm>
-              <span v-else>-</span>
-            </template>
-          </DeliveryGrid>
+              <template #actions="{ row }">
+                <el-popconfirm
+                  v-if="canRetryDelivery(row)"
+                  :title="`确认重试 Dispatch ${formatNullable(row.dispatchId)} ?`"
+                  cancel-button-text="取消"
+                  confirm-button-text="确认"
+                  @confirm="retryDelivery(row)"
+                >
+                  <template #reference>
+                    <el-button link type="primary">重试</el-button>
+                  </template>
+                </el-popconfirm>
+                <span v-else>-</span>
+              </template>
+            </DeliveryGrid>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
