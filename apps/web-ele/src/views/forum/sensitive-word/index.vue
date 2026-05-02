@@ -7,9 +7,11 @@ import type {
   ForumSensitiveWordUpdateRequest,
 } from '#/api/types';
 
+import { ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import {  useVbenVxeGrid } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   forumSensitiveWordCreateApi,
   forumSensitiveWordDeleteApi,
@@ -21,6 +23,7 @@ import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
+import SensitiveWordDetectDrawer from './components/sensitive-word-detect-drawer.vue';
 import {
   formSchema,
   pageColumns,
@@ -28,6 +31,7 @@ import {
 } from './modules/model/shared';
 
 const router = useRouter();
+const detectDrawerVisible = ref(false);
 
 const gridOptions: VxeGridProps<BaseSensitiveWordDto> = {
   columns: pageColumns,
@@ -97,6 +101,9 @@ async function toggleEnableStatus(record: BaseSensitiveWordDto) {
         <el-button class="ml-2" type="primary" @click="openFormModal()">
           添加敏感词
         </el-button>
+        <el-button class="ml-2" @click="detectDrawerVisible = true">
+          检测工具
+        </el-button>
         <el-button
           class="ml-2"
           @click="router.push({ name: 'ForumSensitiveWordStatistics' })"
@@ -136,6 +143,7 @@ async function toggleEnableStatus(record: BaseSensitiveWordDto) {
     </Grid>
 
     <Form :schema="formSchema" :on-submit="handleSubmit" />
+    <SensitiveWordDetectDrawer v-model:visible="detectDrawerVisible" />
   </Page>
 </template>
 

@@ -9,6 +9,8 @@ import type { CheckInRewardItemDto } from '../model/shared';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
+import { useVbenDrawer } from '@vben/common-ui';
+
 import {
   checkInConfigDetailApi,
   checkInConfigUpdateApi,
@@ -70,8 +72,6 @@ const loading = ref(false);
 const saving = ref(false);
 const toggleLoading = ref(false);
 const isEnabled = ref(false);
-const dateOverviewVisible = ref(false);
-const patternOverviewVisible = ref(false);
 const formState = reactive<CheckInConfigFormState>(
   createDefaultConfigFormState(),
 );
@@ -90,6 +90,20 @@ const rewardEditor = reactive<RewardEditorState>({
   targetWeekday: undefined,
   title: '',
   originalScope: undefined,
+});
+
+const [DateOverviewDrawer, dateOverviewDrawerApi] = useVbenDrawer({
+  class: '!w-[42vw] max-w-full max-sm:!w-full',
+  destroyOnClose: false,
+  footer: false,
+  title: '具体日期奖励总览',
+});
+
+const [PatternOverviewDrawer, patternOverviewDrawerApi] = useVbenDrawer({
+  class: '!w-[42vw] max-w-full max-sm:!w-full',
+  destroyOnClose: false,
+  footer: false,
+  title: '周期模式奖励总览',
 });
 
 const previewDays = computed(() =>
@@ -266,11 +280,11 @@ function handleBaseRewardAmountChange(
 }
 
 function openDateOverview() {
-  dateOverviewVisible.value = true;
+  dateOverviewDrawerApi.open();
 }
 
 function openPatternOverview() {
-  patternOverviewVisible.value = true;
+  patternOverviewDrawerApi.open();
 }
 
 function openPreviewEditor(cell: CheckInConfigPreviewDay) {
@@ -919,11 +933,7 @@ onMounted(async () => {
       </template>
     </RewardConfigModal>
 
-    <el-drawer
-      v-model="dateOverviewVisible"
-      size="42%"
-      title="具体日期奖励总览"
-    >
+    <DateOverviewDrawer>
       <div class="space-y-3">
         <div
           v-if="dateRuleSummaryGroups.length === 0"
@@ -1001,13 +1011,9 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-    </el-drawer>
+    </DateOverviewDrawer>
 
-    <el-drawer
-      v-model="patternOverviewVisible"
-      size="42%"
-      title="周期模式奖励总览"
-    >
+    <PatternOverviewDrawer>
       <div class="space-y-3">
         <div
           v-if="patternRuleSummaries.length === 0"
@@ -1059,7 +1065,7 @@ onMounted(async () => {
           </button>
         </div>
       </div>
-    </el-drawer>
+    </PatternOverviewDrawer>
   </div>
 </template>
 

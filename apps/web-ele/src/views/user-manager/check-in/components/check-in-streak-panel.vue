@@ -5,6 +5,8 @@ import type { CheckInStreakDetailResponse } from '#/api/types';
 
 import { computed, onMounted, reactive, ref } from 'vue';
 
+import { useVbenDrawer } from '@vben/common-ui';
+
 import { ElMessageBox } from 'element-plus';
 
 import {
@@ -38,9 +40,7 @@ defineOptions({
 const loading = ref(false);
 const saving = ref(false);
 const historyLoading = ref(false);
-const editorVisible = ref(false);
 const rewardConfigVisible = ref(false);
-const historyVisible = ref(false);
 const historyRules = ref<CheckInStreakDetailResponse[]>([]);
 const ruleList = ref<CheckInStreakDetailResponse[]>([]);
 const currentHistoryTarget = ref<CheckInStreakDetailResponse | null>(null);
@@ -52,6 +52,24 @@ const editorTitle = computed(() =>
     ? `发布连续签到 ${formState.streakDays} 天的新版本`
     : '新增连续签到记录',
 );
+
+const historyTitle = computed(() =>
+  currentHistoryTarget.value
+    ? `连续签到 ${currentHistoryTarget.value.streakDays} 天的版本历史`
+    : '版本历史',
+);
+
+const [EditorDrawer, editorDrawerApi] = useVbenDrawer({
+  class: '!w-[35vw] max-w-full max-sm:!w-full',
+  destroyOnClose: false,
+  footer: false,
+});
+
+const [HistoryDrawer, historyDrawerApi] = useVbenDrawer({
+  class: '!w-[40vw] max-w-full max-sm:!w-full',
+  destroyOnClose: false,
+  footer: false,
+});
 
 const publishButtonLabel = computed(() => {
   switch (formState.publishStrategy) {
@@ -88,12 +106,12 @@ async function loadRules() {
 
 function openCreateEditor() {
   Object.assign(formState, createDefaultStreakFormState());
-  editorVisible.value = true;
+  editorDrawerApi.open();
 }
 
 function openEditEditor(rule: CheckInStreakDetailResponse) {
   Object.assign(formState, mapStreakDetailToForm(rule));
-  editorVisible.value = true;
+  editorDrawerApi.open();
 }
 
 function openRewardConfigEditor() {
@@ -116,7 +134,7 @@ async function handlePublish() {
   try {
     await checkInStreakPublishApi(buildStreakPublishPayload(formState));
     useMessage.success('连续签到记录已发布');
-    editorVisible.value = false;
+    editorDrawerApi.close();
     await loadRules();
 
     if (
@@ -161,7 +179,7 @@ async function terminateRule(rule: CheckInStreakDetailResponse) {
 
 async function openHistory(rule: CheckInStreakDetailResponse) {
   currentHistoryTarget.value = rule;
-  historyVisible.value = true;
+  historyDrawerApi.open();
   historyLoading.value = true;
   try {
     const page = await checkInStreakHistoryPageApi({
@@ -309,7 +327,7 @@ onMounted(async () => {
       </el-card>
     </div>
 
-    <el-drawer v-model="editorVisible" size="35%" :title="editorTitle">
+    <EditorDrawer :title="editorTitle">
       <div class="space-y-5">
         <el-card class="text-sm text-slate-600" shadow="never">
           <div class="flex items-center justify-between gap-3">
@@ -414,13 +432,13 @@ onMounted(async () => {
         </el-card>
 
         <div class="flex justify-end gap-3">
-          <el-button @click="editorVisible = false">取消</el-button>
+          <el-button @click="editorDrawerApi.close()">取消</el-button>
           <el-button :loading="saving" type="primary" @click="handlePublish">
             {{ publishButtonLabel }}
           </el-button>
         </div>
       </div>
-    </el-drawer>
+    </EditorDrawer>
 
     <RewardConfigModal
       v-model:visible="rewardConfigVisible"
@@ -436,15 +454,7 @@ onMounted(async () => {
       @confirm="handleRewardConfigConfirm"
     />
 
-    <el-drawer
-      v-model="historyVisible"
-      size="40%"
-      :title="
-        currentHistoryTarget
-          ? `连续签到 ${currentHistoryTarget.streakDays} 天的版本历史`
-          : '版本历史'
-      "
-    >
+    <HistoryDrawer :title="historyTitle">
       <div v-loading="historyLoading" class="space-y-4">
         <div
           v-if="historyRules.length === 0"
@@ -538,7 +548,7 @@ onMounted(async () => {
           </el-card>
         </div>
       </div>
-    </el-drawer>
+    </HistoryDrawer>
   </div>
 </template>
 
