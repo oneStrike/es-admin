@@ -75,7 +75,7 @@
 本次生成类型中，以下字段从旧的字符串语义调整为数值枚举：
 
 | 类型 | 字段 | 旧业务侧认知 | 当前生成类型 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- |
 | `AppUpdateReleaseListItemDto` | `platform` | `'ios' | 'android'` | `1 | 2` |
 | `AppUpdateReleaseDetailDto` | `platform` | `'ios' | 'android'` | `1 | 2` |
 | `CreateAppUpdateReleaseDto` | `platform` | `'ios' | 'android'` | `1 | 2` |
@@ -131,10 +131,10 @@
 
 `ComicArchiveTaskResponseDto` 与 `ComicArchiveResultItemDto` 中的状态字段已改为数值枚举：
 
-| 类型 | 字段 | 旧业务侧认知 | 当前生成类型 |
-| --- | --- | --- | --- |
-| `ComicArchiveTaskResponseDto` | `status` | `'draft' | 'pending' | 'processing' | 'success' | ...` | `0 | 1 | 2 | 3 | 4 | 5 | 6 | 7` |
-| `ComicArchiveResultItemDto` | `status` | `'success' | 'failed' | 'skipped' | ...` | `0 | 1 | 2` |
+| 类型                          | 字段     | 旧业务侧认知 | 当前生成类型 |
+| ----------------------------- | -------- | ------------ | ------------ | ------------ | --------- | ---- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `ComicArchiveTaskResponseDto` | `status` | `'draft'     | 'pending'    | 'processing' | 'success' | ...` | `0  | 1   | 2   | 3   | 4   | 5   | 6   | 7`  |
+| `ComicArchiveResultItemDto`   | `status` | `'success'   | 'failed'     | 'skipped'    | ...`      | `0   | 1   | 2`  |
 
 ### 业务层修正
 
@@ -230,24 +230,24 @@
 
 #### 1. 周期类型改为数值枚举
 
-| 类型 | 字段 | 旧业务侧认知 | 当前生成类型 |
-| --- | --- | --- | --- |
-| `CheckInPlanPageItemDto` | `cycleType` | `'weekly' | 'monthly'` | `1 | 2` |
-| `CheckInPlanDetailResponseDto` | `cycleType` | `'weekly' | 'monthly'` | `1 | 2` |
-| `CreateCheckInPlanDto` | `cycleType` | `'weekly' | 'monthly'` | `1 | 2` |
-| `UpdateCheckInPlanDto` | `cycleType` | `'weekly' | 'monthly'` | `1 | 2` |
+| 类型                           | 字段        | 旧业务侧认知 | 当前生成类型 |
+| ------------------------------ | ----------- | ------------ | ------------ | --- | --- |
+| `CheckInPlanPageItemDto`       | `cycleType` | `'weekly'    | 'monthly'`   | `1  | 2`  |
+| `CheckInPlanDetailResponseDto` | `cycleType` | `'weekly'    | 'monthly'`   | `1  | 2`  |
+| `CreateCheckInPlanDto`         | `cycleType` | `'weekly'    | 'monthly'`   | `1  | 2`  |
+| `UpdateCheckInPlanDto`         | `cycleType` | `'weekly'    | 'monthly'`   | `1  | 2`  |
 
 #### 2. 周期模式类型改为数值枚举
 
 | 类型 | 字段 | 旧业务侧认知 | 当前生成类型 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 | `CheckInPatternRewardRuleItemDto` | `patternType` | `'WEEKDAY' | 'MONTH_DAY' | 'MONTH_LAST_DAY'` | `1 | 2 | 3` |
 | `CreateCheckInPatternRewardRuleDto` | `patternType` | `'WEEKDAY' | 'MONTH_DAY' | 'MONTH_LAST_DAY'` | `1 | 2 | 3` |
 
 #### 3. 对账来源类型改为数值枚举
 
 | 类型 | 字段 | 旧业务侧认知 | 当前生成类型 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 | `CheckInReconciliationItemDto` | `resolvedRewardSourceType` | `'BASE_REWARD' | 'DATE_RULE' | 'PATTERN_RULE'` | `1 | 2 | 3` |
 
 ### 业务层修正

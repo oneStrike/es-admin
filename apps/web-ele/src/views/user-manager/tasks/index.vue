@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { Page } from '@vben/common-ui';
 
+import EsFullHeightTabs from '#/components/es-full-height-tabs';
+
 import TaskDefinitionPanel from './components/task-definition-panel.vue';
 import TaskInstancePanel from './components/task-instance-panel.vue';
 import TaskReconciliationPanel from './components/task-reconciliation-panel.vue';
-
-import '../styles/full-height-tabs.css';
 
 defineOptions({
   name: 'TaskManager',
@@ -19,13 +19,10 @@ const activeTab = ref<TabKey>('definition');
 <template>
   <Page
     auto-content-height
-    content-class="user-manager-page-content"
+    content-class="es-full-height-page-content"
     title="任务管理"
   >
-    <el-tabs
-      v-model="activeTab"
-      class="user-manager-full-height-tabs task-manager-tabs"
-    >
+    <EsFullHeightTabs v-model="activeTab" class="es-pill-tabs">
       <el-tab-pane label="任务定义" name="definition">
         <TaskDefinitionPanel />
       </el-tab-pane>
@@ -37,6 +34,6 @@ const activeTab = ref<TabKey>('definition');
       <el-tab-pane label="奖励对账" name="reconciliation">
         <TaskReconciliationPanel />
       </el-tab-pane>
-    </el-tabs>
+    </EsFullHeightTabs>
   </Page>
 </template>

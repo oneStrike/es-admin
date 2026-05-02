@@ -1,8 +1,8 @@
-.user-manager-page-content {
+.es-full-height-page-content {
   overflow: hidden !important;
 }
 
-.user-manager-full-height-tabs {
+.es-full-height-tabs {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -10,45 +10,45 @@
   overflow: hidden;
 }
 
-.user-manager-full-height-tabs > .el-tabs__header {
+.es-full-height-tabs > .el-tabs__header {
   flex: 0 0 auto;
   margin-bottom: 20px;
 }
 
-.user-manager-full-height-tabs > .el-tabs__content {
+.es-full-height-tabs > .el-tabs__content {
   flex: 1 1 0;
   min-height: 0;
   overflow: hidden;
 }
 
-.user-manager-full-height-tabs .el-tab-pane {
+.es-full-height-tabs .el-tab-pane {
   height: 100%;
   min-height: 0;
   overflow: hidden;
 }
 
-.user-manager-full-height-pane,
-.user-manager-scroll-pane {
+.es-full-height-pane,
+.es-scroll-pane {
   height: 100%;
   min-height: 0;
 }
 
-.user-manager-full-height-pane {
+.es-full-height-pane {
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.user-manager-scroll-pane {
+.es-scroll-pane {
   overflow-y: auto;
 }
 
-.user-manager-full-height-grid {
+.es-full-height-grid {
   flex: 1 1 0;
   min-height: 0;
 }
 
-.task-manager-tabs .el-tabs__item {
+.es-pill-tabs .el-tabs__item {
   padding: 0 18px;
   font-weight: 600;
   border-radius: 9999px;

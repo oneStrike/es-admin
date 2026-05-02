@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type {
-  SystemUserCreateRequest,
-  UpdateUserDto,
-} from '#/api/types';
+import type { SystemUserCreateRequest, UpdateUserDto } from '#/api/types';
 
 import { computed } from 'vue';
 
@@ -28,11 +25,11 @@ import {
   editFormSchema,
   formSchema,
   lockStatusObj,
-  type SystemUserRow,
   userColumns,
   userFilter,
   userRoleObj,
 } from './model/shared';
+import type { SystemUserRow } from './model/shared';
 
 const userStore = useUserStore();
 
@@ -47,7 +44,9 @@ const gridOptions: VxeGridProps<SystemUserRow> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await systemUserPageApi(formatQuery({ page, formValues, sorts }));
+        return await systemUserPageApi(
+          formatQuery({ page, formValues, sorts }),
+        );
       },
     },
     sort: true,

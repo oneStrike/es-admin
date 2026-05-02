@@ -207,10 +207,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    v-loading="loading"
-    class="check-in-theme user-manager-scroll-pane space-y-5"
-  >
+  <div v-loading="loading" class="check-in-theme es-scroll-pane space-y-5">
     <el-card shadow="never">
       <div class="flex items-center justify-between gap-4">
         <div>

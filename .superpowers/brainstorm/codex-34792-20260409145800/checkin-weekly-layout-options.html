@@ -52,7 +52,11 @@
   }
 
   .shell {
-    background: linear-gradient(180deg, rgba(0, 113, 227, 0.05), rgba(0, 113, 227, 0));
+    background: linear-gradient(
+      180deg,
+      rgba(0, 113, 227, 0.05),
+      rgba(0, 113, 227, 0)
+    );
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 0.9rem;
@@ -316,27 +320,37 @@
 <div class="hero">
   <div>
     <h2>周签到计划的展示方式</h2>
-    <p class="subtitle">核心问题不是“还能不能叫日历”，而是周计划要不要继续保留按天块状感和批量设置入口。</p>
+    <p class="subtitle">
+      核心问题不是“还能不能叫日历”，而是周计划要不要继续保留按天块状感和批量设置入口。
+    </p>
   </div>
   <div class="badge">需要和月计划共享同一套编辑心智</div>
 </div>
 
 <p class="section-note">
-  我的判断是：周计划不应该继续用“新增第 1 天 / 第 2 天”的列表，也没必要硬塞进完整月历。
-  最稳的是把它显示成 <b>固定 7 列的一周日历条</b>，周一到周日恒定在同一位置。
+  我的判断是：周计划不应该继续用“新增第 1 天 / 第 2
+  天”的列表，也没必要硬塞进完整月历。 最稳的是把它显示成
+  <b>固定 7 列的一周日历条</b>，周一到周日恒定在同一位置。
 </p>
 
 <div class="cards">
-  <div class="card selected" data-choice="weekly-a" onclick="toggleSelect(this)">
+  <div
+    class="card selected"
+    data-choice="weekly-a"
+    onclick="toggleSelect(this)"
+  >
     <div class="card-body">
       <div class="card-head">
         <h3>方案 A: 固定 7 列周历条</h3>
         <span class="flag recommend">推荐</span>
       </div>
-      <p>周一到周日各占一个卡片格，保留“选中多个日期 -> 右侧批量设置”的交互，和月计划只是在维度上缩短。</p>
+      <p>
+        周一到周日各占一个卡片格，保留“选中多个日期 ->
+        右侧批量设置”的交互，和月计划只是在维度上缩短。
+      </p>
     </div>
-    <div class="card-image" style="padding:1rem;">
-      <div class="shell" style="width:100%;">
+    <div class="card-image" style="padding: 1rem">
+      <div class="shell" style="width: 100%">
         <div class="toolbar">
           <div class="pill active">批量模式</div>
           <div class="pill">工作日</div>
@@ -347,49 +361,63 @@
           <div class="weekday-strip">
             <div class="day">
               <div class="day-top">
-                <div class="day-title"><strong>周一</strong><span>第 1 天</span></div>
+                <div class="day-title">
+                  <strong>周一</strong><span>第 1 天</span>
+                </div>
                 <span class="tag blue">P10</span>
               </div>
               <div class="reward"><span>积分 10</span></div>
             </div>
             <div class="day">
               <div class="day-top">
-                <div class="day-title"><strong>周二</strong><span>第 2 天</span></div>
+                <div class="day-title">
+                  <strong>周二</strong><span>第 2 天</span>
+                </div>
                 <span class="tag blue">P10</span>
               </div>
               <div class="reward"><span>积分 10</span></div>
             </div>
             <div class="day selected">
               <div class="day-top">
-                <div class="day-title"><strong>周三</strong><span>第 3 天</span></div>
+                <div class="day-title">
+                  <strong>周三</strong><span>第 3 天</span>
+                </div>
                 <span class="tag orange">选中</span>
               </div>
               <div class="reward"><span>待批量设置</span></div>
             </div>
             <div class="day selected">
               <div class="day-top">
-                <div class="day-title"><strong>周四</strong><span>第 4 天</span></div>
+                <div class="day-title">
+                  <strong>周四</strong><span>第 4 天</span>
+                </div>
                 <span class="tag orange">选中</span>
               </div>
               <div class="reward"><span>待批量设置</span></div>
             </div>
             <div class="day">
               <div class="day-top">
-                <div class="day-title"><strong>周五</strong><span>第 5 天</span></div>
+                <div class="day-title">
+                  <strong>周五</strong><span>第 5 天</span>
+                </div>
                 <span class="tag gray">空</span>
               </div>
               <div class="reward"><span>未配置</span></div>
             </div>
             <div class="day">
               <div class="day-top">
-                <div class="day-title"><strong>周六</strong><span>第 6 天</span></div>
+                <div class="day-title">
+                  <strong>周六</strong><span>第 6 天</span>
+                </div>
                 <span class="tag blue">P20</span>
               </div>
               <div class="reward"><span>积分 20</span><span>经验 3</span></div>
             </div>
             <div class="day">
               <div class="day-top">
-                <div class="day-title"><strong>周日</strong><span>第 7 天</span></div>
+                <div class="day-title">
+                  <strong>周日</strong><span>第 7 天</span>
+                </div>
                 <span class="tag blue">P20</span>
               </div>
               <div class="reward"><span>积分 20</span></div>
@@ -397,9 +425,18 @@
           </div>
           <div class="side">
             <h4>批量设置 周三, 周四</h4>
-            <div class="field"><label>奖励积分</label><div class="box">15</div></div>
-            <div class="field"><label>奖励经验</label><div class="box">5</div></div>
-            <div class="field"><label>应用方式</label><div class="box">覆盖已有配置</div></div>
+            <div class="field">
+              <label>奖励积分</label>
+              <div class="box">15</div>
+            </div>
+            <div class="field">
+              <label>奖励经验</label>
+              <div class="box">5</div>
+            </div>
+            <div class="field">
+              <label>应用方式</label>
+              <div class="box">覆盖已有配置</div>
+            </div>
             <div class="shortcut-list">
               <span class="chip">一键选工作日</span>
               <span class="chip">一键选周末</span>
@@ -411,9 +448,16 @@
     </div>
     <div class="card-body">
       <div class="metrics">
-        <div class="metric"><strong>一致性</strong><span>最高。和月历编辑逻辑完全同构。</span></div>
-        <div class="metric"><strong>辨识度</strong><span>高。周几固定，不会误解 dayIndex。</span></div>
-        <div class="metric"><strong>开发成本</strong><span>最低。可复用同一套状态和批量逻辑。</span></div>
+        <div class="metric">
+          <strong>一致性</strong><span>最高。和月历编辑逻辑完全同构。</span>
+        </div>
+        <div class="metric">
+          <strong>辨识度</strong><span>高。周几固定，不会误解 dayIndex。</span>
+        </div>
+        <div class="metric">
+          <strong>开发成本</strong
+          ><span>最低。可复用同一套状态和批量逻辑。</span>
+        </div>
       </div>
     </div>
   </div>
@@ -424,25 +468,51 @@
         <h3>方案 B: 周计划列表卡片</h3>
         <span class="flag alt">信息更直白</span>
       </div>
-      <p>按“周一到周日”纵向列出来，每条都是一个奖励卡片，批量操作通过勾选多条来完成。</p>
+      <p>
+        按“周一到周日”纵向列出来，每条都是一个奖励卡片，批量操作通过勾选多条来完成。
+      </p>
     </div>
-    <div class="card-image" style="padding:1rem;">
-      <div class="shell" style="width:100%;">
+    <div class="card-image" style="padding: 1rem">
+      <div class="shell" style="width: 100%">
         <div class="agenda">
           <div class="agenda-item">
-            <div class="agenda-left"><div class="check"></div><div><strong>周一</strong><div class="note">积分 10</div></div></div>
+            <div class="agenda-left">
+              <div class="check"></div>
+              <div>
+                <strong>周一</strong>
+                <div class="note">积分 10</div>
+              </div>
+            </div>
             <span class="tag blue">已配置</span>
           </div>
           <div class="agenda-item">
-            <div class="agenda-left"><div class="check"></div><div><strong>周二</strong><div class="note">积分 10</div></div></div>
+            <div class="agenda-left">
+              <div class="check"></div>
+              <div>
+                <strong>周二</strong>
+                <div class="note">积分 10</div>
+              </div>
+            </div>
             <span class="tag blue">已配置</span>
           </div>
           <div class="agenda-item">
-            <div class="agenda-left"><div class="check"></div><div><strong>周三</strong><div class="note">未配置</div></div></div>
+            <div class="agenda-left">
+              <div class="check"></div>
+              <div>
+                <strong>周三</strong>
+                <div class="note">未配置</div>
+              </div>
+            </div>
             <span class="tag gray">空</span>
           </div>
           <div class="agenda-item">
-            <div class="agenda-left"><div class="check"></div><div><strong>周四</strong><div class="note">未配置</div></div></div>
+            <div class="agenda-left">
+              <div class="check"></div>
+              <div>
+                <strong>周四</strong>
+                <div class="note">未配置</div>
+              </div>
+            </div>
             <span class="tag gray">空</span>
           </div>
         </div>
@@ -450,9 +520,16 @@
     </div>
     <div class="card-body">
       <div class="metrics">
-        <div class="metric"><strong>一致性</strong><span>一般。更像表单列表，不像日历。</span></div>
-        <div class="metric"><strong>辨识度</strong><span>高。信息表达直接。</span></div>
-        <div class="metric"><strong>开发成本</strong><span>中。能做，但不符合你想从列表切到日历的初衷。</span></div>
+        <div class="metric">
+          <strong>一致性</strong><span>一般。更像表单列表，不像日历。</span>
+        </div>
+        <div class="metric">
+          <strong>辨识度</strong><span>高。信息表达直接。</span>
+        </div>
+        <div class="metric">
+          <strong>开发成本</strong
+          ><span>中。能做，但不符合你想从列表切到日历的初衷。</span>
+        </div>
       </div>
     </div>
   </div>
@@ -463,43 +540,63 @@
         <h3>方案 C: 7 步时间轴</h3>
         <span class="flag alt">强调顺序</span>
       </div>
-      <p>把周计划看成连续 7 步流程，适合强调“第几天”，但会弱化“周几”的自然认知。</p>
+      <p>
+        把周计划看成连续 7 步流程，适合强调“第几天”，但会弱化“周几”的自然认知。
+      </p>
     </div>
-    <div class="card-image" style="padding:1rem;">
-      <div class="shell" style="width:100%;">
+    <div class="card-image" style="padding: 1rem">
+      <div class="shell" style="width: 100%">
         <div class="timeline">
-          <div class="step"><strong>D1</strong><span>周一<br>积分 10</span></div>
-          <div class="step"><strong>D2</strong><span>周二<br>积分 10</span></div>
-          <div class="step selected"><strong>D3</strong><span>周三<br>待设置</span></div>
-          <div class="step selected"><strong>D4</strong><span>周四<br>待设置</span></div>
-          <div class="step"><strong>D5</strong><span>周五<br>未配置</span></div>
-          <div class="step"><strong>D6</strong><span>周六<br>积分 20</span></div>
-          <div class="step"><strong>D7</strong><span>周日<br>积分 20</span></div>
+          <div class="step">
+            <strong>D1</strong><span>周一<br />积分 10</span>
+          </div>
+          <div class="step">
+            <strong>D2</strong><span>周二<br />积分 10</span>
+          </div>
+          <div class="step selected">
+            <strong>D3</strong><span>周三<br />待设置</span>
+          </div>
+          <div class="step selected">
+            <strong>D4</strong><span>周四<br />待设置</span>
+          </div>
+          <div class="step">
+            <strong>D5</strong><span>周五<br />未配置</span>
+          </div>
+          <div class="step">
+            <strong>D6</strong><span>周六<br />积分 20</span>
+          </div>
+          <div class="step">
+            <strong>D7</strong><span>周日<br />积分 20</span>
+          </div>
         </div>
       </div>
     </div>
     <div class="card-body">
       <div class="metrics">
-        <div class="metric"><strong>一致性</strong><span>一般。和月计划差异太大。</span></div>
-        <div class="metric"><strong>辨识度</strong><span>中。更像流程条，不像日历。</span></div>
-        <div class="metric"><strong>开发成本</strong><span>中。视觉新鲜，但收益有限。</span></div>
+        <div class="metric">
+          <strong>一致性</strong><span>一般。和月计划差异太大。</span>
+        </div>
+        <div class="metric">
+          <strong>辨识度</strong><span>中。更像流程条，不像日历。</span>
+        </div>
+        <div class="metric">
+          <strong>开发成本</strong><span>中。视觉新鲜，但收益有限。</span>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="mockup" style="margin-top:1.5rem;">
+<div class="mockup" style="margin-top: 1.5rem">
   <div class="mockup-header">建议落地方式</div>
   <div class="mockup-body">
     <p class="note">
       我建议周计划采用 <b>方案 A</b>:
       <b>一行 7 列，固定周一到周日，卡片内显示周几和奖励摘要</b>。
       这样月计划是“月历网格”，周计划是“周历条”，但两者都还是日历视图，
-      并且都能复用同一套能力：
-      1. 点击单天编辑
-      2. 多选后批量设置
-      3. 快速选择工作日 / 周末
-      4. 最终仍然提交为现有的 <code>dayIndex + rewardConfig</code>
+      并且都能复用同一套能力： 1. 点击单天编辑 2. 多选后批量设置 3.
+      快速选择工作日 / 周末 4. 最终仍然提交为现有的
+      <code>dayIndex + rewardConfig</code>
     </p>
   </div>
 </div>

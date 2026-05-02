@@ -203,20 +203,18 @@ function normalizeApiClientError(error: unknown): NormalizedApiError {
     return error;
   }
 
-  const response = isRecord(error) && isRecord(error.response)
-    ? error.response
-    : undefined;
-  const httpStatus =
-    typeof response?.status === 'number' ? response.status : 0;
+  const response =
+    isRecord(error) && isRecord(error.response) ? error.response : undefined;
+  const httpStatus = typeof response?.status === 'number' ? response.status : 0;
   const responseData = response?.data;
 
   if (isApiResponse(responseData)) {
     const code =
       httpStatus === 200 && BUSINESS_ERROR_CODES.has(responseData.code)
         ? responseData.code
-        : (isKnownApiCode(responseData.code)
+        : isKnownApiCode(responseData.code)
           ? responseData.code
-          : mapHttpStatusToCode(httpStatus));
+          : mapHttpStatusToCode(httpStatus);
 
     return createApiError({
       code,

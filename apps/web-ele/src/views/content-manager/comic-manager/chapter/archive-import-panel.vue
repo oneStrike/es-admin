@@ -46,8 +46,9 @@ const uploadProgress = ref(0);
 const confirming = ref(false);
 const selectedChapterIds = ref<number[]>([]);
 const sourceFileName = ref('');
-const taskDetail =
-  ref<ContentComicChapterContentArchiveDetailResponse | null>(null);
+const taskDetail = ref<ContentComicChapterContentArchiveDetailResponse | null>(
+  null,
+);
 
 let pollTimer: null | number = null;
 let notifiedTaskId = '';
@@ -149,11 +150,15 @@ const panelSubtitle = computed(() => {
   return `${props.displayTitle || '当前作品'} · 支持按章节 ID 批量匹配章节并确认导入`;
 });
 
-const currentStatusLabel = computed(() =>
-  statusLabelMap[taskDetail.value?.status ?? ARCHIVE_STATUS.DRAFT] ?? '等待上传',
+const currentStatusLabel = computed(
+  () =>
+    statusLabelMap[taskDetail.value?.status ?? ARCHIVE_STATUS.DRAFT] ??
+    '等待上传',
 );
 const currentStatusType = computed(
-  () => statusTypeMap[taskDetail.value?.status ?? ARCHIVE_STATUS.DRAFT] ?? 'primary',
+  () =>
+    statusTypeMap[taskDetail.value?.status ?? ARCHIVE_STATUS.DRAFT] ??
+    'primary',
 );
 const showConfirmStage = computed(
   () =>
@@ -184,9 +189,9 @@ const archiveProgress = computed(() => {
   const selectedCount =
     selectedChapterIds.value.length > 0
       ? selectedChapterIds.value.length
-      : (taskDetail.value.matchedItems.length > 0
+      : taskDetail.value.matchedItems.length > 0
         ? taskDetail.value.matchedItems.length
-        : 1);
+        : 1;
   const total = Math.max(1, selectedCount);
   return Math.min(
     100,
@@ -230,7 +235,8 @@ function closePanel() {
 }
 
 watch(
-  () => `${props.workId}-${props.chapterId ?? 'all'}-${props.displayTitle ?? ''}`,
+  () =>
+    `${props.workId}-${props.chapterId ?? 'all'}-${props.displayTitle ?? ''}`,
   () => {
     stopPolling();
     closePanel();
@@ -294,7 +300,10 @@ async function fetchTaskDetail(taskId: string) {
     } else {
       stopPolling();
     }
-    if (terminalStatuses.has(detail.status) && notifiedTaskId !== detail.taskId) {
+    if (
+      terminalStatuses.has(detail.status) &&
+      notifiedTaskId !== detail.taskId
+    ) {
       notifiedTaskId = detail.taskId;
       emit('importFinished', detail);
       if (detail.status === ARCHIVE_STATUS.SUCCESS) {
@@ -336,20 +345,21 @@ async function handleArchiveUpload(options: UploadRequestOptions) {
   stopPolling();
 
   try {
-    const task = await requestClient.upload<ContentComicChapterContentArchivePreviewResponse>(
-      `${UploadUrlMapEnum.COMIC_ARCHIVE_PREVIEW}?${params.toString()}`,
-      { file },
-      {
-        timeout: 180_000,
-        onUploadProgress: (event) => {
-          if (event.total) {
-            uploadProgress.value = Math.round(
-              (event.loaded * 100) / event.total,
-            );
-          }
+    const task =
+      await requestClient.upload<ContentComicChapterContentArchivePreviewResponse>(
+        `${UploadUrlMapEnum.COMIC_ARCHIVE_PREVIEW}?${params.toString()}`,
+        { file },
+        {
+          timeout: 180_000,
+          onUploadProgress: (event) => {
+            if (event.total) {
+              uploadProgress.value = Math.round(
+                (event.loaded * 100) / event.total,
+              );
+            }
+          },
         },
-      },
-    );
+      );
     taskDetail.value = task;
     selectedChapterIds.value = task.matchedItems.map((item) => item.chapterId);
     options.onSuccess?.(task as never);
@@ -443,7 +453,9 @@ async function handleConfirmImport() {
       <template #title>
         <div class="flex items-start justify-between gap-4">
           <div>
-            <div class="text-lg font-semibold text-slate-900">{{ panelTitle }}</div>
+            <div class="text-lg font-semibold text-slate-900">
+              {{ panelTitle }}
+            </div>
             <div class="mt-1 text-sm text-slate-500">{{ panelSubtitle }}</div>
           </div>
           <el-tag :type="currentStatusType" effect="light">
@@ -454,25 +466,33 @@ async function handleConfirmImport() {
 
       <div class="space-y-4">
         <div class="grid grid-cols-4 gap-3">
-          <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div
+            class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+          >
             <div class="text-xs text-slate-500">可导入章节</div>
             <div class="mt-2 text-2xl font-semibold text-slate-900">
               {{ taskDetail?.summary.matchedChapterCount ?? 0 }}
             </div>
           </div>
-          <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div
+            class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+          >
             <div class="text-xs text-slate-500">有效图片</div>
             <div class="mt-2 text-2xl font-semibold text-slate-900">
               {{ selectedImageCount || taskDetail?.summary.imageCount || 0 }}
             </div>
           </div>
-          <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div
+            class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+          >
             <div class="text-xs text-slate-500">忽略条目</div>
             <div class="mt-2 text-2xl font-semibold text-slate-900">
               {{ taskDetail?.summary.ignoredItemCount ?? 0 }}
             </div>
           </div>
-          <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div
+            class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+          >
             <div class="text-xs text-slate-500">处理进度</div>
             <div class="mt-2 text-2xl font-semibold text-slate-900">
               {{ archiveProgress }}%
@@ -531,7 +551,9 @@ async function handleConfirmImport() {
 
           <div class="grid grid-cols-12 gap-4">
             <div class="col-span-7 space-y-3">
-              <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div
+                class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
                 <div class="mb-3 flex items-center justify-between">
                   <div class="text-sm font-semibold text-slate-900">
                     {{ isSingleChapterMode ? '当前章节预解析' : '匹配章节' }}
@@ -552,24 +574,32 @@ async function handleConfirmImport() {
                     :key="item.chapterId"
                     class="rounded-2xl border p-4 transition"
                     :class="
-                      isSingleChapterMode || selectedChapterIds.includes(item.chapterId)
+                      isSingleChapterMode ||
+                      selectedChapterIds.includes(item.chapterId)
                         ? 'border-blue-300 bg-blue-50/70 shadow-sm'
                         : 'border-slate-200 bg-slate-50/70 hover:border-blue-200 hover:bg-white'
                     "
                     :role="isSingleChapterMode ? undefined : 'button'"
                     :tabindex="isSingleChapterMode ? undefined : 0"
-                    @click="!isSingleChapterMode && toggleChapterSelection(item.chapterId)"
+                    @click="
+                      !isSingleChapterMode &&
+                      toggleChapterSelection(item.chapterId)
+                    "
                     @keydown.enter.prevent="
-                      !isSingleChapterMode && toggleChapterSelection(item.chapterId)
+                      !isSingleChapterMode &&
+                      toggleChapterSelection(item.chapterId)
                     "
                     @keydown.space.prevent="
-                      !isSingleChapterMode && toggleChapterSelection(item.chapterId)
+                      !isSingleChapterMode &&
+                      toggleChapterSelection(item.chapterId)
                     "
                   >
                     <div class="flex items-start gap-3">
                       <el-checkbox
                         v-if="!isSingleChapterMode"
-                        :model-value="selectedChapterIds.includes(item.chapterId)"
+                        :model-value="
+                          selectedChapterIds.includes(item.chapterId)
+                        "
                         @click.stop="toggleChapterSelection(item.chapterId)"
                       />
                       <div class="min-w-0 flex-1">
@@ -630,7 +660,9 @@ async function handleConfirmImport() {
             </div>
 
             <div class="col-span-5 space-y-3">
-              <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div
+                class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
                 <div class="text-sm font-semibold text-slate-900">忽略原因</div>
                 <div class="mt-3 flex flex-wrap gap-2">
                   <el-tag
@@ -650,7 +682,9 @@ async function handleConfirmImport() {
                 </div>
               </div>
 
-              <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div
+                class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
                 <div class="mb-3 flex items-center justify-between">
                   <div class="text-sm font-semibold text-slate-900">
                     忽略明细
@@ -668,7 +702,10 @@ async function handleConfirmImport() {
                     <div class="flex items-center gap-2 text-xs text-slate-500">
                       <AlertCircleIcon class="text-3xl text-amber-500" />
                       <span>
-                        {{ ignoreReasonLabelMap[item.reason] ?? `原因 ${item.reason}` }}
+                        {{
+                          ignoreReasonLabelMap[item.reason] ??
+                          `原因 ${item.reason}`
+                        }}
                       </span>
                     </div>
                     <div class="mt-2 text-sm font-medium text-slate-900">
@@ -687,7 +724,9 @@ async function handleConfirmImport() {
                 </div>
               </div>
 
-              <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div
+                class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
                 <div class="mb-3 flex items-center justify-between">
                   <div class="text-sm font-semibold text-slate-900">
                     执行结果
@@ -714,7 +753,8 @@ async function handleConfirmImport() {
                       </el-tag>
                     </div>
                     <div class="mt-2 text-xs text-slate-500">
-                      章节 #{{ item.chapterId }} · 导入 {{ item.importedImageCount }}
+                      章节 #{{ item.chapterId }} · 导入
+                      {{ item.importedImageCount }}
                       张
                     </div>
                     <div class="mt-1 text-xs leading-5 text-slate-500">

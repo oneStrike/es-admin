@@ -247,8 +247,8 @@ defineExpose({
 </script>
 
 <template>
-  <div class="user-manager-full-height-pane">
-    <ModeratorGrid class="user-manager-full-height-grid">
+  <div class="es-full-height-pane">
+    <ModeratorGrid class="es-full-height-grid">
       <template #toolbar-actions>
         <el-button class="ml-2" type="primary" @click="openCreateModal()">
           添加版主

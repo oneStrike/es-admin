@@ -65,11 +65,8 @@ const gridOptions: VxeGridProps<AdminAppUserPageItemDto> = {
         let lastLoginStartDate;
         let startDate;
 
-        const {
-          dateRange,
-          lastLoginDateRange,
-          ...restFormValues
-        } = formValues || {};
+        const { dateRange, lastLoginDateRange, ...restFormValues } =
+          formValues || {};
 
         if (Array.isArray(dateRange)) {
           [startDate, endDate] = dateRange;

@@ -93,7 +93,8 @@ function createStreakDetail(
         iconUrl: 'https://cdn.example.com/check-in/streak.png',
       },
     ],
-    rewardOverviewIconUrl: 'https://cdn.example.com/check-in/streak-overview.png',
+    rewardOverviewIconUrl:
+      'https://cdn.example.com/check-in/streak-overview.png',
     ruleCode: 'streak-day-3',
     status: 2,
     streakDays: 3,
@@ -165,7 +166,8 @@ describe('check-in config model', () => {
         },
       ],
       periodicAllowance: 2,
-      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/base-overview.png',
+      rewardOverviewIconUrl:
+        'https://cdn.example.com/check-in/base-overview.png',
     });
 
     expect(payload).toEqual({
@@ -195,7 +197,8 @@ describe('check-in config model', () => {
         },
       ],
       periodicAllowance: 2,
-      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/base-overview.png',
+      rewardOverviewIconUrl:
+        'https://cdn.example.com/check-in/base-overview.png',
     });
   });
 
@@ -233,7 +236,8 @@ describe('check-in config model', () => {
     });
 
     expect(days[0]).toMatchObject({
-      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/base-overview.png',
+      rewardOverviewIconUrl:
+        'https://cdn.example.com/check-in/base-overview.png',
       rewardSourceType: 1,
       rewardSummary: '积分 10 / 经验 5',
     });
@@ -511,7 +515,8 @@ describe('check-in streak config model', () => {
           iconUrl: 'https://cdn.example.com/check-in/streak.png',
         },
       ],
-      rewardOverviewIconUrl: 'https://cdn.example.com/check-in/streak-overview.png',
+      rewardOverviewIconUrl:
+        'https://cdn.example.com/check-in/streak-overview.png',
       streakDays: 3,
     });
   });

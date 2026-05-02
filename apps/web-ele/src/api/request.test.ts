@@ -112,10 +112,7 @@ function createRejectedResponse(
   });
 }
 
-function createResolvedResponse(
-  config: MockRequestConfig,
-  data: unknown,
-) {
+function createResolvedResponse(config: MockRequestConfig, data: unknown) {
   return Promise.resolve<MockResponse>({
     config,
     data,
@@ -136,7 +133,8 @@ function createAdapter(
   return (config: MockRequestConfig) => {
     const matchedRoute = routes.find(
       (route) =>
-        route.method === config.method?.toUpperCase() && route.url === config.url,
+        route.method === config.method?.toUpperCase() &&
+        route.url === config.url,
     );
 
     if (!matchedRoute) {
@@ -151,7 +149,11 @@ function createAdapter(
       return createResolvedResponse(config, matchedRoute.data);
     }
 
-    return createRejectedResponse(config, matchedRoute.status, matchedRoute.data);
+    return createRejectedResponse(
+      config,
+      matchedRoute.status,
+      matchedRoute.data,
+    );
   };
 }
 

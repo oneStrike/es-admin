@@ -123,13 +123,11 @@ export const taskReconciliationColumns =
         minWidth: 120,
       },
       settlementStatus: {
-        field: 'rewardSettlement',
         formatter: undefined,
         minWidth: 140,
         slots: { default: 'settlementStatus' },
       },
       settlementResult: {
-        field: 'rewardSettlement',
         formatter: undefined,
         minWidth: 140,
         slots: { default: 'settlementResult' },

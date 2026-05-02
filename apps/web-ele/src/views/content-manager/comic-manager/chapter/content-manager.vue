@@ -106,7 +106,9 @@ async function handleDelete(index?: number) {
 
 async function handleClearAll() {
   useConfirm('clear', async () => {
-    await contentComicChapterContentClearApi({ id: shareData.value!.chapterId });
+    await contentComicChapterContentClearApi({
+      id: shareData.value!.chapterId,
+    });
     useMessage.success('清空成功');
     await loadContents();
   });

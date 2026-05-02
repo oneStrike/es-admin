@@ -58,6 +58,7 @@
 ## 任务 1：补齐 `es-server` 轮次历史只读 contract
 
 **文件：**
+
 - 修改：`E:/Code/es/es-server/libs/growth/src/check-in/dto/check-in-definition.dto.ts`
 - 修改：`E:/Code/es/es-server/libs/growth/src/check-in/check-in-definition.service.ts`
 - 修改：`E:/Code/es/es-server/libs/growth/src/check-in/check-in.service.ts`
@@ -68,7 +69,10 @@
 
 ```ts
 it('returns history page items with predecessor and successor context', async () => {
-  const result = await service.getRoundHistoryPage({ pageIndex: 1, pageSize: 15 });
+  const result = await service.getRoundHistoryPage({
+    pageIndex: 1,
+    pageSize: 15,
+  });
   expect(result.list[0]).toMatchObject({
     isCurrent: true,
     predecessorRoundId: 2,
@@ -86,8 +90,7 @@ it('returns read-only history detail for archived rounds', async () => {
 
 - [ ] **步骤 2：运行测试验证失败**
 
-运行：`pnpm test -- --runInBand --runTestsByPath libs/growth/src/check-in/check-in-definition.service.spec.ts`
-预期：FAIL，报错缺少 `getRoundHistoryPage` / `getRoundHistoryDetail` 或返回结构不匹配。
+运行：`pnpm test -- --runInBand --runTestsByPath libs/growth/src/check-in/check-in-definition.service.spec.ts` 预期：FAIL，报错缺少 `getRoundHistoryPage` / `getRoundHistoryDetail` 或返回结构不匹配。
 
 - [ ] **步骤 3：新增历史 DTO**
 
@@ -105,8 +108,7 @@ export class CheckInStreakRoundHistoryPageItemDto extends BaseDto {
   successorRoundCode?: string | null;
 }
 
-export class CheckInStreakRoundHistoryDetailResponseDto
-  extends CheckInStreakRoundHistoryPageItemDto {
+export class CheckInStreakRoundHistoryDetailResponseDto extends CheckInStreakRoundHistoryPageItemDto {
   rewardRules!: CheckInStreakRewardRuleItemDto[];
 }
 ```
@@ -155,16 +157,13 @@ async getRoundHistoryDetail(@Query() query: IdDto) {
 
 - [ ] **步骤 6：运行类型检查和 targeted Jest**
 
-运行：`pnpm type-check`
-预期：PASS
+运行：`pnpm type-check` 预期：PASS
 
-运行：`pnpm test -- --runInBand --runTestsByPath libs/growth/src/check-in/check-in-definition.service.spec.ts libs/growth/src/check-in/check-in-execution.service.spec.ts libs/growth/src/check-in/check-in-runtime.service.spec.ts libs/growth/src/check-in/check-in-streak-round.spec.ts`
-预期：PASS
+运行：`pnpm test -- --runInBand --runTestsByPath libs/growth/src/check-in/check-in-definition.service.spec.ts libs/growth/src/check-in/check-in-execution.service.spec.ts libs/growth/src/check-in/check-in-runtime.service.spec.ts libs/growth/src/check-in/check-in-streak-round.spec.ts` 预期：PASS
 
 - [ ] **步骤 7：同步 admin OpenAPI 到 Apifox**
 
-运行：`pnpm publish-api:admin`
-预期：PASS，并看到新增 `streak-round/history/page` 与 `streak-round/history/detail` 被发布。
+运行：`pnpm publish-api:admin` 预期：PASS，并看到新增 `streak-round/history/page` 与 `streak-round/history/detail` 被发布。
 
 - [ ] **步骤 8：Commit**
 
@@ -176,18 +175,17 @@ git -C E:/Code/es/es-server commit -m "feat: add read-only check-in round histor
 ## 任务 2：刷新 `es-admin` 生成层并确认类型对齐
 
 **文件：**
+
 - 修改：`E:/Code/es/es-admin/apps/web-ele/src/api/core/checkIn.ts`
 - 修改：`E:/Code/es/es-admin/apps/web-ele/src/api/types/checkIn.d.ts`
 
 - [ ] **步骤 1：运行生成脚本刷新 `checkIn` API**
 
-运行：`pnpm att:ele`
-预期：PASS，且生成结果包含 `checkInStreakRoundHistoryPageApi`、`checkInStreakRoundHistoryDetailApi` 以及对应类型。
+运行：`pnpm att:ele` 预期：PASS，且生成结果包含 `checkInStreakRoundHistoryPageApi`、`checkInStreakRoundHistoryDetailApi` 以及对应类型。
 
 - [ ] **步骤 2：验证生成层包含历史接口**
 
-运行：`rg -n "history/page|history/detail|CheckInStreakRoundHistory" E:/Code/es/es-admin/apps/web-ele/src/api/core/checkIn.ts E:/Code/es/es-admin/apps/web-ele/src/api/types/checkIn.d.ts`
-预期：命中历史 page/detail API 与 DTO。
+运行：`rg -n "history/page|history/detail|CheckInStreakRoundHistory" E:/Code/es/es-admin/apps/web-ele/src/api/core/checkIn.ts E:/Code/es/es-admin/apps/web-ele/src/api/types/checkIn.d.ts` 预期：命中历史 page/detail API 与 DTO。
 
 - [ ] **步骤 3：Commit**
 
@@ -199,6 +197,7 @@ git -C E:/Code/es/es-admin commit -m "types: regenerate admin check-in history a
 ## 任务 3：重建签到页为三段式配置台
 
 **文件：**
+
 - 修改：`E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/index.vue`
 - 创建：`E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/components/check-in-config-panel.vue`
 - 创建：`E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/components/check-in-round-panel.vue`
@@ -229,7 +228,9 @@ const formState = reactive(createDefaultConfigFormState());
 async function handleSave() {
   const error = validateConfigForm(formState);
   if (error) return;
-  await checkInConfigUpdateApi(buildConfigUpdatePayload(enabled.value, formState));
+  await checkInConfigUpdateApi(
+    buildConfigUpdatePayload(enabled.value, formState),
+  );
   await loadConfig();
 }
 ```
@@ -246,6 +247,7 @@ async function handleSave() {
 ```
 
 约束：
+
 - `status = ACTIVE`
 - `nextRoundStrategy = INHERIT`
 - `nextRoundConfigId` 省略
@@ -258,6 +260,7 @@ const historyDetail = ref<CheckInStreakRoundHistoryDetailResponse | null>(null);
 ```
 
 要求：
+
 - 只能查看详情
 - 不能出现任何历史编辑按钮
 
@@ -272,11 +275,9 @@ const [ReconciliationGrid, reconciliationGridApi] = useVbenVxeGrid({
 
 - [ ] **步骤 6：运行页面级 IA 搜索验证**
 
-运行：`rg -n "基础配置|连续奖励轮次|奖励对账" E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/index.vue`
-预期：命中三个新 tab 标签。
+运行：`rg -n "基础配置|连续奖励轮次|奖励对账" E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/index.vue` 预期：命中三个新 tab 标签。
 
-运行：`rg -n "新增签到计划|计划管理|切换状态|编辑历史轮次" E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in`
-预期：无命中。
+运行：`rg -n "新增签到计划|计划管理|切换状态|编辑历史轮次" E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in` 预期：无命中。
 
 - [ ] **步骤 7：Commit**
 
@@ -288,6 +289,7 @@ git -C E:/Code/es/es-admin commit -m "feat: rebuild check-in page as config cons
 ## 任务 4：重建模型层并让奖励状态向 `rewardItems[]` 靠拢
 
 **文件：**
+
 - 修改：`E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/model/shared.ts`
 - 创建：`E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/model/config.ts`
 - 创建：`E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/model/streak-round.ts`
@@ -323,6 +325,7 @@ export type CheckInConfigFormState = {
 ```
 
 要求：
+
 - `rewardItems[]` 为真实提交结构
 - `points / experience` 为当前快捷编辑投影
 
@@ -363,8 +366,7 @@ it('builds round update payload with fixed transport fields', () => {
 
 - [ ] **步骤 6：运行模型层单测验证**
 
-运行：`pnpm test:unit -- apps/web-ele/src/views/user-manager/check-in/model/plan-modal.test.ts`
-预期：PASS
+运行：`pnpm test:unit -- apps/web-ele/src/views/user-manager/check-in/model/plan-modal.test.ts` 预期：PASS
 
 - [ ] **步骤 7：Commit**
 
@@ -376,34 +378,29 @@ git -C E:/Code/es/es-admin commit -m "refactor: rebuild check-in models around r
 ## 任务 5：做最终跨仓库验证并清理 legacy 引用
 
 **文件：**
+
 - 修改：`E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/**`
 - 修改：`E:/Code/es/es-server/libs/growth/src/check-in/**`
 
 - [ ] **步骤 1：运行 `es-server` 最终验证**
 
-运行：`pnpm type-check`
-预期：PASS
+运行：`pnpm type-check` 预期：PASS
 
-运行：`pnpm test -- --runInBand --runTestsByPath libs/growth/src/check-in/check-in-definition.service.spec.ts libs/growth/src/check-in/check-in-execution.service.spec.ts libs/growth/src/check-in/check-in-runtime.service.spec.ts libs/growth/src/check-in/check-in-streak-round.spec.ts`
-预期：PASS
+运行：`pnpm test -- --runInBand --runTestsByPath libs/growth/src/check-in/check-in-definition.service.spec.ts libs/growth/src/check-in/check-in-execution.service.spec.ts libs/growth/src/check-in/check-in-runtime.service.spec.ts libs/growth/src/check-in/check-in-streak-round.spec.ts` 预期：PASS
 
 - [ ] **步骤 2：运行 `es-admin` 最终验证**
 
-运行：`pnpm -F @vben/web-ele run typecheck`
-预期：PASS
+运行：`pnpm -F @vben/web-ele run typecheck` 预期：PASS
 
-运行：`pnpm test:unit -- apps/web-ele/src/views/user-manager/check-in/model/plan-modal.test.ts`
-预期：PASS
+运行：`pnpm test:unit -- apps/web-ele/src/views/user-manager/check-in/model/plan-modal.test.ts` 预期：PASS
 
 - [ ] **步骤 3：搜索 legacy plan/cycle 依赖**
 
-运行：`rg -n "checkInPlan|计划管理|新增签到计划" E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in`
-预期：无命中
+运行：`rg -n "checkInPlan|计划管理|新增签到计划" E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in` 预期：无命中
 
 - [ ] **步骤 4：确认最终路由 IA**
 
-运行：`rg -n "基础配置|连续奖励轮次|奖励对账" E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/index.vue`
-预期：命中三个 tab 标签
+运行：`rg -n "基础配置|连续奖励轮次|奖励对账" E:/Code/es/es-admin/apps/web-ele/src/views/user-manager/check-in/index.vue` 预期：命中三个 tab 标签
 
 - [ ] **步骤 5：Commit**
 
@@ -427,4 +424,4 @@ git -C E:/Code/es/es-admin commit -m "fix: align check-in admin with config cons
 
 **2. 内联执行** - 在当前会话中使用 executing-plans 执行任务，批量执行并设有检查点
 
-鉴于你前面已经明确要求不要开启子代理，更适合继续走 **内联执行**。*** End Patch
+鉴于你前面已经明确要求不要开启子代理，更适合继续走 **内联执行**。\*\*\* End Patch

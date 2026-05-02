@@ -112,19 +112,26 @@ onMounted(loadStatus);
 <template>
   <Page auto-content-height title="IP 属地库">
     <main class="space-y-6">
-      <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div class="space-y-2">
             <div class="flex items-center gap-3">
-              <h1 class="text-xl font-semibold text-slate-900">IP 属地库管理</h1>
+              <h1 class="text-xl font-semibold text-slate-900">
+                IP 属地库管理
+              </h1>
               <el-tag :type="statusTagType" effect="light">
                 {{ statusSummary }}
               </el-tag>
             </div>
             <p class="max-w-3xl text-sm leading-6 text-slate-500">
               用于上传并切换当前进程使用的
-              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700">ip2region_v4.xdb</code>
-              文件。当前能力只保证接收上传请求的 API 进程立即生效，不处理跨进程或跨实例同步。
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700"
+                >ip2region_v4.xdb</code
+              >
+              文件。当前能力只保证接收上传请求的 API
+              进程立即生效，不处理跨进程或跨实例同步。
             </p>
           </div>
           <el-button :loading="statusLoading" @click="loadStatus">
@@ -133,7 +140,9 @@ onMounted(loadStatus);
         </div>
       </section>
 
-      <section class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,2fr)_360px]">
+      <section
+        class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,2fr)_360px]"
+      >
         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div class="mb-4 flex items-center justify-between gap-3">
             <h2 class="text-base font-semibold text-slate-900">当前状态</h2>
@@ -193,15 +202,23 @@ onMounted(loadStatus);
         </div>
 
         <div class="space-y-6">
-          <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <section
+            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+          >
             <h2 class="text-base font-semibold text-slate-900">上传新库</h2>
             <p class="mt-2 text-sm leading-6 text-slate-500">
               仅支持上传
-              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700">ip2region_v4.xdb</code>
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700"
+                >ip2region_v4.xdb</code
+              >
               。上传成功后会写入
-              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700">versions</code>
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700"
+                >versions</code
+              >
               和
-              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700">active</code>
+              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700"
+                >active</code
+              >
               目录，并切换当前进程查询器。
             </p>
 
@@ -221,12 +238,18 @@ onMounted(loadStatus);
                 plain
                 :loading="uploading"
               >
-                {{ uploading ? '正在上传并切换...' : '选择并上传 ip2region_v4.xdb' }}
+                {{
+                  uploading
+                    ? '正在上传并切换...'
+                    : '选择并上传 ip2region_v4.xdb'
+                }}
               </el-button>
             </el-upload>
 
             <div v-if="uploading" class="mt-4">
-              <div class="mb-2 flex items-center justify-between text-xs text-slate-500">
+              <div
+                class="mb-2 flex items-center justify-between text-xs text-slate-500"
+              >
                 <span>{{ lastUploadFileName || '上传中' }}</span>
                 <span>{{ uploadProgress }}%</span>
               </div>
@@ -234,13 +257,18 @@ onMounted(loadStatus);
             </div>
           </section>
 
-          <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <section
+            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+          >
             <h2 class="text-base font-semibold text-slate-900">操作说明</h2>
             <ul class="mt-3 space-y-3 text-sm leading-6 text-slate-500">
               <li>1. 上传失败不会影响当前在线查询能力。</li>
               <li>2. 同一时刻只允许一个热切换流程执行。</li>
               <li>3. 服务重启后会优先尝试从 active 目录恢复当前生效库。</li>
-              <li>4. 若 `admin-api` 与 `app-api` 分离运行，本页上传只影响当前接收请求的进程。</li>
+              <li>
+                4. 若 `admin-api` 与 `app-api`
+                分离运行，本页上传只影响当前接收请求的进程。
+              </li>
             </ul>
           </section>
         </div>

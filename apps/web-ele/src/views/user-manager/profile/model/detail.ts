@@ -204,7 +204,9 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
     {
       title: '管控信息',
       show:
-        detail.status !== normalUserStatus || !!detail.banReason || !!detail.banUntil,
+        detail.status !== normalUserStatus ||
+        !!detail.banReason ||
+        !!detail.banUntil,
       fields: [
         {
           label: '当前状态',
@@ -226,11 +228,17 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
     },
     {
       title: '等级详情',
-      show: !!detail.level || !!experienceStats?.level || !!experienceStats?.nextLevel,
+      show:
+        !!detail.level ||
+        !!experienceStats?.level ||
+        !!experienceStats?.nextLevel,
       fields: [
         {
           label: '当前等级所需经验',
-          value: experienceStats?.level?.requiredExperience ?? detail.level?.requiredExperience ?? '-',
+          value:
+            experienceStats?.level?.requiredExperience ??
+            detail.level?.requiredExperience ??
+            '-',
           type: 'text' as const,
         },
         {
@@ -240,7 +248,9 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
         },
         {
           label: '状态更新时间',
-          value: detail.updatedAt ? formatUTC(detail.updatedAt, 'YYYY-MM-DD HH:mm:ss') : '-',
+          value: detail.updatedAt
+            ? formatUTC(detail.updatedAt, 'YYYY-MM-DD HH:mm:ss')
+            : '-',
           type: 'text' as const,
         },
       ],

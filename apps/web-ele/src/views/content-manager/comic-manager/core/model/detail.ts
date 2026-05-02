@@ -34,13 +34,15 @@ export function getDetailCards(
         },
         {
           label: '作者',
-          value: extractRelationNames(detail.authors, 'author').join(', ') || '-',
+          value:
+            extractRelationNames(detail.authors, 'author').join(', ') || '-',
           type: 'text',
         },
         {
           label: '分类',
           value:
-            extractRelationNames(detail.categories, 'category').join(', ') || '-',
+            extractRelationNames(detail.categories, 'category').join(', ') ||
+            '-',
           type: 'text',
         },
         {

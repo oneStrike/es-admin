@@ -4,7 +4,7 @@ import type { AuditItemDto, AuditPageRequest } from '#/api/types';
 
 import { Page } from '@vben/common-ui';
 
-import {  useVbenVxeGrid } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { auditPageApi } from '#/api/core';
 import { createSearchFormOptions } from '#/utils';
 

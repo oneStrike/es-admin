@@ -91,8 +91,9 @@ export const formSchema: EsFormSchema = [
   },
 ];
 
-export const pageColumns =
-  formSchemaTransform.toTableColumns<BaseUserBadgeDto>(formSchema, {
+export const pageColumns = formSchemaTransform.toTableColumns<BaseUserBadgeDto>(
+  formSchema,
+  {
     icon: {
       cellRender: {
         name: 'CellImage',
@@ -135,7 +136,8 @@ export const pageColumns =
     actions: {
       show: true,
     },
-  });
+  },
+);
 
 export const searchFormSchema = formSchemaTransform.toSearchSchema(formSchema, {
   name: {

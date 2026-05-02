@@ -94,7 +94,9 @@ export function cloneRewardItems(
     assetKey: item.assetKey ?? '',
   }));
 
-  return cloneSharedRewardItems(normalizedRewardItems) as CheckInRewardItemDto[];
+  return cloneSharedRewardItems(
+    normalizedRewardItems,
+  ) as CheckInRewardItemDto[];
 }
 
 export function hasRewardItems(
@@ -111,10 +113,16 @@ export function formatRewardSummary(
     assetKey: item.assetKey ?? '',
   }));
 
-  return formatSharedRewardSummary(normalizedRewardItems, checkInRewardAssetOptions);
+  return formatSharedRewardSummary(
+    normalizedRewardItems,
+    checkInRewardAssetOptions,
+  );
 }
 
-export function buildBaseRewardItems(points?: null | number, experience?: null | number) {
+export function buildBaseRewardItems(
+  points?: null | number,
+  experience?: null | number,
+) {
   const rewardItems: CheckInRewardItemDto[] = [];
 
   if (typeof points === 'number' && points > 0) {
@@ -136,7 +144,9 @@ export function buildBaseRewardItems(points?: null | number, experience?: null |
   return rewardItems;
 }
 
-export function parseBaseRewardItems(rewardItems?: CheckInRewardItemDto[] | null) {
+export function parseBaseRewardItems(
+  rewardItems?: CheckInRewardItemDto[] | null,
+) {
   const rewardValue = {
     experience: undefined as number | undefined,
     points: undefined as number | undefined,

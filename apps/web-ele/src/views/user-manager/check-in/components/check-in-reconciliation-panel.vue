@@ -162,8 +162,8 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
 </script>
 
 <template>
-  <div class="check-in-theme user-manager-full-height-pane">
-    <ReconciliationGrid class="user-manager-full-height-grid">
+  <div class="check-in-theme es-full-height-pane">
+    <ReconciliationGrid class="es-full-height-grid">
       <template #signInfo="{ row }">
         <div class="space-y-1">
           <div class="font-medium text-slate-900">{{ row.signDate }}</div>

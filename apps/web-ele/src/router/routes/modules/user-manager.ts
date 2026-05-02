@@ -78,11 +78,20 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'UserGrowthBadges',
         path: '/user-manager/growth/badges',
-        component: () =>
-          import('#/views/user-manager/growth/badges/index.vue'),
+        component: () => import('#/views/user-manager/growth/badges/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
           title: '徽章管理',
+        },
+      },
+      {
+        name: 'UserGrowthOperations',
+        path: '/user-manager/growth/operations',
+        component: () =>
+          import('#/views/user-manager/growth/operations/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '成长运营',
         },
       },
     ],

@@ -13,7 +13,7 @@ import { onMounted, ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import {  useVbenVxeGrid } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   auditPageApi,
   systemUserPasswordChangeApi,

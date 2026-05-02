@@ -108,9 +108,7 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
     },
     {
       title: '弹窗背景设置',
-      show: !!(
-        detail.popupBackgroundImage || detail.popupBackgroundPosition
-      ),
+      show: !!(detail.popupBackgroundImage || detail.popupBackgroundPosition),
       fields: [
         {
           label: '背景图',
@@ -121,9 +119,9 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
         {
           label: '背景图位置',
           value: detail.popupBackgroundPosition
-            ? popupBackgroundPositionOptions.find(
+            ? (popupBackgroundPositionOptions.find(
                 (opt) => opt.value === detail.popupBackgroundPosition,
-              )?.label ?? detail.popupBackgroundPosition
+              )?.label ?? detail.popupBackgroundPosition)
             : '-',
           type: 'text' as const,
           show: !!detail.popupBackgroundPosition,

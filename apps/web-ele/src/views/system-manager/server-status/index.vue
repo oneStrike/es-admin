@@ -67,10 +67,7 @@ function formatJson(data: unknown) {
 async function loadHealthStatus() {
   statusLoading.value = true;
   try {
-    const [health, ready] = await Promise.all([
-      apiHealthApi(),
-      apiReadyApi(),
-    ]);
+    const [health, ready] = await Promise.all([apiHealthApi(), apiReadyApi()]);
     healthData.value = health ?? null;
     readyData.value = ready ?? null;
     healthUpdatedAt.value = new Date().toLocaleString();

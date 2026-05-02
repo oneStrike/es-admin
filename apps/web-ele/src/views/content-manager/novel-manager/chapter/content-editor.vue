@@ -52,7 +52,9 @@ async function handleUploadSuccess() {
 
 async function handleClear() {
   await useConfirm('clear', async () => {
-    await contentNovelChapterContentDeleteApi({ id: shareData.value!.chapterId });
+    await contentNovelChapterContentDeleteApi({
+      id: shareData.value!.chapterId,
+    });
     content.value = '';
   });
 }

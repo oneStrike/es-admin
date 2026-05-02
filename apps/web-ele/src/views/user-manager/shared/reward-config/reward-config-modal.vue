@@ -83,7 +83,10 @@ function removeRewardItem(index: number) {
   draft.rewardItems.splice(index, 1);
 }
 
-function handleAssetTypeChange(item: RewardConfigItemValue, assetType?: number) {
+function handleAssetTypeChange(
+  item: RewardConfigItemValue,
+  assetType?: number,
+) {
   item.assetType = Number(
     assetType || props.assetOptions[0]?.value || 1,
   ) as RewardConfigItemValue['assetType'];
@@ -103,7 +106,10 @@ function handleConfirm() {
   );
 
   for (const item of normalizedItems) {
-    const assetOption = getRewardAssetOption(item.assetType, props.assetOptions);
+    const assetOption = getRewardAssetOption(
+      item.assetType,
+      props.assetOptions,
+    );
     if (!assetOption) {
       useMessage.warning(`存在未支持的奖励类型：${item.assetType}`);
       return;
@@ -112,7 +118,10 @@ function handleConfirm() {
       useMessage.warning(`请填写 ${assetOption.label} 的有效奖励数量`);
       return;
     }
-    if (assetOption.supportsAssetKey && !normalizeOptionalString(item.assetKey)) {
+    if (
+      assetOption.supportsAssetKey &&
+      !normalizeOptionalString(item.assetKey)
+    ) {
       useMessage.warning(`请填写 ${assetOption.label} 的资产键`);
       return;
     }
@@ -234,7 +243,12 @@ function handleClear() {
                 />
               </div>
 
-              <div v-if="getRewardAssetOption(item.assetType, assetOptions)?.supportsAssetKey">
+              <div
+                v-if="
+                  getRewardAssetOption(item.assetType, assetOptions)
+                    ?.supportsAssetKey
+                "
+              >
                 <div class="mb-2 text-sm font-medium text-slate-700">
                   {{
                     getRewardAssetOption(item.assetType, assetOptions)
@@ -250,7 +264,12 @@ function handleClear() {
                 />
               </div>
 
-              <div v-if="getRewardAssetOption(item.assetType, assetOptions)?.supportsIcon">
+              <div
+                v-if="
+                  getRewardAssetOption(item.assetType, assetOptions)
+                    ?.supportsIcon
+                "
+              >
                 <div class="mb-2 text-sm font-medium text-slate-700">
                   奖励图标
                 </div>
@@ -272,7 +291,9 @@ function handleClear() {
         </div>
       </div>
 
-      <div class="rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-4 text-sm text-slate-600">
+      <div
+        class="rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-4 text-sm text-slate-600"
+      >
         当前摘要：{{ formatRewardSummary(draft.rewardItems, assetOptions) }}
       </div>
     </div>

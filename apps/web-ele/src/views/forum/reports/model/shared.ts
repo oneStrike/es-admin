@@ -441,13 +441,11 @@ export const pageColumns =
       slots: { default: 'targetType' },
     },
     targetTitle: {
-      field: 'targetSummary',
       formatter: undefined,
       minWidth: 220,
       slots: { default: 'targetTitle' },
     },
     targetExtra: {
-      field: 'targetSummary',
       formatter: undefined,
       minWidth: 180,
       slots: { default: 'targetExtra' },
@@ -458,13 +456,11 @@ export const pageColumns =
       slots: { default: 'sceneType' },
     },
     sceneTitle: {
-      field: 'sceneSummary',
       formatter: undefined,
       minWidth: 220,
       slots: { default: 'sceneTitle' },
     },
     sceneExtra: {
-      field: 'sceneSummary',
       formatter: undefined,
       minWidth: 180,
       slots: { default: 'sceneExtra' },

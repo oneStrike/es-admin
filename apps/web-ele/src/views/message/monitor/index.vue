@@ -17,6 +17,7 @@ import {
   messageMonitorDispatchPageApi,
   messageMonitorWsSummaryApi,
 } from '#/api/core';
+import EsFullHeightTabs from '#/components/es-full-height-tabs';
 import { useMessage } from '#/hooks/useFeedback';
 import { formatUTC } from '#/utils';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
@@ -29,8 +30,6 @@ import {
   splitDateRange,
 } from './model/shared';
 import { getWsSummaryItems, windowHourOptions } from './model/ws';
-
-import '../../user-manager/styles/full-height-tabs.css';
 
 defineOptions({
   name: 'MessageMonitor',
@@ -136,7 +135,7 @@ onMounted(fetchWsSummary);
 </script>
 
 <template>
-  <Page auto-content-height content-class="user-manager-page-content">
+  <Page auto-content-height content-class="es-full-height-page-content">
     <div class="flex h-full min-h-0 flex-col gap-4 overflow-hidden">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
@@ -192,18 +191,15 @@ onMounted(fetchWsSummary);
         </el-card>
       </div>
 
-      <el-tabs
-        v-model="activeTab"
-        class="user-manager-full-height-tabs min-h-0 flex-1"
-      >
+      <EsFullHeightTabs v-model="activeTab" class="min-h-0 flex-1">
         <el-tab-pane label="调度记录" name="dispatch">
-          <div class="user-manager-full-height-pane">
-            <DispatchGrid class="user-manager-full-height-grid" />
+          <div class="es-full-height-pane">
+            <DispatchGrid class="es-full-height-grid" />
           </div>
         </el-tab-pane>
         <el-tab-pane label="投递结果" name="delivery">
-          <div class="user-manager-full-height-pane">
-            <DeliveryGrid class="user-manager-full-height-grid">
+          <div class="es-full-height-pane">
+            <DeliveryGrid class="es-full-height-grid">
               <template #category="{ row }">
                 <div class="min-w-0">
                   <div class="truncate">
@@ -250,7 +246,7 @@ onMounted(fetchWsSummary);
             </DeliveryGrid>
           </div>
         </el-tab-pane>
-      </el-tabs>
+      </EsFullHeightTabs>
     </div>
   </Page>
 </template>

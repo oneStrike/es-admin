@@ -124,7 +124,7 @@ async function handleSubmit(
     showAsPopup: values.showAsPopup ?? false,
   } as CreateAnnouncementDto | UpdateAnnouncementDto;
 
-  await (('id' in payload && payload.id)
+  await ('id' in payload && payload.id
     ? announcementUpdateApi(payload as UpdateAnnouncementDto)
     : announcementCreateApi(payload as CreateAnnouncementDto));
   formApi.close();

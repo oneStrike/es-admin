@@ -115,7 +115,8 @@ export const authorColumns =
       },
     },
     gender: {
-      formatter: ({ cellValue }) => genderOptions.find((item) => item.value === cellValue)?.label ?? '-',
+      formatter: ({ cellValue }) =>
+        genderOptions.find((item) => item.value === cellValue)?.label ?? '-',
     },
     nationality: {
       slots: { default: 'nationality' },

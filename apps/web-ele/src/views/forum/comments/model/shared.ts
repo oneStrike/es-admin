@@ -359,13 +359,11 @@ export const pageColumns =
       slots: { default: 'targetType' },
     },
     targetTitle: {
-      field: 'targetSummary',
       formatter: undefined,
       minWidth: 220,
       slots: { default: 'targetTitle' },
     },
     targetExtra: {
-      field: 'targetSummary',
       formatter: undefined,
       minWidth: 180,
       slots: { default: 'targetExtra' },

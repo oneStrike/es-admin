@@ -53,7 +53,7 @@ function sortItemsWithSortValue<T extends { sortValue: number }>(
 export const formSchemaTransform: FormSchemaTransform = {
   toTableColumns: (schema, extra) => {
     const innerSchema = cloneDeep(schema);
-    const extraConfig = { ...(extra ?? {}) } as ColumnItemExtra<any>;
+    const extraConfig = { ...extra } as ColumnItemExtra<any>;
 
     const columnsWithSort: Array<
       VxeGridPropTypes.Columns<any>[number] & {

@@ -4,10 +4,10 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
+import EsFullHeightTabs from '#/components/es-full-height-tabs';
+
 import ModeratorApplicationPanel from './components/moderator-application-panel.vue';
 import ModeratorListPanel from './components/moderator-list-panel.vue';
-
-import '../../user-manager/styles/full-height-tabs.css';
 
 defineOptions({
   name: 'ForumModerators',
@@ -51,12 +51,12 @@ async function handleApplicationApproved() {
 <template>
   <Page
     auto-content-height
-    content-class="user-manager-page-content"
+    content-class="es-full-height-page-content"
     title="版主管理"
   >
-    <el-tabs
+    <EsFullHeightTabs
       v-model="activeTab"
-      class="user-manager-full-height-tabs task-manager-tabs"
+      class="es-pill-tabs"
       @tab-change="handleTabChange"
     >
       <el-tab-pane label="版主列表" name="moderators">
@@ -66,7 +66,7 @@ async function handleApplicationApproved() {
       <el-tab-pane label="申请审核" name="applications">
         <ModeratorApplicationPanel @approved="handleApplicationApproved" />
       </el-tab-pane>
-    </el-tabs>
+    </EsFullHeightTabs>
   </Page>
 </template>
 

@@ -185,19 +185,15 @@ async function handleSubmit(
     isPublished:
       values.isPublished ?? currentNovelRecord.value?.isPublished ?? false,
     isRecommended:
-      values.isRecommended ??
-      currentNovelRecord.value?.isRecommended ??
-      false,
+      values.isRecommended ?? currentNovelRecord.value?.isRecommended ?? false,
     recommendWeight:
-      values.recommendWeight ??
-      currentNovelRecord.value?.recommendWeight ??
-      0,
+      values.recommendWeight ?? currentNovelRecord.value?.recommendWeight ?? 0,
     tagIds: values.tagIds ?? currentNovelRecord.value?.tagIds ?? [],
     type: 2,
     viewRule: values.viewRule ?? currentNovelRecord.value?.viewRule ?? 0,
   } as ContentNovelCreateRequest | ContentNovelUpdateRequest;
 
-  await (('id' in payload && payload.id)
+  await ('id' in payload && payload.id
     ? contentNovelUpdateApi(payload as ContentNovelUpdateRequest)
     : contentNovelCreateApi(payload as ContentNovelCreateRequest));
   useMessage.success('操作成功');
@@ -364,7 +360,9 @@ function openChapterModal(record: BaseWorkDto) {
 
     <DetailModal
       :api="contentNovelDetailApi"
-      :cards="(data: BaseWorkDto) => getDetailCards(data, dataDict ?? emptyDict)"
+      :cards="
+        (data: BaseWorkDto) => getDetailCards(data, dataDict ?? emptyDict)
+      "
     />
 
     <ChapterModal />

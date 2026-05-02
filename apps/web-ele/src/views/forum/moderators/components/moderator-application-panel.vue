@@ -136,8 +136,8 @@ defineExpose({
 </script>
 
 <template>
-  <div class="user-manager-full-height-pane">
-    <ApplicationGrid class="user-manager-full-height-grid">
+  <div class="es-full-height-pane">
+    <ApplicationGrid class="es-full-height-grid">
       <template #applicant="{ row }">
         <div v-if="row.applicant" class="flex min-w-0 items-center gap-2">
           <el-avatar

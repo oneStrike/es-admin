@@ -294,14 +294,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="user-manager-full-height-pane">
+  <div class="es-full-height-pane">
     <div
       class="mb-4 rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm leading-6 text-slate-600"
     >
       事件模板下拉仅保留当前允许创建的模板；
       过滤条件需使用模板声明的字段键和值类型。 具体字段请参考模板返回的说明。
     </div>
-    <Grid class="user-manager-full-height-grid">
+    <Grid class="es-full-height-grid">
       <template #toolbar-actions>
         <el-button class="ml-2" type="primary" @click="openFormModal()">
           添加任务

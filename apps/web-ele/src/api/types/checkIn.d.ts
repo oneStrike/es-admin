@@ -3,7 +3,7 @@ export type CheckInConfigDetailResponse = CheckInConfigDetailResponseDto;
 /**
  *  类型定义 [CheckInCalendarDetailRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInCalendarDetailRequest = {
   /** 任意合法数值 */
@@ -19,7 +19,7 @@ export type CheckInCalendarDetailResponse =
 /**
  *  类型定义 [CheckInCalendarUserDetailRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInCalendarUserDetailRequest = {
   /** 任意合法数值 */
@@ -38,7 +38,7 @@ export type CheckInCalendarUserDetailResponse =
 /**
  *  类型定义 [CheckInCalendarSignedUserPageRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInCalendarSignedUserPageRequest = {
   /** 任意合法数值 */
@@ -74,7 +74,7 @@ export type CheckInCalendarSignedUserPageResponse = {
 /**
  *  类型定义 [CheckInConfigUpdateRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInConfigUpdateRequest = UpdateCheckInConfigDto;
 
@@ -83,7 +83,7 @@ export type CheckInConfigUpdateResponse = boolean;
 /**
  *  类型定义 [CheckInConfigUpdateEnabledRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInConfigUpdateEnabledRequest = UpdateCheckInEnabledDto;
 
@@ -92,7 +92,7 @@ export type CheckInConfigUpdateEnabledResponse = boolean;
 /**
  *  类型定义 [CheckInStreakPageRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInStreakPageRequest = {
   /** 任意合法数值 */
@@ -140,7 +140,7 @@ export type CheckInStreakPageResponse = {
 /**
  *  类型定义 [CheckInStreakDetailRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInStreakDetailRequest = {
   /** 任意合法数值 */
@@ -155,7 +155,7 @@ export type CheckInStreakDetailResponse = CheckInStreakRuleDetailResponseDto;
 /**
  *  类型定义 [CheckInStreakHistoryPageRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInStreakHistoryPageRequest = {
   /** 任意合法数值 */
@@ -200,7 +200,7 @@ export type CheckInStreakHistoryPageResponse = {
 /**
  *  类型定义 [CheckInStreakHistoryDetailRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInStreakHistoryDetailRequest = {
   /** 任意合法数值 */
@@ -216,7 +216,7 @@ export type CheckInStreakHistoryDetailResponse =
 /**
  *  类型定义 [CheckInStreakPublishRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInStreakPublishRequest = PublishCheckInStreakRuleDto;
 
@@ -225,7 +225,7 @@ export type CheckInStreakPublishResponse = boolean;
 /**
  *  类型定义 [CheckInStreakTerminateRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInStreakTerminateRequest = IdDto;
 
@@ -234,7 +234,7 @@ export type CheckInStreakTerminateResponse = boolean;
 /**
  *  类型定义 [CheckInReconciliationPageRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInReconciliationPageRequest = {
   /** 任意合法数值 */
@@ -294,7 +294,7 @@ export type CheckInReconciliationPageResponse = {
 /**
  *  类型定义 [CheckInReconciliationRepairRequest]
  *  @来源 签到管理
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInReconciliationRepairRequest = RepairCheckInRewardDto;
 
@@ -304,7 +304,7 @@ export type CheckInReconciliationRepairResponse =
 /**
  *  类型定义 [CheckInConfigDetailResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInConfigDetailResponseDto = {
   /** 任意合法数值 */
@@ -337,7 +337,7 @@ export type CheckInConfigDetailResponseDto = {
 /**
  *  类型定义 [CheckInRewardItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInRewardItemDto = {
   /** 任意合法数值 */
@@ -356,7 +356,7 @@ export type CheckInRewardItemDto = {
 /**
  *  类型定义 [CheckInDateRewardRuleFieldsDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInDateRewardRuleFieldsDto = {
   /** 任意合法数值 */
@@ -373,7 +373,7 @@ export type CheckInDateRewardRuleFieldsDto = {
 /**
  *  类型定义 [BaseCheckInPatternRewardRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type BaseCheckInPatternRewardRuleDto = {
   /** 任意合法数值 */
@@ -394,7 +394,7 @@ export type BaseCheckInPatternRewardRuleDto = {
 /**
  *  类型定义 [AdminCheckInCalendarDetailResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type AdminCheckInCalendarDetailResponseDto = {
   /** 任意合法数值 */
@@ -415,7 +415,7 @@ export type AdminCheckInCalendarDetailResponseDto = {
 /**
  *  类型定义 [AdminCheckInCalendarDayDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type AdminCheckInCalendarDayDto = {
   /** 任意合法数值 */
@@ -450,7 +450,7 @@ export type AdminCheckInCalendarDayDto = {
 /**
  *  类型定义 [AdminUserCheckInCalendarDetailResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type AdminUserCheckInCalendarDetailResponseDto = {
   /** 任意合法数值 */
@@ -471,7 +471,7 @@ export type AdminUserCheckInCalendarDetailResponseDto = {
 /**
  *  类型定义 [CheckInCalendarDayDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInCalendarDayDto = {
   /** 任意合法数值 */
@@ -502,7 +502,7 @@ export type CheckInCalendarDayDto = {
 /**
  *  类型定义 [CheckInRewardSettlementSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInRewardSettlementSummaryDto = {
   /** 任意合法数值 */
@@ -529,7 +529,7 @@ export type CheckInRewardSettlementSummaryDto = {
 /**
  *  类型定义 [AdminCheckInSignedUserPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type AdminCheckInSignedUserPageItemDto = {
   /** 任意合法数值 */
@@ -568,7 +568,7 @@ export type AdminCheckInSignedUserPageItemDto = {
 /**
  *  类型定义 [CheckInGrantItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInGrantItemDto = {
   /** 任意合法数值 */
@@ -605,7 +605,7 @@ export type CheckInGrantItemDto = {
 /**
  *  类型定义 [AdminCheckInSignedUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type AdminCheckInSignedUserDto = {
   /** 任意合法数值 */
@@ -622,7 +622,7 @@ export type AdminCheckInSignedUserDto = {
 /**
  *  类型定义 [UpdateCheckInConfigDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type UpdateCheckInConfigDto = {
   /** 任意合法数值 */
@@ -649,7 +649,7 @@ export type UpdateCheckInConfigDto = {
 /**
  *  类型定义 [UpdateCheckInEnabledDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type UpdateCheckInEnabledDto = {
   /** 任意合法数值 */
@@ -662,7 +662,7 @@ export type UpdateCheckInEnabledDto = {
 /**
  *  类型定义 [CheckInStreakRuleDetailResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInStreakRuleDetailResponseDto = {
   /** 任意合法数值 */
@@ -701,7 +701,7 @@ export type CheckInStreakRuleDetailResponseDto = {
 /**
  *  类型定义 [PublishCheckInStreakRuleDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type PublishCheckInStreakRuleDto = {
   /** 任意合法数值 */
@@ -724,7 +724,7 @@ export type PublishCheckInStreakRuleDto = {
 /**
  *  类型定义 [IdDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type IdDto = {
   /** 任意合法数值 */
@@ -737,7 +737,7 @@ export type IdDto = {
 /**
  *  类型定义 [CheckInReconciliationPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type CheckInReconciliationPageItemDto = {
   /** 任意合法数值 */
@@ -776,7 +776,7 @@ export type CheckInReconciliationPageItemDto = {
 /**
  *  类型定义 [RepairCheckInRewardDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type RepairCheckInRewardDto = {
   /** 任意合法数值 */
@@ -793,7 +793,7 @@ export type RepairCheckInRewardDto = {
 /**
  *  类型定义 [RepairCheckInRewardResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 21:15:02
+ *  @更新时间 2026-05-02 22:38:19
  */
 export type RepairCheckInRewardResponseDto = {
   /** 任意合法数值 */

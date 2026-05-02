@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { Page } from '@vben/common-ui';
 
+import EsFullHeightTabs from '#/components/es-full-height-tabs';
+
 import CheckInConfigPanel from './components/check-in-config-panel.vue';
 import CheckInReconciliationPanel from './components/check-in-reconciliation-panel.vue';
 import CheckInStreakPanel from './components/check-in-streak-panel.vue';
-
-import '../styles/full-height-tabs.css';
 
 defineOptions({
   name: 'CheckInManager',
@@ -19,10 +19,10 @@ const activeTab = ref<TabKey>('config');
 <template>
   <Page
     auto-content-height
-    content-class="user-manager-page-content"
+    content-class="es-full-height-page-content"
     title="签到管理"
   >
-    <el-tabs v-model="activeTab" class="user-manager-full-height-tabs">
+    <EsFullHeightTabs v-model="activeTab">
       <el-tab-pane label="基础配置" name="config">
         <CheckInConfigPanel />
       </el-tab-pane>
@@ -34,6 +34,6 @@ const activeTab = ref<TabKey>('config');
       <el-tab-pane label="奖励对账" name="reconciliation">
         <CheckInReconciliationPanel />
       </el-tab-pane>
-    </el-tabs>
+    </EsFullHeightTabs>
   </Page>
 </template>

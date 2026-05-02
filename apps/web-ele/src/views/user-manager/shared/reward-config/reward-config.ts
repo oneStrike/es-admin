@@ -47,7 +47,9 @@ export function cloneRewardConfigValue(
 ): RewardConfigValue {
   return {
     rewardItems: cloneRewardItems(value?.rewardItems),
-    rewardOverviewIconUrl: normalizeOptionalString(value?.rewardOverviewIconUrl),
+    rewardOverviewIconUrl: normalizeOptionalString(
+      value?.rewardOverviewIconUrl,
+    ),
   };
 }
 

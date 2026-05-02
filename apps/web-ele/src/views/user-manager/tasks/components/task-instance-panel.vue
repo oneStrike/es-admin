@@ -44,7 +44,7 @@ const [Grid] = useVbenVxeGrid({
 </script>
 
 <template>
-  <div class="user-manager-full-height-pane">
-    <Grid class="user-manager-full-height-grid" />
+  <div class="es-full-height-pane">
+    <Grid class="es-full-height-grid" />
   </div>
 </template>

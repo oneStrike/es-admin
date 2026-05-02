@@ -219,7 +219,8 @@ async function handleSubmit(
       values.canComment ?? currentChapterRecord.value?.canComment ?? true,
     canDownload:
       values.canDownload ?? currentChapterRecord.value?.canDownload ?? false,
-    isPreview: values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
+    isPreview:
+      values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
     price: values.price ?? currentChapterRecord.value?.price ?? 0,
     viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
     workId: shareData.value!.workId,
@@ -228,7 +229,9 @@ async function handleSubmit(
 
   await (payload?.id
     ? contentComicChapterUpdateApi(payload as ContentComicChapterUpdateRequest)
-    : contentComicChapterCreateApi(payload as ContentComicChapterCreateRequest));
+    : contentComicChapterCreateApi(
+        payload as ContentComicChapterCreateRequest,
+      ));
 
   formApi.close();
   useMessage.success(payload?.id ? '章节更新成功' : '章节创建成功');

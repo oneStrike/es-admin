@@ -53,7 +53,9 @@ async function openFormModal(row?: AgreementListItemDto) {
 }
 
 async function handleSubmit(values: CreateAgreementDto | UpdateAgreementDto) {
-  await (typeof (values as UpdateAgreementDto).id === 'number' ? agreementUpdateApi(values as UpdateAgreementDto) : agreementCreateApi(values as CreateAgreementDto));
+  await (typeof (values as UpdateAgreementDto).id === 'number'
+    ? agreementUpdateApi(values as UpdateAgreementDto)
+    : agreementCreateApi(values as CreateAgreementDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();

@@ -62,12 +62,10 @@ const userColumns = formSchemaTransform.toTableColumns<BadgeUserPageItemDto>(
       minWidth: 100,
     },
     nickname: {
-      field: 'user',
       formatter: ({ row }) => row.user?.nickname || '-',
       minWidth: 140,
     },
     level: {
-      field: 'user',
       formatter: ({ row }) => row.user?.level || '-',
       minWidth: 140,
     },

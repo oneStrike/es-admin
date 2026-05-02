@@ -2,10 +2,7 @@ import type { CheckInRewardItemDto } from './shared';
 
 import type { CheckInStreakDetailResponse } from '#/api/types';
 
-import {
-  cloneRewardItems,
-  hasRewardItems,
-} from './shared';
+import { cloneRewardItems, hasRewardItems } from './shared';
 
 export type CheckInStreakRuleDetail = CheckInStreakDetailResponse;
 
@@ -57,7 +54,9 @@ export function mapStreakDetailToForm(
     publishStrategy: 1,
     repeatable: !!detail.repeatable,
     rewardItems: cloneRewardItems(detail.rewardItems),
-    rewardOverviewIconUrl: normalizeOptionalText(detail.rewardOverviewIconUrl ?? undefined),
+    rewardOverviewIconUrl: normalizeOptionalText(
+      detail.rewardOverviewIconUrl ?? undefined,
+    ),
     sourceId: detail.id,
     sourceRuleCode: detail.ruleCode,
     sourceVersion: detail.version,
