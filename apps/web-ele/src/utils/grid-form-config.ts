@@ -14,7 +14,7 @@ export const DEFAULT_SEARCH_FORM_OPTIONS: Omit<VbenFormProps, 'schema'> = {
   compact: true,
   showCollapseButton: true,
   submitOnChange: true,
-  collapsed: true,
+  collapsed: false,
 };
 
 /**

@@ -31,9 +31,16 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'ForumModeratorApplication',
         path: '/forum/moderator-application',
-        component: () => import('#/views/forum/moderator-application/index.vue'),
+        redirect: (to) => ({
+          path: '/forum/moderators',
+          query: {
+            ...to.query,
+            tab: 'applications',
+          },
+        }),
         meta: {
           icon: 'codex:dot-circle',
+          hideInMenu: true,
           title: '版主申请',
         },
       },

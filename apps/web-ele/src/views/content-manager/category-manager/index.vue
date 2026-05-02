@@ -62,7 +62,9 @@ const gridOptions: VxeGridProps<BaseCategoryDto> = {
         if (Array.isArray(formValues.contentType)) {
           formValues.contentType = JSON.stringify(formValues.contentType);
         }
-        return await contentCategoryPageApi(formatQuery({ page, formValues, sorts }));
+        return await contentCategoryPageApi(
+          formatQuery({ page, formValues, sorts }),
+        );
       },
     },
     sort: true,
@@ -71,9 +73,7 @@ const gridOptions: VxeGridProps<BaseCategoryDto> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
-  formOptions: createSearchFormOptions(categorySearchSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(categorySearchSchema),
 });
 
 /**

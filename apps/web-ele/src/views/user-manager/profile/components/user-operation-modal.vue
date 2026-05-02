@@ -464,9 +464,7 @@ const availableBadgeColumns =
   );
 
 const [PointGrid, pointGridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(pointRecordSearchSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(pointRecordSearchSchema),
   gridOptions: {
     autoResize: true,
     columns: pointRecordColumns,
@@ -502,9 +500,7 @@ const [PointGrid, pointGridApi] = useVbenVxeGrid({
 });
 
 const [ExperienceGrid, experienceGridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(experienceRecordSearchSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(experienceRecordSearchSchema),
   gridOptions: {
     autoResize: true,
     columns: experienceRecordColumns,
@@ -540,9 +536,7 @@ const [ExperienceGrid, experienceGridApi] = useVbenVxeGrid({
 });
 
 const [BadgeGrid, badgeGridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(badgeSearchSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(badgeSearchSchema),
   gridOptions: {
     autoResize: true,
     columns: userBadgeColumns,
@@ -735,9 +729,7 @@ function openAssignBadgeModal() {
       api: growthBadgesPageApi,
       columns: availableBadgeColumns,
       multipleLimit: 20,
-      searchSchema: createSearchFormOptions(badgeSearchSchema, {
-        showCollapseButton: false,
-      }),
+      searchSchema: createSearchFormOptions(badgeSearchSchema),
       selectionMode: 'multiple',
       title: `分配徽章 - ${currentUser.value.nickname || currentUser.value.account}`,
     })

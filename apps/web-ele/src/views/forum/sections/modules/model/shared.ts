@@ -81,6 +81,18 @@ export const formSchema: EsFormSchema = [
     },
   },
   {
+    label: '访问等级规则',
+    fieldName: 'userLevelRuleId',
+    component: 'Select',
+    componentProps: {
+      placeholder: '不选择表示所有用户可访问',
+      options: [],
+      clearable: true,
+      filterable: true,
+      class: 'w-full',
+    },
+  },
+  {
     component: 'Upload',
     componentProps: {
       accept: 'image/*',
@@ -113,6 +125,17 @@ export const formSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     componentProps: {
       placeholder: '请输入板块描述信息...',
+    },
+  },
+  {
+    label: '运营备注',
+    fieldName: 'remark',
+    component: 'Input',
+    formItemClass: 'col-span-2',
+    componentProps: {
+      type: 'textarea',
+      placeholder: '请输入运营备注，仅后台可见',
+      rows: 3,
     },
   },
 ];
@@ -160,6 +183,12 @@ export const sectionColumns =
     },
     topicReviewPolicy: {
       width: 100,
+    },
+    userLevelRuleId: {
+      hide: true,
+    },
+    remark: {
+      hide: true,
     },
     createdAt: {
       show: true,

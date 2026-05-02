@@ -50,7 +50,9 @@ const gridOptions: VxeGridProps<BaseTagDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await contentTagPageApi(formatQuery({ page, formValues, sorts }));
+        return await contentTagPageApi(
+          formatQuery({ page, formValues, sorts }),
+        );
       },
     },
     sort: true,
@@ -59,9 +61,7 @@ const gridOptions: VxeGridProps<BaseTagDto> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
-  formOptions: createSearchFormOptions(tagSearchSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(tagSearchSchema),
 });
 
 /**

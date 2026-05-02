@@ -68,10 +68,7 @@ const gridOptions: VxeGridProps<BaseDictionaryItemDto> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
-  formOptions: createSearchFormOptions(dictionarySearchSchema, {
-    wrapperClass: 'grid-cols-3 gap-4',
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(dictionarySearchSchema),
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -91,7 +88,7 @@ const [Form, formApi] = useVbenModal({
 
 async function addDictionaryItem(values: any) {
   if (!values.dictionaryCode) {
-    values.dictionaryCode = shareData.value!.record.code;
+    values.dictionaryCode = shareData.value?.record.code;
   }
   await (values.id
     ? dictionaryItemUpdateApi(values)

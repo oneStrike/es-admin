@@ -53,9 +53,7 @@ const gridOptions: VxeGridProps<AuthorPageResponseDto> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
-  formOptions: createSearchFormOptions(authorSearchSchema, {
-    showCollapseButton: true,
-  }),
+  formOptions: createSearchFormOptions(authorSearchSchema),
 });
 
 const nationalityMap = ref();

@@ -67,9 +67,7 @@ const gridOptions: VxeGridProps<ForumHashtagRow> = {
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(searchFormSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(searchFormSchema),
   gridOptions,
 });
 

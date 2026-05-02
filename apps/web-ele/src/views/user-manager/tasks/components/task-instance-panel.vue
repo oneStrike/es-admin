@@ -38,10 +38,7 @@ const gridOptions: VxeGridProps<TaskInstanceViewDto> = {
 };
 
 const [Grid] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(taskInstanceSearchFormSchema, {
-    showCollapseButton: false,
-    wrapperClass: 'grid-cols-5 gap-4',
-  }),
+  formOptions: createSearchFormOptions(taskInstanceSearchFormSchema),
   gridOptions,
 });
 </script>

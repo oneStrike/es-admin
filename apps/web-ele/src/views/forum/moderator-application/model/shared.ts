@@ -1,6 +1,8 @@
 import type {
   BaseForumSectionDto,
   ForumModeratorApplicationDto,
+  ForumModeratorApplicationSectionDto,
+  ForumModeratorApplicationUserDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -25,20 +27,21 @@ export const sectionOptions: Array<{ label: string; value: number }> = [];
 
 export const searchFormSchema: EsFormSchema = [
   {
+    component: 'Select',
+    fieldName: 'status',
+    defaultValue: 0,
+    componentProps: {
+      clearable: true,
+      options: applicationStatusOptions,
+      placeholder: '审核状态',
+    },
+  },
+  {
     component: 'Input',
     fieldName: 'nickname',
     componentProps: {
       clearable: true,
       placeholder: '申请人昵称',
-    },
-  },
-  {
-    component: 'InputNumber',
-    fieldName: 'applicantId',
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '申请人ID',
     },
   },
   {
@@ -53,15 +56,6 @@ export const searchFormSchema: EsFormSchema = [
     },
   },
   {
-    component: 'Select',
-    fieldName: 'status',
-    componentProps: {
-      clearable: true,
-      options: applicationStatusOptions,
-      placeholder: '审核状态',
-    },
-  },
-  {
     component: 'DatePicker',
     fieldName: 'dateRange',
     componentProps: {
@@ -70,6 +64,15 @@ export const searchFormSchema: EsFormSchema = [
       startPlaceholder: '申请开始时间',
       type: 'daterange',
       valueFormat: 'YYYY-MM-DD',
+    },
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'applicantId',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '申请人编号',
     },
   },
 ];
@@ -113,8 +116,7 @@ export const auditFormSchema: EsFormSchema = [
 
 const applicationTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'applicant', label: '申请人' },
-  { component: 'InputNumber', fieldName: 'applicantId', label: '申请人ID' },
-  { component: 'Select', fieldName: 'sectionId', label: '申请板块' },
+  { component: 'Select', fieldName: 'section', label: '申请板块' },
   { component: 'Select', fieldName: 'permissionNames', label: '申请权限' },
   { component: 'Input', fieldName: 'reason', label: '申请理由' },
   { component: 'Select', fieldName: 'status', label: '审核状态' },
@@ -127,18 +129,17 @@ export const applicationColumns =
   formSchemaTransform.toTableColumns<ForumModeratorApplicationDto>(
     applicationTableSchema,
     {
+      seq: { width: 60 },
       applicant: {
         fixed: 'left',
-        formatter: ({ row }) => row.applicant?.nickname || '-',
+        formatter: undefined,
         minWidth: 180,
+        slots: { default: 'applicant' },
       },
-      applicantId: {
-        formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
-      },
-      sectionId: {
-        formatter: ({ cellValue }) => getSectionLabel(cellValue),
+      section: {
+        formatter: undefined,
         minWidth: 160,
+        slots: { default: 'section' },
       },
       permissionNames: {
         cellRender: {
@@ -191,6 +192,18 @@ export const applicationColumns =
     },
   );
 
+export function formatApplicationUser(
+  user?: ForumModeratorApplicationUserDto | null,
+) {
+  return user?.nickname || '-';
+}
+
+export function formatApplicationSection(
+  section?: ForumModeratorApplicationSectionDto | null,
+) {
+  return section?.name || '-';
+}
+
 export function syncSectionOptions(sections: BaseForumSectionDto[] = []) {
   sectionOptions.splice(
     0,
@@ -205,12 +218,4 @@ export function syncSectionOptions(sections: BaseForumSectionDto[] = []) {
 export async function fetchApplicationOptions() {
   const sectionResp = await forumSectionsPageApi({ pageSize: 500 });
   syncSectionOptions(sectionResp.list ?? []);
-}
-
-export function getSectionLabel(sectionId?: null | number) {
-  if (!sectionId) return '-';
-  return (
-    sectionOptions.find((item) => item.value === sectionId)?.label ||
-    `ID:${sectionId}`
-  );
 }

@@ -5,7 +5,6 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { fromApiPageIndex } from '#/adapter/vxe-table';
-import { getApiErrorMessage } from '#/api/error';
 import {
   contentComicThirdPartyChapterContentDetailApi,
   contentComicThirdPartyChapterListApi,
@@ -13,6 +12,7 @@ import {
   contentComicThirdPartyPlatformListApi,
   contentComicThirdPartySearchPageApi,
 } from '#/api/core';
+import { getApiErrorMessage } from '#/api/error';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
@@ -51,7 +51,6 @@ const [Form, formApi] = useVbenForm(
       },
     ],
     {
-      showCollapseButton: false,
       handleSubmit: async (values) => {
         const currentPlatform = String(values.platform || '').trim();
         const trimmedKeyword = String(values.keyword || '').trim();
@@ -96,7 +95,9 @@ const detailEntries = computed(() => {
     return [] as Array<{ key: string; value: unknown }>;
   }
   return Object.entries(detailData.value)
-    .filter(([, value]) => value !== undefined && value !== null && value !== '')
+    .filter(
+      ([, value]) => value !== undefined && value !== null && value !== '',
+    )
     .map(([key, value]) => ({ key, value }));
 });
 
@@ -297,7 +298,9 @@ async function loadChapterContent(chapter: ThirdPartyChapterItem) {
 
       <div class="flex-1 overflow-auto p-4">
         <el-empty
-          :description="keyword ? '暂未搜索到相关资源' : '请选择平台并输入关键词搜索'"
+          :description="
+            keyword ? '暂未搜索到相关资源' : '请选择平台并输入关键词搜索'
+          "
           v-if="comicList.length === 0"
         />
 
@@ -316,12 +319,16 @@ async function loadChapterContent(chapter: ThirdPartyChapterItem) {
               />
             </div>
             <div class="p-3">
-              <div class="mb-2 line-clamp-2 text-sm font-semibold text-gray-900">
+              <div
+                class="mb-2 line-clamp-2 text-sm font-semibold text-gray-900"
+              >
                 {{ item.name }}
               </div>
               <div class="mb-1 flex items-center gap-1 text-xs text-gray-600">
                 <span class="font-medium">作者:</span>
-                <span class="line-clamp-1">{{ item.author?.join('、') || '-' }}</span>
+                <span class="line-clamp-1">{{
+                  item.author?.join('、') || '-'
+                }}</span>
               </div>
               <div class="mb-1 flex items-center gap-1 text-xs text-gray-600">
                 <span class="font-medium">来源:</span>
@@ -329,7 +336,9 @@ async function loadChapterContent(chapter: ThirdPartyChapterItem) {
               </div>
               <div class="flex items-center gap-1 text-xs text-gray-600">
                 <span class="font-medium">平台:</span>
-                <span class="line-clamp-1">{{ resolveComicPlatform(item) || '-' }}</span>
+                <span class="line-clamp-1">{{
+                  resolveComicPlatform(item) || '-'
+                }}</span>
               </div>
             </div>
           </div>
@@ -382,12 +391,17 @@ async function loadChapterContent(chapter: ThirdPartyChapterItem) {
             <div class="text-sm text-gray-600">
               作者：{{ activeComic?.author?.join('、') || '-' }}
             </div>
-            <div class="text-sm text-gray-600">来源：{{ activeComic?.source || '-' }}</div>
+            <div class="text-sm text-gray-600">
+              来源：{{ activeComic?.source || '-' }}
+            </div>
           </div>
 
           <div class="rounded-lg border border-gray-200 bg-white p-3">
             <div class="mb-2 text-sm font-semibold text-gray-800">详情字段</div>
-            <el-empty v-if="detailEntries.length === 0" description="无可展示字段" />
+            <el-empty
+              v-if="detailEntries.length === 0"
+              description="无可展示字段"
+            />
             <el-descriptions
               v-else
               :column="1"
@@ -407,20 +421,31 @@ async function loadChapterContent(chapter: ThirdPartyChapterItem) {
         </div>
 
         <div class="col-span-8 grid grid-cols-12 gap-4">
-          <div class="col-span-5 rounded-lg border border-gray-200 bg-white p-3">
+          <div
+            class="col-span-5 rounded-lg border border-gray-200 bg-white p-3"
+          >
             <div class="mb-3 flex items-center justify-between">
               <div class="text-sm font-semibold text-gray-800">章节列表</div>
-              <div class="text-xs text-gray-500">{{ chapterList.length }} 条</div>
+              <div class="text-xs text-gray-500">
+                {{ chapterList.length }} 条
+              </div>
             </div>
-            <div class="max-h-[560px] space-y-2 overflow-y-auto pr-1" v-loading="chapterLoading">
-              <el-empty v-if="chapterList.length === 0" description="暂无章节" />
+            <div
+              class="max-h-[560px] space-y-2 overflow-y-auto pr-1"
+              v-loading="chapterLoading"
+            >
+              <el-empty
+                v-if="chapterList.length === 0"
+                description="暂无章节"
+              />
               <div
                 v-for="(chapter, index) in chapterList"
                 :key="`${resolveChapterId(chapter) || index}`"
                 class="cursor-pointer rounded border p-2 transition-all hover:border-blue-300 hover:bg-blue-50"
                 :class="{
                   'border-blue-400 bg-blue-50':
-                    resolveChapterId(chapter) === resolveChapterId(activeChapter || {}),
+                    resolveChapterId(chapter) ===
+                    resolveChapterId(activeChapter || {}),
                 }"
                 @click="loadChapterContent(chapter)"
               >
@@ -434,7 +459,9 @@ async function loadChapterContent(chapter: ThirdPartyChapterItem) {
             </div>
           </div>
 
-          <div class="col-span-7 rounded-lg border border-gray-200 bg-white p-3">
+          <div
+            class="col-span-7 rounded-lg border border-gray-200 bg-white p-3"
+          >
             <div class="mb-3 flex items-center justify-between">
               <div class="text-sm font-semibold text-gray-800">章节正文</div>
               <div class="text-xs text-gray-500">

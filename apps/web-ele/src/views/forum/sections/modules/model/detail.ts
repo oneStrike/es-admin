@@ -1,15 +1,34 @@
+import type { BasicOption } from '@vben/types';
+
 import type { ForumSectionsDetailResponse } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
 import { topicReviewPolicy } from './constants';
 
+function getUserLevelRuleLabel(
+  detail: ForumSectionsDetailResponse,
+  levelOptions: BasicOption[] = [],
+) {
+  if (detail.userLevelRuleId === null || detail.userLevelRuleId === undefined) {
+    return '所有用户';
+  }
+
+  return (
+    levelOptions.find((item) => item.value === detail.userLevelRuleId)?.label ||
+    `规则ID：${detail.userLevelRuleId}`
+  );
+}
+
 /**
  * 获取板块详情卡片配置
  * @param detail 板块详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: ForumSectionsDetailResponse) {
+export function getDetailCards(
+  detail: ForumSectionsDetailResponse,
+  levelOptions: BasicOption[] = [],
+) {
   // 获取审核策略标签
   const reviewPolicyLabel =
     topicReviewPolicy.find((item) => item.value === detail.topicReviewPolicy)
@@ -44,6 +63,16 @@ export function getDetailCards(detail: ForumSectionsDetailResponse) {
         {
           label: '审核策略',
           value: reviewPolicyLabel,
+          type: 'text' as const,
+        },
+        {
+          label: '访问等级规则',
+          value: getUserLevelRuleLabel(detail, levelOptions),
+          type: 'text' as const,
+        },
+        {
+          label: '运营备注',
+          value: detail?.remark || '-',
           type: 'text' as const,
         },
       ],

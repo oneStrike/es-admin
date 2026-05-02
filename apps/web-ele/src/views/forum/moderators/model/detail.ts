@@ -4,15 +4,7 @@ import { formatUTC } from '#/utils';
 
 import { moderatorRoleMap } from './shared';
 
-function normalizePermissions(
-  permissions: ForumModeratorDto['permissions'],
-): number[] {
-  return Array.isArray(permissions) ? permissions : [permissions];
-}
-
 export function getDetailCards(detail: ForumModeratorDto) {
-  const permissions = normalizePermissions(detail.permissions);
-
   return [
     {
       title: '基本信息',
@@ -21,11 +13,6 @@ export function getDetailCards(detail: ForumModeratorDto) {
         {
           label: '昵称',
           value: detail.nickname,
-          type: 'text' as const,
-        },
-        {
-          label: '用户ID',
-          value: detail.userId,
           type: 'text' as const,
         },
         {
@@ -64,16 +51,9 @@ export function getDetailCards(detail: ForumModeratorDto) {
           type: 'text' as const,
         },
         {
-          label: '权限编码',
-          value: permissions.length ? permissions.join(', ') : '-',
-          type: 'text' as const,
-        },
-        {
           label: '管理板块',
           value: detail.sections?.length
-            ? detail.sections
-                .map((item) => `${item.name}(ID:${item.id})`)
-                .join('；')
+            ? detail.sections.map((item) => item.name).join('；')
             : '-',
           type: 'text' as const,
         },

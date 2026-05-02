@@ -25,6 +25,10 @@ package-lock.json
 .omx
 .trae/documents
 
+# Generated declaration files
+**/auto-imports.d.ts
+**/components.d.ts
+
 # local env files
 .env.local
 .env.*.local

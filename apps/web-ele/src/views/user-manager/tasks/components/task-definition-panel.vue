@@ -72,9 +72,7 @@ const gridOptions: VxeGridProps<TaskDefinitionRow> = {
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(definitionSearchFormSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(definitionSearchFormSchema),
   gridOptions,
 });
 

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { BasicOption } from '@vben/types';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseForumSectionDto,
@@ -6,6 +8,7 @@ import type {
   ForumSectionGroupsCreateRequest,
   ForumSectionGroupsUpdateRequest,
   ForumSectionsCreateRequest,
+  ForumSectionsDetailResponse,
   ForumSectionsUpdateRequest,
 } from '#/api/types';
 
@@ -18,7 +21,6 @@ import {
   forumSectionGroupsDetailApi,
   forumSectionGroupsSwapSortOrderApi,
   forumSectionGroupsUpdateApi,
-  forumSectionGroupsUpdateEnabledApi,
   forumSectionsCreateApi,
   forumSectionsDeleteApi,
   forumSectionsDetailApi,
@@ -29,6 +31,7 @@ import {
   forumSectionsTreeApi,
   forumSectionsUpdateApi,
   forumSectionsUpdateEnabledApi,
+  growthLevelRulesPageApi,
 } from '#/api/core';
 import {
   AlertCircleIcon,
@@ -40,6 +43,7 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
+import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './modules/model/detail';
@@ -55,7 +59,6 @@ type SectionGroupNode = Partial<BaseForumSectionGroupDto> & {
   id?: number;
   isEnabled?: boolean;
   isUngrouped: boolean;
-  loading?: boolean;
   name: string;
   sectionCount: number;
   treeKey: string;
@@ -71,6 +74,7 @@ const currentSectionGroup = ref<null | SectionGroupNode>(null);
 const sections = ref<SectionGroupNode[]>([]);
 // 搜索关键词
 const searchKeyword = ref('');
+const levelOptions = ref<BasicOption[]>([]);
 
 // 过滤后的板块组列表
 const filteredSections = computed(() => {
@@ -172,6 +176,26 @@ function getCurrentGroupId() {
 }
 loadSectionGroups();
 
+async function loadLevelOptions() {
+  try {
+    const data = await growthLevelRulesPageApi({
+      isEnabled: true,
+      pageSize: 500,
+    });
+    levelOptions.value =
+      data?.list?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })) || [];
+    useForm.setOptions(formSchema, {
+      userLevelRuleId: levelOptions.value,
+    });
+  } catch {
+    useMessage.error('访问等级规则加载失败');
+  }
+}
+loadLevelOptions();
+
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
@@ -231,10 +255,10 @@ function buildSectionCreatePayload(
     icon: values.icon,
     isEnabled: values.isEnabled,
     name: values.name,
-    remark: values.remark,
+    remark: values.remark ?? null,
     sortOrder: values.sortOrder,
     topicReviewPolicy: values.topicReviewPolicy,
-    userLevelRuleId: values.userLevelRuleId,
+    userLevelRuleId: values.userLevelRuleId ?? null,
   };
 }
 
@@ -249,10 +273,10 @@ function buildSectionUpdatePayload(
     id: values.id,
     isEnabled: values.isEnabled,
     name: values.name,
-    remark: values.remark,
+    remark: values.remark ?? null,
     sortOrder: values.sortOrder,
     topicReviewPolicy: values.topicReviewPolicy,
-    userLevelRuleId: values.userLevelRuleId,
+    userLevelRuleId: values.userLevelRuleId ?? null,
   };
 }
 
@@ -337,22 +361,6 @@ async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
   await loadSectionGroups();
 }
 
-async function toggleSectionGroupEnableStatus(record: SectionGroupNode) {
-  if (!record.id) return;
-
-  record.loading = true;
-  try {
-    await forumSectionGroupsUpdateEnabledApi({
-      id: record.id,
-      isEnabled: !record.isEnabled,
-    });
-    useMessage.success('操作成功');
-    await loadSectionGroups();
-  } finally {
-    record.loading = false;
-  }
-}
-
 async function rebuildSectionFollowCount(record: ForumSectionRow) {
   record.rebuildLoading = true;
   try {
@@ -369,12 +377,16 @@ async function rebuildAllSectionFollowCount() {
   useMessage.success('已提交全量重建关注数');
   await gridApi.reload();
 }
+
+function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
+  return getDetailCards(detail, levelOptions.value);
+}
 </script>
 
 <template>
   <Page auto-content-height>
     <div class="flex h-full">
-      <div class="mr-4 h-full w-[260px] min-w-[260px]">
+      <div class="mr-4 h-full w-[360px] min-w-[360px]">
         <div class="h-full rounded-md bg-white p-3">
           <div class="mb-2 flex items-center justify-between">
             <el-input
@@ -414,16 +426,6 @@ async function rebuildAllSectionFollowCount() {
                   </div>
                 </div>
                 <el-space>
-                  <el-switch
-                    v-if="!data.isUngrouped"
-                    :active-value="true"
-                    :inactive-value="false"
-                    :loading="data.loading"
-                    :model-value="data.isEnabled"
-                    size="small"
-                    @click.stop
-                    @change="toggleSectionGroupEnableStatus(data)"
-                  />
                   <el-tooltip
                     v-if="!data.isUngrouped"
                     content="查看详情"
@@ -499,7 +501,7 @@ async function rebuildAllSectionFollowCount() {
           </el-tree>
         </div>
       </div>
-      <Grid class="w-[calc(100%-260px)]">
+      <Grid class="w-[calc(100%-376px)]">
         <template #toolbar-actions>
           <el-button class="ml-2" type="primary" @click="openFormModal()">
             添加
@@ -567,7 +569,7 @@ async function rebuildAllSectionFollowCount() {
 
     <DetailModal
       :api="forumSectionsDetailApi"
-      :cards="getDetailCards"
+      :cards="getSectionDetailCards"
       class="!w-[800px]"
     />
 

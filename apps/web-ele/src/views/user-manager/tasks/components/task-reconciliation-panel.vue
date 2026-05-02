@@ -42,10 +42,7 @@ const gridOptions: VxeGridProps<AdminTaskReconciliationItemDto> = {
 };
 
 const [Grid] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(taskReconciliationSearchFormSchema, {
-    showCollapseButton: false,
-    wrapperClass: 'grid-cols-6 gap-4',
-  }),
+  formOptions: createSearchFormOptions(taskReconciliationSearchFormSchema),
   gridOptions,
 });
 </script>

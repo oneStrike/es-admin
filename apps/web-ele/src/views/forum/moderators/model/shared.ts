@@ -62,7 +62,7 @@ export const moderatorUserSearchSchema: EsFormSchema = [
 ];
 
 const moderatorUserTableSchema: EsFormSchema = [
-  { component: 'InputNumber', fieldName: 'id', label: '用户ID' },
+  { component: 'InputNumber', fieldName: 'id', label: '用户编号' },
   { component: 'Input', fieldName: 'nickname', label: '昵称' },
   { component: 'Input', fieldName: 'phoneNumber', label: '手机号' },
   { component: 'Input', fieldName: 'levelName', label: '等级' },
@@ -228,15 +228,6 @@ export const searchFormSchema: EsFormSchema = [
     },
   },
   {
-    component: 'InputNumber',
-    fieldName: 'userId',
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '用户ID',
-    },
-  },
-  {
     component: 'Select',
     fieldName: 'sectionId',
     componentProps: {
@@ -267,12 +258,19 @@ export const searchFormSchema: EsFormSchema = [
       valueFormat: 'YYYY-MM-DD',
     },
   },
+  {
+    component: 'InputNumber',
+    fieldName: 'userId',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '用户编号',
+    },
+  },
 ];
 
 const moderatorTableSchema: EsFormSchema = [
-  { component: 'Upload', fieldName: 'avatar', label: '头像' },
-  { component: 'Input', fieldName: 'nickname', label: '昵称' },
-  { component: 'InputNumber', fieldName: 'userId', label: '用户ID' },
+  { component: 'Input', fieldName: 'moderatorUser', label: '版主' },
   { component: 'RadioGroup', fieldName: 'roleType', label: '角色类型' },
   { component: 'Select', fieldName: 'group', label: '所属分组' },
   { component: 'Select', fieldName: 'sections', label: '管理板块' },
@@ -284,18 +282,13 @@ const moderatorTableSchema: EsFormSchema = [
 
 export const moderatorColumns =
   formSchemaTransform.toTableColumns<ForumModeratorDto>(moderatorTableSchema, {
-    avatar: {
-      cellRender: {
-        name: 'CellImage',
-      },
-      minWidth: 90,
-    },
-    nickname: {
-      minWidth: 140,
-    },
-    userId: {
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 100,
+    seq: { width: 60 },
+    moderatorUser: {
+      field: 'nickname',
+      formatter: undefined,
+      fixed: 'left',
+      minWidth: 180,
+      slots: { default: 'moderatorUser' },
     },
     roleType: {
       cellRender: {

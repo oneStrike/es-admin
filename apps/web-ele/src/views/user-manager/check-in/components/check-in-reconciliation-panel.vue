@@ -59,10 +59,7 @@ const reconciliationGridOptions: VxeGridProps<CheckInReconciliationPageItemDto> 
   };
 
 const [ReconciliationGrid, reconciliationGridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(reconciliationSearchFormSchema, {
-    showCollapseButton: true,
-    wrapperClass: 'grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4',
-  }),
+  formOptions: createSearchFormOptions(reconciliationSearchFormSchema),
   gridOptions: reconciliationGridOptions,
 });
 

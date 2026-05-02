@@ -194,9 +194,7 @@ function openRevokeModal(record: BaseUserBadgeDto) {
         growthBadgesUserPageApi({ ...params, badgeId: record.id }),
       selectionMode: 'multiple',
       multipleLimit: 50,
-      searchSchema: createSearchFormOptions(userSearchSchema, {
-        showCollapseButton: false,
-      }),
+      searchSchema: createSearchFormOptions(userSearchSchema),
     })
     .open();
 }

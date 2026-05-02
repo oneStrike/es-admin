@@ -297,6 +297,21 @@ export const auditFormSchema: EsFormSchema = [
   },
 ];
 
+export const moveFormSchema: EsFormSchema = [
+  {
+    component: 'Select',
+    componentProps: {
+      class: 'w-full',
+      filterable: true,
+      options: sectionOptions,
+      placeholder: '请选择目标板块',
+    },
+    fieldName: 'sectionId',
+    label: '目标板块',
+    rules: 'selectRequired',
+  },
+];
+
 export const searchFormSchema: EsFormSchema = [
   {
     component: 'Select',
@@ -496,7 +511,7 @@ export const topicColumns =
       actions: {
         show: true,
         fixed: 'right',
-        minWidth: 290,
+        minWidth: 360,
         slots: { default: 'actions' },
       },
     },

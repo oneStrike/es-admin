@@ -40,7 +40,7 @@ watch(
   (newValue) => {
     if (Array.isArray(newValue)) {
       if (newValue.length > 0) {
-        if (newValue[0]![props.keyField]) {
+        if (newValue[0]?.[props.keyField]) {
           confirmSelection(newValue);
         }
       } else {
@@ -114,12 +114,7 @@ defineExpose({
 
     <!-- 使用表格模态框组件 -->
     <ModalTable
-      :search-schema="
-        createSearchFormOptions(props.searchSchema!, {
-          wrapperClass: 'grid-cols-2',
-          showCollapseButton: false,
-        })
-      "
+      :search-schema="createSearchFormOptions(props.searchSchema!)"
       @confirm="confirmSelection"
     />
   </div>

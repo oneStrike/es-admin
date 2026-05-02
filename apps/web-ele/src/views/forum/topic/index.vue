@@ -3,6 +3,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminForumTopicPageItemDto,
   ForumTopicCreateRequest,
+  ForumTopicMoveRequest,
   ForumTopicUpdateAuditStatusRequest,
   ForumTopicUpdateRequest,
 } from '#/api/types';
@@ -14,6 +15,7 @@ import {
   forumTopicCreateApi,
   forumTopicDeleteApi,
   forumTopicDetailApi,
+  forumTopicMoveApi,
   forumTopicPageApi,
   forumTopicUpdateApi,
   forumTopicUpdateAuditStatusApi,
@@ -38,9 +40,11 @@ import {
   formatTopicSectionSummary,
   formatTopicUserLevel,
   formatTopicUserSummary,
+  moveFormSchema,
   resolveTopicSectionState,
   resolveTopicUserState,
   searchFormSchema,
+  sectionOptions,
   topicColumns,
 } from './model/shared';
 
@@ -99,10 +103,16 @@ const [AuditForm, auditFormApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
+const [MoveForm, moveFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
   title: '帖子详情',
 });
+
+const currentMoveTopic = ref<ForumTopicRow | null>(null);
 
 function openCreateModal() {
   createFormApi
@@ -145,6 +155,26 @@ async function openAuditModal(row: ForumTopicRow) {
       schema: auditFormSchema,
       title: '审核',
       width: 720,
+    })
+    .open();
+}
+
+async function openMoveModal(row: ForumTopicRow) {
+  if (sectionOptions.length === 0) {
+    await fetchTopicSectionOptions();
+  }
+
+  currentMoveTopic.value = row;
+  moveFormApi
+    .setData({
+      cols: 1,
+      record: {
+        id: row.id,
+        sectionId: row.sectionId,
+      },
+      schema: moveFormSchema,
+      title: '移动板块',
+      width: 640,
     })
     .open();
 }
@@ -214,6 +244,28 @@ async function handleAuditSubmit(values: Record<string, any>) {
     id: Number(values.id),
   } satisfies ForumTopicUpdateAuditStatusRequest);
   useMessage.success('审核成功');
+  await gridApi.reload();
+}
+
+async function handleMoveSubmit(values: Record<string, any>) {
+  const nextSectionId = Number(values.sectionId);
+
+  if (!nextSectionId) {
+    useMessage.warning('请选择目标板块');
+    throw new Error('missing target section');
+  }
+
+  if (nextSectionId === Number(currentMoveTopic.value?.sectionId)) {
+    useMessage.warning('目标板块不能与当前板块相同');
+    throw new Error('same section');
+  }
+
+  await forumTopicMoveApi({
+    id: Number(values.id),
+    sectionId: nextSectionId,
+  } satisfies ForumTopicMoveRequest);
+  currentMoveTopic.value = null;
+  useMessage.success('移动成功');
   await gridApi.reload();
 }
 
@@ -405,6 +457,10 @@ async function toggleTopicBoolean(
             编辑
           </el-button>
           <el-divider direction="vertical" />
+          <el-button link type="primary" @click="openMoveModal(row)">
+            移动板块
+          </el-button>
+          <el-divider direction="vertical" />
           <el-button link type="primary" @click="openAuditModal(row)">
             审核
           </el-button>
@@ -426,6 +482,7 @@ async function toggleTopicBoolean(
     <CreateForm :schema="createFormSchema" :on-submit="handleCreateSubmit" />
     <EditForm :schema="editFormSchema" :on-submit="handleEditSubmit" />
     <AuditForm :schema="auditFormSchema" :on-submit="handleAuditSubmit" />
+    <MoveForm :schema="moveFormSchema" :on-submit="handleMoveSubmit" />
 
     <DetailModal
       :api="forumTopicDetailApi"

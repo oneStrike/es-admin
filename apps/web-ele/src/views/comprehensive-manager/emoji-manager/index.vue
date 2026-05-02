@@ -175,9 +175,7 @@ const [PackGrid, packGridApi] = useVbenVxeGrid({
 });
 
 const [AssetGrid, assetGridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(emojiAssetSearchSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(emojiAssetSearchSchema),
   gridOptions: assetGridOptions,
 });
 

@@ -14,17 +14,14 @@ export function getDetailCards(detail: ForumModeratorApplicationDto) {
       fields: [
         {
           label: '申请标题',
-          value: `${detail.applicant?.nickname || `用户${detail.applicantId}`} 的版主申请`,
+          value: detail.applicant?.nickname
+            ? `${detail.applicant.nickname} 的版主申请`
+            : '版主申请',
           type: 'title',
         },
         {
           label: '申请人',
           value: detail.applicant?.nickname || '-',
-          type: 'text',
-        },
-        {
-          label: '申请人ID',
-          value: detail.applicantId,
           type: 'text',
         },
         {
@@ -72,11 +69,6 @@ export function getDetailCards(detail: ForumModeratorApplicationDto) {
           type: 'text',
         },
         {
-          label: '审核人ID',
-          value: detail.auditById || '-',
-          type: 'text',
-        },
-        {
           label: '审核意见',
           value: detail.auditReason || '-',
           type: 'text',
@@ -102,11 +94,6 @@ export function getDetailCards(detail: ForumModeratorApplicationDto) {
         {
           label: '板块描述',
           value: detail.section?.description || '-',
-          type: 'text',
-        },
-        {
-          label: '板块ID',
-          value: detail.sectionId,
           type: 'text',
         },
       ],

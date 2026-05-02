@@ -5,7 +5,7 @@ import type { BaseDictionaryDto } from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import {  useVbenVxeGrid } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as Api from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
@@ -37,9 +37,7 @@ const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
       sort: true,
     },
   },
-  formOptions: createSearchFormOptions(dictionarySearchSchema, {
-    showCollapseButton: false,
-  }),
+  formOptions: createSearchFormOptions(dictionarySearchSchema),
 });
 
 async function deleteDictionary(row: BaseDictionaryDto) {
