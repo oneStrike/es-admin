@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/message/monitor/index.vue'),
         meta: {
           icon: 'codex:dot-circle',
-          title: '消息监控',
+          title: '消息运行',
         },
       },
       {

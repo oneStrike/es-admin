@@ -19,17 +19,23 @@ import {
 } from '#/api/core';
 import EsFullHeightTabs from '#/components/es-full-height-tabs';
 import { useMessage } from '#/hooks/useFeedback';
-import { formatUTC } from '#/utils';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { deliveryColumns, deliverySearchFormSchema } from './model/delivery';
 import { dispatchColumns, dispatchSearchFormSchema } from './model/dispatch';
 import {
+  attentionSummaryQueries,
   deliveryStatusMap,
   formatNullable,
+  getMonitorNotificationCategoryLabel,
+  getPageTotal,
   splitDateRange,
 } from './model/shared';
-import { getWsSummaryItems, windowHourOptions } from './model/ws';
+import {
+  getRealtimeSummaryText,
+  getWsSummaryItems,
+  windowHourOptions,
+} from './model/ws';
 
 defineOptions({
   name: 'MessageMonitor',
@@ -38,9 +44,37 @@ defineOptions({
 const activeTab = ref('dispatch');
 const windowHours = ref(24);
 const wsSummary = ref<MessageWsMonitorSummaryDto | null>(null);
-const wsLoading = ref(false);
+const overviewLoading = ref(false);
+const attentionSummary = ref({
+  failedDeliveryTotal: 0,
+  failedDispatchTotal: 0,
+  retryingDeliveryTotal: 0,
+});
 
-const wsSummaryItems = computed(() => getWsSummaryItems(wsSummary.value));
+const realtimeSummaryText = computed(() =>
+  getRealtimeSummaryText(wsSummary.value),
+);
+const overviewItems = computed(() => [
+  {
+    label: '送达失败',
+    tone: 'danger',
+    value: attentionSummary.value.failedDeliveryTotal,
+  },
+  {
+    label: '等待自动重试',
+    tone: 'warning',
+    value: attentionSummary.value.retryingDeliveryTotal,
+  },
+  {
+    label: '发送任务失败',
+    tone: 'danger',
+    value: attentionSummary.value.failedDispatchTotal,
+  },
+  ...getWsSummaryItems(wsSummary.value),
+]);
+const overviewGridStyle = computed(() => ({
+  gridTemplateColumns: `repeat(${Math.ceil(overviewItems.value.length / 2)}, minmax(150px, 1fr))`,
+}));
 
 const dispatchGridOptions: VxeGridProps<MessageDispatchPageItemDto> = {
   columns: dispatchColumns,
@@ -91,13 +125,31 @@ const [DeliveryGrid, deliveryGridApi] = useVbenVxeGrid({
 });
 
 async function fetchWsSummary() {
-  wsLoading.value = true;
+  wsSummary.value = await messageMonitorWsSummaryApi({
+    windowHours: windowHours.value,
+  });
+}
+
+async function fetchAttentionSummary() {
+  const [failedDelivery, retryingDelivery, failedDispatch] = await Promise.all([
+    messageMonitorDeliveryPageApi(attentionSummaryQueries.failedDelivery),
+    messageMonitorDeliveryPageApi(attentionSummaryQueries.retryingDelivery),
+    messageMonitorDispatchPageApi(attentionSummaryQueries.failedDispatch),
+  ]);
+
+  attentionSummary.value = {
+    failedDeliveryTotal: getPageTotal(failedDelivery),
+    failedDispatchTotal: getPageTotal(failedDispatch),
+    retryingDeliveryTotal: getPageTotal(retryingDelivery),
+  };
+}
+
+async function refreshOverview() {
+  overviewLoading.value = true;
   try {
-    wsSummary.value = await messageMonitorWsSummaryApi({
-      windowHours: windowHours.value,
-    });
+    await Promise.all([fetchWsSummary(), fetchAttentionSummary()]);
   } finally {
-    wsLoading.value = false;
+    overviewLoading.value = false;
   }
 }
 
@@ -127,32 +179,29 @@ function metricTextClass(tone: string) {
 
 async function retryDelivery(row: MessageNotificationDeliveryItemDto) {
   await messageMonitorDeliveryRetryApi({ dispatchId: row.dispatchId });
-  useMessage.success('重试已提交');
+  useMessage.success('重新发送已提交');
   await deliveryGridApi.reload();
+  await refreshOverview();
 }
 
-onMounted(fetchWsSummary);
+onMounted(refreshOverview);
 </script>
 
 <template>
   <Page auto-content-height content-class="es-full-height-page-content">
-    <div class="flex h-full min-h-0 flex-col gap-4 overflow-hidden">
+    <div
+      class="flex h-full min-h-0 flex-col gap-4 overflow-auto lg:overflow-hidden"
+    >
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div class="text-base font-medium">WS 监控摘要</div>
-          <div class="text-xs text-gray-400">
-            {{
-              wsSummary?.windowStartAt
-                ? `窗口开始：${formatUTC(wsSummary.windowStartAt, 'YYYY-MM-DD HH:mm:ss')}`
-                : '选择统计窗口查看实时摘要'
-            }}
-          </div>
+          <div class="text-base font-medium">实时消息通道</div>
+          <div class="text-xs text-gray-400">{{ realtimeSummaryText }}</div>
         </div>
         <div class="flex items-center gap-2">
           <el-radio-group
             v-model="windowHours"
-            :disabled="wsLoading"
-            @change="fetchWsSummary"
+            :disabled="overviewLoading"
+            @change="refreshOverview"
           >
             <el-radio-button
               v-for="item in windowHourOptions"
@@ -163,9 +212,9 @@ onMounted(fetchWsSummary);
             </el-radio-button>
           </el-radio-group>
           <el-button
-            :loading="wsLoading"
+            :loading="overviewLoading"
             type="primary"
-            @click="fetchWsSummary"
+            @click="refreshOverview"
           >
             刷新
           </el-button>
@@ -173,14 +222,11 @@ onMounted(fetchWsSummary);
       </div>
 
       <div
-        v-loading="wsLoading"
-        class="grid shrink-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5"
+        v-loading="overviewLoading"
+        class="grid shrink-0 grid-rows-2 gap-3 overflow-x-auto pb-1"
+        :style="overviewGridStyle"
       >
-        <el-card
-          v-for="item in wsSummaryItems"
-          :key="item.label"
-          shadow="never"
-        >
+        <el-card v-for="item in overviewItems" :key="item.label" shadow="never">
           <div class="text-xs text-gray-400">{{ item.label }}</div>
           <div
             class="mt-2 text-xl font-semibold"
@@ -191,25 +237,27 @@ onMounted(fetchWsSummary);
         </el-card>
       </div>
 
-      <EsFullHeightTabs v-model="activeTab" class="min-h-0 flex-1">
-        <el-tab-pane label="调度记录" name="dispatch">
+      <EsFullHeightTabs
+        v-model="activeTab"
+        class="!min-h-[720px] flex-1 lg:!min-h-0"
+      >
+        <el-tab-pane label="发送任务" name="dispatch">
           <div class="es-full-height-pane">
             <DispatchGrid class="es-full-height-grid" />
           </div>
         </el-tab-pane>
-        <el-tab-pane label="投递结果" name="delivery">
+        <el-tab-pane label="通知送达明细" name="delivery">
           <div class="es-full-height-pane">
             <DeliveryGrid class="es-full-height-grid">
               <template #category="{ row }">
                 <div class="min-w-0">
                   <div class="truncate">
-                    {{ row.categoryLabel || row.categoryKey || '-' }}
-                  </div>
-                  <div
-                    v-if="row.categoryKey"
-                    class="truncate text-xs text-gray-400"
-                  >
-                    {{ row.categoryKey }}
+                    {{
+                      getMonitorNotificationCategoryLabel({
+                        categoryKey: row.categoryKey,
+                        categoryLabel: row.categoryLabel,
+                      })
+                    }}
                   </div>
                 </div>
               </template>
@@ -232,13 +280,13 @@ onMounted(fetchWsSummary);
               <template #actions="{ row }">
                 <el-popconfirm
                   v-if="canRetryDelivery(row)"
-                  :title="`确认重试 Dispatch ${formatNullable(row.dispatchId)} ?`"
+                  :title="`确认重新发送任务 ${formatNullable(row.dispatchId)} 对应的通知？`"
                   cancel-button-text="取消"
                   confirm-button-text="确认"
                   @confirm="retryDelivery(row)"
                 >
                   <template #reference>
-                    <el-button link type="primary">重试</el-button>
+                    <el-button link type="primary">重新发送</el-button>
                   </template>
                 </el-popconfirm>
                 <span v-else>-</span>

@@ -3,66 +3,58 @@ import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
 
-import { deliveryStatusOptions, dispatchStatusOptions } from './shared';
+import {
+  deliveryStatusOptions,
+  dispatchStatusOptions,
+  monitorBusinessLabels,
+} from './shared';
 
-export const dispatchSearchFormSchema: EsFormSchema = [
+const dispatchFormSchema: EsFormSchema = [
   {
     component: 'Input',
-    componentProps: {
-      clearable: true,
-      placeholder: 'Dispatch ID',
-    },
     fieldName: 'dispatchId',
+    label: monitorBusinessLabels.dispatchId,
   },
   {
     component: 'Input',
-    componentProps: {
-      clearable: true,
-      placeholder: '事件 ID',
-    },
     fieldName: 'eventId',
+    label: monitorBusinessLabels.eventId,
   },
   {
     component: 'Input',
-    componentProps: {
-      clearable: true,
-      placeholder: '事件 key',
-    },
     fieldName: 'eventKey',
+    label: monitorBusinessLabels.eventKey,
   },
   {
     component: 'Input',
-    componentProps: {
-      clearable: true,
-      placeholder: '事件域',
-    },
     fieldName: 'domain',
+    label: monitorBusinessLabels.domain,
+  },
+  {
+    component: 'Input',
+    fieldName: 'consumer',
+    label: monitorBusinessLabels.consumer,
   },
   {
     component: 'Select',
     componentProps: {
-      clearable: true,
       options: dispatchStatusOptions.map(({ color: _color, ...rest }) => rest),
-      placeholder: '技术状态',
     },
     fieldName: 'dispatchStatus',
+    label: monitorBusinessLabels.dispatchStatus,
   },
   {
     component: 'Select',
     componentProps: {
-      clearable: true,
       options: deliveryStatusOptions.map(({ color: _color, ...rest }) => rest),
-      placeholder: '投递状态',
     },
     fieldName: 'deliveryStatus',
+    label: monitorBusinessLabels.deliveryStatus,
   },
   {
     component: 'Input',
-    componentProps: {
-      clearable: true,
-      placeholder: '通知投影 key',
-    },
     fieldName: 'projectionKey',
+    label: monitorBusinessLabels.projectionKey,
   },
   {
     component: 'InputNumber',
@@ -70,9 +62,29 @@ export const dispatchSearchFormSchema: EsFormSchema = [
       class: '!w-full',
       controlsPosition: 'right',
       min: 1,
-      placeholder: '接收用户 ID',
     },
     fieldName: 'receiverUserId',
+    label: monitorBusinessLabels.receiverUserId,
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'retryCount',
+    label: monitorBusinessLabels.retryCount,
+  },
+  {
+    component: 'DatePicker',
+    fieldName: 'nextRetryAt',
+    label: monitorBusinessLabels.nextRetryAt,
+  },
+  {
+    component: 'DatePicker',
+    fieldName: 'processedAt',
+    label: monitorBusinessLabels.processedAt,
+  },
+  {
+    component: 'Input',
+    fieldName: 'lastError',
+    label: monitorBusinessLabels.lastError,
   },
   {
     component: 'DatePicker',
@@ -84,34 +96,61 @@ export const dispatchSearchFormSchema: EsFormSchema = [
       valueFormat: 'YYYY-MM-DD',
     },
     fieldName: 'dateRange',
+    label: '创建时间',
   },
 ];
 
-const dispatchTableSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'dispatchId', label: 'Dispatch ID' },
-  { component: 'Input', fieldName: 'eventId', label: '事件 ID' },
-  { component: 'Input', fieldName: 'eventKey', label: '事件 key' },
-  { component: 'Input', fieldName: 'domain', label: '事件域' },
-  { component: 'Input', fieldName: 'consumer', label: 'Consumer' },
-  { component: 'Select', fieldName: 'dispatchStatus', label: '技术状态' },
-  { component: 'Select', fieldName: 'deliveryStatus', label: '投递状态' },
-  { component: 'Input', fieldName: 'projectionKey', label: '投影 key' },
-  { component: 'InputNumber', fieldName: 'receiverUserId', label: '接收用户' },
-  { component: 'InputNumber', fieldName: 'retryCount', label: '重试次数' },
-  { component: 'DatePicker', fieldName: 'nextRetryAt', label: '下次重试' },
-  { component: 'DatePicker', fieldName: 'processedAt', label: '处理完成' },
-  { component: 'Input', fieldName: 'lastError', label: '最后错误' },
-];
+export const dispatchSearchFormSchema = formSchemaTransform.toSearchSchema(
+  dispatchFormSchema,
+  {
+    dispatchId: { show: true },
+    eventId: { show: true },
+    eventKey: { show: true },
+    domain: { show: true },
+    dispatchStatus: { show: true },
+    deliveryStatus: { show: true },
+    projectionKey: { show: true },
+    receiverUserId: { show: true },
+    dateRange: { show: true },
+  },
+);
 
 export const dispatchColumns =
   formSchemaTransform.toTableColumns<MessageDispatchPageItemDto>(
-    dispatchTableSchema,
+    dispatchFormSchema,
     {
+      consumer: {
+        minWidth: 150,
+        showOverflow: 'tooltip',
+      },
+      dateRange: { hide: true },
+      deliveryStatus: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: deliveryStatusOptions,
+          },
+        },
+        minWidth: 140,
+      },
       dispatchId: {
         fixed: 'left',
         minWidth: 190,
         showOverflow: 'tooltip',
         sortable: true,
+      },
+      dispatchStatus: {
+        cellRender: {
+          name: 'CellTag',
+          props: {
+            mapOptions: dispatchStatusOptions,
+          },
+        },
+        minWidth: 130,
+      },
+      domain: {
+        minWidth: 130,
+        showOverflow: 'tooltip',
       },
       eventId: {
         minWidth: 160,
@@ -121,31 +160,22 @@ export const dispatchColumns =
         minWidth: 180,
         showOverflow: 'tooltip',
       },
-      domain: {
-        minWidth: 130,
+      lastError: {
+        formatter: ({ cellValue }) => cellValue || '-',
+        minWidth: 260,
         showOverflow: 'tooltip',
       },
-      consumer: {
-        minWidth: 150,
-        showOverflow: 'tooltip',
-      },
-      dispatchStatus: {
+      nextRetryAt: {
         cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: dispatchStatusOptions,
-          },
+          name: 'CellDate',
         },
-        minWidth: 110,
+        minWidth: 170,
       },
-      deliveryStatus: {
+      processedAt: {
         cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: deliveryStatusOptions,
-          },
+          name: 'CellDate',
         },
-        minWidth: 140,
+        minWidth: 170,
       },
       projectionKey: {
         minWidth: 170,
@@ -158,25 +188,8 @@ export const dispatchColumns =
       },
       retryCount: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 110,
+        minWidth: 120,
         sortable: true,
-      },
-      nextRetryAt: {
-        cellRender: {
-          name: 'CellDate',
-        },
-        minWidth: 160,
-      },
-      processedAt: {
-        cellRender: {
-          name: 'CellDate',
-        },
-        minWidth: 160,
-      },
-      lastError: {
-        formatter: ({ cellValue }) => cellValue || '-',
-        minWidth: 260,
-        showOverflow: 'tooltip',
       },
     },
   );
