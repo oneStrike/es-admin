@@ -66,20 +66,23 @@ function getGridOptions(data: EsModalTableProps) {
     };
   }
 
-  const labelField = data.columns![0]!.field;
+  const firstColumn = options.columns?.[0];
+  if (!firstColumn?.field) return options;
+
+  const labelField = firstColumn.field;
 
   if (data.selectionMode === 'multiple') {
     options.checkboxConfig = {
       highlight: true,
       labelField,
     };
-    options.columns![0]!.type = 'checkbox';
+    firstColumn.type = 'checkbox';
   } else if (data.selectionMode === 'single') {
     options.radioConfig = {
       highlight: true,
       labelField,
     };
-    options.columns![0]!.type = 'radio';
+    firstColumn.type = 'radio';
   }
 
   return options;

@@ -98,18 +98,21 @@ function createRejectedResponse(
   status: number,
   data: unknown,
 ) {
-  return Promise.reject({
-    config,
-    isAxiosError: true,
-    message: `Request failed with status code ${status}`,
-    response: {
+  const error = Object.assign(
+    new Error(`Request failed with status code ${status}`),
+    {
       config,
-      data,
-      headers: {},
-      status,
-      statusText: status === 401 ? 'Unauthorized' : 'Error',
+      isAxiosError: true,
+      response: {
+        config,
+        data,
+        headers: {},
+        status,
+        statusText: status === 401 ? 'Unauthorized' : 'Error',
+      },
     },
-  });
+  );
+  return Promise.reject(error);
 }
 
 function createResolvedResponse(config: MockRequestConfig, data: unknown) {

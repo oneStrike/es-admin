@@ -168,12 +168,12 @@ watch(
 
 // 设置值
 const setContent = (content: string) => {
-  tinymce.activeEditor!.setContent(content);
+  tinymce.activeEditor?.setContent(content);
 };
 
 // 获取值
 const getContent = () => {
-  return tinymce.activeEditor!.getContent();
+  return tinymce.activeEditor?.getContent() ?? '';
 };
 
 const containerRef = ref<HTMLElement>();

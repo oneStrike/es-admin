@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  AgreementListItemDto,
-  BaseAgreementDto,
+  AdminAgreementDetailDto,
+  AdminAgreementListItemDto,
   CreateAgreementDto,
   UpdateAgreementDto,
 } from '#/api/types';
@@ -22,10 +22,23 @@ import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
+import { fetchAgreementAccessHtml } from './access-preview';
 import { getDetailCards } from './model/detail';
 import { agreementColumns, agreementFilter, formSchema } from './model/shared';
 
-const gridOptions: VxeGridProps<AgreementListItemDto> = {
+type AgreementRow = AdminAgreementListItemDto & {
+  loading?: boolean;
+};
+
+type AgreementStatusRecord = (AdminAgreementDetailDto | AgreementRow) & {
+  loading?: boolean;
+};
+
+const previewHtml = ref('');
+const previewLoadingId = ref<null | number>(null);
+const previewTitle = ref('');
+
+const gridOptions: VxeGridProps<AgreementRow> = {
   columns: agreementColumns,
   height: 'auto',
   proxyConfig: {
@@ -47,7 +60,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-async function openFormModal(row?: AgreementListItemDto) {
+const [PreviewModal, previewApi] = useVbenModal({
+  footer: false,
+  onOpenChange(isOpen) {
+    if (!isOpen) {
+      previewHtml.value = '';
+      previewTitle.value = '';
+    }
+  },
+  title: '协议预览',
+});
+
+async function openFormModal(row?: AgreementRow) {
   const record = row ? await agreementDetailApi({ id: row.id }) : undefined;
   formApi.setData({ title: '协议', record }).open();
 }
@@ -66,9 +90,43 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '协议详情',
 });
 
-async function togglePublishedStatus(
-  record: AgreementListItemDto | BaseAgreementDto,
-) {
+async function copyAccessPath(row: AgreementRow) {
+  if (!row.accessPath) {
+    useMessage.warning('暂无访问路径');
+    return;
+  }
+
+  try {
+    await writeClipboardText(row.accessPath);
+    useMessage.success('复制成功');
+  } catch {
+    useMessage.error('复制失败');
+  }
+}
+
+async function openPreview(row: AgreementRow) {
+  const previewId = row.id;
+  previewHtml.value = '';
+  previewTitle.value = row.title;
+  previewLoadingId.value = previewId;
+
+  try {
+    const html = await fetchAgreementAccessHtml(previewId);
+    if (previewLoadingId.value !== previewId) {
+      return;
+    }
+    previewHtml.value = html;
+    previewApi.open();
+  } catch {
+    previewHtml.value = '';
+  } finally {
+    if (previewLoadingId.value === previewId) {
+      previewLoadingId.value = null;
+    }
+  }
+}
+
+async function togglePublishedStatus(record: AgreementStatusRecord) {
   record.loading = true;
   try {
     await agreementUpdateStatusApi({
@@ -79,6 +137,29 @@ async function togglePublishedStatus(
     gridApi.reload();
   } finally {
     record.loading = false;
+  }
+}
+
+async function writeClipboardText(text: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', 'true');
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.append(textarea);
+  textarea.select();
+
+  try {
+    if (!document.execCommand('copy')) {
+      throw new Error('copy failed');
+    }
+  } finally {
+    textarea.remove();
   }
 }
 </script>
@@ -115,6 +196,19 @@ async function togglePublishedStatus(
           <el-button link type="primary" @click="openFormModal(row)">
             编辑
           </el-button>
+          <el-divider direction="vertical" />
+          <el-button
+            link
+            :loading="previewLoadingId === row.id"
+            type="primary"
+            @click="openPreview(row)"
+          >
+            预览
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button link type="primary" @click="copyAccessPath(row)">
+            复制访问地址
+          </el-button>
         </div>
       </template>
     </Grid>
@@ -126,5 +220,19 @@ async function togglePublishedStatus(
       :cards="getDetailCards"
       class="!w-[900px]"
     />
+
+    <PreviewModal class="!h-[82vh] !w-[960px]">
+      <div class="flex h-full min-h-0 flex-col gap-3">
+        <div class="shrink-0 truncate text-sm text-muted-foreground">
+          {{ previewTitle || '协议预览' }}
+        </div>
+        <iframe
+          class="min-h-0 flex-1 rounded-md border border-border bg-white"
+          sandbox=""
+          :srcdoc="previewHtml"
+          title="协议预览"
+        ></iframe>
+      </div>
+    </PreviewModal>
   </Page>
 </template>

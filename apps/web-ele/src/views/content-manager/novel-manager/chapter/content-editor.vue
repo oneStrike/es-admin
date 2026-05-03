@@ -51,9 +51,12 @@ async function handleUploadSuccess() {
 }
 
 async function handleClear() {
+  const data = shareData.value;
+  if (!data?.chapterId) return;
+
   await useConfirm('clear', async () => {
     await contentNovelChapterContentDeleteApi({
-      id: shareData.value!.chapterId,
+      id: data.chapterId,
     });
     content.value = '';
   });

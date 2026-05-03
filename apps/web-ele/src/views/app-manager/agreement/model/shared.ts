@@ -1,4 +1,4 @@
-import type { AgreementListItemDto } from '#/api/types';
+import type { AdminAgreementListItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -84,7 +84,7 @@ export const formSchema: EsFormSchema = [
 ];
 
 export const agreementColumns =
-  formSchemaTransform.toTableColumns<AgreementListItemDto>(formSchema, {
+  formSchemaTransform.toTableColumns<AdminAgreementListItemDto>(formSchema, {
     content: {
       hide: true,
     },
@@ -112,6 +112,7 @@ export const agreementColumns =
     },
     actions: {
       show: true,
+      width: 260,
     },
   });
 

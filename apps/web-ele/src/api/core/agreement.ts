@@ -1,4 +1,6 @@
 import type {
+  AgreementAccessRequest,
+  AgreementAccessResponse,
   AgreementCreateRequest,
   AgreementCreateResponse,
   AgreementDetailRequest,
@@ -68,6 +70,18 @@ export async function agreementDetailApi(
 ): Promise<AgreementDetailResponse> {
   return requestClient.get<AgreementDetailResponse>(
     '/api/admin/agreement/detail',
+    { params },
+  );
+}
+
+/**
+ * 协议 HTML 访问页
+ */
+export async function agreementAccessApi(
+  params: AgreementAccessRequest,
+): Promise<AgreementAccessResponse> {
+  return requestClient.get<AgreementAccessResponse>(
+    '/api/admin/agreement/access',
     { params },
   );
 }

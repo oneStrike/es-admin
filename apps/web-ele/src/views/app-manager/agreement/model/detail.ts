@@ -1,8 +1,8 @@
-import type { BaseAgreementDto } from '#/api/types';
+import type { AdminAgreementDetailDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
-export function getDetailCards(detail: BaseAgreementDto) {
+export function getDetailCards(detail: AdminAgreementDetailDto) {
   return [
     {
       title: '基本信息',

@@ -129,11 +129,14 @@ function openDetailModal(record: ContentNovelChapterDetailResponse) {
 }
 
 function openContentModal(record: ContentNovelChapterDetailResponse) {
+  const data = shareData.value;
+  if (!data) return;
+
   contentApi
     .setData({
       chapterId: record.id,
       chapterTitle: record.title,
-      workId: shareData.value!.workId,
+      workId: data.workId,
     })
     .open();
 }
@@ -156,6 +159,9 @@ async function openFormModal(record?: ContentNovelChapterDetailResponse) {
 async function handleSubmit(
   values: ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest,
 ) {
+  const data = shareData.value;
+  if (!data) return;
+
   const payload = {
     ...(values as Record<string, any>),
     canComment:
@@ -166,7 +172,7 @@ async function handleSubmit(
       values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
     price: values.price ?? currentChapterRecord.value?.price ?? 0,
     viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
-    workId: shareData.value!.workId,
+    workId: data.workId,
     workType: 2,
   } as ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest;
 

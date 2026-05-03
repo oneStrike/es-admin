@@ -11,9 +11,9 @@ import forge from 'node-forge';
 import { defineStore } from 'pinia';
 
 import {
+  authKeyPublicApi,
   authLoginApi,
   authLogoutApi,
-  authKeyPublicApi,
   systemUserProfileApi,
 } from '#/api/core';
 import { $t } from '#/locales';

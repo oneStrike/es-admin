@@ -24,7 +24,7 @@ defineOptions({
   name: 'ForumSensitiveWordStatistics',
 });
 
-const statisticsData = ref<SensitiveWordStatisticsDataDto | null>(null);
+const statisticsData = ref<null | SensitiveWordStatisticsDataDto>(null);
 const loading = ref(false);
 
 const levelChartRef = ref<EchartsUIType>();

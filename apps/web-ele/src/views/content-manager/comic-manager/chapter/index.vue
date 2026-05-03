@@ -171,9 +171,12 @@ function openDetailModal(record: ContentComicChapterDetailResponse) {
  * @param record 章节数据
  */
 function openContentModal(record: ContentComicChapterDetailResponse) {
+  const data = shareData.value;
+  if (!data) return;
+
   contentApi
     .setData({
-      workId: shareData.value!.workId,
+      workId: data.workId,
       chapterId: record.id,
       chapterTitle: record.title,
     })
@@ -213,6 +216,9 @@ async function openFormModal(record?: ContentComicChapterDetailResponse) {
 async function handleSubmit(
   values: ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest,
 ) {
+  const data = shareData.value;
+  if (!data) return;
+
   const payload = {
     ...(values as Record<string, any>),
     canComment:
@@ -223,7 +229,7 @@ async function handleSubmit(
       values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
     price: values.price ?? currentChapterRecord.value?.price ?? 0,
     viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
-    workId: shareData.value!.workId,
+    workId: data.workId,
     workType: 1,
   } as ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest;
 

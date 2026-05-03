@@ -1,7 +1,7 @@
 /**
  *  类型定义 [AgreementCreateRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
 export type AgreementCreateRequest = CreateAgreementDto;
 
@@ -10,7 +10,7 @@ export type AgreementCreateResponse = boolean;
 /**
  *  类型定义 [AgreementUpdateRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
 export type AgreementUpdateRequest = UpdateAgreementDto;
 
@@ -19,7 +19,7 @@ export type AgreementUpdateResponse = boolean;
 /**
  *  类型定义 [AgreementUpdateStatusRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
 export type AgreementUpdateStatusRequest = UpdatePublishedStatusDto;
 
@@ -28,7 +28,7 @@ export type AgreementUpdateStatusResponse = boolean;
 /**
  *  类型定义 [AgreementPageRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
 export type AgreementPageRequest = {
   /** 任意合法数值 */
@@ -64,7 +64,7 @@ export type AgreementPageResponse = {
   [property: string]: any;
 
   /* 列表数据 */
-  list?: AgreementListItemDto[];
+  list?: AdminAgreementListItemDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -79,7 +79,7 @@ export type AgreementPageResponse = {
 /**
  *  类型定义 [AgreementDetailRequest]
  *  @来源 APP管理/协议管理
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
 export type AgreementDetailRequest = {
   /** 任意合法数值 */
@@ -89,12 +89,27 @@ export type AgreementDetailRequest = {
   id: number;
 };
 
-export type AgreementDetailResponse = BaseAgreementDto;
+export type AgreementDetailResponse = AdminAgreementDetailDto;
+
+/**
+ *  类型定义 [AgreementAccessRequest]
+ *  @来源 APP管理/协议管理
+ *  @更新时间 2026-05-03 14:46:16
+ */
+export type AgreementAccessRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 主键id */
+  id: number;
+};
+
+export type AgreementAccessResponse = undefined;
 
 /**
  *  类型定义 [CreateAgreementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
 export type CreateAgreementDto = {
   /** 任意合法数值 */
@@ -115,7 +130,7 @@ export type CreateAgreementDto = {
 /**
  *  类型定义 [UpdateAgreementDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
 export type UpdateAgreementDto = {
   /** 任意合法数值 */
@@ -138,7 +153,7 @@ export type UpdateAgreementDto = {
 /**
  *  类型定义 [UpdatePublishedStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
 export type UpdatePublishedStatusDto = {
   /** 任意合法数值 */
@@ -151,13 +166,15 @@ export type UpdatePublishedStatusDto = {
 };
 
 /**
- *  类型定义 [AgreementListItemDto]
+ *  类型定义 [AdminAgreementListItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
-export type AgreementListItemDto = {
+export type AdminAgreementListItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 协议 HTML 访问路径 */
+  accessPath: string;
   /* 创建时间 */
   createdAt: string;
   /* 主键id */
@@ -180,13 +197,15 @@ export type AgreementListItemDto = {
 };
 
 /**
- *  类型定义 [BaseAgreementDto]
+ *  类型定义 [AdminAgreementDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-02 22:38:19
+ *  @更新时间 2026-05-03 14:46:16
  */
-export type BaseAgreementDto = {
+export type AdminAgreementDetailDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 协议 HTML 访问路径 */
+  accessPath: string;
   /* 协议内容 */
   content: string;
   /* 创建时间 */

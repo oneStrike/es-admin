@@ -56,12 +56,16 @@ function parseValue(value: string | undefined) {
 }
 
 function handleNameChange(index: number, name: string) {
-  colorItems.value[index]!.name = name;
+  const item = colorItems.value[index];
+  if (!item) return;
+  item.name = name;
   emitValue();
 }
 
 function handleColorChange(index: number, color: null | string) {
-  colorItems.value[index]!.color = color || '';
+  const item = colorItems.value[index];
+  if (!item) return;
+  item.color = color || '';
   emitValue();
 }
 

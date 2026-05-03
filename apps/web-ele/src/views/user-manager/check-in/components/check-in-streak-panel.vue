@@ -10,6 +10,8 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { ElMessageBox } from 'element-plus';
 
 import {
+  checkInStreakDetailApi,
+  checkInStreakHistoryDetailApi,
   checkInStreakHistoryPageApi,
   checkInStreakPageApi,
   checkInStreakPublishApi,
@@ -18,6 +20,10 @@ import {
 import { useMessage } from '#/hooks/useFeedback';
 
 import RewardConfigModal from '../../shared/reward-config/reward-config-modal.vue';
+import {
+  buildStreakDetailRequest,
+  buildStreakHistoryDetailRequest,
+} from '../model/calendar-runtime';
 import {
   checkInRewardAssetOptions,
   checkInStreakPublishStrategyOptions,
@@ -44,6 +50,8 @@ const rewardConfigVisible = ref(false);
 const historyRules = ref<CheckInStreakDetailResponse[]>([]);
 const ruleList = ref<CheckInStreakDetailResponse[]>([]);
 const currentHistoryTarget = ref<CheckInStreakDetailResponse | null>(null);
+const editingMap = reactive<Record<number, boolean>>({});
+const historyEditingMap = reactive<Record<number, boolean>>({});
 const terminatingMap = reactive<Record<number, boolean>>({});
 const formState = reactive(createDefaultStreakFormState());
 
@@ -109,9 +117,35 @@ function openCreateEditor() {
   editorDrawerApi.open();
 }
 
-function openEditEditor(rule: CheckInStreakDetailResponse) {
-  Object.assign(formState, mapStreakDetailToForm(rule));
+function openEditorWithDetail(detail: CheckInStreakDetailResponse) {
+  Object.assign(formState, mapStreakDetailToForm(detail));
   editorDrawerApi.open();
+}
+
+async function openEditEditor(rule: CheckInStreakDetailResponse) {
+  editingMap[rule.id] = true;
+  Object.assign(formState, createDefaultStreakFormState());
+  try {
+    const detail = await checkInStreakDetailApi(
+      buildStreakDetailRequest(rule.id),
+    );
+    openEditorWithDetail(detail);
+  } finally {
+    editingMap[rule.id] = false;
+  }
+}
+
+async function openHistoryEditEditor(rule: CheckInStreakDetailResponse) {
+  historyEditingMap[rule.id] = true;
+  Object.assign(formState, createDefaultStreakFormState());
+  try {
+    const detail = await checkInStreakHistoryDetailApi(
+      buildStreakHistoryDetailRequest(rule.id),
+    );
+    openEditorWithDetail(detail);
+  } finally {
+    historyEditingMap[rule.id] = false;
+  }
 }
 
 function openRewardConfigEditor() {
@@ -308,7 +342,11 @@ onMounted(async () => {
         </div>
 
         <div class="mt-5 flex flex-wrap gap-2">
-          <el-button type="primary" @click="openEditEditor(rule)">
+          <el-button
+            :loading="editingMap[rule.id]"
+            type="primary"
+            @click="openEditEditor(rule)"
+          >
             编辑并发新版
           </el-button>
           <el-button @click="openHistory(rule)">查看历史</el-button>
@@ -530,7 +568,11 @@ onMounted(async () => {
             </div>
 
             <div class="mt-4 flex flex-wrap gap-2">
-              <el-button type="primary" @click="openEditEditor(rule)">
+              <el-button
+                :loading="historyEditingMap[rule.id]"
+                type="primary"
+                @click="openHistoryEditEditor(rule)"
+              >
                 基于此版本再发布
               </el-button>
               <el-button

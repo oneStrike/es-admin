@@ -3,6 +3,7 @@ export { agreementUpdateApi } from './agreement';
 export { agreementUpdateStatusApi } from './agreement';
 export { agreementPageApi } from './agreement';
 export { agreementDetailApi } from './agreement';
+export { agreementAccessApi } from './agreement';
 export { announcementCreateApi } from './announcement';
 export { announcementPageApi } from './announcement';
 export { announcementDetailApi } from './announcement';

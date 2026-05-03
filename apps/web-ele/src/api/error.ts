@@ -209,12 +209,12 @@ function normalizeApiClientError(error: unknown): NormalizedApiError {
   const responseData = response?.data;
 
   if (isApiResponse(responseData)) {
-    const code =
-      httpStatus === 200 && BUSINESS_ERROR_CODES.has(responseData.code)
-        ? responseData.code
-        : isKnownApiCode(responseData.code)
-          ? responseData.code
-          : mapHttpStatusToCode(httpStatus);
+    let code = mapHttpStatusToCode(httpStatus);
+    if (httpStatus === 200 && BUSINESS_ERROR_CODES.has(responseData.code)) {
+      code = responseData.code;
+    } else if (isKnownApiCode(responseData.code)) {
+      code = responseData.code;
+    }
 
     return createApiError({
       code,

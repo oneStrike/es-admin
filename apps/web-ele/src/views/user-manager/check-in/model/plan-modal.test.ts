@@ -1,11 +1,27 @@
 import type { CheckInStreakRuleDetail } from './streak-config';
 
-import type { CheckInConfigDetailResponse } from '#/api/types';
+import type {
+  AdminCheckInCalendarDayDto,
+  CheckInConfigDetailResponse,
+} from '#/api/types';
 
 import { describe, expect, it } from 'vitest';
 
 import { dayjs } from '#/utils';
 
+import {
+  buildCalendarDetailRequest,
+  buildCalendarUserDetailRequest,
+  buildDefaultSignedUserQueryDate,
+  buildSignedUserGridPageRequest,
+  buildSignedUserPageRequest,
+  buildStreakDetailRequest,
+  buildStreakHistoryDetailRequest,
+  isMonthSignedUserQueryDateVisible,
+  isPositiveIntegerUserId,
+  isSignedUserQueryDateVisible,
+  resolveCalendarDay,
+} from './calendar-runtime';
 import * as checkInConfigModel from './config';
 import {
   buildConfigPreviewDays,
@@ -545,5 +561,120 @@ describe('check-in streak config model', () => {
     });
 
     expect(error).toContain('连续奖励项不能为空');
+  });
+});
+
+describe('check-in calendar runtime model', () => {
+  const days: AdminCheckInCalendarDayDto[] = [
+    {
+      dayIndex: 1,
+      isFuture: false,
+      isToday: false,
+      makeupSignCount: 0,
+      normalSignCount: 3,
+      signDate: '2026-05-04',
+      signedCount: 3,
+      streakRewardTriggerCount: 0,
+    },
+    {
+      dayIndex: 2,
+      isFuture: false,
+      isToday: true,
+      makeupSignCount: 1,
+      normalSignCount: 5,
+      signDate: '2026-05-05',
+      signedCount: 6,
+      streakRewardTriggerCount: 2,
+    },
+  ];
+
+  it('builds default signed-user query date from today', () => {
+    expect(buildDefaultSignedUserQueryDate(dayjs('2026-05-04'))).toBe(
+      '2026-05-04',
+    );
+  });
+
+  it('resolves the selected calendar day by exact target date', () => {
+    expect(resolveCalendarDay(days, '2026-05-04')).toEqual(days[0]);
+    expect(resolveCalendarDay(days, '2026-05-01')).toBeUndefined();
+    expect(resolveCalendarDay([], '2026-05-01')).toBeUndefined();
+  });
+
+  it('shows signed-user query entry for historical dates and today only', () => {
+    expect(isSignedUserQueryDateVisible('2026-05-04', '2026-05-05')).toBe(true);
+    expect(isSignedUserQueryDateVisible('2026-05-05', '2026-05-05')).toBe(true);
+    expect(isSignedUserQueryDateVisible('2026-05-06', '2026-05-05')).toBe(
+      false,
+    );
+  });
+
+  it('shows month signed-user query entry only for current-month non-future days', () => {
+    expect(
+      isMonthSignedUserQueryDateVisible(
+        { date: '2026-05-04', isCurrentMonth: true },
+        '2026-05-05',
+      ),
+    ).toBe(true);
+    expect(
+      isMonthSignedUserQueryDateVisible(
+        { date: '2026-05-05', isCurrentMonth: true },
+        '2026-05-05',
+      ),
+    ).toBe(true);
+    expect(
+      isMonthSignedUserQueryDateVisible(
+        { date: '2026-05-06', isCurrentMonth: true },
+        '2026-05-05',
+      ),
+    ).toBe(false);
+    expect(
+      isMonthSignedUserQueryDateVisible(
+        { date: '2026-04-30', isCurrentMonth: false },
+        '2026-05-05',
+      ),
+    ).toBe(false);
+  });
+
+  it('builds calendar runtime request payloads with whitelisted fields', () => {
+    expect(buildCalendarDetailRequest('2026-05-04')).toEqual({
+      targetDate: '2026-05-04',
+    });
+    expect(buildSignedUserPageRequest('2026-05-04', 2, 20)).toEqual({
+      pageIndex: 2,
+      pageSize: 20,
+      targetDate: '2026-05-04',
+    });
+    expect(
+      buildSignedUserGridPageRequest('2026-05-04', {
+        currentPage: 3,
+        pageSize: 30,
+      }),
+    ).toEqual({
+      pageIndex: 3,
+      pageSize: 30,
+      targetDate: '2026-05-04',
+    });
+    expect(buildSignedUserGridPageRequest('2026-05-04', {})).toEqual({
+      pageIndex: 1,
+      pageSize: 15,
+      targetDate: '2026-05-04',
+    });
+    expect(buildCalendarUserDetailRequest('2026-05-04', 88)).toEqual({
+      targetDate: '2026-05-04',
+      userId: 88,
+    });
+    expect(buildStreakDetailRequest(9)).toEqual({ id: 9 });
+    expect(buildStreakHistoryDetailRequest(10)).toEqual({ id: 10 });
+  });
+
+  it('accepts only positive integer user id values', () => {
+    expect(isPositiveIntegerUserId(1)).toBe(true);
+    expect(isPositiveIntegerUserId('88')).toBe(true);
+    expect(isPositiveIntegerUserId(0)).toBe(false);
+    expect(isPositiveIntegerUserId(-1)).toBe(false);
+    expect(isPositiveIntegerUserId(1.5)).toBe(false);
+    expect(isPositiveIntegerUserId('')).toBe(false);
+    expect(isPositiveIntegerUserId('abc')).toBe(false);
+    expect(isPositiveIntegerUserId(undefined)).toBe(false);
   });
 });

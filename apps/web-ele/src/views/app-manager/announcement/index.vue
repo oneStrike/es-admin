@@ -40,13 +40,17 @@ appPagePageApi({
   pageSize: 500,
 }).then((res) => {
   const pageOptions =
-    res.list?.map((pageItem: BaseAppPageDto) => {
-      clientPageObj.value[pageItem.id!] = pageItem.name;
-      return {
-        label: pageItem.name,
-        value: pageItem.id,
-        ...pageItem,
-      };
+    res.list?.flatMap((pageItem: BaseAppPageDto) => {
+      if (pageItem.id === undefined || pageItem.id === null) return [];
+
+      clientPageObj.value[pageItem.id] = pageItem.name;
+      return [
+        {
+          label: pageItem.name,
+          value: pageItem.id,
+          ...pageItem,
+        },
+      ];
     }) || [];
 
   announcementFilter.forEach((item) => {

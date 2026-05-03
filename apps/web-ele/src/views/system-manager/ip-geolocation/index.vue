@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import type { UploadProps, UploadRequestOptions } from 'element-plus';
+
 import type {
   SystemIp2regionStatusResponse,
   SystemIp2regionUploadResponse,
 } from '#/api/types';
-import type { UploadProps, UploadRequestOptions } from 'element-plus';
 
 import { computed, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { getApiErrorMessage } from '#/api/error';
 import { systemIp2regionStatusApi } from '#/api/core';
+import { getApiErrorMessage } from '#/api/error';
 import { requestClient } from '#/api/request';
 import { useMessage } from '#/hooks/useFeedback';
 
@@ -44,6 +45,7 @@ const statusSummary = computed(() => {
   if (!statusData.value.ready) return '当前进程尚未加载可用属地库';
   return '当前进程已加载可用属地库';
 });
+const inlineCodeClass = 'rounded bg-slate-100 px-1 py-0.5 text-slate-700';
 
 function formatDateTime(value?: null | string) {
   if (!value) return '-';
@@ -127,9 +129,7 @@ onMounted(loadStatus);
             </div>
             <p class="max-w-3xl text-sm leading-6 text-slate-500">
               用于上传并切换当前进程使用的
-              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700"
-                >ip2region_v4.xdb</code
-              >
+              <code :class="inlineCodeClass">ip2region_v4.xdb</code>
               文件。当前能力只保证接收上传请求的 API
               进程立即生效，不处理跨进程或跨实例同步。
             </p>
@@ -208,17 +208,11 @@ onMounted(loadStatus);
             <h2 class="text-base font-semibold text-slate-900">上传新库</h2>
             <p class="mt-2 text-sm leading-6 text-slate-500">
               仅支持上传
-              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700"
-                >ip2region_v4.xdb</code
-              >
+              <code :class="inlineCodeClass">ip2region_v4.xdb</code>
               。上传成功后会写入
-              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700"
-                >versions</code
-              >
+              <code :class="inlineCodeClass">versions</code>
               和
-              <code class="rounded bg-slate-100 px-1 py-0.5 text-slate-700"
-                >active</code
-              >
+              <code :class="inlineCodeClass">active</code>
               目录，并切换当前进程查询器。
             </p>
 

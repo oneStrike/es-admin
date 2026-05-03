@@ -149,9 +149,10 @@ export async function generateAPI(
           : file.fileName.replace('.ts', '');
         const exportNames = [
           ...file.content.matchAll(/export async function (\w+)\(/g),
-        ]
-          .map((match) => match[1])
-          .filter((name): name is string => Boolean(name));
+        ].flatMap((match) => {
+          const name = match[1];
+          return name ? [name] : [];
+        });
         return exportNames.map((name) => ({ filePath, name }));
       });
 

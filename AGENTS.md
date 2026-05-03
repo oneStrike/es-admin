@@ -51,6 +51,9 @@
 - 涉及 `apps/web-ele/src/api/**`、`apps/web-ele/src/api/types/**` 一类接口产物时，只允许通过现有脚本生成，禁止手动修改、手动补丁或手工同步。
 - 当前已有脚本：`pnpm -F @vben/web-ele run att`
 - 如需调整接口定义、类型结构或生成结果，必须修改生成源、生成模板或脚本输入后重新生成，不允许直接编辑生成产物。
+- 排查接口不一致时，应先核对官方接口规范、生成源和当前生成结果；不要为了让业务代码通过而在生成产物里临时改字段、改类型或补兼容逻辑。
+- 业务层如需适配接口字段，只能在页面、model、service/helper 等非生成文件中做显式映射，并保留后端契约字段的清晰边界。
+- 已生成但尚未对接的接口，应在排查结论或任务文档中单独列出，不应通过删除生成代码、手改类型或伪造调用来掩盖未对接状态。
 - 业务逻辑、页面交互、页面级适配优先放在 `apps/web-ele/src/**` 内完成。
 
 ### 5.1 表单、筛选与表格字段复用
@@ -60,6 +63,34 @@
 - 表格列的序号列应由 `formSchemaTransform.toTableColumns(...)` 统一生成；不要在业务列表中手写重复的序号列，除非该表格确实无法用 schema 表达。
 - 表格、筛选或展示字段只在以下情况允许手写补充：字段不属于表单语义、是纯展示/操作列、统计聚合列、弹窗选择器的临时列，或需要特殊 slot/formatter/cellRender。此时也应优先通过 `toTableColumns` 的 `extra` 参数追加或覆盖；只有无法映射到 schema 字段时才保留手写 columns。
 - 新增或改造业务列表时，应先检查是否已有可复用的 `formSchema`、`searchSchema` 或同域 model/shared 定义；确需新增 schema 时，应放在对应业务模块的 `model` 层并与现有命名方式保持一致。
+- 同一业务字段的 label、枚举选项、格式化、显示/筛选语义应尽量集中在同域 `model` 或 shared 文件中维护，不要在页面、弹窗、表格 slot 中各写一套。
+- 搜索表单、列表表格、弹窗选择器如果使用同一组字段，应优先从同源 schema 派生；只有操作列、聚合列、状态组合展示等无法表达的内容，才允许作为额外列补充。
+
+### 5.2 Vben 组件优先规则
+
+- 业务页面优先使用 Vben 与项目封装组件；只要 Vben 或项目业务层已有等价能力，就禁止在业务层直接搭建 Element Plus 的同类容器组件。
+- 页面壳、弹窗、抽屉、表单、表格、分页和弹窗选择器默认使用 `Page`、`useVbenModal`/`VbenModal`、`useVbenDrawer`/`VbenDrawer`、`useVbenForm`、`useVbenVxeGrid`、`EsModalForm`、`EsModalTable`、`#/components/es-*` 等现有能力。
+- 禁止在有 Vben 或项目封装等价能力时直接使用 `el-dialog`、`el-drawer`、`el-table`、`el-pagination`、手写整套查询表单、手写页面容器或重复封装同类基础能力。
+- Element Plus 仅允许作为小型业务原子控件使用，例如表格 slot 内的状态标签、提示、轻量按钮、日期选择等；如果后续 Vben 或项目组件提供同等直接入口，应迁回 Vben 或项目封装。
+- 如确实需要绕过 Vben 组件，必须在改动说明中写明原因、替代方案和后续迁移条件。
+- 新增页面或改造页面前，应先查找同类模块的 Vben 用法，优先复用已有模式；不要因为局部实现方便而绕过 Vben 的页面、弹窗、表单、表格、分页能力。
+
+### 5.3 弹窗与表格布局规范
+
+- 弹窗内承载表格时，优先使用 `useVbenModal` 连接组件模式和 `useVbenVxeGrid`，不要用 `el-dialog + el-table + el-pagination` 重新搭建。
+- 父组件打开连接弹窗时，默认使用 `modalApi.setData(...).open()` 传递上下文；子组件通过 `useVbenModal({ onOpenChange })` 与 `modalApi.getData()` 读取上下文，避免为弹窗专门维护一组 `visible` 和初始参数 props。
+- 需要固定弹窗高度时，Modal 根容器应同时设置明确高度和最大高度，例如 `class: '!h-[86vh] !max-h-[86vh] ...'`；不要只设置 `max-h` 后让默认内容滚动行为决定高度。
+- Modal 内容区承载自适应表格时，应通过 `contentClass` 明确 `min-h-0` 和 `overflow-hidden`，内部布局使用 `flex h-full min-h-0 flex-col`，表格容器使用 `flex-1 min-h-0`，让 VxeGrid 占满剩余空间。
+- 顶部查询区、概览区、操作区应分区清晰；不要把查询控件、统计指标、说明文字、操作按钮全部挤在同一行，也不要让顶部信息区过度侵占表格高度。
+- 弹窗中的复杂展示列应优先使用 VxeGrid slots 或 cellRender；状态标签、提示、轻量按钮等小型原子控件可以留在 slot 内，但表格、分页和弹窗容器必须交给 Vben/项目封装。
+
+### 5.4 VxeGrid 分页请求规范
+
+- 使用 `useVbenVxeGrid` 的远程分页列表，应明确把 Vxe 的 `page.currentPage`、`page.pageSize` 映射为后端分页契约字段，当前后端默认使用 `pageIndex`、`pageSize`。
+- 通用列表优先复用 `#/adapter/vxe-table` 的 `formatQuery(...)`；如果某个接口需要额外上下文参数，应在 `formatQuery(...)` 外显式合并，不要在视图里散落手写分页对象。
+- 弹窗内、详情内或特殊列表若不适合直接使用 `formatQuery(...)`，应在同域 model/helper 中提供请求构造函数，例如把 `{ currentPage, pageSize }` 转成 `{ pageIndex, pageSize, ...业务上下文 }`。
+- 分页请求构造函数必须只传后端契约允许的字段，不要把 VxeGrid 的内部状态、UI-only 字段或临时筛选对象透传给接口。
+- 新增或调整分页映射时，应补充聚焦单测或至少执行现有 model 测试，验证 `pageIndex`、`pageSize` 和业务上下文参数没有丢失、改名或多传。
 
 ## 6. 包管理与运行方式
 

@@ -94,9 +94,12 @@ async function handleDelete(index?: number) {
     useMessage.warning('请先选择要删除的图片');
     return;
   }
+  const data = shareData.value;
+  if (!data) return;
+
   useConfirm('delete', async () => {
     await contentComicChapterContentDeleteApi({
-      chapterId: shareData.value!.chapterId,
+      chapterId: data.chapterId,
       index: deleteIndex,
     });
     selectedIndices.value = [];
@@ -105,9 +108,12 @@ async function handleDelete(index?: number) {
 }
 
 async function handleClearAll() {
+  const data = shareData.value;
+  if (!data) return;
+
   useConfirm('clear', async () => {
     await contentComicChapterContentClearApi({
-      id: shareData.value!.chapterId,
+      id: data.chapterId,
     });
     useMessage.success('清空成功');
     await loadContents();
@@ -116,6 +122,8 @@ async function handleClearAll() {
 
 async function handleMove(fromIndex: number, toIndex: number) {
   if (fromIndex === toIndex) return;
+  const data = shareData.value;
+  if (!data) return;
 
   const nextList = [...contentList.value];
   const [moved] = nextList.splice(fromIndex, 1);
@@ -125,7 +133,7 @@ async function handleMove(fromIndex: number, toIndex: number) {
 
   try {
     await contentComicChapterContentMoveApi({
-      chapterId: shareData.value!.chapterId,
+      chapterId: data.chapterId,
       fromIndex,
       toIndex,
     });

@@ -11,11 +11,11 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { getApiErrorMessage } from '#/api/error';
 import {
   contentComicChapterContentArchiveConfirmApi,
   contentComicChapterContentArchiveDetailApi,
 } from '#/api/core';
+import { getApiErrorMessage } from '#/api/error';
 import { requestClient } from '#/api/request';
 import { AlertCircleIcon, ImageLine, UploadLoop } from '#/components/es-icons';
 import { UploadUrlMapEnum } from '#/enum/api';
@@ -186,12 +186,10 @@ const selectedImageCount = computed(() => {
 const archiveProgress = computed(() => {
   if (uploading.value) return uploadProgress.value;
   if (!taskDetail.value) return 0;
-  const selectedCount =
-    selectedChapterIds.value.length > 0
-      ? selectedChapterIds.value.length
-      : taskDetail.value.matchedItems.length > 0
-        ? taskDetail.value.matchedItems.length
-        : 1;
+  let selectedCount = selectedChapterIds.value.length;
+  if (selectedCount <= 0) {
+    selectedCount = taskDetail.value.matchedItems.length || 1;
+  }
   const total = Math.max(1, selectedCount);
   return Math.min(
     100,

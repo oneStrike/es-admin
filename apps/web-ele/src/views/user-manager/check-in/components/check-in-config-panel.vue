@@ -9,7 +9,7 @@ import type { CheckInRewardItemDto } from '../model/shared';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
-import { useVbenDrawer } from '@vben/common-ui';
+import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 
 import {
   checkInConfigDetailApi,
@@ -22,6 +22,10 @@ import { useMessage } from '#/hooks/useFeedback';
 import { dayjs } from '#/utils';
 
 import RewardConfigModal from '../../shared/reward-config/reward-config-modal.vue';
+import {
+  isMonthSignedUserQueryDateVisible,
+  isSignedUserQueryDateVisible,
+} from '../model/calendar-runtime';
 import {
   applyMakeupPeriodTypeChange,
   buildConfigPreviewDays,
@@ -51,6 +55,7 @@ import {
   parseBaseRewardItems,
   weeklyCalendarLabels,
 } from '../model/shared';
+import CheckInSignedUserQueryDialog from './check-in-signed-user-query-dialog.vue';
 
 defineOptions({
   name: 'CheckInConfigPanel',
@@ -106,6 +111,15 @@ const [PatternOverviewDrawer, patternOverviewDrawerApi] = useVbenDrawer({
   title: '周期模式奖励总览',
 });
 
+const [SignedUserQueryModal, signedUserQueryModalApi] = useVbenModal({
+  class:
+    '!top-[5vh] !h-[86vh] !max-h-[86vh] !w-[1180px] max-w-[calc(100vw-32px)]',
+  connectedComponent: CheckInSignedUserQueryDialog,
+  contentClass: 'min-h-0 !overflow-hidden p-3',
+  footer: false,
+  title: '已签用户查询',
+});
+
 const previewDays = computed(() =>
   buildConfigPreviewDays({
     cursor:
@@ -123,7 +137,6 @@ const weekTitle = computed(() => {
 const monthTitle = computed(() =>
   dayjs(`${monthCursor.value}-01`).format('YYYY 年 M 月'),
 );
-
 const expandedDateRuleMonths = ref<string[]>([]);
 
 const dateRuleSummaryGroups = computed(() =>
@@ -285,6 +298,10 @@ function openDateOverview() {
 
 function openPatternOverview() {
   patternOverviewDrawerApi.open();
+}
+
+function openSignedUserQuery(targetDate: string) {
+  signedUserQueryModalApi.setData({ targetDate }).open();
 }
 
 function openPreviewEditor(cell: CheckInConfigPreviewDay) {
@@ -739,7 +756,7 @@ onMounted(async () => {
           <el-button @click="goNextWeek">下一周</el-button>
         </div>
         <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
-          <button
+          <div
             v-for="cell in previewDays"
             :key="cell.date"
             class="check-in-preview-cell flex h-[102px] flex-col px-3 py-3 text-left transition"
@@ -748,8 +765,8 @@ onMounted(async () => {
                 ? 'check-in-preview-cell--editable'
                 : 'check-in-preview-cell--readonly cursor-not-allowed'
             "
-            :disabled="!cell.isEditable"
-            type="button"
+            :aria-disabled="!cell.isEditable"
+            role="button"
             @click="openPreviewEditor(cell)"
           >
             <div class="flex items-start justify-between gap-2">
@@ -796,11 +813,22 @@ onMounted(async () => {
                   ? 'check-in-preview-status--editable'
                   : 'check-in-preview-status--readonly'
               "
-              class="mt-auto pt-1 text-[10px]"
+              class="mt-auto flex items-center justify-between gap-2 pt-1 text-[10px]"
             >
-              {{ cell.isEditable ? '点击编辑奖励' : '历史日期只读' }}
+              <span>{{
+                cell.isEditable ? '点击编辑奖励' : '历史日期只读'
+              }}</span>
+              <el-button
+                v-if="isSignedUserQueryDateVisible(cell.date)"
+                link
+                size="small"
+                type="primary"
+                @click.stop="openSignedUserQuery(cell.date)"
+              >
+                已签用户
+              </el-button>
             </div>
-          </button>
+          </div>
         </div>
       </template>
 
@@ -824,7 +852,7 @@ onMounted(async () => {
           </div>
         </div>
         <div class="grid grid-cols-7 gap-2">
-          <button
+          <div
             v-for="cell in previewDays"
             :key="cell.date"
             class="check-in-month-cell flex h-[102px] flex-col px-3 py-3 text-left transition"
@@ -833,9 +861,9 @@ onMounted(async () => {
                 ? 'check-in-month-cell--editable'
                 : 'check-in-month-cell--readonly cursor-not-allowed'
             "
-            :disabled="!cell.isCurrentMonth || !cell.isEditable"
-            type="button"
-            @click="openPreviewEditor(cell)"
+            :aria-disabled="!cell.isCurrentMonth || !cell.isEditable"
+            role="button"
+            @click="cell.isCurrentMonth && openPreviewEditor(cell)"
           >
             <div class="flex items-start justify-between gap-2">
               <div
@@ -882,11 +910,22 @@ onMounted(async () => {
                   ? 'check-in-preview-status--editable'
                   : 'check-in-preview-status--readonly'
               "
-              class="mt-auto pt-1 text-[10px]"
+              class="mt-auto flex items-center justify-between gap-2 pt-1 text-[10px]"
             >
-              {{ cell.isEditable ? '点击编辑奖励' : '历史日期只读' }}
+              <span>{{
+                cell.isEditable ? '点击编辑奖励' : '历史日期只读'
+              }}</span>
+              <el-button
+                v-if="isMonthSignedUserQueryDateVisible(cell)"
+                link
+                size="small"
+                type="primary"
+                @click.stop="openSignedUserQuery(cell.date)"
+              >
+                已签用户
+              </el-button>
             </div>
-          </button>
+          </div>
         </div>
       </template>
     </el-card>
@@ -1063,6 +1102,8 @@ onMounted(async () => {
         </div>
       </div>
     </PatternOverviewDrawer>
+
+    <SignedUserQueryModal />
   </div>
 </template>
 

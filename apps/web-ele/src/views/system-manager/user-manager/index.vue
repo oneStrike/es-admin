@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { SystemUserRow } from './model/shared';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { SystemUserCreateRequest, UpdateUserDto } from '#/api/types';
 
@@ -29,7 +31,6 @@ import {
   userFilter,
   userRoleObj,
 } from './model/shared';
-import type { SystemUserRow } from './model/shared';
 
 const userStore = useUserStore();
 

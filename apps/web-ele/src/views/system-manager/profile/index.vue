@@ -35,7 +35,7 @@ type SystemUserProfile = AdminUserResponseDto & {
 
 const userStore = useUserStore();
 // 用户信息
-const userInfo = ref<SystemUserProfile | null>(null);
+const userInfo = ref<null | SystemUserProfile>(null);
 const loading = ref(false);
 
 // 登录历史表格配置

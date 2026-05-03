@@ -54,6 +54,7 @@ export const formSchemaTransform: FormSchemaTransform = {
   toTableColumns: (schema, extra) => {
     const innerSchema = cloneDeep(schema);
     const extraConfig = { ...extra } as ColumnItemExtra<any>;
+    const consumedExtraKeys = new Set<string>();
 
     const columnsWithSort: Array<
       VxeGridPropTypes.Columns<any>[number] & {
@@ -63,7 +64,7 @@ export const formSchemaTransform: FormSchemaTransform = {
 
     innerSchema.forEach((item, idx) => {
       const itemExtra = extraConfig[item.fieldName];
-      delete extraConfig[item.fieldName];
+      consumedExtraKeys.add(item.fieldName);
       if (!item.hide && item.component !== 'Divider' && !itemExtra?.hide) {
         columnsWithSort.push({
           title: item.label as string,
@@ -128,7 +129,12 @@ export const formSchemaTransform: FormSchemaTransform = {
     if (Object.keys(extraConfig).length > 0) {
       Object.keys(extraConfig).forEach((key) => {
         const item = extraConfig[key];
-        if (!['createdAt', 'seq'].includes(key) && item && !item.hide) {
+        if (
+          !consumedExtraKeys.has(key) &&
+          !['createdAt', 'seq'].includes(key) &&
+          item &&
+          !item.hide
+        ) {
           columnsWithSort.push({
             ...item,
             field: key,
