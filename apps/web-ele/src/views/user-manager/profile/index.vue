@@ -150,10 +150,20 @@ async function toggleUserEnabled(row: AdminAppUserPageItemDto) {
 }
 
 function openDetailModal(row: AdminAppUserPageItemDto) {
+  if (row.deletedAt) {
+    useMessage.warning('已删除用户不能查看详情');
+    return;
+  }
+
   detailApi.setData({ recordId: row.id }).open();
 }
 
 function openOperationModal(row: AdminAppUserPageItemDto) {
+  if (row.deletedAt) {
+    useMessage.warning('已删除用户不能打开运营');
+    return;
+  }
+
   operationApi
     .setData({
       isSuperAdmin: isSuperAdmin.value,
@@ -210,7 +220,7 @@ function openStatusModal(row: AdminAppUserPageItemDto) {
   }
 
   if (row.deletedAt) {
-    useMessage.warning('已删除用户不能调整社区状态');
+    useMessage.warning('已删除用户不能调整用户状态');
     return;
   }
 
@@ -223,7 +233,7 @@ function openStatusModal(row: AdminAppUserPageItemDto) {
         id: row.id,
         status: row.status,
       },
-      title: '社区状态',
+      title: '用户状态',
       width: 700,
     })
     .open();
@@ -339,7 +349,7 @@ async function handleStatusSubmit(values: AppUsersUpdateStatusRequest) {
     status: values.status,
   });
 
-  useMessage.success('社区状态更新成功');
+  useMessage.success('用户状态更新成功');
   statusFormApi.close();
   await gridApi.reload();
 }
@@ -454,13 +464,23 @@ function mapDetailToEditRecord(
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button link type="primary" @click="openDetailModal(row)">
+        <div class="flex items-center justify-center">
+          <el-button
+            link
+            type="primary"
+            :disabled="!!row.deletedAt"
+            @click="openDetailModal(row)"
+          >
             详情
           </el-button>
 
           <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openOperationModal(row)">
+          <el-button
+            link
+            type="primary"
+            :disabled="!!row.deletedAt"
+            @click="openOperationModal(row)"
+          >
             运营
           </el-button>
 
@@ -496,7 +516,7 @@ function mapDetailToEditRecord(
                     command="status"
                     :disabled="!isSuperAdmin"
                   >
-                    社区状态
+                    用户状态
                   </el-dropdown-item>
                   <el-dropdown-item
                     v-if="!row.deletedAt"

@@ -8,7 +8,6 @@ const loginLogTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'username', label: '用户名' },
   { component: 'Input', fieldName: 'ip', label: '登录IP' },
   { component: 'Input', fieldName: 'userAgent', label: '用户代理' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '登录时间' },
   { component: 'Select', fieldName: 'isSuccess', label: '登录结果' },
   { component: 'Input', fieldName: 'content', label: '日志内容' },
 ];
@@ -34,6 +33,7 @@ export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
     createdAt: {
       formatter: ({ cellValue }) => formatUTC(cellValue),
       sortable: true,
+      title: '登录时间',
       width: 160,
     },
     isSuccess: {

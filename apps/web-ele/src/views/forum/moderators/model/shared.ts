@@ -276,8 +276,6 @@ const moderatorTableSchema: EsFormSchema = [
   { component: 'Select', fieldName: 'sections', label: '管理板块' },
   { component: 'Select', fieldName: 'permissionNames', label: '权限' },
   { component: 'RadioGroup', fieldName: 'isEnabled', label: '启用状态' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
-  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
 
 export const moderatorColumns =

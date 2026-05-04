@@ -51,7 +51,6 @@ const userTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'userId', label: '用户ID' },
   { component: 'Input', fieldName: 'nickname', label: '昵称' },
   { component: 'Input', fieldName: 'level', label: '等级' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '获得时间' },
 ];
 
 const userColumns = formSchemaTransform.toTableColumns<BadgeUserPageItemDto>(
@@ -74,6 +73,7 @@ const userColumns = formSchemaTransform.toTableColumns<BadgeUserPageItemDto>(
         name: 'CellDate',
       },
       minWidth: 160,
+      title: '获得时间',
     },
   },
 );

@@ -2,7 +2,6 @@
 import type {
   AdminAppUserDetailDto,
   AdminAppUserExperienceRecordDto,
-  AdminAppUserExperienceStatsDto,
   AdminAppUserPageItemDto,
   AdminAppUserPointRecordDto,
   AppUsersExperienceGrantRequest,
@@ -10,7 +9,6 @@ import type {
   AppUsersPointsGrantRequest,
   BaseUserBadgeDto,
   UserBadgeItemDto,
-  UserPointStatsFieldsDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -27,11 +25,9 @@ import {
   appUsersDetailApi,
   appUsersExperienceGrantApi,
   appUsersExperienceRecordPageApi,
-  appUsersExperienceStatsApi,
   appUsersPointsConsumeApi,
   appUsersPointsGrantApi,
   appUsersPointsRecordPageApi,
-  appUsersPointsStatsApi,
   growthBadgesPageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
@@ -61,23 +57,27 @@ const activeTab = ref('points');
 const currentUser = ref<AdminAppUserPageItemDto | null>(null);
 const loading = ref(false);
 const userDetail = ref<AdminAppUserDetailDto | null>(null);
-const pointStats = ref<null | UserPointStatsFieldsDto>(null);
-const experienceStats = ref<AdminAppUserExperienceStatsDto | null>(null);
 const sharedData = ref<null | OperationModalData>(null);
 const pointsGrantOperationKey = ref('');
 const pointsConsumeOperationKey = ref('');
 const experienceGrantOperationKey = ref('');
 
+const displayUser = computed(() => userDetail.value ?? currentUser.value);
+const displayUserLabel = computed(() => {
+  const user = displayUser.value;
+  return user ? user.nickname || user.account : '';
+});
+
 const canOperate = computed(() => {
-  return !!sharedData.value?.isSuperAdmin && !currentUser.value?.deletedAt;
+  return !!sharedData.value?.isSuperAdmin && !displayUser.value?.deletedAt;
 });
 
 const modalTitle = computed(() => {
-  if (!currentUser.value) {
+  if (!displayUserLabel.value) {
     return '用户运营';
   }
 
-  return `用户运营 - ${currentUser.value.nickname || currentUser.value.account}`;
+  return `用户运营 - ${displayUserLabel.value}`;
 });
 
 const pointRecordSearchSchema: EsFormSchema = [
@@ -289,7 +289,6 @@ const experienceGrantFormSchema: EsFormSchema = [
 ];
 
 const pointRecordTableSchema: EsFormSchema = [
-  { component: 'DatePicker', fieldName: 'createdAt', label: '操作时间' },
   { component: 'InputNumber', fieldName: 'points', label: '积分变化' },
   { component: 'InputNumber', fieldName: 'beforePoints', label: '变化前' },
   { component: 'InputNumber', fieldName: 'afterPoints', label: '变化后' },
@@ -310,6 +309,7 @@ const pointRecordColumns =
           name: 'CellDate',
         },
         minWidth: 170,
+        title: '操作时间',
       },
       points: {
         formatter: undefined,
@@ -341,7 +341,6 @@ const pointRecordColumns =
   );
 
 const experienceRecordTableSchema: EsFormSchema = [
-  { component: 'DatePicker', fieldName: 'createdAt', label: '操作时间' },
   { component: 'InputNumber', fieldName: 'experience', label: '经验变化' },
   {
     component: 'InputNumber',
@@ -364,6 +363,7 @@ const experienceRecordColumns =
           name: 'CellDate',
         },
         minWidth: 170,
+        title: '操作时间',
       },
       experience: {
         formatter: undefined,
@@ -388,7 +388,6 @@ const experienceRecordColumns =
 
 const userBadgeTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'badge', label: '徽章信息' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '获得时间' },
 ];
 
 const userBadgeColumns = formSchemaTransform.toTableColumns<UserBadgeItemDto>(
@@ -407,6 +406,7 @@ const userBadgeColumns = formSchemaTransform.toTableColumns<UserBadgeItemDto>(
         name: 'CellDate',
       },
       minWidth: 170,
+      title: '获得时间',
     },
     actions: {
       show: true,
@@ -591,12 +591,16 @@ const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen) {
     if (isOpen) {
       sharedData.value = modalApi.getData<OperationModalData>();
+      userDetail.value = null;
       currentUser.value = sharedData.value?.record ?? null;
       activeTab.value = 'points';
       modalApi.setState({
         title: modalTitle.value,
       });
       void refreshAll();
+    } else {
+      userDetail.value = null;
+      currentUser.value = null;
     }
   },
   onOpened() {
@@ -626,29 +630,16 @@ async function refreshUserDetail() {
   loading.value = true;
   try {
     userDetail.value = await appUsersDetailApi({ id: currentUser.value.id });
+    modalApi.setState({
+      title: modalTitle.value,
+    });
   } finally {
     loading.value = false;
   }
 }
 
-async function refreshStats() {
-  if (!currentUser.value) {
-    pointStats.value = null;
-    experienceStats.value = null;
-    return;
-  }
-
-  const [nextPointStats, nextExperienceStats] = await Promise.all([
-    appUsersPointsStatsApi({ userId: currentUser.value.id }),
-    appUsersExperienceStatsApi({ userId: currentUser.value.id }),
-  ]);
-
-  pointStats.value = nextPointStats;
-  experienceStats.value = nextExperienceStats;
-}
-
 async function refreshAll() {
-  await Promise.all([refreshUserDetail(), refreshStats()]);
+  await refreshUserDetail();
   await Promise.all([
     pointGridApi.reload(),
     experienceGridApi.reload(),
@@ -731,7 +722,7 @@ function openAssignBadgeModal() {
       multipleLimit: 20,
       searchSchema: createSearchFormOptions(badgeSearchSchema),
       selectionMode: 'multiple',
-      title: `分配徽章 - ${currentUser.value.nickname || currentUser.value.account}`,
+      title: `分配徽章 - ${displayUserLabel.value}`,
     })
     .open();
 }
@@ -846,43 +837,76 @@ async function revokeBadge(row: Record<string, any>) {
   >
     <div v-loading="loading" class="user-operation-modal__body">
       <div
-        v-if="currentUser && userDetail"
+        v-if="displayUser && userDetail"
         class="user-operation-modal__summary rounded-lg border border-border bg-background p-4"
       >
         <div
           class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
         >
-          <div class="flex items-center gap-4">
-            <el-avatar :size="64" :src="currentUser.avatarUrl || undefined">
-              {{
-                (currentUser.nickname || currentUser.account)
-                  ?.slice(0, 1)
-                  ?.toUpperCase()
-              }}
-            </el-avatar>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-lg font-semibold text-foreground">
-                  {{ currentUser.nickname || currentUser.account }}
-                </span>
-                <el-tag
-                  :type="userStatusMap[currentUser.status]?.tagType || 'info'"
-                >
-                  {{ getUserStatusText(currentUser.status) }}
-                </el-tag>
-                <el-tag :type="currentUser.isEnabled ? 'success' : 'danger'">
-                  {{ currentUser.isEnabled ? '启用' : '禁用' }}
-                </el-tag>
-                <el-tag v-if="currentUser.deletedAt" type="danger">
-                  已删除
-                </el-tag>
+          <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:gap-6">
+            <div class="flex min-w-0 items-center gap-4">
+              <el-avatar :size="64" :src="displayUser.avatarUrl || undefined">
+                {{
+                  (displayUser.nickname || displayUser.account)
+                    ?.slice(0, 1)
+                    ?.toUpperCase()
+                }}
+              </el-avatar>
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-lg font-semibold text-foreground">
+                    {{ displayUser.nickname || displayUser.account }}
+                  </span>
+                  <el-tag
+                    :type="userStatusMap[displayUser.status]?.tagType || 'info'"
+                  >
+                    {{ getUserStatusText(displayUser.status) }}
+                  </el-tag>
+                  <el-tag :type="displayUser.isEnabled ? 'success' : 'danger'">
+                    {{ displayUser.isEnabled ? '启用' : '禁用' }}
+                  </el-tag>
+                  <el-tag v-if="displayUser.deletedAt" type="danger">
+                    已删除
+                  </el-tag>
+                </div>
+                <div class="mt-2 text-sm text-muted-foreground">
+                  账号：{{ displayUser.account }}
+                </div>
+                <div class="mt-1 text-sm text-muted-foreground">
+                  最后登录：{{ displayUser.lastLoginAt || '-' }}
+                </div>
               </div>
-              <div class="mt-2 text-sm text-muted-foreground">
-                账号：{{ currentUser.account }}
-              </div>
-              <div class="mt-1 text-sm text-muted-foreground">
-                最后登录：{{ currentUser.lastLoginAt || '-' }}
-              </div>
+            </div>
+
+            <div v-if="canOperate" class="flex flex-wrap gap-2">
+              <el-button
+                class="!ml-0"
+                type="primary"
+                @click="openPointsGrantModal"
+              >
+                增加积分
+              </el-button>
+              <el-button
+                class="!ml-0"
+                type="warning"
+                @click="openPointsConsumeModal"
+              >
+                扣减积分
+              </el-button>
+              <el-button
+                class="!ml-0"
+                type="primary"
+                @click="openExperienceGrantModal"
+              >
+                增加经验
+              </el-button>
+              <el-button
+                class="!ml-0"
+                type="primary"
+                @click="openAssignBadgeModal"
+              >
+                分配徽章
+              </el-button>
             </div>
           </div>
 
@@ -890,21 +914,22 @@ async function revokeBadge(row: Record<string, any>) {
             <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
               <div class="text-xs text-muted-foreground">当前积分</div>
               <div class="mt-1 text-lg font-semibold">
-                {{ pointStats?.currentPoints ?? userDetail.points }}
+                {{ userDetail.pointStats?.currentPoints ?? userDetail.points }}
               </div>
             </div>
             <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
               <div class="text-xs text-muted-foreground">当前经验</div>
               <div class="mt-1 text-lg font-semibold">
                 {{
-                  experienceStats?.currentExperience ?? userDetail.experience
+                  userDetail.experienceStats?.currentExperience ??
+                  userDetail.experience
                 }}
               </div>
             </div>
             <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
               <div class="text-xs text-muted-foreground">今日积分</div>
               <div class="mt-1 text-lg font-semibold">
-                {{ pointStats?.todayEarned ?? 0 }}
+                {{ userDetail.pointStats?.todayEarned ?? 0 }}
               </div>
             </div>
             <div class="rounded-md bg-muted/50 px-4 py-3 text-center">
@@ -934,18 +959,6 @@ async function revokeBadge(row: Record<string, any>) {
       <el-tabs v-model="activeTab" class="user-operation-modal__tabs">
         <el-tab-pane label="积分记录" name="points">
           <div class="user-operation-modal__tab-pane">
-            <div
-              v-if="canOperate"
-              class="user-operation-modal__tab-actions flex justify-end gap-2"
-            >
-              <el-button type="primary" @click="openPointsGrantModal">
-                增加积分
-              </el-button>
-              <el-button type="warning" @click="openPointsConsumeModal">
-                扣减积分
-              </el-button>
-            </div>
-
             <PointGrid class="user-operation-modal__grid">
               <template #pointsDelta="{ row }">
                 <el-text :type="row.points >= 0 ? 'success' : 'danger'">
@@ -958,15 +971,6 @@ async function revokeBadge(row: Record<string, any>) {
 
         <el-tab-pane label="经验记录" name="experience">
           <div class="user-operation-modal__tab-pane">
-            <div
-              v-if="canOperate"
-              class="user-operation-modal__tab-actions flex justify-end gap-2"
-            >
-              <el-button type="primary" @click="openExperienceGrantModal">
-                增加经验
-              </el-button>
-            </div>
-
             <ExperienceGrid class="user-operation-modal__grid">
               <template #experienceDelta="{ row }">
                 <el-text :type="row.experience >= 0 ? 'success' : 'danger'">
@@ -981,15 +985,6 @@ async function revokeBadge(row: Record<string, any>) {
 
         <el-tab-pane label="用户徽章" name="badges">
           <div class="user-operation-modal__tab-pane">
-            <div
-              v-if="canOperate"
-              class="user-operation-modal__tab-actions flex justify-end gap-2"
-            >
-              <el-button type="primary" @click="openAssignBadgeModal">
-                分配徽章
-              </el-button>
-            </div>
-
             <BadgeGrid class="user-operation-modal__grid">
               <template #badgeInfo="{ row }">
                 <div class="flex items-center gap-3 text-left">
@@ -1085,18 +1080,11 @@ async function revokeBadge(row: Record<string, any>) {
 
   &__tab-pane {
     display: grid;
-    grid-template-areas:
-      'actions'
-      'grid';
-    grid-template-rows: auto minmax(0, 1fr);
-    gap: 0.75rem;
+    grid-template-areas: 'grid';
+    grid-template-rows: minmax(0, 1fr);
     height: 100%;
     min-height: 0;
     overflow: hidden;
-  }
-
-  &__tab-actions {
-    grid-area: actions;
   }
 
   &__grid {

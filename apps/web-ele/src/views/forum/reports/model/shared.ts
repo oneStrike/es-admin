@@ -423,8 +423,6 @@ const pageTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'description', label: '举报说明' },
   { component: 'Input', fieldName: 'handlerSummary', label: '处理人' },
   { component: 'Input', fieldName: 'evidenceUrl', label: '证据' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
-  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
 
 export const pageColumns =

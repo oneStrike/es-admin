@@ -88,7 +88,6 @@ const taskReconciliationTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'latestEvent', label: '最近事件' },
   { component: 'DatePicker', fieldName: 'claimedAt', label: '领取时间' },
   { component: 'DatePicker', fieldName: 'completedAt', label: '完成时间' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
 ];
 
 export const taskReconciliationColumns =

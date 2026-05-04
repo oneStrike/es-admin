@@ -158,7 +158,7 @@ export const searchFormSchema: EsFormSchema = [
     componentProps: {
       clearable: true,
       options: userStatusOptions,
-      placeholder: '社区状态',
+      placeholder: '用户状态',
     },
   },
   {
@@ -299,11 +299,11 @@ export const createFormSchema: EsFormSchema = [
   {
     component: 'Select',
     fieldName: 'status',
-    label: '社区状态',
+    label: '用户状态',
     defaultValue: normalUserStatus as CreateUserStatusValue,
     componentProps: {
       options: userStatusOptions,
-      placeholder: '请选择社区状态',
+      placeholder: '请选择用户状态',
     },
   },
 ];
@@ -416,11 +416,11 @@ export const statusFormSchema: EsFormSchema = [
   {
     component: 'Select',
     fieldName: 'status',
-    label: '社区状态',
-    rules: z.number().min(1, '请选择社区状态'),
+    label: '用户状态',
+    rules: z.number().min(1, '请选择用户状态'),
     componentProps: {
       options: userStatusOptions,
-      placeholder: '请选择社区状态',
+      placeholder: '请选择用户状态',
     },
   },
   {
@@ -463,11 +463,10 @@ const userTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'topicCount', label: '主题数' },
   { component: 'InputNumber', fieldName: 'replyCount', label: '回复数' },
   { component: 'Switch', fieldName: 'isEnabled', label: '启用状态' },
-  { component: 'Select', fieldName: 'status', label: '社区状态' },
+  { component: 'Select', fieldName: 'status', label: '用户状态' },
   { component: 'DatePicker', fieldName: 'banUntil', label: '状态截止' },
   { component: 'DatePicker', fieldName: 'lastLoginAt', label: '最后登录' },
   { component: 'Input', fieldName: 'lastLoginIp', label: '登录 IP' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '注册时间' },
   { component: 'DatePicker', fieldName: 'deletedAt', label: '删除时间' },
 ];
 
@@ -557,6 +556,7 @@ export const userColumns =
         cellValue ? formatUTC(cellValue, 'YYYY-MM-DD HH:mm:ss') : '-',
       minWidth: 170,
       sortable: true,
+      title: '注册时间',
     },
     deletedAt: {
       formatter: ({ cellValue }) =>
@@ -566,6 +566,6 @@ export const userColumns =
     actions: {
       show: true,
       slots: { default: 'actions' },
-      width: 260,
+      width: 180,
     },
   });

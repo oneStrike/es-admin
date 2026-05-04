@@ -139,8 +139,6 @@ const templateTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'contentTemplate', label: '正文模板' },
   { component: 'RadioGroup', fieldName: 'isEnabled', label: '启用状态' },
   { component: 'Input', fieldName: 'remark', label: '备注' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
-  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
 
 export const pageColumns =

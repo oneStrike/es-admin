@@ -414,8 +414,6 @@ const topicTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'commentCount', label: '评论数' },
   { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },
   { component: 'InputNumber', fieldName: 'favoriteCount', label: '收藏数' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
-  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
 
 export const topicColumns =

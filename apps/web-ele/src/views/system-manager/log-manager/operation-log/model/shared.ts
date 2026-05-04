@@ -45,7 +45,6 @@ const operationLogTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'device', label: '设备信息' },
   { component: 'Input', fieldName: 'params', label: '请求参数' },
   { component: 'Input', fieldName: 'content', label: '日志内容' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '操作时间' },
 ];
 
 export const operationLogColumns =
@@ -131,6 +130,7 @@ export const operationLogColumns =
       fixed: 'right',
       formatter: ({ cellValue }) => formatUTC(cellValue),
       sortable: true,
+      title: '操作时间',
       width: 160,
     },
   });

@@ -121,7 +121,6 @@ const applicationTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'reason', label: '申请理由' },
   { component: 'Select', fieldName: 'status', label: '审核状态' },
   { component: 'Input', fieldName: 'auditReason', label: '审核意见' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '申请时间' },
   { component: 'DatePicker', fieldName: 'auditAt', label: '审核时间' },
 ];
 
@@ -175,6 +174,7 @@ export const applicationColumns =
         },
         minWidth: 160,
         sortable: true,
+        title: '申请时间',
       },
       auditAt: {
         cellRender: {

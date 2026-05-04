@@ -1,7 +1,7 @@
 /**
  *  类型定义 [CommentPageRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type CommentPageRequest = {
   /** 任意合法数值 */
@@ -70,7 +70,7 @@ export type CommentPageResponse = {
 /**
  *  类型定义 [CommentDetailRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type CommentDetailRequest = {
   /** 任意合法数值 */
@@ -85,7 +85,7 @@ export type CommentDetailResponse = AdminCommentDetailDto;
 /**
  *  类型定义 [CommentUpdateAuditStatusRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type CommentUpdateAuditStatusRequest = UpdateCommentAuditStatusDto;
 
@@ -94,7 +94,7 @@ export type CommentUpdateAuditStatusResponse = boolean;
 /**
  *  类型定义 [CommentUpdateHiddenRequest]
  *  @来源 内容治理/评论处理
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type CommentUpdateHiddenRequest = UpdateCommentHiddenDto;
 
@@ -103,7 +103,7 @@ export type CommentUpdateHiddenResponse = boolean;
 /**
  *  类型定义 [AdminCommentPageItemDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type AdminCommentPageItemDto = {
   /** 任意合法数值 */
@@ -156,7 +156,7 @@ export type AdminCommentPageItemDto = {
 /**
  *  类型定义 [SensitiveWordHitDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type SensitiveWordHitDto = {
   /** 任意合法数值 */
@@ -181,7 +181,7 @@ export type SensitiveWordHitDto = {
 /**
  *  类型定义 [AdminCommentUserDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type AdminCommentUserDto = {
   /** 任意合法数值 */
@@ -202,7 +202,7 @@ export type AdminCommentUserDto = {
 /**
  *  类型定义 [InteractionCommentTargetSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type InteractionCommentTargetSummaryDto = {
   /** 任意合法数值 */
@@ -233,7 +233,7 @@ export type InteractionCommentTargetSummaryDto = {
 /**
  *  类型定义 [InteractionReplyCommentSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type InteractionReplyCommentSummaryDto = {
   /** 任意合法数值 */
@@ -260,7 +260,7 @@ export type InteractionReplyCommentSummaryDto = {
 /**
  *  类型定义 [AdminCommentDetailDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type AdminCommentDetailDto = {
   /** 任意合法数值 */
@@ -315,7 +315,7 @@ export type AdminCommentDetailDto = {
 /**
  *  类型定义 [InteractionActorSummaryDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type InteractionActorSummaryDto = {
   /** 任意合法数值 */
@@ -336,7 +336,7 @@ export type InteractionActorSummaryDto = {
 /**
  *  类型定义 [AdminCommentReplyTargetDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type AdminCommentReplyTargetDto = {
   /** 任意合法数值 */
@@ -365,7 +365,7 @@ export type AdminCommentReplyTargetDto = {
 /**
  *  类型定义 [UpdateCommentAuditStatusDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type UpdateCommentAuditStatusDto = {
   /** 任意合法数值 */
@@ -382,7 +382,7 @@ export type UpdateCommentAuditStatusDto = {
 /**
  *  类型定义 [UpdateCommentHiddenDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-03 14:46:16
+ *  @更新时间 2026-05-04 17:53:36
  */
 export type UpdateCommentHiddenDto = {
   /** 任意合法数值 */

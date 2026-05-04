@@ -336,8 +336,6 @@ const pageTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },
   { component: 'InputNumber', fieldName: 'floor', label: '楼层' },
   { component: 'Input', fieldName: 'sensitiveWordHits', label: '敏感词' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
-  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
 
 export const pageColumns =

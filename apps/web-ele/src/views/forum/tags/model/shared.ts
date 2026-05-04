@@ -193,8 +193,6 @@ const pageTableSchema: EsFormSchema = [
     fieldName: 'lastReferencedAt',
     label: '最近引用时间',
   },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
-  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
 
 export const pageColumns =

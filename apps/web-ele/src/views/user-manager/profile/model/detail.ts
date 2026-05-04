@@ -50,7 +50,7 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
           tagType: detail.isEnabled ? 'success' : 'danger',
         },
         {
-          label: '社区状态',
+          label: '用户状态',
           value: detail.status,
           type: 'tag' as const,
           tagText: getUserStatusText(detail.status),

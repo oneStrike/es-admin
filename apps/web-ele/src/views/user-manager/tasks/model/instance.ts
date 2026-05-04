@@ -83,8 +83,6 @@ const taskInstanceTableSchema: EsFormSchema = [
   { component: 'DatePicker', fieldName: 'claimedAt', label: '领取时间' },
   { component: 'DatePicker', fieldName: 'completedAt', label: '完成时间' },
   { component: 'DatePicker', fieldName: 'expiredAt', label: '过期时间' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '创建时间' },
-  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
 
 export const taskInstanceColumns =

@@ -310,7 +310,6 @@ const taskDefinitionTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'sortOrder', label: '排序值' },
   { component: 'DatePicker', fieldName: 'startAt', label: '开始时间' },
   { component: 'DatePicker', fieldName: 'endAt', label: '结束时间' },
-  { component: 'DatePicker', fieldName: 'updatedAt', label: '更新时间' },
 ];
 
 export const taskDefinitionColumns =

@@ -6,7 +6,6 @@ import { formatUTC, formSchemaTransform } from '#/utils';
 const loginHistoryTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'ip', label: '登录IP' },
   { component: 'Input', fieldName: 'device', label: '浏览器' },
-  { component: 'DatePicker', fieldName: 'createdAt', label: '登录时间' },
   { component: 'Select', fieldName: 'isSuccess', label: '登录结果' },
 ];
 
@@ -24,6 +23,7 @@ export const loginHistortColumn =
     },
     createdAt: {
       formatter: ({ cellValue }) => formatUTC(cellValue),
+      title: '登录时间',
       width: 160,
     },
     isSuccess: {
