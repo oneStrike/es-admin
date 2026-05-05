@@ -143,10 +143,30 @@ async function toggleIsRecommendedStatus(
  */
 type AuthorFormValues = CreateAuthorDto | UpdateAuthorDto;
 
+function buildAuthorPayload(
+  values: AuthorFormValues,
+): CreateAuthorDto | UpdateAuthorDto {
+  const payload = {
+    avatar: values.avatar,
+    name: values.name,
+    gender: values.gender,
+    nationality: values.nationality,
+    type: values.type,
+    description: values.description,
+    remark: values.remark,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateAuthorDto)
+    : (payload as CreateAuthorDto);
+}
+
 async function addOrUpdateAuthor(values: AuthorFormValues): Promise<void> {
-  await (values.id
-    ? contentAuthorUpdateApi(values as UpdateAuthorDto)
-    : contentAuthorCreateApi(values as CreateAuthorDto));
+  const payload = buildAuthorPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? contentAuthorUpdateApi(payload as UpdateAuthorDto)
+    : contentAuthorCreateApi(payload as CreateAuthorDto));
   useMessage.success('操作成功');
   await gridApi.reload();
 }
@@ -234,7 +254,7 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
     <DetailModal
       :api="contentAuthorDetailApi"
       :cards="getDetailCards"
-      class="!min-w-[800px]"
+      class="min-w-[800px]"
     />
   </Page>
 </template>

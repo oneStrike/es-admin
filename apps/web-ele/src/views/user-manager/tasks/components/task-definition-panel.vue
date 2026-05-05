@@ -373,7 +373,7 @@ onMounted(async () => {
     <DetailModal
       :api="taskDetailApi"
       :cards="getTaskDefinitionDetailCards"
-      class="!w-[980px]"
+      class="w-[980px]"
     />
   </div>
 </template>

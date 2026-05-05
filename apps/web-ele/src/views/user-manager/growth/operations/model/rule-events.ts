@@ -25,6 +25,35 @@ type RuleEventsSearchValues = GrowthRuleEventsPageRequest & {
   dateRange?: string[];
 };
 
+type RuleEventsSchemaField = EsFormSchema[number];
+
+const ruleEventsFieldCatalog = {
+  isImplemented: {
+    component: 'Select',
+    fieldName: 'isImplemented',
+    label: '是否已实现',
+  },
+} satisfies Record<string, RuleEventsSchemaField>;
+
+function createRuleEventsField(
+  field: keyof typeof ruleEventsFieldCatalog,
+  overrides: Partial<RuleEventsSchemaField> = {},
+): RuleEventsSchemaField {
+  const base = ruleEventsFieldCatalog[field] as RuleEventsSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
 export const ruleEventsSearchFormSchema: EsFormSchema = [
   {
     component: 'Select',
@@ -57,16 +86,13 @@ export const ruleEventsSearchFormSchema: EsFormSchema = [
     fieldName: 'hasTask',
     label: '是否有关联任务',
   },
-  {
-    component: 'Select',
+  createRuleEventsField('isImplemented', {
     componentProps: {
       clearable: true,
       options: booleanOptions,
       placeholder: '是否已实现',
     },
-    fieldName: 'isImplemented',
-    label: '是否已实现',
-  },
+  }),
   {
     component: 'DatePicker',
     componentProps: {
@@ -86,7 +112,7 @@ const ruleEventsTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'eventName', label: '事件名称' },
   { component: 'Select', fieldName: 'domain', label: '事件域' },
   { component: 'Select', fieldName: 'implStatus', label: '实现状态' },
-  { component: 'Select', fieldName: 'isImplemented', label: '接入状态' },
+  createRuleEventsField('isImplemented', { label: '接入状态' }),
   { component: 'Select', fieldName: 'governanceGate', label: '治理门禁' },
   { component: 'Input', fieldName: 'rewardPolicy', label: '奖励策略' },
   { component: 'Input', fieldName: 'assetRules', label: '资产规则' },

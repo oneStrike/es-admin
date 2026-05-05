@@ -3,12 +3,56 @@ import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';
 
+const loginResultOptions = [
+  { label: '成功', value: true },
+  { label: '失败', value: false },
+];
+
+type LoginLogSchemaField = EsFormSchema[number];
+
+const loginLogFieldCatalog = {
+  ip: {
+    component: 'Input',
+    fieldName: 'ip',
+    label: '登录IP',
+  },
+  isSuccess: {
+    component: 'Select',
+    fieldName: 'isSuccess',
+    label: '登录结果',
+  },
+  username: {
+    component: 'Input',
+    fieldName: 'username',
+    label: '用户名',
+  },
+} satisfies Record<string, LoginLogSchemaField>;
+
+function createLoginLogField(
+  field: keyof typeof loginLogFieldCatalog,
+  overrides: Partial<LoginLogSchemaField> = {},
+): LoginLogSchemaField {
+  const base = loginLogFieldCatalog[field] as LoginLogSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
 // 登录日志表格列配置
 const loginLogTableSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'username', label: '用户名' },
-  { component: 'Input', fieldName: 'ip', label: '登录IP' },
+  createLoginLogField('username'),
+  createLoginLogField('ip'),
   { component: 'Input', fieldName: 'userAgent', label: '用户代理' },
-  { component: 'Select', fieldName: 'isSuccess', label: '登录结果' },
+  createLoginLogField('isSuccess'),
   { component: 'Input', fieldName: 'content', label: '日志内容' },
 ];
 
@@ -51,34 +95,25 @@ export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
 
 // 搜索表单配置
 export const searchFormSchema: EsFormSchema = [
-  {
-    component: 'Input',
-    fieldName: 'username',
+  createLoginLogField('username', {
     componentProps: {
       placeholder: '用户名',
       clearable: true,
     },
-  },
-  {
-    component: 'Input',
-    fieldName: 'ip',
+  }),
+  createLoginLogField('ip', {
     componentProps: {
       placeholder: 'IP地址',
       clearable: true,
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'isSuccess',
+  }),
+  createLoginLogField('isSuccess', {
     componentProps: {
       placeholder: '登录结果',
       clearable: true,
-      options: [
-        { label: '成功', value: true },
-        { label: '失败', value: false },
-      ],
+      options: loginResultOptions,
     },
-  },
+  }),
   {
     component: 'DatePicker',
     fieldName: 'dateRange',

@@ -24,33 +24,71 @@ export type TaskDefinitionRow = AdminTaskDefinitionListItemDto & {
   statusLoading?: boolean;
 };
 
-export const definitionSearchFormSchema: EsFormSchema = [
-  {
+type TaskDefinitionSchemaField = EsFormSchema[number];
+
+const taskDefinitionFieldCatalog = {
+  sceneType: {
+    component: 'Select',
+    fieldName: 'sceneType',
+    label: '任务场景',
+  },
+  status: {
+    component: 'RadioGroup',
+    fieldName: 'status',
+    label: '任务状态',
+  },
+  title: {
     component: 'Input',
     fieldName: 'title',
+    label: '任务标题',
+  },
+} satisfies Record<string, TaskDefinitionSchemaField>;
+
+function withoutColorOptions<T extends { color?: unknown }>(options: T[]) {
+  return options.map(({ color: _color, ...rest }) => rest);
+}
+
+function createTaskDefinitionField(
+  field: keyof typeof taskDefinitionFieldCatalog,
+  overrides: Partial<TaskDefinitionSchemaField> = {},
+): TaskDefinitionSchemaField {
+  const base = taskDefinitionFieldCatalog[field] as TaskDefinitionSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
+export const definitionSearchFormSchema: EsFormSchema = [
+  createTaskDefinitionField('title', {
     componentProps: {
       clearable: true,
       placeholder: '任务标题',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'sceneType',
+  }),
+  createTaskDefinitionField('sceneType', {
     componentProps: {
       clearable: true,
       options: taskSceneTypeOptions,
       placeholder: '任务场景',
     },
-  },
-  {
+  }),
+  createTaskDefinitionField('status', {
     component: 'Select',
-    fieldName: 'status',
     componentProps: {
       clearable: true,
       options: taskDefinitionStatusOptions,
       placeholder: '任务状态',
     },
-  },
+  }),
   {
     component: 'DatePicker',
     fieldName: 'dateRange',
@@ -80,42 +118,31 @@ export function createTaskDefinitionFormSchema(
       fieldName: 'cover',
       label: '任务封面',
     },
-    {
-      component: 'Input',
+    createTaskDefinitionField('title', {
       componentProps: {
         maxlength: 80,
         placeholder: '请输入任务标题',
         showWordLimit: true,
       },
-      fieldName: 'title',
-      label: '任务标题',
       rules: 'required',
-    },
-    {
-      component: 'Select',
+    }),
+    createTaskDefinitionField('sceneType', {
       componentProps: {
         class: 'w-full',
         options: taskSceneTypeOptions,
         placeholder: '请选择任务场景',
       },
       defaultValue: 1,
-      fieldName: 'sceneType',
-      label: '任务场景',
       rules: 'required',
-    },
-    {
-      component: 'RadioGroup',
+    }),
+    createTaskDefinitionField('status', {
       componentProps: {
         class: 'w-full',
-        options: taskDefinitionStatusOptions.map(
-          ({ color: _color, ...rest }) => rest,
-        ),
+        options: withoutColorOptions(taskDefinitionStatusOptions),
       },
       defaultValue: 0,
-      fieldName: 'status',
-      label: '任务状态',
       rules: 'required',
-    },
+    }),
     {
       component: 'RadioGroup',
       componentProps: {
@@ -290,10 +317,10 @@ export function createTaskDefinitionFormSchema(
 
 const taskDefinitionTableSchema: EsFormSchema = [
   { component: 'Upload', fieldName: 'cover', label: '封面' },
-  { component: 'Input', fieldName: 'title', label: '任务标题' },
+  createTaskDefinitionField('title'),
   { component: 'Input', fieldName: 'code', label: '任务编码' },
-  { component: 'Select', fieldName: 'sceneType', label: '任务场景' },
-  { component: 'RadioGroup', fieldName: 'status', label: '任务状态' },
+  createTaskDefinitionField('sceneType'),
+  createTaskDefinitionField('status'),
   { component: 'RadioGroup', fieldName: 'claimMode', label: '领取方式' },
   { component: 'Select', fieldName: 'repeatType', label: '重复周期' },
   { component: 'InputNumber', fieldName: 'stepCount', label: '步骤数' },

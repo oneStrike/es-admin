@@ -25,17 +25,55 @@ export const applicationStatusMap = Object.fromEntries(
 
 export const sectionOptions: Array<{ label: string; value: number }> = [];
 
-export const searchFormSchema: EsFormSchema = [
-  {
+type ModeratorApplicationSchemaField = EsFormSchema[number];
+
+const moderatorApplicationFieldCatalog = {
+  auditReason: {
+    component: 'Input',
+    fieldName: 'auditReason',
+    label: '审核意见',
+  },
+  status: {
     component: 'Select',
     fieldName: 'status',
+    label: '审核状态',
+  },
+} satisfies Record<string, ModeratorApplicationSchemaField>;
+
+function withoutColorOptions<T extends { color?: unknown }>(options: T[]) {
+  return options.map(({ color: _color, ...rest }) => rest);
+}
+
+function createModeratorApplicationField(
+  field: keyof typeof moderatorApplicationFieldCatalog,
+  overrides: Partial<ModeratorApplicationSchemaField> = {},
+): ModeratorApplicationSchemaField {
+  const base = moderatorApplicationFieldCatalog[
+    field
+  ] as ModeratorApplicationSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
+export const searchFormSchema: EsFormSchema = [
+  createModeratorApplicationField('status', {
     defaultValue: 0,
     componentProps: {
       clearable: true,
       options: applicationStatusOptions,
       placeholder: '审核状态',
     },
-  },
+  }),
   {
     component: 'Input',
     fieldName: 'nickname',
@@ -78,21 +116,17 @@ export const searchFormSchema: EsFormSchema = [
 ];
 
 export const auditFormSchema: EsFormSchema = [
-  {
+  createModeratorApplicationField('status', {
     component: 'RadioGroup',
-    fieldName: 'status',
     label: '审核结果',
     rules: 'required',
     componentProps: {
       class: 'w-full',
-      options: auditStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: withoutColorOptions(auditStatusOptions),
       placeholder: '请选择审核结果',
     },
-  },
-  {
-    component: 'Input',
-    fieldName: 'auditReason',
-    label: '审核意见',
+  }),
+  createModeratorApplicationField('auditReason', {
     formItemClass: 'col-span-2',
     componentProps: {
       placeholder: '请输入审核意见；拒绝时建议说明原因',
@@ -100,7 +134,7 @@ export const auditFormSchema: EsFormSchema = [
       type: 'textarea',
     },
     help: '当审核结果为“已拒绝”时，建议填写拒绝原因',
-  },
+  }),
   {
     component: 'Input',
     fieldName: 'remark',
@@ -119,8 +153,8 @@ const applicationTableSchema: EsFormSchema = [
   { component: 'Select', fieldName: 'section', label: '申请板块' },
   { component: 'Select', fieldName: 'permissionNames', label: '申请权限' },
   { component: 'Input', fieldName: 'reason', label: '申请理由' },
-  { component: 'Select', fieldName: 'status', label: '审核状态' },
-  { component: 'Input', fieldName: 'auditReason', label: '审核意见' },
+  createModeratorApplicationField('status'),
+  createModeratorApplicationField('auditReason'),
   { component: 'DatePicker', fieldName: 'auditAt', label: '审核时间' },
 ];
 

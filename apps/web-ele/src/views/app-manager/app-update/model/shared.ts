@@ -1,6 +1,8 @@
 import type {
   AppUpdateReleaseDetailDto,
   AppUpdateReleaseListItemDto,
+  CreateAppUpdateReleaseDto,
+  UpdateAppUpdateReleaseDto,
   UploadResponseDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
@@ -462,74 +464,81 @@ export function mapAppUpdateDetailToFormValues(
 
 export function buildAppUpdateSubmitPayload(
   values: Record<string, any>,
-): Record<string, any> {
-  const payload = { ...values };
+): CreateAppUpdateReleaseDto | UpdateAppUpdateReleaseDto {
   const uploadedFile = normalizeUploadValue(
-    payload.packageUpload ?? payload.packageUrlUpload,
+    values.packageUpload ?? values.packageUrlUpload,
   );
   const popupBackgroundImageFile = normalizeUploadValue(
-    payload.popupBackgroundImageUpload,
+    values.popupBackgroundImageUpload,
   );
 
-  payload.releaseNotes = normalizeOptionalString(payload.releaseNotes);
+  const releaseNotes = normalizeOptionalString(values.releaseNotes);
+  let packageUrl: string | undefined;
+  let packageOriginalName: string | undefined;
+  let packageFileSize: number | undefined;
+  let packageMimeType: string | undefined;
 
   // 根据安装包来源处理 packageUrl
-  switch (payload.packageSourceType) {
+  switch (values.packageSourceType) {
     case 1: {
       // 后台上传
-      payload.packageUrl = resolvePackageUrl({
-        ...payload,
+      packageUrl = resolvePackageUrl({
+        packageUrl: values.packageUrl,
+        packageSourceType: values.packageSourceType,
+        packageUrlUpload: values.packageUrlUpload,
         packageUpload: uploadedFile,
       });
-      payload.packageOriginalName =
+      packageOriginalName =
         normalizeOptionalString(uploadedFile?.originalName) ||
         normalizeOptionalString(uploadedFile?.filename) ||
-        normalizeOptionalString(payload.packageOriginalName);
-      payload.packageFileSize =
-        uploadedFile?.fileSize ?? payload.packageFileSize ?? undefined;
-      payload.packageMimeType =
+        normalizeOptionalString(values.packageOriginalName);
+      packageFileSize = uploadedFile?.fileSize ?? values.packageFileSize;
+      packageMimeType =
         normalizeOptionalString(uploadedFile?.mimeType) ||
-        normalizeOptionalString(payload.packageMimeType);
+        normalizeOptionalString(values.packageMimeType);
       break;
     }
     case 2: {
       // 外部下载地址
-      payload.packageUrl = normalizeOptionalString(payload.packageUrl);
-      payload.packageOriginalName = undefined;
-      payload.packageFileSize = undefined;
-      payload.packageMimeType = undefined;
+      packageUrl = normalizeOptionalString(values.packageUrl);
       break;
     }
     case 3: {
       // 外部中转页
-      payload.packageUrl = normalizeOptionalString(payload.customPageUrl);
-      payload.packageOriginalName = undefined;
-      payload.packageFileSize = undefined;
-      payload.packageMimeType = undefined;
+      packageUrl = normalizeOptionalString(values.customPageUrl);
       break;
     }
   }
 
-  if (!payload.packageUrl) {
-    payload.packageOriginalName = undefined;
-    payload.packageFileSize = undefined;
-    payload.packageMimeType = undefined;
+  if (!packageUrl) {
+    packageOriginalName = undefined;
+    packageFileSize = undefined;
+    packageMimeType = undefined;
   }
 
   // 处理弹窗背景图
-  payload.popupBackgroundImage =
+  const popupBackgroundImage =
     normalizeOptionalString(popupBackgroundImageFile?.filePath) ||
-    normalizeOptionalString(payload.popupBackgroundImage);
+    normalizeOptionalString(values.popupBackgroundImage);
 
-  payload.popupBackgroundPosition = normalizeOptionalString(
-    payload.popupBackgroundPosition,
-  );
+  const payload = {
+    versionName: values.versionName,
+    buildCode: values.buildCode,
+    platform: values.platform,
+    forceUpdate: values.forceUpdate,
+    packageSourceType: values.packageSourceType,
+    packageUrl,
+    packageOriginalName,
+    packageFileSize,
+    packageMimeType,
+    releaseNotes,
+    popupBackgroundImage,
+    popupBackgroundPosition: normalizeOptionalString(
+      values.popupBackgroundPosition,
+    ),
+  };
 
-  delete payload.packageUpload;
-  delete payload.packageUrlUpload;
-  delete payload.popupBackgroundImageUpload;
-  delete payload.customPageUrl;
-  delete payload._storeLinksDivider;
-  delete payload._popupBackgroundDivider;
-  return payload;
+  return typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateAppUpdateReleaseDto)
+    : (payload as CreateAppUpdateReleaseDto);
 }

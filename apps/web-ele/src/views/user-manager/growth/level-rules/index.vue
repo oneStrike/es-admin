@@ -62,12 +62,41 @@ async function openFormModal(row?: BaseUserLevelRuleDto) {
   formApi.setData({ title: '等级规则', record, schema: formSchema }).open();
 }
 
+function buildLevelRulePayload(
+  values: GrowthLevelRulesCreateRequest | GrowthLevelRulesUpdateRequest,
+): GrowthLevelRulesCreateRequest | GrowthLevelRulesUpdateRequest {
+  const payload = {
+    icon: values.icon,
+    name: values.name,
+    color: values.color,
+    description: values.description,
+    requiredExperience: values.requiredExperience,
+    sortOrder: values.sortOrder,
+    loginDays: values.loginDays,
+    purchasePayableRate: values.purchasePayableRate,
+    dailyTopicLimit: values.dailyTopicLimit,
+    dailyReplyCommentLimit: values.dailyReplyCommentLimit,
+    dailyLikeLimit: values.dailyLikeLimit,
+    dailyFavoriteLimit: values.dailyFavoriteLimit,
+    workCollectionLimit: values.workCollectionLimit,
+    blacklistLimit: values.blacklistLimit,
+    postInterval: values.postInterval,
+    isEnabled: values.isEnabled,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as GrowthLevelRulesUpdateRequest)
+    : (payload as GrowthLevelRulesCreateRequest);
+}
+
 async function handleSubmit(
   values: GrowthLevelRulesCreateRequest | GrowthLevelRulesUpdateRequest,
 ) {
-  await (values?.id
-    ? growthLevelRulesUpdateApi(values as GrowthLevelRulesUpdateRequest)
-    : growthLevelRulesCreateApi(values as GrowthLevelRulesCreateRequest));
+  const payload = buildLevelRulePayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? growthLevelRulesUpdateApi(payload as GrowthLevelRulesUpdateRequest)
+    : growthLevelRulesCreateApi(payload as GrowthLevelRulesCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
@@ -157,7 +186,7 @@ async function toggleEnableStatus(
     <DetailModal
       :api="growthLevelRulesDetailApi"
       :cards="getDetailCards"
-      class="!min-w-[800px]"
+      class="min-w-[800px]"
     />
   </Page>
 </template>

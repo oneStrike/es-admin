@@ -219,19 +219,7 @@ async function handleSubmit(
   const data = shareData.value;
   if (!data) return;
 
-  const payload = {
-    ...(values as Record<string, any>),
-    canComment:
-      values.canComment ?? currentChapterRecord.value?.canComment ?? true,
-    canDownload:
-      values.canDownload ?? currentChapterRecord.value?.canDownload ?? false,
-    isPreview:
-      values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
-    price: values.price ?? currentChapterRecord.value?.price ?? 0,
-    viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
-    workId: data.workId,
-    workType: 1,
-  } as ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest;
+  const payload = buildComicChapterPayload(values, data.workId);
 
   await (payload?.id
     ? contentComicChapterUpdateApi(payload as ContentComicChapterUpdateRequest)
@@ -242,6 +230,36 @@ async function handleSubmit(
   formApi.close();
   useMessage.success(payload?.id ? '章节更新成功' : '章节创建成功');
   gridApi.reload();
+}
+
+function buildComicChapterPayload(
+  values: ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest,
+  workId: number,
+): ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest {
+  const payload = {
+    cover: values.cover,
+    sortOrder: values.sortOrder,
+    title: values.title,
+    subtitle: values.subtitle,
+    requiredViewLevelId: values.requiredViewLevelId,
+    publishAt: values.publishAt,
+    description: values.description,
+    remark: values.remark,
+    canComment:
+      values.canComment ?? currentChapterRecord.value?.canComment ?? true,
+    canDownload:
+      values.canDownload ?? currentChapterRecord.value?.canDownload ?? false,
+    isPreview:
+      values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
+    price: values.price ?? currentChapterRecord.value?.price ?? 0,
+    viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
+    workId,
+    workType: 1,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as ContentComicChapterUpdateRequest)
+    : (payload as ContentComicChapterCreateRequest);
 }
 
 /**

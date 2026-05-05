@@ -77,11 +77,11 @@ async function openFormModal(row?: AppUpdateReleaseListItemDto) {
 async function handleSubmit(
   values: CreateAppUpdateReleaseDto | UpdateAppUpdateReleaseDto,
 ) {
-  const raw = buildAppUpdateSubmitPayload(values as Record<string, any>);
+  const payload = buildAppUpdateSubmitPayload(values as Record<string, any>);
 
-  await ('id' in raw && typeof raw.id === 'number'
-    ? appUpdateUpdateApi(raw as UpdateAppUpdateReleaseDto)
-    : appUpdateCreateApi(raw as CreateAppUpdateReleaseDto));
+  await ('id' in payload && typeof payload.id === 'number'
+    ? appUpdateUpdateApi(payload as UpdateAppUpdateReleaseDto)
+    : appUpdateCreateApi(payload as CreateAppUpdateReleaseDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
@@ -170,7 +170,7 @@ const [DetailModal, detailApi] = useVbenModal({
     <DetailModal
       :api="appUpdateDetailApi"
       :cards="getDetailCards"
-      class="!w-[900px]"
+      class="w-[900px]"
     />
   </Page>
 </template>

@@ -12,25 +12,60 @@ import {
   taskVisibleStatusOptions,
 } from './options';
 
-export const taskInstanceSearchFormSchema: EsFormSchema = [
-  {
+type TaskInstanceSchemaField = EsFormSchema[number];
+
+const taskInstanceFieldCatalog = {
+  status: {
+    component: 'Select',
+    fieldName: 'status',
+    label: '实例状态',
+  },
+  taskId: {
     component: 'InputNumber',
     fieldName: 'taskId',
+    label: '任务头 ID',
+  },
+  userId: {
+    component: 'InputNumber',
+    fieldName: 'userId',
+    label: '用户 ID',
+  },
+} satisfies Record<string, TaskInstanceSchemaField>;
+
+function createTaskInstanceField(
+  field: keyof typeof taskInstanceFieldCatalog,
+  overrides: Partial<TaskInstanceSchemaField> = {},
+): TaskInstanceSchemaField {
+  const base = taskInstanceFieldCatalog[field] as TaskInstanceSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
+export const taskInstanceSearchFormSchema: EsFormSchema = [
+  createTaskInstanceField('taskId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '任务头 ID',
     },
-  },
-  {
-    component: 'InputNumber',
-    fieldName: 'userId',
+  }),
+  createTaskInstanceField('userId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '用户 ID',
     },
-  },
+  }),
   {
     component: 'Select',
     fieldName: 'sceneType',
@@ -40,15 +75,13 @@ export const taskInstanceSearchFormSchema: EsFormSchema = [
       placeholder: '任务场景',
     },
   },
-  {
-    component: 'Select',
-    fieldName: 'status',
+  createTaskInstanceField('status', {
     componentProps: {
       clearable: true,
       options: taskInstanceStatusOptions,
       placeholder: '实例状态',
     },
-  },
+  }),
   {
     component: 'DatePicker',
     fieldName: 'dateRange',
@@ -64,9 +97,9 @@ export const taskInstanceSearchFormSchema: EsFormSchema = [
 
 const taskInstanceTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'id', label: '实例 ID' },
-  { component: 'InputNumber', fieldName: 'taskId', label: '任务头 ID' },
-  { component: 'InputNumber', fieldName: 'userId', label: '用户 ID' },
-  { component: 'Select', fieldName: 'status', label: '实例状态' },
+  createTaskInstanceField('taskId'),
+  createTaskInstanceField('userId'),
+  createTaskInstanceField('status'),
   { component: 'Select', fieldName: 'visibleStatus', label: '可见状态' },
   { component: 'Input', fieldName: 'steps', label: '步骤摘要' },
   { component: 'Input', fieldName: 'cycleKey', label: '周期键' },

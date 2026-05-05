@@ -119,14 +119,34 @@ async function openFormModal(row?: BaseAnnouncementDto) {
   formApi.setData({ title: '公告', record }).open();
 }
 
+function buildAnnouncementPayload(
+  values: CreateAnnouncementDto | UpdateAnnouncementDto,
+): CreateAnnouncementDto | UpdateAnnouncementDto {
+  const payload = {
+    title: values.title,
+    announcementType: values.announcementType,
+    enablePlatform: values.enablePlatform,
+    priorityLevel: values.priorityLevel,
+    pageId: values.pageId,
+    publishStartTime: values.publishStartTime,
+    publishEndTime: values.publishEndTime,
+    isPinned: values.isPinned ?? false,
+    showAsPopup: values.showAsPopup ?? false,
+    popupBackgroundImage: values.popupBackgroundImage,
+    popupBackgroundPosition: values.popupBackgroundPosition,
+    summary: values.summary,
+    content: values.content,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateAnnouncementDto)
+    : (payload as CreateAnnouncementDto);
+}
+
 async function handleSubmit(
   values: CreateAnnouncementDto | UpdateAnnouncementDto,
 ) {
-  const payload = {
-    ...(values as Record<string, any>),
-    isPinned: values.isPinned ?? false,
-    showAsPopup: values.showAsPopup ?? false,
-  } as CreateAnnouncementDto | UpdateAnnouncementDto;
+  const payload = buildAnnouncementPayload(values);
 
   await ('id' in payload && payload.id
     ? announcementUpdateApi(payload as UpdateAnnouncementDto)
@@ -311,7 +331,7 @@ const [DetailModal, detailApi] = useVbenModal({
     <DetailModal
       :api="announcementDetailApi"
       :cards="getDetailCards"
-      class="!w-[1000px]"
+      class="w-[1000px]"
     />
   </Page>
 </template>

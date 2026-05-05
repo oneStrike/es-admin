@@ -62,12 +62,32 @@ async function openFormModal(row?: BaseSensitiveWordDto) {
   formApi.setData({ title: '敏感词', record: row }).open();
 }
 
+function buildSensitiveWordPayload(
+  values: ForumSensitiveWordCreateRequest | ForumSensitiveWordUpdateRequest,
+): ForumSensitiveWordCreateRequest | ForumSensitiveWordUpdateRequest {
+  const payload = {
+    word: values.word,
+    type: values.type,
+    level: values.level,
+    matchMode: values.matchMode,
+    replaceWord: values.replaceWord,
+    isEnabled: values.isEnabled,
+    remark: values.remark,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as ForumSensitiveWordUpdateRequest)
+    : (payload as ForumSensitiveWordCreateRequest);
+}
+
 async function handleSubmit(
   values: ForumSensitiveWordCreateRequest | ForumSensitiveWordUpdateRequest,
 ) {
-  await (values?.id
-    ? forumSensitiveWordUpdateApi(values as ForumSensitiveWordUpdateRequest)
-    : forumSensitiveWordCreateApi(values as ForumSensitiveWordCreateRequest));
+  const payload = buildSensitiveWordPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? forumSensitiveWordUpdateApi(payload as ForumSensitiveWordUpdateRequest)
+    : forumSensitiveWordCreateApi(payload as ForumSensitiveWordCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();

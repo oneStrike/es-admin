@@ -126,12 +126,32 @@ async function openFormModal(row?: BaseUserBadgeDto) {
   formApi.setData({ title: '徽章', record, schema: formSchema }).open();
 }
 
+function buildBadgePayload(
+  values: GrowthBadgesCreateRequest | GrowthBadgesUpdateRequest,
+): GrowthBadgesCreateRequest | GrowthBadgesUpdateRequest {
+  const payload = {
+    icon: values.icon,
+    name: values.name,
+    type: values.type,
+    sortOrder: values.sortOrder,
+    eventKey: values.eventKey,
+    isEnabled: values.isEnabled,
+    description: values.description,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as GrowthBadgesUpdateRequest)
+    : (payload as GrowthBadgesCreateRequest);
+}
+
 async function handleSubmit(
   values: GrowthBadgesCreateRequest | GrowthBadgesUpdateRequest,
 ) {
-  await (values?.id
-    ? growthBadgesUpdateApi(values as GrowthBadgesUpdateRequest)
-    : growthBadgesCreateApi(values as GrowthBadgesCreateRequest));
+  const payload = buildBadgePayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? growthBadgesUpdateApi(payload as GrowthBadgesUpdateRequest)
+    : growthBadgesCreateApi(payload as GrowthBadgesCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
@@ -288,7 +308,7 @@ async function handleRevokeConfirm(rows: BadgeUserPageItemDto[]) {
     <DetailModal
       :api="growthBadgesDetailApi"
       :cards="getDetailCards"
-      class="!min-w-[800px]"
+      class="min-w-[800px]"
     />
     <AssignForm :on-submit="handleAssignSubmit" />
     <RevokeModal @confirm="handleRevokeConfirm" />

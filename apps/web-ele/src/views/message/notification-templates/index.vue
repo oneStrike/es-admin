@@ -290,7 +290,7 @@ async function deleteTemplate(row: TemplateRow) {
       </template>
     </Grid>
 
-    <TemplateModal class="!w-[960px] px-4">
+    <TemplateModal class="w-[960px] px-4">
       <TemplateForm />
 
       <div class="mt-4 rounded-md border border-border p-4">
@@ -339,7 +339,7 @@ async function deleteTemplate(row: TemplateRow) {
     <DetailModal
       :api="messageNotificationTemplatesDetailApi"
       :cards="getDetailCards"
-      class="!w-[920px]"
+      class="w-[920px]"
     />
   </Page>
 </template>

@@ -191,7 +191,7 @@ defineExpose({
     <DetailModal
       :api="forumModeratorApplicationDetailApi"
       :cards="getDetailCards"
-      class="!w-[980px]"
+      class="w-[980px]"
     />
   </div>
 </template>

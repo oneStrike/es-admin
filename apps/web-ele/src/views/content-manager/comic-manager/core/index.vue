@@ -174,10 +174,37 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
 async function handleSubmit(
   values: ContentComicCreateRequest | ContentComicUpdateRequest,
 ) {
-  const rawValues = { ...(values as Record<string, any>) };
-  delete rawValues.price;
+  const payload = buildComicPayload(values);
+
+  await ('id' in payload && payload.id
+    ? contentComicUpdateApi(payload as ContentComicUpdateRequest)
+    : contentComicCreateApi(payload as ContentComicCreateRequest));
+  formApi.close();
+  useMessage.success('操作成功');
+  gridApi.reload();
+}
+
+function buildComicPayload(
+  values: ContentComicCreateRequest | ContentComicUpdateRequest,
+): ContentComicCreateRequest | ContentComicUpdateRequest {
   const payload = {
-    ...rawValues,
+    cover: values.cover,
+    name: values.name,
+    alias: values.alias,
+    authorIds: values.authorIds,
+    serialStatus: values.serialStatus,
+    region: values.region,
+    language: values.language,
+    ageRating: values.ageRating,
+    categoryIds: values.categoryIds,
+    description: values.description,
+    publisher: values.publisher,
+    originalSource: values.originalSource,
+    copyright: values.copyright,
+    disclaimer: values.disclaimer,
+    requiredViewLevelId: values.requiredViewLevelId,
+    publishAt: values.publishAt,
+    remark: values.remark,
     canComment:
       values.canComment ?? currentComicRecord.value?.canComment ?? true,
     chapterPrice:
@@ -193,14 +220,11 @@ async function handleSubmit(
     tagIds: values.tagIds ?? currentComicRecord.value?.tagIds ?? [],
     type: 1,
     viewRule: values.viewRule ?? currentComicRecord.value?.viewRule ?? 0,
-  } as ContentComicCreateRequest | ContentComicUpdateRequest;
+  };
 
-  await ('id' in payload && payload.id
-    ? contentComicUpdateApi(payload as ContentComicUpdateRequest)
-    : contentComicCreateApi(payload as ContentComicCreateRequest));
-  formApi.close();
-  useMessage.success('操作成功');
-  gridApi.reload();
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as ContentComicUpdateRequest)
+    : (payload as ContentComicCreateRequest);
 }
 
 async function deleteComic(record: BaseWorkDto) {

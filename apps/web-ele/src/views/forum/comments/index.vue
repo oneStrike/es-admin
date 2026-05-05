@@ -283,7 +283,7 @@ async function toggleHiddenStatus(row: CommentRow) {
     <DetailModal
       :api="commentDetailApi"
       :cards="getDetailCards"
-      class="!w-[960px]"
+      class="w-[960px]"
     />
   </Page>
 </template>

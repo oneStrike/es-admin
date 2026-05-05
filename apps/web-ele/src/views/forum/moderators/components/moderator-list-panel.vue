@@ -312,7 +312,7 @@ defineExpose({
     <DetailModal
       :api="getCurrentModerator"
       :cards="getDetailCards"
-      class="!w-[960px]"
+      class="w-[960px]"
     />
   </div>
 </template>

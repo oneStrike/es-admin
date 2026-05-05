@@ -8,17 +8,55 @@ import {
   checkInRewardStatusOptions,
 } from './shared';
 
-const reconciliationSearchBaseSchema: EsFormSchema = [
-  {
+type CheckInReconciliationSchemaField = EsFormSchema[number];
+
+const checkInReconciliationFieldCatalog = {
+  recordId: {
     component: 'InputNumber',
+    fieldName: 'recordId',
+    label: '签到记录ID',
+  },
+  recordSettlementStatus: {
+    component: 'Select',
+    fieldName: 'recordSettlementStatus',
+    label: '基础奖励状态',
+  },
+  userId: {
+    component: 'InputNumber',
+    fieldName: 'userId',
+    label: '用户ID',
+  },
+} satisfies Record<string, CheckInReconciliationSchemaField>;
+
+function createCheckInReconciliationField(
+  field: keyof typeof checkInReconciliationFieldCatalog,
+  overrides: Partial<CheckInReconciliationSchemaField> = {},
+): CheckInReconciliationSchemaField {
+  const base = checkInReconciliationFieldCatalog[
+    field
+  ] as CheckInReconciliationSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
+const reconciliationSearchBaseSchema: EsFormSchema = [
+  createCheckInReconciliationField('userId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '用户ID',
     },
-    fieldName: 'userId',
-    label: '用户ID',
-  },
+  }),
   {
     component: 'InputNumber',
     componentProps: {
@@ -29,16 +67,13 @@ const reconciliationSearchBaseSchema: EsFormSchema = [
     fieldName: 'ruleId',
     label: '规则ID',
   },
-  {
-    component: 'InputNumber',
+  createCheckInReconciliationField('recordId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '签到记录ID',
     },
-    fieldName: 'recordId',
-    label: '签到记录ID',
-  },
+  }),
   {
     component: 'InputNumber',
     componentProps: {
@@ -49,16 +84,13 @@ const reconciliationSearchBaseSchema: EsFormSchema = [
     fieldName: 'grantId',
     label: '连续奖励ID',
   },
-  {
-    component: 'Select',
+  createCheckInReconciliationField('recordSettlementStatus', {
     componentProps: {
       clearable: true,
       options: checkInRewardStatusOptions,
       placeholder: '基础奖励状态',
     },
-    fieldName: 'recordSettlementStatus',
-    label: '基础奖励状态',
-  },
+  }),
   {
     component: 'Select',
     componentProps: {
@@ -72,16 +104,13 @@ const reconciliationSearchBaseSchema: EsFormSchema = [
 ];
 
 const reconciliationTableSchema: EsFormSchema = [
-  {
-    component: 'InputNumber',
+  createCheckInReconciliationField('recordId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '签到记录ID',
     },
-    fieldName: 'recordId',
-    label: '签到记录ID',
-  },
+  }),
   {
     component: 'Input',
     componentProps: {
@@ -90,16 +119,13 @@ const reconciliationTableSchema: EsFormSchema = [
     fieldName: 'signDate',
     label: '签到信息',
   },
-  {
-    component: 'InputNumber',
+  createCheckInReconciliationField('userId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '用户ID',
     },
-    fieldName: 'userId',
-    label: '用户ID',
-  },
+  }),
   {
     component: 'Input',
     componentProps: {
@@ -108,14 +134,13 @@ const reconciliationTableSchema: EsFormSchema = [
     fieldName: 'resolvedRewardSourceType',
     label: '解析来源',
   },
-  {
+  createCheckInReconciliationField('recordSettlementStatus', {
     component: 'Input',
     componentProps: {
       placeholder: '基础奖励',
     },
-    fieldName: 'recordSettlementStatus',
     label: '基础奖励',
-  },
+  }),
   {
     component: 'Input',
     componentProps: {

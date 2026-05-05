@@ -253,7 +253,7 @@ async function handleReportSubmit(values: Record<string, any>) {
     <DetailModal
       :api="reportDetailApi"
       :cards="getDetailCards"
-      class="!w-[960px]"
+      class="w-[960px]"
     />
   </Page>
 </template>

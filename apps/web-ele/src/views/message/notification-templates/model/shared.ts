@@ -17,6 +17,41 @@ export function getEnabledOption(value?: boolean) {
   return value ? enabledOption : disabledOption;
 }
 
+type NotificationTemplateSchemaField = EsFormSchema[number];
+
+const notificationTemplateFieldCatalog = {
+  isEnabled: {
+    component: 'RadioGroup',
+    fieldName: 'isEnabled',
+    label: '是否启用',
+  },
+} satisfies Record<string, NotificationTemplateSchemaField>;
+
+function withoutColorOptions<T extends { color?: unknown }>(options: T[]) {
+  return options.map(({ color: _color, ...rest }) => rest);
+}
+
+function createNotificationTemplateField(
+  field: keyof typeof notificationTemplateFieldCatalog,
+  overrides: Partial<NotificationTemplateSchemaField> = {},
+): NotificationTemplateSchemaField {
+  const base = notificationTemplateFieldCatalog[
+    field
+  ] as NotificationTemplateSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
 export function formatCategory(
   record: Pick<
     AdminMessageNotificationTemplateDto,
@@ -47,17 +82,14 @@ export function createTemplateFormSchema(
       label: '通知分类',
       rules: 'required',
     },
-    {
-      component: 'RadioGroup',
+    createNotificationTemplateField('isEnabled', {
       componentProps: {
         class: 'w-full',
-        options: enabledOptions.map(({ color: _color, ...rest }) => rest),
+        options: withoutColorOptions(enabledOptions),
       },
       defaultValue: true,
-      fieldName: 'isEnabled',
-      label: '是否启用',
       rules: 'required',
-    },
+    }),
     {
       component: 'Input',
       componentProps: {
@@ -110,15 +142,14 @@ export const searchFormSchema: EsFormSchema = [
     },
     fieldName: 'categoryKey',
   },
-  {
+  createNotificationTemplateField('isEnabled', {
     component: 'Select',
     componentProps: {
       clearable: true,
-      options: enabledOptions.map(({ color: _color, ...rest }) => rest),
+      options: withoutColorOptions(enabledOptions),
       placeholder: '启用状态',
     },
-    fieldName: 'isEnabled',
-  },
+  }),
   {
     component: 'DatePicker',
     componentProps: {
@@ -137,7 +168,7 @@ const templateTableSchema: EsFormSchema = [
   { component: 'Select', fieldName: 'categoryLabel', label: '通知分类' },
   { component: 'Input', fieldName: 'titleTemplate', label: '标题模板' },
   { component: 'Input', fieldName: 'contentTemplate', label: '正文模板' },
-  { component: 'RadioGroup', fieldName: 'isEnabled', label: '启用状态' },
+  createNotificationTemplateField('isEnabled', { label: '启用状态' }),
   { component: 'Input', fieldName: 'remark', label: '备注' },
 ];
 

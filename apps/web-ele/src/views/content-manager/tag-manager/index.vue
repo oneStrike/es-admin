@@ -109,10 +109,25 @@ async function toggleEnableStatus(row: BaseTagDto): Promise<void> {
  */
 type TagFormValues = CreateTagDto | UpdateTagDto;
 
+function buildTagPayload(values: TagFormValues): CreateTagDto | UpdateTagDto {
+  const payload = {
+    icon: values.icon,
+    name: values.name,
+    sortOrder: values.sortOrder,
+    description: values.description,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateTagDto)
+    : (payload as CreateTagDto);
+}
+
 async function addOrUpdateTag(values: TagFormValues): Promise<void> {
-  await (values.id
-    ? contentTagUpdateApi(values as UpdateTagDto)
-    : contentTagCreateApi(values as CreateTagDto));
+  const payload = buildTagPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? contentTagUpdateApi(payload as UpdateTagDto)
+    : contentTagCreateApi(payload as CreateTagDto));
   useMessage.success('操作成功');
   await gridApi.reload();
 }

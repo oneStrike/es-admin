@@ -487,7 +487,7 @@ async function toggleTopicBoolean(
     <DetailModal
       :api="forumTopicDetailApi"
       :cards="getDetailCards"
-      class="!w-[1040px]"
+      class="w-[1040px]"
     />
   </Page>
 </template>

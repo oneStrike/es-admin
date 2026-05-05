@@ -32,12 +32,21 @@ const POINTS_ASSET_TYPE = 1 as const;
 
 function normalizeRewardRulePayload(
   values: GrowthRewardRulesCreateRequest | GrowthRewardRulesUpdateRequest,
-) {
-  return {
-    ...values,
+): GrowthRewardRulesCreateRequest | GrowthRewardRulesUpdateRequest {
+  const payload = {
+    type: values.type,
+    delta: values.delta,
+    dailyLimit: values.dailyLimit,
+    totalLimit: values.totalLimit,
+    isEnabled: values.isEnabled,
+    remark: values.remark,
     assetKey: '',
     assetType: POINTS_ASSET_TYPE,
   };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as GrowthRewardRulesUpdateRequest)
+    : (payload as GrowthRewardRulesCreateRequest);
 }
 
 const gridOptions: VxeGridProps<BaseGrowthRewardRuleDto> = {
@@ -161,7 +170,7 @@ async function toggleEnableStatus(
     <DetailModal
       :api="growthRewardRulesDetailApi"
       :cards="getDetailCards"
-      class="!min-w-[800px]"
+      class="min-w-[800px]"
     />
   </Page>
 </template>

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { BaseDictionaryDto, BaseDictionaryItemDto } from '#/api/types';
+import type {
+  BaseDictionaryDto,
+  BaseDictionaryItemDto,
+  CreateDictionaryItemDto,
+  UpdateDictionaryItemDto,
+} from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -86,13 +91,38 @@ const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-async function addDictionaryItem(values: any) {
-  if (!values.dictionaryCode) {
-    values.dictionaryCode = shareData.value?.record.code;
-  }
-  await (values.id
-    ? dictionaryItemUpdateApi(values)
-    : dictionaryItemCreateApi(values));
+type DictionaryItemFormValues =
+  | CreateDictionaryItemDto
+  | UpdateDictionaryItemDto;
+
+function resolveDictionaryCode(values: DictionaryItemFormValues) {
+  return values.dictionaryCode ?? shareData.value?.record.code ?? '';
+}
+
+function buildDictionaryItemPayload(
+  values: DictionaryItemFormValues,
+): CreateDictionaryItemDto | UpdateDictionaryItemDto {
+  const payload = {
+    cover: values.cover,
+    name: values.name,
+    code: values.code,
+    sortOrder: values.sortOrder,
+    isEnabled: values.isEnabled,
+    description: values.description,
+    dictionaryCode: resolveDictionaryCode(values),
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateDictionaryItemDto)
+    : (payload as CreateDictionaryItemDto);
+}
+
+async function addDictionaryItem(values: DictionaryItemFormValues) {
+  const payload = buildDictionaryItemPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? dictionaryItemUpdateApi(payload as UpdateDictionaryItemDto)
+    : dictionaryItemCreateApi(payload as CreateDictionaryItemDto));
 
   formApi.close();
   useMessage.success('操作成功');

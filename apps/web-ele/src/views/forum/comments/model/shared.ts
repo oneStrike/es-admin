@@ -220,18 +220,60 @@ export function formatSensitiveWordHit(hit: SensitiveWordHitDto) {
   return `${hit.word}（${type}/${level}/${field}）`;
 }
 
+type CommentSchemaField = EsFormSchema[number];
+
+const commentFieldCatalog = {
+  auditStatus: {
+    component: 'Select',
+    fieldName: 'auditStatus',
+    label: '审核状态',
+  },
+  isHidden: {
+    component: 'Select',
+    fieldName: 'isHidden',
+    label: '隐藏',
+  },
+  targetType: {
+    component: 'Select',
+    fieldName: 'targetType',
+    label: '目标类型',
+  },
+} satisfies Record<string, CommentSchemaField>;
+
+function withoutColorOptions<T extends { color?: unknown }>(options: T[]) {
+  return options.map(({ color: _color, ...rest }) => rest);
+}
+
+function createCommentField(
+  field: keyof typeof commentFieldCatalog,
+  overrides: Partial<CommentSchemaField> = {},
+): CommentSchemaField {
+  const base = commentFieldCatalog[field] as CommentSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
 export const auditFormSchema: EsFormSchema = [
-  {
+  createCommentField('auditStatus', {
     component: 'RadioGroup',
     componentProps: {
       class: 'w-full',
-      options: auditStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: withoutColorOptions(auditStatusOptions),
       placeholder: '请选择审核结果',
     },
-    fieldName: 'auditStatus',
     label: '审核结果',
     rules: 'required',
-  },
+  }),
   {
     component: 'Input',
     componentProps: {
@@ -245,34 +287,28 @@ export const auditFormSchema: EsFormSchema = [
 ];
 
 export const searchFormSchema: EsFormSchema = [
-  {
-    component: 'Select',
+  createCommentField('auditStatus', {
     componentProps: {
       clearable: true,
-      options: auditStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: withoutColorOptions(auditStatusOptions),
       placeholder: '审核状态',
     },
     defaultValue: 0,
-    fieldName: 'auditStatus',
-  },
-  {
-    component: 'Select',
+  }),
+  createCommentField('isHidden', {
     componentProps: {
       clearable: true,
       options: hiddenOptions,
       placeholder: '隐藏状态',
     },
-    fieldName: 'isHidden',
-  },
-  {
-    component: 'Select',
+  }),
+  createCommentField('targetType', {
     componentProps: {
       clearable: true,
       options: targetTypeOptions,
       placeholder: '目标类型',
     },
-    fieldName: 'targetType',
-  },
+  }),
   {
     component: 'Input',
     componentProps: {
@@ -327,12 +363,12 @@ export const searchFormSchema: EsFormSchema = [
 const pageTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'user', label: '评论用户' },
   { component: 'Input', fieldName: 'html', label: '评论摘要' },
-  { component: 'Select', fieldName: 'targetType', label: '对象类型' },
+  createCommentField('targetType', { label: '对象类型' }),
   { component: 'Input', fieldName: 'targetTitle', label: '评论对象' },
   { component: 'Input', fieldName: 'targetExtra', label: '所属对象' },
   { component: 'Input', fieldName: 'replyToSummary', label: '回复对象' },
-  { component: 'Select', fieldName: 'auditStatus', label: '审核状态' },
-  { component: 'Switch', fieldName: 'isHidden', label: '隐藏' },
+  createCommentField('auditStatus'),
+  createCommentField('isHidden', { component: 'Switch' }),
   { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },
   { component: 'InputNumber', fieldName: 'floor', label: '楼层' },
   { component: 'Input', fieldName: 'sensitiveWordHits', label: '敏感词' },

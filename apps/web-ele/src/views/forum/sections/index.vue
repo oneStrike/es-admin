@@ -283,12 +283,30 @@ function buildSectionUpdatePayload(
 async function handleSectionGroupSubmit(
   values: ForumSectionGroupsCreateRequest | ForumSectionGroupsUpdateRequest,
 ) {
-  await (values?.id
-    ? forumSectionGroupsUpdateApi(values as ForumSectionGroupsUpdateRequest)
-    : forumSectionGroupsCreateApi(values as ForumSectionGroupsCreateRequest));
+  const payload = buildSectionGroupPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? forumSectionGroupsUpdateApi(payload as ForumSectionGroupsUpdateRequest)
+    : forumSectionGroupsCreateApi(payload as ForumSectionGroupsCreateRequest));
   sectionGroupFormApi.close();
   useMessage.success('操作成功');
   await loadSectionGroups();
+}
+
+function buildSectionGroupPayload(
+  values: ForumSectionGroupsCreateRequest | ForumSectionGroupsUpdateRequest,
+): ForumSectionGroupsCreateRequest | ForumSectionGroupsUpdateRequest {
+  const payload = {
+    name: values.name,
+    isEnabled: values.isEnabled,
+    sortOrder: values.sortOrder,
+    maxModerators: values.maxModerators,
+    description: values.description,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as ForumSectionGroupsUpdateRequest)
+    : (payload as ForumSectionGroupsCreateRequest);
 }
 
 async function deleteSection(record: BaseForumSectionDto) {
@@ -570,7 +588,7 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
     <DetailModal
       :api="forumSectionsDetailApi"
       :cards="getSectionDetailCards"
-      class="!w-[800px]"
+      class="w-[800px]"
     />
 
     <SectionGroupForm
@@ -581,7 +599,7 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
     <SectionGroupDetailModal
       :api="forumSectionGroupsDetailApi"
       :cards="getSectionGroupDetailCards"
-      class="!w-[800px]"
+      class="w-[800px]"
     />
   </Page>
 </template>

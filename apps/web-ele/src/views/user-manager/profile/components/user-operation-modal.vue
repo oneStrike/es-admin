@@ -80,89 +80,150 @@ const modalTitle = computed(() => {
   return `用户运营 - ${displayUserLabel.value}`;
 });
 
-const pointRecordSearchSchema: EsFormSchema = [
-  {
-    component: 'DatePicker',
-    fieldName: 'startDate',
-    componentProps: {
-      clearable: true,
-      placeholder: '开始日期',
-      type: 'date',
-      valueFormat: 'YYYY-MM-DD',
-    },
+type OperationSchemaField = EsFormSchema[number];
+
+const operationFieldCatalog = {
+  badgeIsEnabled: {
+    component: 'Select',
+    fieldName: 'isEnabled',
+    label: '状态',
   },
-  {
-    component: 'DatePicker',
-    fieldName: 'endDate',
-    componentProps: {
-      clearable: true,
-      placeholder: '结束日期',
-      type: 'date',
-      valueFormat: 'YYYY-MM-DD',
-    },
-  },
-  {
+  badgeName: {
     component: 'Input',
+    fieldName: 'name',
+    label: '徽章名称',
+  },
+  badgeType: {
+    component: 'Select',
+    fieldName: 'type',
+    label: '徽章类型',
+  },
+  points: {
+    component: 'InputNumber',
+    fieldName: 'points',
+    label: '积分变化',
+  },
+  remark: {
+    component: 'Input',
+    fieldName: 'remark',
+    label: '备注',
+  },
+  targetId: {
+    component: 'InputNumber',
+    fieldName: 'targetId',
+    label: '目标 ID',
+  },
+  targetType: {
+    component: 'InputNumber',
     fieldName: 'targetType',
+    label: '目标类型',
+  },
+} satisfies Record<string, OperationSchemaField>;
+
+function createOperationField(
+  field: keyof typeof operationFieldCatalog,
+  overrides: Partial<OperationSchemaField> = {},
+): OperationSchemaField {
+  const base = operationFieldCatalog[field] as OperationSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
+function createRecordDateSearchSchema(): EsFormSchema {
+  return [
+    {
+      component: 'DatePicker',
+      fieldName: 'startDate',
+      componentProps: {
+        clearable: true,
+        placeholder: '开始日期',
+        type: 'date',
+        valueFormat: 'YYYY-MM-DD',
+      },
+    },
+    {
+      component: 'DatePicker',
+      fieldName: 'endDate',
+      componentProps: {
+        clearable: true,
+        placeholder: '结束日期',
+        type: 'date',
+        valueFormat: 'YYYY-MM-DD',
+      },
+    },
+  ];
+}
+
+function createGrowthGrantFormSchema(): EsFormSchema {
+  return [
+    {
+      component: 'Select',
+      fieldName: 'ruleType',
+      label: '规则类型',
+      rules: z.number().min(1, '请选择规则类型'),
+      componentProps: {
+        options: growthTypeOptions,
+        placeholder: '请选择规则类型',
+      },
+    },
+    createOperationField('remark', {
+      componentProps: {
+        maxlength: 200,
+        placeholder: '请输入备注',
+        rows: 4,
+        showWordLimit: true,
+        type: 'textarea',
+      },
+    }),
+  ];
+}
+
+const pointRecordSearchSchema: EsFormSchema = [
+  ...createRecordDateSearchSchema(),
+  createOperationField('targetType', {
+    component: 'Input',
     componentProps: {
       clearable: true,
       placeholder: '目标类型',
     },
-  },
-  {
+  }),
+  createOperationField('targetId', {
     component: 'Input',
-    fieldName: 'targetId',
     componentProps: {
       clearable: true,
       placeholder: '目标 ID',
     },
-  },
+  }),
 ];
 
-const experienceRecordSearchSchema: EsFormSchema = [
-  {
-    component: 'DatePicker',
-    fieldName: 'startDate',
-    componentProps: {
-      clearable: true,
-      placeholder: '开始日期',
-      type: 'date',
-      valueFormat: 'YYYY-MM-DD',
-    },
-  },
-  {
-    component: 'DatePicker',
-    fieldName: 'endDate',
-    componentProps: {
-      clearable: true,
-      placeholder: '结束日期',
-      type: 'date',
-      valueFormat: 'YYYY-MM-DD',
-    },
-  },
-];
+const experienceRecordSearchSchema: EsFormSchema =
+  createRecordDateSearchSchema();
 
 const badgeSearchSchema: EsFormSchema = [
-  {
-    component: 'Input',
-    fieldName: 'name',
+  createOperationField('badgeName', {
     componentProps: {
       clearable: true,
       placeholder: '徽章名称',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'type',
+  }),
+  createOperationField('badgeType', {
     componentProps: {
       clearable: true,
       options: badgeTypeOptions,
       placeholder: '徽章类型',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'isEnabled',
+  }),
+  createOperationField('badgeIsEnabled', {
     componentProps: {
       clearable: true,
       options: [
@@ -171,38 +232,13 @@ const badgeSearchSchema: EsFormSchema = [
       ],
       placeholder: '状态',
     },
-  },
+  }),
 ];
 
-const pointsGrantFormSchema: EsFormSchema = [
-  {
-    component: 'Select',
-    fieldName: 'ruleType',
-    label: '规则类型',
-    rules: z.number().min(1, '请选择规则类型'),
-    componentProps: {
-      options: growthTypeOptions,
-      placeholder: '请选择规则类型',
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'remark',
-    label: '备注',
-    componentProps: {
-      maxlength: 200,
-      placeholder: '请输入备注',
-      rows: 4,
-      showWordLimit: true,
-      type: 'textarea',
-    },
-  },
-];
+const pointsGrantFormSchema: EsFormSchema = createGrowthGrantFormSchema();
 
 const pointsConsumeFormSchema: EsFormSchema = [
-  {
-    component: 'InputNumber',
-    fieldName: 'points',
+  createOperationField('points', {
     label: '扣减积分',
     rules: z.number().min(1, '请输入大于 0 的积分值'),
     componentProps: {
@@ -212,11 +248,8 @@ const pointsConsumeFormSchema: EsFormSchema = [
       min: 1,
       placeholder: '请输入要扣减的积分',
     },
-  },
-  {
-    component: 'InputNumber',
-    fieldName: 'targetType',
-    label: '目标类型',
+  }),
+  createOperationField('targetType', {
     componentProps: {
       align: 'left',
       class: '!w-full',
@@ -224,11 +257,8 @@ const pointsConsumeFormSchema: EsFormSchema = [
       min: 0,
       placeholder: '可选，填写目标类型',
     },
-  },
-  {
-    component: 'InputNumber',
-    fieldName: 'targetId',
-    label: '目标 ID',
+  }),
+  createOperationField('targetId', {
     componentProps: {
       align: 'left',
       class: '!w-full',
@@ -236,7 +266,7 @@ const pointsConsumeFormSchema: EsFormSchema = [
       min: 0,
       placeholder: '可选，填写目标 ID',
     },
-  },
+  }),
   {
     component: 'InputNumber',
     fieldName: 'exchangeId',
@@ -249,10 +279,7 @@ const pointsConsumeFormSchema: EsFormSchema = [
       placeholder: '可选，填写兑换 ID',
     },
   },
-  {
-    component: 'Input',
-    fieldName: 'remark',
-    label: '备注',
+  createOperationField('remark', {
     componentProps: {
       maxlength: 200,
       placeholder: '请输入备注',
@@ -260,41 +287,18 @@ const pointsConsumeFormSchema: EsFormSchema = [
       showWordLimit: true,
       type: 'textarea',
     },
-  },
+  }),
 ];
 
-const experienceGrantFormSchema: EsFormSchema = [
-  {
-    component: 'Select',
-    fieldName: 'ruleType',
-    label: '规则类型',
-    rules: z.number().min(1, '请选择规则类型'),
-    componentProps: {
-      options: growthTypeOptions,
-      placeholder: '请选择规则类型',
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'remark',
-    label: '备注',
-    componentProps: {
-      maxlength: 200,
-      placeholder: '请输入备注',
-      rows: 4,
-      showWordLimit: true,
-      type: 'textarea',
-    },
-  },
-];
+const experienceGrantFormSchema: EsFormSchema = createGrowthGrantFormSchema();
 
 const pointRecordTableSchema: EsFormSchema = [
-  { component: 'InputNumber', fieldName: 'points', label: '积分变化' },
+  createOperationField('points'),
   { component: 'InputNumber', fieldName: 'beforePoints', label: '变化前' },
   { component: 'InputNumber', fieldName: 'afterPoints', label: '变化后' },
-  { component: 'InputNumber', fieldName: 'targetType', label: '目标类型' },
-  { component: 'InputNumber', fieldName: 'targetId', label: '目标 ID' },
-  { component: 'Input', fieldName: 'remark', label: '备注' },
+  createOperationField('targetType'),
+  createOperationField('targetId'),
+  createOperationField('remark'),
 ];
 
 const pointRecordColumns =
@@ -348,7 +352,7 @@ const experienceRecordTableSchema: EsFormSchema = [
     label: '变化前',
   },
   { component: 'InputNumber', fieldName: 'afterExperience', label: '变化后' },
-  { component: 'Input', fieldName: 'remark', label: '备注' },
+  createOperationField('remark'),
 ];
 
 const experienceRecordColumns =
@@ -417,11 +421,11 @@ const userBadgeColumns = formSchemaTransform.toTableColumns<UserBadgeItemDto>(
 );
 
 const availableBadgeTableSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'name', label: '徽章名称' },
-  { component: 'Select', fieldName: 'type', label: '徽章类型' },
+  createOperationField('badgeName'),
+  createOperationField('badgeType'),
   { component: 'Input', fieldName: 'business', label: '业务域' },
   { component: 'Input', fieldName: 'eventKey', label: '事件键' },
-  { component: 'Select', fieldName: 'isEnabled', label: '状态' },
+  createOperationField('badgeIsEnabled'),
 ];
 
 const availableBadgeColumns =

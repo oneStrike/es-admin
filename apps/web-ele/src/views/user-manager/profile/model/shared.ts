@@ -12,6 +12,8 @@ import { formatUTC, formSchemaTransform } from '#/utils';
 
 type UserStatusValue = AppUsersUpdateStatusRequest['status'];
 type GenderValue = NonNullable<AppUsersProfileUpdateRequest['genderType']>;
+type SchemaItem = EsFormSchema[number];
+type CreateUserStatusValue = NonNullable<AppUsersCreateRequest['status']>;
 
 export const normalUserStatus = 1 as UserStatusValue;
 
@@ -110,57 +112,196 @@ export function getUserBanUntilText(
   return banUntil ? formatUTC(banUntil, 'YYYY-MM-DD HH:mm:ss') : '-';
 }
 
-export const searchFormSchema: EsFormSchema = [
-  {
+export const passwordRules = z
+  .string()
+  .min(6, '密码长度不能少于6位')
+  .max(32, '密码长度不能超过32位');
+
+function passwordField(label = '密码', placeholder = '请输入密码'): SchemaItem {
+  return {
+    component: 'Input',
+    fieldName: 'password',
+    label,
+    rules: passwordRules,
+    componentProps: {
+      autocomplete: 'new-password',
+      placeholder,
+      showPassword: true,
+      type: 'password',
+    },
+  };
+}
+
+const userField = {
+  account: (): SchemaItem => ({
     component: 'Input',
     fieldName: 'account',
+    label: '账号',
+  }),
+  avatarUrl: (): SchemaItem => ({
+    component: 'Upload',
+    fieldName: 'avatarUrl',
+    label: '头像',
+    componentProps: {
+      accept: 'image/*',
+      maxCount: 1,
+      returnDataType: 'url',
+      scene: UploadSceneEnum.SHARED,
+    },
+  }),
+  birthDate: (): SchemaItem => ({
+    component: 'DatePicker',
+    fieldName: 'birthDate',
+    label: '出生日期',
     componentProps: {
       clearable: true,
-      placeholder: '账号',
+      placeholder: '请选择出生日期',
+      type: 'date',
+      valueFormat: 'YYYY-MM-DD',
     },
-  },
-  {
+  }),
+  bio: (): SchemaItem => ({
     component: 'Input',
-    fieldName: 'nickname',
+    fieldName: 'bio',
+    label: '论坛简介',
     componentProps: {
-      clearable: true,
-      placeholder: '昵称',
+      maxlength: 300,
+      placeholder: '请输入论坛简介',
+      rows: 4,
+      showWordLimit: true,
+      type: 'textarea',
     },
-  },
-  {
-    component: 'Input',
-    fieldName: 'phoneNumber',
-    componentProps: {
-      clearable: true,
-      placeholder: '手机号',
-    },
-  },
-  {
+    formItemClass: 'col-span-2',
+  }),
+  emailAddress: (): SchemaItem => ({
     component: 'Input',
     fieldName: 'emailAddress',
+    label: '邮箱',
+    rules: z
+      .string()
+      .regex(
+        /^$|^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+        '请输入正确的邮箱地址',
+      )
+      .optional(),
     componentProps: {
       clearable: true,
-      placeholder: '邮箱',
+      placeholder: '请输入邮箱',
     },
-  },
-  {
+  }),
+  genderType: (): SchemaItem => ({
     component: 'Select',
+    fieldName: 'genderType',
+    label: '性别',
+    componentProps: {
+      options: genderOptions,
+      placeholder: '请选择性别',
+    },
+  }),
+  isEnabled: (): SchemaItem => ({
+    component: 'RadioGroup',
     fieldName: 'isEnabled',
+    label: '是否启用',
+    defaultValue: true,
+    componentProps: {
+      options: enabledOptions,
+    },
+  }),
+  nickname: (): SchemaItem => ({
+    component: 'Input',
+    fieldName: 'nickname',
+    label: '昵称',
+    rules: z
+      .string()
+      .trim()
+      .min(1, '昵称不能为空')
+      .max(30, '昵称不能超过30个字符'),
+    componentProps: {
+      maxlength: 30,
+      placeholder: '请输入昵称',
+      showWordLimit: true,
+    },
+  }),
+  phoneNumber: (): SchemaItem => ({
+    component: 'Input',
+    fieldName: 'phoneNumber',
+    label: '手机号',
+    rules: z
+      .string()
+      .regex(/^$|^1[3-9]\d{9}$/, '请输入正确的手机号')
+      .optional(),
     componentProps: {
       clearable: true,
-      options: enabledOptions,
-      placeholder: '启用状态',
+      placeholder: '请输入手机号',
     },
-  },
-  {
+  }),
+  signature: (): SchemaItem => ({
+    component: 'Input',
+    fieldName: 'signature',
+    label: '论坛签名',
+    componentProps: {
+      maxlength: 100,
+      placeholder: '请输入论坛签名',
+      rows: 3,
+      showWordLimit: true,
+      type: 'textarea',
+    },
+    formItemClass: 'col-span-2',
+  }),
+  status: (): SchemaItem => ({
     component: 'Select',
     fieldName: 'status',
+    label: '用户状态',
+    defaultValue: normalUserStatus as CreateUserStatusValue,
     componentProps: {
-      clearable: true,
       options: userStatusOptions,
-      placeholder: '用户状态',
+      placeholder: '请选择用户状态',
     },
-  },
+  }),
+} satisfies Record<string, () => SchemaItem>;
+
+function pickUserFields(...keys: Array<keyof typeof userField>): EsFormSchema {
+  return keys.map((key) => userField[key]());
+}
+
+function toSearchField(
+  key: keyof typeof userField,
+  placeholder?: string,
+): SchemaItem {
+  const field = userField[key]();
+  const {
+    defaultValue: _defaultValue,
+    formItemClass: _formItemClass,
+    ...searchField
+  } = field;
+  const componentProps =
+    field.componentProps &&
+    typeof field.componentProps === 'object' &&
+    !Array.isArray(field.componentProps)
+      ? field.componentProps
+      : {};
+
+  return {
+    ...searchField,
+    component: field.component === 'RadioGroup' ? 'Select' : field.component,
+    componentProps: {
+      ...componentProps,
+      clearable: true,
+      placeholder: placeholder ?? field.label,
+    },
+    hideLabel: true,
+    label: '',
+    rules: '',
+  };
+}
+
+export const searchFormSchema: EsFormSchema = [
+  toSearchField('account'),
+  toSearchField('nickname'),
+  toSearchField('phoneNumber'),
+  toSearchField('emailAddress'),
+  toSearchField('isEnabled', '启用状态'),
+  toSearchField('status'),
   {
     component: 'Select',
     fieldName: 'deletedScope',
@@ -194,221 +335,45 @@ export const searchFormSchema: EsFormSchema = [
   },
 ];
 
-type CreateUserStatusValue = NonNullable<AppUsersCreateRequest['status']>;
-
 export const createFormSchema: EsFormSchema = [
-  {
-    component: 'Upload',
-    fieldName: 'avatarUrl',
-    label: '头像',
-    componentProps: {
-      accept: 'image/*',
-      maxCount: 1,
-      returnDataType: 'url',
-      scene: UploadSceneEnum.SHARED,
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'nickname',
-    label: '昵称',
-    rules: z
-      .string()
-      .trim()
-      .min(1, '昵称不能为空')
-      .max(30, '昵称不能超过30个字符'),
-    componentProps: {
-      maxlength: 30,
-      placeholder: '请输入昵称',
-      showWordLimit: true,
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'password',
-    label: '密码',
-    rules: z
-      .string()
-      .min(6, '密码长度不能少于6位')
-      .max(32, '密码长度不能超过32位'),
-    componentProps: {
-      autocomplete: 'new-password',
-      placeholder: '请输入密码',
-      showPassword: true,
-      type: 'password',
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'phoneNumber',
-    label: '手机号',
-    rules: z
-      .string()
-      .regex(/^$|^1[3-9]\d{9}$/, '请输入正确的手机号')
-      .optional(),
-    componentProps: {
-      clearable: true,
-      placeholder: '请输入手机号',
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'emailAddress',
-    label: '邮箱',
-    rules: z
-      .string()
-      .regex(
-        /^$|^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
-        '请输入正确的邮箱地址',
-      )
-      .optional(),
-    componentProps: {
-      clearable: true,
-      placeholder: '请输入邮箱',
-    },
-  },
-  {
-    component: 'Select',
-    fieldName: 'genderType',
-    label: '性别',
-    componentProps: {
-      options: genderOptions,
-      placeholder: '请选择性别',
-    },
-  },
-  {
-    component: 'DatePicker',
-    fieldName: 'birthDate',
-    label: '出生日期',
-    componentProps: {
-      clearable: true,
-      placeholder: '请选择出生日期',
-      type: 'date',
-      valueFormat: 'YYYY-MM-DD',
-    },
-  },
-  {
-    component: 'RadioGroup',
-    fieldName: 'isEnabled',
-    label: '是否启用',
-    defaultValue: true,
-    componentProps: {
-      options: enabledOptions,
-    },
-  },
-  {
-    component: 'Select',
-    fieldName: 'status',
-    label: '用户状态',
-    defaultValue: normalUserStatus as CreateUserStatusValue,
-    componentProps: {
-      options: userStatusOptions,
-      placeholder: '请选择用户状态',
-    },
-  },
+  ...pickUserFields('avatarUrl', 'nickname'),
+  passwordField(),
+  ...pickUserFields(
+    'phoneNumber',
+    'emailAddress',
+    'genderType',
+    'birthDate',
+    'isEnabled',
+    'status',
+  ),
 ];
 
 export const editFormSchema: EsFormSchema = [
-  {
-    component: 'Upload',
-    fieldName: 'avatarUrl',
-    label: '头像',
-    componentProps: {
-      accept: 'image/*',
-      maxCount: 1,
-      returnDataType: 'url',
-      scene: UploadSceneEnum.SHARED,
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'nickname',
-    label: '昵称',
-    rules: z
-      .string()
-      .trim()
-      .min(1, '昵称不能为空')
-      .max(30, '昵称不能超过30个字符'),
-    componentProps: {
-      maxlength: 30,
-      placeholder: '请输入昵称',
-      showWordLimit: true,
-    },
-  },
+  ...pickUserFields(
+    'avatarUrl',
+    'nickname',
+    'phoneNumber',
+    'emailAddress',
+    'genderType',
+    'birthDate',
+    'signature',
+    'bio',
+  ),
+];
+
+export const passwordResetFormSchema: EsFormSchema = [
+  passwordField('新密码', '请输入新密码'),
   {
     component: 'Input',
-    fieldName: 'phoneNumber',
-    label: '手机号',
-    rules: z
-      .string()
-      .regex(/^$|^1[3-9]\d{9}$/, '请输入正确的手机号')
-      .optional(),
+    fieldName: 'confirmPassword',
+    label: '确认密码',
+    rules: passwordRules,
     componentProps: {
-      clearable: true,
-      placeholder: '请输入手机号',
+      autocomplete: 'new-password',
+      placeholder: '请再次输入新密码',
+      showPassword: true,
+      type: 'password',
     },
-  },
-  {
-    component: 'Input',
-    fieldName: 'emailAddress',
-    label: '邮箱',
-    rules: z
-      .string()
-      .regex(
-        /^$|^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
-        '请输入正确的邮箱地址',
-      )
-      .optional(),
-    componentProps: {
-      clearable: true,
-      placeholder: '请输入邮箱',
-    },
-  },
-  {
-    component: 'Select',
-    fieldName: 'genderType',
-    label: '性别',
-    componentProps: {
-      options: genderOptions,
-      placeholder: '请选择性别',
-    },
-  },
-  {
-    component: 'DatePicker',
-    fieldName: 'birthDate',
-    label: '出生日期',
-    componentProps: {
-      clearable: true,
-      placeholder: '请选择出生日期',
-      type: 'date',
-      valueFormat: 'YYYY-MM-DD',
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'signature',
-    label: '论坛签名',
-    componentProps: {
-      maxlength: 100,
-      placeholder: '请输入论坛签名',
-      rows: 3,
-      showWordLimit: true,
-      type: 'textarea',
-    },
-    formItemClass: 'col-span-2',
-  },
-  {
-    component: 'Input',
-    fieldName: 'bio',
-    label: '论坛简介',
-    componentProps: {
-      maxlength: 300,
-      placeholder: '请输入论坛简介',
-      rows: 4,
-      showWordLimit: true,
-      type: 'textarea',
-    },
-    formItemClass: 'col-span-2',
   },
 ];
 
@@ -451,19 +416,21 @@ export const statusFormSchema: EsFormSchema = [
 ];
 
 const userTableSchema: EsFormSchema = [
-  { component: 'Upload', fieldName: 'avatarUrl', label: '头像' },
-  { component: 'Input', fieldName: 'account', label: '账号' },
-  { component: 'Input', fieldName: 'nickname', label: '昵称' },
-  { component: 'Input', fieldName: 'phoneNumber', label: '手机号' },
-  { component: 'Input', fieldName: 'emailAddress', label: '邮箱' },
-  { component: 'Select', fieldName: 'genderType', label: '性别' },
+  ...pickUserFields(
+    'avatarUrl',
+    'account',
+    'nickname',
+    'phoneNumber',
+    'emailAddress',
+    'genderType',
+  ),
   { component: 'Input', fieldName: 'levelName', label: '等级' },
   { component: 'InputNumber', fieldName: 'points', label: '积分' },
   { component: 'InputNumber', fieldName: 'experience', label: '经验' },
   { component: 'InputNumber', fieldName: 'topicCount', label: '主题数' },
   { component: 'InputNumber', fieldName: 'replyCount', label: '回复数' },
-  { component: 'Switch', fieldName: 'isEnabled', label: '启用状态' },
-  { component: 'Select', fieldName: 'status', label: '用户状态' },
+  { ...userField.isEnabled(), component: 'Switch', label: '启用状态' },
+  userField.status(),
   { component: 'DatePicker', fieldName: 'banUntil', label: '状态截止' },
   { component: 'DatePicker', fieldName: 'lastLoginAt', label: '最后登录' },
   { component: 'Input', fieldName: 'lastLoginIp', label: '登录 IP' },

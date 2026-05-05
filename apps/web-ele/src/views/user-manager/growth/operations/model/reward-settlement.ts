@@ -21,48 +21,82 @@ type RewardSettlementSearchValues = GrowthRewardSettlementPageRequest & {
   dateRange?: string[];
 };
 
-export const rewardSettlementSearchFormSchema: EsFormSchema = [
-  {
+type RewardSettlementSchemaField = EsFormSchema[number];
+
+const rewardSettlementFieldCatalog = {
+  eventCode: {
+    component: 'Select',
+    fieldName: 'eventCode',
+    label: '事件编码',
+  },
+  settlementStatus: {
+    component: 'Select',
+    fieldName: 'settlementStatus',
+    label: '结算状态',
+  },
+  settlementType: {
+    component: 'Select',
+    fieldName: 'settlementType',
+    label: '结算类型',
+  },
+  userId: {
     component: 'InputNumber',
+    fieldName: 'userId',
+    label: '用户 ID',
+  },
+} satisfies Record<string, RewardSettlementSchemaField>;
+
+function createRewardSettlementField(
+  field: keyof typeof rewardSettlementFieldCatalog,
+  overrides: Partial<RewardSettlementSchemaField> = {},
+): RewardSettlementSchemaField {
+  const base = rewardSettlementFieldCatalog[
+    field
+  ] as RewardSettlementSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
+export const rewardSettlementSearchFormSchema: EsFormSchema = [
+  createRewardSettlementField('userId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '用户 ID',
     },
-    fieldName: 'userId',
-    label: '用户 ID',
-  },
-  {
-    component: 'Select',
+  }),
+  createRewardSettlementField('eventCode', {
     componentProps: {
       clearable: true,
       filterable: true,
       options: growthTypeOptions,
       placeholder: '事件编码',
     },
-    fieldName: 'eventCode',
-    label: '事件编码',
-  },
-  {
-    component: 'Select',
+  }),
+  createRewardSettlementField('settlementType', {
     componentProps: {
       clearable: true,
       options: settlementTypeOptions,
       placeholder: '结算类型',
     },
-    fieldName: 'settlementType',
-    label: '结算类型',
-  },
-  {
-    component: 'Select',
+  }),
+  createRewardSettlementField('settlementStatus', {
     componentProps: {
       clearable: true,
       options: settlementStatusOptions,
       placeholder: '结算状态',
     },
-    fieldName: 'settlementStatus',
-    label: '结算状态',
-  },
+  }),
   {
     component: 'DatePicker',
     componentProps: {
@@ -79,12 +113,12 @@ export const rewardSettlementSearchFormSchema: EsFormSchema = [
 
 const rewardSettlementTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'id', label: '结算 ID' },
-  { component: 'InputNumber', fieldName: 'userId', label: '用户 ID' },
+  createRewardSettlementField('userId'),
   { component: 'Input', fieldName: 'eventKey', label: '事件 key' },
-  { component: 'Select', fieldName: 'eventCode', label: '事件编码' },
+  createRewardSettlementField('eventCode'),
   { component: 'Input', fieldName: 'source', label: '来源' },
-  { component: 'Select', fieldName: 'settlementType', label: '结算类型' },
-  { component: 'Select', fieldName: 'settlementStatus', label: '结算状态' },
+  createRewardSettlementField('settlementType'),
+  createRewardSettlementField('settlementStatus'),
   {
     component: 'Select',
     fieldName: 'settlementResultType',

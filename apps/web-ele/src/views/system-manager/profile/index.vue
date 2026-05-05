@@ -84,10 +84,35 @@ const fetchUserInfo = async () => {
   }
 };
 
+function buildProfileUpdatePayload(values: UpdateUserDto): UpdateUserDto {
+  if (!userInfo.value) {
+    throw new Error('User profile is not loaded');
+  }
+
+  return {
+    id: userInfo.value.id,
+    isEnabled: userInfo.value.isEnabled,
+    role: userInfo.value.role,
+    username: values.username,
+    avatar: values.avatar,
+    mobile: values.mobile,
+  };
+}
+
+function buildPasswordChangePayload(
+  values: ChangePasswordDto,
+): ChangePasswordDto {
+  return {
+    oldPassword: values.oldPassword,
+    newPassword: values.newPassword,
+    confirmPassword: values.confirmPassword,
+  };
+}
+
 // 提交：编辑用户信息
 async function handleEditSubmit(values: UpdateUserDto) {
   try {
-    await systemUserProfileUpdateApi({ ...userInfo.value, ...values });
+    await systemUserProfileUpdateApi(buildProfileUpdatePayload(values));
     useMessage.success('用户信息更新成功');
     await fetchUserInfo();
     // 更新全局用户信息
@@ -113,7 +138,7 @@ async function handlePasswordSubmit(values: ChangePasswordDto) {
     return;
   }
   try {
-    await systemUserPasswordChangeApi(values);
+    await systemUserPasswordChangeApi(buildPasswordChangePayload(values));
     useMessage.success('密码修改成功');
     passwordFormApi.close();
   } catch {

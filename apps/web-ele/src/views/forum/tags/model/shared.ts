@@ -37,20 +37,69 @@ export const auditRoleMap = Object.fromEntries(
   auditRoleOptions.map((item) => [item.value, item]),
 ) as Record<number, (typeof auditRoleOptions)[number]>;
 
-export const createFormSchema: EsFormSchema = [
-  {
+type HashtagSchemaField = EsFormSchema[number];
+
+const hashtagFieldCatalog = {
+  auditStatus: {
+    component: 'Select',
+    fieldName: 'auditStatus',
+    label: '审核状态',
+  },
+  description: {
     component: 'Input',
+    fieldName: 'description',
+    label: '运营描述',
+  },
+  displayName: {
+    component: 'Input',
+    fieldName: 'displayName',
+    label: '话题名称',
+  },
+  isHidden: {
+    component: 'Select',
+    fieldName: 'isHidden',
+    label: '隐藏',
+  },
+  manualBoost: {
+    component: 'InputNumber',
+    fieldName: 'manualBoost',
+    label: '人工热度',
+  },
+} satisfies Record<string, HashtagSchemaField>;
+
+function withoutColorOptions<T extends { color?: unknown }>(options: T[]) {
+  return options.map(({ color: _color, ...rest }) => rest);
+}
+
+function createHashtagField(
+  field: keyof typeof hashtagFieldCatalog,
+  overrides: Partial<HashtagSchemaField> = {},
+): HashtagSchemaField {
+  const base = hashtagFieldCatalog[field] as HashtagSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
+export const createFormSchema: EsFormSchema = [
+  createHashtagField('displayName', {
     componentProps: {
       maxlength: 50,
       placeholder: '请输入话题名称',
       showWordLimit: true,
     },
-    fieldName: 'displayName',
-    label: '话题名称',
     rules: 'required',
-  },
-  {
-    component: 'InputNumber',
+  }),
+  createHashtagField('manualBoost', {
     componentProps: {
       align: 'left',
       class: '!w-full',
@@ -59,34 +108,25 @@ export const createFormSchema: EsFormSchema = [
       placeholder: '请输入人工热度',
     },
     defaultValue: 0,
-    fieldName: 'manualBoost',
-    label: '人工热度',
-  },
-  {
-    component: 'Input',
+  }),
+  createHashtagField('description', {
     componentProps: {
       placeholder: '请输入运营描述',
       rows: 4,
       type: 'textarea',
     },
-    fieldName: 'description',
     formItemClass: 'col-span-2',
-    label: '运营描述',
-  },
+  }),
 ];
 
 export const editFormSchema: EsFormSchema = [
-  {
-    component: 'Input',
+  createHashtagField('displayName', {
     componentProps: {
       disabled: true,
       placeholder: '话题名称不可编辑',
     },
-    fieldName: 'displayName',
-    label: '话题名称',
-  },
-  {
-    component: 'InputNumber',
+  }),
+  createHashtagField('manualBoost', {
     componentProps: {
       align: 'left',
       class: '!w-full',
@@ -94,34 +134,28 @@ export const editFormSchema: EsFormSchema = [
       min: 0,
       placeholder: '请输入人工热度',
     },
-    fieldName: 'manualBoost',
-    label: '人工热度',
-  },
-  {
-    component: 'Input',
+  }),
+  createHashtagField('description', {
     componentProps: {
       placeholder: '请输入运营描述',
       rows: 4,
       type: 'textarea',
     },
-    fieldName: 'description',
     formItemClass: 'col-span-2',
-    label: '运营描述',
-  },
+  }),
 ];
 
 export const auditFormSchema: EsFormSchema = [
-  {
+  createHashtagField('auditStatus', {
     component: 'RadioGroup',
     componentProps: {
       class: 'w-full',
-      options: auditStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: withoutColorOptions(auditStatusOptions),
       placeholder: '请选择审核结果',
     },
-    fieldName: 'auditStatus',
     label: '审核结果',
     rules: 'required',
-  },
+  }),
   {
     component: 'Input',
     componentProps: {
@@ -143,24 +177,20 @@ export const searchFormSchema: EsFormSchema = [
     },
     fieldName: 'keyword',
   },
-  {
-    component: 'Select',
+  createHashtagField('auditStatus', {
     componentProps: {
       clearable: true,
-      options: auditStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: withoutColorOptions(auditStatusOptions),
       placeholder: '审核状态',
     },
-    fieldName: 'auditStatus',
-  },
-  {
-    component: 'Select',
+  }),
+  createHashtagField('isHidden', {
     componentProps: {
       clearable: true,
       options: hiddenOptions,
       placeholder: '隐藏状态',
     },
-    fieldName: 'isHidden',
-  },
+  }),
   {
     component: 'DatePicker',
     componentProps: {
@@ -175,11 +205,11 @@ export const searchFormSchema: EsFormSchema = [
 ];
 
 const pageTableSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'displayName', label: '话题名称' },
+  createHashtagField('displayName'),
   { component: 'Input', fieldName: 'slug', label: 'Slug' },
-  { component: 'Select', fieldName: 'auditStatus', label: '审核状态' },
-  { component: 'Select', fieldName: 'isHidden', label: '隐藏' },
-  { component: 'InputNumber', fieldName: 'manualBoost', label: '人工热度' },
+  createHashtagField('auditStatus'),
+  createHashtagField('isHidden'),
+  createHashtagField('manualBoost'),
   { component: 'InputNumber', fieldName: 'followerCount', label: '关注人数' },
   { component: 'InputNumber', fieldName: 'topicRefCount', label: '主题引用数' },
   {

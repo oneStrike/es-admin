@@ -82,10 +82,37 @@ async function openFormModal(row?: SystemUserRow) {
     .open();
 }
 
+function buildSystemUserPayload(
+  values: SystemUserCreateRequest | UpdateUserDto,
+): SystemUserCreateRequest | UpdateUserDto {
+  if ('id' in values && typeof values.id === 'number') {
+    return {
+      id: values.id,
+      username: values.username,
+      mobile: values.mobile,
+      avatar: values.avatar,
+      role: values.role,
+      isEnabled: values.isEnabled,
+    };
+  }
+
+  return {
+    username: values.username,
+    mobile: values.mobile,
+    password: values.password,
+    confirmPassword: values.confirmPassword,
+    role: values.role,
+    isEnabled: values.isEnabled,
+    avatar: values.avatar,
+  };
+}
+
 async function handleSubmit(values: SystemUserCreateRequest | UpdateUserDto) {
-  await (values?.id
-    ? systemUserProfileUpdateApi(values as UpdateUserDto)
-    : systemUserCreateApi(values as SystemUserCreateRequest));
+  const payload = buildSystemUserPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? systemUserProfileUpdateApi(payload as UpdateUserDto)
+    : systemUserCreateApi(payload as SystemUserCreateRequest));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();

@@ -162,19 +162,7 @@ async function handleSubmit(
   const data = shareData.value;
   if (!data) return;
 
-  const payload = {
-    ...(values as Record<string, any>),
-    canComment:
-      values.canComment ?? currentChapterRecord.value?.canComment ?? true,
-    canDownload:
-      values.canDownload ?? currentChapterRecord.value?.canDownload ?? false,
-    isPreview:
-      values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
-    price: values.price ?? currentChapterRecord.value?.price ?? 0,
-    viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
-    workId: data.workId,
-    workType: 2,
-  } as ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest;
+  const payload = buildNovelChapterPayload(values, data.workId);
 
   await (payload?.id
     ? contentNovelChapterUpdateApi(payload as ContentNovelChapterUpdateRequest)
@@ -184,6 +172,37 @@ async function handleSubmit(
 
   useMessage.success(payload?.id ? '章节更新成功' : '章节创建成功');
   await gridApi.reload();
+}
+
+function buildNovelChapterPayload(
+  values: ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest,
+  workId: number,
+): ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest {
+  const payload = {
+    cover: values.cover,
+    sortOrder: values.sortOrder,
+    title: values.title,
+    subtitle: values.subtitle,
+    requiredViewLevelId: values.requiredViewLevelId,
+    publishAt: values.publishAt,
+    description: values.description,
+    content: values.content,
+    remark: values.remark,
+    canComment:
+      values.canComment ?? currentChapterRecord.value?.canComment ?? true,
+    canDownload:
+      values.canDownload ?? currentChapterRecord.value?.canDownload ?? false,
+    isPreview:
+      values.isPreview ?? currentChapterRecord.value?.isPreview ?? false,
+    price: values.price ?? currentChapterRecord.value?.price ?? 0,
+    viewRule: values.viewRule ?? currentChapterRecord.value?.viewRule ?? -1,
+    workId,
+    workType: 2,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as ContentNovelChapterUpdateRequest)
+    : (payload as ContentNovelChapterCreateRequest);
 }
 
 async function deleteChapter(record: ContentNovelChapterDetailResponse) {

@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { BaseAppPageDto, UpdateAppPageDto } from '#/api/types';
+import type {
+  BaseAppPageDto,
+  CreateAppPageDto,
+  UpdateAppPageDto,
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -62,10 +66,31 @@ async function openFormModal(row?: BaseAppPageDto) {
   formApi.setData({ title: '页面', record }).open();
 }
 
-async function handleSubmit(values: BaseAppPageDto | UpdateAppPageDto) {
-  await (values?.id
-    ? appPageUpdateApi(values as UpdateAppPageDto)
-    : appPageCreateApi(values as BaseAppPageDto));
+function buildAppPagePayload(
+  values: CreateAppPageDto | UpdateAppPageDto,
+): CreateAppPageDto | UpdateAppPageDto {
+  const payload = {
+    code: values.code,
+    path: values.path,
+    name: values.name,
+    title: values.title,
+    accessLevel: values.accessLevel,
+    isEnabled: values.isEnabled,
+    enablePlatform: values.enablePlatform,
+    description: values.description,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateAppPageDto)
+    : (payload as CreateAppPageDto);
+}
+
+async function handleSubmit(values: CreateAppPageDto | UpdateAppPageDto) {
+  const payload = buildAppPagePayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? appPageUpdateApi(payload as UpdateAppPageDto)
+    : appPageCreateApi(payload as CreateAppPageDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
@@ -153,7 +178,7 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
     <DetailModal
       :api="appPageDetailApi"
       :cards="getDetailCards"
-      class="!w-[800px]"
+      class="w-[800px]"
     />
   </Page>
 </template>

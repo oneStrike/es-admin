@@ -141,7 +141,7 @@ defineExpose({
 </script>
 
 <template>
-  <Modal class="!w-[1000px]">
+  <Modal class="w-[1000px]">
     <div v-loading="loading" class="space-y-6">
       <!-- 置顶图片卡片 -->
       <div

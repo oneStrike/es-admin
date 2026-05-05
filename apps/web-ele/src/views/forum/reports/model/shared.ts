@@ -285,18 +285,65 @@ export function resolveReportCommentState(
   );
 }
 
+type ReportSchemaField = EsFormSchema[number];
+
+const reportFieldCatalog = {
+  reasonType: {
+    component: 'Select',
+    fieldName: 'reasonType',
+    label: '举报原因',
+  },
+  sceneType: {
+    component: 'Select',
+    fieldName: 'sceneType',
+    label: '场景类型',
+  },
+  status: {
+    component: 'Select',
+    fieldName: 'status',
+    label: '举报状态',
+  },
+  targetType: {
+    component: 'Select',
+    fieldName: 'targetType',
+    label: '目标类型',
+  },
+} satisfies Record<string, ReportSchemaField>;
+
+function withoutColorOptions<T extends { color?: unknown }>(options: T[]) {
+  return options.map(({ color: _color, ...rest }) => rest);
+}
+
+function createReportField(
+  field: keyof typeof reportFieldCatalog,
+  overrides: Partial<ReportSchemaField> = {},
+): ReportSchemaField {
+  const base = reportFieldCatalog[field] as ReportSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
 export const handleFormSchema: EsFormSchema = [
-  {
+  createReportField('status', {
     component: 'RadioGroup',
     componentProps: {
       class: 'w-full',
       options: handleStatusOptions,
       placeholder: '请选择处理结果',
     },
-    fieldName: 'status',
     label: '处理结果',
     rules: 'required',
-  },
+  }),
   {
     component: 'Input',
     componentProps: {
@@ -310,43 +357,35 @@ export const handleFormSchema: EsFormSchema = [
 ];
 
 export const searchFormSchema: EsFormSchema = [
-  {
-    component: 'Select',
+  createReportField('status', {
     componentProps: {
       clearable: true,
-      options: reportStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: withoutColorOptions(reportStatusOptions),
       placeholder: '举报状态',
     },
     defaultValue: 1,
-    fieldName: 'status',
-  },
-  {
-    component: 'Select',
+  }),
+  createReportField('reasonType', {
     componentProps: {
       clearable: true,
       options: reasonTypeOptions,
       placeholder: '举报原因',
     },
-    fieldName: 'reasonType',
-  },
-  {
-    component: 'Select',
+  }),
+  createReportField('targetType', {
     componentProps: {
       clearable: true,
       options: targetTypeOptions,
       placeholder: '目标类型',
     },
-    fieldName: 'targetType',
-  },
-  {
-    component: 'Select',
+  }),
+  createReportField('sceneType', {
     componentProps: {
       clearable: true,
       options: sceneTypeOptions,
       placeholder: '场景类型',
     },
-    fieldName: 'sceneType',
-  },
+  }),
   {
     component: 'DatePicker',
     componentProps: {
@@ -412,14 +451,14 @@ export const searchFormSchema: EsFormSchema = [
 
 const pageTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'reporterSummary', label: '举报人' },
-  { component: 'Select', fieldName: 'targetType', label: '目标类型' },
+  createReportField('targetType'),
   { component: 'Input', fieldName: 'targetTitle', label: '举报目标' },
   { component: 'Input', fieldName: 'targetExtra', label: '关联信息' },
-  { component: 'Select', fieldName: 'sceneType', label: '场景类型' },
+  createReportField('sceneType'),
   { component: 'Input', fieldName: 'sceneTitle', label: '业务场景' },
   { component: 'Input', fieldName: 'sceneExtra', label: '所属对象' },
-  { component: 'Select', fieldName: 'reasonType', label: '举报原因' },
-  { component: 'Select', fieldName: 'status', label: '状态' },
+  createReportField('reasonType'),
+  createReportField('status', { label: '状态' }),
   { component: 'Input', fieldName: 'description', label: '举报说明' },
   { component: 'Input', fieldName: 'handlerSummary', label: '处理人' },
   { component: 'Input', fieldName: 'evidenceUrl', label: '证据' },

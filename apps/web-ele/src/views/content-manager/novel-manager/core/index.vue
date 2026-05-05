@@ -172,10 +172,36 @@ useDict('work_age_rating,work_publisher,work_region,work_language').then(
 async function handleSubmit(
   values: ContentNovelCreateRequest | ContentNovelUpdateRequest,
 ) {
-  const rawValues = { ...(values as Record<string, any>) };
-  delete rawValues.price;
+  const payload = buildNovelPayload(values);
+
+  await ('id' in payload && payload.id
+    ? contentNovelUpdateApi(payload as ContentNovelUpdateRequest)
+    : contentNovelCreateApi(payload as ContentNovelCreateRequest));
+  useMessage.success('操作成功');
+  await gridApi.reload();
+}
+
+function buildNovelPayload(
+  values: ContentNovelCreateRequest | ContentNovelUpdateRequest,
+): ContentNovelCreateRequest | ContentNovelUpdateRequest {
   const payload = {
-    ...rawValues,
+    cover: values.cover,
+    name: values.name,
+    alias: values.alias,
+    authorIds: values.authorIds,
+    serialStatus: values.serialStatus,
+    region: values.region,
+    language: values.language,
+    ageRating: values.ageRating,
+    categoryIds: values.categoryIds,
+    description: values.description,
+    publisher: values.publisher,
+    originalSource: values.originalSource,
+    copyright: values.copyright,
+    disclaimer: values.disclaimer,
+    requiredViewLevelId: values.requiredViewLevelId,
+    publishAt: values.publishAt,
+    remark: values.remark,
     canComment:
       values.canComment ?? currentNovelRecord.value?.canComment ?? true,
     chapterPrice:
@@ -191,13 +217,11 @@ async function handleSubmit(
     tagIds: values.tagIds ?? currentNovelRecord.value?.tagIds ?? [],
     type: 2,
     viewRule: values.viewRule ?? currentNovelRecord.value?.viewRule ?? 0,
-  } as ContentNovelCreateRequest | ContentNovelUpdateRequest;
+  };
 
-  await ('id' in payload && payload.id
-    ? contentNovelUpdateApi(payload as ContentNovelUpdateRequest)
-    : contentNovelCreateApi(payload as ContentNovelCreateRequest));
-  useMessage.success('操作成功');
-  await gridApi.reload();
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as ContentNovelUpdateRequest)
+    : (payload as ContentNovelCreateRequest);
 }
 
 async function deleteNovel(record: BaseWorkDto) {

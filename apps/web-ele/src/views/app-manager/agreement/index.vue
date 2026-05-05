@@ -76,10 +76,28 @@ async function openFormModal(row?: AgreementRow) {
   formApi.setData({ title: '协议', record }).open();
 }
 
+function buildAgreementPayload(
+  values: CreateAgreementDto | UpdateAgreementDto,
+): CreateAgreementDto | UpdateAgreementDto {
+  const payload = {
+    title: values.title,
+    version: values.version,
+    showInAuth: values.showInAuth,
+    isForce: values.isForce,
+    content: values.content,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateAgreementDto)
+    : (payload as CreateAgreementDto);
+}
+
 async function handleSubmit(values: CreateAgreementDto | UpdateAgreementDto) {
-  await (typeof (values as UpdateAgreementDto).id === 'number'
-    ? agreementUpdateApi(values as UpdateAgreementDto)
-    : agreementCreateApi(values as CreateAgreementDto));
+  const payload = buildAgreementPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? agreementUpdateApi(payload as UpdateAgreementDto)
+    : agreementCreateApi(payload as CreateAgreementDto));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
@@ -218,10 +236,10 @@ async function writeClipboardText(text: string) {
     <DetailModal
       :api="agreementDetailApi"
       :cards="getDetailCards"
-      class="!w-[900px]"
+      class="w-[900px]"
     />
 
-    <PreviewModal class="!h-[82vh] !w-[960px]">
+    <PreviewModal class="h-[82vh] w-[960px]">
       <div class="flex h-full min-h-0 flex-col gap-3">
         <div class="shrink-0 truncate text-sm text-muted-foreground">
           {{ previewTitle || '协议预览' }}

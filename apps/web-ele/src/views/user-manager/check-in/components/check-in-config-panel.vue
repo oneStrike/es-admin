@@ -112,8 +112,7 @@ const [PatternOverviewDrawer, patternOverviewDrawerApi] = useVbenDrawer({
 });
 
 const [SignedUserQueryModal, signedUserQueryModalApi] = useVbenModal({
-  class:
-    '!top-[5vh] !h-[86vh] !max-h-[86vh] !w-[1180px] max-w-[calc(100vw-32px)]',
+  class: 'top-[5vh] h-[86vh] max-h-[86vh] w-[1180px] max-w-[calc(100vw-32px)]',
   connectedComponent: CheckInSignedUserQueryDialog,
   contentClass: 'min-h-0 !overflow-hidden p-3',
   footer: false,

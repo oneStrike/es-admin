@@ -151,7 +151,7 @@ async function deleteApplication(row: ForumModeratorApplicationDto) {
     <DetailModal
       :api="forumModeratorApplicationDetailApi"
       :cards="getDetailCards"
-      class="!w-[980px]"
+      class="w-[980px]"
     />
   </Page>
 </template>

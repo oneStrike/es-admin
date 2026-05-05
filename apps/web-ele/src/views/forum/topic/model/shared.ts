@@ -135,6 +135,74 @@ export function formatTopicActorSummary(
   return actor?.nickname || actor?.username || '-';
 }
 
+type TopicSchemaField = EsFormSchema[number];
+
+const topicFieldCatalog = {
+  auditStatus: {
+    component: 'Select',
+    fieldName: 'auditStatus',
+    label: '审核状态',
+  },
+  content: {
+    component: 'Input',
+    fieldName: 'content',
+    label: '帖子内容',
+  },
+  isFeatured: {
+    component: 'Select',
+    fieldName: 'isFeatured',
+    label: '精华',
+  },
+  isHidden: {
+    component: 'Select',
+    fieldName: 'isHidden',
+    label: '隐藏',
+  },
+  isLocked: {
+    component: 'Select',
+    fieldName: 'isLocked',
+    label: '锁定',
+  },
+  isPinned: {
+    component: 'Select',
+    fieldName: 'isPinned',
+    label: '置顶',
+  },
+  sectionId: {
+    component: 'Select',
+    fieldName: 'sectionId',
+    label: '所属板块',
+  },
+  title: {
+    component: 'Input',
+    fieldName: 'title',
+    label: '帖子标题',
+  },
+} satisfies Record<string, TopicSchemaField>;
+
+function withoutColorOptions<T extends { color?: unknown }>(options: T[]) {
+  return options.map(({ color: _color, ...rest }) => rest);
+}
+
+function createTopicField(
+  field: keyof typeof topicFieldCatalog,
+  overrides: Partial<TopicSchemaField> = {},
+): TopicSchemaField {
+  const base = topicFieldCatalog[field] as TopicSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
 const userSearchSchema: EsFormSchema = [
   {
     component: 'Input',
@@ -208,81 +276,65 @@ export const createFormSchema: EsFormSchema = [
     label: '发帖用户',
     rules: 'arrayRequired',
   },
-  {
-    component: 'Select',
+  createTopicField('sectionId', {
     componentProps: {
       class: 'w-full',
       filterable: true,
       options: sectionOptions,
       placeholder: '请选择所属板块',
     },
-    fieldName: 'sectionId',
-    label: '所属板块',
     rules: 'selectRequired',
-  },
-  {
-    component: 'Input',
+  }),
+  createTopicField('title', {
     componentProps: {
       maxlength: 120,
       placeholder: '请输入帖子标题',
       showWordLimit: true,
     },
-    fieldName: 'title',
-    label: '帖子标题',
     rules: 'required',
-  },
-  {
-    component: 'Input',
+  }),
+  createTopicField('content', {
     componentProps: {
       placeholder: '请输入帖子内容',
       rows: 8,
       type: 'textarea',
     },
-    fieldName: 'content',
     formItemClass: 'col-span-2',
-    label: '帖子内容',
     rules: 'required',
-  },
+  }),
 ];
 
 export const editFormSchema: EsFormSchema = [
-  {
-    component: 'Input',
+  createTopicField('title', {
     componentProps: {
       maxlength: 120,
       placeholder: '请输入帖子标题',
       showWordLimit: true,
     },
-    fieldName: 'title',
-    label: '帖子标题',
     rules: 'required',
-  },
-  {
-    component: 'Input',
+  }),
+  createTopicField('content', {
     componentProps: {
       placeholder: '请输入帖子内容',
       rows: 8,
       type: 'textarea',
     },
-    fieldName: 'content',
     formItemClass: 'col-span-2',
-    label: '帖子内容',
     rules: 'required',
-  },
+  }),
 ];
 
 export const auditFormSchema: EsFormSchema = [
-  {
+  createTopicField('auditStatus', {
     component: 'RadioGroup',
     componentProps: {
       class: 'w-full',
-      options: auditStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: withoutColorOptions(auditStatusOptions),
       placeholder: '请选择审核结果',
     },
-    fieldName: 'auditStatus',
     label: '审核结果',
     rules: 'required',
-  },
+  }),
   {
     component: 'Input',
     componentProps: {
@@ -298,31 +350,27 @@ export const auditFormSchema: EsFormSchema = [
 ];
 
 export const moveFormSchema: EsFormSchema = [
-  {
-    component: 'Select',
+  createTopicField('sectionId', {
     componentProps: {
       class: 'w-full',
       filterable: true,
       options: sectionOptions,
       placeholder: '请选择目标板块',
     },
-    fieldName: 'sectionId',
     label: '目标板块',
     rules: 'selectRequired',
-  },
+  }),
 ];
 
 export const searchFormSchema: EsFormSchema = [
-  {
-    component: 'Select',
-    fieldName: 'auditStatus',
+  createTopicField('auditStatus', {
     defaultValue: 0,
     componentProps: {
       clearable: true,
       options: auditStatusOptions,
       placeholder: '审核状态',
     },
-  },
+  }),
   {
     component: 'Input',
     fieldName: 'keyword',
@@ -331,9 +379,7 @@ export const searchFormSchema: EsFormSchema = [
       placeholder: '标题或内容关键词',
     },
   },
-  {
-    component: 'Select',
-    fieldName: 'sectionId',
+  createTopicField('sectionId', {
     componentProps: {
       class: 'w-full',
       clearable: true,
@@ -341,43 +387,35 @@ export const searchFormSchema: EsFormSchema = [
       options: sectionOptions,
       placeholder: '所属板块',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'isPinned',
+  }),
+  createTopicField('isPinned', {
     componentProps: {
       clearable: true,
       options: booleanFilterOptions,
       placeholder: '置顶',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'isFeatured',
+  }),
+  createTopicField('isFeatured', {
     componentProps: {
       clearable: true,
       options: booleanFilterOptions,
       placeholder: '精华',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'isLocked',
+  }),
+  createTopicField('isLocked', {
     componentProps: {
       clearable: true,
       options: booleanFilterOptions,
       placeholder: '锁定',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'isHidden',
+  }),
+  createTopicField('isHidden', {
     componentProps: {
       clearable: true,
       options: booleanFilterOptions,
       placeholder: '隐藏',
     },
-  },
+  }),
   {
     component: 'DatePicker',
     fieldName: 'dateRange',
@@ -401,15 +439,15 @@ export const searchFormSchema: EsFormSchema = [
 ];
 
 const topicTableSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'title', label: '帖子标题' },
+  createTopicField('title'),
   { component: 'Input', fieldName: 'contentPreview', label: '正文摘要' },
   { component: 'Input', fieldName: 'userSummary', label: '发帖用户' },
   { component: 'Input', fieldName: 'sectionSummary', label: '所属板块' },
-  { component: 'RadioGroup', fieldName: 'auditStatus', label: '审核状态' },
-  { component: 'Select', fieldName: 'isPinned', label: '置顶' },
-  { component: 'Select', fieldName: 'isFeatured', label: '精华' },
-  { component: 'Select', fieldName: 'isLocked', label: '锁定' },
-  { component: 'Select', fieldName: 'isHidden', label: '隐藏' },
+  createTopicField('auditStatus', { component: 'RadioGroup' }),
+  createTopicField('isPinned'),
+  createTopicField('isFeatured'),
+  createTopicField('isLocked'),
+  createTopicField('isHidden'),
   { component: 'InputNumber', fieldName: 'viewCount', label: '浏览数' },
   { component: 'InputNumber', fieldName: 'commentCount', label: '评论数' },
   { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },

@@ -44,6 +44,7 @@ import {
   isPermanentStatus,
   isTemporaryStatus,
   normalUserStatus,
+  passwordResetFormSchema,
   searchFormSchema,
   statusFormSchema,
   userColumns,
@@ -124,6 +125,27 @@ const [DetailModal, detailApi] = useVbenModal({
 const [OperationModal, operationApi] = useVbenModal({
   connectedComponent: UserOperationModal,
 });
+
+async function encryptPassword(password: string) {
+  const publicKey = await authKeyPublicApi();
+  const publicKeyPem = forge.pki.publicKeyFromPem(publicKey.publicKey);
+  const encrypted = publicKeyPem.encrypt(password, 'RSA-OAEP', {
+    md: forge.md.sha256.create(),
+    mgf1: {
+      md: forge.md.sha256.create(),
+    },
+  });
+
+  return forge.util.encode64(encrypted);
+}
+
+function optionalTrim(value?: null | string) {
+  return value?.trim() || undefined;
+}
+
+function optionalValue<T>(value?: null | T) {
+  return value || undefined;
+}
 
 async function toggleUserEnabled(row: AdminAppUserPageItemDto) {
   if (!isSuperAdmin.value) {
@@ -263,22 +285,15 @@ function openPasswordModal(row: AdminAppUserPageItemDto) {
 }
 
 async function handleCreateSubmit(values: AppUsersCreateRequest) {
-  const publicKey = await authKeyPublicApi();
-  const publicKeyPem = forge.pki.publicKeyFromPem(publicKey.publicKey);
-  const encrypted = publicKeyPem.encrypt(values.password, 'RSA-OAEP', {
-    md: forge.md.sha256.create(),
-    mgf1: {
-      md: forge.md.sha256.create(),
-    },
-  });
-
   await appUsersCreateApi({
-    ...values,
-    avatarUrl: values.avatarUrl || undefined,
-    emailAddress: values.emailAddress?.trim() || undefined,
-    nickname: values.nickname?.trim(),
-    password: forge.util.encode64(encrypted),
-    phoneNumber: values.phoneNumber?.trim() || undefined,
+    avatarUrl: optionalValue(values.avatarUrl),
+    birthDate: optionalValue(values.birthDate),
+    emailAddress: optionalTrim(values.emailAddress),
+    genderType: values.genderType,
+    isEnabled: values.isEnabled,
+    nickname: values.nickname.trim(),
+    password: await encryptPassword(values.password),
+    phoneNumber: optionalTrim(values.phoneNumber),
     status: values.status ?? normalUserStatus,
   });
 
@@ -295,18 +310,9 @@ async function handlePasswordSubmit(
     return;
   }
 
-  const publicKey = await authKeyPublicApi();
-  const publicKeyPem = forge.pki.publicKeyFromPem(publicKey.publicKey);
-  const encrypted = publicKeyPem.encrypt(values.password, 'RSA-OAEP', {
-    md: forge.md.sha256.create(),
-    mgf1: {
-      md: forge.md.sha256.create(),
-    },
-  });
-
   await appUsersPasswordResetApi({
     id: values.id,
-    password: forge.util.encode64(encrypted),
+    password: await encryptPassword(values.password),
   });
 
   useMessage.success('密码重置成功');
@@ -315,13 +321,15 @@ async function handlePasswordSubmit(
 
 async function handleEditSubmit(values: AppUsersProfileUpdateRequest) {
   await appUsersProfileUpdateApi({
-    ...values,
-    avatarUrl: values.avatarUrl || undefined,
-    bio: values.bio?.trim() || undefined,
-    emailAddress: values.emailAddress?.trim() || undefined,
-    nickname: values.nickname?.trim(),
-    phoneNumber: values.phoneNumber?.trim() || undefined,
-    signature: values.signature?.trim() || undefined,
+    avatarUrl: optionalValue(values.avatarUrl),
+    bio: optionalTrim(values.bio),
+    birthDate: optionalValue(values.birthDate),
+    emailAddress: optionalTrim(values.emailAddress),
+    genderType: values.genderType,
+    id: values.id,
+    nickname: optionalTrim(values.nickname),
+    phoneNumber: optionalTrim(values.phoneNumber),
+    signature: optionalTrim(values.signature),
   });
 
   useMessage.success('用户资料更新成功');
@@ -544,32 +552,7 @@ function mapDetailToEditRecord(
     <EditForm :schema="editFormSchema" :on-submit="handleEditSubmit" />
     <StatusForm :schema="statusFormSchema" :on-submit="handleStatusSubmit" />
     <PasswordForm
-      :schema="[
-        {
-          component: 'Input',
-          fieldName: 'password',
-          label: '新密码',
-          rules: 'required',
-          componentProps: {
-            autocomplete: 'new-password',
-            placeholder: '请输入新密码',
-            showPassword: true,
-            type: 'password',
-          },
-        },
-        {
-          component: 'Input',
-          fieldName: 'confirmPassword',
-          label: '确认密码',
-          rules: 'required',
-          componentProps: {
-            autocomplete: 'new-password',
-            placeholder: '请再次输入新密码',
-            showPassword: true,
-            type: 'password',
-          },
-        },
-      ]"
+      :schema="passwordResetFormSchema"
       :on-submit="handlePasswordSubmit"
     />
     <DetailModal

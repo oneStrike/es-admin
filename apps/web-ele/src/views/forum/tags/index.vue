@@ -271,7 +271,7 @@ async function toggleHiddenStatus(row: ForumHashtagRow) {
     <DetailModal
       :api="forumHashtagsDetailApi"
       :cards="getDetailCards"
-      class="!w-[960px]"
+      class="w-[960px]"
     />
   </Page>
 </template>

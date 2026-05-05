@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { Recordable } from '@vben/types';
 
-import type { BaseDictionaryDto } from '#/api/types';
+import type {
+  BaseDictionaryDto,
+  CreateDictionaryDto,
+  UpdateDictionaryDto,
+} from '#/api/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -79,10 +83,30 @@ async function toggleEnableStatus(row: BaseDictionaryDto) {
 }
 
 // 添加数据字典
-async function addDictionary(values: any) {
-  await (values.id
-    ? Api.dictionaryUpdateApi(values)
-    : Api.dictionaryCreateApi(values));
+type DictionaryFormValues = CreateDictionaryDto | UpdateDictionaryDto;
+
+function buildDictionaryPayload(
+  values: DictionaryFormValues,
+): CreateDictionaryDto | UpdateDictionaryDto {
+  const payload = {
+    cover: values.cover,
+    name: values.name,
+    code: values.code,
+    isEnabled: values.isEnabled,
+    description: values.description,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateDictionaryDto)
+    : (payload as CreateDictionaryDto);
+}
+
+async function addDictionary(values: DictionaryFormValues) {
+  const payload = buildDictionaryPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? Api.dictionaryUpdateApi(payload as UpdateDictionaryDto)
+    : Api.dictionaryCreateApi(payload as CreateDictionaryDto));
   useMessage.success('操作成功');
   formApi.close();
   gridApi.reload();

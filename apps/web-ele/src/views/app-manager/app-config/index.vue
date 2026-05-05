@@ -23,18 +23,32 @@ const loading = ref(false);
 // 当前配置数据
 const currentConfig = ref<BaseAppConfigDto | null>(null);
 
+function buildAppConfigUpdatePayload(
+  values: AppConfigUpdateRequest,
+): AppConfigUpdateRequest {
+  return {
+    appName: values.appName,
+    appDesc: values.appDesc,
+    version: values.version,
+    appLogo: values.appLogo,
+    onboardingImage: values.onboardingImage,
+    themeColor: values.themeColor,
+    secondaryColor: values.secondaryColor,
+    optionalThemeColors: values.optionalThemeColors,
+    enableMaintenanceMode: values.enableMaintenanceMode,
+    maintenanceMessage: values.maintenanceMessage,
+  };
+}
+
 // 表单配置
 const [Form, formApi] = useVbenForm({
   schema: formSchema,
   layout: 'horizontal',
   wrapperClass: 'grid-cols-1 md:grid-cols-2 gap-6',
   handleSubmit: async (values) => {
-    const payload = currentConfig.value
-      ? { ...currentConfig.value, ...values }
-      : { ...values };
-    const { id: _id, ...request } = payload as AppConfigUpdateRequest &
-      BaseAppConfigDto;
-    await handleSaveConfig(request);
+    await handleSaveConfig(
+      buildAppConfigUpdatePayload(values as AppConfigUpdateRequest),
+    );
   },
   handleReset: async () => {
     if (currentConfig.value) {
@@ -61,10 +75,10 @@ async function loadConfig() {
  * 保存应用配置
  * @param values 配置数据
  */
-async function handleSaveConfig(values: AppConfigUpdateRequest) {
+async function handleSaveConfig(request: AppConfigUpdateRequest) {
   loading.value = true;
   try {
-    await appConfigUpdateApi(values);
+    await appConfigUpdateApi(request);
     useMessage.success('配置保存成功');
     await loadConfig();
   } finally {

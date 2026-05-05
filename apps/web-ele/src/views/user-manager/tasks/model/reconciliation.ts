@@ -11,6 +11,47 @@ import {
   taskVisibleStatusOptions,
 } from './options';
 
+type TaskReconciliationSchemaField = EsFormSchema[number];
+
+const taskReconciliationFieldCatalog = {
+  rewardSettlementId: {
+    component: 'InputNumber',
+    fieldName: 'rewardSettlementId',
+    label: '结算事实 ID',
+  },
+  settlementStatus: {
+    component: 'Select',
+    fieldName: 'settlementStatus',
+    label: '补偿状态',
+  },
+  userId: {
+    component: 'InputNumber',
+    fieldName: 'userId',
+    label: '用户 ID',
+  },
+} satisfies Record<string, TaskReconciliationSchemaField>;
+
+function createTaskReconciliationField(
+  field: keyof typeof taskReconciliationFieldCatalog,
+  overrides: Partial<TaskReconciliationSchemaField> = {},
+): TaskReconciliationSchemaField {
+  const base = taskReconciliationFieldCatalog[
+    field
+  ] as TaskReconciliationSchemaField;
+  const componentProps = overrides.componentProps ?? base.componentProps;
+
+  return {
+    ...base,
+    ...overrides,
+    componentProps:
+      componentProps &&
+      typeof componentProps === 'object' &&
+      !Array.isArray(componentProps)
+        ? { ...componentProps }
+        : componentProps,
+  };
+}
+
 export const taskReconciliationSearchFormSchema: EsFormSchema = [
   {
     component: 'InputNumber',
@@ -30,33 +71,27 @@ export const taskReconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '任务头 ID',
     },
   },
-  {
-    component: 'InputNumber',
-    fieldName: 'userId',
+  createTaskReconciliationField('userId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '用户 ID',
     },
-  },
-  {
-    component: 'InputNumber',
-    fieldName: 'rewardSettlementId',
+  }),
+  createTaskReconciliationField('rewardSettlementId', {
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '结算事实 ID',
     },
-  },
-  {
-    component: 'Select',
-    fieldName: 'settlementStatus',
+  }),
+  createTaskReconciliationField('settlementStatus', {
     componentProps: {
       clearable: true,
       options: taskRewardSettlementStatusOptions,
       placeholder: '补偿状态',
     },
-  },
+  }),
   {
     component: 'DatePicker',
     fieldName: 'dateRange',
@@ -73,14 +108,10 @@ export const taskReconciliationSearchFormSchema: EsFormSchema = [
 const taskReconciliationTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'id', label: '实例 ID' },
   { component: 'Input', fieldName: 'task', label: '任务' },
-  { component: 'InputNumber', fieldName: 'userId', label: '用户 ID' },
+  createTaskReconciliationField('userId'),
   { component: 'Select', fieldName: 'visibleStatus', label: '可见状态' },
-  {
-    component: 'InputNumber',
-    fieldName: 'rewardSettlementId',
-    label: '结算事实 ID',
-  },
-  { component: 'Select', fieldName: 'settlementStatus', label: '补偿状态' },
+  createTaskReconciliationField('rewardSettlementId'),
+  createTaskReconciliationField('settlementStatus'),
   { component: 'Select', fieldName: 'settlementResult', label: '补偿结果' },
   { component: 'Input', fieldName: 'steps', label: '步骤摘要' },
   { component: 'Input', fieldName: 'cycleKey', label: '周期键' },

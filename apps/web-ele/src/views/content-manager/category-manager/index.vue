@@ -121,10 +121,29 @@ async function toggleEnableStatus(row: BaseCategoryDto): Promise<void> {
  */
 type CategoryFormValues = CreateCategoryDto | UpdateCategoryDto;
 
+function buildCategoryPayload(
+  values: CategoryFormValues,
+): CreateCategoryDto | UpdateCategoryDto {
+  const payload = {
+    icon: values.icon,
+    name: values.name,
+    contentType: values.contentType,
+    sortOrder: values.sortOrder,
+    isEnabled: values.isEnabled,
+    description: values.description,
+  };
+
+  return 'id' in values && typeof values.id === 'number'
+    ? ({ id: values.id, ...payload } as UpdateCategoryDto)
+    : (payload as CreateCategoryDto);
+}
+
 async function addOrUpdateCategory(values: CategoryFormValues): Promise<void> {
-  await (values.id
-    ? contentCategoryUpdateApi(values as UpdateCategoryDto)
-    : contentCategoryCreateApi(values as CreateCategoryDto));
+  const payload = buildCategoryPayload(values);
+
+  await ('id' in payload && typeof payload.id === 'number'
+    ? contentCategoryUpdateApi(payload as UpdateCategoryDto)
+    : contentCategoryCreateApi(payload as CreateCategoryDto));
   useMessage.success('操作成功');
   await gridApi.reload();
 }
