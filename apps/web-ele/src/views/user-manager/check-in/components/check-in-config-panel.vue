@@ -635,7 +635,8 @@ onMounted(async () => {
                 :model-value="formState.makeupPeriodType"
                 class="!w-full"
                 @update:model-value="
-                  (value) => handleMakeupPeriodTypeChange(value as 1 | 2)
+                  (value: unknown) =>
+                    handleMakeupPeriodTypeChange(value as 1 | 2)
                 "
               >
                 <el-option
@@ -680,7 +681,7 @@ onMounted(async () => {
                 :model-value="baseRewardValues.points"
                 :step="1"
                 @update:model-value="
-                  (value) =>
+                  (value: unknown) =>
                     handleBaseRewardAmountChange(1, value as number | undefined)
                 "
               />
@@ -703,7 +704,7 @@ onMounted(async () => {
                 :model-value="baseRewardValues.experience"
                 :step="1"
                 @update:model-value="
-                  (value) =>
+                  (value: unknown) =>
                     handleBaseRewardAmountChange(2, value as number | undefined)
                 "
               />
@@ -953,7 +954,8 @@ onMounted(async () => {
           <el-radio-group
             :model-value="rewardEditor.scope"
             @update:model-value="
-              (value) => handleScopeChange(value as CheckInConfigEditorKind)
+              (value: unknown) =>
+                handleScopeChange(value as CheckInConfigEditorKind)
             "
           >
             <el-radio-button

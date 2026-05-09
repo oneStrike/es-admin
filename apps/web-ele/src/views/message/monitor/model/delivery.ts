@@ -42,7 +42,7 @@ const deliveryFormSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
-      options: deliveryStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: deliveryStatusOptions,
     },
     fieldName: 'status',
     label: monitorBusinessLabels.deliveryStatus,
@@ -50,7 +50,7 @@ const deliveryFormSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
-      options: booleanOptions.map(({ color: _color, ...rest }) => rest),
+      options: booleanOptions,
     },
     fieldName: 'usedTemplate',
     label: monitorBusinessLabels.usedTemplate,
@@ -128,9 +128,7 @@ export const deliveryColumns =
     deliveryFormSchema,
     {
       actions: {
-        fixed: 'right',
         show: true,
-        slots: { default: 'actions' },
         width: 100,
       },
       categoryKey: {
@@ -159,12 +157,12 @@ export const deliveryColumns =
         showOverflow: 'tooltip',
       },
       failureReason: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 240,
         showOverflow: 'tooltip',
       },
       fallbackReason: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 220,
         showOverflow: 'tooltip',
       },
@@ -186,7 +184,7 @@ export const deliveryColumns =
         minWidth: 120,
       },
       projectionKey: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 170,
         showOverflow: 'tooltip',
       },

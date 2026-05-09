@@ -95,7 +95,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Page auto-content-height title="应用配置">
+  <Page auto-content-height>
     <div class="rounded-lg bg-white p-6 shadow">
       <Form :loading="loading" />
     </div>

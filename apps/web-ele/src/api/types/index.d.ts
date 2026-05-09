@@ -14,6 +14,7 @@ export * from './dictionary.d';
 export * from './forum.d';
 export * from './growth.d';
 export * from './message.d';
+export * from './monetization.d';
 export * from './report.d';
 export * from './system.d';
 export * from './systemUser.d';

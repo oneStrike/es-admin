@@ -201,7 +201,6 @@ export function createEmojiAssetColumns(
       },
       preview: {
         field: 'preview',
-        minWidth: 100,
         slots: { default: 'preview' },
         sort: 0,
         title: '预览',
@@ -211,15 +210,6 @@ export function createEmojiAssetColumns(
         hide: options?.hidePackColumn,
         minWidth: 200,
         title: '所属表情包',
-      },
-      kind: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: emojiKindOptions,
-          },
-        },
-        minWidth: 110,
       },
       isAnimated: {
         formatter: ({ row }) => {
@@ -245,7 +235,6 @@ export function createEmojiAssetColumns(
         sortable: true,
       },
       isEnabled: {
-        minWidth: 100,
         show: true,
         slots: { default: 'isEnabled' },
         title: '状态',

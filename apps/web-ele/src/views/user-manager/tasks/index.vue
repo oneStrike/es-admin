@@ -17,11 +17,7 @@ const activeTab = ref<TabKey>('definition');
 </script>
 
 <template>
-  <Page
-    auto-content-height
-    content-class="es-full-height-page-content"
-    title="任务管理"
-  >
+  <Page auto-content-height content-class="es-full-height-page-content">
     <EsFullHeightTabs v-model="activeTab" class="es-pill-tabs">
       <el-tab-pane label="任务定义" name="definition">
         <TaskDefinitionPanel />

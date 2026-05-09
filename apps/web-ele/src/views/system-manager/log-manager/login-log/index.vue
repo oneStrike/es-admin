@@ -4,7 +4,7 @@ import type { AuditItemDto, AuditPageRequest } from '#/api/types';
 
 import { Page } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { auditPageApi } from '#/api/core';
 import { createSearchFormOptions } from '#/utils';
 
@@ -16,7 +16,7 @@ const gridOptions: VxeGridProps<AuditItemDto> = {
   height: 'auto',
   proxyConfig: {
     ajax: {
-      query: async ({ page }, formValues) => {
+      query: async ({ page, sorts }, formValues) => {
         // 处理时间范围参数
         let endDate, startDate;
         if (formValues.dateRange && formValues.dateRange.length === 2) {
@@ -24,8 +24,6 @@ const gridOptions: VxeGridProps<AuditItemDto> = {
         }
 
         const params: AuditPageRequest = {
-          pageIndex: page.currentPage,
-          pageSize: page.pageSize,
           username: formValues.username || undefined,
           isSuccess: formValues.isSuccess,
           startDate,
@@ -33,7 +31,9 @@ const gridOptions: VxeGridProps<AuditItemDto> = {
           path: '/api/admin/auth/login',
         };
 
-        return await auditPageApi(params);
+        return await auditPageApi(
+          formatQuery({ page, sorts, formValues: params }),
+        );
       },
     },
     sort: true,

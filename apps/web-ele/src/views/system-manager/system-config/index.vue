@@ -356,7 +356,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Page auto-content-height title="系统配置">
+  <Page auto-content-height>
     <div class="flex h-full overflow-hidden rounded-lg bg-white shadow">
       <!-- 左侧导航菜单 -->
       <div class="w-48 flex-shrink-0 border-r border-gray-200 bg-gray-50">

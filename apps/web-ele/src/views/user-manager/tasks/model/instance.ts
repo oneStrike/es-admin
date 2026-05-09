@@ -51,7 +51,8 @@ function createTaskInstanceField(
   };
 }
 
-export const taskInstanceSearchFormSchema: EsFormSchema = [
+const taskInstanceListSchema: EsFormSchema = [
+  { component: 'InputNumber', fieldName: 'id', label: '实例 ID' },
   createTaskInstanceField('taskId', {
     componentProps: {
       class: '!w-full',
@@ -69,6 +70,7 @@ export const taskInstanceSearchFormSchema: EsFormSchema = [
   {
     component: 'Select',
     fieldName: 'sceneType',
+    label: '任务场景',
     componentProps: {
       clearable: true,
       options: taskSceneTypeOptions,
@@ -83,24 +85,11 @@ export const taskInstanceSearchFormSchema: EsFormSchema = [
     },
   }),
   {
-    component: 'DatePicker',
-    fieldName: 'dateRange',
-    componentProps: {
-      clearable: true,
-      endPlaceholder: '结束时间',
-      startPlaceholder: '开始时间',
-      type: 'datetimerange',
-      valueFormat: 'YYYY-MM-DD HH:mm:ss',
-    },
+    component: 'Select',
+    componentProps: { options: taskVisibleStatusOptions },
+    fieldName: 'visibleStatus',
+    label: '可见状态',
   },
-];
-
-const taskInstanceTableSchema: EsFormSchema = [
-  { component: 'InputNumber', fieldName: 'id', label: '实例 ID' },
-  createTaskInstanceField('taskId'),
-  createTaskInstanceField('userId'),
-  createTaskInstanceField('status'),
-  { component: 'Select', fieldName: 'visibleStatus', label: '可见状态' },
   { component: 'Input', fieldName: 'steps', label: '步骤摘要' },
   { component: 'Input', fieldName: 'cycleKey', label: '周期键' },
   {
@@ -118,9 +107,51 @@ const taskInstanceTableSchema: EsFormSchema = [
   { component: 'DatePicker', fieldName: 'expiredAt', label: '过期时间' },
 ];
 
+export const taskInstanceSearchFormSchema = formSchemaTransform.toSearchSchema(
+  taskInstanceListSchema,
+  {
+    taskId: {
+      show: true,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '任务头 ID',
+      },
+    },
+    userId: {
+      show: true,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '用户 ID',
+      },
+    },
+    sceneType: { show: true },
+    status: {
+      show: true,
+      componentProps: {
+        clearable: true,
+        options: taskInstanceStatusOptions,
+        placeholder: '实例状态',
+      },
+    },
+    dateRange: {
+      component: 'DatePicker',
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '结束时间',
+        startPlaceholder: '开始时间',
+        type: 'datetimerange',
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+      },
+      fieldName: 'dateRange',
+    },
+  },
+);
+
 export const taskInstanceColumns =
   formSchemaTransform.toTableColumns<TaskInstanceViewDto>(
-    taskInstanceTableSchema,
+    taskInstanceListSchema,
     {
       id: {
         formatter: ({ cellValue }) => cellValue ?? '-',
@@ -128,30 +159,11 @@ export const taskInstanceColumns =
       },
       taskId: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
       },
       userId: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
       },
-      status: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: taskInstanceStatusOptions,
-          },
-        },
-        minWidth: 120,
-      },
-      visibleStatus: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: taskVisibleStatusOptions,
-          },
-        },
-        minWidth: 140,
-      },
+      sceneType: { hide: true },
       steps: {
         formatter: ({ cellValue }) => formatInstanceStepSummary(cellValue),
         minWidth: 260,
@@ -183,14 +195,6 @@ export const taskInstanceColumns =
         minWidth: 170,
       },
       expiredAt: {
-        cellRender: { name: 'CellDate' },
-        minWidth: 170,
-      },
-      createdAt: {
-        cellRender: { name: 'CellDate' },
-        minWidth: 170,
-      },
-      updatedAt: {
         cellRender: { name: 'CellDate' },
         minWidth: 170,
       },

@@ -119,27 +119,15 @@ export const categoryColumns =
       show: true,
       title: '状态',
       sort: 99,
-      minWidth: 100,
       slots: { default: 'isEnabled' },
     },
     sortOrder: {
       sortable: true,
     },
-    contentType: {
-      title: '应用类型',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: contentTypeOptions,
-        },
-      },
-      minWidth: 200,
-    },
     popularity: {
       title: '热度',
       field: 'popularity',
       sort: 9,
-      minWidth: 100,
       sortable: true,
     },
     description: {

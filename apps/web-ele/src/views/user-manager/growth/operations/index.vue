@@ -220,11 +220,7 @@ async function retryPendingBatch() {
 </script>
 
 <template>
-  <Page
-    auto-content-height
-    content-class="es-full-height-page-content"
-    title="成长运营"
-  >
+  <Page auto-content-height content-class="es-full-height-page-content">
     <EsFullHeightTabs v-model="activeTab">
       <el-tab-pane label="奖励补偿" name="reward-settlement">
         <div class="es-full-height-pane">

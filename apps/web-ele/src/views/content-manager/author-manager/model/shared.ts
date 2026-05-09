@@ -121,28 +121,16 @@ export const authorColumns =
     nationality: {
       slots: { default: 'nationality' },
     },
-    type: {
-      title: '身份角色',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: typeOptions,
-        },
-      },
-      minWidth: 150,
-    },
     isEnabled: {
       show: true,
       title: '状态',
       sort: 98,
-      minWidth: 100,
       slots: { default: 'isEnabled' },
     },
     isRecommended: {
       show: true,
       title: '推荐',
       sort: 12,
-      minWidth: 100,
       slots: { default: 'isRecommended' },
     },
     workCount: {
@@ -150,7 +138,6 @@ export const authorColumns =
       title: '作品数',
       field: 'workCount',
       sort: 10,
-      minWidth: 100,
       sortable: true,
     },
     followersCount: {
@@ -158,7 +145,6 @@ export const authorColumns =
       title: '粉丝数',
       field: 'followersCount',
       sort: 11,
-      minWidth: 100,
       sortable: true,
     },
     createdAt: {

@@ -334,7 +334,7 @@ onMounted(async () => {
           <el-divider direction="vertical" />
           <el-dropdown
             :disabled="row.statusLoading"
-            @command="(status) => updateTaskStatus(row, status)"
+            @command="(status: 0 | 1 | 2 | 3) => updateTaskStatus(row, status)"
           >
             <el-button link type="primary">状态</el-button>
             <template #dropdown>

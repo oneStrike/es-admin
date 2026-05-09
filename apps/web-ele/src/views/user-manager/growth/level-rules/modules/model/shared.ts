@@ -222,7 +222,6 @@ export const formSchema: EsFormSchema = [
 export const pageColumns =
   formSchemaTransform.toTableColumns<BaseUserLevelRuleDto>(formSchema, {
     icon: {
-      minWidth: 100,
       cellRender: {
         name: 'CellImage',
       },
@@ -263,7 +262,6 @@ export const pageColumns =
     },
     isEnabled: {
       show: true,
-      minWidth: 100,
       slots: { default: 'isEnabled' },
     },
     actions: {

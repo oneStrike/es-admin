@@ -90,9 +90,6 @@ export const pageColumns =
       minWidth: 120,
       cellRender: {
         name: 'CellTag',
-        props: {
-          mapOptions: experienceTypeOptions,
-        },
       },
     },
     delta: {
@@ -141,7 +138,6 @@ export const pageColumns =
     isEnabled: {
       show: true,
       title: '是否启用',
-      minWidth: 100,
       slots: { default: 'isEnabled' },
     },
     createdAt: {

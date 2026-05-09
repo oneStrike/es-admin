@@ -290,6 +290,7 @@ type ReportSchemaField = EsFormSchema[number];
 const reportFieldCatalog = {
   reasonType: {
     component: 'Select',
+    componentProps: { options: reasonTypeOptions },
     fieldName: 'reasonType',
     label: '举报原因',
   },
@@ -300,6 +301,7 @@ const reportFieldCatalog = {
   },
   status: {
     component: 'Select',
+    componentProps: { options: reportStatusOptions },
     fieldName: 'status',
     label: '举报状态',
   },
@@ -309,10 +311,6 @@ const reportFieldCatalog = {
     label: '目标类型',
   },
 } satisfies Record<string, ReportSchemaField>;
-
-function withoutColorOptions<T extends { color?: unknown }>(options: T[]) {
-  return options.map(({ color: _color, ...rest }) => rest);
-}
 
 function createReportField(
   field: keyof typeof reportFieldCatalog,
@@ -356,36 +354,19 @@ export const handleFormSchema: EsFormSchema = [
   },
 ];
 
-export const searchFormSchema: EsFormSchema = [
-  createReportField('status', {
-    componentProps: {
-      clearable: true,
-      options: withoutColorOptions(reportStatusOptions),
-      placeholder: '举报状态',
-    },
-    defaultValue: 1,
-  }),
-  createReportField('reasonType', {
-    componentProps: {
-      clearable: true,
-      options: reasonTypeOptions,
-      placeholder: '举报原因',
-    },
-  }),
-  createReportField('targetType', {
-    componentProps: {
-      clearable: true,
-      options: targetTypeOptions,
-      placeholder: '目标类型',
-    },
-  }),
-  createReportField('sceneType', {
-    componentProps: {
-      clearable: true,
-      options: sceneTypeOptions,
-      placeholder: '场景类型',
-    },
-  }),
+const pageListSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'reporterSummary', label: '举报人' },
+  createReportField('targetType'),
+  { component: 'Input', fieldName: 'targetTitle', label: '举报目标' },
+  { component: 'Input', fieldName: 'targetExtra', label: '关联信息' },
+  createReportField('sceneType'),
+  { component: 'Input', fieldName: 'sceneTitle', label: '业务场景' },
+  { component: 'Input', fieldName: 'sceneExtra', label: '所属对象' },
+  createReportField('reasonType'),
+  createReportField('status', { label: '状态' }),
+  { component: 'Input', fieldName: 'description', label: '举报说明' },
+  { component: 'Input', fieldName: 'handlerSummary', label: '处理人' },
+  { component: 'Input', fieldName: 'evidenceUrl', label: '证据' },
   {
     component: 'DatePicker',
     componentProps: {
@@ -449,23 +430,92 @@ export const searchFormSchema: EsFormSchema = [
   },
 ];
 
-const pageTableSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'reporterSummary', label: '举报人' },
-  createReportField('targetType'),
-  { component: 'Input', fieldName: 'targetTitle', label: '举报目标' },
-  { component: 'Input', fieldName: 'targetExtra', label: '关联信息' },
-  createReportField('sceneType'),
-  { component: 'Input', fieldName: 'sceneTitle', label: '业务场景' },
-  { component: 'Input', fieldName: 'sceneExtra', label: '所属对象' },
-  createReportField('reasonType'),
-  createReportField('status', { label: '状态' }),
-  { component: 'Input', fieldName: 'description', label: '举报说明' },
-  { component: 'Input', fieldName: 'handlerSummary', label: '处理人' },
-  { component: 'Input', fieldName: 'evidenceUrl', label: '证据' },
-];
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  pageListSchema,
+  {
+    status: {
+      componentProps: {
+        clearable: true,
+        options: reportStatusOptions,
+        placeholder: '举报状态',
+      },
+      defaultValue: 1,
+    },
+    reasonType: {
+      componentProps: {
+        clearable: true,
+        options: reasonTypeOptions,
+        placeholder: '举报原因',
+      },
+    },
+    targetType: {
+      componentProps: {
+        clearable: true,
+        options: targetTypeOptions,
+        placeholder: '目标类型',
+      },
+    },
+    sceneType: {
+      componentProps: {
+        clearable: true,
+        options: sceneTypeOptions,
+        placeholder: '场景类型',
+      },
+    },
+    dateRange: {
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '创建结束时间',
+        startPlaceholder: '创建开始时间',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
+      },
+    },
+    id: {
+      componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
+        min: 1,
+        placeholder: '举报 ID',
+      },
+    },
+    targetId: {
+      componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
+        min: 1,
+        placeholder: '目标 ID',
+      },
+    },
+    sceneId: {
+      componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
+        min: 1,
+        placeholder: '场景 ID',
+      },
+    },
+    reporterId: {
+      componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
+        min: 1,
+        placeholder: '举报人 ID',
+      },
+    },
+    handlerId: {
+      componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
+        min: 1,
+        placeholder: '处理人 ID',
+      },
+    },
+  },
+);
 
 export const pageColumns =
-  formSchemaTransform.toTableColumns<AdminReportPageItemDto>(pageTableSchema, {
+  formSchemaTransform.toTableColumns<AdminReportPageItemDto>(pageListSchema, {
     seq: { width: 60 },
     reporterSummary: {
       formatter: undefined,
@@ -505,18 +555,6 @@ export const pageColumns =
     reasonType: {
       cellRender: {
         name: 'CellTag',
-        props: {
-          mapOptions: reasonTypeOptions,
-        },
-      },
-      minWidth: 120,
-    },
-    status: {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: reportStatusOptions,
-        },
       },
       minWidth: 120,
     },
@@ -535,6 +573,12 @@ export const pageColumns =
       minWidth: 90,
       slots: { default: 'evidence' },
     },
+    dateRange: { hide: true },
+    id: { hide: true },
+    targetId: { hide: true },
+    sceneId: { hide: true },
+    reporterId: { hide: true },
+    handlerId: { hide: true },
     createdAt: {
       cellRender: {
         name: 'CellDate',
@@ -551,7 +595,6 @@ export const pageColumns =
     },
     actions: {
       show: true,
-      slots: { default: 'actions' },
       width: 160,
     },
   });

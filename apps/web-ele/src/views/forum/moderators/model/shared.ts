@@ -33,10 +33,11 @@ export const moderatorRoleMap = Object.fromEntries(
 export const sectionOptions: Array<{ label: string; value: number }> = [];
 export const groupOptions: Array<{ label: string; value: number }> = [];
 
-export const moderatorUserSearchSchema: EsFormSchema = [
+const moderatorUserListSchema: EsFormSchema = [
   {
     component: 'Input',
     fieldName: 'nickname',
+    label: '昵称',
     componentProps: {
       clearable: true,
       placeholder: '昵称',
@@ -45,6 +46,7 @@ export const moderatorUserSearchSchema: EsFormSchema = [
   {
     component: 'Input',
     fieldName: 'phoneNumber',
+    label: '手机号',
     componentProps: {
       clearable: true,
       placeholder: '手机号',
@@ -53,39 +55,45 @@ export const moderatorUserSearchSchema: EsFormSchema = [
   {
     component: 'Select',
     fieldName: 'isEnabled',
+    label: '启用状态',
     componentProps: {
       clearable: true,
       options: enabledOptions,
       placeholder: '启用状态',
     },
   },
-];
-
-const moderatorUserTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'id', label: '用户编号' },
-  { component: 'Input', fieldName: 'nickname', label: '昵称' },
-  { component: 'Input', fieldName: 'phoneNumber', label: '手机号' },
   { component: 'Input', fieldName: 'levelName', label: '等级' },
   { component: 'Select', fieldName: 'status', label: '社区状态' },
 ];
 
+export const moderatorUserSearchSchema = formSchemaTransform.toSearchSchema(
+  moderatorUserListSchema,
+  {
+    nickname: { show: true },
+    phoneNumber: { show: true },
+    isEnabled: { show: true },
+  },
+);
+
 export const moderatorUserColumns =
   formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(
-    moderatorUserTableSchema,
+    moderatorUserListSchema,
     {
       id: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
+        sort: -0.5,
       },
+      isEnabled: { hide: true },
       nickname: {
         minWidth: 140,
       },
       phoneNumber: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 140,
       },
       levelName: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 120,
       },
       status: {
@@ -123,7 +131,7 @@ const roleField: EsFormSchema[number] = {
   component: 'RadioGroup',
   componentProps: {
     class: 'w-full',
-    options: moderatorRoleOptions.map(({ color: _color, ...rest }) => rest),
+    options: moderatorRoleOptions,
     placeholder: '请选择版主角色',
   },
   defaultValue: 3,
@@ -218,10 +226,11 @@ export const assignSectionFormSchema: EsFormSchema = [
   },
 ];
 
-export const searchFormSchema: EsFormSchema = [
+const moderatorListSchema: EsFormSchema = [
   {
     component: 'Input',
     fieldName: 'nickname',
+    label: '昵称',
     componentProps: {
       clearable: true,
       placeholder: '昵称',
@@ -230,6 +239,7 @@ export const searchFormSchema: EsFormSchema = [
   {
     component: 'Select',
     fieldName: 'sectionId',
+    label: '板块',
     componentProps: {
       class: 'w-full',
       clearable: true,
@@ -241,6 +251,7 @@ export const searchFormSchema: EsFormSchema = [
   {
     component: 'Select',
     fieldName: 'isEnabled',
+    label: '启用状态',
     componentProps: {
       clearable: true,
       options: enabledOptions,
@@ -261,41 +272,44 @@ export const searchFormSchema: EsFormSchema = [
   {
     component: 'InputNumber',
     fieldName: 'userId',
+    label: '用户编号',
     componentProps: {
       class: '!w-full',
       min: 1,
       placeholder: '用户编号',
     },
   },
-];
-
-const moderatorTableSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'moderatorUser', label: '版主' },
   { component: 'RadioGroup', fieldName: 'roleType', label: '角色类型' },
   { component: 'Select', fieldName: 'group', label: '所属分组' },
   { component: 'Select', fieldName: 'sections', label: '管理板块' },
   { component: 'Select', fieldName: 'permissionNames', label: '权限' },
-  { component: 'RadioGroup', fieldName: 'isEnabled', label: '启用状态' },
 ];
 
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  moderatorListSchema,
+  {
+    nickname: { show: true },
+    sectionId: { show: true },
+    isEnabled: { show: true },
+    dateRange: { show: true },
+    userId: { show: true },
+  },
+);
+
 export const moderatorColumns =
-  formSchemaTransform.toTableColumns<ForumModeratorDto>(moderatorTableSchema, {
+  formSchemaTransform.toTableColumns<ForumModeratorDto>(moderatorListSchema, {
     seq: { width: 60 },
+    nickname: { hide: true },
+    sectionId: { hide: true },
+    dateRange: { hide: true },
+    userId: { hide: true },
     moderatorUser: {
       field: 'nickname',
       formatter: undefined,
       fixed: 'left',
       minWidth: 180,
       slots: { default: 'moderatorUser' },
-    },
-    roleType: {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: moderatorRoleOptions,
-        },
-      },
-      minWidth: 120,
     },
     group: {
       formatter: ({ row }) => row.group?.name || '-',
@@ -339,9 +353,7 @@ export const moderatorColumns =
     },
     actions: {
       show: true,
-      fixed: 'right',
       minWidth: 260,
-      slots: { default: 'actions' },
     },
   });
 

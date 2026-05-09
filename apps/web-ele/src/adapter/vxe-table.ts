@@ -17,9 +17,99 @@ import { ElButton, ElImage, ElTag, ElText } from 'element-plus';
 
 import { ImageLine } from '#/components/es-icons';
 import { formatUTC } from '#/utils';
-import { getOptionLabel } from '#/utils/options';
 
 import { useVbenForm } from './form';
+
+type OptionWithDisplay = Options & {
+  color?: string;
+  type?: string | TagProps['type'];
+};
+
+type GridRow = Record<string, unknown>;
+
+type SortItem = {
+  field: string;
+  order: string;
+};
+
+type QueryParams<T extends GridRow> = {
+  formValues?: T;
+  page: {
+    currentPage: number;
+    pageSize: number;
+  };
+  sorts?: SortItem[];
+};
+
+type PageQuery<T extends GridRow> = T & {
+  orderBy?: string;
+  pageIndex: number;
+  pageSize: number;
+};
+
+const tagTypes = new Set(['danger', 'info', 'primary', 'success', 'warning']);
+
+function isTagType(value: unknown): value is TagProps['type'] {
+  return typeof value === 'string' && tagTypes.has(value);
+}
+
+function findOption(options: unknown, value: unknown) {
+  if (!Array.isArray(options)) {
+    return undefined;
+  }
+
+  return options.find((item: OptionWithDisplay) => item.value === value) as
+    | OptionWithDisplay
+    | undefined;
+}
+
+function resolveOptionDisplay(options: unknown, value: unknown) {
+  const option = findOption(options, value);
+
+  return {
+    color: option?.color,
+    label: option?.label ?? String(value ?? '-'),
+    type: option?.type,
+  };
+}
+
+function resolveTagDisplayProps(
+  optionDisplay: ReturnType<typeof resolveOptionDisplay>,
+  fallbackType: TagProps['type'] = 'primary',
+) {
+  const displayType = optionDisplay.type ?? optionDisplay.color;
+
+  if (isTagType(displayType)) {
+    return { type: displayType };
+  }
+
+  return {
+    color: typeof displayType === 'string' ? displayType : undefined,
+    type: fallbackType,
+  };
+}
+
+function resolveTextDisplayProps(
+  optionDisplay: ReturnType<typeof resolveOptionDisplay>,
+) {
+  const displayType = optionDisplay.type ?? optionDisplay.color;
+
+  if (isTagType(displayType)) {
+    return { type: displayType };
+  }
+
+  return {
+    style: typeof displayType === 'string' ? { color: displayType } : undefined,
+  };
+}
+
+function getCellValue(row: unknown, field: unknown) {
+  if (!row || typeof row !== 'object' || !field) {
+    return undefined;
+  }
+
+  return (row as GridRow)[String(field)];
+}
 
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
@@ -76,7 +166,9 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellImage', {
       renderTableDefault(_renderOpts, params) {
         const { column, row } = params;
-        const src = row[column.field] || '';
+        const srcValue = getCellValue(row, column.field);
+        const src =
+          srcValue === undefined || srcValue === null ? '' : String(srcValue);
         return h(
           ElImage,
           {
@@ -95,7 +187,11 @@ setupVbenVxeTable({
       renderTableDefault(_renderOpts, params) {
         const { column, row } = params;
         const type = _renderOpts.props?.type ?? '';
-        const text = row[column.field] || '';
+        const textValue = getCellValue(row, column.field);
+        const text =
+          textValue === undefined || textValue === null
+            ? ''
+            : String(textValue);
         return h(
           ElText,
           {
@@ -111,7 +207,11 @@ setupVbenVxeTable({
       renderTableDefault(renderOpts, params) {
         const type = renderOpts.props?.type ?? 'primary';
         const { column, row } = params;
-        const text = row[column.field] || '';
+        const textValue = getCellValue(row, column.field);
+        const text =
+          textValue === undefined || textValue === null
+            ? ''
+            : String(textValue);
         return h(
           ElButton,
           { size: 'small', link: true, class: 'line-clamp-1 w-full', type },
@@ -124,54 +224,55 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellTag', {
       renderTableDefault({ props }, params) {
         const { column, row } = params;
-        let tags: (boolean | string)[] | boolean | string = row[column.field];
+        let tags = getCellValue(row, column.field);
         let type: TagProps['type'] = props?.type || 'primary';
 
         // 处理格式化函数
         if (props?.formatter) {
-          tags = props.formatter(row[column.field]);
+          tags = props.formatter(getCellValue(row, column.field));
         }
 
         // 处理数组情况
         if (Array.isArray(tags)) {
-          if (tags.length === 0) {
+          const tagItems = tags;
+
+          if (tagItems.length === 0) {
             return '-';
           }
 
-          return tags.map((tag, idx) => {
-            let tagValue = tag;
-            if (Array.isArray(props?.mapOptions)) {
-              tagValue = getOptionLabel(props?.mapOptions, tag);
-            }
+          return tagItems.map((tag, idx) => {
+            const optionDisplay = resolveOptionDisplay(props?.mapOptions, tag);
 
             return h(
               ElTag,
               {
-                type: props?.type || 'primary',
-                size: props?.size || 'small',
-                class: idx + 1 === (tags as any[]).length ? '' : 'mr-1',
                 ...props,
+                ...resolveTagDisplayProps(
+                  optionDisplay,
+                  props?.type || 'primary',
+                ),
+                size: props?.size || 'small',
+                class: idx + 1 === tagItems.length ? '' : 'mr-1',
               },
-              { default: () => tagValue },
+              { default: () => optionDisplay.label },
             );
           });
         }
         // 处理 mapOptions 映射情况
         else if (props?.mapOptions) {
-          const option = props.mapOptions.find(
-            (item: Options) => item.value === tags,
-          );
-          const label = option?.label || '';
-          const color = option?.color || props?.type || 'primary';
+          const optionDisplay = resolveOptionDisplay(props.mapOptions, tags);
 
           return h(
             ElTag,
             {
-              type: color,
-              size: props?.size || 'small',
               ...props,
+              ...resolveTagDisplayProps(
+                optionDisplay,
+                props?.type || 'primary',
+              ),
+              size: props?.size || 'small',
             },
-            { default: () => label },
+            { default: () => optionDisplay.label },
           );
         }
         // 处理布尔值情况
@@ -214,7 +315,7 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellText', {
       renderTableDefault({ props }, params) {
         const { column, row } = params;
-        let value: any = row[column.field];
+        let value = getCellValue(row, column.field);
 
         // 处理格式化函数
         if (props?.formatter) {
@@ -228,42 +329,25 @@ setupVbenVxeTable({
           }
 
           return value.map((item, idx) => {
-            let displayText = item;
-            let textColor: string | undefined;
-
-            if (Array.isArray(props?.mapOptions)) {
-              const option = props.mapOptions.find(
-                (opt: Options) => opt.value === item,
-              );
-              displayText = option?.label || item;
-              textColor = option?.color;
-            }
+            const optionDisplay = resolveOptionDisplay(props?.mapOptions, item);
 
             return h(
               'span',
               {
-                style: textColor ? { color: textColor } : undefined,
+                ...resolveTextDisplayProps(optionDisplay),
                 class: idx + 1 === value.length ? '' : 'mr-2',
               },
-              displayText,
+              optionDisplay.label,
             );
           });
         }
         // 处理 mapOptions 映射情况
         else if (props?.mapOptions) {
-          const option = props.mapOptions.find(
-            (item: Options) => item.value === value,
-          );
-          const label = option?.label || String(value ?? '-');
-          const color = option?.color;
+          const optionDisplay = resolveOptionDisplay(props.mapOptions, value);
 
-          return h(
-            ElText,
-            {
-              style: color ? { color } : undefined,
-            },
-            { default: () => label },
-          );
+          return h(ElText, resolveTextDisplayProps(optionDisplay), {
+            default: () => optionDisplay.label,
+          });
         }
         // 处理布尔值情况
         else if (typeof value === 'boolean') {
@@ -296,26 +380,29 @@ setupVbenVxeTable({
   useVbenForm,
 });
 
-export const useVbenVxeGrid = <T extends Record<string, any>>(
+export const useVbenVxeGrid = <T extends GridRow>(
   ...rest: Parameters<typeof useGrid<T, ComponentType, ComponentPropsMap>>
 ) => useGrid<T, ComponentType, ComponentPropsMap>(...rest);
 const fromApiPageIndex = (pageIndex?: null | number) =>
   Math.max((pageIndex ?? 0) + 1, 1);
 
-const formatQuery = ({ page, formValues, sorts }: any) => {
+const formatQuery = <T extends GridRow = GridRow>({
+  page,
+  formValues = {} as T,
+  sorts = [],
+}: QueryParams<T>): PageQuery<T> => {
+  const nextFormValues = { ...formValues } as T & { orderBy?: string };
+
   if (sorts.length > 0) {
-    formValues.orderBy = [];
-    sorts.forEach((item: any) => {
-      formValues.orderBy.push({
-        [item.field]: item.order,
-      });
-    });
-    formValues.orderBy = JSON.stringify(formValues.orderBy);
+    const orderBy = sorts.map((item) => ({
+      [item.field]: item.order,
+    }));
+    nextFormValues.orderBy = JSON.stringify(orderBy);
   }
   return {
     pageIndex: page.currentPage,
     pageSize: page.pageSize,
-    ...formValues,
+    ...nextFormValues,
   };
 };
 

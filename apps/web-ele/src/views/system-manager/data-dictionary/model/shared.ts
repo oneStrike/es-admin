@@ -181,7 +181,7 @@ export const dictionaryItemColumns =
     },
     description: {
       formatter: ({ cellValue }: any) => {
-        return cellValue || '-';
+        return cellValue ?? '-';
       },
     },
   });

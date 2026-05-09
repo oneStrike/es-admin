@@ -38,7 +38,7 @@ const dispatchFormSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
-      options: dispatchStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: dispatchStatusOptions,
     },
     fieldName: 'dispatchStatus',
     label: monitorBusinessLabels.dispatchStatus,
@@ -46,7 +46,7 @@ const dispatchFormSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
-      options: deliveryStatusOptions.map(({ color: _color, ...rest }) => rest),
+      options: deliveryStatusOptions,
     },
     fieldName: 'deliveryStatus',
     label: monitorBusinessLabels.deliveryStatus,
@@ -124,29 +124,11 @@ export const dispatchColumns =
         showOverflow: 'tooltip',
       },
       dateRange: { hide: true },
-      deliveryStatus: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: deliveryStatusOptions,
-          },
-        },
-        minWidth: 140,
-      },
       dispatchId: {
         fixed: 'left',
         minWidth: 190,
         showOverflow: 'tooltip',
         sortable: true,
-      },
-      dispatchStatus: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: dispatchStatusOptions,
-          },
-        },
-        minWidth: 130,
       },
       domain: {
         minWidth: 130,
@@ -161,7 +143,7 @@ export const dispatchColumns =
         showOverflow: 'tooltip',
       },
       lastError: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 260,
         showOverflow: 'tooltip',
       },

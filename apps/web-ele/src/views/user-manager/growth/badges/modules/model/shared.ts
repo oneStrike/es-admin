@@ -104,9 +104,6 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseUserBadgeDto>(
       minWidth: 120,
       cellRender: {
         name: 'CellTag',
-        props: {
-          mapOptions: badgeTypeOptions,
-        },
       },
     },
     description: {
@@ -116,7 +113,6 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseUserBadgeDto>(
     sortOrder: {
       title: '排序',
       sortable: true,
-      minWidth: 100,
     },
     eventKey: {
       minWidth: 120,
@@ -124,7 +120,6 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseUserBadgeDto>(
     isEnabled: {
       show: true,
       title: '是否启用',
-      minWidth: 100,
       slots: { default: 'isEnabled' },
     },
     createdAt: {

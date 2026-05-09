@@ -67,7 +67,7 @@ function createRewardSettlementField(
   };
 }
 
-export const rewardSettlementSearchFormSchema: EsFormSchema = [
+const rewardSettlementListSchema: EsFormSchema = [
   createRewardSettlementField('userId', {
     componentProps: {
       class: '!w-full',
@@ -109,16 +109,9 @@ export const rewardSettlementSearchFormSchema: EsFormSchema = [
     fieldName: 'dateRange',
     label: '时间范围',
   },
-];
-
-const rewardSettlementTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'id', label: '结算 ID' },
-  createRewardSettlementField('userId'),
   { component: 'Input', fieldName: 'eventKey', label: '事件 key' },
-  createRewardSettlementField('eventCode'),
   { component: 'Input', fieldName: 'source', label: '来源' },
-  createRewardSettlementField('settlementType'),
-  createRewardSettlementField('settlementStatus'),
   {
     component: 'Select',
     fieldName: 'settlementResultType',
@@ -130,11 +123,11 @@ const rewardSettlementTableSchema: EsFormSchema = [
 
 export const rewardSettlementColumns =
   formSchemaTransform.toTableColumns<GrowthRewardSettlementPageItemDto>(
-    rewardSettlementTableSchema,
+    rewardSettlementListSchema,
     {
+      dateRange: { hide: true },
       id: {
         fixed: 'left',
-        minWidth: 100,
       },
       userId: {
         minWidth: 110,
@@ -165,11 +158,8 @@ export const rewardSettlementColumns =
         minWidth: 130,
         slots: { default: 'settlementResultType' },
       },
-      retryCount: {
-        minWidth: 100,
-      },
       lastError: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 220,
         showOverflow: 'tooltip',
       },
@@ -183,7 +173,6 @@ export const rewardSettlementColumns =
       },
       actions: {
         show: true,
-        width: 150,
       },
     },
   );
@@ -208,7 +197,7 @@ export function formatSettlementLedgerIds(
 }
 
 export const rewardSettlementSearchSchema = formSchemaTransform.toSearchSchema(
-  rewardSettlementSearchFormSchema,
+  rewardSettlementListSchema,
   {
     userId: { show: true },
     eventCode: { show: true },

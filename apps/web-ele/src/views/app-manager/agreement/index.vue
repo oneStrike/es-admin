@@ -9,6 +9,8 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
+import { useClipboard } from '@vueuse/core';
+
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   agreementCreateApi,
@@ -33,6 +35,7 @@ type AgreementRow = AdminAgreementListItemDto & {
 type AgreementStatusRecord = (AdminAgreementDetailDto | AgreementRow) & {
   loading?: boolean;
 };
+const { copy: writeClipboardText } = useClipboard({ legacy: true });
 
 const previewHtml = ref('');
 const previewLoadingId = ref<null | number>(null);
@@ -155,29 +158,6 @@ async function togglePublishedStatus(record: AgreementStatusRecord) {
     gridApi.reload();
   } finally {
     record.loading = false;
-  }
-}
-
-async function writeClipboardText(text: string) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-
-  const textarea = document.createElement('textarea');
-  textarea.value = text;
-  textarea.setAttribute('readonly', 'true');
-  textarea.style.position = 'fixed';
-  textarea.style.opacity = '0';
-  document.body.append(textarea);
-  textarea.select();
-
-  try {
-    if (!document.execCommand('copy')) {
-      throw new Error('copy failed');
-    }
-  } finally {
-    textarea.remove();
   }
 }
 </script>

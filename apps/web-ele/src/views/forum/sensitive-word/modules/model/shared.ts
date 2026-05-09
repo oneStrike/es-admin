@@ -104,9 +104,6 @@ export const pageColumns =
       minWidth: 120,
       cellRender: {
         name: 'CellTag',
-        props: {
-          mapOptions: sensitiveWordTypeOptions,
-        },
       },
     },
     level: {
@@ -114,9 +111,6 @@ export const pageColumns =
       minWidth: 120,
       cellRender: {
         name: 'CellTag',
-        props: {
-          mapOptions: sensitiveWordLevelOptions,
-        },
       },
     },
     matchMode: {
@@ -124,15 +118,11 @@ export const pageColumns =
       minWidth: 120,
       cellRender: {
         name: 'CellTag',
-        props: {
-          mapOptions: matchModeOptions,
-        },
       },
     },
     isEnabled: {
       show: true,
       title: '是否启用',
-      minWidth: 100,
       slots: { default: 'isEnabled' },
     },
     actions: {

@@ -75,11 +75,19 @@ const gridOptions: VxeGridProps<ContentNovelChapterDetailResponse> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        formValues.workId = shareData.value?.workId;
+        const workId = shareData.value?.workId;
+
+        if (typeof workId !== 'number') {
+          return { list: [], total: 0 };
+        }
+
         return await contentNovelChapterPageApi(
           formatQuery({
             page,
-            formValues,
+            formValues: {
+              ...formValues,
+              workId,
+            },
             sorts,
           }),
         );

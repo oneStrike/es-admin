@@ -264,77 +264,6 @@ function pickUserFields(...keys: Array<keyof typeof userField>): EsFormSchema {
   return keys.map((key) => userField[key]());
 }
 
-function toSearchField(
-  key: keyof typeof userField,
-  placeholder?: string,
-): SchemaItem {
-  const field = userField[key]();
-  const {
-    defaultValue: _defaultValue,
-    formItemClass: _formItemClass,
-    ...searchField
-  } = field;
-  const componentProps =
-    field.componentProps &&
-    typeof field.componentProps === 'object' &&
-    !Array.isArray(field.componentProps)
-      ? field.componentProps
-      : {};
-
-  return {
-    ...searchField,
-    component: field.component === 'RadioGroup' ? 'Select' : field.component,
-    componentProps: {
-      ...componentProps,
-      clearable: true,
-      placeholder: placeholder ?? field.label,
-    },
-    hideLabel: true,
-    label: '',
-    rules: '',
-  };
-}
-
-export const searchFormSchema: EsFormSchema = [
-  toSearchField('account'),
-  toSearchField('nickname'),
-  toSearchField('phoneNumber'),
-  toSearchField('emailAddress'),
-  toSearchField('isEnabled', '启用状态'),
-  toSearchField('status'),
-  {
-    component: 'Select',
-    fieldName: 'deletedScope',
-    componentProps: {
-      clearable: true,
-      options: deletedScopeOptions,
-      placeholder: '删除态',
-    },
-  },
-  {
-    component: 'DatePicker',
-    fieldName: 'dateRange',
-    componentProps: {
-      clearable: true,
-      endPlaceholder: '注册结束时间',
-      startPlaceholder: '注册开始时间',
-      type: 'daterange',
-      valueFormat: 'YYYY-MM-DD',
-    },
-  },
-  {
-    component: 'DatePicker',
-    fieldName: 'lastLoginDateRange',
-    componentProps: {
-      clearable: true,
-      endPlaceholder: '登录结束时间',
-      startPlaceholder: '登录开始时间',
-      type: 'daterange',
-      valueFormat: 'YYYY-MM-DD',
-    },
-  },
-];
-
 export const createFormSchema: EsFormSchema = [
   ...pickUserFields('avatarUrl', 'nickname'),
   passwordField(),
@@ -415,7 +344,7 @@ export const statusFormSchema: EsFormSchema = [
   },
 ];
 
-const userTableSchema: EsFormSchema = [
+const userListSchema: EsFormSchema = [
   ...pickUserFields(
     'avatarUrl',
     'account',
@@ -435,10 +364,80 @@ const userTableSchema: EsFormSchema = [
   { component: 'DatePicker', fieldName: 'lastLoginAt', label: '最后登录' },
   { component: 'Input', fieldName: 'lastLoginIp', label: '登录 IP' },
   { component: 'DatePicker', fieldName: 'deletedAt', label: '删除时间' },
+  {
+    component: 'Select',
+    fieldName: 'deletedScope',
+    label: '删除态',
+    componentProps: {
+      options: deletedScopeOptions,
+    },
+  },
+  {
+    component: 'DatePicker',
+    fieldName: 'dateRange',
+    label: '注册时间',
+    componentProps: {
+      type: 'daterange',
+      valueFormat: 'YYYY-MM-DD',
+    },
+  },
+  {
+    component: 'DatePicker',
+    fieldName: 'lastLoginDateRange',
+    label: '登录时间',
+    componentProps: {
+      type: 'daterange',
+      valueFormat: 'YYYY-MM-DD',
+    },
+  },
 ];
 
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  userListSchema,
+  {
+    account: { show: true },
+    nickname: { show: true },
+    phoneNumber: { show: true },
+    emailAddress: { show: true },
+    isEnabled: {
+      component: 'Select',
+      componentProps: {
+        clearable: true,
+        options: enabledOptions,
+        placeholder: '启用状态',
+      },
+    },
+    status: { show: true },
+    deletedScope: {
+      componentProps: {
+        clearable: true,
+        options: deletedScopeOptions,
+        placeholder: '删除态',
+      },
+    },
+    dateRange: {
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '注册结束时间',
+        startPlaceholder: '注册开始时间',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
+      },
+    },
+    lastLoginDateRange: {
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '登录结束时间',
+        startPlaceholder: '登录开始时间',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
+      },
+    },
+  },
+);
+
 export const userColumns =
-  formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(userTableSchema, {
+  formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(userListSchema, {
     seq: { width: 60 },
     avatarUrl: {
       formatter: undefined,
@@ -456,11 +455,11 @@ export const userColumns =
       showOverflow: 'tooltip',
     },
     phoneNumber: {
-      formatter: ({ cellValue }) => cellValue || '-',
+      formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 140,
     },
     emailAddress: {
-      formatter: ({ cellValue }) => cellValue || '-',
+      formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 200,
       showOverflow: 'tooltip',
     },
@@ -470,7 +469,7 @@ export const userColumns =
       width: 90,
     },
     levelName: {
-      formatter: ({ cellValue, row }) => cellValue || row.level?.name || '-',
+      formatter: ({ cellValue, row }) => cellValue ?? row.level?.name ?? '-',
       minWidth: 120,
     },
     points: {
@@ -496,6 +495,7 @@ export const userColumns =
     isEnabled: {
       formatter: undefined,
       slots: { default: 'isEnabled' },
+      title: '启用状态',
       width: 110,
     },
     status: {
@@ -515,7 +515,7 @@ export const userColumns =
       sortable: true,
     },
     lastLoginIp: {
-      formatter: ({ cellValue }) => cellValue || '-',
+      formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 140,
     },
     createdAt: {
@@ -530,9 +530,11 @@ export const userColumns =
         cellValue ? formatUTC(cellValue, 'YYYY-MM-DD HH:mm:ss') : '-',
       minWidth: 170,
     },
+    deletedScope: { hide: true },
+    dateRange: { hide: true },
+    lastLoginDateRange: { hide: true },
     actions: {
       show: true,
-      slots: { default: 'actions' },
       width: 180,
     },
   });

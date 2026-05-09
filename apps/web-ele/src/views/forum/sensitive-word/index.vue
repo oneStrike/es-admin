@@ -11,7 +11,7 @@ import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   forumSensitiveWordCreateApi,
   forumSensitiveWordDeleteApi,
@@ -37,12 +37,10 @@ const gridOptions: VxeGridProps<BaseSensitiveWordDto> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
-      query: async ({ page }, formValues) => {
-        return await forumSensitiveWordPageApi({
-          pageIndex: page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
+      query: async ({ page, sorts }, formValues) => {
+        return await forumSensitiveWordPageApi(
+          formatQuery({ page, sorts, formValues }),
+        );
       },
     },
     sort: true,

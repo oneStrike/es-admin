@@ -47,8 +47,7 @@ function createLoginLogField(
   };
 }
 
-// 登录日志表格列配置
-const loginLogTableSchema: EsFormSchema = [
+const loginLogListSchema: EsFormSchema = [
   createLoginLogField('username'),
   createLoginLogField('ip'),
   { component: 'Input', fieldName: 'userAgent', label: '用户代理' },
@@ -57,7 +56,7 @@ const loginLogTableSchema: EsFormSchema = [
 ];
 
 export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
-  loginLogTableSchema,
+  loginLogListSchema,
   {
     seq: { width: 60 },
     username: {
@@ -70,7 +69,7 @@ export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
       width: 140,
     },
     userAgent: {
-      formatter: ({ cellValue }) => cellValue || '-',
+      formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 250,
       showOverflow: 'tooltip',
     },
@@ -86,44 +85,49 @@ export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
       width: 120,
     },
     content: {
-      formatter: ({ cellValue }) => cellValue || '-',
+      formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 200,
       showOverflow: 'tooltip',
     },
   },
 );
 
-// 搜索表单配置
-export const searchFormSchema: EsFormSchema = [
-  createLoginLogField('username', {
-    componentProps: {
-      placeholder: '用户名',
-      clearable: true,
-    },
-  }),
-  createLoginLogField('ip', {
-    componentProps: {
-      placeholder: 'IP地址',
-      clearable: true,
-    },
-  }),
-  createLoginLogField('isSuccess', {
-    componentProps: {
-      placeholder: '登录结果',
-      clearable: true,
-      options: loginResultOptions,
-    },
-  }),
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  loginLogListSchema,
   {
-    component: 'DatePicker',
-    fieldName: 'dateRange',
-    componentProps: {
-      type: 'datetimerange',
-      startPlaceholder: '开始时间',
-      endPlaceholder: '结束时间',
-      format: 'YYYY-MM-DD HH:mm:ss',
-      valueFormat: 'YYYY-MM-DD HH:mm:ss',
-      clearable: true,
+    username: {
+      show: true,
+      componentProps: {
+        clearable: true,
+        placeholder: '用户名',
+      },
+    },
+    ip: {
+      show: true,
+      componentProps: {
+        clearable: true,
+        placeholder: 'IP地址',
+      },
+    },
+    isSuccess: {
+      show: true,
+      componentProps: {
+        clearable: true,
+        options: loginResultOptions,
+        placeholder: '登录结果',
+      },
+    },
+    dateRange: {
+      component: 'DatePicker',
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '结束时间',
+        format: 'YYYY-MM-DD HH:mm:ss',
+        startPlaceholder: '开始时间',
+        type: 'datetimerange',
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+      },
+      fieldName: 'dateRange',
     },
   },
-];
+);

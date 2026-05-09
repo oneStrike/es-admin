@@ -45,7 +45,6 @@ const topHitWordsColumns = [
   {
     field: 'level',
     title: '级别',
-    minWidth: 100,
     cellRender: {
       name: 'CellTag',
       props: {
@@ -57,7 +56,7 @@ const topHitWordsColumns = [
       },
     },
   },
-  { field: 'type', title: '类型', minWidth: 100 },
+  { field: 'type', title: '类型' },
   {
     field: 'lastHitAt',
     title: '最后命中时间',
@@ -78,7 +77,6 @@ const recentHitWordsColumns = [
   {
     field: 'level',
     title: '级别',
-    minWidth: 100,
     cellRender: {
       name: 'CellTag',
       props: {
@@ -90,7 +88,7 @@ const recentHitWordsColumns = [
       },
     },
   },
-  { field: 'type', title: '类型', minWidth: 100 },
+  { field: 'type', title: '类型' },
   {
     field: 'lastHitAt',
     title: '最后命中时间',

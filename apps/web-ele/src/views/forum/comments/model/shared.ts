@@ -225,6 +225,7 @@ type CommentSchemaField = EsFormSchema[number];
 const commentFieldCatalog = {
   auditStatus: {
     component: 'Select',
+    componentProps: { options: auditStatusOptions },
     fieldName: 'auditStatus',
     label: '审核状态',
   },
@@ -286,29 +287,18 @@ export const auditFormSchema: EsFormSchema = [
   },
 ];
 
-export const searchFormSchema: EsFormSchema = [
-  createCommentField('auditStatus', {
-    componentProps: {
-      clearable: true,
-      options: withoutColorOptions(auditStatusOptions),
-      placeholder: '审核状态',
-    },
-    defaultValue: 0,
-  }),
-  createCommentField('isHidden', {
-    componentProps: {
-      clearable: true,
-      options: hiddenOptions,
-      placeholder: '隐藏状态',
-    },
-  }),
-  createCommentField('targetType', {
-    componentProps: {
-      clearable: true,
-      options: targetTypeOptions,
-      placeholder: '目标类型',
-    },
-  }),
+const pageListSchema: EsFormSchema = [
+  { component: 'Input', fieldName: 'user', label: '评论用户' },
+  { component: 'Input', fieldName: 'html', label: '评论摘要' },
+  createCommentField('targetType', { label: '对象类型' }),
+  { component: 'Input', fieldName: 'targetTitle', label: '评论对象' },
+  { component: 'Input', fieldName: 'targetExtra', label: '所属对象' },
+  { component: 'Input', fieldName: 'replyToSummary', label: '回复对象' },
+  createCommentField('auditStatus'),
+  createCommentField('isHidden'),
+  { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },
+  { component: 'InputNumber', fieldName: 'floor', label: '楼层' },
+  { component: 'Input', fieldName: 'sensitiveWordHits', label: '敏感词' },
   {
     component: 'Input',
     componentProps: {
@@ -360,22 +350,75 @@ export const searchFormSchema: EsFormSchema = [
   },
 ];
 
-const pageTableSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'user', label: '评论用户' },
-  { component: 'Input', fieldName: 'html', label: '评论摘要' },
-  createCommentField('targetType', { label: '对象类型' }),
-  { component: 'Input', fieldName: 'targetTitle', label: '评论对象' },
-  { component: 'Input', fieldName: 'targetExtra', label: '所属对象' },
-  { component: 'Input', fieldName: 'replyToSummary', label: '回复对象' },
-  createCommentField('auditStatus'),
-  createCommentField('isHidden', { component: 'Switch' }),
-  { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },
-  { component: 'InputNumber', fieldName: 'floor', label: '楼层' },
-  { component: 'Input', fieldName: 'sensitiveWordHits', label: '敏感词' },
-];
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  pageListSchema,
+  {
+    auditStatus: {
+      componentProps: {
+        clearable: true,
+        options: withoutColorOptions(auditStatusOptions),
+        placeholder: '审核状态',
+      },
+      defaultValue: 0,
+    },
+    isHidden: {
+      componentProps: {
+        clearable: true,
+        options: hiddenOptions,
+        placeholder: '隐藏状态',
+      },
+    },
+    targetType: {
+      componentProps: {
+        clearable: true,
+        options: targetTypeOptions,
+        placeholder: '目标类型',
+      },
+    },
+    keyword: {
+      componentProps: {
+        clearable: true,
+        placeholder: '评论内容关键词',
+      },
+    },
+    dateRange: {
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '创建结束时间',
+        startPlaceholder: '创建开始时间',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
+      },
+    },
+    id: {
+      componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
+        min: 1,
+        placeholder: '评论 ID',
+      },
+    },
+    userId: {
+      componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
+        min: 1,
+        placeholder: '评论用户 ID',
+      },
+    },
+    targetId: {
+      componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
+        min: 1,
+        placeholder: '目标 ID',
+      },
+    },
+  },
+);
 
 export const pageColumns =
-  formSchemaTransform.toTableColumns<AdminCommentPageItemDto>(pageTableSchema, {
+  formSchemaTransform.toTableColumns<AdminCommentPageItemDto>(pageListSchema, {
     seq: { width: 60 },
     user: {
       formatter: undefined,
@@ -407,23 +450,12 @@ export const pageColumns =
       minWidth: 240,
       slots: { default: 'replyToSummary' },
     },
-    auditStatus: {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: auditStatusOptions,
-        },
-      },
-      minWidth: 120,
-    },
     isHidden: {
       formatter: undefined,
-      minWidth: 100,
       slots: { default: 'isHidden' },
     },
     likeCount: {
       formatter: undefined,
-      minWidth: 100,
       sortable: true,
     },
     floor: {
@@ -436,6 +468,11 @@ export const pageColumns =
       minWidth: 160,
       slots: { default: 'sensitiveWords' },
     },
+    keyword: { hide: true },
+    dateRange: { hide: true },
+    id: { hide: true },
+    userId: { hide: true },
+    targetId: { hide: true },
     createdAt: {
       cellRender: {
         name: 'CellDate',
@@ -452,7 +489,6 @@ export const pageColumns =
     },
     actions: {
       show: true,
-      slots: { default: 'actions' },
       width: 160,
     },
   });

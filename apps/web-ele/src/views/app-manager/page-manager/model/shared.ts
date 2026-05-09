@@ -157,16 +157,6 @@ export const pageColumns = formSchemaTransform.toTableColumns<BaseAppPageDto>(
     isEnabled: {
       slots: { default: 'isEnabled' },
     },
-
-    enablePlatform: {
-      title: '启用平台',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: enablePlatform,
-        },
-      },
-    },
   },
 );
 

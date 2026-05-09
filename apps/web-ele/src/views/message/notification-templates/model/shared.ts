@@ -131,61 +131,59 @@ export function createTemplateFormSchema(
 
 export const templateFormSchema = createTemplateFormSchema();
 
-export const searchFormSchema: EsFormSchema = [
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  templateFormSchema,
   {
-    component: 'Select',
-    componentProps: {
-      clearable: true,
-      filterable: true,
-      options: notificationCategoryOptions,
-      placeholder: '通知分类',
+    categoryKey: {
+      show: true,
+      componentProps: {
+        clearable: true,
+        filterable: true,
+        options: notificationCategoryOptions,
+        placeholder: '通知分类',
+      },
     },
-    fieldName: 'categoryKey',
+    isEnabled: {
+      show: true,
+      component: 'Select',
+      componentProps: {
+        clearable: true,
+        options: withoutColorOptions(enabledOptions),
+        placeholder: '启用状态',
+      },
+    },
+    dateRange: {
+      component: 'DatePicker',
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '创建结束时间',
+        startPlaceholder: '创建开始时间',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
+      },
+      fieldName: 'dateRange',
+    },
   },
-  createNotificationTemplateField('isEnabled', {
-    component: 'Select',
-    componentProps: {
-      clearable: true,
-      options: withoutColorOptions(enabledOptions),
-      placeholder: '启用状态',
-    },
-  }),
-  {
-    component: 'DatePicker',
-    componentProps: {
-      clearable: true,
-      endPlaceholder: '创建结束时间',
-      startPlaceholder: '创建开始时间',
-      type: 'daterange',
-      valueFormat: 'YYYY-MM-DD',
-    },
-    fieldName: 'dateRange',
-  },
-];
-
-const templateTableSchema: EsFormSchema = [
-  { component: 'InputNumber', fieldName: 'id', label: '模板 ID' },
-  { component: 'Select', fieldName: 'categoryLabel', label: '通知分类' },
-  { component: 'Input', fieldName: 'titleTemplate', label: '标题模板' },
-  { component: 'Input', fieldName: 'contentTemplate', label: '正文模板' },
-  createNotificationTemplateField('isEnabled', { label: '启用状态' }),
-  { component: 'Input', fieldName: 'remark', label: '备注' },
-];
+);
 
 export const pageColumns =
   formSchemaTransform.toTableColumns<AdminMessageNotificationTemplateDto>(
-    templateTableSchema,
+    templateFormSchema,
     {
       id: {
         fixed: 'left',
         formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 90,
+        sort: -0.5,
         sortable: true,
       },
+      categoryKey: { hide: true },
       categoryLabel: {
         formatter: undefined,
         minWidth: 180,
+        sort: 0.5,
         slots: { default: 'category' },
+        title: '通知分类',
       },
       titleTemplate: {
         minWidth: 240,
@@ -201,7 +199,7 @@ export const pageColumns =
         slots: { default: 'isEnabled' },
       },
       remark: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 180,
         showOverflow: 'tooltip',
       },
@@ -221,8 +219,6 @@ export const pageColumns =
       },
       actions: {
         show: true,
-        fixed: 'right',
-        slots: { default: 'actions' },
         width: 170,
       },
     },

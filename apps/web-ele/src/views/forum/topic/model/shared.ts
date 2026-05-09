@@ -140,6 +140,7 @@ type TopicSchemaField = EsFormSchema[number];
 const topicFieldCatalog = {
   auditStatus: {
     component: 'Select',
+    componentProps: { options: auditStatusOptions },
     fieldName: 'auditStatus',
     label: '审核状态',
   },
@@ -203,48 +204,43 @@ function createTopicField(
   };
 }
 
-const userSearchSchema: EsFormSchema = [
-  {
-    component: 'Input',
-    fieldName: 'nickname',
-    componentProps: {
-      clearable: true,
-      placeholder: '昵称',
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'phoneNumber',
-    componentProps: {
-      clearable: true,
-      placeholder: '手机号',
-    },
-  },
-];
-
-const userTableSchema: EsFormSchema = [
+const userListSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'id', label: '用户ID' },
   { component: 'Input', fieldName: 'nickname', label: '昵称' },
   { component: 'Input', fieldName: 'phoneNumber', label: '手机号' },
   { component: 'Input', fieldName: 'levelName', label: '等级' },
 ];
 
+const userSearchSchema = formSchemaTransform.toSearchSchema(userListSchema, {
+  nickname: {
+    componentProps: {
+      clearable: true,
+      placeholder: '昵称',
+    },
+  },
+  phoneNumber: {
+    componentProps: {
+      clearable: true,
+      placeholder: '手机号',
+    },
+  },
+});
+
 const userColumns = formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(
-  userTableSchema,
+  userListSchema,
   {
     id: {
       formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 100,
     },
     nickname: {
       minWidth: 140,
     },
     phoneNumber: {
-      formatter: ({ cellValue }) => cellValue || '-',
+      formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 140,
     },
     levelName: {
-      formatter: ({ cellValue }) => cellValue || '-',
+      formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 120,
     },
   },
@@ -362,15 +358,20 @@ export const moveFormSchema: EsFormSchema = [
   }),
 ];
 
-export const searchFormSchema: EsFormSchema = [
-  createTopicField('auditStatus', {
-    defaultValue: 0,
-    componentProps: {
-      clearable: true,
-      options: auditStatusOptions,
-      placeholder: '审核状态',
-    },
-  }),
+const topicListSchema: EsFormSchema = [
+  createTopicField('title'),
+  { component: 'Input', fieldName: 'contentPreview', label: '正文摘要' },
+  { component: 'Input', fieldName: 'userSummary', label: '发帖用户' },
+  { component: 'Input', fieldName: 'sectionSummary', label: '所属板块' },
+  createTopicField('auditStatus'),
+  createTopicField('isPinned'),
+  createTopicField('isFeatured'),
+  createTopicField('isLocked'),
+  createTopicField('isHidden'),
+  { component: 'InputNumber', fieldName: 'viewCount', label: '浏览数' },
+  { component: 'InputNumber', fieldName: 'commentCount', label: '评论数' },
+  { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },
+  { component: 'InputNumber', fieldName: 'favoriteCount', label: '收藏数' },
   {
     component: 'Input',
     fieldName: 'keyword',
@@ -386,34 +387,6 @@ export const searchFormSchema: EsFormSchema = [
       filterable: true,
       options: sectionOptions,
       placeholder: '所属板块',
-    },
-  }),
-  createTopicField('isPinned', {
-    componentProps: {
-      clearable: true,
-      options: booleanFilterOptions,
-      placeholder: '置顶',
-    },
-  }),
-  createTopicField('isFeatured', {
-    componentProps: {
-      clearable: true,
-      options: booleanFilterOptions,
-      placeholder: '精华',
-    },
-  }),
-  createTopicField('isLocked', {
-    componentProps: {
-      clearable: true,
-      options: booleanFilterOptions,
-      placeholder: '锁定',
-    },
-  }),
-  createTopicField('isHidden', {
-    componentProps: {
-      clearable: true,
-      options: booleanFilterOptions,
-      placeholder: '隐藏',
     },
   }),
   {
@@ -438,25 +411,82 @@ export const searchFormSchema: EsFormSchema = [
   },
 ];
 
-const topicTableSchema: EsFormSchema = [
-  createTopicField('title'),
-  { component: 'Input', fieldName: 'contentPreview', label: '正文摘要' },
-  { component: 'Input', fieldName: 'userSummary', label: '发帖用户' },
-  { component: 'Input', fieldName: 'sectionSummary', label: '所属板块' },
-  createTopicField('auditStatus', { component: 'RadioGroup' }),
-  createTopicField('isPinned'),
-  createTopicField('isFeatured'),
-  createTopicField('isLocked'),
-  createTopicField('isHidden'),
-  { component: 'InputNumber', fieldName: 'viewCount', label: '浏览数' },
-  { component: 'InputNumber', fieldName: 'commentCount', label: '评论数' },
-  { component: 'InputNumber', fieldName: 'likeCount', label: '点赞数' },
-  { component: 'InputNumber', fieldName: 'favoriteCount', label: '收藏数' },
-];
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  topicListSchema,
+  {
+    auditStatus: {
+      defaultValue: 0,
+      componentProps: {
+        clearable: true,
+        options: auditStatusOptions,
+        placeholder: '审核状态',
+      },
+    },
+    keyword: {
+      componentProps: {
+        clearable: true,
+        placeholder: '标题或内容关键词',
+      },
+    },
+    sectionId: {
+      componentProps: {
+        class: 'w-full',
+        clearable: true,
+        filterable: true,
+        options: sectionOptions,
+        placeholder: '所属板块',
+      },
+    },
+    isPinned: {
+      componentProps: {
+        clearable: true,
+        options: booleanFilterOptions,
+        placeholder: '置顶',
+      },
+    },
+    isFeatured: {
+      componentProps: {
+        clearable: true,
+        options: booleanFilterOptions,
+        placeholder: '精华',
+      },
+    },
+    isLocked: {
+      componentProps: {
+        clearable: true,
+        options: booleanFilterOptions,
+        placeholder: '锁定',
+      },
+    },
+    isHidden: {
+      componentProps: {
+        clearable: true,
+        options: booleanFilterOptions,
+        placeholder: '隐藏',
+      },
+    },
+    dateRange: {
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '创建结束时间',
+        startPlaceholder: '创建开始时间',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
+      },
+    },
+    userId: {
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '用户ID',
+      },
+    },
+  },
+);
 
 export const topicColumns =
   formSchemaTransform.toTableColumns<AdminForumTopicPageItemDto>(
-    topicTableSchema,
+    topicListSchema,
     {
       seq: { width: 60 },
       title: {
@@ -481,55 +511,42 @@ export const topicColumns =
         minWidth: 180,
         slots: { default: 'sectionSummary' },
       },
-      auditStatus: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: auditStatusOptions,
-          },
-        },
-        minWidth: 120,
-      },
       isPinned: {
         formatter: undefined,
-        minWidth: 100,
         slots: { default: 'isPinned' },
       },
       isFeatured: {
         formatter: undefined,
-        minWidth: 100,
         slots: { default: 'isFeatured' },
       },
       isLocked: {
         formatter: undefined,
-        minWidth: 100,
         slots: { default: 'isLocked' },
       },
       isHidden: {
         formatter: undefined,
-        minWidth: 100,
         slots: { default: 'isHidden' },
       },
       viewCount: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
         sortable: true,
       },
       commentCount: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
         sortable: true,
       },
       likeCount: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
         sortable: true,
       },
       favoriteCount: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
         sortable: true,
       },
+      keyword: { hide: true },
+      sectionId: { hide: true },
+      dateRange: { hide: true },
+      userId: { hide: true },
       createdAt: {
         cellRender: {
           name: 'CellDate',
@@ -546,9 +563,7 @@ export const topicColumns =
       },
       actions: {
         show: true,
-        fixed: 'right',
         minWidth: 360,
-        slots: { default: 'actions' },
       },
     },
   );

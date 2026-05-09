@@ -17,11 +17,7 @@ const activeTab = ref<TabKey>('config');
 </script>
 
 <template>
-  <Page
-    auto-content-height
-    content-class="es-full-height-page-content"
-    title="签到管理"
-  >
+  <Page auto-content-height content-class="es-full-height-page-content">
     <EsFullHeightTabs v-model="activeTab">
       <el-tab-pane label="基础配置" name="config">
         <CheckInConfigPanel />

@@ -1,0 +1,253 @@
+<script lang="ts" setup>
+import type {
+  CouponFormValues,
+  CouponGrantFormValues,
+  CouponRow,
+} from '../model/coupon';
+
+import type { VxeGridProps } from '#/adapter/vxe-table';
+import type {
+  MonetizationCouponPageRequest,
+  MonetizationCouponUpdateStatusRequest,
+} from '#/api/types';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  monetizationCouponCreateApi,
+  monetizationCouponGrantCreateApi,
+  monetizationCouponPageApi,
+  monetizationCouponUpdateApi,
+  monetizationCouponUpdateStatusApi,
+} from '#/api/core';
+import EsModalForm from '#/components/es-modal-form/index.vue';
+import EsRecordDetail from '#/components/es-record-detail';
+import { useMessage } from '#/hooks/useFeedback';
+import { createSearchFormOptions } from '#/utils/grid-form-config';
+
+import {
+  normalizeSearchBoolean,
+  normalizeSearchNumber,
+  splitSearchDateRange,
+} from '../../model/search';
+import {
+  buildCouponCreatePayload,
+  buildCouponGrantPayload,
+  buildCouponUpdatePayload,
+  couponColumns,
+  couponFormSchema,
+  couponGrantFormSchema,
+  couponSearchSchema,
+  getCouponDetailCards,
+  mapCouponToFormRecord,
+} from '../model/coupon';
+
+type CouponSearchValues = {
+  couponType?: unknown;
+  dateRange?: unknown;
+  isEnabled?: unknown;
+  targetScope?: unknown;
+};
+
+const currentCoupon = ref({} as CouponRow);
+
+const couponGridOptions: VxeGridProps<CouponRow> = {
+  columns: couponColumns,
+  height: '100%',
+  proxyConfig: {
+    ajax: {
+      query: async ({ page, sorts }, formValues?: CouponSearchValues) =>
+        await monetizationCouponPageApi(
+          formatQuery({
+            page,
+            formValues: buildCouponSearchValues(formValues),
+            sorts,
+          }),
+        ),
+    },
+    sort: true,
+  },
+};
+
+const [CouponGrid, couponGridApi] = useVbenVxeGrid({
+  formOptions: createSearchFormOptions(couponSearchSchema),
+  gridOptions: couponGridOptions,
+});
+
+const [CreateForm, createFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+
+const [EditForm, editFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+
+const [GrantForm, grantFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+
+const [DetailModal, detailApi] = useVbenModal({
+  connectedComponent: EsRecordDetail,
+  title: '券定义详情',
+});
+
+function buildCouponSearchValues(formValues: CouponSearchValues = {}) {
+  const { endDate, startDate } = splitSearchDateRange(formValues.dateRange);
+
+  return {
+    couponType: normalizeSearchNumber(formValues.couponType),
+    endDate,
+    isEnabled: normalizeSearchBoolean(formValues.isEnabled),
+    startDate,
+    targetScope: normalizeSearchNumber(formValues.targetScope),
+  } satisfies Partial<MonetizationCouponPageRequest>;
+}
+
+function openCreateModal() {
+  createFormApi
+    .setData({
+      cols: 2,
+      schema: couponFormSchema,
+      title: '券定义',
+      width: 1000,
+    })
+    .open();
+}
+
+function openEditModal(row: CouponRow) {
+  editFormApi
+    .setData({
+      cols: 2,
+      record: mapCouponToFormRecord(row),
+      schema: couponFormSchema,
+      title: '券定义',
+      width: 1000,
+    })
+    .open();
+}
+
+function openGrantModal(row: CouponRow) {
+  grantFormApi
+    .setData({
+      cols: 2,
+      record: {
+        couponDefinitionId: row.id,
+        sourceType: 3,
+      },
+      schema: couponGrantFormSchema,
+      title: '发券',
+      width: 760,
+    })
+    .open();
+}
+
+function openDetailModal(row: CouponRow) {
+  currentCoupon.value = row;
+  detailApi.setData({ recordId: row.id }).open();
+}
+
+async function handleCreateSubmit(values: CouponFormValues) {
+  await monetizationCouponCreateApi(buildCouponCreatePayload(values));
+  useMessage.success('操作成功');
+  await couponGridApi.reload();
+}
+
+async function handleEditSubmit(values: CouponFormValues) {
+  await monetizationCouponUpdateApi(buildCouponUpdatePayload(values));
+  useMessage.success('操作成功');
+  await couponGridApi.reload();
+}
+
+async function handleGrant(values: CouponGrantFormValues) {
+  try {
+    await monetizationCouponGrantCreateApi(buildCouponGrantPayload(values));
+    useMessage.success('发券成功');
+    grantFormApi.close();
+    await couponGridApi.reload();
+  } catch (error) {
+    useMessage.warning(error instanceof Error ? error.message : '发券失败');
+    throw error;
+  }
+}
+
+async function toggleEnableStatus(row: CouponRow) {
+  if (typeof row.id !== 'number') {
+    return;
+  }
+
+  row.statusLoading = true;
+  try {
+    await monetizationCouponUpdateStatusApi({
+      id: row.id,
+      isEnabled: row.isEnabled !== true,
+    } satisfies MonetizationCouponUpdateStatusRequest);
+    useMessage.success('状态更新成功');
+    await couponGridApi.reload();
+  } finally {
+    row.statusLoading = false;
+  }
+}
+
+async function getCurrentCoupon() {
+  return currentCoupon.value;
+}
+</script>
+
+<template>
+  <div class="es-full-height-pane">
+    <CouponGrid class="es-full-height-grid">
+      <template #toolbar-actions>
+        <el-button class="ml-2" type="primary" @click="openCreateModal()">
+          添加券定义
+        </el-button>
+      </template>
+
+      <template #detail="{ row }">
+        <el-text
+          class="cursor-pointer text-left hover:opacity-80"
+          type="primary"
+          @click="openDetailModal(row)"
+        >
+          {{ row.name || row.id }}
+        </el-text>
+      </template>
+
+      <template #isEnabled="{ row }">
+        <el-switch
+          :active-value="true"
+          :inactive-value="false"
+          :loading="row.statusLoading"
+          :model-value="row.isEnabled === true"
+          @change="toggleEnableStatus(row)"
+        />
+      </template>
+
+      <template #actions="{ row }">
+        <div class="my-1 flex items-center">
+          <el-button link type="primary" @click="openDetailModal(row)">
+            详情
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button link type="primary" @click="openEditModal(row)">
+            编辑
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button link type="primary" @click="openGrantModal(row)">
+            发券
+          </el-button>
+        </div>
+      </template>
+    </CouponGrid>
+
+    <CreateForm :schema="couponFormSchema" :on-submit="handleCreateSubmit" />
+    <EditForm :schema="couponFormSchema" :on-submit="handleEditSubmit" />
+    <GrantForm :schema="couponGrantFormSchema" :on-submit="handleGrant" />
+
+    <DetailModal
+      :api="getCurrentCoupon"
+      :cards="getCouponDetailCards"
+      class="w-[980px]"
+    />
+  </div>
+</template>

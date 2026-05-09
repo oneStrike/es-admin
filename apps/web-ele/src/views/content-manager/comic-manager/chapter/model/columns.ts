@@ -2,7 +2,7 @@ import type { ContentComicChapterDetailResponse } from '#/api/types';
 
 import { formSchemaTransform } from '#/utils';
 
-import { chapterFormSchema, readRule } from './form';
+import { chapterFormSchema } from './form';
 
 /**
  * 章节表格列配置
@@ -62,9 +62,6 @@ export const chapterColumns =
         sort: 5,
         cellRender: {
           name: 'CellTag',
-          props: {
-            mapOptions: readRule,
-          },
         },
       },
       isPreview: {
@@ -111,7 +108,6 @@ export const chapterColumns =
       actions: {
         show: true,
         width: 180,
-        fixed: 'right',
       },
     },
   );

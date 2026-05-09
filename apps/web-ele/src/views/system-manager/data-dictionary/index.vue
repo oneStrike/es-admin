@@ -9,7 +9,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as Api from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
@@ -28,14 +28,18 @@ const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
     proxyConfig: {
       ajax: {
         query: async (
-          { page }: { page: { currentPage: number; pageSize: number } },
+          {
+            page,
+            sorts,
+          }: {
+            page: { currentPage: number; pageSize: number };
+            sorts: any[];
+          },
           formValues: Recordable<any>,
         ) => {
-          return await Api.dictionaryPageApi({
-            pageIndex: page.currentPage,
-            pageSize: page.pageSize,
-            ...formValues,
-          });
+          return await Api.dictionaryPageApi(
+            formatQuery({ page, sorts, formValues }),
+          );
         },
       },
       sort: true,

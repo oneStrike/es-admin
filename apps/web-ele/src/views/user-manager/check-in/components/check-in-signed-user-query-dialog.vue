@@ -101,8 +101,6 @@ const signedUserGridOptions: VxeGridProps<AdminCheckInSignedUserPageItemDto> = {
         if (!selectedDate.value) {
           return {
             list: [],
-            pageIndex: page.currentPage,
-            pageSize: page.pageSize,
             total: 0,
           };
         }

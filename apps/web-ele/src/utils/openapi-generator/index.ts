@@ -1,12 +1,61 @@
 import type { OpenAPIGeneratorConfig } from './config';
 import type { GeneratedFile } from './types';
 
+import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
 import { defaultConfig, mergeOpenAPIGeneratorConfig } from './config';
 import { clearDirectory, ensureDirectory, writeFile } from './file-utils';
 import { OpenAPIGenerator } from './generator';
+
+const generatedAtPattern = /@更新时间\s+(.+)/;
+
+function isMissingPathError(error: unknown) {
+  return (
+    error !== null &&
+    typeof error === 'object' &&
+    'code' in error &&
+    error.code === 'ENOENT'
+  );
+}
+
+async function readExistingGeneratedAt(typesDir: string): Promise<string> {
+  let entries: Array<{ isFile: () => boolean; name: string }>;
+
+  try {
+    entries = await fs.readdir(typesDir, { withFileTypes: true });
+  } catch (error) {
+    if (isMissingPathError(error)) {
+      return '';
+    }
+
+    throw error;
+  }
+
+  const firstTypeFile = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.d.ts'))
+    .map((entry) => entry.name)
+    .toSorted()[0];
+
+  if (!firstTypeFile) {
+    return '';
+  }
+
+  try {
+    const content = await fs.readFile(
+      path.join(typesDir, firstTypeFile),
+      'utf8',
+    );
+    return content.match(generatedAtPattern)?.[1]?.trim() ?? '';
+  } catch (error) {
+    if (isMissingPathError(error)) {
+      return '';
+    }
+
+    throw error;
+  }
+}
 
 /**
  * 生成 API 代码的主函数
@@ -50,6 +99,7 @@ export async function generateAPI(
   });
   const outputDir = path.resolve(process.cwd(), finalConfig.outputDir);
   const typesDir = finalConfig.typesOutputDir;
+  process.env.OPENAPI_GENERATED_AT ||= await readExistingGeneratedAt(typesDir);
 
   try {
     console.warn('开始生成API代码...');

@@ -45,33 +45,30 @@ defineOptions({
 
 const currentBadge = ref<BaseUserBadgeDto | null>(null);
 
-const userSearchSchema: EsFormSchema = [];
-
-const userTableSchema: EsFormSchema = [
+const userListSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'userId', label: '用户ID' },
   { component: 'Input', fieldName: 'nickname', label: '昵称' },
   { component: 'Input', fieldName: 'level', label: '等级' },
 ];
 
+// 徽章用户分页接口当前只支持按徽章上下文分页查询，不暴露用户筛选字段。
+const userSearchSchema: EsFormSchema = [];
+
 const userColumns = formSchemaTransform.toTableColumns<BadgeUserPageItemDto>(
-  userTableSchema,
+  userListSchema,
   {
     userId: {
       formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 100,
     },
     nickname: {
       formatter: ({ row }) => row.user?.nickname || '-',
       minWidth: 140,
     },
     level: {
-      formatter: ({ row }) => row.user?.level || '-',
+      formatter: ({ row }) => row.user?.level ?? '-',
       minWidth: 140,
     },
     createdAt: {
-      cellRender: {
-        name: 'CellDate',
-      },
       minWidth: 160,
       title: '获得时间',
     },

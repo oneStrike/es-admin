@@ -70,14 +70,14 @@ const filteredPacks = computed(() => {
 
 const packOptions = computed(() => buildEmojiPackOptions(packs.value));
 
-const packTableSchema: EsFormSchema = [
+const packListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'name', label: '表情包' },
   { component: 'Switch', fieldName: 'isEnabled', label: '状态' },
 ];
 
 const packGridOptions: VxeGridProps<BaseEmojiPackDto> = {
   columns: formSchemaTransform.toTableColumns<BaseEmojiPackDto>(
-    packTableSchema,
+    packListSchema,
     {
       seq: { width: 70 },
       name: {
@@ -129,8 +129,6 @@ const assetGridOptions: VxeGridProps<BaseEmojiAssetDto> = {
         if (!currentPack.value?.id) {
           return {
             list: [],
-            pageIndex: page.currentPage,
-            pageSize: page.pageSize,
             total: 0,
           };
         }

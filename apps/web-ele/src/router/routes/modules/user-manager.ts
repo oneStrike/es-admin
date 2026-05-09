@@ -20,15 +20,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'UserMembers',
-        path: '/user-manager/members',
-        component: () => import('#/views/user-manager/members/index.vue'),
-        meta: {
-          icon: 'codex:dot-circle',
-          title: '会员管理',
-        },
-      },
-      {
         name: 'UserCheckIn',
         path: '/user-manager/check-in',
         component: () => import('#/views/user-manager/check-in/index.vue'),

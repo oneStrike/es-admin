@@ -8,7 +8,7 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   appPageCreateApi,
   appPageDeleteApi,
@@ -34,15 +34,16 @@ const gridOptions: VxeGridProps<BaseAppPageDto> = {
   height: 'auto',
   proxyConfig: {
     ajax: {
-      query: async ({ page }, formValues) => {
-        if (formValues.enablePlatform) {
-          formValues.enablePlatform = JSON.stringify(formValues.enablePlatform);
+      query: async ({ page, sorts }, formValues) => {
+        const nextFormValues = { ...formValues };
+        if (nextFormValues.enablePlatform) {
+          nextFormValues.enablePlatform = JSON.stringify(
+            nextFormValues.enablePlatform,
+          );
         }
-        return await appPagePageApi({
-          pageIndex: page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
+        return await appPagePageApi(
+          formatQuery({ page, sorts, formValues: nextFormValues }),
+        );
       },
     },
     sort: true,

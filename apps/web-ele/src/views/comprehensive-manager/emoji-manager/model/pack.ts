@@ -139,7 +139,6 @@ export const emojiPackColumns =
       cellRender: {
         name: 'CellImage',
       },
-      minWidth: 100,
       sort: 0,
     },
     sceneType: {
@@ -147,7 +146,6 @@ export const emojiPackColumns =
         name: 'CellTag',
         props: {
           formatter: normalizeSceneTypeValue,
-          mapOptions: emojiSceneTypeOptions,
         },
       },
       minWidth: 220,
@@ -156,7 +154,6 @@ export const emojiPackColumns =
       sortable: true,
     },
     isEnabled: {
-      minWidth: 100,
       show: true,
       slots: { default: 'isEnabled' },
       title: '状态',

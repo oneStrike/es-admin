@@ -219,7 +219,8 @@ function handleClear() {
                   :model-value="item.assetType"
                   class="!w-full"
                   @update:model-value="
-                    (value) => handleAssetTypeChange(item, value as number)
+                    (value: unknown) =>
+                      handleAssetTypeChange(item, value as number)
                   "
                 >
                   <el-option

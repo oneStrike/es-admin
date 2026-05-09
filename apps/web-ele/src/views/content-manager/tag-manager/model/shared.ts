@@ -70,14 +70,12 @@ export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
     popularity: {
       title: '热度',
       field: 'popularity',
-      minWidth: 100,
       sortable: true,
     },
 
     isEnabled: {
       show: true,
       title: '状态',
-      minWidth: 100,
       slots: { default: 'isEnabled' },
     },
 

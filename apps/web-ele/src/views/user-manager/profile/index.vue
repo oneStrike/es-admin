@@ -496,7 +496,7 @@ function mapDetailToEditRecord(
             <el-divider direction="vertical" />
             <el-dropdown
               @command="
-                (command) => {
+                (command: string) => {
                   handleRowCommand(command, row);
                 }
               "

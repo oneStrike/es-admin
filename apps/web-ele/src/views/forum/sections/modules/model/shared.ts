@@ -181,9 +181,6 @@ export const sectionColumns =
       width: 100,
       sortable: true,
     },
-    topicReviewPolicy: {
-      width: 100,
-    },
     userLevelRuleId: {
       hide: true,
     },

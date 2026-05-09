@@ -49,11 +49,7 @@ async function handleApplicationApproved() {
 </script>
 
 <template>
-  <Page
-    auto-content-height
-    content-class="es-full-height-page-content"
-    title="版主管理"
-  >
+  <Page auto-content-height content-class="es-full-height-page-content">
     <EsFullHeightTabs
       v-model="activeTab"
       class="es-pill-tabs"

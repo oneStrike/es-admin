@@ -53,6 +53,16 @@ type OperationModalData = {
   record: AdminAppUserPageItemDto;
 };
 
+type GridQueryContext = {
+  page: {
+    currentPage: number;
+    pageSize: number;
+  };
+  sorts?: Array<{ field: string; order: string }>;
+};
+
+type GridSearchValues = Record<string, unknown>;
+
 const activeTab = ref('points');
 const currentUser = ref<AdminAppUserPageItemDto | null>(null);
 const loading = ref(false);
@@ -95,6 +105,7 @@ const operationFieldCatalog = {
   },
   badgeType: {
     component: 'Select',
+    componentProps: { options: badgeTypeOptions },
     fieldName: 'type',
     label: '徽章类型',
   },
@@ -139,7 +150,27 @@ function createOperationField(
   };
 }
 
-function createRecordDateSearchSchema(): EsFormSchema {
+function getRecordNumber(row: GridSearchValues, field: string) {
+  const value = row[field];
+  return typeof value === 'number' ? value : 0;
+}
+
+function getSignedNumberType(row: GridSearchValues, field: string) {
+  return getRecordNumber(row, field) >= 0 ? 'success' : 'danger';
+}
+
+function formatSignedNumber(row: GridSearchValues, field: string) {
+  const value = getRecordNumber(row, field);
+  return value > 0 ? `+${value}` : value;
+}
+
+function getBadgeInfo(row: GridSearchValues): Partial<BaseUserBadgeDto> {
+  return row.badge && typeof row.badge === 'object'
+    ? (row.badge as Partial<BaseUserBadgeDto>)
+    : {};
+}
+
+function createRecordDateFields(): EsFormSchema {
   return [
     {
       component: 'DatePicker',
@@ -187,53 +218,6 @@ function createGrowthGrantFormSchema(): EsFormSchema {
     }),
   ];
 }
-
-const pointRecordSearchSchema: EsFormSchema = [
-  ...createRecordDateSearchSchema(),
-  createOperationField('targetType', {
-    component: 'Input',
-    componentProps: {
-      clearable: true,
-      placeholder: '目标类型',
-    },
-  }),
-  createOperationField('targetId', {
-    component: 'Input',
-    componentProps: {
-      clearable: true,
-      placeholder: '目标 ID',
-    },
-  }),
-];
-
-const experienceRecordSearchSchema: EsFormSchema =
-  createRecordDateSearchSchema();
-
-const badgeSearchSchema: EsFormSchema = [
-  createOperationField('badgeName', {
-    componentProps: {
-      clearable: true,
-      placeholder: '徽章名称',
-    },
-  }),
-  createOperationField('badgeType', {
-    componentProps: {
-      clearable: true,
-      options: badgeTypeOptions,
-      placeholder: '徽章类型',
-    },
-  }),
-  createOperationField('badgeIsEnabled', {
-    componentProps: {
-      clearable: true,
-      options: [
-        { label: '启用', value: true },
-        { label: '禁用', value: false },
-      ],
-      placeholder: '状态',
-    },
-  }),
-];
 
 const pointsGrantFormSchema: EsFormSchema = createGrowthGrantFormSchema();
 
@@ -292,18 +276,41 @@ const pointsConsumeFormSchema: EsFormSchema = [
 
 const experienceGrantFormSchema: EsFormSchema = createGrowthGrantFormSchema();
 
-const pointRecordTableSchema: EsFormSchema = [
+const pointRecordListSchema: EsFormSchema = [
   createOperationField('points'),
   { component: 'InputNumber', fieldName: 'beforePoints', label: '变化前' },
   { component: 'InputNumber', fieldName: 'afterPoints', label: '变化后' },
   createOperationField('targetType'),
   createOperationField('targetId'),
   createOperationField('remark'),
+  ...createRecordDateFields(),
 ];
+
+const pointRecordSearchSchema = formSchemaTransform.toSearchSchema(
+  pointRecordListSchema,
+  {
+    startDate: { show: true },
+    endDate: { show: true },
+    targetType: {
+      component: 'Input',
+      componentProps: {
+        clearable: true,
+        placeholder: '目标类型',
+      },
+    },
+    targetId: {
+      component: 'Input',
+      componentProps: {
+        clearable: true,
+        placeholder: '目标 ID',
+      },
+    },
+  },
+);
 
 const pointRecordColumns =
   formSchemaTransform.toTableColumns<AdminAppUserPointRecordDto>(
-    pointRecordTableSchema,
+    pointRecordListSchema,
     {
       seq: {
         width: 60,
@@ -330,21 +337,21 @@ const pointRecordColumns =
       },
       targetType: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
       },
       targetId: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
       },
       remark: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 220,
         showOverflow: 'tooltip',
       },
+      startDate: { hide: true },
+      endDate: { hide: true },
     },
   );
 
-const experienceRecordTableSchema: EsFormSchema = [
+const experienceRecordListSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'experience', label: '经验变化' },
   {
     component: 'InputNumber',
@@ -353,11 +360,20 @@ const experienceRecordTableSchema: EsFormSchema = [
   },
   { component: 'InputNumber', fieldName: 'afterExperience', label: '变化后' },
   createOperationField('remark'),
+  ...createRecordDateFields(),
 ];
+
+const experienceRecordSearchSchema = formSchemaTransform.toSearchSchema(
+  experienceRecordListSchema,
+  {
+    startDate: { show: true },
+    endDate: { show: true },
+  },
+);
 
 const experienceRecordColumns =
   formSchemaTransform.toTableColumns<AdminAppUserExperienceRecordDto>(
-    experienceRecordTableSchema,
+    experienceRecordListSchema,
     {
       seq: {
         width: 60,
@@ -383,19 +399,21 @@ const experienceRecordColumns =
         width: 100,
       },
       remark: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 240,
         showOverflow: 'tooltip',
       },
+      startDate: { hide: true },
+      endDate: { hide: true },
     },
   );
 
-const userBadgeTableSchema: EsFormSchema = [
+const userBadgeListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'badge', label: '徽章信息' },
 ];
 
 const userBadgeColumns = formSchemaTransform.toTableColumns<UserBadgeItemDto>(
-  userBadgeTableSchema,
+  userBadgeListSchema,
   {
     seq: {
       width: 60,
@@ -420,7 +438,7 @@ const userBadgeColumns = formSchemaTransform.toTableColumns<UserBadgeItemDto>(
   },
 );
 
-const availableBadgeTableSchema: EsFormSchema = [
+const availableBadgeListSchema: EsFormSchema = [
   createOperationField('badgeName'),
   createOperationField('badgeType'),
   { component: 'Input', fieldName: 'business', label: '业务域' },
@@ -428,9 +446,38 @@ const availableBadgeTableSchema: EsFormSchema = [
   createOperationField('badgeIsEnabled'),
 ];
 
+const badgeSearchSchema = formSchemaTransform.toSearchSchema(
+  availableBadgeListSchema,
+  {
+    name: {
+      componentProps: {
+        clearable: true,
+        placeholder: '徽章名称',
+      },
+    },
+    type: {
+      componentProps: {
+        clearable: true,
+        options: badgeTypeOptions,
+        placeholder: '徽章类型',
+      },
+    },
+    isEnabled: {
+      componentProps: {
+        clearable: true,
+        options: [
+          { label: '启用', value: true },
+          { label: '禁用', value: false },
+        ],
+        placeholder: '状态',
+      },
+    },
+  },
+);
+
 const availableBadgeColumns =
   formSchemaTransform.toTableColumns<BaseUserBadgeDto>(
-    availableBadgeTableSchema,
+    availableBadgeListSchema,
     {
       name: {
         minWidth: 180,
@@ -438,18 +485,15 @@ const availableBadgeColumns =
       type: {
         cellRender: {
           name: 'CellTag',
-          props: {
-            mapOptions: badgeTypeOptions,
-          },
         },
         minWidth: 120,
       },
       business: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 120,
       },
       eventKey: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 140,
       },
       isEnabled: {
@@ -462,7 +506,6 @@ const availableBadgeColumns =
             },
           },
         },
-        minWidth: 100,
       },
     },
   );
@@ -477,8 +520,8 @@ const [PointGrid, pointGridApi] = useVbenVxeGrid({
       autoLoad: false,
       ajax: {
         query: async (
-          { page, sorts }: any,
-          formValues: Record<string, any>,
+          { page, sorts }: GridQueryContext,
+          formValues: GridSearchValues = {},
         ) => {
           const userId = currentUser.value?.id;
 
@@ -513,8 +556,8 @@ const [ExperienceGrid, experienceGridApi] = useVbenVxeGrid({
       autoLoad: false,
       ajax: {
         query: async (
-          { page, sorts }: any,
-          formValues: Record<string, any>,
+          { page, sorts }: GridQueryContext,
+          formValues: GridSearchValues = {},
         ) => {
           const userId = currentUser.value?.id;
 
@@ -549,8 +592,8 @@ const [BadgeGrid, badgeGridApi] = useVbenVxeGrid({
       autoLoad: false,
       ajax: {
         query: async (
-          { page, sorts }: any,
-          formValues: Record<string, any>,
+          { page, sorts }: GridQueryContext,
+          formValues: GridSearchValues = {},
         ) => {
           const userId = currentUser.value?.id;
 
@@ -815,16 +858,20 @@ async function handleAssignBadgeConfirm(rows: Array<{ id: number }>) {
   await notifyParentUpdated();
 }
 
-async function revokeBadge(row: Record<string, any>) {
+async function revokeBadge(row: GridSearchValues) {
   if (!currentUser.value || !canOperate.value) {
     useMessage.warning('当前用户不可执行运营操作');
     return;
   }
 
-  const badgeRecord = row as UserBadgeItemDto;
+  const badgeId = getBadgeInfo(row).id;
+  if (typeof badgeId !== 'number') {
+    useMessage.warning('徽章记录缺少可撤销标识');
+    return;
+  }
 
   await appUsersBadgesRevokeApi({
-    badgeId: badgeRecord.badge.id,
+    badgeId,
     userId: currentUser.value.id,
   });
 
@@ -965,8 +1012,8 @@ async function revokeBadge(row: Record<string, any>) {
           <div class="user-operation-modal__tab-pane">
             <PointGrid class="user-operation-modal__grid">
               <template #pointsDelta="{ row }">
-                <el-text :type="row.points >= 0 ? 'success' : 'danger'">
-                  {{ row.points > 0 ? `+${row.points}` : row.points }}
+                <el-text :type="getSignedNumberType(row, 'points')">
+                  {{ formatSignedNumber(row, 'points') }}
                 </el-text>
               </template>
             </PointGrid>
@@ -977,10 +1024,8 @@ async function revokeBadge(row: Record<string, any>) {
           <div class="user-operation-modal__tab-pane">
             <ExperienceGrid class="user-operation-modal__grid">
               <template #experienceDelta="{ row }">
-                <el-text :type="row.experience >= 0 ? 'success' : 'danger'">
-                  {{
-                    row.experience > 0 ? `+${row.experience}` : row.experience
-                  }}
+                <el-text :type="getSignedNumberType(row, 'experience')">
+                  {{ formatSignedNumber(row, 'experience') }}
                 </el-text>
               </template>
             </ExperienceGrid>
@@ -993,19 +1038,19 @@ async function revokeBadge(row: Record<string, any>) {
               <template #badgeInfo="{ row }">
                 <div class="flex items-center gap-3 text-left">
                   <el-image
-                    :src="row.badge.icon"
+                    :src="getBadgeInfo(row).icon || ''"
                     class="size-10 rounded-md border border-border"
                     fit="cover"
                     preview-teleported
                   />
                   <div class="min-w-0">
                     <div class="truncate font-medium text-foreground">
-                      {{ row.badge.name }}
+                      {{ getBadgeInfo(row).name || '-' }}
                     </div>
                     <div class="truncate text-xs text-muted-foreground">
-                      {{ badgeTypeMap[row.badge.type] || '-' }}
-                      <span v-if="row.badge.eventKey">
-                        / {{ row.badge.eventKey }}
+                      {{ badgeTypeMap[getBadgeInfo(row).type || 0] || '-' }}
+                      <span v-if="getBadgeInfo(row).eventKey">
+                        / {{ getBadgeInfo(row).eventKey }}
                       </span>
                     </div>
                   </div>

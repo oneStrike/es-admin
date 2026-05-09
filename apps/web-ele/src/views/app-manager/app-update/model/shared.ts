@@ -263,15 +263,6 @@ export const appUpdateColumns =
       title: '版本号',
       slots: { default: 'versionName' },
     },
-    platform: {
-      title: '平台',
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: platformOptions,
-        },
-      },
-    },
     forceUpdate: {
       title: '强制更新',
       cellRender: {

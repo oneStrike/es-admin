@@ -168,7 +168,7 @@ export const auditFormSchema: EsFormSchema = [
   },
 ];
 
-export const searchFormSchema: EsFormSchema = [
+const pageListSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
@@ -180,7 +180,7 @@ export const searchFormSchema: EsFormSchema = [
   createHashtagField('auditStatus', {
     componentProps: {
       clearable: true,
-      options: withoutColorOptions(auditStatusOptions),
+      options: auditStatusOptions,
       placeholder: '审核状态',
     },
   }),
@@ -202,13 +202,8 @@ export const searchFormSchema: EsFormSchema = [
     },
     fieldName: 'dateRange',
   },
-];
-
-const pageTableSchema: EsFormSchema = [
   createHashtagField('displayName'),
   { component: 'Input', fieldName: 'slug', label: 'Slug' },
-  createHashtagField('auditStatus'),
-  createHashtagField('isHidden'),
   createHashtagField('manualBoost'),
   { component: 'InputNumber', fieldName: 'followerCount', label: '关注人数' },
   { component: 'InputNumber', fieldName: 'topicRefCount', label: '主题引用数' },
@@ -217,7 +212,12 @@ const pageTableSchema: EsFormSchema = [
     fieldName: 'commentRefCount',
     label: '评论引用数',
   },
-  { component: 'Select', fieldName: 'createSourceType', label: '创建来源' },
+  {
+    component: 'Select',
+    componentProps: { options: createSourceTypeOptions },
+    fieldName: 'createSourceType',
+    label: '创建来源',
+  },
   {
     component: 'DatePicker',
     fieldName: 'lastReferencedAt',
@@ -225,8 +225,20 @@ const pageTableSchema: EsFormSchema = [
   },
 ];
 
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  pageListSchema,
+  {
+    keyword: { show: true },
+    auditStatus: { show: true },
+    isHidden: { show: true },
+    dateRange: { show: true },
+  },
+);
+
 export const pageColumns =
-  formSchemaTransform.toTableColumns<BaseForumHashtagDto>(pageTableSchema, {
+  formSchemaTransform.toTableColumns<BaseForumHashtagDto>(pageListSchema, {
+    keyword: { hide: true },
+    dateRange: { hide: true },
     displayName: {
       fixed: 'left',
       formatter: undefined,
@@ -238,18 +250,8 @@ export const pageColumns =
       minWidth: 160,
       showOverflow: 'tooltip',
     },
-    auditStatus: {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: auditStatusOptions,
-        },
-      },
-      minWidth: 120,
-    },
     isHidden: {
       formatter: undefined,
-      minWidth: 100,
       slots: { default: 'isHidden' },
     },
     manualBoost: {
@@ -271,15 +273,6 @@ export const pageColumns =
       formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 120,
       sortable: true,
-    },
-    createSourceType: {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: createSourceTypeOptions,
-        },
-      },
-      minWidth: 150,
     },
     lastReferencedAt: {
       cellRender: {
@@ -304,8 +297,6 @@ export const pageColumns =
     },
     actions: {
       show: true,
-      fixed: 'right',
-      slots: { default: 'actions' },
       width: 180,
     },
   });

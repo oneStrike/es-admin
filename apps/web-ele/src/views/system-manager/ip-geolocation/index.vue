@@ -112,7 +112,7 @@ onMounted(loadStatus);
 </script>
 
 <template>
-  <Page auto-content-height title="IP 属地库">
+  <Page auto-content-height>
     <main class="space-y-6">
       <section
         class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"

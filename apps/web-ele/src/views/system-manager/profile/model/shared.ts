@@ -3,14 +3,14 @@ import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';
 
-const loginHistoryTableSchema: EsFormSchema = [
+const loginHistoryListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'ip', label: '登录IP' },
   { component: 'Input', fieldName: 'device', label: '浏览器' },
   { component: 'Select', fieldName: 'isSuccess', label: '登录结果' },
 ];
 
 export const loginHistortColumn =
-  formSchemaTransform.toTableColumns<AuditItemDto>(loginHistoryTableSchema, {
+  formSchemaTransform.toTableColumns<AuditItemDto>(loginHistoryListSchema, {
     seq: { width: 50 },
     ip: {
       formatter: undefined,

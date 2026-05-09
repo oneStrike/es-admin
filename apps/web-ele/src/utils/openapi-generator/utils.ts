@@ -1,3 +1,5 @@
+import process from 'node:process';
+
 import { TYPE_MAPPING } from './config';
 
 /**
@@ -189,6 +191,10 @@ export function resolveRef(ref: string) {
  * 格式化当前时间
  */
 export function formatCurrentTime(options: Intl.DateTimeFormatOptions): string {
+  if (process.env.OPENAPI_GENERATED_AT) {
+    return process.env.OPENAPI_GENERATED_AT;
+  }
+
   return new Date().toLocaleString('zh-CN', options).replaceAll('/', '-');
 }
 

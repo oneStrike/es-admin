@@ -2,7 +2,7 @@ import type { ContentNovelChapterDetailResponse } from '#/api/types';
 
 import { formSchemaTransform } from '#/utils';
 
-import { chapterFormSchema, readRule } from './form';
+import { chapterFormSchema } from './form';
 
 const hideField = [
   'content',
@@ -56,9 +56,6 @@ export const chapterColumns =
       viewRule: {
         cellRender: {
           name: 'CellTag',
-          props: {
-            mapOptions: readRule,
-          },
         },
         sort: 5,
         width: 120,
@@ -104,7 +101,6 @@ export const chapterColumns =
         show: true,
       },
       actions: {
-        fixed: 'right',
         show: true,
         width: 220,
       },

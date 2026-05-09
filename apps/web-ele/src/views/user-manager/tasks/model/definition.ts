@@ -67,41 +67,6 @@ function createTaskDefinitionField(
   };
 }
 
-export const definitionSearchFormSchema: EsFormSchema = [
-  createTaskDefinitionField('title', {
-    componentProps: {
-      clearable: true,
-      placeholder: '任务标题',
-    },
-  }),
-  createTaskDefinitionField('sceneType', {
-    componentProps: {
-      clearable: true,
-      options: taskSceneTypeOptions,
-      placeholder: '任务场景',
-    },
-  }),
-  createTaskDefinitionField('status', {
-    component: 'Select',
-    componentProps: {
-      clearable: true,
-      options: taskDefinitionStatusOptions,
-      placeholder: '任务状态',
-    },
-  }),
-  {
-    component: 'DatePicker',
-    fieldName: 'dateRange',
-    componentProps: {
-      clearable: true,
-      endPlaceholder: '结束时间',
-      startPlaceholder: '开始时间',
-      type: 'datetimerange',
-      valueFormat: 'YYYY-MM-DD HH:mm:ss',
-    },
-  },
-];
-
 export function createTaskDefinitionFormSchema(
   templateOptions: TaskEventTemplateOptionDto[],
 ): EsFormSchema {
@@ -315,14 +280,24 @@ export function createTaskDefinitionFormSchema(
   ];
 }
 
-const taskDefinitionTableSchema: EsFormSchema = [
+const taskDefinitionListSchema: EsFormSchema = [
   { component: 'Upload', fieldName: 'cover', label: '封面' },
   createTaskDefinitionField('title'),
   { component: 'Input', fieldName: 'code', label: '任务编码' },
   createTaskDefinitionField('sceneType'),
   createTaskDefinitionField('status'),
-  { component: 'RadioGroup', fieldName: 'claimMode', label: '领取方式' },
-  { component: 'Select', fieldName: 'repeatType', label: '重复周期' },
+  {
+    component: 'RadioGroup',
+    componentProps: { options: taskClaimModeOptions },
+    fieldName: 'claimMode',
+    label: '领取方式',
+  },
+  {
+    component: 'Select',
+    componentProps: { options: taskRepeatTypeOptions },
+    fieldName: 'repeatType',
+    label: '重复周期',
+  },
   { component: 'InputNumber', fieldName: 'stepCount', label: '步骤数' },
   {
     component: 'InputNumber',
@@ -339,9 +314,50 @@ const taskDefinitionTableSchema: EsFormSchema = [
   { component: 'DatePicker', fieldName: 'endAt', label: '结束时间' },
 ];
 
+export const definitionSearchFormSchema = formSchemaTransform.toSearchSchema(
+  taskDefinitionListSchema,
+  {
+    title: {
+      show: true,
+      componentProps: {
+        clearable: true,
+        placeholder: '任务标题',
+      },
+    },
+    sceneType: {
+      show: true,
+      componentProps: {
+        clearable: true,
+        options: taskSceneTypeOptions,
+        placeholder: '任务场景',
+      },
+    },
+    status: {
+      show: true,
+      component: 'Select',
+      componentProps: {
+        clearable: true,
+        options: taskDefinitionStatusOptions,
+        placeholder: '任务状态',
+      },
+    },
+    dateRange: {
+      component: 'DatePicker',
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '结束时间',
+        startPlaceholder: '开始时间',
+        type: 'datetimerange',
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+      },
+      fieldName: 'dateRange',
+    },
+  },
+);
+
 export const taskDefinitionColumns =
   formSchemaTransform.toTableColumns<TaskDefinitionRow>(
-    taskDefinitionTableSchema,
+    taskDefinitionListSchema,
     {
       cover: {
         cellRender: {
@@ -360,45 +376,8 @@ export const taskDefinitionColumns =
       code: {
         minWidth: 160,
       },
-      sceneType: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: taskSceneTypeOptions,
-          },
-        },
-        minWidth: 120,
-      },
-      status: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: taskDefinitionStatusOptions,
-          },
-        },
-        minWidth: 120,
-      },
-      claimMode: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: taskClaimModeOptions,
-          },
-        },
-        minWidth: 120,
-      },
-      repeatType: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: taskRepeatTypeOptions,
-          },
-        },
-        minWidth: 120,
-      },
       stepCount: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
       },
       activeInstanceCount: {
         formatter: ({ cellValue }) => cellValue ?? '-',
@@ -410,7 +389,6 @@ export const taskDefinitionColumns =
       },
       sortOrder: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
         sortable: true,
       },
       startAt: {
@@ -434,9 +412,7 @@ export const taskDefinitionColumns =
       },
       actions: {
         show: true,
-        fixed: 'right',
         minWidth: 260,
-        slots: { default: 'actions' },
       },
     },
   );

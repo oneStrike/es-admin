@@ -52,10 +52,11 @@ function createTaskReconciliationField(
   };
 }
 
-export const taskReconciliationSearchFormSchema: EsFormSchema = [
+const taskReconciliationListSchema: EsFormSchema = [
   {
     component: 'InputNumber',
     fieldName: 'instanceId',
+    label: '任务实例 ID',
     componentProps: {
       class: '!w-full',
       min: 1,
@@ -65,6 +66,7 @@ export const taskReconciliationSearchFormSchema: EsFormSchema = [
   {
     component: 'InputNumber',
     fieldName: 'taskId',
+    label: '任务头 ID',
     componentProps: {
       class: '!w-full',
       min: 1,
@@ -92,26 +94,14 @@ export const taskReconciliationSearchFormSchema: EsFormSchema = [
       placeholder: '补偿状态',
     },
   }),
-  {
-    component: 'DatePicker',
-    fieldName: 'dateRange',
-    componentProps: {
-      clearable: true,
-      endPlaceholder: '结束时间',
-      startPlaceholder: '开始时间',
-      type: 'datetimerange',
-      valueFormat: 'YYYY-MM-DD HH:mm:ss',
-    },
-  },
-];
-
-const taskReconciliationTableSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'id', label: '实例 ID' },
   { component: 'Input', fieldName: 'task', label: '任务' },
-  createTaskReconciliationField('userId'),
-  { component: 'Select', fieldName: 'visibleStatus', label: '可见状态' },
-  createTaskReconciliationField('rewardSettlementId'),
-  createTaskReconciliationField('settlementStatus'),
+  {
+    component: 'Select',
+    componentProps: { options: taskVisibleStatusOptions },
+    fieldName: 'visibleStatus',
+    label: '可见状态',
+  },
   { component: 'Select', fieldName: 'settlementResult', label: '补偿结果' },
   { component: 'Input', fieldName: 'steps', label: '步骤摘要' },
   { component: 'Input', fieldName: 'cycleKey', label: '周期键' },
@@ -121,10 +111,67 @@ const taskReconciliationTableSchema: EsFormSchema = [
   { component: 'DatePicker', fieldName: 'completedAt', label: '完成时间' },
 ];
 
+export const taskReconciliationSearchFormSchema =
+  formSchemaTransform.toSearchSchema(taskReconciliationListSchema, {
+    instanceId: {
+      show: true,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '任务实例 ID',
+      },
+    },
+    taskId: {
+      show: true,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '任务头 ID',
+      },
+    },
+    userId: {
+      show: true,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '用户 ID',
+      },
+    },
+    rewardSettlementId: {
+      show: true,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '结算事实 ID',
+      },
+    },
+    settlementStatus: {
+      show: true,
+      componentProps: {
+        clearable: true,
+        options: taskRewardSettlementStatusOptions,
+        placeholder: '补偿状态',
+      },
+    },
+    dateRange: {
+      component: 'DatePicker',
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '结束时间',
+        startPlaceholder: '开始时间',
+        type: 'datetimerange',
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+      },
+      fieldName: 'dateRange',
+    },
+  });
+
 export const taskReconciliationColumns =
   formSchemaTransform.toTableColumns<AdminTaskReconciliationItemDto>(
-    taskReconciliationTableSchema,
+    taskReconciliationListSchema,
     {
+      instanceId: { hide: true },
+      taskId: { hide: true },
       id: {
         formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 90,
@@ -137,16 +184,6 @@ export const taskReconciliationColumns =
       },
       userId: {
         formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 100,
-      },
-      visibleStatus: {
-        cellRender: {
-          name: 'CellTag',
-          props: {
-            mapOptions: taskVisibleStatusOptions,
-          },
-        },
-        minWidth: 140,
       },
       rewardSettlementId: {
         formatter: ({ cellValue }) => cellValue ?? '-',
@@ -185,10 +222,6 @@ export const taskReconciliationColumns =
         minWidth: 170,
       },
       completedAt: {
-        cellRender: { name: 'CellDate' },
-        minWidth: 170,
-      },
-      createdAt: {
         cellRender: { name: 'CellDate' },
         minWidth: 170,
       },

@@ -1,3 +1,4 @@
+import type { CheckInReconciliationPageItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -49,7 +50,7 @@ function createCheckInReconciliationField(
   };
 }
 
-const reconciliationSearchBaseSchema: EsFormSchema = [
+const reconciliationListSchema: EsFormSchema = [
   createCheckInReconciliationField('userId', {
     componentProps: {
       class: '!w-full',
@@ -101,16 +102,6 @@ const reconciliationSearchBaseSchema: EsFormSchema = [
     fieldName: 'grantSettlementStatus',
     label: '连续奖励状态',
   },
-];
-
-const reconciliationTableSchema: EsFormSchema = [
-  createCheckInReconciliationField('recordId', {
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '签到记录ID',
-    },
-  }),
   {
     component: 'Input',
     componentProps: {
@@ -119,13 +110,6 @@ const reconciliationTableSchema: EsFormSchema = [
     fieldName: 'signDate',
     label: '签到信息',
   },
-  createCheckInReconciliationField('userId', {
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '用户ID',
-    },
-  }),
   {
     component: 'Input',
     componentProps: {
@@ -134,13 +118,6 @@ const reconciliationTableSchema: EsFormSchema = [
     fieldName: 'resolvedRewardSourceType',
     label: '解析来源',
   },
-  createCheckInReconciliationField('recordSettlementStatus', {
-    component: 'Input',
-    componentProps: {
-      placeholder: '基础奖励',
-    },
-    label: '基础奖励',
-  }),
   {
     component: 'Input',
     componentProps: {
@@ -157,18 +134,10 @@ const reconciliationTableSchema: EsFormSchema = [
     fieldName: 'grants',
     label: '连续奖励',
   },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '操作',
-    },
-    fieldName: 'actions',
-    label: '操作',
-  },
 ];
 
 export const reconciliationSearchFormSchema =
-  formSchemaTransform.toSearchSchema(reconciliationSearchBaseSchema, {
+  formSchemaTransform.toSearchSchema(reconciliationListSchema, {
     userId: { show: true },
     ruleId: { show: true },
     recordId: { show: true },
@@ -177,59 +146,68 @@ export const reconciliationSearchFormSchema =
     grantSettlementStatus: { show: true },
   });
 
-export const reconciliationColumns = formSchemaTransform.toTableColumns<any>(
-  reconciliationTableSchema,
-  {
-    recordId: {
-      fixed: 'left',
-      minWidth: 110,
+export const reconciliationColumns =
+  formSchemaTransform.toTableColumns<CheckInReconciliationPageItemDto>(
+    reconciliationListSchema,
+    {
+      grantId: { hide: true },
+      grantSettlementStatus: { hide: true },
+      ruleId: { hide: true },
+      recordId: {
+        fixed: 'left',
+        minWidth: 110,
+        sort: -0.5,
+      },
+      signDate: {
+        fixed: 'left',
+        minWidth: 180,
+        showOverflow: false,
+        sort: 0.5,
+        slots: { default: 'signInfo' },
+        title: '签到信息',
+      },
+      userId: {
+        sort: 1,
+      },
+      resolvedRewardSourceType: {
+        minWidth: 140,
+        showOverflow: false,
+        sort: 2,
+        slots: { default: 'resolvedRewardSourceType' },
+        title: '解析来源',
+      },
+      recordSettlementStatus: {
+        minWidth: 160,
+        showOverflow: false,
+        sort: 3,
+        slots: { default: 'baseRewardStatus' },
+        title: '基础奖励',
+      },
+      resolvedRewardItems: {
+        minWidth: 220,
+        showOverflow: false,
+        sort: 4,
+        slots: { default: 'resolvedRewardConfig' },
+        title: '奖励快照',
+      },
+      grants: {
+        minWidth: 360,
+        showOverflow: false,
+        sort: 5,
+        slots: { default: 'grants' },
+        title: '连续奖励',
+      },
+      createdAt: {
+        show: true,
+        width: 160,
+      },
+      actions: {
+        show: true,
+        slots: { default: 'reconciliationActions' },
+        width: 140,
+      },
     },
-    signDate: {
-      fixed: 'left',
-      minWidth: 180,
-      showOverflow: false,
-      slots: { default: 'signInfo' },
-      title: '签到信息',
-    },
-    userId: {
-      minWidth: 100,
-    },
-    resolvedRewardSourceType: {
-      minWidth: 140,
-      showOverflow: false,
-      slots: { default: 'resolvedRewardSourceType' },
-      title: '解析来源',
-    },
-    recordSettlementStatus: {
-      minWidth: 160,
-      showOverflow: false,
-      slots: { default: 'baseRewardStatus' },
-      title: '基础奖励',
-    },
-    resolvedRewardItems: {
-      minWidth: 220,
-      showOverflow: false,
-      slots: { default: 'resolvedRewardConfig' },
-      title: '奖励快照',
-    },
-    grants: {
-      minWidth: 360,
-      showOverflow: false,
-      slots: { default: 'grants' },
-      title: '连续奖励',
-    },
-    createdAt: {
-      show: true,
-      width: 160,
-    },
-    actions: {
-      slots: { default: 'reconciliationActions' },
-      sort: 999_999,
-      title: '操作',
-      width: 140,
-    },
-  },
-);
+  );
 
 export {
   checkInRecordTypeOptions,

@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { authRequestClient, requestClient } from './request';
+
 interface MockAccessStore {
   accessToken: null | string;
   isAccessChecked: boolean;
@@ -162,8 +164,6 @@ function createAdapter(
 
 describe('requestClient refresh fallback', () => {
   beforeEach(() => {
-    vi.resetModules();
-
     accessStore.accessToken = 'expired-access-token';
     accessStore.refreshToken = 'expired-refresh-token';
     accessStore.isAccessChecked = false;
@@ -175,11 +175,13 @@ describe('requestClient refresh fallback', () => {
     authStore.logout.mockReset();
     authStore.logout.mockResolvedValue(undefined);
     messageError.mockReset();
+    authRequestClient.isRefreshing = false;
+    authRequestClient.refreshTokenQueue = [];
+    requestClient.isRefreshing = false;
+    requestClient.refreshTokenQueue = [];
   });
 
   it('logs out instead of hanging when refresh token request also returns 401', async () => {
-    const { authRequestClient, requestClient } = await import('./request');
-
     requestClient.instance.defaults.adapter = createAdapter([
       {
         data: {
@@ -223,9 +225,11 @@ describe('requestClient refresh fallback', () => {
     expect(result.status).toBe('rejected');
     expect(authStore.logout).toHaveBeenCalledTimes(1);
 
-    if (result.status === 'rejected') {
-      expect(result.error).toBeInstanceOf(Error);
-      expect((result.error as Error).message).toBe('refresh expired');
+    if (result.status !== 'rejected') {
+      throw new Error('request should reject when refresh token is expired');
     }
-  });
+
+    expect(result.error).toBeInstanceOf(Error);
+    expect((result.error as Error).message).toBe('refresh expired');
+  }, 10_000);
 });

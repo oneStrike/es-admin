@@ -63,17 +63,42 @@
 
 - 业务表单、查询筛选和表格列应优先复用同一份 `EsFormSchema` 字段定义，避免为同一业务字段重复维护多套 label、field、组件语义和枚举映射。
 - 表格列默认通过 `formSchemaTransform.toTableColumns(...)` 从业务 `formSchema` 生成；查询筛选默认通过 `formSchemaTransform.toSearchSchema(...)` 从同一份或同源 schema 派生。
+- 业务列表配置必须按三层默认值判断：先遵守 `apps/web-ele/src/adapter/vxe-table.ts` 的 VxeGrid 全局默认值，再遵守 `formSchemaTransform` 的列/筛选转换默认值，最后才在业务模块 `extra` 或 `gridOptions` 中写差异。
+- 新增或改造业务列表时，必须先确定一个本模块内的源 schema（例如 `formSchema`、`xxxFormSchema`、`xxxListSchema`）；表格列和查询筛选都应从这个源 schema 派生，再通过 `extra` 覆盖展示差异。禁止为同一业务字段同时维护一份 `formSchema`、一份 `*SearchSchema: EsFormSchema = [...]`、一份 `*TableSchema: EsFormSchema = [...]`。
+- `const *TableSchema: EsFormSchema = [...]` 只允许作为临时过渡代码存在；正式业务 model 中应改名并定位为源 schema（如 `xxxListSchema`），或直接复用已有表单 schema 后调用 `formSchemaTransform.toTableColumns(sourceSchema, extra)`。
+- 手写 `export const *SearchSchema: EsFormSchema = [...]` 只允许用于完全没有源 schema 且字段不属于任何业务表单/列表语义的特殊场景；只要字段能从本模块源 schema 表达，就必须使用 `formSchemaTransform.toSearchSchema(sourceSchema, extra)`。
+- `toSearchSchema(...)` 的搜索项合并语义是二次合并：源 schema 的 `componentProps` 先进入搜索默认值，再与 `extra[field].componentProps` 深合并；业务侧 `extra.componentProps` 只写差异项，禁止重复声明默认 `clearable`、默认宽度 `class`、默认 `options: []`，除非本字段确实要覆盖默认行为。
+- `toSearchSchema(...)` 是显式白名单转换；业务代码不得调用无 `extra` 参数的 `formSchemaTransform.toSearchSchema(sourceSchema)` 来表达“使用全部字段”。如果确实需要空搜索表单，应使用明确命名的空数组或局部注释说明。
+- 修改 `formSchemaTransform.toSearchSchema(...)`、`toTableColumns(...)` 或 `apps/web-ele/src/adapter/vxe-table.ts` 后，必须全量排查 `apps/web-ele/src/views` 的调用点，清理因旧浅合并或旧默认缺失而遗留的重复配置，并在最终说明中列出保留例外。
 - 表格列的序号列应由 `formSchemaTransform.toTableColumns(...)` 统一生成；不要在业务列表中手写重复的序号列，除非该表格确实无法用 schema 表达。
+- 操作列通过 `actions: { show: true }` 显式开启即可；`toTableColumns(...)` 已默认提供 `title: '操作'`、`fixed: 'right'`、`slots: { default: 'actions' }` 和默认宽度。业务侧只在按钮数量较多、较少或使用非默认 slot 时补充 `width` / `minWidth` / `slots` 等真实差异。
+- 表格列不要重复声明 `vxe-table` 适配层和 `toTableColumns(...)` 已经提供的默认行为，例如 `align: 'center'`、普通列默认 `minWidth: 100`、全局 `showOverflow`、默认 toolbar、默认分页大小、默认远程多排序、默认行 hover 和 `keyField: 'id'`。只有需要改变默认值时才写覆盖项。
+- 日期列优先使用全局 `CellDate`，创建/更新时间优先使用 `toTableColumns(...)` 的 `createdAt` / `updatedAt` extra；图片 URL 优先使用 `CellImage`；枚举、布尔、状态类字段优先使用 `CellTag` 或 `CellText`；简单链接文本优先使用 `CellLink`。只有复杂交互、组合展示或业务按钮组才使用 slot。
+- `toTableColumns(...)` 会从源 schema 的 `componentProps.options` 推导常见表格渲染：多选、布尔、RadioGroup、状态类字段和带 `color` / `type` 的 options 默认推导为 `CellTag`，普通 `Select` options 默认推导为 `CellText`。业务模块如果只是复用源 schema 里的同一组选项，禁止重复写 `cellRender.props.mapOptions`；确需改变展示形态时只写 `cellRender: { name: 'CellTag' }` 或 `CellText`，让选项数据继续来自源 schema。
+- `CellTag` / `CellText` 的未知枚举值必须显示原始值或 `-`，禁止因为 options 未命中而渲染空标签。只有字段不在源 schema 中、表格展示故意使用另一组选项、或存在复杂 slot/formatter/交互展示时，才允许在业务 `extra` 中保留显式 `mapOptions`。
+- 对于已经由源 schema 表达的枚举、布尔、状态类字段，业务 `extra` 不应只为了 `title`、`minWidth`、`width` 再声明同名字段；这类弱差异优先沉到 `formSchemaTransform` 或适配层默认值，只有存在 formatter、slot、fixed、sort、sortable、hide/show、非源字段或真实业务命名差异时才保留。
+- 表格 formatter 的空值兜底默认使用空值判断（例如 `cellValue ?? '-'`），不要对可能是数字或布尔值的字段使用 `cellValue || '-'`，避免把 `0` 或 `false` 误显示成 `-`。
 - 表格、筛选或展示字段只在以下情况允许手写补充：字段不属于表单语义、是纯展示/操作列、统计聚合列、弹窗选择器的临时列，或需要特殊 slot/formatter/cellRender。此时也应优先通过 `toTableColumns` 的 `extra` 参数追加或覆盖；只有无法映射到 schema 字段时才保留手写 columns。
+- 统计看板、临时选择器弹窗、纯聚合列表等确实无法从业务源 schema 派生的例外，需要在改动说明或局部注释中说明原因；不要为了满足规则伪造无业务含义的表单字段。
 - 新增或改造业务列表时，应先检查是否已有可复用的 `formSchema`、`searchSchema` 或同域 model/shared 定义；确需新增 schema 时，应放在对应业务模块的 `model` 层并与现有命名方式保持一致。
 - 同一业务字段的 label、枚举选项、格式化、显示/筛选语义应尽量集中在同域 `model` 或 shared 文件中维护，不要在页面、弹窗、表格 slot 中各写一套。
 - 搜索表单、列表表格、弹窗选择器如果使用同一组字段，应优先从同源 schema 派生；只有操作列、聚合列、状态组合展示等无法表达的内容，才允许作为额外列补充。
 - create/edit/search/table/detail 等不同 surface 可以有不同字段集合，但同一业务字段的原子定义应来自同域字段目录或同源 schema；不要复制粘贴一组相同 field/label/rules/componentProps 后分别维护。
 
+### 5.1.1 业务 model 边界与类型推导
+
+- 业务模块必须自己维护自己的 `model` 文件；跨模块共用的内容只能放在同域 `shared` 目录中，并且只能包含无业务归属的基础 helper、分页查询映射、通用格式化或通用状态枚举。
+- 禁止把多个业务模块的 schema、columns、detail、payload、options 合并进一个集中式大 model 文件，也禁止新增“兼容导出层”把旧集中入口继续暴露给业务模块。
+- 页面列表行类型必须优先从生成 API 响应中推导，例如 `NonNullable<XxxPageResponse['list']>[number]`；不要手写一份与 DTO 重复的行类型。
+- 创建、更新、查询、确认等提交 payload 必须由生成 API 请求类型约束，优先在对象字面量处使用 `satisfies XxxRequest` 校验；函数返回类型默认交给 TypeScript 推导，除非公共 API 边界、递归结构或泛型约束确实需要显式返回类型。
+- 表单值、详情记录和业务行记录禁止使用 `Record<string, any>` 或宽泛 `any` 作为领域类型；如确实是通用基础组件边界，使用 `Record<string, unknown>` 并在进入具体业务 payload 前显式白名单转换。
+- 生成 DTO 中的宽松索引签名只代表后端生成契约，不得在业务 model 中继续扩散；业务代码应从生成类型中选取、派生、约束，而不是复制 DTO 字段或放宽成 `any`。
+
 ### 5.2 Vben 组件优先规则
 
 - 业务页面优先使用 Vben 与项目封装组件；只要 Vben 或项目业务层已有等价能力，就禁止在业务层直接搭建 Element Plus 的同类容器组件。
 - 页面壳、弹窗、抽屉、表单、表格、分页和弹窗选择器默认使用 `Page`、`useVbenModal`/`VbenModal`、`useVbenDrawer`/`VbenDrawer`、`useVbenForm`、`useVbenVxeGrid`、`EsModalForm`、`EsModalTable`、`#/components/es-*` 等现有能力。
+- `apps/web-ele` 业务页面中的 `Page` 只作为内容容器使用，绝对禁止添加 `title`、`:title`，也禁止通过 `v-bind` 向 `Page` 透传 `title`；页面标题统一由路由 `meta.title` 和菜单系统承载，避免页面内重复标题、面包屑语义漂移和菜单语义偏差。
 - 禁止在有 Vben 或项目封装等价能力时直接使用 `el-dialog`、`el-drawer`、`el-table`、`el-pagination`、手写整套查询表单、手写页面容器或重复封装同类基础能力。
 - Element Plus 仅允许作为小型业务原子控件使用，例如表格 slot 内的状态标签、提示、轻量按钮、日期选择等；如果后续 Vben 或项目组件提供同等直接入口，应迁回 Vben 或项目封装。
 - 如确实需要绕过 Vben 组件，必须在改动说明中写明原因、替代方案和后续迁移条件。

@@ -65,7 +65,7 @@ function createModeratorApplicationField(
   };
 }
 
-export const searchFormSchema: EsFormSchema = [
+const applicationListSchema: EsFormSchema = [
   createModeratorApplicationField('status', {
     defaultValue: 0,
     componentProps: {
@@ -113,7 +113,24 @@ export const searchFormSchema: EsFormSchema = [
       placeholder: '申请人编号',
     },
   },
+  { component: 'Input', fieldName: 'applicant', label: '申请人' },
+  { component: 'Select', fieldName: 'section', label: '申请板块' },
+  { component: 'Select', fieldName: 'permissionNames', label: '申请权限' },
+  { component: 'Input', fieldName: 'reason', label: '申请理由' },
+  createModeratorApplicationField('auditReason'),
+  { component: 'DatePicker', fieldName: 'auditAt', label: '审核时间' },
 ];
+
+export const searchFormSchema = formSchemaTransform.toSearchSchema(
+  applicationListSchema,
+  {
+    status: { show: true },
+    nickname: { show: true },
+    sectionId: { show: true },
+    dateRange: { show: true },
+    applicantId: { show: true },
+  },
+);
 
 export const auditFormSchema: EsFormSchema = [
   createModeratorApplicationField('status', {
@@ -148,21 +165,15 @@ export const auditFormSchema: EsFormSchema = [
   },
 ];
 
-const applicationTableSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'applicant', label: '申请人' },
-  { component: 'Select', fieldName: 'section', label: '申请板块' },
-  { component: 'Select', fieldName: 'permissionNames', label: '申请权限' },
-  { component: 'Input', fieldName: 'reason', label: '申请理由' },
-  createModeratorApplicationField('status'),
-  createModeratorApplicationField('auditReason'),
-  { component: 'DatePicker', fieldName: 'auditAt', label: '审核时间' },
-];
-
 export const applicationColumns =
   formSchemaTransform.toTableColumns<ForumModeratorApplicationDto>(
-    applicationTableSchema,
+    applicationListSchema,
     {
       seq: { width: 60 },
+      nickname: { hide: true },
+      sectionId: { hide: true },
+      dateRange: { hide: true },
+      applicantId: { hide: true },
       applicant: {
         fixed: 'left',
         formatter: undefined,
@@ -184,21 +195,18 @@ export const applicationColumns =
         minWidth: 220,
       },
       reason: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 220,
         showOverflow: 'tooltip',
       },
       status: {
         cellRender: {
           name: 'CellTag',
-          props: {
-            mapOptions: applicationStatusOptions,
-          },
         },
         minWidth: 120,
       },
       auditReason: {
-        formatter: ({ cellValue }) => cellValue || '-',
+        formatter: ({ cellValue }) => cellValue ?? '-',
         minWidth: 220,
         showOverflow: 'tooltip',
       },
@@ -219,9 +227,7 @@ export const applicationColumns =
       },
       actions: {
         show: true,
-        fixed: 'right',
         minWidth: 220,
-        slots: { default: 'actions' },
       },
     },
   );

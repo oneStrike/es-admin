@@ -54,7 +54,7 @@ function createRuleEventsField(
   };
 }
 
-export const ruleEventsSearchFormSchema: EsFormSchema = [
+const ruleEventsListSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
@@ -105,14 +105,10 @@ export const ruleEventsSearchFormSchema: EsFormSchema = [
     fieldName: 'dateRange',
     label: '时间范围',
   },
-];
-
-const ruleEventsTableSchema: EsFormSchema = [
   { component: 'Select', fieldName: 'ruleType', label: '规则类型' },
   { component: 'Input', fieldName: 'eventName', label: '事件名称' },
   { component: 'Select', fieldName: 'domain', label: '事件域' },
   { component: 'Select', fieldName: 'implStatus', label: '实现状态' },
-  createRuleEventsField('isImplemented', { label: '接入状态' }),
   { component: 'Select', fieldName: 'governanceGate', label: '治理门禁' },
   { component: 'Input', fieldName: 'rewardPolicy', label: '奖励策略' },
   { component: 'Input', fieldName: 'assetRules', label: '资产规则' },
@@ -126,8 +122,12 @@ const ruleEventsTableSchema: EsFormSchema = [
 
 export const ruleEventsColumns =
   formSchemaTransform.toTableColumns<GrowthRuleEventPageItemDto>(
-    ruleEventsTableSchema,
+    ruleEventsListSchema,
     {
+      type: { hide: true },
+      hasBaseReward: { hide: true },
+      hasTask: { hide: true },
+      dateRange: { hide: true },
       ruleType: {
         fixed: 'left',
         formatter: ({ cellValue }) => getGrowthTypeLabel(cellValue),
@@ -150,6 +150,7 @@ export const ruleEventsColumns =
       },
       isImplemented: {
         formatter: ({ cellValue }) => formatBoolean(cellValue),
+        title: '接入状态',
         minWidth: 110,
       },
       governanceGate: {
@@ -183,7 +184,7 @@ export const ruleEventsColumns =
   );
 
 export const ruleEventsSearchSchema = formSchemaTransform.toSearchSchema(
-  ruleEventsSearchFormSchema,
+  ruleEventsListSchema,
   {
     type: { show: true },
     hasBaseReward: { show: true },

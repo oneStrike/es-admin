@@ -337,31 +337,6 @@ export const announcementColumns =
       width: 120,
       slots: { default: 'publishStatus' },
     },
-    announcementType: {
-      title: '公告类型',
-      cellRender: {
-        name: 'CellText',
-        props: {
-          mapOptions: announcementType,
-        },
-      },
-    },
-    priorityLevel: {
-      cellRender: {
-        name: 'CellText',
-        props: {
-          mapOptions: announcementPriority,
-        },
-      },
-    },
-    enablePlatform: {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: enablePlatform,
-        },
-      },
-    },
     pageId: {
       slots: { default: 'pageId' },
     },

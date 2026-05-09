@@ -6,7 +6,7 @@ import type { UseDictItem } from '#/hooks/useDict';
 import { formSchemaTransform } from '#/utils';
 
 import { extractRelationNames } from '../../../work-relations';
-import { formSchema, serialStatus } from './shared';
+import { formSchema } from './shared';
 
 const hideField = [
   'authorIds',
@@ -77,12 +77,6 @@ export const novelColumns = ({
       width: 180,
     },
     serialStatus: {
-      cellRender: {
-        name: 'CellTag',
-        props: {
-          mapOptions: serialStatus,
-        },
-      },
       sort: 4,
       title: '连载状态',
       width: 100,

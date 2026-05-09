@@ -3,17 +3,30 @@ import type { EsFormSchema } from '#/types';
 
 import { cloneDeep } from 'es-toolkit';
 
-type ColumnItemExtra<T> = Partial<
+type SchemaRecord = Record<string, unknown>;
+
+type TableColumn<T extends SchemaRecord> = VxeGridPropTypes.Columns<T>[number];
+
+type ColumnItemExtra<T extends SchemaRecord> = Partial<
   Record<
     EsFormSchema[number]['fieldName'],
-    Partial<T> & {
-      formatter?: VxeGridPropTypes.Columns<T>[number]['formatter'];
+    Partial<TableColumn<T>> & {
       hide?: boolean;
       show?: boolean;
       sort?: number;
     }
   >
 >;
+
+type ColumnExtraItem = NonNullable<ColumnItemExtra<SchemaRecord>[string]>;
+type TableCellRender = TableColumn<SchemaRecord>['cellRender'];
+
+type SchemaOption = {
+  color?: string;
+  label: string;
+  type?: string;
+  value: boolean | number | string;
+};
 
 type FilterItemExtra = Partial<
   Record<
@@ -27,7 +40,7 @@ type FilterItemExtra = Partial<
 >;
 
 interface FormSchemaTransform {
-  toTableColumns: <T extends Record<string, any> = any>(
+  toTableColumns: <T extends SchemaRecord = SchemaRecord>(
     schema: EsFormSchema,
     extra?: ColumnItemExtra<T>,
   ) => VxeGridPropTypes.Columns<T>;
@@ -43,6 +56,171 @@ const filterComponentProps = {
   },
 } as const;
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Object.prototype.toString.call(value) === '[object Object]';
+}
+
+function mergePlainObjectProps(
+  ...sources: Array<Record<string, unknown> | undefined>
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  sources.forEach((source) => {
+    if (!source) return;
+
+    Object.entries(source).forEach(([key, value]) => {
+      const currentValue = result[key];
+      result[key] =
+        isPlainObject(currentValue) && isPlainObject(value)
+          ? mergePlainObjectProps(currentValue, value)
+          : value;
+    });
+  });
+
+  return result;
+}
+
+function getPlainComponentProps(item: EsFormSchema[number]) {
+  return isPlainObject(item.componentProps) ? item.componentProps : {};
+}
+
+function getSchemaOptions(item: EsFormSchema[number]) {
+  const componentProps = getPlainComponentProps(item);
+  return Array.isArray(componentProps.options)
+    ? (componentProps.options as SchemaOption[])
+    : undefined;
+}
+
+function isBooleanOptions(options: SchemaOption[] | undefined) {
+  return options?.some((option) => typeof option.value === 'boolean') ?? false;
+}
+
+function hasDisplayType(options: SchemaOption[] | undefined) {
+  return (
+    options?.some((option) => Boolean(option.color || option.type)) ?? false
+  );
+}
+
+function isStatusLikeField(item: EsFormSchema[number]) {
+  const fieldName = String(item.fieldName);
+  const label = String(item.label ?? '');
+
+  return (
+    /status|state|enabled|visible|audit|review/i.test(fieldName) ||
+    /状态|审核|启用|禁用|可见/.test(label)
+  );
+}
+
+function getCellRenderName(cellRender: unknown) {
+  if (!isPlainObject(cellRender)) {
+    return undefined;
+  }
+
+  return typeof cellRender.name === 'string' ? cellRender.name : undefined;
+}
+
+function hasDefaultSlot(itemExtra: ColumnExtraItem | undefined) {
+  return isPlainObject(itemExtra?.slots) && Boolean(itemExtra.slots.default);
+}
+
+function shouldUseCellTag(
+  item: EsFormSchema[number],
+  componentProps: Record<string, unknown>,
+  options: SchemaOption[] | undefined,
+) {
+  return (
+    item.component === 'CheckboxGroup' ||
+    item.component === 'RadioGroup' ||
+    item.component === 'Switch' ||
+    componentProps.multiple === true ||
+    isBooleanOptions(options) ||
+    hasDisplayType(options) ||
+    isStatusLikeField(item)
+  );
+}
+
+function shouldUseCellText(
+  item: EsFormSchema[number],
+  options: SchemaOption[] | undefined,
+) {
+  return item.component === 'Select' && Boolean(options?.length);
+}
+
+function createCellRender(
+  name: 'CellTag' | 'CellText',
+  options?: SchemaOption[],
+): TableCellRender {
+  return options?.length ? { name, props: { mapOptions: options } } : { name };
+}
+
+function mergeSourceOptionsIntoRenderer(
+  cellRender: TableCellRender,
+  options: SchemaOption[] | undefined,
+): TableCellRender {
+  if (!isPlainObject(cellRender) || !options?.length) {
+    return cellRender;
+  }
+
+  const name = getCellRenderName(cellRender);
+  if (name !== 'CellTag' && name !== 'CellText') {
+    return cellRender;
+  }
+
+  const props = isPlainObject(cellRender.props) ? cellRender.props : {};
+  if (Object.prototype.hasOwnProperty.call(props, 'mapOptions')) {
+    return cellRender;
+  }
+
+  return {
+    ...cellRender,
+    props: {
+      ...props,
+      mapOptions: options,
+    },
+  };
+}
+
+function deriveTableColumnExtra(
+  item: EsFormSchema[number],
+  itemExtra: ColumnExtraItem | undefined,
+) {
+  const options = getSchemaOptions(item);
+  const explicitRendererName = getCellRenderName(itemExtra?.cellRender);
+  const hasExplicitCommonRenderer =
+    explicitRendererName === 'CellTag' || explicitRendererName === 'CellText';
+
+  if (hasExplicitCommonRenderer) {
+    return {
+      ...itemExtra,
+      cellRender: mergeSourceOptionsIntoRenderer(
+        itemExtra?.cellRender,
+        options,
+      ),
+    };
+  }
+
+  if (itemExtra?.formatter || hasDefaultSlot(itemExtra)) {
+    return itemExtra;
+  }
+
+  const componentProps = getPlainComponentProps(item);
+  if (shouldUseCellTag(item, componentProps, options)) {
+    return {
+      ...itemExtra,
+      cellRender: createCellRender('CellTag', options),
+    };
+  }
+
+  if (shouldUseCellText(item, options)) {
+    return {
+      ...itemExtra,
+      cellRender: createCellRender('CellText', options),
+    };
+  }
+
+  return itemExtra;
+}
+
 // 通用排序函数
 function sortItemsWithSortValue<T extends { sortValue: number }>(
   items: T[],
@@ -51,33 +229,39 @@ function sortItemsWithSortValue<T extends { sortValue: number }>(
 }
 
 export const formSchemaTransform: FormSchemaTransform = {
-  toTableColumns: (schema, extra) => {
+  toTableColumns: <T extends SchemaRecord = SchemaRecord>(
+    schema: EsFormSchema,
+    extra?: ColumnItemExtra<T>,
+  ) => {
     const innerSchema = cloneDeep(schema);
-    const extraConfig = { ...extra } as ColumnItemExtra<any>;
+    const extraConfig = {
+      ...(extra as ColumnItemExtra<SchemaRecord> | undefined),
+    };
     const consumedExtraKeys = new Set<string>();
 
     const columnsWithSort: Array<
-      VxeGridPropTypes.Columns<any>[number] & {
+      VxeGridPropTypes.Columns<SchemaRecord>[number] & {
         sortValue: number;
       }
     > = [];
 
     innerSchema.forEach((item, idx) => {
       const itemExtra = extraConfig[item.fieldName];
+      const columnExtra = deriveTableColumnExtra(item, itemExtra);
       consumedExtraKeys.add(item.fieldName);
-      if (!item.hide && item.component !== 'Divider' && !itemExtra?.hide) {
+      if (!item.hide && item.component !== 'Divider' && !columnExtra?.hide) {
         columnsWithSort.push({
           title: item.label as string,
           field: item.fieldName,
           align: 'center',
           minWidth: 100,
-          sortValue: itemExtra?.sort ?? idx,
-          formatter: itemExtra?.cellRender
+          sortValue: columnExtra?.sort ?? idx,
+          formatter: columnExtra?.cellRender
             ? undefined
             : ({ cellValue }) => {
-                return cellValue || '-';
+                return cellValue ?? '-';
               },
-          ...itemExtra,
+          ...columnExtra,
         });
       }
     });
@@ -102,7 +286,7 @@ export const formSchemaTransform: FormSchemaTransform = {
         field: 'updatedAt',
         align: 'center',
         sortValue: 99,
-        width: 150,
+        minWidth: 170,
         sortable: true,
         cellRender: {
           name: 'CellDate',
@@ -117,7 +301,7 @@ export const formSchemaTransform: FormSchemaTransform = {
         field: 'createdAt',
         align: 'center',
         sortValue: 99,
-        width: 150,
+        minWidth: 170,
         sortable: true,
         cellRender: {
           name: 'CellDate',
@@ -156,7 +340,9 @@ export const formSchemaTransform: FormSchemaTransform = {
     });
 
     // 移除辅助属性，返回最终的列配置
-    return sortedColumns.map(({ sortValue: _ignored, ...rest }) => rest);
+    return sortedColumns.map(
+      ({ sortValue: _ignored, ...rest }) => rest,
+    ) as VxeGridPropTypes.Columns<T>;
   },
   toSearchSchema: (schema, extra) => {
     const innerSchema = cloneDeep(schema);
@@ -178,16 +364,13 @@ export const formSchemaTransform: FormSchemaTransform = {
               schemaItem.component as keyof typeof filterComponentProps
             ];
 
-          const componentProps =
-            schemaItem.componentProps &&
-            typeof schemaItem.componentProps === 'object' &&
-            !Array.isArray(schemaItem.componentProps)
-              ? ({ ...schemaItem.componentProps } as Record<string, any>)
-              : ({} as Record<string, any>);
+          const componentProps = isPlainObject(schemaItem.componentProps)
+            ? schemaItem.componentProps
+            : {};
 
           // 获取原有的options（如果componentProps是对象类型）
           const existingOptions = componentProps.options;
-          const nextComponentProps: Record<string, any> = {
+          const nextComponentProps: Record<string, unknown> = {
             ...componentProps,
             placeholder: componentConfig?.placeholder || schemaItem.label,
             class: 'w-[280px]',
@@ -221,23 +404,44 @@ export const formSchemaTransform: FormSchemaTransform = {
               nextSchemaItem.componentProps.endPlaceholder || '结束时间';
           }
 
-          // 合并 extra 中的配置
+          const { componentProps: extraComponentProps, ...itemExtraRest } =
+            itemExtra;
+          const hasExtraComponentProps = Object.prototype.hasOwnProperty.call(
+            itemExtra,
+            'componentProps',
+          );
+          let mergedComponentProps: EsFormSchema[number]['componentProps'] =
+            nextSchemaItem.componentProps;
+          if (isPlainObject(extraComponentProps)) {
+            mergedComponentProps = mergePlainObjectProps(
+              nextSchemaItem.componentProps,
+              extraComponentProps,
+            );
+          } else if (hasExtraComponentProps) {
+            mergedComponentProps = extraComponentProps;
+          }
+
+          // 先合并非 componentProps 配置，再回填二次合并后的 componentProps。
           filterList.push({
             ...nextSchemaItem,
-            ...itemExtra,
+            ...itemExtraRest,
+            componentProps: mergedComponentProps,
           });
         } else {
           // schema 中不存在，使用 extra 中的配置创建新项
-          const componentProps = (itemExtra.componentProps ?? {}) as Record<
-            string,
-            any
-          >;
+          const componentProps = isPlainObject(itemExtra.componentProps)
+            ? itemExtra.componentProps
+            : {};
+          const placeholder =
+            typeof componentProps.placeholder === 'string'
+              ? componentProps.placeholder
+              : itemExtra.label;
           const nextItemExtra = {
             ...itemExtra,
             fieldName: itemExtra.fieldName || key,
             componentProps: {
               ...componentProps,
-              placeholder: componentProps.placeholder ?? itemExtra.label,
+              placeholder,
             },
           };
           filterList.push(nextItemExtra as EsFormSchema[number]);

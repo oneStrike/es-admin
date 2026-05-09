@@ -206,7 +206,6 @@ export const userColumns = formSchemaTransform.toTableColumns<SystemUserRow>(
           },
         },
       },
-      minWidth: 100,
       sort: 66,
     },
     isEnabled: {
@@ -220,7 +219,6 @@ export const userColumns = formSchemaTransform.toTableColumns<SystemUserRow>(
       },
       sortable: true,
       sort: 98,
-      minWidth: 100,
     },
     createdAt: {
       show: true,
