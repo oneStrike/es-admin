@@ -1,0 +1,188 @@
+{
+  "tab_size": 2,
+  "hard_tabs": false,
+  "line_ending": "enforce_lf",
+  "ensure_final_newline_on_save": true,
+  "remove_trailing_whitespace_on_save": true,
+  "format_on_save": "on",
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/.jj",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+    "**/.eslintcache",
+    "**/.stylelintcache",
+    "**/.turbo",
+    "**/.vitepress/cache",
+    "**/.idea",
+    "**/bower_components",
+    "**/coverage",
+    "**/dev-dist",
+    "**/dist",
+    "**/node_modules",
+    "**/tmp",
+    "**/.nitro",
+    "**/.output",
+    "**/elehukouben",
+    "out"
+  ],
+  "file_types": {
+    "HTML": ["*.art", "*.ejs"],
+    "JSON": ["package.json"],
+    "JSONC": [
+      "**/.zed/**/*.json",
+      "**/zed/**/*.json",
+      "**/Zed/**/*.json",
+      "**/.vscode/**/*.json",
+      "**/tsconfig.json",
+      "**/tsconfig.*.json"
+    ],
+    "Shell Script": [".env.*"]
+  },
+  "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "includeLanguages": {
+          "vue": "html"
+        },
+        "experimental": {
+          "configFile": "internal/tailwind-config/src/theme.css",
+          "classRegex": [
+            "class=\"([^\"]*)\"",
+            "class='([^']*)'",
+            ":class=\"([^\"]*)\"",
+            ":class='([^']*)'",
+            ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+          ]
+        },
+        "lint": {
+          "suggestCanonicalClasses": "ignore"
+        }
+      }
+    },
+    "vue-language-server": {
+      "initialization_options": {
+        "typescript": {
+          "tsdk": "node_modules/typescript/lib"
+        }
+      }
+    },
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "tsserver": {
+            "maxTsServerMemory": 16184
+          }
+        },
+        "javascript": {
+          "tsserver": {
+            "maxTsServerMemory": 16184
+          }
+        }
+      }
+    }
+  },
+  "languages": {
+    "CSS": {
+      "language_servers": [
+        "tailwindcss-intellisense-css",
+        "!vscode-css-language-server",
+        "..."
+      ],
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "HTML": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "JavaScript": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "JSON": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "JSONC": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "LESS": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "Markdown": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "SCSS": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "TypeScript": {
+      "prettier": {
+        "allowed": false
+      },
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "TSX": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "Vue.js": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    }
+  }
+}
