@@ -4,7 +4,7 @@ import { Page } from '@vben/common-ui';
 import AdProviderPanel from './components/ad-provider-panel.vue';
 
 defineOptions({
-  name: 'AdRewardManager',
+  name: 'AdConfig',
 });
 </script>
 

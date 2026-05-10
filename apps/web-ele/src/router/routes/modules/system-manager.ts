@@ -20,17 +20,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'SystemConfig',
-        path: '/system-manager/system-config',
-        component: () =>
-          import('#/views/system-manager/system-config/index.vue'),
-        meta: {
-          title: '系统配置',
-          icon: 'codex:dot-circle',
-        },
-      },
-
-      {
         name: 'DataDictionary',
         path: '/system-manager/data-dictionary',
         component: () =>

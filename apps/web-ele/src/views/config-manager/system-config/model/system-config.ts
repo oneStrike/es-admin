@@ -1,0 +1,300 @@
+import type { BaseSystemConfigDto, SystemUpdateRequest } from '#/api/types';
+
+export type SystemConfigMenuKey =
+  | 'aliyun'
+  | 'contentReview'
+  | 'forumHashtag'
+  | 'maintenance'
+  | 'site'
+  | 'upload';
+
+export type SystemConfigFormValues = Record<string, unknown>;
+
+export type SystemSecretEncryptor = (value: string) => string;
+
+type BuildSystemConfigUpdatePayloadInput = {
+  currentConfig: BaseSystemConfigDto;
+  encryptSecret?: SystemSecretEncryptor;
+  menuKey: SystemConfigMenuKey;
+  values: SystemConfigFormValues;
+};
+
+function textValue(value: unknown) {
+  return typeof value === 'string' ? value : undefined;
+}
+
+function numberValue(value: unknown) {
+  if (value === null || value === undefined || value === '') {
+    return undefined;
+  }
+
+  const normalized = Number(value);
+  return Number.isFinite(normalized) ? normalized : undefined;
+}
+
+function booleanValue(value: unknown) {
+  return typeof value === 'boolean' ? value : undefined;
+}
+
+function uploadProviderValue(value: unknown): 'local' | 'qiniu' | 'superbed' {
+  return value === 'qiniu' || value === 'superbed' ? value : 'local';
+}
+
+function encryptedSecretValue(
+  value: unknown,
+  currentValue: null | string | undefined,
+  encryptSecret?: SystemSecretEncryptor,
+) {
+  const plainText = textValue(value);
+
+  if (!plainText) {
+    return currentValue;
+  }
+
+  return encryptSecret ? encryptSecret(plainText) : plainText;
+}
+
+/**
+ * 系统配置各分区表单的回填值构造，和页面菜单 key 保持一一对应。
+ */
+export function buildSystemConfigFormValues(
+  menuKey: SystemConfigMenuKey,
+  config: BaseSystemConfigDto | null,
+) {
+  const values: SystemConfigFormValues = {};
+
+  switch (menuKey) {
+    case 'aliyun': {
+      const aliyunConfig = config?.aliyunConfig ?? {};
+      const sms = aliyunConfig.sms ?? {};
+      values.accessKeyId = aliyunConfig.accessKeyId;
+      values.accessKeySecret = aliyunConfig.accessKeySecret;
+      values.smsEndpoint = sms.endpoint;
+      values.smsSignName = sms.signName;
+      values.smsVerifyCodeLength = sms.verifyCodeLength;
+      values.smsVerifyCodeExpire = sms.verifyCodeExpire;
+      break;
+    }
+    case 'contentReview': {
+      const policy = config?.contentReviewPolicy ?? {};
+      const light = policy.lightAction ?? {};
+      const general = policy.generalAction ?? {};
+      const severe = policy.severeAction ?? {};
+      values.recordHits = policy.recordHits;
+      values.lightActionIsHidden = light.isHidden;
+      values.lightActionAuditStatus = light.auditStatus;
+      values.generalActionIsHidden = general.isHidden;
+      values.generalActionAuditStatus = general.auditStatus;
+      values.severeActionIsHidden = severe.isHidden;
+      values.severeActionAuditStatus = severe.auditStatus;
+      break;
+    }
+    case 'forumHashtag': {
+      const forumHashtagConfig =
+        config?.operationConfig?.forumHashtagConfig ?? {};
+      values.forumHashtagCreationMode = forumHashtagConfig.creationMode ?? 1;
+      break;
+    }
+    case 'maintenance': {
+      const maintenanceConfig = config?.maintenanceConfig ?? {};
+      values.enableMaintenanceMode = maintenanceConfig.enableMaintenanceMode;
+      values.maintenanceMessage = maintenanceConfig.maintenanceMessage;
+      break;
+    }
+    case 'upload': {
+      const uploadConfig = config?.uploadConfig ?? {};
+      const qiniu = uploadConfig.qiniu ?? {};
+      const superbed = uploadConfig.superbed ?? {};
+      values.uploadProvider = uploadConfig.provider || 'local';
+      values.superbedNonImageFallbackToLocal =
+        uploadConfig.superbedNonImageFallbackToLocal ?? false;
+      values.qiniuAccessKey = qiniu.accessKey;
+      values.qiniuSecretKey = qiniu.secretKey;
+      values.qiniuBucket = qiniu.bucket;
+      values.qiniuDomain = qiniu.domain;
+      values.qiniuRegion = qiniu.region;
+      values.qiniuPathPrefix = qiniu.pathPrefix;
+      values.qiniuUseHttps = qiniu.useHttps ?? true;
+      values.qiniuTokenExpires = qiniu.tokenExpires;
+      values.superbedToken = superbed.token;
+      values.superbedCategories = superbed.categories;
+      values.superbedWatermark = superbed.watermark ?? false;
+      values.superbedCompress = superbed.compress ?? false;
+      values.superbedWebp = superbed.webp ?? false;
+      break;
+    }
+    default: {
+      const siteConfig = config?.siteConfig ?? {};
+      values.siteName = siteConfig.siteName;
+      values.siteDescription = siteConfig.siteDescription;
+      values.siteKeywords = siteConfig.siteKeywords;
+      values.siteLogo = siteConfig.siteLogo;
+      values.siteFavicon = siteConfig.siteFavicon;
+      values.contactEmail = siteConfig.contactEmail;
+      values.icpNumber = siteConfig.icpNumber;
+      break;
+    }
+  }
+
+  return values;
+}
+
+/**
+ * 系统配置更新 payload 只白名单提交当前分区相关字段，保留其它配置快照。
+ */
+export function buildSystemConfigUpdatePayload({
+  currentConfig,
+  encryptSecret,
+  menuKey,
+  values,
+}: BuildSystemConfigUpdatePayloadInput): SystemUpdateRequest {
+  const submitData: SystemUpdateRequest = {
+    aliyunConfig: currentConfig.aliyunConfig,
+    contentReviewPolicy: currentConfig.contentReviewPolicy,
+    id: currentConfig.id,
+    maintenanceConfig: currentConfig.maintenanceConfig,
+    operationConfig: currentConfig.operationConfig,
+    siteConfig: currentConfig.siteConfig,
+    uploadConfig: currentConfig.uploadConfig,
+  };
+
+  switch (menuKey) {
+    case 'aliyun': {
+      const currentAliyunConfig = currentConfig.aliyunConfig ?? {};
+      submitData.aliyunConfig = {
+        ...currentAliyunConfig,
+        accessKeyId: encryptedSecretValue(
+          values.accessKeyId,
+          currentAliyunConfig.accessKeyId,
+          encryptSecret,
+        ),
+        accessKeySecret: encryptedSecretValue(
+          values.accessKeySecret,
+          currentAliyunConfig.accessKeySecret,
+          encryptSecret,
+        ),
+        sms: {
+          ...currentAliyunConfig.sms,
+          endpoint: textValue(values.smsEndpoint),
+          signName: textValue(values.smsSignName),
+          verifyCodeExpire: numberValue(values.smsVerifyCodeExpire),
+          verifyCodeLength: numberValue(values.smsVerifyCodeLength),
+        },
+      };
+      break;
+    }
+    case 'contentReview': {
+      const currentPolicy = currentConfig.contentReviewPolicy ?? {};
+      submitData.contentReviewPolicy = {
+        ...currentPolicy,
+        recordHits: booleanValue(values.recordHits),
+        lightAction: {
+          ...currentPolicy.lightAction,
+          auditStatus: numberValue(values.lightActionAuditStatus),
+          isHidden: booleanValue(values.lightActionIsHidden),
+        },
+        generalAction: {
+          ...currentPolicy.generalAction,
+          auditStatus: numberValue(values.generalActionAuditStatus),
+          isHidden: booleanValue(values.generalActionIsHidden),
+        },
+        severeAction: {
+          ...currentPolicy.severeAction,
+          auditStatus: numberValue(values.severeActionAuditStatus),
+          isHidden: booleanValue(values.severeActionIsHidden),
+        },
+      };
+      break;
+    }
+    case 'forumHashtag': {
+      const currentOperationConfig = currentConfig.operationConfig ?? {};
+      const currentForumHashtagConfig =
+        currentOperationConfig.forumHashtagConfig ?? {};
+      submitData.operationConfig = {
+        ...currentOperationConfig,
+        forumHashtagConfig: {
+          ...currentForumHashtagConfig,
+          creationMode: numberValue(values.forumHashtagCreationMode) ?? 1,
+        },
+      };
+      break;
+    }
+    case 'maintenance': {
+      const currentMaintenanceConfig = currentConfig.maintenanceConfig ?? {};
+      submitData.maintenanceConfig = {
+        ...currentMaintenanceConfig,
+        enableMaintenanceMode: booleanValue(values.enableMaintenanceMode),
+        maintenanceMessage: textValue(values.maintenanceMessage),
+      };
+      break;
+    }
+    case 'upload': {
+      const currentUploadConfig = currentConfig.uploadConfig ?? {};
+      const currentQiniu = currentUploadConfig.qiniu ?? {};
+      const currentSuperbed = currentUploadConfig.superbed ?? {};
+      const provider = uploadProviderValue(values.uploadProvider);
+      submitData.uploadConfig = {
+        ...currentUploadConfig,
+        provider,
+        superbedNonImageFallbackToLocal:
+          provider === 'superbed'
+            ? booleanValue(values.superbedNonImageFallbackToLocal)
+            : false,
+        qiniu:
+          provider === 'qiniu'
+            ? {
+                ...currentQiniu,
+                accessKey: encryptedSecretValue(
+                  values.qiniuAccessKey,
+                  currentQiniu.accessKey,
+                  encryptSecret,
+                ),
+                bucket: textValue(values.qiniuBucket),
+                domain: textValue(values.qiniuDomain),
+                pathPrefix: textValue(values.qiniuPathPrefix),
+                region: textValue(values.qiniuRegion),
+                secretKey: encryptedSecretValue(
+                  values.qiniuSecretKey,
+                  currentQiniu.secretKey,
+                  encryptSecret,
+                ),
+                tokenExpires: numberValue(values.qiniuTokenExpires),
+                useHttps: booleanValue(values.qiniuUseHttps),
+              }
+            : currentQiniu,
+        superbed:
+          provider === 'superbed'
+            ? {
+                ...currentSuperbed,
+                categories: textValue(values.superbedCategories),
+                compress: booleanValue(values.superbedCompress),
+                token: encryptedSecretValue(
+                  values.superbedToken,
+                  currentSuperbed.token,
+                  encryptSecret,
+                ),
+                watermark: booleanValue(values.superbedWatermark),
+                webp: booleanValue(values.superbedWebp),
+              }
+            : currentSuperbed,
+      };
+      break;
+    }
+    default: {
+      const currentSiteConfig = currentConfig.siteConfig ?? {};
+      submitData.siteConfig = {
+        ...currentSiteConfig,
+        contactEmail: textValue(values.contactEmail),
+        icpNumber: textValue(values.icpNumber),
+        siteDescription: textValue(values.siteDescription),
+        siteFavicon: textValue(values.siteFavicon),
+        siteKeywords: textValue(values.siteKeywords),
+        siteLogo: textValue(values.siteLogo),
+        siteName: textValue(values.siteName),
+      };
+      break;
+    }
+  }
+
+  return submitData;
+}
