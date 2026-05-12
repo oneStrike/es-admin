@@ -104,6 +104,8 @@ export { contentComicThirdPartySearchPageApi } from './content';
 export { contentComicThirdPartyDetailApi } from './content';
 export { contentComicThirdPartyChapterListApi } from './content';
 export { contentComicThirdPartyChapterContentDetailApi } from './content';
+export { contentComicThirdPartyImportPreviewApi } from './content';
+export { contentComicThirdPartyImportConfirmApi } from './content';
 export { contentNovelCreateApi } from './content';
 export { contentNovelPageApi } from './content';
 export { contentNovelDetailApi } from './content';

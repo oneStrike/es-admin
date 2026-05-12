@@ -33,6 +33,8 @@ export type BaseSystemConfigDto = {
   maintenanceConfig?: MaintenanceConfigDto;
   /* 运营配置 */
   operationConfig?: OperationConfigDto;
+  /* 安全配置 */
+  securityConfig?: SecurityConfigDto;
   /* 站点配置 */
   siteConfig?: SiteConfigDto;
   /* 更新时间 */
@@ -129,6 +131,32 @@ export type ForumHashtagConfigDto = {
 
   /* 话题创建模式（1=仅引用已存在且可用话题；2=正文中允许自动创建话题） */
   creationMode?: null | number;
+};
+
+/**
+ *  类型定义 [SecurityConfigDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type SecurityConfigDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 远程图片导入安全配置 */
+  remoteImageImport?: RemoteImageImportSecurityConfigDto;
+};
+
+/**
+ *  类型定义 [RemoteImageImportSecurityConfigDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type RemoteImageImportSecurityConfigDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 是否启用远程图片 DNS 不安全地址防护 */
+  enableAddressGuard?: boolean | null;
 };
 
 /**
@@ -265,6 +293,8 @@ export type UpdateSystemConfigDto = {
   maintenanceConfig?: MaintenanceConfigDto;
   /* 运营配置 */
   operationConfig?: OperationConfigDto;
+  /* 安全配置 */
+  securityConfig?: SecurityConfigDto;
   /* 站点配置 */
   siteConfig?: SiteConfigDto;
 

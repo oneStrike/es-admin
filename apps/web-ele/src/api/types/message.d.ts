@@ -11,16 +11,16 @@ export type MessageMonitorDeliveryPageRequest = {
   categoryKey?: null | string;
 
   /* dispatch ID（正整数字符串） */
-  dispatchId?: null | string;
+  dispatchId?: string;
 
   /* 结束时间 */
   endDate?: null | string;
 
-  /* 领域事件 ID（正整数字符串） */
-  eventId?: null | string;
+  /* 关联的领域事件 ID（正整数字符串） */
+  eventId?: string;
 
   /* 领域事件键 */
-  eventKey?: null | string;
+  eventKey?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -31,7 +31,7 @@ export type MessageMonitorDeliveryPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number;
 
-  /* 通知投影键精确匹配 */
+  /* 通知投影键 */
   projectionKey?: null | string;
 
   /* 接收用户 ID */
@@ -41,7 +41,7 @@ export type MessageMonitorDeliveryPageRequest = {
   startDate?: null | string;
 
   /* 业务投递状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
-  status?: null | number;
+  status?: number;
 };
 
 export type MessageMonitorDeliveryPageResponse = {
@@ -80,26 +80,29 @@ export type MessageMonitorDispatchPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
+  /* 通知分类键，表示通知所属业务分类 */
+  categoryKey?: null | string;
+
   /* 通知投影业务状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
   deliveryStatus?: null | number;
 
   /* dispatch ID（正整数字符串） */
-  dispatchId?: null | string;
+  dispatchId?: string;
 
   /* 领域事件 dispatch 技术状态（0=待处理；1=处理中；2=成功；3=失败） */
-  dispatchStatus?: null | number;
+  dispatchStatus?: number;
 
   /* 事件域 */
-  domain?: null | string;
+  domain?: string;
 
   /* 结束时间 */
   endDate?: null | string;
 
-  /* 领域事件 ID（正整数字符串） */
-  eventId?: null | string;
+  /* 关联的领域事件 ID（正整数字符串） */
+  eventId?: string;
 
   /* 领域事件键 */
-  eventKey?: null | string;
+  eventKey?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -110,7 +113,7 @@ export type MessageMonitorDispatchPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number;
 
-  /* 通知投影键精确匹配 */
+  /* 通知投影键 */
   projectionKey?: null | string;
 
   /* 接收用户 ID */
@@ -263,24 +266,26 @@ export type MessageNotificationTemplatesDeleteResponse = boolean;
 export type MessageNotificationDeliveryItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 通知分类键 */
+  /* 通知分类键，表示通知所属业务分类 */
   categoryKey?: null | string;
   /* 通知分类中文标签 */
   categoryLabel?: null | string;
   /* 创建时间 */
   createdAt: string;
-  /* dispatch ID */
+  /* dispatch ID（正整数字符串） */
   dispatchId: string;
-  /* 关联的领域事件 ID */
+  /* 关联的领域事件 ID（正整数字符串） */
   eventId: string;
   /* 领域事件键 */
-  eventKey?: null | string;
+  eventKey: string;
   /* 最近一次失败原因 */
   failureReason?: null | string;
   /* 模板回退原因 */
   fallbackReason?: null | string;
   /* 投递结果 ID */
   id: number;
+  /* 任务实例 ID */
+  instanceId?: null | number;
   /* 最近一次业务投递尝试时间 */
   lastAttemptAt: string;
   /* 关联的站内通知 ID */
@@ -289,10 +294,14 @@ export type MessageNotificationDeliveryItemDto = {
   projectionKey?: null | string;
   /* 接收用户 ID */
   receiverUserId?: null | number;
+  /* 任务提醒子类型 */
+  reminderKind?: null | string;
   /* 业务投递状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
   status: 1 | 2 | 3 | 4;
   /* 业务投递结果中文标签 */
   statusLabel: string;
+  /* 任务 ID */
+  taskId?: null | number;
   /* 命中的模板 ID */
   templateId?: null | number;
   /* 更新时间 */
@@ -311,7 +320,7 @@ export type RetryMessageNotificationDeliveryDto = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  /* 通知 dispatch ID */
+  /* dispatch ID（正整数字符串） */
   dispatchId: string;
 };
 
@@ -323,17 +332,17 @@ export type RetryMessageNotificationDeliveryDto = {
 export type MessageDispatchPageItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* consumer */
+  /* 领域事件消费者标识 */
   consumer: string;
   /* 通知投影业务状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
   deliveryStatus?: null | number;
-  /* dispatch ID */
+  /* dispatch ID（正整数字符串） */
   dispatchId: string;
   /* 领域事件 dispatch 技术状态（0=待处理；1=处理中；2=成功；3=失败） */
   dispatchStatus: 0 | 1 | 2 | 3;
-  /* 领域事件域 */
+  /* 事件域 */
   domain: string;
-  /* 领域事件 ID */
+  /* 关联的领域事件 ID（正整数字符串） */
   eventId: string;
   /* 领域事件键 */
   eventKey: string;

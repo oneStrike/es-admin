@@ -27,6 +27,7 @@ import {
   contentReviewFormSchema,
   forumHashtagFormSchema,
   maintenanceFormSchema,
+  securityFormSchema,
   siteFormSchema,
   uploadFormSchema,
 } from './modules/model/shared';
@@ -45,6 +46,7 @@ const menuItems: Array<{ key: SystemConfigMenuKey; label: string }> = [
   { key: 'aliyun', label: '阿里云配置' },
   { key: 'contentReview', label: '内容审核' },
   { key: 'forumHashtag', label: '话题配置' },
+  { key: 'security', label: '安全配置' },
   { key: 'upload', label: '上传配置' },
 ];
 
@@ -61,6 +63,9 @@ const currentSchema = computed(() => {
     }
     case 'maintenance': {
       return maintenanceFormSchema;
+    }
+    case 'security': {
+      return securityFormSchema;
     }
     case 'upload': {
       return uploadFormSchema;

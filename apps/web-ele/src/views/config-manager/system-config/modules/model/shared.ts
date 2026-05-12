@@ -391,6 +391,27 @@ export const forumHashtagFormSchema: EsFormSchema = [
   },
 ];
 
+// ========== 安全配置 ==========
+export const securityFormSchema: EsFormSchema = [
+  {
+    component: 'Divider',
+    fieldName: 'divider_security',
+    hideLabel: true,
+    formItemClass: 'w-full',
+    renderComponentContent: () => {
+      return {
+        default: () => h('div', { class: 'text-lg font-bold' }, '安全配置'),
+      };
+    },
+  },
+  {
+    component: 'Switch',
+    fieldName: 'remoteImageImportEnableAddressGuard',
+    label: '远程图片 DNS 不安全地址防护',
+    defaultValue: true,
+  },
+];
+
 // ========== 上传配置 ==========
 export const uploadFormSchema: EsFormSchema = [
   {

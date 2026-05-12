@@ -1,36 +1,36 @@
 <script setup lang="ts">
-import type {
-  ContentComicThirdPartyImportConfirmRequest,
-  ContentComicThirdPartyImportConfirmResponse,
-  ContentComicThirdPartyImportPreviewResponse,
-  ThirdPartyComicChapterContentDto,
-  ThirdPartyComicImportChapterItemDto,
-} from './model/import';
-
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AuthorPageResponseDto,
   BaseCategoryDto,
   BaseTagDto,
+  ContentComicThirdPartyImportConfirmRequest,
+  ContentComicThirdPartyImportConfirmResponse,
+  ContentComicThirdPartyImportPreviewResponse,
   CreateAuthorDto,
   CreateCategoryDto,
   CreateTagDto,
   PageWorkDto,
   PlatformResponseDto,
   SearchComicItemDto,
+  ThirdPartyComicChapterContentDto,
+  ThirdPartyComicImportChapterItemDto,
 } from '#/api/types/content';
 import type { EsFormSchema } from '#/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   contentAuthorCreateApi,
   contentAuthorPageApi,
   contentCategoryCreateApi,
   contentCategoryPageApi,
   contentComicPageApi,
+  contentComicThirdPartyChapterContentDetailApi,
+  contentComicThirdPartyImportConfirmApi,
+  contentComicThirdPartyImportPreviewApi,
   contentComicThirdPartyPlatformListApi,
   contentComicThirdPartySearchPageApi,
   contentTagCreateApi,
@@ -48,9 +48,6 @@ import { formSchema as categoryFormSchema } from '../../category-manager/model/s
 import { formSchema as tagFormSchema } from '../../tag-manager/model/shared';
 import {
   canUseProviderWorkCover,
-  contentComicThirdPartyChapterContentDetailApi,
-  contentComicThirdPartyImportConfirmApi,
-  contentComicThirdPartyImportPreviewApi,
   findCreatedOptionByName,
   resolveInitialGroup,
   resolveInitialWorkCoverMode,
@@ -58,7 +55,7 @@ import {
   SERVER_COMIC_CATEGORY_TYPE,
   SERVER_MANGA_AUTHOR_TYPE,
   toApiGroup,
-} from './model/import';
+} from './model/helpers';
 
 type ImportMode = ContentComicThirdPartyImportConfirmRequest['mode'];
 type WorkCoverMode = NonNullable<
@@ -401,7 +398,6 @@ const searchGridOptions: VxeGridProps<SearchComicRow> = {
       width: 120,
     },
   ],
-  height: 520,
   pagerConfig: {
     pageSize: 20,
     pageSizes: [10, 20, 30, 50],
@@ -416,12 +412,15 @@ const searchGridOptions: VxeGridProps<SearchComicRow> = {
 
         loading.value = true;
         try {
-          const res = await contentComicThirdPartySearchPageApi({
-            keyword: keyword.value.trim(),
-            pageIndex: page.currentPage,
-            pageSize: page.pageSize,
-            platform: platform.value,
-          });
+          const res = await contentComicThirdPartySearchPageApi(
+            formatQuery({
+              page,
+              formValues: {
+                keyword: keyword.value.trim(),
+                platform: platform.value,
+              },
+            }),
+          );
           return {
             list: res.list || [],
             total: res.total || 0,
@@ -702,17 +701,17 @@ async function handleGroupChange(group: string) {
 function applyPreviewToDraft(res: ContentComicThirdPartyImportPreviewResponse) {
   workDraft.value = {
     ...createEmptyWorkDraft(),
-    alias: res.workDraft.alias,
+    alias: res.workDraft.alias || undefined,
     description: res.workDraft.description,
     language: resolveSelectDefault(languageOptions.value, undefined, 'zh'),
     name: res.workDraft.name,
-    originalSource: res.workDraft.originalSource,
+    originalSource: res.workDraft.originalSource || undefined,
     region: resolveSelectDefault(
       regionOptions.value,
       res.workDraft.suggestedRegion,
       'CN',
     ),
-    remark: res.workDraft.remark,
+    remark: res.workDraft.remark || undefined,
     serialStatus: res.workDraft.suggestedSerialStatus ?? 1,
   };
   workCoverMode.value = resolveInitialWorkCoverMode(res.coverOptions);
@@ -742,7 +741,7 @@ function createChapterMapping(
     action: 'create',
     canComment: true,
     canDownload: false,
-    chapterApiVersion: chapter.chapterApiVersion,
+    chapterApiVersion: chapter.chapterApiVersion ?? undefined,
     coverMode: 'skip',
     importImages: true,
     isPreview: false,
@@ -1193,26 +1192,21 @@ function buildImportRequest(): ContentComicThirdPartyImportConfirmRequest | null
   const currentPreview = preview.value;
   if (!currentPreview) return null;
 
-  const request: ContentComicThirdPartyImportConfirmRequest = {
-    chapters: selectedMappings.value.map((item) => toChapterImportItem(item)),
-    comicId: currentPreview.comicId,
-    mode: importMode.value,
-    platform: currentPreview.platform,
-    sourceSnapshot: currentPreview.sourceSnapshot,
-  };
+  const chapters = selectedMappings.value.map((item) =>
+    toChapterImportItem(item),
+  );
 
   if (importMode.value === 'attachToExisting') {
-    request.targetWorkId = targetWorkId.value;
-    return request;
+    return {
+      chapters,
+      comicId: currentPreview.comicId,
+      mode: importMode.value,
+      platform: currentPreview.platform,
+      sourceSnapshot: currentPreview.sourceSnapshot,
+      targetWorkId: targetWorkId.value ?? null,
+    } satisfies ContentComicThirdPartyImportConfirmRequest;
   }
 
-  request.workDraft = {
-    ...workDraft.value,
-    alias: workDraft.value.alias || undefined,
-    ageRating: workDraft.value.ageRating || undefined,
-    originalSource: workDraft.value.originalSource || undefined,
-    remark: workDraft.value.remark || undefined,
-  };
   const providerCover = currentPreview.coverOptions.provider;
   if (workCoverMode.value === 'provider') {
     if (!canUseProviderWorkCover(currentPreview.coverOptions)) {
@@ -1224,21 +1218,50 @@ function buildImportRequest(): ContentComicThirdPartyImportConfirmRequest | null
       return null;
     }
   }
-  request.cover =
-    workCoverMode.value === 'local'
-      ? { localPath: localWorkCoverPath.value, mode: 'local' }
-      : {
-          mode: 'provider',
-          providerImageId: providerCover?.providerImageId,
-        };
+  const draft = workDraft.value;
 
-  return request;
+  return {
+    chapters,
+    comicId: currentPreview.comicId,
+    cover:
+      workCoverMode.value === 'local'
+        ? { localPath: localWorkCoverPath.value, mode: 'local' }
+        : {
+            mode: 'provider',
+            providerImageId: providerCover?.providerImageId,
+          },
+    mode: importMode.value,
+    platform: currentPreview.platform,
+    sourceSnapshot: currentPreview.sourceSnapshot,
+    workDraft: {
+      ageRating: draft.ageRating || undefined,
+      alias: draft.alias || undefined,
+      authorIds: draft.authorIds,
+      canComment: draft.canComment,
+      categoryIds: draft.categoryIds,
+      chapterPrice: draft.chapterPrice,
+      description: draft.description,
+      isHot: draft.isHot,
+      isNew: draft.isNew,
+      isPublished: draft.isPublished,
+      isRecommended: draft.isRecommended,
+      language: draft.language,
+      name: draft.name,
+      originalSource: draft.originalSource || undefined,
+      recommendWeight: draft.recommendWeight,
+      region: draft.region,
+      remark: draft.remark || undefined,
+      serialStatus: draft.serialStatus,
+      tagIds: draft.tagIds,
+      viewRule: draft.viewRule,
+    },
+  } satisfies ContentComicThirdPartyImportConfirmRequest;
 }
 
 function toChapterImportItem(
   item: ChapterMappingForm,
 ): ThirdPartyComicImportChapterItemDto {
-  return {
+  const chapterItem = {
     action: item.action,
     canComment: item.canComment,
     canDownload: item.canDownload,
@@ -1258,7 +1281,9 @@ function toChapterImportItem(
     targetChapterId: item.targetChapterId,
     title: item.title,
     viewRule: item.viewRule,
-  };
+  } satisfies ThirdPartyComicImportChapterItemDto;
+
+  return chapterItem;
 }
 
 function resultTagType(status?: unknown) {
@@ -1967,7 +1992,7 @@ function resultTagType(status?: unknown) {
       </div>
 
       <div
-        class="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card p-4"
+        class="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card p-3 pb-0"
       >
         <el-button :disabled="wizardBusy" @click="modalApi.close()">
           关闭

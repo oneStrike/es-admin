@@ -5,6 +5,7 @@ export type SystemConfigMenuKey =
   | 'contentReview'
   | 'forumHashtag'
   | 'maintenance'
+  | 'security'
   | 'site'
   | 'upload';
 
@@ -101,6 +102,12 @@ export function buildSystemConfigFormValues(
       values.maintenanceMessage = maintenanceConfig.maintenanceMessage;
       break;
     }
+    case 'security': {
+      const remoteImageImport = config?.securityConfig?.remoteImageImport ?? {};
+      values.remoteImageImportEnableAddressGuard =
+        remoteImageImport.enableAddressGuard ?? true;
+      break;
+    }
     case 'upload': {
       const uploadConfig = config?.uploadConfig ?? {};
       const qiniu = uploadConfig.qiniu ?? {};
@@ -154,6 +161,7 @@ export function buildSystemConfigUpdatePayload({
     id: currentConfig.id,
     maintenanceConfig: currentConfig.maintenanceConfig,
     operationConfig: currentConfig.operationConfig,
+    securityConfig: currentConfig.securityConfig,
     siteConfig: currentConfig.siteConfig,
     uploadConfig: currentConfig.uploadConfig,
   };
@@ -225,6 +233,20 @@ export function buildSystemConfigUpdatePayload({
         ...currentMaintenanceConfig,
         enableMaintenanceMode: booleanValue(values.enableMaintenanceMode),
         maintenanceMessage: textValue(values.maintenanceMessage),
+      };
+      break;
+    }
+    case 'security': {
+      const currentSecurityConfig = currentConfig.securityConfig ?? {};
+      const currentRemoteImageImport =
+        currentSecurityConfig.remoteImageImport ?? {};
+      submitData.securityConfig = {
+        ...currentSecurityConfig,
+        remoteImageImport: {
+          ...currentRemoteImageImport,
+          enableAddressGuard:
+            booleanValue(values.remoteImageImportEnableAddressGuard) ?? true,
+        },
       };
       break;
     }
