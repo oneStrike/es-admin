@@ -1,6 +1,6 @@
 import process from 'node:process';
 
-import { TYPE_MAPPING } from './config';
+import { TYPE_MAPPING } from './type-mapping';
 
 /**
  * 转换为驼峰命名
@@ -45,6 +45,10 @@ export function mapOpenAPIType(
   );
 }
 
+export function wrapArrayItemType(type: string): string {
+  return /\s[&|]\s/.test(type) ? `(${type})` : type;
+}
+
 /**
  * 映射 schema 到 TypeScript 类型
  */
@@ -78,7 +82,7 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
     case 'array': {
       if (!schema.items) return 'any[]';
       const itemType = mapSchemaToType(schema.items, depth + 1);
-      return `${itemType}[]`;
+      return `${wrapArrayItemType(itemType)}[]`;
     }
     case 'boolean': {
       return 'boolean';

@@ -17,6 +17,7 @@ import {
   resolveRef,
   toCamelCase,
   toPascalCase,
+  wrapArrayItemType,
 } from './utils';
 
 /**
@@ -455,7 +456,7 @@ export class OpenAPIGenerator {
       const itemType = schema.items?.$ref
         ? (resolveRef(schema.items.$ref) as string)
         : mapSchemaToType(schema.items);
-      return [`  /* 数组数据 */\n  items: ${itemType}[]`];
+      return [`  /* 数组数据 */\n  items: ${wrapArrayItemType(itemType)}[]`];
     } else if (schema.enum) {
       // 处理枚举类型
       const enumType = mapSchemaToType(schema);
@@ -547,7 +548,7 @@ ${properties.join('\n\n')}
 
     if (dataSchema.type === 'array') {
       const itemType = mapSchemaToType(dataSchema.items);
-      return `export type ${typeName} = ${itemType}[]`;
+      return `export type ${typeName} = ${wrapArrayItemType(itemType)}[]`;
     }
 
     if (
@@ -648,7 +649,7 @@ export type ${typeName} = ${types.join(' | ')}`;
         updateTime,
       );
       return `${comment}
-export type ${typeName} = ${itemType}[]`;
+export type ${typeName} = ${wrapArrayItemType(itemType)}[]`;
     }
 
     // 检查是否是枚举类型

@@ -77,10 +77,6 @@ import type {
   ContentComicThirdPartyChapterListResponse,
   ContentComicThirdPartyDetailRequest,
   ContentComicThirdPartyDetailResponse,
-  ContentComicThirdPartyImportConfirmRequest,
-  ContentComicThirdPartyImportConfirmResponse,
-  ContentComicThirdPartyImportPreviewRequest,
-  ContentComicThirdPartyImportPreviewResponse,
   ContentComicThirdPartyPlatformListResponse,
   ContentComicThirdPartySearchPageRequest,
   ContentComicThirdPartySearchPageResponse,
@@ -1209,30 +1205,6 @@ export async function contentEmojiAssetSwapSortOrderApi(
 ): Promise<ContentEmojiAssetSwapSortOrderResponse> {
   return requestClient.post<ContentEmojiAssetSwapSortOrderResponse>(
     '/api/admin/content/emoji-asset/swap-sort-order',
-    params,
-  );
-}
-
-/**
- * 预览第三方漫画导入
- */
-export async function contentComicThirdPartyImportPreviewApi(
-  params: ContentComicThirdPartyImportPreviewRequest,
-): Promise<ContentComicThirdPartyImportPreviewResponse> {
-  return requestClient.post<ContentComicThirdPartyImportPreviewResponse>(
-    '/api/admin/content/comic/third-party/import/preview',
-    params,
-  );
-}
-
-/**
- * 确认第三方漫画导入
- */
-export async function contentComicThirdPartyImportConfirmApi(
-  params: ContentComicThirdPartyImportConfirmRequest,
-): Promise<ContentComicThirdPartyImportConfirmResponse> {
-  return requestClient.post<ContentComicThirdPartyImportConfirmResponse>(
-    '/api/admin/content/comic/third-party/import/confirm',
     params,
   );
 }

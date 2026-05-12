@@ -1378,7 +1378,7 @@ export type GrowthRuleTaskBindingSummaryDto = {
   /* 关联任务总数 */
   relatedTaskCount: number;
   /* 关联任务场景类型列表（1=新手引导任务；2=日常任务；4=活动任务） */
-  sceneTypes: 1 | 2 | 4[];
+  sceneTypes: (1 | 2 | 4)[];
 
   /* 关联任务 ID 列表 */
   taskIds: number[];

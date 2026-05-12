@@ -13,10 +13,8 @@ export const genderOptions = [
 ];
 
 export const typeOptions = [
-  { label: '作家', value: AuthorTypeEnum.WRITER },
-  { label: '插画家', value: AuthorTypeEnum.ILLUSTRATOR },
-  { label: '漫画家', value: AuthorTypeEnum.COMIC_COVER },
-  { label: '模特', value: AuthorTypeEnum.MODEL },
+  { label: '漫画家', value: AuthorTypeEnum.MANGA },
+  { label: '轻小说作者', value: AuthorTypeEnum.NOVEL },
 ];
 
 /**

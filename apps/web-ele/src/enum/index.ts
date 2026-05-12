@@ -1,27 +1,21 @@
 /**
- * 内容类型枚举 bitmask
+ * 内容类型枚举
  */
 export enum ContentTypeEnum {
   /** 漫画 */
   COMIC = 1,
   /** 小说 */
   NOVEL = 2,
-  /** 插画 */
-  ILLUSTRATION = 4,
-  /** 写真 */
-  PHOTO = 8,
+  /** 帖子 */
+  TOPIC = 3,
 }
 
-// 作者角色类型枚举 bitmask
+// 作者角色类型枚举
 export enum AuthorTypeEnum {
-  /** 作家 */
-  WRITER = 1,
-  /** 插画家 */
-  ILLUSTRATOR = 2,
   /** 漫画家 */
-  COMIC_COVER = 4,
-  /** 模特 */
-  MODEL = 8,
+  MANGA = 1,
+  /** 轻小说作者 */
+  NOVEL = 2,
 }
 
 // / 性别枚举

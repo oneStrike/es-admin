@@ -403,25 +403,25 @@ export type ContentComicThirdPartySearchPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 搜索关键词 */
   keyword: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 平台代码 */
   platform: string;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type ContentComicThirdPartySearchPageResponse = {
@@ -453,14 +453,11 @@ export type ContentComicThirdPartyDetailRequest = {
   /* 漫画ID */
   comicId: string;
 
-  /* 章节分组 */
-  group?: string;
-
   /* 平台代码 */
   platform: string;
 };
 
-export type ContentComicThirdPartyDetailResponse = ThirdPartyComicDetailDto;
+export type ContentComicThirdPartyDetailResponse = undefined;
 
 /**
  *  类型定义 [ContentComicThirdPartyChapterListRequest]
@@ -474,15 +471,11 @@ export type ContentComicThirdPartyChapterListRequest = {
   /* 漫画ID */
   comicId: string;
 
-  /* 章节分组 */
-  group?: string;
-
   /* 平台代码 */
   platform: string;
 };
 
-export type ContentComicThirdPartyChapterListResponse =
-  ThirdPartyComicChapterDto[];
+export type ContentComicThirdPartyChapterListResponse = Record<string, any>[];
 
 /**
  *  类型定义 [ContentComicThirdPartyChapterContentDetailRequest]
@@ -499,15 +492,11 @@ export type ContentComicThirdPartyChapterContentDetailRequest = {
   /* 漫画ID */
   comicId: string;
 
-  /* 章节分组 */
-  group?: string;
-
   /* 平台代码 */
   platform: string;
 };
 
-export type ContentComicThirdPartyChapterContentDetailResponse =
-  ThirdPartyComicChapterContentDto;
+export type ContentComicThirdPartyChapterContentDetailResponse = undefined;
 
 /**
  *  类型定义 [ContentNovelCreateRequest]
@@ -1435,28 +1424,6 @@ export type ContentEmojiAssetSwapSortOrderRequest = DragReorderDto;
 export type ContentEmojiAssetSwapSortOrderResponse = boolean;
 
 /**
- *  类型定义 [ContentComicThirdPartyImportPreviewRequest]
- *  @来源 内容管理/漫画管理/三方平台解析
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentComicThirdPartyImportPreviewRequest =
-  ThirdPartyComicImportPreviewRequestDto;
-
-export type ContentComicThirdPartyImportPreviewResponse =
-  ThirdPartyComicImportPreviewDto;
-
-/**
- *  类型定义 [ContentComicThirdPartyImportConfirmRequest]
- *  @来源 内容管理/漫画管理/三方平台解析
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentComicThirdPartyImportConfirmRequest =
-  ThirdPartyComicImportRequestDto;
-
-export type ContentComicThirdPartyImportConfirmResponse =
-  ThirdPartyComicImportResultDto;
-
-/**
  *  类型定义 [CreateWorkDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -1594,7 +1561,7 @@ export type AuthorInfoDto = {
   name: string;
 
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: 1 | 2[];
+  type?: (1 | 2)[];
 };
 
 /**
@@ -2210,149 +2177,13 @@ export type SearchComicItemDto = {
   author: string[];
   /* 封面图片URL */
   cover: string;
-  /* 第三方漫画ID */
-  id: string;
+  /* 主键id */
+  id: number;
   /* 漫画名称 */
   name: string;
-  /* 平台代码 */
-  platform: string;
 
   /* 来源平台 */
   source: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicDetailDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicDetailDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 漫画别名 */
-  alias?: string;
-  /* 三方作者名称列表 */
-  authors: string[];
-  /* 三方简介 */
-  brief?: string;
-  /* 三方封面 URL */
-  cover?: string;
-  /* 三方最后更新时间 */
-  datetimeUpdated?: string;
-  /* 三方章节分组 */
-  groups: ThirdPartyComicGroupDto[];
-  /* 第三方漫画ID */
-  id: string;
-  /* 漫画名称 */
-  name: string;
-  /* 第三方路径标识 */
-  pathWord: string;
-  /* 三方热度 */
-  popular?: number;
-  /* 三方地区展示值 */
-  region?: string;
-  /* 三方访问标记 */
-  sourceFlags: ThirdPartyComicSourceFlagsDto;
-  /* 三方状态展示值 */
-  status?: string;
-  /* 三方分类或题材名称列表 */
-  taxonomies: string[];
-
-  /* 第三方漫画 UUID */
-  uuid?: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicGroupDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicGroupDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 分组章节数 */
-  count: number;
-  /* 三方分组名称 */
-  name: string;
-
-  /* 三方分组标识 */
-  pathWord: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicSourceFlagsDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicSourceFlagsDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 三方是否锁定 */
-  isLock: boolean;
-  /* 三方是否需要登录 */
-  isLogin: boolean;
-  /* 三方是否需要绑定手机 */
-  isMobileBind: boolean;
-
-  /* 三方是否需要会员 */
-  isVip: boolean;
-};
-
-/**
- *  类型定义 [ThirdPartyComicChapterDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicChapterDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 三方章节创建时间 */
-  datetimeCreated?: string;
-  /* 三方章节分组 */
-  group?: string;
-  /* 三方章节图片数 */
-  imageCount?: number;
-  /* 三方章节ID */
-  providerChapterId: string;
-  /* 章节排序 */
-  sortOrder: number;
-
-  /* 章节标题 */
-  title: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicChapterContentDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicChapterContentDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 章节图片列表 */
-  images: ThirdPartyComicImageDto[];
-  /* 三方章节ID */
-  providerChapterId: string;
-
-  /* 章节标题 */
-  title: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImageDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImageDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 三方图片ID */
-  providerImageId: string;
-  /* 图片排序 */
-  sortOrder: number;
-
-  /* 三方图片 URL */
-  url: string;
 };
 
 /**
@@ -2377,7 +2208,7 @@ export type CreateAuthorDto = {
   remark?: null | string;
 
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: 1 | 2[];
+  type?: (1 | 2)[];
 };
 
 /**
@@ -2407,7 +2238,7 @@ export type AuthorPageResponseDto = {
   /* 国籍 */
   nationality?: null | string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: 1 | 2[];
+  type?: (1 | 2)[];
   /* 更新时间 */
   updatedAt: string;
 
@@ -2446,7 +2277,7 @@ export type BaseAuthorDto = {
   /* 管理员备注 */
   remark?: null | string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: 1 | 2[];
+  type?: (1 | 2)[];
   /* 更新时间 */
   updatedAt: string;
 
@@ -2478,7 +2309,7 @@ export type UpdateAuthorDto = {
   remark?: null | string;
 
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: 1 | 2[];
+  type?: (1 | 2)[];
 };
 
 /**
@@ -2550,7 +2381,7 @@ export type CreateCategoryDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: 1 | 2 | 3[];
+  contentType?: (1 | 2 | 3)[];
   /* 分类描述 */
   description?: null | string;
   /* 分类图标 URL */
@@ -2573,7 +2404,7 @@ export type BaseCategoryDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: 1 | 2 | 3[];
+  contentType?: (1 | 2 | 3)[];
   /* 创建时间 */
   createdAt: string;
   /* 分类描述 */
@@ -2604,7 +2435,7 @@ export type UpdateCategoryDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: 1 | 2 | 3[];
+  contentType?: (1 | 2 | 3)[];
   /* 分类描述 */
   description?: null | string;
   /* 分类图标 URL */
@@ -2774,7 +2605,7 @@ export type BaseEmojiPackDto = {
   /* 表情包名称 */
   name: string;
   /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType: 1 | 2 | 3[];
+  sceneType: (1 | 2 | 3)[];
   /* 排序值 */
   sortOrder: number;
   /* 更新时间 */
@@ -2805,7 +2636,7 @@ export type CreateEmojiPackDto = {
   /* 表情包名称 */
   name: string;
   /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType: 1 | 2 | 3[];
+  sceneType: (1 | 2 | 3)[];
   /* 排序值 */
   sortOrder?: null | number;
 
@@ -2834,7 +2665,7 @@ export type UpdateEmojiPackDto = {
   /* 表情包名称 */
   name?: string;
   /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType?: 1 | 2 | 3[];
+  sceneType?: (1 | 2 | 3)[];
   /* 排序值 */
   sortOrder?: null | number;
 
@@ -2854,7 +2685,7 @@ export type UpdateEmojiPackSceneTypeDto = {
   id: number;
 
   /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType: 1 | 2 | 3[];
+  sceneType: (1 | 2 | 3)[];
 };
 
 /**
@@ -2966,405 +2797,4 @@ export type UpdateEmojiAssetDto = {
 
   /* Unicode 序列（unicode 必填） */
   unicodeSequence?: null | string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportPreviewRequestDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportPreviewRequestDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 漫画ID */
-  comicId: string;
-  /* 章节分组 */
-  group?: string;
-
-  /* 平台代码 */
-  platform: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportPreviewDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportPreviewDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 章节列表 */
-  chapters: ThirdPartyComicChapterDto[];
-  /* 三方漫画ID */
-  comicId: string;
-  /* 封面导入选项 */
-  coverOptions: ThirdPartyComicCoverOptionsDto;
-  /* 三方详情 */
-  detail: ThirdPartyComicDetailDto;
-  /* 章节分组 */
-  groups: ThirdPartyComicGroupDto[];
-  /* 缺失的本地必填字段 */
-  missingLocalFields: string[];
-  /* 平台代码 */
-  platform: string;
-  /* 本地关系候选 */
-  relationCandidates: ThirdPartyComicRelationCandidatesDto;
-  /* 三方来源快照 */
-  sourceSnapshot: ThirdPartyComicSourceSnapshotDto;
-
-  /* 本地作品草稿 */
-  workDraft: ThirdPartyComicImportPreviewWorkDraftDto;
-};
-
-/**
- *  类型定义 [ThirdPartyComicSourceSnapshotDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicSourceSnapshotDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 抓取时间 */
-  fetchedAt: string;
-  /* 三方路径标识 */
-  pathWord?: string;
-  /* 三方漫画ID */
-  providerComicId: string;
-
-  /* 三方 UUID */
-  uuid?: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportPreviewWorkDraftDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportPreviewWorkDraftDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 作品别名 */
-  alias?: string;
-  /* 作品简介 */
-  description: string;
-  /* 作品名称 */
-  name: string;
-  /* 原始来源 */
-  originalSource?: string;
-  /* 管理员备注 */
-  remark?: string;
-  /* 建议地区 */
-  suggestedRegion?: string;
-
-  /* 建议连载状态 */
-  suggestedSerialStatus?: number;
-};
-
-/**
- *  类型定义 [ThirdPartyComicCoverOptionsDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicCoverOptionsDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 是否必须本地上传封面 */
-  localRequired: boolean;
-
-  /* 三方封面候选 */
-  provider?: ThirdPartyComicProviderCoverOptionDto;
-};
-
-/**
- *  类型定义 [ThirdPartyComicProviderCoverOptionDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicProviderCoverOptionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 三方图片ID */
-  providerImageId: string;
-
-  /* 三方图片 URL */
-  url: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicRelationCandidatesDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicRelationCandidatesDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 作者候选 */
-  authors: ThirdPartyComicRelationCandidateItemDto[];
-  /* 分类候选 */
-  categories: ThirdPartyComicRelationCandidateItemDto[];
-
-  /* 标签候选 */
-  tags: ThirdPartyComicRelationCandidateItemDto[];
-};
-
-/**
- *  类型定义 [ThirdPartyComicRelationCandidateItemDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicRelationCandidateItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 本地候选 */
-  localCandidates: ThirdPartyComicLocalCandidateDto[];
-
-  /* 三方名称 */
-  providerName: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicLocalCandidateDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicLocalCandidateDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 本地ID */
-  id: number;
-
-  /* 本地名称 */
-  name: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportRequestDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportRequestDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 导入章节列表 */
-  chapters: ThirdPartyComicImportChapterItemDto[];
-  /* 三方漫画ID */
-  comicId: string;
-  /* 作品封面处理方式 */
-  cover?: ThirdPartyComicImportCoverDto;
-  /* 导入模式（createNew=新建作品；attachToExisting=挂载到已有作品） */
-  mode: 'attachToExisting' | 'createNew';
-  /* 平台代码 */
-  platform: string;
-  /* 三方来源快照 */
-  sourceSnapshot: Record<string, any>;
-  /* 目标作品ID */
-  targetWorkId?: number;
-
-  /* 新建作品草稿 */
-  workDraft?: ThirdPartyComicImportWorkDraftDto;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportCoverDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportCoverDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 本地上传路径 */
-  localPath?: string;
-  /* 封面处理方式（provider=使用三方图片；local=使用本地上传；skip=跳过章节封面） */
-  mode: 'local' | 'provider' | 'skip';
-
-  /* 三方图片ID */
-  providerImageId?: string;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportWorkDraftDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportWorkDraftDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 年龄分级 */
-  ageRating?: string;
-  /* 作品别名 */
-  alias?: string;
-  /* 作者ID列表 */
-  authorIds: number[];
-  /* 是否允许评论 */
-  canComment?: boolean;
-  /* 分类ID列表 */
-  categoryIds: number[];
-  /* 章节默认价格 */
-  chapterPrice?: number;
-  /* 作品封面 */
-  cover?: string;
-  /* 作品简介 */
-  description: string;
-  /* 是否热门 */
-  isHot?: boolean;
-  /* 是否新作 */
-  isNew?: boolean;
-  /* 是否发布 */
-  isPublished?: boolean;
-  /* 是否推荐 */
-  isRecommended?: boolean;
-  /* 语言代码 */
-  language: string;
-  /* 作品名称 */
-  name: string;
-  /* 原始来源 */
-  originalSource?: string;
-  /* 推荐权重 */
-  recommendWeight?: number;
-  /* 地区代码 */
-  region: string;
-  /* 管理员备注 */
-  remark?: string;
-  /* 连载状态 */
-  serialStatus: number;
-  /* 标签ID列表 */
-  tagIds: number[];
-
-  /* 阅读规则 */
-  viewRule: number;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportChapterItemDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportChapterItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 章节导入动作（create=新建；update=更新） */
-  action: 'create' | 'update';
-  /* 是否允许评论 */
-  canComment?: boolean;
-  /* 是否允许下载 */
-  canDownload?: boolean;
-  /* 章节封面处理方式 */
-  cover?: ThirdPartyComicImportCoverDto;
-  /* 是否导入章节图片 */
-  importImages: boolean;
-  /* 是否试读 */
-  isPreview?: boolean;
-  /* 是否发布 */
-  isPublished?: boolean;
-  /* 是否覆盖已有章节内容 */
-  overwriteContent?: boolean;
-  /* 章节价格 */
-  price?: number;
-  /* 三方章节ID */
-  providerChapterId: string;
-  /* 排序值 */
-  sortOrder: number;
-  /* 章节副标题 */
-  subtitle?: string;
-  /* 目标章节ID */
-  targetChapterId?: number;
-  /* 章节标题 */
-  title: string;
-
-  /* 查看规则 */
-  viewRule?: number;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 章节处理结果 */
-  chapters: ThirdPartyComicImportChapterResultDto[];
-  /* 作品封面处理结果 */
-  cover?: ThirdPartyComicImportCoverResultDto;
-  /* 导入模式 */
-  mode: 'attachToExisting' | 'createNew';
-  /* 导入状态 */
-  status: 'failed' | 'partial_failed' | 'success';
-
-  /* 作品处理结果 */
-  work?: ThirdPartyComicImportWorkResultDto;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportWorkResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportWorkResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 错误码 */
-  errorCode?: string;
-  /* 本地作品ID */
-  id?: number;
-  /* 结果说明 */
-  message?: string;
-
-  /* 作品处理状态 */
-  status: 'attached' | 'created' | 'failed';
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportCoverResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportCoverResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 错误码 */
-  errorCode?: string;
-  /* 本地文件路径 */
-  filePath?: string;
-  /* 结果说明 */
-  message?: string;
-
-  /* 封面处理状态 */
-  status: 'failed' | 'local' | 'skipped' | 'uploaded';
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportChapterResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportChapterResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 章节导入动作 */
-  action: 'create' | 'update';
-  /* 章节封面处理结果 */
-  cover?: ThirdPartyComicImportCoverResultDto;
-  /* 错误码 */
-  errorCode?: string;
-  /* 成功图片数 */
-  imageSucceeded?: number;
-  /* 图片总数 */
-  imageTotal?: number;
-  /* 本地章节ID */
-  localChapterId?: number;
-  /* 结果说明 */
-  message?: string;
-  /* 三方章节ID */
-  providerChapterId: string;
-
-  /* 章节处理状态 */
-  status:
-    | 'content_imported'
-    | 'created'
-    | 'failed'
-    | 'metadata_only'
-    | 'skipped'
-    | 'updated';
 };

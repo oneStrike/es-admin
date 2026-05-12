@@ -10,16 +10,12 @@ export const contentTypeOptions = [
     value: ContentTypeEnum.COMIC,
   },
   {
-    label: '插画',
-    value: ContentTypeEnum.ILLUSTRATION,
-  },
-  {
     label: '小说',
     value: ContentTypeEnum.NOVEL,
   },
   {
-    label: '写真',
-    value: ContentTypeEnum.PHOTO,
+    label: '帖子',
+    value: ContentTypeEnum.TOPIC,
   },
 ];
 

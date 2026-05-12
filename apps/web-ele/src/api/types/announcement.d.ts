@@ -134,7 +134,7 @@ export type CreateAnnouncementDto = {
   /* 公告内容详情 */
   content: string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[];
+  enablePlatform?: (1 | 2 | 3)[];
   /* 是否置顶 */
   isPinned: boolean;
   /* 关联页面 id */
@@ -173,7 +173,7 @@ export type BaseAnnouncementDto = {
   /* 创建时间 */
   createdAt: string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[];
+  enablePlatform?: (1 | 2 | 3)[];
   /* 主键id */
   id: number;
   /* 是否置顶 */
@@ -222,7 +222,7 @@ export type AnnouncementDetailDto = {
   /* 创建时间 */
   createdAt: string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[];
+  enablePlatform?: (1 | 2 | 3)[];
   /* 主键id */
   id: number;
   /* 是否置顶 */
@@ -286,7 +286,7 @@ export type UpdateAnnouncementDto = {
   /* 公告内容详情 */
   content?: string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[];
+  enablePlatform?: (1 | 2 | 3)[];
   /* 主键id */
   id: number;
   /* 是否置顶 */

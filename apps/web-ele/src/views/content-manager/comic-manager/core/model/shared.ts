@@ -3,7 +3,7 @@ import type { EsFormSchema } from '#/types';
 import { cloneDeep } from 'es-toolkit';
 
 import { contentAuthorPageApi } from '#/api/core';
-import { ContentPermissionEnum } from '#/enum';
+import { AuthorTypeEnum, ContentPermissionEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
 import {
@@ -86,7 +86,7 @@ export const formSchema: EsFormSchema = [
           return contentAuthorPageApi({
             ...value,
             isEnabled: true,
-            type: JSON.stringify([4]),
+            type: JSON.stringify([AuthorTypeEnum.MANGA]),
           });
         },
       };

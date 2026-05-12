@@ -1,41 +1,63 @@
 <script setup lang="ts">
-import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   ContentComicThirdPartyImportConfirmRequest,
   ContentComicThirdPartyImportConfirmResponse,
   ContentComicThirdPartyImportPreviewResponse,
+  ThirdPartyComicChapterContentDto,
+  ThirdPartyComicImportChapterItemDto,
+} from './model/import';
+
+import type { VxeGridProps } from '#/adapter/vxe-table';
+import type {
+  AuthorPageResponseDto,
+  BaseCategoryDto,
+  BaseTagDto,
+  CreateAuthorDto,
+  CreateCategoryDto,
+  CreateTagDto,
   PageWorkDto,
   PlatformResponseDto,
   SearchComicItemDto,
-  ThirdPartyComicChapterContentDto,
-  ThirdPartyComicImportChapterItemDto,
 } from '#/api/types/content';
+import type { EsFormSchema } from '#/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  contentAuthorCreateApi,
   contentAuthorPageApi,
+  contentCategoryCreateApi,
   contentCategoryPageApi,
   contentComicPageApi,
-  contentComicThirdPartyChapterContentDetailApi,
-  contentComicThirdPartyImportConfirmApi,
-  contentComicThirdPartyImportPreviewApi,
   contentComicThirdPartyPlatformListApi,
   contentComicThirdPartySearchPageApi,
+  contentTagCreateApi,
   contentTagPageApi,
 } from '#/api/core/content';
 import { getApiErrorMessage } from '#/api/error';
+import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsUpload from '#/components/es-upload/es-upload.vue';
 import { UploadSceneEnum } from '#/enum/api';
+import { useDict } from '#/hooks/useDict';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
+import { formSchema as authorFormSchema } from '../../author-manager/model/shared';
+import { formSchema as categoryFormSchema } from '../../category-manager/model/shared';
+import { formSchema as tagFormSchema } from '../../tag-manager/model/shared';
 import {
   canUseProviderWorkCover,
+  contentComicThirdPartyChapterContentDetailApi,
+  contentComicThirdPartyImportConfirmApi,
+  contentComicThirdPartyImportPreviewApi,
+  findCreatedOptionByName,
   resolveInitialGroup,
   resolveInitialWorkCoverMode,
+  resolveSelectDefault,
+  SERVER_COMIC_CATEGORY_TYPE,
+  SERVER_MANGA_AUTHOR_TYPE,
   toApiGroup,
 } from './model/import';
 
@@ -53,6 +75,11 @@ interface PlatformOption {
 interface LocalOption {
   label: string;
   value: number;
+}
+
+interface DictOption {
+  label: string;
+  value: string;
 }
 
 interface SearchFormValues {
@@ -151,11 +178,80 @@ const chapterCoverOptions: Array<{
 
 const workCoverScene = 'comic' as UploadSceneEnum;
 const chapterCoverScene = 'chapter' as UploadSceneEnum;
+const mangaAuthorTypeOptions = [
+  { label: '漫画家', value: SERVER_MANGA_AUTHOR_TYPE },
+];
+const comicCategoryTypeOptions = [
+  { label: '漫画', value: SERVER_COMIC_CATEGORY_TYPE },
+];
+
+function getObjectComponentProps(field: EsFormSchema[number]) {
+  return typeof field.componentProps === 'object' && field.componentProps
+    ? field.componentProps
+    : {};
+}
+
+function overrideSchemaField(
+  schema: EsFormSchema,
+  fieldName: string,
+  overrides: Partial<EsFormSchema[number]>,
+): EsFormSchema {
+  return schema.map((field) => {
+    if (field.fieldName !== fieldName) {
+      return { ...field };
+    }
+
+    return {
+      ...field,
+      ...overrides,
+      componentProps: {
+        ...getObjectComponentProps(field),
+        ...getObjectComponentProps(overrides as EsFormSchema[number]),
+      },
+    };
+  });
+}
+
+const thirdPartyAuthorFormSchema = overrideSchemaField(
+  overrideSchemaField(authorFormSchema, 'type', {
+    componentProps: {
+      options: mangaAuthorTypeOptions,
+      placeholder: '请选择作者身份',
+    },
+    defaultValue: [SERVER_MANGA_AUTHOR_TYPE],
+  }),
+  'gender',
+  {
+    defaultValue: 0,
+  },
+);
+
+const thirdPartyCategoryFormSchema = overrideSchemaField(
+  categoryFormSchema,
+  'contentType',
+  {
+    componentProps: {
+      options: comicCategoryTypeOptions,
+      placeholder: '请选择内容类型',
+    },
+    defaultValue: [SERVER_COMIC_CATEGORY_TYPE],
+  },
+);
+
+const thirdPartyTagFormSchema = overrideSchemaField(
+  tagFormSchema,
+  'sortOrder',
+  {
+    defaultValue: 0,
+  },
+);
 
 const step = ref(0);
 const platform = ref('');
 const keyword = ref('');
 const platformOptions = ref<PlatformOption[]>([]);
+const languageOptions = ref<DictOption[]>([]);
+const regionOptions = ref<DictOption[]>([]);
 const loading = ref(false);
 const previewLoading = ref(false);
 const relationLoading = ref(false);
@@ -224,18 +320,23 @@ const [Form, formApi] = useVbenForm(
         keyword.value = trimmedKeyword;
         await searchGridApi.reload({ page: { currentPage: 1 } });
       },
+      submitButtonOptions: {
+        content: '搜索',
+      },
+      submitOnChange: false,
     },
   ),
 );
 
 const [Modal, modalApi] = useVbenModal({
+  footer: false,
   onOpenChange: async (isOpen) => {
     if (!isOpen) return;
     resetWizard();
     modalApi.setState({
       title: '第三方平台资源解析',
     });
-    await loadPlatforms();
+    await Promise.all([loadPlatforms(), loadWorkDictionaries()]);
   },
 });
 
@@ -381,6 +482,16 @@ const [ImportResultGrid, importResultGridApi] =
     showSearchForm: false,
   });
 
+const [AuthorForm, authorFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+const [CategoryForm, categoryFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+const [TagForm, tagFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+
 const selectedMappings = computed(() =>
   chapterMappings.value.filter((item) => item.selected),
 );
@@ -426,10 +537,10 @@ function createEmptyWorkDraft(): WorkDraftForm {
     isNew: false,
     isPublished: false,
     isRecommended: false,
-    language: 'zh',
+    language: '',
     name: '',
     recommendWeight: 0,
-    region: 'CN',
+    region: '',
     serialStatus: 1,
     tagIds: [],
     viewRule: 0,
@@ -453,7 +564,11 @@ function resetWizard() {
   activeProviderChapterId.value = '';
   contentPreview.value = null;
   importResult.value = null;
-  void searchGridApi.reload({ page: { currentPage: 1 } });
+  formApi.setValues({
+    keyword: '',
+    platform: '',
+  });
+  searchGridApi.setGridOptions({ data: [] });
   chapterPreviewGridApi.setGridOptions({ data: [] });
   importResultGridApi.setGridOptions({ data: [] });
 }
@@ -482,6 +597,19 @@ async function loadPlatforms() {
     }
   } catch (error: unknown) {
     useMessage.error(getApiErrorMessage(error, '加载平台列表失败'));
+  }
+}
+
+async function loadWorkDictionaries() {
+  try {
+    const { work_language, work_region } = await useDict(
+      'work_language,work_region',
+    );
+    languageOptions.value = work_language?.options || [];
+    regionOptions.value = work_region?.options || [];
+    applyDictionaryDefaultsToDraft();
+  } catch (error: unknown) {
+    useMessage.error(getApiErrorMessage(error, '加载作品字典失败'));
   }
 }
 
@@ -540,14 +668,35 @@ function applyPreviewToDraft(res: ContentComicThirdPartyImportPreviewResponse) {
     ...createEmptyWorkDraft(),
     alias: res.workDraft.alias,
     description: res.workDraft.description,
+    language: resolveSelectDefault(languageOptions.value, undefined, 'zh'),
     name: res.workDraft.name,
     originalSource: res.workDraft.originalSource,
-    region: res.workDraft.suggestedRegion || 'CN',
+    region: resolveSelectDefault(
+      regionOptions.value,
+      res.workDraft.suggestedRegion,
+      'CN',
+    ),
     remark: res.workDraft.remark,
     serialStatus: res.workDraft.suggestedSerialStatus ?? 1,
   };
   workCoverMode.value = resolveInitialWorkCoverMode(res.coverOptions);
   localWorkCoverPath.value = '';
+}
+
+function applyDictionaryDefaultsToDraft() {
+  workDraft.value = {
+    ...workDraft.value,
+    language: resolveSelectDefault(
+      languageOptions.value,
+      workDraft.value.language,
+      'zh',
+    ),
+    region: resolveSelectDefault(
+      regionOptions.value,
+      workDraft.value.region,
+      'CN',
+    ),
+  };
 }
 
 function createChapterMapping(
@@ -572,8 +721,59 @@ function createChapterMapping(
   };
 }
 
-async function loadRelationOptions() {
+function toLocalOptions(
+  list: Array<{ id: number; name: string }> | undefined,
+): LocalOption[] {
+  return (list || []).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+}
+
+function authorPageParams(name?: string) {
+  return {
+    isEnabled: true,
+    name: name || undefined,
+    pageSize: name ? 20 : 500,
+    type: JSON.stringify([SERVER_MANGA_AUTHOR_TYPE]),
+  };
+}
+
+function categoryPageParams(name?: string) {
+  return {
+    contentType: JSON.stringify([SERVER_COMIC_CATEGORY_TYPE]),
+    isEnabled: true,
+    name: name || undefined,
+    pageSize: name ? 20 : 500,
+  };
+}
+
+function tagPageParams(name?: string) {
+  return {
+    isEnabled: true,
+    name: name || undefined,
+    pageSize: name ? 20 : 500,
+  };
+}
+
+async function loadAuthorOptions() {
+  const authors = await contentAuthorPageApi(authorPageParams());
+  authorOptions.value = toLocalOptions(authors.list as AuthorPageResponseDto[]);
+}
+
+async function loadCategoryOptions() {
+  const categories = await contentCategoryPageApi(categoryPageParams());
+  categoryOptions.value = toLocalOptions(categories.list as BaseCategoryDto[]);
+}
+
+async function loadTagOptions() {
+  const tags = await contentTagPageApi(tagPageParams());
+  tagOptions.value = toLocalOptions(tags.list as BaseTagDto[]);
+}
+
+async function loadRelationOptions(force = false) {
   if (
+    !force &&
     authorOptions.value.length > 0 &&
     categoryOptions.value.length > 0 &&
     tagOptions.value.length > 0
@@ -583,32 +783,157 @@ async function loadRelationOptions() {
 
   relationLoading.value = true;
   try {
-    const [authors, categories, tags] = await Promise.all([
-      contentAuthorPageApi({
-        isEnabled: true,
-        pageSize: 500,
-        type: JSON.stringify([4]),
-      }),
-      contentCategoryPageApi({ pageSize: 500 }),
-      contentTagPageApi({ pageSize: 500 }),
+    await Promise.all([
+      loadAuthorOptions(),
+      loadCategoryOptions(),
+      loadTagOptions(),
     ]);
-    authorOptions.value = (authors.list || []).map((item) => ({
-      label: item.name,
-      value: item.id,
-    }));
-    categoryOptions.value = (categories.list || []).map((item) => ({
-      label: item.name,
-      value: item.id,
-    }));
-    tagOptions.value = (tags.list || []).map((item) => ({
-      label: item.name,
-      value: item.id,
-    }));
   } catch (error: unknown) {
     useMessage.error(getApiErrorMessage(error, '加载本地关系失败'));
   } finally {
     relationLoading.value = false;
   }
+}
+
+function openCreateAuthorModal() {
+  authorFormApi
+    .setData({
+      schema: thirdPartyAuthorFormSchema,
+      title: '作者',
+    })
+    .open();
+}
+
+function openCreateCategoryModal() {
+  categoryFormApi
+    .setData({
+      schema: thirdPartyCategoryFormSchema,
+      title: '分类',
+    })
+    .open();
+}
+
+function openCreateTagModal() {
+  tagFormApi
+    .setData({
+      schema: thirdPartyTagFormSchema,
+      title: '标签',
+    })
+    .open();
+}
+
+function selectCreatedRelation(
+  selectedIds: number[],
+  createdOption: LocalOption | undefined,
+) {
+  if (!createdOption || selectedIds.includes(createdOption.value)) {
+    return selectedIds;
+  }
+  return [...selectedIds, createdOption.value];
+}
+
+function ensureRelationOption(
+  options: { value: LocalOption[] },
+  createdOption: LocalOption | undefined,
+) {
+  if (
+    createdOption &&
+    !options.value.some((item) => item.value === createdOption.value)
+  ) {
+    options.value = [createdOption, ...options.value];
+  }
+}
+
+async function findCreatedAuthor(name: string) {
+  const res = await contentAuthorPageApi(authorPageParams(name));
+  return findCreatedOptionByName(
+    toLocalOptions(res.list as AuthorPageResponseDto[]),
+    name,
+  ) as LocalOption | undefined;
+}
+
+async function findCreatedCategory(name: string) {
+  const res = await contentCategoryPageApi(categoryPageParams(name));
+  return findCreatedOptionByName(
+    toLocalOptions(res.list as BaseCategoryDto[]),
+    name,
+  ) as LocalOption | undefined;
+}
+
+async function findCreatedTag(name: string) {
+  const res = await contentTagPageApi(tagPageParams(name));
+  return findCreatedOptionByName(
+    toLocalOptions(res.list as BaseTagDto[]),
+    name,
+  ) as LocalOption | undefined;
+}
+
+async function handleCreateAuthor(values: CreateAuthorDto) {
+  const name = values.name.trim();
+  const payload: CreateAuthorDto = {
+    avatar: values.avatar,
+    description: values.description,
+    gender: values.gender ?? 0,
+    name,
+    nationality: values.nationality,
+    remark: values.remark,
+    type: [SERVER_MANGA_AUTHOR_TYPE],
+  };
+  await contentAuthorCreateApi(payload);
+  const created = await findCreatedAuthor(name);
+  await loadAuthorOptions();
+  ensureRelationOption(authorOptions, created);
+  workDraft.value.authorIds = selectCreatedRelation(
+    workDraft.value.authorIds,
+    created,
+  );
+  useMessage.success(
+    created ? '作者已新增并选中' : '作者已新增，请从列表中选择',
+  );
+}
+
+async function handleCreateCategory(values: CreateCategoryDto) {
+  const name = values.name.trim();
+  const payload: CreateCategoryDto = {
+    contentType: [SERVER_COMIC_CATEGORY_TYPE],
+    description: values.description,
+    icon: values.icon,
+    isEnabled: values.isEnabled ?? true,
+    name,
+    sortOrder: values.sortOrder ?? 0,
+  };
+  await contentCategoryCreateApi(payload);
+  const created = await findCreatedCategory(name);
+  await loadCategoryOptions();
+  ensureRelationOption(categoryOptions, created);
+  workDraft.value.categoryIds = selectCreatedRelation(
+    workDraft.value.categoryIds,
+    created,
+  );
+  useMessage.success(
+    created ? '分类已新增并选中' : '分类已新增，请从列表中选择',
+  );
+}
+
+async function handleCreateTag(values: CreateTagDto) {
+  const name = values.name.trim();
+  const payload: CreateTagDto = {
+    description: values.description,
+    icon: values.icon,
+    name,
+    sortOrder: values.sortOrder ?? 0,
+  };
+  await contentTagCreateApi(payload);
+  const created = await findCreatedTag(name);
+  await loadTagOptions();
+  ensureRelationOption(tagOptions, created);
+  workDraft.value.tagIds = selectCreatedRelation(
+    workDraft.value.tagIds,
+    created,
+  );
+  useMessage.success(
+    created ? '标签已新增并选中' : '标签已新增，请从列表中选择',
+  );
 }
 
 async function searchLocalWorks(query = '') {
@@ -907,7 +1232,7 @@ function resultTagType(status?: unknown) {
 <template>
   <Modal class="third-party-import-modal h-[78vh] w-[1280px]">
     <div class="flex h-full flex-col">
-      <div class="shrink-0 border-b bg-white p-4">
+      <div class="shrink-0 border-b border-border bg-card p-4">
         <el-steps :active="step" finish-status="success" simple>
           <el-step v-for="item in wizardSteps" :key="item" :title="item" />
         </el-steps>
@@ -932,7 +1257,7 @@ function resultTagType(status?: unknown) {
               <div class="line-clamp-2 text-sm font-semibold">
                 {{ row.name }}
               </div>
-              <div class="mt-1 text-xs text-gray-500">
+              <div class="mt-1 text-xs text-muted-foreground">
                 ID：{{ row.id ?? '-' }}
               </div>
             </template>
@@ -957,7 +1282,7 @@ function resultTagType(status?: unknown) {
           <el-empty v-if="!preview" description="请选择第三方作品" />
           <template v-else>
             <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-4 rounded border bg-white p-4">
+              <div class="col-span-4 rounded border border-border bg-card p-4">
                 <div class="flex gap-4">
                   <el-image
                     v-if="preview.detail.cover"
@@ -969,26 +1294,26 @@ function resultTagType(status?: unknown) {
                     <div class="line-clamp-2 text-lg font-semibold">
                       {{ preview.detail.name }}
                     </div>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-muted-foreground">
                       ID：{{ preview.detail.id }}
                     </div>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-muted-foreground">
                       作者：{{ formatTextList(preview.detail.authors) }}
                     </div>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-muted-foreground">
                       状态：{{ preview.detail.status || '-' }}
                     </div>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-muted-foreground">
                       地区：{{ preview.detail.region || '-' }}
                     </div>
                   </div>
                 </div>
-                <div class="mt-3 text-sm leading-6 text-gray-600">
+                <div class="mt-3 text-sm leading-6 text-muted-foreground">
                   {{ preview.detail.brief || '-' }}
                 </div>
               </div>
 
-              <div class="col-span-8 rounded border bg-white p-4">
+              <div class="col-span-8 rounded border border-border bg-card p-4">
                 <div class="mb-3 flex items-center justify-between">
                   <div class="font-semibold">章节分组</div>
                   <el-select
@@ -1046,7 +1371,7 @@ function resultTagType(status?: unknown) {
 
           <div
             v-if="importMode === 'attachToExisting'"
-            class="rounded border p-4"
+            class="rounded border border-border bg-card p-4"
           >
             <el-form label-width="110px">
               <el-form-item label="目标作品">
@@ -1072,7 +1397,7 @@ function resultTagType(status?: unknown) {
           </div>
 
           <div v-else class="grid grid-cols-12 gap-4">
-            <div class="col-span-4 rounded border bg-white p-4">
+            <div class="col-span-4 rounded border border-border bg-card p-4">
               <div class="mb-3 font-semibold">作品封面</div>
               <el-radio-group v-model="workCoverMode" class="mb-3">
                 <el-radio-button
@@ -1103,7 +1428,7 @@ function resultTagType(status?: unknown) {
             </div>
 
             <el-form
-              class="col-span-8 grid grid-cols-2 gap-x-4 rounded border bg-white p-4"
+              class="col-span-8 grid grid-cols-2 gap-x-4 rounded border border-border bg-card p-4"
               label-width="110px"
             >
               <el-form-item label="作品名称">
@@ -1120,10 +1445,24 @@ function resultTagType(status?: unknown) {
                 />
               </el-form-item>
               <el-form-item label="语言">
-                <el-input v-model="workDraft.language" />
+                <el-select v-model="workDraft.language" class="w-full">
+                  <el-option
+                    v-for="item in languageOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="地区">
-                <el-input v-model="workDraft.region" />
+                <el-select v-model="workDraft.region" class="w-full">
+                  <el-option
+                    v-for="item in regionOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="连载状态">
                 <el-select v-model="workDraft.serialStatus" class="w-full">
@@ -1197,7 +1536,7 @@ function resultTagType(status?: unknown) {
             type="info"
           />
           <div v-else class="grid grid-cols-12 gap-4">
-            <div class="col-span-5 rounded border bg-white p-4">
+            <div class="col-span-5 rounded border border-border bg-card p-4">
               <div class="mb-3 font-semibold">三方字段</div>
               <div class="space-y-3 text-sm">
                 <div>
@@ -1225,60 +1564,75 @@ function resultTagType(status?: unknown) {
             </div>
 
             <el-form
-              class="col-span-7 rounded border bg-white p-4"
+              class="col-span-7 rounded border border-border bg-card p-4"
               label-width="100px"
             >
               <el-form-item label="本地作者">
-                <el-select
-                  v-model="workDraft.authorIds"
-                  class="w-full"
-                  filterable
-                  multiple
-                >
-                  <el-option
-                    v-for="item in authorOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
+                <div class="flex w-full gap-2">
+                  <el-select
+                    v-model="workDraft.authorIds"
+                    class="flex-1"
+                    filterable
+                    multiple
+                  >
+                    <el-option
+                      v-for="item in authorOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                  <el-button type="primary" @click="openCreateAuthorModal">
+                    新增
+                  </el-button>
+                </div>
               </el-form-item>
               <el-form-item label="本地分类">
-                <el-select
-                  v-model="workDraft.categoryIds"
-                  class="w-full"
-                  filterable
-                  multiple
-                >
-                  <el-option
-                    v-for="item in categoryOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
+                <div class="flex w-full gap-2">
+                  <el-select
+                    v-model="workDraft.categoryIds"
+                    class="flex-1"
+                    filterable
+                    multiple
+                  >
+                    <el-option
+                      v-for="item in categoryOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                  <el-button type="primary" @click="openCreateCategoryModal">
+                    新增
+                  </el-button>
+                </div>
               </el-form-item>
               <el-form-item label="本地标签">
-                <el-select
-                  v-model="workDraft.tagIds"
-                  class="w-full"
-                  filterable
-                  multiple
-                >
-                  <el-option
-                    v-for="item in tagOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
+                <div class="flex w-full gap-2">
+                  <el-select
+                    v-model="workDraft.tagIds"
+                    class="flex-1"
+                    filterable
+                    multiple
+                  >
+                    <el-option
+                      v-for="item in tagOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                  <el-button type="primary" @click="openCreateTagModal">
+                    新增
+                  </el-button>
+                </div>
               </el-form-item>
             </el-form>
           </div>
         </div>
 
         <div v-show="step === 4" class="grid grid-cols-12 gap-4">
-          <div class="col-span-5 rounded border bg-white p-4">
+          <div class="col-span-5 rounded border border-border bg-card p-4">
             <div class="mb-3 flex items-center justify-between">
               <div class="font-semibold">
                 章节映射 {{ selectedMappings.length }} /
@@ -1297,9 +1651,9 @@ function resultTagType(status?: unknown) {
               <button
                 v-for="mapping in chapterMappings"
                 :key="mapping.providerChapterId"
-                class="flex w-full items-start gap-3 rounded border p-3 text-left hover:border-primary"
+                class="flex w-full items-start gap-3 rounded border border-border p-3 text-left hover:border-primary"
                 :class="{
-                  'border-primary bg-blue-50':
+                  'border-primary bg-primary/10':
                     mapping.providerChapterId === activeProviderChapterId,
                 }"
                 type="button"
@@ -1310,7 +1664,7 @@ function resultTagType(status?: unknown) {
                   <div class="line-clamp-2 text-sm font-medium">
                     {{ mapping.title }}
                   </div>
-                  <div class="mt-1 text-xs text-gray-500">
+                  <div class="mt-1 text-xs text-muted-foreground">
                     {{ mapping.providerChapterId }}
                   </div>
                 </div>
@@ -1320,7 +1674,7 @@ function resultTagType(status?: unknown) {
 
           <el-form
             v-if="activeMapping"
-            class="col-span-7 grid grid-cols-2 gap-x-4 rounded border bg-white p-4"
+            class="col-span-7 grid grid-cols-2 gap-x-4 rounded border border-border bg-card p-4"
             label-width="110px"
           >
             <el-form-item class="col-span-2" label="章节标题">
@@ -1421,7 +1775,9 @@ function resultTagType(status?: unknown) {
         </div>
 
         <div v-show="step === 5" class="space-y-4">
-          <div class="flex items-center gap-3 rounded border bg-white p-4">
+          <div
+            class="flex items-center gap-3 rounded border border-border bg-card p-4"
+          >
             <el-select
               v-model="activeProviderChapterId"
               class="w-[360px]"
@@ -1451,7 +1807,7 @@ function resultTagType(status?: unknown) {
           </div>
 
           <div
-            class="rounded border bg-white p-4"
+            class="rounded border border-border bg-card p-4"
             v-loading="contentPreviewLoading"
           >
             <el-empty v-if="!contentPreview" description="请选择章节预览正文" />
@@ -1468,7 +1824,7 @@ function resultTagType(status?: unknown) {
                   :key="image.providerImageId"
                   :preview-src-list="contentPreviewImages"
                   :src="image.url"
-                  class="aspect-[9/14] rounded border object-cover"
+                  class="aspect-[9/14] rounded border border-border object-cover"
                   fit="cover"
                   lazy
                 />
@@ -1479,20 +1835,20 @@ function resultTagType(status?: unknown) {
 
         <div v-show="step === 6" class="space-y-4">
           <div class="grid grid-cols-4 gap-4">
-            <div class="rounded border bg-white p-4">
-              <div class="text-sm text-gray-500">导入模式</div>
+            <div class="rounded border border-border bg-card p-4">
+              <div class="text-sm text-muted-foreground">导入模式</div>
               <div class="mt-2 text-lg font-semibold">
                 {{ importMode === 'createNew' ? '新建作品' : '挂载已有作品' }}
               </div>
             </div>
-            <div class="rounded border bg-white p-4">
-              <div class="text-sm text-gray-500">章节数量</div>
+            <div class="rounded border border-border bg-card p-4">
+              <div class="text-sm text-muted-foreground">章节数量</div>
               <div class="mt-2 text-lg font-semibold">
                 {{ selectedMappings.length }}
               </div>
             </div>
-            <div class="rounded border bg-white p-4">
-              <div class="text-sm text-gray-500">作品封面</div>
+            <div class="rounded border border-border bg-card p-4">
+              <div class="text-sm text-muted-foreground">作品封面</div>
               <div class="mt-2 text-lg font-semibold">
                 {{
                   importMode === 'attachToExisting'
@@ -1503,8 +1859,8 @@ function resultTagType(status?: unknown) {
                 }}
               </div>
             </div>
-            <div class="rounded border bg-white p-4">
-              <div class="text-sm text-gray-500">覆盖确认</div>
+            <div class="rounded border border-border bg-card p-4">
+              <div class="text-sm text-muted-foreground">覆盖确认</div>
               <div class="mt-2 text-lg font-semibold">
                 {{ updateWithoutOverwriteCount === 0 ? '已满足' : '未满足' }}
               </div>
@@ -1513,7 +1869,7 @@ function resultTagType(status?: unknown) {
 
           <el-empty v-if="!importResult" description="尚未执行导入" />
           <div v-else class="space-y-4">
-            <div class="rounded border bg-white p-4">
+            <div class="rounded border border-border bg-card p-4">
               <div class="mb-3 flex items-center gap-3">
                 <span class="font-semibold">导入结果</span>
                 <el-tag :type="resultTagType(importResult.status)">
@@ -1553,7 +1909,7 @@ function resultTagType(status?: unknown) {
       </div>
 
       <div
-        class="flex shrink-0 items-center justify-end gap-2 border-t bg-white p-4"
+        class="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card p-4"
       >
         <el-button @click="modalApi.close()">关闭</el-button>
         <el-button :disabled="step === 0" @click="goPrev">上一步</el-button>
@@ -1575,6 +1931,16 @@ function resultTagType(status?: unknown) {
       </div>
     </div>
   </Modal>
+
+  <AuthorForm
+    :on-submit="handleCreateAuthor"
+    :schema="thirdPartyAuthorFormSchema"
+  />
+  <CategoryForm
+    :on-submit="handleCreateCategory"
+    :schema="thirdPartyCategoryFormSchema"
+  />
+  <TagForm :on-submit="handleCreateTag" :schema="thirdPartyTagFormSchema" />
 </template>
 
 <style>

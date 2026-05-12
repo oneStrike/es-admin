@@ -127,7 +127,7 @@ export type CreateAppPageDto = {
   /* 页面描述信息 */
   description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[];
+  enablePlatform?: (1 | 2 | 3)[];
   /* 页面启用状态 */
   isEnabled: boolean;
   /* 页面名称 */
@@ -156,7 +156,7 @@ export type BaseAppPageDto = {
   /* 页面描述信息 */
   description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[];
+  enablePlatform?: (1 | 2 | 3)[];
   /* 主键id */
   id: number;
   /* 页面启用状态 */
@@ -187,7 +187,7 @@ export type UpdateAppPageDto = {
   /* 页面描述信息 */
   description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: 1 | 2 | 3[];
+  enablePlatform?: (1 | 2 | 3)[];
   /* 主键id */
   id: number;
   /* 页面启用状态 */

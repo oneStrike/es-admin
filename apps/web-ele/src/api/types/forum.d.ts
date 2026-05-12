@@ -930,7 +930,7 @@ export type ForumModeratorDto = {
   /* 权限中文名称列表 */
   permissionNames: string[];
   /* 权限列表（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
-  permissions: 1 | 2 | 3 | 4 | 5 | 6[];
+  permissions: (1 | 2 | 3 | 4 | 5 | 6)[];
   /* 备注 */
   remark?: null | string;
   /* 版主角色类型（1=超级版主；2=分组版主；3=板块版主） */
@@ -968,9 +968,9 @@ export type ForumModeratorSectionItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 板块自定义权限（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
-  customPermissions: 1 | 2 | 3 | 4 | 5 | 6[];
+  customPermissions: (1 | 2 | 3 | 4 | 5 | 6)[];
   /* 板块最终生效权限（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
-  finalPermissions: 1 | 2 | 3 | 4 | 5 | 6[];
+  finalPermissions: (1 | 2 | 3 | 4 | 5 | 6)[];
   /* 板块ID */
   id: number;
   /* 是否继承基础权限 */
@@ -993,7 +993,7 @@ export type CreateForumModeratorDto = {
   /* 是否启用 */
   isEnabled: boolean;
   /* 版主权限列表（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
-  permissions?: 1 | 2 | 3 | 4 | 5 | 6[];
+  permissions?: (1 | 2 | 3 | 4 | 5 | 6)[];
   /* 备注 */
   remark?: null | string;
   /* 版主角色类型（1=超级版主；2=分组版主；3=板块版主） */
@@ -1020,7 +1020,7 @@ export type UpdateForumModeratorDto = {
   /* 是否启用 */
   isEnabled?: boolean;
   /* 版主权限列表（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
-  permissions?: 1 | 2 | 3 | 4 | 5 | 6[];
+  permissions?: (1 | 2 | 3 | 4 | 5 | 6)[];
   /* 备注 */
   remark?: null | string;
   /* 版主角色类型（1=超级版主；2=分组版主；3=板块版主） */
@@ -1054,7 +1054,7 @@ export type AssignForumModeratorSectionDto = {
   /* 版主ID */
   moderatorId: number;
   /* 版主权限列表（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
-  permissions?: 1 | 2 | 3 | 4 | 5 | 6[];
+  permissions?: (1 | 2 | 3 | 4 | 5 | 6)[];
 
   /* 板块ID列表；仅板块版主场景使用。 */
   sectionIds: number[];
@@ -1087,7 +1087,7 @@ export type ForumModeratorApplicationDto = {
   /* 权限名称列表 */
   permissionNames: string[];
   /* 申请权限列表（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
-  permissions?: 1 | 2 | 3 | 4 | 5 | 6[];
+  permissions?: (1 | 2 | 3 | 4 | 5 | 6)[];
   /* 申请理由 */
   reason: string;
   /* 备注 */
