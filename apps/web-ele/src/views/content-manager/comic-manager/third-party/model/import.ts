@@ -35,6 +35,7 @@ export interface ThirdPartyComicDetailDto {
 
 export interface ThirdPartyComicChapterDto {
   [property: string]: unknown;
+  chapterApiVersion?: number;
   datetimeCreated?: string;
   group?: string;
   imageCount?: number;
@@ -151,6 +152,7 @@ export interface ThirdPartyComicImportChapterItemDto {
   action: 'create' | 'update';
   canComment?: boolean;
   canDownload?: boolean;
+  chapterApiVersion?: number;
   cover?: ThirdPartyComicImportCoverDto;
   importImages: boolean;
   isPreview?: boolean;
@@ -246,6 +248,7 @@ export function contentComicThirdPartyImportConfirmApi(
 }
 
 export function contentComicThirdPartyChapterContentDetailApi(params: {
+  chapterApiVersion?: number;
   chapterId: string;
   comicId: string;
   group?: string;

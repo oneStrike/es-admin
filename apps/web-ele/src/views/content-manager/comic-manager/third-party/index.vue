@@ -36,7 +36,6 @@ import {
   contentTagCreateApi,
   contentTagPageApi,
 } from '#/api/core/content';
-import { getApiErrorMessage } from '#/api/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsUpload from '#/components/es-upload/es-upload.vue';
 import { UploadSceneEnum } from '#/enum/api';
@@ -114,6 +113,7 @@ interface ChapterMappingForm {
   action: ChapterAction;
   canComment: boolean;
   canDownload: boolean;
+  chapterApiVersion?: number;
   coverMode: Extract<WorkCoverMode, 'local' | 'skip'>;
   importImages: boolean;
   isPreview: boolean;
@@ -258,6 +258,8 @@ const relationLoading = ref(false);
 const localWorkLoading = ref(false);
 const contentPreviewLoading = ref(false);
 const importLoading = ref(false);
+const nextStepLoading = ref(false);
+const selectingComicId = ref('');
 
 const activeComic = ref<null | SearchComicItemDto>(null);
 const activePlatform = ref('');
@@ -278,6 +280,16 @@ const activeProviderChapterId = ref('');
 const contentPreview = ref<null | ThirdPartyComicChapterContentDto>(null);
 const importResult = ref<ContentComicThirdPartyImportConfirmResponse | null>(
   null,
+);
+
+const wizardBusy = computed(
+  () =>
+    loading.value ||
+    previewLoading.value ||
+    relationLoading.value ||
+    contentPreviewLoading.value ||
+    importLoading.value ||
+    nextStepLoading.value,
 );
 
 const [Form, formApi] = useVbenForm(
@@ -327,6 +339,17 @@ const [Form, formApi] = useVbenForm(
     },
   ),
 );
+
+watch(loading, (isLoading) => {
+  formApi.setState((prev) => ({
+    ...prev,
+    submitButtonOptions: {
+      ...prev.submitButtonOptions,
+      content: '搜索',
+      loading: isLoading,
+    },
+  }));
+});
 
 const [Modal, modalApi] = useVbenModal({
   footer: false,
@@ -403,8 +426,7 @@ const searchGridOptions: VxeGridProps<SearchComicRow> = {
             list: res.list || [],
             total: res.total || 0,
           };
-        } catch (error: unknown) {
-          useMessage.error(getApiErrorMessage(error, '搜索第三方资源失败'));
+        } catch {
           return { list: [], total: 0 };
         } finally {
           loading.value = false;
@@ -577,6 +599,10 @@ function resolveComicPlatform(item: SearchComicItemDto) {
   return String(item.platform || activePlatform.value || platform.value || '');
 }
 
+function resolveComicId(item: SearchComicItemDto) {
+  return String(item.id ?? '');
+}
+
 function formatTextList(values?: string[]) {
   return values && values.length > 0 ? values.join('、') : '-';
 }
@@ -595,8 +621,8 @@ async function loadPlatforms() {
         platform: defaultPlatform,
       });
     }
-  } catch (error: unknown) {
-    useMessage.error(getApiErrorMessage(error, '加载平台列表失败'));
+  } catch {
+    platformOptions.value = [];
   }
 }
 
@@ -608,8 +634,9 @@ async function loadWorkDictionaries() {
     languageOptions.value = work_language?.options || [];
     regionOptions.value = work_region?.options || [];
     applyDictionaryDefaultsToDraft();
-  } catch (error: unknown) {
-    useMessage.error(getApiErrorMessage(error, '加载作品字典失败'));
+  } catch {
+    languageOptions.value = [];
+    regionOptions.value = [];
   }
 }
 
@@ -620,11 +647,18 @@ async function selectComic(item: SearchComicItemDto) {
     return;
   }
 
-  activeComic.value = item;
-  activePlatform.value = currentPlatform;
-  selectedGroup.value = '';
-  await loadImportPreview();
-  step.value = 1;
+  selectingComicId.value = resolveComicId(item);
+  try {
+    activeComic.value = item;
+    activePlatform.value = currentPlatform;
+    selectedGroup.value = '';
+    await loadImportPreview();
+    if (preview.value) {
+      step.value = 1;
+    }
+  } finally {
+    selectingComicId.value = '';
+  }
 }
 
 async function loadImportPreview(group = selectedGroup.value) {
@@ -651,8 +685,10 @@ async function loadImportPreview(group = selectedGroup.value) {
     activeProviderChapterId.value =
       chapterMappings.value[0]?.providerChapterId || '';
     chapterPreviewGridApi.setGridOptions({ data: res.chapters });
-  } catch (error: unknown) {
-    useMessage.error(getApiErrorMessage(error, '加载导入预览失败'));
+  } catch {
+    preview.value = null;
+    chapterMappings.value = [];
+    chapterPreviewGridApi.setGridOptions({ data: [] });
   } finally {
     previewLoading.value = false;
   }
@@ -706,6 +742,7 @@ function createChapterMapping(
     action: 'create',
     canComment: true,
     canDownload: false,
+    chapterApiVersion: chapter.chapterApiVersion,
     coverMode: 'skip',
     importImages: true,
     isPreview: false,
@@ -788,8 +825,10 @@ async function loadRelationOptions(force = false) {
       loadCategoryOptions(),
       loadTagOptions(),
     ]);
-  } catch (error: unknown) {
-    useMessage.error(getApiErrorMessage(error, '加载本地关系失败'));
+  } catch {
+    authorOptions.value = [];
+    categoryOptions.value = [];
+    tagOptions.value = [];
   } finally {
     relationLoading.value = false;
   }
@@ -949,8 +988,8 @@ async function searchLocalWorks(query = '') {
       label: `${item.name}（ID: ${item.id}）`,
       value: item.id,
     }));
-  } catch (error: unknown) {
-    useMessage.error(getApiErrorMessage(error, '搜索本地作品失败'));
+  } catch {
+    localWorkOptions.value = [];
   } finally {
     localWorkLoading.value = false;
   }
@@ -978,33 +1017,40 @@ async function loadActiveChapterContent() {
   contentPreviewLoading.value = true;
   try {
     contentPreview.value = await contentComicThirdPartyChapterContentDetailApi({
+      chapterApiVersion: mapping.chapterApiVersion,
       chapterId: mapping.providerChapterId,
       comicId: currentPreview.comicId,
       group: toApiGroup(selectedGroup.value),
       platform: currentPreview.platform,
     });
-  } catch (error: unknown) {
-    useMessage.error(getApiErrorMessage(error, '加载章节正文失败'));
+  } catch {
+    contentPreview.value = null;
   } finally {
     contentPreviewLoading.value = false;
   }
 }
 
 async function goNext() {
+  if (nextStepLoading.value) return;
   if (!validateStep(step.value)) return;
 
-  if (step.value === 2 && importMode.value === 'createNew') {
-    await loadRelationOptions();
-  }
-  if (step.value === 4 && selectedMappings.value.length > 0) {
-    const first = selectedMappings.value[0];
-    if (first) {
-      activeProviderChapterId.value = first.providerChapterId;
-      await loadActiveChapterContent();
+  nextStepLoading.value = true;
+  try {
+    if (step.value === 2 && importMode.value === 'createNew') {
+      await loadRelationOptions();
     }
-  }
+    if (step.value === 4 && selectedMappings.value.length > 0) {
+      const first = selectedMappings.value[0];
+      if (first) {
+        activeProviderChapterId.value = first.providerChapterId;
+        await loadActiveChapterContent();
+      }
+    }
 
-  step.value = Math.min(step.value + 1, wizardSteps.length - 1);
+    step.value = Math.min(step.value + 1, wizardSteps.length - 1);
+  } finally {
+    nextStepLoading.value = false;
+  }
 }
 
 function goPrev() {
@@ -1134,10 +1180,10 @@ async function handleImport() {
     } else if (status === 'partial_failed') {
       useMessage.warning('导入部分失败，请查看结果明细');
     } else {
-      useMessage.error('导入失败');
+      useMessage.warning('导入未完成，请查看结果明细');
     }
-  } catch (error: unknown) {
-    useMessage.error(getApiErrorMessage(error, '确认导入失败'));
+  } catch {
+    importResult.value = null;
   } finally {
     importLoading.value = false;
   }
@@ -1200,6 +1246,7 @@ function toChapterImportItem(
       item.coverMode === 'local'
         ? { localPath: item.localCoverPath, mode: 'local' }
         : { mode: 'skip' },
+    chapterApiVersion: item.chapterApiVersion,
     importImages: item.importImages,
     isPreview: item.isPreview,
     isPublished: item.isPublished,
@@ -1271,7 +1318,15 @@ function resultTagType(status?: unknown) {
             </template>
 
             <template #searchActions="{ row }">
-              <el-button link type="primary" @click="selectComic(row)">
+              <el-button
+                link
+                type="primary"
+                :disabled="
+                  !!selectingComicId && selectingComicId !== resolveComicId(row)
+                "
+                :loading="selectingComicId === resolveComicId(row)"
+                @click="selectComic(row)"
+              >
                 选择导入
               </el-button>
             </template>
@@ -1674,103 +1729,106 @@ function resultTagType(status?: unknown) {
 
           <el-form
             v-if="activeMapping"
-            class="col-span-7 grid grid-cols-2 gap-x-4 rounded border border-border bg-card p-4"
+            class="chapter-mapping-form col-span-7 rounded border border-border bg-card p-4"
             label-width="110px"
           >
-            <el-form-item class="col-span-2" label="章节标题">
-              <el-input v-model="activeMapping.title" />
-            </el-form-item>
-            <el-form-item label="章节序号">
-              <el-input-number
-                v-model="activeMapping.sortOrder"
-                :min="0"
-                class="!w-full"
-              />
-            </el-form-item>
-            <el-form-item label="导入动作">
-              <el-select v-model="activeMapping.action" class="w-full">
-                <el-option
-                  v-for="item in chapterActionOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+            <div class="grid grid-cols-2 gap-x-6 gap-y-1">
+              <el-form-item class="col-span-2" label="章节标题">
+                <el-input v-model="activeMapping.title" />
+              </el-form-item>
+              <el-form-item label="章节序号">
+                <el-input-number
+                  v-model="activeMapping.sortOrder"
+                  :min="0"
+                  class="!w-full"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="activeMapping.action === 'update'"
-              label="目标章节ID"
-            >
-              <el-input-number
-                v-model="activeMapping.targetChapterId"
-                :min="1"
-                class="!w-full"
-              />
-            </el-form-item>
-            <el-form-item label="查看规则">
-              <el-select v-model="activeMapping.viewRule" class="w-full">
-                <el-option
-                  v-for="item in chapterViewRuleOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+              </el-form-item>
+              <el-form-item label="导入动作">
+                <el-select v-model="activeMapping.action" class="w-full">
+                  <el-option
+                    v-for="item in chapterActionOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="activeMapping.action === 'update'"
+                label="目标章节ID"
+              >
+                <el-input-number
+                  v-model="activeMapping.targetChapterId"
+                  :min="1"
+                  class="!w-full"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="章节价格">
-              <el-input-number
-                v-model="activeMapping.price"
-                :min="0"
-                :precision="2"
-                class="!w-full"
-              />
-            </el-form-item>
-            <el-form-item label="导入图片">
-              <el-switch v-model="activeMapping.importImages" />
-            </el-form-item>
-            <el-form-item
-              v-if="
-                activeMapping.action === 'update' && activeMapping.importImages
-              "
-              label="覆盖内容"
-            >
-              <el-switch v-model="activeMapping.overwriteContent" />
-            </el-form-item>
-            <el-form-item label="发布">
-              <el-switch v-model="activeMapping.isPublished" />
-            </el-form-item>
-            <el-form-item label="试读">
-              <el-switch v-model="activeMapping.isPreview" />
-            </el-form-item>
-            <el-form-item label="允许评论">
-              <el-switch v-model="activeMapping.canComment" />
-            </el-form-item>
-            <el-form-item label="允许下载">
-              <el-switch v-model="activeMapping.canDownload" />
-            </el-form-item>
-            <el-form-item label="章节封面">
-              <el-select v-model="activeMapping.coverMode" class="w-full">
-                <el-option
-                  v-for="item in chapterCoverOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+              </el-form-item>
+              <el-form-item label="查看规则">
+                <el-select v-model="activeMapping.viewRule" class="w-full">
+                  <el-option
+                    v-for="item in chapterViewRuleOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="章节价格">
+                <el-input-number
+                  v-model="activeMapping.price"
+                  :min="0"
+                  :precision="2"
+                  class="!w-full"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              v-if="activeMapping.coverMode === 'local'"
-              class="col-span-2"
-              label="本地封面"
-            >
-              <EsUpload
-                v-model="activeMapping.localCoverPath"
-                :max-count="1"
-                :multiple="false"
-                :scene="chapterCoverScene"
-                accept="image/*"
-              />
-            </el-form-item>
+              </el-form-item>
+              <el-form-item label="导入图片">
+                <el-switch v-model="activeMapping.importImages" />
+              </el-form-item>
+              <el-form-item
+                v-if="
+                  activeMapping.action === 'update' &&
+                  activeMapping.importImages
+                "
+                label="覆盖内容"
+              >
+                <el-switch v-model="activeMapping.overwriteContent" />
+              </el-form-item>
+              <el-form-item label="发布">
+                <el-switch v-model="activeMapping.isPublished" />
+              </el-form-item>
+              <el-form-item label="试读">
+                <el-switch v-model="activeMapping.isPreview" />
+              </el-form-item>
+              <el-form-item label="允许评论">
+                <el-switch v-model="activeMapping.canComment" />
+              </el-form-item>
+              <el-form-item label="允许下载">
+                <el-switch v-model="activeMapping.canDownload" />
+              </el-form-item>
+              <el-form-item label="章节封面">
+                <el-select v-model="activeMapping.coverMode" class="w-full">
+                  <el-option
+                    v-for="item in chapterCoverOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                v-if="activeMapping.coverMode === 'local'"
+                class="col-span-2"
+                label="本地封面"
+              >
+                <EsUpload
+                  v-model="activeMapping.localCoverPath"
+                  :max-count="1"
+                  :multiple="false"
+                  :scene="chapterCoverScene"
+                  accept="image/*"
+                />
+              </el-form-item>
+            </div>
           </el-form>
         </div>
 
@@ -1911,11 +1969,17 @@ function resultTagType(status?: unknown) {
       <div
         class="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-card p-4"
       >
-        <el-button @click="modalApi.close()">关闭</el-button>
-        <el-button :disabled="step === 0" @click="goPrev">上一步</el-button>
+        <el-button :disabled="wizardBusy" @click="modalApi.close()">
+          关闭
+        </el-button>
+        <el-button :disabled="step === 0 || wizardBusy" @click="goPrev">
+          上一步
+        </el-button>
         <el-button
           v-if="step < wizardSteps.length - 1"
           type="primary"
+          :disabled="wizardBusy && !nextStepLoading"
+          :loading="nextStepLoading"
           @click="goNext"
         >
           下一步
@@ -1946,5 +2010,19 @@ function resultTagType(status?: unknown) {
 <style>
 .third-party-import-modal .el-step.is-simple .el-step__title {
   font-size: 13px;
+}
+
+.third-party-import-modal .chapter-mapping-form .el-form-item {
+  margin-bottom: 14px;
+}
+
+.third-party-import-modal .chapter-mapping-form .el-form-item__content {
+  min-width: 0;
+}
+
+.third-party-import-modal .chapter-mapping-form .el-select,
+.third-party-import-modal .chapter-mapping-form .el-input,
+.third-party-import-modal .chapter-mapping-form .el-input-number {
+  width: 100%;
 }
 </style>
