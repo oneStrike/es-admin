@@ -4,11 +4,23 @@ import type { EsFormSchema } from '#/types';
 import { formSchemaTransform } from '#/utils';
 
 import { backgroundTaskStatusOptions } from './status';
+import { formatBackgroundTaskType } from './task-type';
 
+export {
+  canCancelBackgroundTask,
+  canRetryBackgroundTask,
+  formatDiagnosticJson,
+  getDiagnosticMessage,
+  resolveBackgroundTaskProgress,
+} from './progress';
 export {
   backgroundTaskStatusOptions,
   formatBackgroundTaskStatus,
 } from './status';
+export {
+  backgroundTaskTypeOptions,
+  formatBackgroundTaskType,
+} from './task-type';
 
 const backgroundTaskListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'taskId', label: '任务ID' },
@@ -21,6 +33,7 @@ const backgroundTaskListSchema: EsFormSchema = [
     fieldName: 'status',
     label: '任务状态',
   },
+  { component: 'Input', fieldName: 'progress', label: '进度' },
   { component: 'InputNumber', fieldName: 'retryCount', label: '重试次数' },
   { component: 'InputNumber', fieldName: 'maxRetries', label: '最大重试' },
   { component: 'Input', fieldName: 'claimedBy', label: '处理 Worker' },
@@ -34,13 +47,21 @@ export const backgroundTaskColumns =
     {
       seq: { width: 70 },
       taskId: { minWidth: 240, showOverflow: 'tooltip' },
-      taskType: { minWidth: 180, showOverflow: 'tooltip' },
+      taskType: {
+        formatter: ({ cellValue }) => formatBackgroundTaskType(cellValue),
+        minWidth: 180,
+        showOverflow: 'tooltip',
+      },
       status: {
         cellRender: {
           name: 'CellTag',
           props: { mapOptions: backgroundTaskStatusOptions },
         },
         width: 120,
+      },
+      progress: {
+        slots: { default: 'progress' },
+        width: 250,
       },
       retryCount: { width: 100 },
       maxRetries: { width: 100 },
@@ -109,8 +130,3 @@ export const backgroundTaskSearchSchema = formSchemaTransform.toSearchSchema(
     },
   },
 );
-
-export function formatTaskJson(value: unknown) {
-  if (value === null || value === undefined) return '-';
-  return JSON.stringify(value, null, 2);
-}

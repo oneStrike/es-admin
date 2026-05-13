@@ -370,13 +370,13 @@ async function handleRowCommand(command: string, row: AdminAppUserPageItemDto) {
 
   switch (command) {
     case 'delete': {
-      const confirmed = await useConfirm('delete', async () => {
-        await appUsersDeleteApi({ id: row.id });
+      await useConfirm({
+        type: 'delete',
+        onConfirm: async () => {
+          await appUsersDeleteApi({ id: row.id });
+          await gridApi.reload();
+        },
       });
-
-      if (confirmed) {
-        await gridApi.reload();
-      }
       break;
     }
     case 'edit': {
@@ -388,13 +388,13 @@ async function handleRowCommand(command: string, row: AdminAppUserPageItemDto) {
       break;
     }
     case 'restore': {
-      const confirmed = await useConfirm('restore', async () => {
-        await appUsersRestoreApi({ id: row.id });
+      await useConfirm({
+        type: 'restore',
+        onConfirm: async () => {
+          await appUsersRestoreApi({ id: row.id });
+          await gridApi.reload();
+        },
       });
-
-      if (confirmed) {
-        await gridApi.reload();
-      }
       break;
     }
     case 'status': {

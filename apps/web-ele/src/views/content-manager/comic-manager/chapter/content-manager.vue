@@ -97,13 +97,16 @@ async function handleDelete(index?: number) {
   const data = shareData.value;
   if (!data) return;
 
-  useConfirm('delete', async () => {
-    await contentComicChapterContentDeleteApi({
-      chapterId: data.chapterId,
-      index: deleteIndex,
-    });
-    selectedIndices.value = [];
-    await loadContents();
+  await useConfirm({
+    type: 'delete',
+    onConfirm: async () => {
+      await contentComicChapterContentDeleteApi({
+        chapterId: data.chapterId,
+        index: deleteIndex,
+      });
+      selectedIndices.value = [];
+      await loadContents();
+    },
   });
 }
 
@@ -111,12 +114,14 @@ async function handleClearAll() {
   const data = shareData.value;
   if (!data) return;
 
-  useConfirm('clear', async () => {
-    await contentComicChapterContentClearApi({
-      id: data.chapterId,
-    });
-    useMessage.success('清空成功');
-    await loadContents();
+  await useConfirm({
+    type: 'clear',
+    onConfirm: async () => {
+      await contentComicChapterContentClearApi({
+        id: data.chapterId,
+      });
+      await loadContents();
+    },
   });
 }
 

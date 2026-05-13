@@ -351,6 +351,7 @@ watch(loading, (isLoading) => {
 });
 
 const [Modal, modalApi] = useVbenModal({
+  contentClass: 'min-h-0 !overflow-hidden p-0',
   footer: false,
   onOpenChange: async (isOpen) => {
     if (!isOpen) return;
@@ -1255,19 +1256,25 @@ function openSubmittedTask() {
 </script>
 
 <template>
-  <Modal class="third-party-import-modal h-[78vh] w-[1280px]">
-    <div class="flex h-full flex-col">
+  <Modal
+    class="third-party-import-modal !h-[86vh] !max-h-[86vh] w-[1280px] max-w-[calc(100vw-32px)]"
+  >
+    <div class="flex h-full min-h-0 flex-col">
       <div class="shrink-0 border-b border-border bg-card p-4">
         <el-steps :active="step" finish-status="success" simple>
           <el-step v-for="item in wizardSteps" :key="item" :title="item" />
         </el-steps>
       </div>
 
-      <div class="flex-1 overflow-auto p-4" v-loading="previewLoading">
-        <div v-show="step === 0" class="space-y-4" v-loading="loading">
+      <div class="min-h-0 flex-1 overflow-auto p-4" v-loading="previewLoading">
+        <div
+          v-show="step === 0"
+          class="flex h-full min-h-0 flex-col gap-4"
+          v-loading="loading"
+        >
           <Form />
 
-          <SearchGrid>
+          <SearchGrid class="min-h-0 flex-1">
             <template #searchCover="{ row }">
               <div class="flex justify-center">
                 <el-image

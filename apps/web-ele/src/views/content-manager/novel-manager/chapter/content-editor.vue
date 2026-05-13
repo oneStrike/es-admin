@@ -54,11 +54,14 @@ async function handleClear() {
   const data = shareData.value;
   if (!data?.chapterId) return;
 
-  await useConfirm('clear', async () => {
-    await contentNovelChapterContentDeleteApi({
-      id: data.chapterId,
-    });
-    content.value = '';
+  await useConfirm({
+    type: 'clear',
+    onConfirm: async () => {
+      await contentNovelChapterContentDeleteApi({
+        id: data.chapterId,
+      });
+      content.value = '';
+    },
   });
 }
 

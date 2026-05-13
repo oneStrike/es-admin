@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  ContentComicChapterBatchDeleteRequest,
   ContentComicChapterContentArchiveDetailResponse,
   ContentComicChapterCreateRequest,
   ContentComicChapterDetailResponse,
@@ -23,7 +22,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
@@ -307,14 +306,18 @@ async function batchDeleteChapters() {
     useMessage.warning('请先选择要删除的章节');
     return;
   }
-
-  await contentComicChapterBatchDeleteApi({
-    ids,
-  } satisfies ContentComicChapterBatchDeleteRequest);
-  useMessage.success(`已删除 ${ids.length} 个章节`);
-  selectedChapterRows.value = [];
-  gridApi.grid?.clearCheckboxRow?.();
-  await gridApi.reload();
+  await useConfirm({
+    type: 'delete',
+    content: `确认删除选中的 ${ids.length} 个章节？此操作不可恢复`,
+    onConfirm: async () => {
+      await contentComicChapterBatchDeleteApi({
+        ids,
+      });
+      selectedChapterRows.value = [];
+      gridApi.grid?.clearCheckboxRow?.();
+      await gridApi.reload();
+    },
+  });
 }
 
 /**
@@ -346,22 +349,13 @@ async function toggleStatus(
         <el-button type="primary" @click="openFormModal()">
           添加章节
         </el-button>
-        <el-popconfirm
-          :title="`确认删除选中的 ${selectedChapterIds.length} 个章节？此操作不可恢复`"
-          cancel-button-text="取消"
-          confirm-button-text="确认"
-          type="warning"
-          @confirm="batchDeleteChapters"
+        <el-button
+          :disabled="selectedChapterIds.length === 0"
+          type="danger"
+          @click="batchDeleteChapters"
         >
-          <template #reference>
-            <el-button
-              :disabled="selectedChapterIds.length === 0"
-              type="danger"
-            >
-              批量删除
-            </el-button>
-          </template>
-        </el-popconfirm>
+          批量删除
+        </el-button>
         <ArchiveImportPanel
           v-if="shareData"
           :work-id="shareData.workId"
