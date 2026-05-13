@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  ContentNovelChapterBatchDeleteRequest,
   ContentNovelChapterCreateRequest,
   ContentNovelChapterDetailResponse,
   ContentNovelChapterUpdateRequest,
@@ -10,6 +11,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  contentNovelChapterBatchDeleteApi,
   contentNovelChapterCreateApi,
   contentNovelChapterDeleteApi,
   contentNovelChapterDetailApi,
@@ -38,6 +40,10 @@ type ShareData = { workId: number; workName: string };
 const shareData = ref<ShareData>();
 const currentChapterRecord =
   ref<null | Partial<ContentNovelChapterDetailResponse>>(null);
+const selectedChapterRows = ref<ContentNovelChapterDetailResponse[]>([]);
+const selectedChapterIds = computed(() =>
+  selectedChapterRows.value.map((item) => item.id),
+);
 
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen) {
@@ -71,6 +77,9 @@ const [ContentModal, contentApi] = useVbenModal({
 });
 
 const gridOptions: VxeGridProps<ContentNovelChapterDetailResponse> = {
+  checkboxConfig: {
+    highlight: true,
+  },
   columns: chapterColumns,
   proxyConfig: {
     ajax: {
@@ -114,6 +123,10 @@ const gridOptions: VxeGridProps<ContentNovelChapterDetailResponse> = {
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   formOptions: createSearchFormOptions(chapterSearchFormSchema),
+  gridEvents: {
+    checkboxAll: handleChapterSelectionChange,
+    checkboxChange: handleChapterSelectionChange,
+  },
 });
 
 growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
@@ -126,6 +139,12 @@ growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
     requiredViewLevelId: options,
   });
 });
+
+function handleChapterSelectionChange(params: {
+  records: ContentNovelChapterDetailResponse[];
+}) {
+  selectedChapterRows.value = params.records;
+}
 
 function openDetailModal(record: ContentNovelChapterDetailResponse) {
   detailApi
@@ -216,6 +235,24 @@ function buildNovelChapterPayload(
 async function deleteChapter(record: ContentNovelChapterDetailResponse) {
   await contentNovelChapterDeleteApi({ id: record.id });
   useMessage.success('章节删除成功');
+  selectedChapterRows.value = [];
+  gridApi.grid?.clearCheckboxRow?.();
+  await gridApi.reload();
+}
+
+async function batchDeleteChapters() {
+  const ids = selectedChapterIds.value;
+  if (ids.length === 0) {
+    useMessage.warning('请先选择要删除的章节');
+    return;
+  }
+
+  await contentNovelChapterBatchDeleteApi({
+    ids,
+  } satisfies ContentNovelChapterBatchDeleteRequest);
+  useMessage.success(`已删除 ${ids.length} 个章节`);
+  selectedChapterRows.value = [];
+  gridApi.grid?.clearCheckboxRow?.();
   await gridApi.reload();
 }
 
@@ -243,6 +280,22 @@ async function toggleStatus(
         <el-button type="primary" @click="openFormModal()">
           添加章节
         </el-button>
+        <el-popconfirm
+          :title="`确认删除选中的 ${selectedChapterIds.length} 个章节？此操作不可恢复`"
+          cancel-button-text="取消"
+          confirm-button-text="确认"
+          type="warning"
+          @confirm="batchDeleteChapters"
+        >
+          <template #reference>
+            <el-button
+              :disabled="selectedChapterIds.length === 0"
+              type="danger"
+            >
+              批量删除
+            </el-button>
+          </template>
+        </el-popconfirm>
       </template>
 
       <template #title="{ row }">

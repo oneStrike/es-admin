@@ -8,6 +8,7 @@ export * from './appUpdate.d';
 export * from './appUsers.d';
 export * from './audit.d';
 export * from './auth.d';
+export * from './backgroundTask.d';
 export * from './checkIn.d';
 export * from './comment.d';
 export * from './content.d';

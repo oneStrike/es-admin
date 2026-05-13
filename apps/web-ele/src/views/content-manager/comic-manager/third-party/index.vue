@@ -18,6 +18,8 @@ import type {
 } from '#/api/types/content';
 import type { EsFormSchema } from '#/types';
 
+import { useRouter } from 'vue-router';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
@@ -41,7 +43,8 @@ import EsUpload from '#/components/es-upload/es-upload.vue';
 import { UploadSceneEnum } from '#/enum/api';
 import { useDict } from '#/hooks/useDict';
 import { useMessage } from '#/hooks/useFeedback';
-import { createSearchFormOptions } from '#/utils';
+import { createSearchFormOptions, formatUTC } from '#/utils';
+import { formatBackgroundTaskStatus } from '#/views/system-manager/background-task/model/status';
 
 import { formSchema as authorFormSchema } from '../../author-manager/model/shared';
 import { formSchema as categoryFormSchema } from '../../category-manager/model/shared';
@@ -130,8 +133,6 @@ interface ChapterMappingForm {
 type SearchComicRow = SearchComicItemDto;
 type ChapterPreviewRow =
   ContentComicThirdPartyImportPreviewResponse['chapters'][number];
-type ImportResultChapterRow =
-  ContentComicThirdPartyImportConfirmResponse['chapters'][number];
 
 const wizardSteps = ['检索', '预览', '作品', '关系', '章节', '正文', '导入'];
 
@@ -275,9 +276,10 @@ const tagOptions = ref<LocalOption[]>([]);
 const chapterMappings = ref<ChapterMappingForm[]>([]);
 const activeProviderChapterId = ref('');
 const contentPreview = ref<null | ThirdPartyComicChapterContentDto>(null);
-const importResult = ref<ContentComicThirdPartyImportConfirmResponse | null>(
+const submittedTask = ref<ContentComicThirdPartyImportConfirmResponse | null>(
   null,
 );
+const router = useRouter();
 
 const wizardBusy = computed(
   () =>
@@ -459,35 +461,6 @@ const chapterPreviewGridOptions: VxeGridProps<ChapterPreviewRow> = {
   },
 };
 
-const importResultGridOptions: VxeGridProps<ImportResultChapterRow> = {
-  columns: [
-    { field: 'providerChapterId', minWidth: 180, title: '三方章节ID' },
-    { field: 'localChapterId', minWidth: 120, title: '本地章节ID' },
-    { field: 'action', title: '动作', width: 100 },
-    {
-      field: 'status',
-      slots: { default: 'resultStatus' },
-      title: '状态',
-      width: 150,
-    },
-    {
-      slots: { default: 'imageSummary' },
-      title: '图片',
-      width: 120,
-    },
-    { field: 'message', minWidth: 220, title: '说明' },
-  ],
-  data: [],
-  height: 320,
-  pagerConfig: { enabled: false },
-  toolbarConfig: {
-    custom: false,
-    export: false,
-    refresh: false,
-    zoom: false,
-  },
-};
-
 const [SearchGrid, searchGridApi] = useVbenVxeGrid<SearchComicRow>({
   gridOptions: searchGridOptions,
   showSearchForm: false,
@@ -495,11 +468,6 @@ const [SearchGrid, searchGridApi] = useVbenVxeGrid<SearchComicRow>({
 const [ChapterPreviewGrid, chapterPreviewGridApi] =
   useVbenVxeGrid<ChapterPreviewRow>({
     gridOptions: chapterPreviewGridOptions,
-    showSearchForm: false,
-  });
-const [ImportResultGrid, importResultGridApi] =
-  useVbenVxeGrid<ImportResultChapterRow>({
-    gridOptions: importResultGridOptions,
     showSearchForm: false,
   });
 
@@ -584,14 +552,13 @@ function resetWizard() {
   chapterMappings.value = [];
   activeProviderChapterId.value = '';
   contentPreview.value = null;
-  importResult.value = null;
+  submittedTask.value = null;
   formApi.setValues({
     keyword: '',
     platform: '',
   });
   searchGridApi.setGridOptions({ data: [] });
   chapterPreviewGridApi.setGridOptions({ data: [] });
-  importResultGridApi.setGridOptions({ data: [] });
 }
 
 function resolveComicPlatform(item: SearchComicItemDto) {
@@ -667,8 +634,7 @@ async function loadImportPreview(group = selectedGroup.value) {
 
   previewLoading.value = true;
   contentPreview.value = null;
-  importResult.value = null;
-  importResultGridApi.setGridOptions({ data: [] });
+  submittedTask.value = null;
   try {
     const res = await contentComicThirdPartyImportPreviewApi({
       comicId: String(comicId),
@@ -1167,22 +1133,14 @@ async function handleImport() {
   if (!request) return;
 
   importLoading.value = true;
-  importResult.value = null;
+  submittedTask.value = null;
   try {
-    importResult.value = await contentComicThirdPartyImportConfirmApi(request);
-    importResultGridApi.setGridOptions({
-      data: importResult.value.chapters,
-    });
-    const status = importResult.value.status;
-    if (status === 'success') {
-      useMessage.success('导入完成');
-    } else if (status === 'partial_failed') {
-      useMessage.warning('导入部分失败，请查看结果明细');
-    } else {
-      useMessage.warning('导入未完成，请查看结果明细');
-    }
+    submittedTask.value = await contentComicThirdPartyImportConfirmApi(request);
+    useMessage.success(
+      `导入任务已提交：${submittedTask.value.taskId.slice(0, 8)}`,
+    );
   } catch {
-    importResult.value = null;
+    submittedTask.value = null;
   } finally {
     importLoading.value = false;
   }
@@ -1286,18 +1244,13 @@ function toChapterImportItem(
   return chapterItem;
 }
 
-function resultTagType(status?: unknown) {
-  const value = String(status ?? '');
-  if (value === 'success' || value === 'created' || value === 'uploaded') {
-    return 'success';
-  }
-  if (value === 'partial_failed' || value === 'skipped') {
-    return 'warning';
-  }
-  if (value === 'failed') {
-    return 'danger';
-  }
-  return 'info';
+function openSubmittedTask() {
+  if (!submittedTask.value) return;
+
+  void router.push({
+    name: 'BackgroundTaskManager',
+    query: { taskId: submittedTask.value.taskId },
+  });
 }
 </script>
 
@@ -1950,43 +1903,50 @@ function resultTagType(status?: unknown) {
             </div>
           </div>
 
-          <el-empty v-if="!importResult" description="尚未执行导入" />
+          <el-empty v-if="!submittedTask" description="尚未提交导入任务" />
           <div v-else class="space-y-4">
             <div class="rounded border border-border bg-card p-4">
-              <div class="mb-3 flex items-center gap-3">
-                <span class="font-semibold">导入结果</span>
-                <el-tag :type="resultTagType(importResult.status)">
-                  {{ importResult.status }}
-                </el-tag>
+              <div class="mb-3 flex items-center justify-between gap-3">
+                <span class="font-semibold">后台任务</span>
+                <el-button type="primary" @click="openSubmittedTask">
+                  查看后台任务
+                </el-button>
               </div>
-              <el-descriptions :column="3" border size="small">
-                <el-descriptions-item label="作品ID">
-                  {{ importResult.work?.id || '-' }}
+              <el-alert
+                :closable="false"
+                class="mb-4"
+                show-icon
+                title="导入任务已提交后台处理，可前往后台任务查看进度、错误、结果和重试状态。"
+                type="success"
+              />
+              <el-descriptions :column="2" border size="small">
+                <el-descriptions-item label="任务ID">
+                  {{ submittedTask.taskId }}
                 </el-descriptions-item>
-                <el-descriptions-item label="作品状态">
-                  {{ importResult.work?.status || '-' }}
+                <el-descriptions-item label="任务类型">
+                  {{ submittedTask.taskType }}
                 </el-descriptions-item>
-                <el-descriptions-item label="封面">
-                  {{
-                    importResult.cover?.filePath ||
-                    importResult.cover?.status ||
-                    '-'
-                  }}
+                <el-descriptions-item label="任务状态">
+                  <el-tag
+                    :type="
+                      formatBackgroundTaskStatus(submittedTask.status).type
+                    "
+                  >
+                    {{ formatBackgroundTaskStatus(submittedTask.status).label }}
+                  </el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="重试次数">
+                  {{ submittedTask.retryCount }} /
+                  {{ submittedTask.maxRetries }}
+                </el-descriptions-item>
+                <el-descriptions-item label="创建时间">
+                  {{ formatUTC(submittedTask.createdAt) || '-' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="更新时间">
+                  {{ formatUTC(submittedTask.updatedAt) || '-' }}
                 </el-descriptions-item>
               </el-descriptions>
             </div>
-
-            <ImportResultGrid>
-              <template #resultStatus="{ row }">
-                <el-tag :type="resultTagType(row.status)">
-                  {{ row.status }}
-                </el-tag>
-              </template>
-
-              <template #imageSummary="{ row }">
-                {{ row.imageSucceeded || 0 }} / {{ row.imageTotal || 0 }}
-              </template>
-            </ImportResultGrid>
           </div>
         </div>
       </div>

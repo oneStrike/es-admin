@@ -33,6 +33,8 @@ import type {
   ContentCategoryUpdateResponse,
   ContentCategoryUpdateStatusRequest,
   ContentCategoryUpdateStatusResponse,
+  ContentComicChapterBatchDeleteRequest,
+  ContentComicChapterBatchDeleteResponse,
   ContentComicChapterContentArchiveConfirmRequest,
   ContentComicChapterContentArchiveConfirmResponse,
   ContentComicChapterContentArchiveDetailRequest,
@@ -124,6 +126,8 @@ import type {
   ContentEmojiPackUpdateResponse,
   ContentEmojiPackUpdateSceneTypeRequest,
   ContentEmojiPackUpdateSceneTypeResponse,
+  ContentNovelChapterBatchDeleteRequest,
+  ContentNovelChapterBatchDeleteResponse,
   ContentNovelChapterContentDeleteRequest,
   ContentNovelChapterContentDeleteResponse,
   ContentNovelChapterContentDetailRequest,
@@ -347,6 +351,18 @@ export async function contentComicChapterDeleteApi(
 }
 
 /**
+ * 批量删除漫画章节
+ */
+export async function contentComicChapterBatchDeleteApi(
+  params: ContentComicChapterBatchDeleteRequest,
+): Promise<ContentComicChapterBatchDeleteResponse> {
+  return requestClient.post<ContentComicChapterBatchDeleteResponse>(
+    '/api/admin/content/comic/chapter/batch-delete',
+    params,
+  );
+}
+
+/**
  * 交换章节序号
  */
 export async function contentComicChapterSwapSortOrderApi(
@@ -536,7 +552,7 @@ export async function contentComicThirdPartyImportPreviewApi(
 }
 
 /**
- * 确认第三方漫画导入
+ * 确认第三方漫画导入并创建后台任务（破坏性移除同步结果）
  */
 export async function contentComicThirdPartyImportConfirmApi(
   params: ContentComicThirdPartyImportConfirmRequest,
@@ -711,6 +727,18 @@ export async function contentNovelChapterDeleteApi(
 ): Promise<ContentNovelChapterDeleteResponse> {
   return requestClient.post<ContentNovelChapterDeleteResponse>(
     '/api/admin/content/novel/chapter/delete',
+    params,
+  );
+}
+
+/**
+ * 批量删除小说章节
+ */
+export async function contentNovelChapterBatchDeleteApi(
+  params: ContentNovelChapterBatchDeleteRequest,
+): Promise<ContentNovelChapterBatchDeleteResponse> {
+  return requestClient.post<ContentNovelChapterBatchDeleteResponse>(
+    '/api/admin/content/novel/chapter/batch-delete',
     params,
   );
 }

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  ContentComicChapterBatchDeleteRequest,
   ContentComicChapterContentArchiveDetailResponse,
   ContentComicChapterCreateRequest,
   ContentComicChapterDetailResponse,
@@ -11,6 +12,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  contentComicChapterBatchDeleteApi,
   contentComicChapterCreateApi,
   contentComicChapterDeleteApi,
   contentComicChapterDetailApi,
@@ -44,6 +46,10 @@ type ShareData = { workId: number; workName: string };
 const shareData = ref<ShareData>();
 const currentChapterRecord =
   ref<null | Partial<ContentComicChapterDetailResponse>>(null);
+const selectedChapterRows = ref<ContentComicChapterDetailResponse[]>([]);
+const selectedChapterIds = computed(() =>
+  selectedChapterRows.value.map((item) => item.id),
+);
 
 // ========== 弹窗定义 ==========
 
@@ -94,6 +100,9 @@ const [ContentModal, contentApi] = useVbenModal({
  * 表格配置选项
  */
 const gridOptions: VxeGridProps<ContentComicChapterDetailResponse> = {
+  checkboxConfig: {
+    highlight: true,
+  },
   columns: chapterColumns,
   proxyConfig: {
     ajax: {
@@ -140,6 +149,10 @@ const gridOptions: VxeGridProps<ContentComicChapterDetailResponse> = {
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
   formOptions: createSearchFormOptions(chapterSearchFormSchema),
+  gridEvents: {
+    checkboxAll: handleChapterSelectionChange,
+    checkboxChange: handleChapterSelectionChange,
+  },
 });
 
 // ========== 数据加载 ==========
@@ -160,6 +173,12 @@ growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
 });
 
 // ========== 事件处理 ==========
+
+function handleChapterSelectionChange(params: {
+  records: ContentComicChapterDetailResponse[];
+}) {
+  selectedChapterRows.value = params.records;
+}
 
 /**
  * 打开章节详情弹窗
@@ -277,7 +296,25 @@ function buildComicChapterPayload(
 async function deleteChapter(record: ContentComicChapterDetailResponse) {
   await contentComicChapterDeleteApi({ id: record.id });
   useMessage.success('章节删除成功');
-  gridApi.reload();
+  selectedChapterRows.value = [];
+  gridApi.grid?.clearCheckboxRow?.();
+  await gridApi.reload();
+}
+
+async function batchDeleteChapters() {
+  const ids = selectedChapterIds.value;
+  if (ids.length === 0) {
+    useMessage.warning('请先选择要删除的章节');
+    return;
+  }
+
+  await contentComicChapterBatchDeleteApi({
+    ids,
+  } satisfies ContentComicChapterBatchDeleteRequest);
+  useMessage.success(`已删除 ${ids.length} 个章节`);
+  selectedChapterRows.value = [];
+  gridApi.grid?.clearCheckboxRow?.();
+  await gridApi.reload();
 }
 
 /**
@@ -309,6 +346,22 @@ async function toggleStatus(
         <el-button type="primary" @click="openFormModal()">
           添加章节
         </el-button>
+        <el-popconfirm
+          :title="`确认删除选中的 ${selectedChapterIds.length} 个章节？此操作不可恢复`"
+          cancel-button-text="取消"
+          confirm-button-text="确认"
+          type="warning"
+          @confirm="batchDeleteChapters"
+        >
+          <template #reference>
+            <el-button
+              :disabled="selectedChapterIds.length === 0"
+              type="danger"
+            >
+              批量删除
+            </el-button>
+          </template>
+        </el-popconfirm>
         <ArchiveImportPanel
           v-if="shareData"
           :work-id="shareData.workId"

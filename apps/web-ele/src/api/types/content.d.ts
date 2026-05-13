@@ -269,6 +269,15 @@ export type ContentComicChapterDeleteRequest = IdDto;
 export type ContentComicChapterDeleteResponse = boolean;
 
 /**
+ *  类型定义 [ContentComicChapterBatchDeleteRequest]
+ *  @来源 内容管理/漫画管理/章节管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentComicChapterBatchDeleteRequest = IdsDto;
+
+export type ContentComicChapterBatchDeleteResponse = boolean;
+
+/**
  *  类型定义 [ContentComicChapterSwapSortOrderRequest]
  *  @来源 内容管理/漫画管理/章节管理
  *  @更新时间 2026-05-09 22:20:06
@@ -531,8 +540,7 @@ export type ContentComicThirdPartyImportPreviewResponse =
 export type ContentComicThirdPartyImportConfirmRequest =
   ThirdPartyComicImportRequestDto;
 
-export type ContentComicThirdPartyImportConfirmResponse =
-  ThirdPartyComicImportResultDto;
+export type ContentComicThirdPartyImportConfirmResponse = BackgroundTaskDto;
 
 /**
  *  类型定义 [ContentNovelCreateRequest]
@@ -803,6 +811,15 @@ export type ContentNovelChapterUpdateResponse = boolean;
 export type ContentNovelChapterDeleteRequest = IdDto;
 
 export type ContentNovelChapterDeleteResponse = boolean;
+
+/**
+ *  类型定义 [ContentNovelChapterBatchDeleteRequest]
+ *  @来源 内容管理/小说管理/章节管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentNovelChapterBatchDeleteRequest = IdsDto;
+
+export type ContentNovelChapterBatchDeleteResponse = boolean;
 
 /**
  *  类型定义 [ContentNovelChapterSwapSortOrderRequest]
@@ -1954,6 +1971,19 @@ export type UpdateWorkChapterDto = {
 };
 
 /**
+ *  类型定义 [IdsDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type IdsDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 主键id集合 */
+  ids: number[];
+};
+
+/**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -2670,97 +2700,54 @@ export type ThirdPartyComicImportChapterItemDto = {
 };
 
 /**
- *  类型定义 [ThirdPartyComicImportResultDto]
+ *  类型定义 [BackgroundTaskDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type ThirdPartyComicImportResultDto = {
+export type BackgroundTaskDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 章节处理结果 */
-  chapters: ThirdPartyComicImportChapterResultDto[];
-  /* 作品封面处理结果 */
-  cover?: ThirdPartyComicImportCoverResultDto;
-  /* 导入模式（createNew=新建本地作品；attachToExisting=挂载已有本地作品） */
-  mode: 'attachToExisting' | 'createNew';
-  /* 导入状态（success=全部成功；partial_failed=部分章节失败；failed=整体失败） */
-  status: 'failed' | 'partial_failed' | 'success';
+  /* 取消请求时间 */
+  cancelRequestedAt?: null | string;
+  /* 当前处理 worker */
+  claimedBy?: null | string;
+  /* claim 过期时间 */
+  claimExpiresAt?: null | string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 任务错误信息 */
+  error?: null | Record<string, any>;
+  /* 进入最终写入时间 */
+  finalizingAt?: null | string;
+  /* 完成时间 */
+  finishedAt?: null | string;
+  /* 主键id */
+  id: number;
+  /* 最大允许重试次数 */
+  maxRetries: number;
+  /* 任务负载 */
+  payload: Record<string, any>;
+  /* 任务进度 */
+  progress: Record<string, any>;
+  /* 任务残留诊断 */
+  residue?: null | Record<string, any>;
+  /* 任务成功结果 */
+  result?: null | Record<string, any>;
+  /* 已重试次数 */
+  retryCount: number;
+  /* 回滚失败诊断 */
+  rollbackError?: null | Record<string, any>;
+  /* 开始处理时间 */
+  startedAt?: null | string;
+  /* 任务状态（1=待处理；2=处理中；3=最终写入中；4=成功；5=失败；6=已取消；7=回滚失败） */
+  status: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  /* 后台任务ID */
+  taskId: string;
+  /* 后台任务类型 */
+  taskType: string;
 
-  /* 作品处理结果 */
-  work?: ThirdPartyComicImportWorkResultDto;
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportWorkResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportWorkResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 错误码 */
-  errorCode?: null | string;
-  /* 本地作品ID */
-  id?: null | number;
-  /* 结果说明 */
-  message?: null | string;
-
-  /* 作品处理状态（created=已新建作品；attached=已挂载已有作品；failed=作品处理失败） */
-  status: 'attached' | 'created' | 'failed';
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportCoverResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportCoverResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 错误码 */
-  errorCode?: null | string;
-  /* 本地文件路径 */
-  filePath?: null | string;
-  /* 结果说明 */
-  message?: null | string;
-
-  /* 封面处理状态（uploaded=已上传第三方封面；local=使用本地封面；skipped=跳过封面；failed=封面处理失败） */
-  status: 'failed' | 'local' | 'skipped' | 'uploaded';
-};
-
-/**
- *  类型定义 [ThirdPartyComicImportChapterResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ThirdPartyComicImportChapterResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 章节导入动作（create=新建章节；update=更新已有章节） */
-  action: 'create' | 'update';
-  /* 章节封面处理结果 */
-  cover?: ThirdPartyComicImportCoverResultDto;
-  /* 错误码 */
-  errorCode?: null | string;
-  /* 成功图片数 */
-  imageSucceeded?: null | number;
-  /* 图片总数 */
-  imageTotal?: null | number;
-  /* 本地章节ID */
-  localChapterId?: null | number;
-  /* 结果说明 */
-  message?: null | string;
-  /* 三方章节ID */
-  providerChapterId: string;
-
-  /* 章节处理状态（created=已新建元数据；updated=已更新元数据；content_imported=已导入图片；metadata_only=仅处理元数据；skipped=已跳过；failed=章节处理失败） */
-  status:
-    | 'content_imported'
-    | 'created'
-    | 'failed'
-    | 'metadata_only'
-    | 'skipped'
-    | 'updated';
+  /* 更新时间 */
+  updatedAt: string;
 };
 
 /**

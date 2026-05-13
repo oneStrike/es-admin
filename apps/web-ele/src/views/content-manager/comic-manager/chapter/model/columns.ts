@@ -1,3 +1,4 @@
+import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { ContentComicChapterDetailResponse } from '#/api/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -22,92 +23,104 @@ const hideFieldConfig = Object.fromEntries(
   hideField.map((field) => [field, { hide: true }]),
 );
 
-export const chapterColumns =
-  formSchemaTransform.toTableColumns<ContentComicChapterDetailResponse>(
-    chapterFormSchema,
-    {
-      ...hideFieldConfig,
-      seq: {
-        dragSort: true,
-        sort: 1,
-      },
-      cover: {
-        title: '封面',
-        width: 60,
-        sort: 1,
-        fixed: 'left',
-        cellRender: {
-          name: 'CellImage',
-          props: {
-            fit: 'cover',
-            height: 80,
-            width: 60,
+const selectionColumn: NonNullable<
+  VxeGridProps<ContentComicChapterDetailResponse>['columns']
+>[number] = {
+  align: 'center',
+  fixed: 'left',
+  type: 'checkbox',
+  width: 48,
+};
+
+export const chapterColumns: VxeGridProps<ContentComicChapterDetailResponse>['columns'] =
+  [
+    selectionColumn,
+    ...formSchemaTransform.toTableColumns<ContentComicChapterDetailResponse>(
+      chapterFormSchema,
+      {
+        ...hideFieldConfig,
+        seq: {
+          dragSort: true,
+          sort: 1,
+        },
+        cover: {
+          title: '封面',
+          width: 60,
+          sort: 1,
+          fixed: 'left',
+          cellRender: {
+            name: 'CellImage',
+            props: {
+              fit: 'cover',
+              height: 80,
+              width: 60,
+            },
           },
         },
-      },
-      title: {
-        width: 200,
-        sort: 2,
-        fixed: 'left',
-        showOverflow: 'tooltip',
-        slots: { default: 'title' },
-      },
-      sortOrder: {
-        width: 100,
-        sort: 4,
-        sortable: true,
-      },
-      viewRule: {
-        width: 120,
-        sort: 5,
-        cellRender: {
-          name: 'CellTag',
+        title: {
+          width: 200,
+          sort: 2,
+          fixed: 'left',
+          showOverflow: 'tooltip',
+          slots: { default: 'title' },
         },
-      },
-      isPreview: {
-        width: 100,
-        sort: 6,
-        cellRender: {
-          name: 'CellTag',
+        sortOrder: {
+          width: 100,
+          sort: 4,
+          sortable: true,
         },
-      },
-      canComment: {
-        width: 100,
-        sort: 7,
-        cellRender: {
-          name: 'CellTag',
+        viewRule: {
+          width: 120,
+          sort: 5,
+          cellRender: {
+            name: 'CellTag',
+          },
         },
-      },
-      canDownload: {
-        width: 100,
-        sort: 8,
-        cellRender: {
-          name: 'CellTag',
+        isPreview: {
+          width: 100,
+          sort: 6,
+          cellRender: {
+            name: 'CellTag',
+          },
         },
-      },
-      isPublished: {
-        width: 100,
-        sort: 10,
-        title: '发布状态',
-        slots: { default: 'isPublished' },
-      },
-      publishAt: {
-        cellRender: {
-          name: 'CellDate',
+        canComment: {
+          width: 100,
+          sort: 7,
+          cellRender: {
+            name: 'CellTag',
+          },
         },
-        width: 160,
-        sortable: true,
-      },
+        canDownload: {
+          width: 100,
+          sort: 8,
+          cellRender: {
+            name: 'CellTag',
+          },
+        },
+        isPublished: {
+          width: 100,
+          sort: 10,
+          title: '发布状态',
+          slots: { default: 'isPublished' },
+        },
+        publishAt: {
+          cellRender: {
+            name: 'CellDate',
+          },
+          width: 160,
+          sortable: true,
+        },
 
-      updatedAt: {
-        show: true,
+        updatedAt: {
+          show: true,
+        },
+        createdAt: {
+          show: true,
+        },
+        actions: {
+          show: true,
+          width: 180,
+        },
       },
-      createdAt: {
-        show: true,
-      },
-      actions: {
-        show: true,
-        width: 180,
-      },
-    },
-  );
+    ),
+  ];
