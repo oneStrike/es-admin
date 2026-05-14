@@ -39,8 +39,12 @@ import type {
   ContentComicChapterContentArchiveConfirmResponse,
   ContentComicChapterContentArchiveDetailRequest,
   ContentComicChapterContentArchiveDetailResponse,
+  ContentComicChapterContentArchiveDiscardRequest,
+  ContentComicChapterContentArchiveDiscardResponse,
   ContentComicChapterContentArchivePreviewRequest,
   ContentComicChapterContentArchivePreviewResponse,
+  ContentComicChapterContentArchiveSessionRequest,
+  ContentComicChapterContentArchiveSessionResponse,
   ContentComicChapterContentClearRequest,
   ContentComicChapterContentClearResponse,
   ContentComicChapterContentDeleteRequest,
@@ -471,6 +475,18 @@ export async function contentComicChapterContentArchiveConfirmApi(
 }
 
 /**
+ * 创建漫画压缩包预解析会话
+ */
+export async function contentComicChapterContentArchiveSessionApi(
+  params: ContentComicChapterContentArchiveSessionRequest,
+): Promise<ContentComicChapterContentArchiveSessionResponse> {
+  return requestClient.post<ContentComicChapterContentArchiveSessionResponse>(
+    '/api/admin/content/comic/chapter-content/archive/session',
+    params,
+  );
+}
+
+/**
  * 查询漫画压缩包导入任务详情
  */
 export async function contentComicChapterContentArchiveDetailApi(
@@ -479,6 +495,18 @@ export async function contentComicChapterContentArchiveDetailApi(
   return requestClient.get<ContentComicChapterContentArchiveDetailResponse>(
     '/api/admin/content/comic/chapter-content/archive/detail',
     { params },
+  );
+}
+
+/**
+ * 丢弃漫画压缩包预解析会话
+ */
+export async function contentComicChapterContentArchiveDiscardApi(
+  params: ContentComicChapterContentArchiveDiscardRequest,
+): Promise<ContentComicChapterContentArchiveDiscardResponse> {
+  return requestClient.post<ContentComicChapterContentArchiveDiscardResponse>(
+    '/api/admin/content/comic/chapter-content/archive/discard',
+    params,
   );
 }
 

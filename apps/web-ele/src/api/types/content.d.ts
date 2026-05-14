@@ -367,6 +367,9 @@ export type ContentComicChapterContentArchivePreviewRequest = {
   /* 单章节压缩包对应的章节ID */
   chapterId?: null | number;
 
+  /* 预解析会话任务ID */
+  taskId: string;
+
   /* 作品ID */
   workId: number;
 };
@@ -385,6 +388,17 @@ export type ContentComicChapterContentArchiveConfirmRequest =
 export type ContentComicChapterContentArchiveConfirmResponse = boolean;
 
 /**
+ *  类型定义 [ContentComicChapterContentArchiveSessionRequest]
+ *  @来源 内容管理/漫画管理/章节内容
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentComicChapterContentArchiveSessionRequest =
+  CreateComicArchiveSessionDto;
+
+export type ContentComicChapterContentArchiveSessionResponse =
+  ComicArchiveTaskIdDto;
+
+/**
  *  类型定义 [ContentComicChapterContentArchiveDetailRequest]
  *  @来源 内容管理/漫画管理/章节内容
  *  @更新时间 2026-05-09 22:20:06
@@ -399,6 +413,16 @@ export type ContentComicChapterContentArchiveDetailRequest = {
 
 export type ContentComicChapterContentArchiveDetailResponse =
   ComicArchiveTaskResponseDto;
+
+/**
+ *  类型定义 [ContentComicChapterContentArchiveDiscardRequest]
+ *  @来源 内容管理/漫画管理/章节内容
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentComicChapterContentArchiveDiscardRequest =
+  DiscardComicArchiveDto;
+
+export type ContentComicChapterContentArchiveDiscardResponse = boolean;
 
 export type ContentComicThirdPartyPlatformListResponse = PlatformResponseDto[];
 
@@ -2088,6 +2112,8 @@ export type MoveComicContentDto = {
 export type ComicArchiveTaskResponseDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 是否已确认并进入后台任务归属 */
+  backgroundOwned: boolean;
   /* 任务过期时间 */
   expiresAt: string;
   /* 完成处理时间 */
@@ -2211,6 +2237,47 @@ export type ConfirmComicArchiveDto = {
   [property: string]: any;
   /* 用户确认要导入的章节ID列表 */
   confirmedChapterIds: number[];
+
+  /* 导入任务ID */
+  taskId: string;
+};
+
+/**
+ *  类型定义 [CreateComicArchiveSessionDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type CreateComicArchiveSessionDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 单章节压缩包对应的章节ID */
+  chapterId?: null | number;
+
+  /* 作品ID */
+  workId: number;
+};
+
+/**
+ *  类型定义 [ComicArchiveTaskIdDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ComicArchiveTaskIdDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 导入任务ID */
+  taskId: string;
+};
+
+/**
+ *  类型定义 [DiscardComicArchiveDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type DiscardComicArchiveDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
 
   /* 导入任务ID */
   taskId: string;
