@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import type { HistoryState, LocationQueryRaw } from 'vue-router';
+
 import type { NotificationItem } from '@vben/layouts';
 
-import { computed, ref, watch } from 'vue';
+import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
@@ -18,62 +20,12 @@ import { preferences, usePreferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
+import { ElNotification } from 'element-plus';
+
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
-
-const notifications = ref<NotificationItem[]>([
-  {
-    id: 1,
-    avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
-    date: '3小时前',
-    isRead: true,
-    message: '描述信息描述信息描述信息',
-    title: '收到了 14 份新周报',
-  },
-  {
-    id: 2,
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '刚刚',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '朱偏右 回复了你',
-  },
-  {
-    id: 3,
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '2024-01-01',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '曲丽丽 评论了你',
-  },
-  {
-    id: 4,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '代办提醒',
-  },
-  {
-    id: 5,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '跳转Workspace示例',
-    link: '/workspace',
-  },
-  {
-    id: 6,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '跳转外部链接示例',
-    link: 'https://doc.vben.pro',
-  },
-]);
+import { useBackgroundTaskNotifications } from '#/views/system-manager/background-task/model/notifications';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -81,6 +33,23 @@ const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
 const { isDark } = usePreferences();
+const {
+  clear: handleNoticeClear,
+  markAllRead: handleMakeAll,
+  markRead,
+  notifications,
+  remove,
+  viewAll,
+} = useBackgroundTaskNotifications({
+  notifyTerminal: (item) => {
+    ElNotification({
+      duration: 5000,
+      message: item.message,
+      title: item.title,
+      type: item.title.includes('成功') ? 'success' : 'warning',
+    });
+  },
+});
 const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
 );
@@ -130,38 +99,21 @@ async function handleLogout() {
   await authStore.logout(false);
 }
 
-function handleNoticeClear() {
-  notifications.value = [];
-}
-
-function markRead(id: number | string) {
-  const item = notifications.value.find((item) => item.id === id);
-  if (item) {
-    item.isRead = true;
-  }
-}
-
-function remove(id: number | string) {
-  notifications.value = notifications.value.filter((item) => item.id !== id);
-}
-
-function handleMakeAll() {
-  notifications.value.forEach((item) => (item.isRead = true));
-}
-
-const viewAll = () => {};
-
 const handleClick = (item: NotificationItem) => {
   // 如果通知项有链接，点击时跳转
   if (item.link) {
-    navigateTo(item.link, item.query, item.state);
+    navigateTo(
+      item.link,
+      item.query as LocationQueryRaw | undefined,
+      item.state as HistoryState | undefined,
+    );
   }
 };
 
 function navigateTo(
   link: string,
-  query?: Record<string, any>,
-  state?: Record<string, any>,
+  query?: LocationQueryRaw,
+  state?: HistoryState,
 ) {
   if (link.startsWith('http://') || link.startsWith('https://')) {
     // 外部链接，在新标签页打开

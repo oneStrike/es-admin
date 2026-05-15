@@ -43,18 +43,19 @@ const formSchema = computed((): VbenFormSchema[] => {
         placeholder: '请输入验证码',
         maxlength: 4,
       },
+      wrapperClass: 'w-100',
       suffix: () =>
         h(
           'div',
           {
-            class: 'flex items-center gap-2',
+            class: 'flex items-center',
           },
           [
             // 验证码图片
             h('img', {
               src: captchaData.value?.captcha,
               alt: '验证码',
-              class: 'h-14 w-30 cursor-pointer',
+              class: 'cursor-pointer scale-145 ml-6',
               onClick: fetchCaptcha,
               title: '点击刷新验证码',
             }),
@@ -68,8 +69,12 @@ const formSchema = computed((): VbenFormSchema[] => {
 });
 
 async function onSubmit(values: any) {
-  values.captchaId = captchaData.value?.captchaId;
-  await authStore.authLogin(values);
+  try {
+    values.captchaId = captchaData.value?.captchaId;
+    await authStore.authLogin(values);
+  } catch {
+    fetchCaptcha();
+  }
 }
 </script>
 

@@ -14,6 +14,8 @@ function createTask(overrides: Partial<BackgroundTaskDto>): BackgroundTaskDto {
     createdAt: '2026-05-13 08:00:00',
     id: 1,
     maxRetries: 3,
+    operatorType: 1,
+    operatorUserId: 7,
     payload: {},
     progress: {},
     retryCount: 0,

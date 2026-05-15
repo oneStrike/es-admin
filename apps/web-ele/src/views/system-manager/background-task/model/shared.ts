@@ -6,6 +6,11 @@ import { formSchemaTransform } from '#/utils';
 import { backgroundTaskStatusOptions } from './status';
 import { formatBackgroundTaskType } from './task-type';
 
+const backgroundTaskOperatorOptions = [
+  { label: '后台管理员', value: 1 },
+  { label: '系统', value: 2 },
+] as const;
+
 export {
   canCancelBackgroundTask,
   canRetryBackgroundTask,
@@ -22,9 +27,22 @@ export {
   formatBackgroundTaskType,
 } from './task-type';
 
+export function formatBackgroundTaskOperator(task: BackgroundTaskDto) {
+  const operator = backgroundTaskOperatorOptions.find(
+    (item) => item.value === task.operatorType,
+  );
+  if (task.operatorType === 1) {
+    return task.operatorUserId
+      ? `${operator?.label ?? '后台管理员'} #${task.operatorUserId}`
+      : `${operator?.label ?? '后台管理员'} #未知`;
+  }
+  return operator?.label ?? String(task.operatorType);
+}
+
 const backgroundTaskListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'taskId', label: '任务ID' },
   { component: 'Input', fieldName: 'taskType', label: '任务类型' },
+  { component: 'Input', fieldName: 'operatorType', label: '操作者' },
   {
     component: 'Select',
     componentProps: {
@@ -50,6 +68,11 @@ export const backgroundTaskColumns =
       taskType: {
         formatter: ({ cellValue }) => formatBackgroundTaskType(cellValue),
         minWidth: 180,
+        showOverflow: 'tooltip',
+      },
+      operatorType: {
+        formatter: ({ row }) => formatBackgroundTaskOperator(row),
+        minWidth: 140,
         showOverflow: 'tooltip',
       },
       status: {

@@ -463,18 +463,6 @@ export async function contentComicChapterContentArchivePreviewApi(
 }
 
 /**
- * 确认漫画压缩包导入
- */
-export async function contentComicChapterContentArchiveConfirmApi(
-  params: ContentComicChapterContentArchiveConfirmRequest,
-): Promise<ContentComicChapterContentArchiveConfirmResponse> {
-  return requestClient.post<ContentComicChapterContentArchiveConfirmResponse>(
-    '/api/admin/content/comic/chapter-content/archive/confirm',
-    params,
-  );
-}
-
-/**
  * 创建漫画压缩包预解析会话
  */
 export async function contentComicChapterContentArchiveSessionApi(
@@ -482,6 +470,30 @@ export async function contentComicChapterContentArchiveSessionApi(
 ): Promise<ContentComicChapterContentArchiveSessionResponse> {
   return requestClient.post<ContentComicChapterContentArchiveSessionResponse>(
     '/api/admin/content/comic/chapter-content/archive/session',
+    params,
+  );
+}
+
+/**
+ * 丢弃漫画压缩包预解析会话
+ */
+export async function contentComicChapterContentArchiveDiscardApi(
+  params: ContentComicChapterContentArchiveDiscardRequest,
+): Promise<ContentComicChapterContentArchiveDiscardResponse> {
+  return requestClient.post<ContentComicChapterContentArchiveDiscardResponse>(
+    '/api/admin/content/comic/chapter-content/archive/discard',
+    params,
+  );
+}
+
+/**
+ * 确认漫画压缩包导入
+ */
+export async function contentComicChapterContentArchiveConfirmApi(
+  params: ContentComicChapterContentArchiveConfirmRequest,
+): Promise<ContentComicChapterContentArchiveConfirmResponse> {
+  return requestClient.post<ContentComicChapterContentArchiveConfirmResponse>(
+    '/api/admin/content/comic/chapter-content/archive/confirm',
     params,
   );
 }
@@ -495,18 +507,6 @@ export async function contentComicChapterContentArchiveDetailApi(
   return requestClient.get<ContentComicChapterContentArchiveDetailResponse>(
     '/api/admin/content/comic/chapter-content/archive/detail',
     { params },
-  );
-}
-
-/**
- * 丢弃漫画压缩包预解析会话
- */
-export async function contentComicChapterContentArchiveDiscardApi(
-  params: ContentComicChapterContentArchiveDiscardRequest,
-): Promise<ContentComicChapterContentArchiveDiscardResponse> {
-  return requestClient.post<ContentComicChapterContentArchiveDiscardResponse>(
-    '/api/admin/content/comic/chapter-content/archive/discard',
-    params,
   );
 }
 

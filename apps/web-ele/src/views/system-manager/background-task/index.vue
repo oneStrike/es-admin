@@ -28,6 +28,7 @@ import {
   backgroundTaskSearchSchema,
   canCancelBackgroundTask,
   canRetryBackgroundTask,
+  formatBackgroundTaskOperator,
   formatBackgroundTaskStatus,
   formatBackgroundTaskType,
   formatDiagnosticJson,
@@ -147,6 +148,7 @@ const currentTaskOverview = computed(() => {
   }
 
   return [
+    { label: '操作者', value: formatBackgroundTaskOperator(task) },
     { label: '重试次数', value: `${task.retryCount} / ${task.maxRetries}` },
     { label: '处理 Worker', value: task.claimedBy || '未分配' },
     { label: '残留诊断', value: task.residue ? '有残留' : '无残留' },

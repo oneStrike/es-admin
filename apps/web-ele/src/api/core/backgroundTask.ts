@@ -3,6 +3,8 @@ import type {
   BackgroundTaskCancelResponse,
   BackgroundTaskDetailRequest,
   BackgroundTaskDetailResponse,
+  BackgroundTaskMyPageRequest,
+  BackgroundTaskMyPageResponse,
   BackgroundTaskPageRequest,
   BackgroundTaskPageResponse,
   BackgroundTaskRetryRequest,
@@ -56,5 +58,17 @@ export async function backgroundTaskRetryApi(
   return requestClient.post<BackgroundTaskRetryResponse>(
     '/api/admin/background-task/retry',
     params,
+  );
+}
+
+/**
+ * 分页查询我的后台任务
+ */
+export async function backgroundTaskMyPageApi(
+  params?: BackgroundTaskMyPageRequest,
+): Promise<BackgroundTaskMyPageResponse> {
+  return requestClient.get<BackgroundTaskMyPageResponse>(
+    '/api/admin/background-task/my/page',
+    { params },
   );
 }

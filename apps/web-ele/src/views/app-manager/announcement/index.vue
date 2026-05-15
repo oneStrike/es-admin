@@ -48,8 +48,9 @@ type AnnouncementSearchValues = Partial<
   dateTimeRange?: unknown;
   enablePlatform?: AnnouncementCreateRequest['enablePlatform'] | null | string;
 };
-const formSchemaWithPageOptions = ref<EsFormSchema>(formSchema);
-const announcementFilterWithPageOptions = ref<EsFormSchema>(announcementFilter);
+const formSchemaWithPageOptions = shallowRef<EsFormSchema>(formSchema);
+const announcementFilterWithPageOptions =
+  shallowRef<EsFormSchema>(announcementFilter);
 
 function withPageOptions(
   schema: EsFormSchema,

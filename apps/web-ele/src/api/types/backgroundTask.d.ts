@@ -83,6 +83,57 @@ export type BackgroundTaskRetryRequest = BackgroundTaskIdDto;
 export type BackgroundTaskRetryResponse = BackgroundTaskDto;
 
 /**
+ *  类型定义 [BackgroundTaskMyPageRequest]
+ *  @来源 系统管理/后台任务
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BackgroundTaskMyPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+
+  /* 任务状态（1=待处理；2=处理中；3=最终写入中；4=成功；5=失败；6=已取消；7=回滚失败） */
+  status?: number;
+
+  /* 后台任务ID */
+  taskId?: string;
+
+  /* 后台任务类型 */
+  taskType?: string;
+};
+
+export type BackgroundTaskMyPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: BackgroundTaskDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
  *  类型定义 [BackgroundTaskDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -108,6 +159,10 @@ export type BackgroundTaskDto = {
   id: number;
   /* 最大允许重试次数 */
   maxRetries: number;
+  /* 操作者类型（1=后台管理员；2=系统） */
+  operatorType: 1 | 2;
+  /* 后台管理员操作者ID；系统任务为空 */
+  operatorUserId?: null | number;
   /* 任务负载 */
   payload: Record<string, any>;
   /* 任务进度 */

@@ -378,16 +378,6 @@ export type ContentComicChapterContentArchivePreviewResponse =
   ComicArchiveTaskResponseDto;
 
 /**
- *  类型定义 [ContentComicChapterContentArchiveConfirmRequest]
- *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentComicChapterContentArchiveConfirmRequest =
-  ConfirmComicArchiveDto;
-
-export type ContentComicChapterContentArchiveConfirmResponse = boolean;
-
-/**
  *  类型定义 [ContentComicChapterContentArchiveSessionRequest]
  *  @来源 内容管理/漫画管理/章节内容
  *  @更新时间 2026-05-09 22:20:06
@@ -397,6 +387,26 @@ export type ContentComicChapterContentArchiveSessionRequest =
 
 export type ContentComicChapterContentArchiveSessionResponse =
   ComicArchiveTaskIdDto;
+
+/**
+ *  类型定义 [ContentComicChapterContentArchiveDiscardRequest]
+ *  @来源 内容管理/漫画管理/章节内容
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentComicChapterContentArchiveDiscardRequest =
+  DiscardComicArchiveDto;
+
+export type ContentComicChapterContentArchiveDiscardResponse = boolean;
+
+/**
+ *  类型定义 [ContentComicChapterContentArchiveConfirmRequest]
+ *  @来源 内容管理/漫画管理/章节内容
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentComicChapterContentArchiveConfirmRequest =
+  ConfirmComicArchiveDto;
+
+export type ContentComicChapterContentArchiveConfirmResponse = boolean;
 
 /**
  *  类型定义 [ContentComicChapterContentArchiveDetailRequest]
@@ -413,16 +423,6 @@ export type ContentComicChapterContentArchiveDetailRequest = {
 
 export type ContentComicChapterContentArchiveDetailResponse =
   ComicArchiveTaskResponseDto;
-
-/**
- *  类型定义 [ContentComicChapterContentArchiveDiscardRequest]
- *  @来源 内容管理/漫画管理/章节内容
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentComicChapterContentArchiveDiscardRequest =
-  DiscardComicArchiveDto;
-
-export type ContentComicChapterContentArchiveDiscardResponse = boolean;
 
 export type ContentComicThirdPartyPlatformListResponse = PlatformResponseDto[];
 
@@ -2228,21 +2228,6 @@ export type ComicArchiveSummaryDto = {
 };
 
 /**
- *  类型定义 [ConfirmComicArchiveDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ConfirmComicArchiveDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 用户确认要导入的章节ID列表 */
-  confirmedChapterIds: number[];
-
-  /* 导入任务ID */
-  taskId: string;
-};
-
-/**
  *  类型定义 [CreateComicArchiveSessionDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -2278,6 +2263,21 @@ export type ComicArchiveTaskIdDto = {
 export type DiscardComicArchiveDto = {
   /** 任意合法数值 */
   [property: string]: any;
+
+  /* 导入任务ID */
+  taskId: string;
+};
+
+/**
+ *  类型定义 [ConfirmComicArchiveDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ConfirmComicArchiveDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 用户确认要导入的章节ID列表 */
+  confirmedChapterIds: number[];
 
   /* 导入任务ID */
   taskId: string;
@@ -2792,6 +2792,10 @@ export type BackgroundTaskDto = {
   id: number;
   /* 最大允许重试次数 */
   maxRetries: number;
+  /* 操作者类型（1=后台管理员；2=系统） */
+  operatorType: 1 | 2;
+  /* 后台管理员操作者ID；系统任务为空 */
+  operatorUserId?: null | number;
   /* 任务负载 */
   payload: Record<string, any>;
   /* 任务进度 */
