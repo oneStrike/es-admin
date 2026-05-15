@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import type { ComicChapterRecord } from './model/types';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   ContentComicChapterContentArchiveDetailResponse,
   ContentComicChapterCreateRequest,
-  ContentComicChapterDetailResponse,
+  ContentComicChapterPageResponse,
   ContentComicChapterUpdateRequest,
 } from '#/api/types';
 
@@ -43,9 +45,8 @@ type ShareData = { workId: number; workName: string };
 
 // ========== 状态定义 ==========
 const shareData = ref<ShareData>();
-const currentChapterRecord =
-  ref<null | Partial<ContentComicChapterDetailResponse>>(null);
-const selectedChapterRows = ref<ContentComicChapterDetailResponse[]>([]);
+const currentChapterRecord = ref<null | Partial<ComicChapterRecord>>(null);
+const selectedChapterRows = ref<ComicChapterRecord[]>([]);
 const selectedChapterIds = computed(() =>
   selectedChapterRows.value.map((item) => item.id),
 );
@@ -98,7 +99,11 @@ const [ContentModal, contentApi] = useVbenModal({
 /**
  * 表格配置选项
  */
-const gridOptions: VxeGridProps<ContentComicChapterDetailResponse> = {
+type ComicChapterPageData = Omit<ContentComicChapterPageResponse, 'list'> & {
+  list?: ComicChapterRecord[];
+};
+
+const gridOptions: VxeGridProps<ComicChapterRecord> = {
   checkboxConfig: {
     highlight: true,
   },
@@ -112,7 +117,7 @@ const gridOptions: VxeGridProps<ContentComicChapterDetailResponse> = {
           return { list: [], total: 0 };
         }
 
-        return await contentComicChapterPageApi(
+        const response = await contentComicChapterPageApi(
           formatQuery({
             page,
             formValues: {
@@ -122,6 +127,10 @@ const gridOptions: VxeGridProps<ContentComicChapterDetailResponse> = {
             sorts,
           }),
         );
+        return {
+          ...response,
+          list: response.list as ComicChapterRecord[] | undefined,
+        } satisfies ComicChapterPageData;
       },
     },
     sort: true,
@@ -174,7 +183,7 @@ growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
 // ========== 事件处理 ==========
 
 function handleChapterSelectionChange(params: {
-  records: ContentComicChapterDetailResponse[];
+  records: ComicChapterRecord[];
 }) {
   selectedChapterRows.value = params.records;
 }
@@ -183,7 +192,7 @@ function handleChapterSelectionChange(params: {
  * 打开章节详情弹窗
  * @param record 章节数据
  */
-function openDetailModal(record: ContentComicChapterDetailResponse) {
+function openDetailModal(record: ComicChapterRecord) {
   detailApi
     .setData({
       recordId: record.id,
@@ -196,7 +205,7 @@ function openDetailModal(record: ContentComicChapterDetailResponse) {
  * 打开内容管理弹窗
  * @param record 章节数据
  */
-function openContentModal(record: ContentComicChapterDetailResponse) {
+function openContentModal(record: ComicChapterRecord) {
   const data = shareData.value;
   if (!data) return;
 
@@ -219,10 +228,12 @@ async function handleArchiveImportFinished(
  * 打开章节表单弹窗
  * @param record 章节数据（编辑时传入，新增时不传）
  */
-async function openFormModal(record?: ContentComicChapterDetailResponse) {
+async function openFormModal(record?: ComicChapterRecord) {
   // 编辑模式获取详情数据，新增模式设为 null
   const recordData = record?.id
-    ? await contentComicChapterDetailApi({ id: record.id })
+    ? ((await contentComicChapterDetailApi({
+        id: record.id,
+      })) as ComicChapterRecord)
     : null;
   currentChapterRecord.value = recordData ?? null;
 
@@ -292,7 +303,7 @@ function buildComicChapterPayload(
  * 删除章节
  * @param record 章节数据
  */
-async function deleteChapter(record: ContentComicChapterDetailResponse) {
+async function deleteChapter(record: ComicChapterRecord) {
   await contentComicChapterDeleteApi({ id: record.id });
   useMessage.success('章节删除成功');
   selectedChapterRows.value = [];
@@ -324,9 +335,7 @@ async function batchDeleteChapters() {
  * 切换章节发布状态
  * @param row 章节数据
  */
-async function toggleStatus(
-  row: ContentComicChapterDetailResponse & { loading?: boolean },
-) {
+async function toggleStatus(row: ComicChapterRecord) {
   row.loading = true;
   try {
     await contentComicChapterUpdateApi({

@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import type { NovelChapterRecord } from './model/types';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   ContentNovelChapterBatchDeleteRequest,
   ContentNovelChapterCreateRequest,
-  ContentNovelChapterDetailResponse,
+  ContentNovelChapterPageResponse,
   ContentNovelChapterUpdateRequest,
 } from '#/api/types';
 
@@ -38,9 +40,8 @@ defineOptions({
 type ShareData = { workId: number; workName: string };
 
 const shareData = ref<ShareData>();
-const currentChapterRecord =
-  ref<null | Partial<ContentNovelChapterDetailResponse>>(null);
-const selectedChapterRows = ref<ContentNovelChapterDetailResponse[]>([]);
+const currentChapterRecord = ref<null | Partial<NovelChapterRecord>>(null);
+const selectedChapterRows = ref<NovelChapterRecord[]>([]);
 const selectedChapterIds = computed(() =>
   selectedChapterRows.value.map((item) => item.id),
 );
@@ -76,7 +77,11 @@ const [ContentModal, contentApi] = useVbenModal({
   connectedComponent: ContentEditor,
 });
 
-const gridOptions: VxeGridProps<ContentNovelChapterDetailResponse> = {
+type NovelChapterPageData = Omit<ContentNovelChapterPageResponse, 'list'> & {
+  list?: NovelChapterRecord[];
+};
+
+const gridOptions: VxeGridProps<NovelChapterRecord> = {
   checkboxConfig: {
     highlight: true,
   },
@@ -90,7 +95,7 @@ const gridOptions: VxeGridProps<ContentNovelChapterDetailResponse> = {
           return { list: [], total: 0 };
         }
 
-        return await contentNovelChapterPageApi(
+        const response = await contentNovelChapterPageApi(
           formatQuery({
             page,
             formValues: {
@@ -100,6 +105,10 @@ const gridOptions: VxeGridProps<ContentNovelChapterDetailResponse> = {
             sorts,
           }),
         );
+        return {
+          ...response,
+          list: response.list as NovelChapterRecord[] | undefined,
+        } satisfies NovelChapterPageData;
       },
     },
     sort: true,
@@ -141,12 +150,12 @@ growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
 });
 
 function handleChapterSelectionChange(params: {
-  records: ContentNovelChapterDetailResponse[];
+  records: NovelChapterRecord[];
 }) {
   selectedChapterRows.value = params.records;
 }
 
-function openDetailModal(record: ContentNovelChapterDetailResponse) {
+function openDetailModal(record: NovelChapterRecord) {
   detailApi
     .setData({
       recordId: record.id,
@@ -155,7 +164,7 @@ function openDetailModal(record: ContentNovelChapterDetailResponse) {
     .open();
 }
 
-function openContentModal(record: ContentNovelChapterDetailResponse) {
+function openContentModal(record: NovelChapterRecord) {
   const data = shareData.value;
   if (!data) return;
 
@@ -168,9 +177,11 @@ function openContentModal(record: ContentNovelChapterDetailResponse) {
     .open();
 }
 
-async function openFormModal(record?: ContentNovelChapterDetailResponse) {
+async function openFormModal(record?: NovelChapterRecord) {
   const recordData = record?.id
-    ? await contentNovelChapterDetailApi({ id: record.id })
+    ? ((await contentNovelChapterDetailApi({
+        id: record.id,
+      })) as NovelChapterRecord)
     : null;
   currentChapterRecord.value = recordData ?? null;
 
@@ -232,7 +243,7 @@ function buildNovelChapterPayload(
     : (payload as ContentNovelChapterCreateRequest);
 }
 
-async function deleteChapter(record: ContentNovelChapterDetailResponse) {
+async function deleteChapter(record: NovelChapterRecord) {
   await contentNovelChapterDeleteApi({ id: record.id });
   useMessage.success('章节删除成功');
   selectedChapterRows.value = [];
@@ -256,9 +267,7 @@ async function batchDeleteChapters() {
   await gridApi.reload();
 }
 
-async function toggleStatus(
-  row: ContentNovelChapterDetailResponse & { loading?: boolean },
-) {
+async function toggleStatus(row: NovelChapterRecord) {
   row.loading = true;
   try {
     await contentNovelChapterUpdateApi({

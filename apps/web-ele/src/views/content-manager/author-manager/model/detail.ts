@@ -72,7 +72,7 @@ export function getDetailCards(detail: BaseAuthorDto, extraData?: any) {
       fields: [
         {
           label: '作品数量',
-          value: detail.worksCount || 0,
+          value: detail.workCount ?? 0,
           type: 'text' as const,
         },
         {

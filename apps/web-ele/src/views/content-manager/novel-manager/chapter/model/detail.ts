@@ -1,10 +1,10 @@
-import type { ContentNovelChapterDetailResponse } from '#/api/types';
+import type { NovelChapterRecord } from './types';
 
 import { formatUTC } from '#/utils';
 
 import { readRuleMap } from './form';
 
-export function getDetailCards(detail: ContentNovelChapterDetailResponse) {
+export function getDetailCards(detail: NovelChapterRecord) {
   return [
     {
       title: '基本信息',

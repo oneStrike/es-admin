@@ -3,6 +3,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminAgreementDetailDto,
   AdminAgreementListItemDto,
+  AgreementPageRequest,
   CreateAgreementDto,
   UpdateAgreementDto,
 } from '#/api/types';
@@ -47,12 +48,36 @@ const gridOptions: VxeGridProps<AgreementRow> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await agreementPageApi(formatQuery({ page, formValues, sorts }));
+        return await agreementPageApi(
+          formatQuery({
+            page,
+            formValues: buildAgreementPageQuery(formValues),
+            sorts,
+          }),
+        );
       },
     },
     sort: true,
   },
 };
+
+function buildAgreementPageQuery(
+  formValues: Partial<AgreementPageRequest>,
+): Partial<AgreementPageRequest> {
+  const query: Partial<AgreementPageRequest> = {};
+
+  if (formValues.isPublished !== undefined) {
+    query.isPublished = formValues.isPublished;
+  }
+  if (formValues.showInAuth !== undefined) {
+    query.showInAuth = formValues.showInAuth;
+  }
+  if (formValues.title) {
+    query.title = formValues.title;
+  }
+
+  return query;
+}
 
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,

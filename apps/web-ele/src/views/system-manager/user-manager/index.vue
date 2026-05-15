@@ -24,8 +24,8 @@ import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import {
+  createFormSchema,
   editFormSchema,
-  formSchema,
   lockStatusObj,
   userColumns,
   userFilter,
@@ -77,7 +77,7 @@ async function openFormModal(row?: SystemUserRow) {
     .setData({
       title: '用户',
       record,
-      schema: row ? editFormSchema : formSchema,
+      schema: row ? editFormSchema : createFormSchema,
     })
     .open();
 }
@@ -97,14 +97,13 @@ function buildSystemUserPayload(
   }
 
   return {
-    username: values.username,
+    avatar: values.avatar,
+    confirmPassword: values.confirmPassword,
     mobile: values.mobile,
     password: values.password,
-    confirmPassword: values.confirmPassword,
     role: values.role,
-    isEnabled: values.isEnabled,
-    avatar: values.avatar,
-  };
+    username: values.username,
+  } satisfies SystemUserCreateRequest;
 }
 
 async function handleSubmit(values: SystemUserCreateRequest | UpdateUserDto) {

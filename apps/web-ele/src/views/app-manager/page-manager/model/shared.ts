@@ -115,7 +115,6 @@ export const formSchema: EsFormSchema = [
     componentProps: {
       placeholder: '请选择发布平台',
       options: enablePlatform,
-      valueType: 'bitMask',
     },
   },
   {

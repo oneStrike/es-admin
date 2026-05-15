@@ -4,6 +4,8 @@ import type { EsModalFormProps } from './types';
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
+import { getApiErrorMessage } from '#/api/error';
+import { useMessage } from '#/hooks/useFeedback';
 
 defineOptions({
   name: 'EsModalForm',
@@ -75,8 +77,12 @@ const [BaseForm, formApi] = useVbenForm({
         id: sharedData.value?.record?.id,
       });
       modalApi.close();
-    } catch {}
-    modalApi.unlock();
+    } catch (error) {
+      useMessage.error(getApiErrorMessage(error, '操作失败'));
+      throw error;
+    } finally {
+      modalApi.unlock();
+    }
   },
 });
 </script>

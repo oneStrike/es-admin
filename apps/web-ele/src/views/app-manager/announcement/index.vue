@@ -1,11 +1,14 @@
 <script lang="ts" setup>
+import type { AnnouncementPageOption, AnnouncementRow } from './model/shared';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  BaseAnnouncementDto,
+  AnnouncementCreateRequest,
+  AnnouncementPageRequest,
+  AnnouncementUpdateRequest,
   BaseAppPageDto,
-  CreateAnnouncementDto,
-  UpdateAnnouncementDto,
 } from '#/api/types';
+import type { EsFormSchema } from '#/types';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -22,19 +25,57 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
-import { formatUTC } from '#/utils';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './model/detail';
 import {
-  announcementColumns,
   announcementFilter,
+  createAnnouncementColumns,
   formSchema,
   getPublishStatus,
   publishStatusObj,
 } from './model/shared';
 
-const clientPageObj = ref<Record<string, string>>({});
+type AnnouncementSubmitValues =
+  | AnnouncementCreateRequest
+  | AnnouncementUpdateRequest;
+type AnnouncementSearchValues = Partial<
+  Pick<
+    AnnouncementPageRequest,
+    'announcementType' | 'isPinned' | 'pageId' | 'priorityLevel' | 'title'
+  >
+> & {
+  dateTimeRange?: unknown;
+  enablePlatform?: AnnouncementCreateRequest['enablePlatform'] | null | string;
+};
+const formSchemaWithPageOptions = ref<EsFormSchema>(formSchema);
+const announcementFilterWithPageOptions = ref<EsFormSchema>(announcementFilter);
+
+function withPageOptions(
+  schema: EsFormSchema,
+  pageOptions: AnnouncementPageOption[],
+): EsFormSchema {
+  return schema.map((item) => {
+    if (item.fieldName !== 'pageId') {
+      return item;
+    }
+
+    const componentProps =
+      item.componentProps &&
+      typeof item.componentProps === 'object' &&
+      !Array.isArray(item.componentProps)
+        ? {
+            ...item.componentProps,
+            options: pageOptions,
+          }
+        : item.componentProps;
+
+    return {
+      ...item,
+      componentProps,
+    };
+  });
+}
 
 appPagePageApi({
   pageSize: 500,
@@ -43,7 +84,6 @@ appPagePageApi({
     res.list?.flatMap((pageItem: BaseAppPageDto) => {
       if (pageItem.id === undefined || pageItem.id === null) return [];
 
-      clientPageObj.value[pageItem.id] = pageItem.name;
       return [
         {
           label: pageItem.name,
@@ -53,50 +93,32 @@ appPagePageApi({
       ];
     }) || [];
 
-  announcementFilter.forEach((item) => {
-    if (item.fieldName === 'pageId' && item.componentProps) {
-      (item.componentProps as any).options = pageOptions;
-    }
-  });
-  formSchema.forEach((item) => {
-    if (item.fieldName === 'pageId' && item.componentProps) {
-      (item.componentProps as any).options = pageOptions;
-    }
-  });
+  formSchemaWithPageOptions.value = withPageOptions(formSchema, pageOptions);
+  announcementFilterWithPageOptions.value = withPageOptions(
+    announcementFilter,
+    pageOptions,
+  );
 
-  gridApi.setState((prev) => ({
-    formOptions: {
-      ...prev.formOptions,
-      schema: [...announcementFilter],
+  gridApi.setState(() => ({
+    formOptions: createSearchFormOptions(
+      announcementFilterWithPageOptions.value,
+    ),
+    gridOptions: {
+      columns: createAnnouncementColumns(pageOptions),
     },
   }));
 });
 
-const gridOptions: VxeGridProps<BaseAnnouncementDto> = {
-  columns: announcementColumns,
-  height: 'auto',
+const gridOptions: VxeGridProps<AnnouncementRow> = {
+  columns: createAnnouncementColumns(),
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        const { dateTimeRange, ...restFormValues } = formValues;
-        const [publishStartTime, publishEndTime] = Array.isArray(dateTimeRange)
-          ? dateTimeRange
-          : [];
-
-        if (restFormValues.enablePlatform) {
-          restFormValues.enablePlatform = JSON.stringify(
-            restFormValues.enablePlatform,
-          );
-        }
         return await announcementPageApi(
           formatQuery({
             page,
             sorts,
-            formValues: {
-              publishEndTime,
-              publishStartTime,
-              ...restFormValues,
-            },
+            formValues: buildAnnouncementPageQuery(formValues),
           }),
         );
       },
@@ -110,11 +132,51 @@ const [Form, formApi] = useVbenModal({
 });
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(announcementFilter),
+  formOptions: createSearchFormOptions(announcementFilterWithPageOptions.value),
   gridOptions,
 });
 
-async function openFormModal(row?: BaseAnnouncementDto) {
+function buildAnnouncementPageQuery(
+  formValues: AnnouncementSearchValues = {},
+): Partial<AnnouncementPageRequest> {
+  const query: Partial<AnnouncementPageRequest> = {};
+  const [publishStartTime, publishEndTime] = Array.isArray(
+    formValues.dateTimeRange,
+  )
+    ? formValues.dateTimeRange
+    : [];
+
+  if (typeof publishStartTime === 'string') {
+    query.publishStartTime = publishStartTime;
+  }
+  if (typeof publishEndTime === 'string') {
+    query.publishEndTime = publishEndTime;
+  }
+  if (typeof formValues.title === 'string' && formValues.title) {
+    query.title = formValues.title;
+  }
+  if (formValues.announcementType !== undefined) {
+    query.announcementType = formValues.announcementType;
+  }
+  if (Array.isArray(formValues.enablePlatform)) {
+    query.enablePlatform = JSON.stringify(formValues.enablePlatform);
+  } else if (typeof formValues.enablePlatform === 'string') {
+    query.enablePlatform = formValues.enablePlatform;
+  }
+  if (formValues.priorityLevel !== undefined) {
+    query.priorityLevel = formValues.priorityLevel;
+  }
+  if (formValues.pageId !== undefined) {
+    query.pageId = formValues.pageId;
+  }
+  if (formValues.isPinned !== undefined) {
+    query.isPinned = formValues.isPinned;
+  }
+
+  return query;
+}
+
+async function openFormModal(row?: AnnouncementRow) {
   let record;
   if (row) {
     record = await announcementDetailApi({ id: row.id });
@@ -123,10 +185,33 @@ async function openFormModal(row?: BaseAnnouncementDto) {
   formApi.setData({ title: '公告', record }).open();
 }
 
-function buildAnnouncementPayload(
-  values: CreateAnnouncementDto | UpdateAnnouncementDto,
-): CreateAnnouncementDto | UpdateAnnouncementDto {
-  const payload = {
+function isUpdateAnnouncementValues(
+  values: AnnouncementSubmitValues,
+): values is AnnouncementUpdateRequest {
+  return 'id' in values && typeof values.id === 'number';
+}
+
+function buildAnnouncementPayload(values: AnnouncementSubmitValues) {
+  if (isUpdateAnnouncementValues(values)) {
+    return {
+      id: values.id,
+      title: values.title,
+      announcementType: values.announcementType,
+      enablePlatform: values.enablePlatform,
+      priorityLevel: values.priorityLevel,
+      pageId: values.pageId,
+      publishStartTime: values.publishStartTime,
+      publishEndTime: values.publishEndTime,
+      isPinned: values.isPinned ?? false,
+      showAsPopup: values.showAsPopup ?? false,
+      popupBackgroundImage: values.popupBackgroundImage,
+      popupBackgroundPosition: values.popupBackgroundPosition,
+      summary: values.summary,
+      content: values.content,
+    } satisfies AnnouncementUpdateRequest;
+  }
+
+  return {
     title: values.title,
     announcementType: values.announcementType,
     enablePlatform: values.enablePlatform,
@@ -140,33 +225,27 @@ function buildAnnouncementPayload(
     popupBackgroundPosition: values.popupBackgroundPosition,
     summary: values.summary,
     content: values.content,
-  };
-
-  return 'id' in values && typeof values.id === 'number'
-    ? ({ id: values.id, ...payload } as UpdateAnnouncementDto)
-    : (payload as CreateAnnouncementDto);
+  } satisfies AnnouncementCreateRequest;
 }
 
-async function handleSubmit(
-  values: CreateAnnouncementDto | UpdateAnnouncementDto,
-) {
+async function handleSubmit(values: AnnouncementSubmitValues) {
   const payload = buildAnnouncementPayload(values);
 
-  await ('id' in payload && payload.id
-    ? announcementUpdateApi(payload as UpdateAnnouncementDto)
-    : announcementCreateApi(payload as CreateAnnouncementDto));
+  await (isUpdateAnnouncementValues(payload)
+    ? announcementUpdateApi(payload)
+    : announcementCreateApi(payload));
   formApi.close();
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function deleteAnnouncement(record: BaseAnnouncementDto) {
+async function deleteAnnouncement(record: AnnouncementRow) {
   await announcementDeleteApi({ id: record.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function togglePublishStatus(record: BaseAnnouncementDto) {
+async function togglePublishStatus(record: AnnouncementRow) {
   const newStatus = !record.isPublished;
   await announcementUpdateStatusApi({
     id: record.id,
@@ -176,7 +255,7 @@ async function togglePublishStatus(record: BaseAnnouncementDto) {
   gridApi.reload();
 }
 
-function getPublishButtonText(record: BaseAnnouncementDto): string {
+function getPublishButtonText(record: AnnouncementRow): string {
   const status = getPublishStatus(record.isPublished, record.publishEndTime);
 
   if (status === 'unpublished') {
@@ -188,7 +267,7 @@ function getPublishButtonText(record: BaseAnnouncementDto): string {
   }
 }
 
-function canPublish(record: BaseAnnouncementDto): boolean {
+function canPublish(record: AnnouncementRow): boolean {
   const status = getPublishStatus(record.isPublished, record.publishEndTime);
   return status !== 'expired';
 }
@@ -227,26 +306,6 @@ const [DetailModal, detailApi] = useVbenModal({
           @click="detailApi.setData({ recordId: row.id }).open()"
         >
           {{ row.title }}
-        </el-text>
-      </template>
-
-      <template #dateTimeRange="{ row }">
-        <el-text>
-          {{
-            row.publishStartTime || row.publishEndTime
-              ? `${formatUTC(row.publishStartTime, 'YYYY-MM-DD')} - ${formatUTC(row.publishEndTime, 'YYYY-MM-DD')}`
-              : '-'
-          }}
-        </el-text>
-      </template>
-
-      <template #pageId="{ row }">
-        <el-text>
-          {{
-            row.pageId && clientPageObj[row.pageId]
-              ? clientPageObj[row.pageId]
-              : '-'
-          }}
         </el-text>
       </template>
 
@@ -325,7 +384,7 @@ const [DetailModal, detailApi] = useVbenModal({
     </Grid>
 
     <Form
-      :schema="formSchema"
+      :schema="formSchemaWithPageOptions"
       :field-mapping-time="[
         ['dateTimeRange', ['publishStartTime', 'publishEndTime']],
       ]"

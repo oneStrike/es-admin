@@ -166,6 +166,11 @@ export const formSchema: EsFormSchema = [
   },
 ];
 
+// 创建接口不接收 isEnabled，初始状态由后端账号注册契约决定。
+export const createFormSchema: EsFormSchema = formSchema.filter(
+  (item) => item.fieldName !== 'isEnabled',
+);
+
 // 编辑表单 - 明确排除密码相关字段
 export const editFormSchema: EsFormSchema = formSchema.filter(
   (item) =>

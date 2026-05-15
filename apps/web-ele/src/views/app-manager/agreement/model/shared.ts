@@ -138,13 +138,4 @@ export const agreementFilter = formSchemaTransform.toSearchSchema(formSchema, {
       options: booleanOptions,
     },
   },
-  isForce: {
-    label: '',
-    component: 'Select',
-    componentProps: {
-      placeholder: '强制同意',
-      clearable: true,
-      options: booleanOptions,
-    },
-  },
 });

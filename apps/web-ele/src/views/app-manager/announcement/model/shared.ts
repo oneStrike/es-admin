@@ -1,7 +1,15 @@
-import type { BaseAnnouncementDto } from '#/api/types';
+import type { AnnouncementPageResponse } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';
+
+export type AnnouncementRow = NonNullable<
+  AnnouncementPageResponse['list']
+>[number];
+export type AnnouncementPageOption = {
+  label: string;
+  value: number;
+};
 
 // 公告类型配置
 export const announcementType = [
@@ -55,7 +63,7 @@ export const enablePlatform = [
   },
   {
     label: '小程序',
-    value: 4,
+    value: 3,
   },
 ];
 
@@ -195,7 +203,6 @@ export const formSchema: EsFormSchema = [
     componentProps: {
       placeholder: '请选择发布平台',
       options: enablePlatform,
-      valueType: 'bitMask',
     },
   },
   {
@@ -302,8 +309,10 @@ export const formSchema: EsFormSchema = [
 ];
 
 // 表格列配置
-export const announcementColumns =
-  formSchemaTransform.toTableColumns<BaseAnnouncementDto>(formSchema, {
+export function createAnnouncementColumns(
+  pageOptions: AnnouncementPageOption[] = [],
+) {
+  return formSchemaTransform.toTableColumns<AnnouncementRow>(formSchema, {
     content: {
       hide: true,
     },
@@ -329,7 +338,10 @@ export const announcementColumns =
     },
     dateTimeRange: {
       title: '发布时间',
-      slots: { default: 'dateTimeRange' },
+      formatter: ({ row }) =>
+        row.publishStartTime || row.publishEndTime
+          ? `${formatUTC(row.publishStartTime, 'YYYY-MM-DD')} - ${formatUTC(row.publishEndTime, 'YYYY-MM-DD')}`
+          : '-',
     },
     publishStatus: {
       title: '发布状态',
@@ -338,9 +350,17 @@ export const announcementColumns =
       slots: { default: 'publishStatus' },
     },
     pageId: {
-      slots: { default: 'pageId' },
+      cellRender:
+        pageOptions.length > 0
+          ? {
+              name: 'CellText',
+              props: { mapOptions: pageOptions },
+            }
+          : undefined,
+      formatter: pageOptions.length > 0 ? undefined : () => '-',
     },
   });
+}
 
 // 搜索表单配置
 export const announcementFilter = formSchemaTransform.toSearchSchema(

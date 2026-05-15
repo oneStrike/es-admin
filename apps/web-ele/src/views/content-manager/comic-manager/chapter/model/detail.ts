@@ -1,4 +1,4 @@
-import type { ContentComicChapterDetailResponse } from '#/api/types';
+import type { ComicChapterRecord } from './types';
 
 import { formatUTC } from '#/utils';
 
@@ -9,7 +9,7 @@ import { readRuleMap } from './form';
  * 参考作品管理的详情配置模式
  * @param detail 章节详情数据
  */
-export function getDetailCards(detail: ContentComicChapterDetailResponse) {
+export function getDetailCards(detail: ComicChapterRecord) {
   return [
     {
       title: '基本信息',

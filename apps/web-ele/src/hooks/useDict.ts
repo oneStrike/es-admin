@@ -12,13 +12,23 @@ export interface UseDictItem {
   options: { label: string; value: string }[];
 }
 
+function assertDictionaryItemList(
+  value: unknown,
+): asserts value is BaseDictionaryItemDto[] {
+  if (!Array.isArray(value)) {
+    throw new TypeError('Dictionary item list response must be an array');
+  }
+}
+
 export async function useDict(codes: string): Promise<Recordable<UseDictItem>> {
-  const list = await dictionaryItemListApi({
+  const listResponse: unknown = await dictionaryItemListApi({
     dictionaryCode: codes,
     isEnabled: true,
   });
+  assertDictionaryItemList(listResponse);
+
   const returnValue: Record<string, UseDictItem> = {};
-  list.forEach((item: BaseDictionaryItemDto) => {
+  listResponse.forEach((item) => {
     // 使用中间变量解决TypeScript类型推断问题
     let dictItem = returnValue[item.dictionaryCode];
     if (!dictItem) {

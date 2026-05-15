@@ -221,8 +221,8 @@ async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
           @click="
             detailApi
               .setData({
+                nationalityMap: nationalityMap.value,
                 recordId: row.id,
-                extraData: { nationalityMap: nationalityMap.value },
               })
               .open()
           "
