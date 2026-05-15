@@ -307,7 +307,7 @@ const [Form, formApi] = useVbenForm(
       {
         fieldName: 'keyword',
         label: '',
-        formItemClass: 'col-span-3',
+        formItemClass: 'col-span-2',
         component: 'Input',
         componentProps: {
           placeholder: '请输入关键词',
@@ -331,6 +331,8 @@ const [Form, formApi] = useVbenForm(
         keyword.value = trimmedKeyword;
         await searchGridApi.reload({ page: { currentPage: 1 } });
       },
+      submitOnEnter: true,
+      showCollapseButton: false,
       submitButtonOptions: {
         content: '搜索',
       },
@@ -351,7 +353,7 @@ watch(loading, (isLoading) => {
 });
 
 const [Modal, modalApi] = useVbenModal({
-  contentClass: 'min-h-0 !overflow-hidden p-0',
+  contentClass: 'min-h-0 !overflow-hidden p-4',
   footer: false,
   onOpenChange: async (isOpen) => {
     if (!isOpen) return;
@@ -382,12 +384,6 @@ const searchGridOptions: VxeGridProps<SearchComicRow> = {
       minWidth: 220,
       slots: { default: 'searchAuthor' },
       title: '作者',
-    },
-    {
-      field: 'platform',
-      minWidth: 140,
-      slots: { default: 'searchPlatform' },
-      title: '平台',
     },
     {
       field: 'source',
@@ -452,7 +448,7 @@ const chapterPreviewGridOptions: VxeGridProps<ChapterPreviewRow> = {
     { field: 'providerChapterId', minWidth: 260, title: '三方章节ID' },
   ],
   data: [],
-  height: 360,
+  height: '100%',
   pagerConfig: { enabled: false },
   toolbarConfig: {
     custom: false,
@@ -1256,22 +1252,14 @@ function openSubmittedTask() {
 </script>
 
 <template>
-  <Modal
-    class="third-party-import-modal !h-[86vh] !max-h-[86vh] w-[1280px] max-w-[calc(100vw-32px)]"
-  >
+  <Modal class="!h-[70vh] !max-h-[70vh] w-[1280px] max-w-[calc(100vw-32px)]">
     <div class="flex h-full min-h-0 flex-col">
-      <div class="shrink-0 border-b border-border bg-card p-4">
-        <el-steps :active="step" finish-status="success" simple>
-          <el-step v-for="item in wizardSteps" :key="item" :title="item" />
-        </el-steps>
-      </div>
+      <el-steps class="mb-4" :active="step" finish-status="success" simple>
+        <el-step v-for="item in wizardSteps" :key="item" :title="item" />
+      </el-steps>
 
-      <div class="min-h-0 flex-1 overflow-auto p-4" v-loading="previewLoading">
-        <div
-          v-show="step === 0"
-          class="flex h-full min-h-0 flex-col gap-4"
-          v-loading="loading"
-        >
+      <div class="min-h-0 flex-1 overflow-auto" v-loading="previewLoading">
+        <div v-show="step === 0" class="flex h-full min-h-0 flex-col">
           <Form />
 
           <SearchGrid class="min-h-0 flex-1">
@@ -1298,10 +1286,6 @@ function openSubmittedTask() {
               {{ formatTextList(row.author) }}
             </template>
 
-            <template #searchPlatform="{ row }">
-              {{ resolveComicPlatform(row) || '-' }}
-            </template>
-
             <template #searchActions="{ row }">
               <el-button
                 link
@@ -1312,17 +1296,17 @@ function openSubmittedTask() {
                 :loading="selectingComicId === resolveComicId(row)"
                 @click="selectComic(row)"
               >
-                选择导入
+                解析
               </el-button>
             </template>
           </SearchGrid>
         </div>
 
-        <div v-show="step === 1" class="space-y-4">
+        <div v-show="step === 1" class="h-full min-h-0">
           <el-empty v-if="!preview" description="请选择第三方作品" />
           <template v-else>
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-4 rounded border border-border bg-card p-4">
+            <div class="grid h-full min-h-0 grid-cols-12 gap-4">
+              <el-card class="col-span-4 h-full min-h-0 overflow-auto">
                 <div class="flex gap-4">
                   <el-image
                     v-if="preview.detail.cover"
@@ -1331,7 +1315,7 @@ function openSubmittedTask() {
                     fit="cover"
                   />
                   <div class="min-w-0 space-y-2">
-                    <div class="line-clamp-2 text-lg font-semibold">
+                    <div class="line-clamp-2 text-lg">
                       {{ preview.detail.name }}
                     </div>
                     <div class="text-sm text-muted-foreground">
@@ -1348,17 +1332,18 @@ function openSubmittedTask() {
                     </div>
                   </div>
                 </div>
-                <div class="mt-3 text-sm leading-6 text-muted-foreground">
+                <div class="mt-4 text-sm leading-6 text-muted-foreground">
                   {{ preview.detail.brief || '-' }}
                 </div>
-              </div>
+              </el-card>
 
-              <div class="col-span-8 rounded border border-border bg-card p-4">
-                <div class="mb-3 flex items-center justify-between">
-                  <div class="font-semibold">章节分组</div>
+              <div
+                class="col-span-8 flex h-full min-h-0 flex-col rounded border border-border bg-card p-4"
+              >
+                <div class="mb-4 flex items-center">
+                  <div class="shrink-0 mr-4">章节分组</div>
                   <el-select
                     v-model="selectedGroup"
-                    class="w-[220px]"
                     @change="handleGroupChange"
                   >
                     <el-option
@@ -1370,7 +1355,7 @@ function openSubmittedTask() {
                   </el-select>
                 </div>
 
-                <div class="mb-3 flex flex-wrap gap-2">
+                <div class="mb-4 flex flex-wrap gap-2">
                   <el-tag
                     v-for="taxonomy in preview.detail.taxonomies"
                     :key="taxonomy"
@@ -1392,13 +1377,13 @@ function openSubmittedTask() {
                   </el-tag>
                 </div>
 
-                <ChapterPreviewGrid />
+                <ChapterPreviewGrid class="min-h-0 flex-1" />
               </div>
             </div>
           </template>
         </div>
 
-        <div v-show="step === 2" class="space-y-4">
+        <div v-show="step === 2">
           <el-radio-group v-model="importMode">
             <el-radio-button
               v-for="item in importModeOptions"
@@ -1438,7 +1423,7 @@ function openSubmittedTask() {
 
           <div v-else class="grid grid-cols-12 gap-4">
             <div class="col-span-4 rounded border border-border bg-card p-4">
-              <div class="mb-3 font-semibold">作品封面</div>
+              <div class="mb-3">作品封面</div>
               <el-radio-group v-model="workCoverMode" class="mb-3">
                 <el-radio-button
                   label="provider"
@@ -1577,7 +1562,7 @@ function openSubmittedTask() {
           />
           <div v-else class="grid grid-cols-12 gap-4">
             <div class="col-span-5 rounded border border-border bg-card p-4">
-              <div class="mb-3 font-semibold">三方字段</div>
+              <div class="mb-3">三方字段</div>
               <div class="space-y-3 text-sm">
                 <div>
                   作者：{{
@@ -1674,7 +1659,7 @@ function openSubmittedTask() {
         <div v-show="step === 4" class="grid grid-cols-12 gap-4">
           <div class="col-span-5 rounded border border-border bg-card p-4">
             <div class="mb-3 flex items-center justify-between">
-              <div class="font-semibold">
+              <div>
                 章节映射 {{ selectedMappings.length }} /
                 {{ chapterMappings.length }}
               </div>
@@ -1817,7 +1802,7 @@ function openSubmittedTask() {
           </el-form>
         </div>
 
-        <div v-show="step === 5" class="space-y-4">
+        <div v-show="step === 5">
           <div
             class="flex items-center gap-3 rounded border border-border bg-card p-4"
           >
@@ -1856,7 +1841,7 @@ function openSubmittedTask() {
             <el-empty v-if="!contentPreview" description="请选择章节预览正文" />
             <template v-else>
               <div class="mb-3 flex items-center justify-between">
-                <div class="font-semibold">
+                <div>
                   {{ contentPreview.title }}
                 </div>
                 <el-tag>{{ contentPreview.images.length }} 张图片</el-tag>
@@ -1876,23 +1861,23 @@ function openSubmittedTask() {
           </div>
         </div>
 
-        <div v-show="step === 6" class="space-y-4">
+        <div v-show="step === 6">
           <div class="grid grid-cols-4 gap-4">
             <div class="rounded border border-border bg-card p-4">
               <div class="text-sm text-muted-foreground">导入模式</div>
-              <div class="mt-2 text-lg font-semibold">
+              <div class="mt-2 text-lg">
                 {{ importMode === 'createNew' ? '新建作品' : '挂载已有作品' }}
               </div>
             </div>
             <div class="rounded border border-border bg-card p-4">
               <div class="text-sm text-muted-foreground">章节数量</div>
-              <div class="mt-2 text-lg font-semibold">
+              <div class="mt-2 text-lg">
                 {{ selectedMappings.length }}
               </div>
             </div>
             <div class="rounded border border-border bg-card p-4">
               <div class="text-sm text-muted-foreground">作品封面</div>
-              <div class="mt-2 text-lg font-semibold">
+              <div class="mt-2 text-lg">
                 {{
                   importMode === 'attachToExisting'
                     ? '不修改'
@@ -1904,17 +1889,17 @@ function openSubmittedTask() {
             </div>
             <div class="rounded border border-border bg-card p-4">
               <div class="text-sm text-muted-foreground">覆盖确认</div>
-              <div class="mt-2 text-lg font-semibold">
+              <div class="mt-2 text-lg">
                 {{ updateWithoutOverwriteCount === 0 ? '已满足' : '未满足' }}
               </div>
             </div>
           </div>
 
           <el-empty v-if="!submittedTask" description="尚未提交导入任务" />
-          <div v-else class="space-y-4">
+          <div v-else>
             <div class="rounded border border-border bg-card p-4">
               <div class="mb-3 flex items-center justify-between gap-3">
-                <span class="font-semibold">后台任务</span>
+                <span>后台任务</span>
                 <el-button type="primary" @click="openSubmittedTask">
                   查看后台任务
                 </el-button>
@@ -1998,23 +1983,3 @@ function openSubmittedTask() {
   />
   <TagForm :on-submit="handleCreateTag" :schema="thirdPartyTagFormSchema" />
 </template>
-
-<style>
-.third-party-import-modal .el-step.is-simple .el-step__title {
-  font-size: 13px;
-}
-
-.third-party-import-modal .chapter-mapping-form .el-form-item {
-  margin-bottom: 14px;
-}
-
-.third-party-import-modal .chapter-mapping-form .el-form-item__content {
-  min-width: 0;
-}
-
-.third-party-import-modal .chapter-mapping-form .el-select,
-.third-party-import-modal .chapter-mapping-form .el-input,
-.third-party-import-modal .chapter-mapping-form .el-input-number {
-  width: 100%;
-}
-</style>

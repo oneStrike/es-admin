@@ -37,6 +37,8 @@ export type BaseSystemConfigDto = {
   securityConfig?: SecurityConfigDto;
   /* 站点配置 */
   siteConfig?: SiteConfigDto;
+  /* 三方资源解析配置 */
+  thirdPartyResourceParseConfig?: ThirdPartyResourceParseConfigDto;
   /* 更新时间 */
   updatedAt: string;
   /* 最后修改人 ID */
@@ -157,6 +159,27 @@ export type RemoteImageImportSecurityConfigDto = {
 
   /* 是否启用远程图片 DNS 不安全地址防护 */
   enableAddressGuard?: boolean | null;
+};
+
+/**
+ *  类型定义 [ThirdPartyResourceParseConfigDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ThirdPartyResourceParseConfigDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* CopyManga API 请求最小间隔（毫秒） */
+  apiIntervalMs?: null | number;
+  /* 是否启用三方资源解析节流 */
+  enabled?: boolean | null;
+  /* CopyManga host discovery 缓存 TTL（秒） */
+  hostCacheTtlSeconds?: null | number;
+  /* 三方远程图片下载最小间隔（毫秒） */
+  imageIntervalMs?: null | number;
+
+  /* 每个资源解析通道允许排队的最大请求数 */
+  maxQueueSize?: null | number;
 };
 
 /**
@@ -297,6 +320,8 @@ export type UpdateSystemConfigDto = {
   securityConfig?: SecurityConfigDto;
   /* 站点配置 */
   siteConfig?: SiteConfigDto;
+  /* 三方资源解析配置 */
+  thirdPartyResourceParseConfig?: ThirdPartyResourceParseConfigDto;
 
   /* 上传配置 */
   uploadConfig?: UploadConfigDto;

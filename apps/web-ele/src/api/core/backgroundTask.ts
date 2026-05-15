@@ -26,6 +26,18 @@ export async function backgroundTaskPageApi(
 }
 
 /**
+ * 分页查询我的后台任务通知
+ */
+export async function backgroundTaskMyPageApi(
+  params?: BackgroundTaskMyPageRequest,
+): Promise<BackgroundTaskMyPageResponse> {
+  return requestClient.get<BackgroundTaskMyPageResponse>(
+    '/api/admin/background-task/my/page',
+    { params },
+  );
+}
+
+/**
  * 查询后台任务详情
  */
 export async function backgroundTaskDetailApi(
@@ -58,17 +70,5 @@ export async function backgroundTaskRetryApi(
   return requestClient.post<BackgroundTaskRetryResponse>(
     '/api/admin/background-task/retry',
     params,
-  );
-}
-
-/**
- * 分页查询我的后台任务
- */
-export async function backgroundTaskMyPageApi(
-  params?: BackgroundTaskMyPageRequest,
-): Promise<BackgroundTaskMyPageResponse> {
-  return requestClient.get<BackgroundTaskMyPageResponse>(
-    '/api/admin/background-task/my/page',
-    { params },
   );
 }

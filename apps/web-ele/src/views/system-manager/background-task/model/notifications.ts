@@ -3,9 +3,9 @@ import type { RouteRecordRaw } from 'vue-router';
 import type { NotificationItem } from '@vben/layouts';
 
 import type {
-  BackgroundTaskDto,
   BackgroundTaskMyPageRequest,
   BackgroundTaskMyPageResponse,
+  BackgroundTaskNotificationDto,
 } from '#/api/types/backgroundTask';
 
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -68,7 +68,9 @@ function isTerminalStatus(status: number) {
   return TERMINAL_STATUSES.has(status);
 }
 
-function buildTaskNotificationItem(task: BackgroundTaskDto): NotificationItem {
+function buildTaskNotificationItem(
+  task: BackgroundTaskNotificationDto,
+): NotificationItem {
   const progress = resolveBackgroundTaskProgress(task);
   const status = formatBackgroundTaskStatus(task.status);
   const typeLabel = formatBackgroundTaskType(task.taskType);

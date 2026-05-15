@@ -29,6 +29,7 @@ import {
   maintenanceFormSchema,
   securityFormSchema,
   siteFormSchema,
+  thirdPartyResourceParseFormSchema,
   uploadFormSchema,
 } from './modules/model/shared';
 
@@ -47,6 +48,7 @@ const menuItems: Array<{ key: SystemConfigMenuKey; label: string }> = [
   { key: 'contentReview', label: '内容审核' },
   { key: 'forumHashtag', label: '话题配置' },
   { key: 'security', label: '安全配置' },
+  { key: 'thirdPartyResourceParse', label: '三方资源解析配置' },
   { key: 'upload', label: '上传配置' },
 ];
 
@@ -66,6 +68,9 @@ const currentSchema = computed(() => {
     }
     case 'security': {
       return securityFormSchema;
+    }
+    case 'thirdPartyResourceParse': {
+      return thirdPartyResourceParseFormSchema;
     }
     case 'upload': {
       return uploadFormSchema;

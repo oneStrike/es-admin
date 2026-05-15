@@ -3,6 +3,10 @@ import type { BackgroundTaskDto } from '#/api/types/backgroundTask';
 import { formatBackgroundTaskStatus } from './status';
 
 type ProgressStatus = 'exception' | 'success' | 'warning';
+interface BackgroundTaskProgressSource {
+  progress: unknown;
+  status: number;
+}
 
 export interface BackgroundTaskProgressView {
   message: string;
@@ -21,7 +25,7 @@ function normalizeProgressPercent(progress: Record<string, unknown>) {
 
 function normalizeProgressMessage(
   progress: Record<string, unknown>,
-  taskStatus: BackgroundTaskDto['status'],
+  taskStatus: number,
 ) {
   const message = progress.message;
   if (typeof message === 'string' && message.trim()) {
@@ -37,7 +41,7 @@ function getProgressRecord(progress: unknown): Record<string, unknown> {
 }
 
 export function resolveBackgroundTaskProgress(
-  task: BackgroundTaskDto,
+  task: BackgroundTaskProgressSource,
 ): BackgroundTaskProgressView {
   const progress = getProgressRecord(task.progress);
   const percent = normalizeProgressPercent(progress);

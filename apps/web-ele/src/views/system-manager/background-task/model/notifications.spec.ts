@@ -1,19 +1,14 @@
-import type { BackgroundTaskDto } from '#/api/types/backgroundTask';
+import type { BackgroundTaskNotificationDto } from '#/api/types/backgroundTask';
 
 import { describe, expect, it, vi } from 'vitest';
 
 import { createBackgroundTaskNotificationState } from './notifications';
 
-function createTask(overrides: Partial<BackgroundTaskDto>): BackgroundTaskDto {
+function createTask(
+  overrides: Partial<BackgroundTaskNotificationDto>,
+): BackgroundTaskNotificationDto {
   return {
-    createdAt: '2026-05-15 10:00:00',
-    id: 1,
-    maxRetries: 3,
-    operatorType: 1,
-    operatorUserId: 7,
-    payload: {},
     progress: { message: '处理中', percent: 40 },
-    retryCount: 0,
     status: 2,
     taskId: 'task-1',
     taskType: 'content.third-party-comic-import',

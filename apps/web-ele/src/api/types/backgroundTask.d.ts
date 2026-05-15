@@ -50,39 +50,6 @@ export type BackgroundTaskPageResponse = {
 };
 
 /**
- *  类型定义 [BackgroundTaskDetailRequest]
- *  @来源 系统管理/后台任务
- *  @更新时间 2026-05-09 22:20:06
- */
-export type BackgroundTaskDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 后台任务ID */
-  taskId: string;
-};
-
-export type BackgroundTaskDetailResponse = BackgroundTaskDto;
-
-/**
- *  类型定义 [BackgroundTaskCancelRequest]
- *  @来源 系统管理/后台任务
- *  @更新时间 2026-05-09 22:20:06
- */
-export type BackgroundTaskCancelRequest = BackgroundTaskIdDto;
-
-export type BackgroundTaskCancelResponse = BackgroundTaskDto;
-
-/**
- *  类型定义 [BackgroundTaskRetryRequest]
- *  @来源 系统管理/后台任务
- *  @更新时间 2026-05-09 22:20:06
- */
-export type BackgroundTaskRetryRequest = BackgroundTaskIdDto;
-
-export type BackgroundTaskRetryResponse = BackgroundTaskDto;
-
-/**
  *  类型定义 [BackgroundTaskMyPageRequest]
  *  @来源 系统管理/后台任务
  *  @更新时间 2026-05-09 22:20:06
@@ -121,7 +88,7 @@ export type BackgroundTaskMyPageResponse = {
   [property: string]: any;
 
   /* 列表数据 */
-  list?: BackgroundTaskDto[];
+  list?: BackgroundTaskNotificationDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -132,6 +99,39 @@ export type BackgroundTaskMyPageResponse = {
   /* 总条数 */
   total?: number;
 };
+
+/**
+ *  类型定义 [BackgroundTaskDetailRequest]
+ *  @来源 系统管理/后台任务
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BackgroundTaskDetailRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 后台任务ID */
+  taskId: string;
+};
+
+export type BackgroundTaskDetailResponse = BackgroundTaskDto;
+
+/**
+ *  类型定义 [BackgroundTaskCancelRequest]
+ *  @来源 系统管理/后台任务
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BackgroundTaskCancelRequest = BackgroundTaskIdDto;
+
+export type BackgroundTaskCancelResponse = BackgroundTaskDto;
+
+/**
+ *  类型定义 [BackgroundTaskRetryRequest]
+ *  @来源 系统管理/后台任务
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BackgroundTaskRetryRequest = BackgroundTaskIdDto;
+
+export type BackgroundTaskRetryResponse = BackgroundTaskDto;
 
 /**
  *  类型定义 [BackgroundTaskDto]
@@ -186,6 +186,42 @@ export type BackgroundTaskDto = {
 
   /* 更新时间 */
   updatedAt: string;
+};
+
+/**
+ *  类型定义 [BackgroundTaskNotificationDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BackgroundTaskNotificationDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 任务进度 */
+  progress: BackgroundTaskNotificationProgressDto;
+  /* 任务状态（1=待处理；2=处理中；3=最终写入中；4=成功；5=失败；6=已取消；7=回滚失败） */
+  status: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  /* 后台任务ID */
+  taskId: string;
+  /* 后台任务类型 */
+  taskType: string;
+
+  /* 更新时间 */
+  updatedAt: string;
+};
+
+/**
+ *  类型定义 [BackgroundTaskNotificationProgressDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BackgroundTaskNotificationProgressDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 任务进度文案 */
+  message?: string;
+
+  /* 任务进度百分比 */
+  percent?: number;
 };
 
 /**

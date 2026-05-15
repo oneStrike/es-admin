@@ -412,6 +412,72 @@ export const securityFormSchema: EsFormSchema = [
   },
 ];
 
+// ========== 三方资源解析配置 ==========
+export const thirdPartyResourceParseFormSchema: EsFormSchema = [
+  {
+    component: 'Divider',
+    fieldName: 'divider_third_party_resource_parse',
+    hideLabel: true,
+    formItemClass: 'w-full',
+    renderComponentContent: () => {
+      return {
+        default: () =>
+          h('div', { class: 'text-lg font-bold' }, '三方资源解析配置'),
+      };
+    },
+  },
+  {
+    component: 'Switch',
+    fieldName: 'thirdPartyResourceParseEnabled',
+    label: '启用解析节流',
+    defaultValue: true,
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'thirdPartyResourceParseApiIntervalMs',
+    label: 'API 请求间隔(毫秒)',
+    defaultValue: 3000,
+    componentProps: {
+      min: 1,
+      max: 60_000,
+      placeholder: '请输入 API 请求间隔',
+    },
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'thirdPartyResourceParseImageIntervalMs',
+    label: '图片下载间隔(毫秒)',
+    defaultValue: 3000,
+    componentProps: {
+      min: 1,
+      max: 60_000,
+      placeholder: '请输入图片下载间隔',
+    },
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'thirdPartyResourceParseHostCacheTtlSeconds',
+    label: 'Host 缓存 TTL(秒)',
+    defaultValue: 60,
+    componentProps: {
+      min: 1,
+      max: 3600,
+      placeholder: '请输入 Host 缓存 TTL',
+    },
+  },
+  {
+    component: 'InputNumber',
+    fieldName: 'thirdPartyResourceParseMaxQueueSize',
+    label: '单通道最大排队数',
+    defaultValue: 1000,
+    componentProps: {
+      min: 1,
+      max: 10_000,
+      placeholder: '请输入单通道最大排队数',
+    },
+  },
+];
+
 // ========== 上传配置 ==========
 export const uploadFormSchema: EsFormSchema = [
   {

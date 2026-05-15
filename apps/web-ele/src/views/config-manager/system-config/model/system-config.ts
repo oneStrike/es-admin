@@ -7,6 +7,7 @@ export type SystemConfigMenuKey =
   | 'maintenance'
   | 'security'
   | 'site'
+  | 'thirdPartyResourceParse'
   | 'upload';
 
 export type SystemConfigFormValues = Record<string, unknown>;
@@ -19,6 +20,14 @@ type BuildSystemConfigUpdatePayloadInput = {
   menuKey: SystemConfigMenuKey;
   values: SystemConfigFormValues;
 };
+
+const THIRD_PARTY_RESOURCE_PARSE_DEFAULTS = {
+  apiIntervalMs: 3000,
+  enabled: true,
+  hostCacheTtlSeconds: 60,
+  imageIntervalMs: 3000,
+  maxQueueSize: 1000,
+} satisfies NonNullable<BaseSystemConfigDto['thirdPartyResourceParseConfig']>;
 
 function textValue(value: unknown) {
   return typeof value === 'string' ? value : undefined;
@@ -108,6 +117,28 @@ export function buildSystemConfigFormValues(
         remoteImageImport.enableAddressGuard ?? true;
       break;
     }
+    case 'thirdPartyResourceParse': {
+      const thirdPartyResourceParseConfig = {
+        ...THIRD_PARTY_RESOURCE_PARSE_DEFAULTS,
+        ...(config?.thirdPartyResourceParseConfig ?? {}),
+      };
+      values.thirdPartyResourceParseEnabled =
+        thirdPartyResourceParseConfig.enabled ??
+        THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.enabled;
+      values.thirdPartyResourceParseApiIntervalMs =
+        numberValue(thirdPartyResourceParseConfig.apiIntervalMs) ??
+        THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.apiIntervalMs;
+      values.thirdPartyResourceParseImageIntervalMs =
+        numberValue(thirdPartyResourceParseConfig.imageIntervalMs) ??
+        THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.imageIntervalMs;
+      values.thirdPartyResourceParseHostCacheTtlSeconds =
+        numberValue(thirdPartyResourceParseConfig.hostCacheTtlSeconds) ??
+        THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.hostCacheTtlSeconds;
+      values.thirdPartyResourceParseMaxQueueSize =
+        numberValue(thirdPartyResourceParseConfig.maxQueueSize) ??
+        THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.maxQueueSize;
+      break;
+    }
     case 'upload': {
       const uploadConfig = config?.uploadConfig ?? {};
       const qiniu = uploadConfig.qiniu ?? {};
@@ -163,6 +194,7 @@ export function buildSystemConfigUpdatePayload({
     operationConfig: currentConfig.operationConfig,
     securityConfig: currentConfig.securityConfig,
     siteConfig: currentConfig.siteConfig,
+    thirdPartyResourceParseConfig: currentConfig.thirdPartyResourceParseConfig,
     uploadConfig: currentConfig.uploadConfig,
   };
 
@@ -248,6 +280,31 @@ export function buildSystemConfigUpdatePayload({
             booleanValue(values.remoteImageImportEnableAddressGuard) ?? true,
         },
       };
+      break;
+    }
+    case 'thirdPartyResourceParse': {
+      const currentThirdPartyResourceParseConfig =
+        currentConfig.thirdPartyResourceParseConfig ?? {};
+      submitData.thirdPartyResourceParseConfig = {
+        ...currentThirdPartyResourceParseConfig,
+        apiIntervalMs:
+          numberValue(values.thirdPartyResourceParseApiIntervalMs) ??
+          THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.apiIntervalMs,
+        enabled:
+          booleanValue(values.thirdPartyResourceParseEnabled) ??
+          THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.enabled,
+        hostCacheTtlSeconds:
+          numberValue(values.thirdPartyResourceParseHostCacheTtlSeconds) ??
+          THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.hostCacheTtlSeconds,
+        imageIntervalMs:
+          numberValue(values.thirdPartyResourceParseImageIntervalMs) ??
+          THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.imageIntervalMs,
+        maxQueueSize:
+          numberValue(values.thirdPartyResourceParseMaxQueueSize) ??
+          THIRD_PARTY_RESOURCE_PARSE_DEFAULTS.maxQueueSize,
+      } satisfies NonNullable<
+        SystemUpdateRequest['thirdPartyResourceParseConfig']
+      >;
       break;
     }
     case 'upload': {
