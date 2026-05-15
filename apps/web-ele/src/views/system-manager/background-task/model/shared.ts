@@ -16,6 +16,9 @@ export {
   canRetryBackgroundTask,
   formatDiagnosticJson,
   getDiagnosticMessage,
+  hasActiveBackgroundTasks,
+  isActiveBackgroundTaskStatus,
+  isTerminalBackgroundTaskStatus,
   resolveBackgroundTaskProgress,
 } from './progress';
 export {

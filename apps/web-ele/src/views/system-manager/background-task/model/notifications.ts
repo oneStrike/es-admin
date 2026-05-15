@@ -15,7 +15,11 @@ import { useAccessStore } from '@vben/stores';
 
 import { formatUTC } from '#/utils/dayjs';
 
-import { resolveBackgroundTaskProgress } from './progress';
+import {
+  isActiveBackgroundTaskStatus,
+  isTerminalBackgroundTaskStatus,
+  resolveBackgroundTaskProgress,
+} from './progress';
 import { formatBackgroundTaskStatus } from './status';
 import { formatBackgroundTaskType } from './task-type';
 
@@ -25,8 +29,6 @@ const NOTIFICATION_PAGE_SIZE = 20;
 const POLL_INTERVAL_MS = 15_000;
 const BACKGROUND_TASK_NOTIFICATION_AVATAR =
   'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 rx=%2220%22 fill=%22%232563eb%22/%3E%3Cpath d=%22M12 13h16v11H12z%22 fill=%22%23fff%22 opacity=%22.92%22/%3E%3Cpath d=%22M15 28h10%22 stroke=%22%23fff%22 stroke-width=%222.5%22 stroke-linecap=%22round%22/%3E%3C/svg%3E';
-const ACTIVE_STATUSES = new Set([1, 2, 3]);
-const TERMINAL_STATUSES = new Set([4, 5, 6, 7]);
 
 interface BackgroundTaskNotificationGate {
   accessToken: null | string;
@@ -60,21 +62,13 @@ function canPoll(gate: BackgroundTaskNotificationGate) {
   );
 }
 
-function isActiveStatus(status: number) {
-  return ACTIVE_STATUSES.has(status);
-}
-
-function isTerminalStatus(status: number) {
-  return TERMINAL_STATUSES.has(status);
-}
-
 function buildTaskNotificationItem(
   task: BackgroundTaskNotificationDto,
 ): NotificationItem {
   const progress = resolveBackgroundTaskProgress(task);
   const status = formatBackgroundTaskStatus(task.status);
   const typeLabel = formatBackgroundTaskType(task.taskType);
-  const terminal = isTerminalStatus(task.status);
+  const terminal = isTerminalBackgroundTaskStatus(task.status);
 
   return {
     avatar: BACKGROUND_TASK_NOTIFICATION_AVATAR,
@@ -138,13 +132,13 @@ export function createBackgroundTaskNotificationState(
       for (const task of page.list ?? []) {
         const item = buildTaskNotificationItem(task);
 
-        if (isActiveStatus(task.status)) {
+        if (isActiveBackgroundTaskStatus(task.status)) {
           activeTaskIds.add(task.taskId);
           notifications.value = upsertNotification(notifications.value, item);
           continue;
         }
 
-        if (!isTerminalStatus(task.status)) {
+        if (!isTerminalBackgroundTaskStatus(task.status)) {
           continue;
         }
 

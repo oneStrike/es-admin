@@ -6,6 +6,9 @@ import {
   canCancelBackgroundTask,
   canRetryBackgroundTask,
   getDiagnosticMessage,
+  hasActiveBackgroundTasks,
+  isActiveBackgroundTaskStatus,
+  isTerminalBackgroundTaskStatus,
   resolveBackgroundTaskProgress,
 } from './progress';
 
@@ -107,6 +110,23 @@ describe('background task progress model', () => {
         createTask({ maxRetries: 3, retryCount: 3, status: 5 }),
       ),
     ).toBe(false);
+  });
+
+  it('classifies active and terminal statuses for polling boundaries', () => {
+    expect(
+      [1, 2, 3].every((status) => isActiveBackgroundTaskStatus(status)),
+    ).toBe(true);
+    expect(
+      [4, 5, 6, 7].every((status) => isTerminalBackgroundTaskStatus(status)),
+    ).toBe(true);
+    expect(isActiveBackgroundTaskStatus(4)).toBe(false);
+    expect(isTerminalBackgroundTaskStatus(2)).toBe(false);
+    expect(isActiveBackgroundTaskStatus(null)).toBe(false);
+    expect(isTerminalBackgroundTaskStatus(undefined)).toBe(false);
+    expect(hasActiveBackgroundTasks([{ status: 4 }, { status: 2 }])).toBe(true);
+    expect(hasActiveBackgroundTasks([{ status: 4 }, { status: 5 }])).toBe(
+      false,
+    );
   });
 
   it('keeps diagnostic objects visible even when message is missing', () => {

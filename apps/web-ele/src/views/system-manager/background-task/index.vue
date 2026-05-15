@@ -8,7 +8,7 @@ import type {
   BackgroundTaskRetryRequest,
 } from '#/api/types/backgroundTask';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -33,6 +33,8 @@ import {
   formatBackgroundTaskType,
   formatDiagnosticJson,
   getDiagnosticMessage,
+  hasActiveBackgroundTasks,
+  isActiveBackgroundTaskStatus,
   resolveBackgroundTaskProgress,
 } from './model/shared';
 
@@ -41,7 +43,13 @@ defineOptions({
 });
 
 const route = useRoute();
+const BACKGROUND_TASK_PAGE_POLL_INTERVAL_MS = 5000;
 const currentTask = ref<BackgroundTaskDto | null>(null);
+const hasActivePageTasks = ref(false);
+const isDetailOpen = ref(false);
+const isDocumentVisible = ref(readDocumentVisible());
+let pagePollTimer: number | undefined;
+let isPagePolling = false;
 const taskJsonFields: Array<{
   field: keyof BackgroundTaskDto;
   label: string;
@@ -96,13 +104,17 @@ const gridOptions: VxeGridProps<BackgroundTaskDto> = {
     autoLoad: false,
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await backgroundTaskPageApi(
+        const response = await backgroundTaskPageApi(
           formatQuery({
             page,
             sorts,
             formValues: buildBackgroundTaskPageRequest(formValues ?? {}),
           }) satisfies BackgroundTaskPageRequest,
         );
+        hasActivePageTasks.value = hasActiveBackgroundTasks(
+          response.list ?? [],
+        );
+        return response;
       },
     },
     sort: true,
@@ -118,6 +130,12 @@ const [DetailModal, detailApi] = useVbenModal({
   footer: false,
   title: '后台任务详情',
   class: 'w-[1000px] h-[800px]',
+  onOpenChange: (isOpen) => {
+    isDetailOpen.value = isOpen;
+    if (!isOpen) {
+      currentTask.value = null;
+    }
+  },
 });
 
 const currentTaskProgress = computed(() =>
@@ -171,6 +189,45 @@ async function openDetail(row: BackgroundTaskDto) {
   detailApi.open();
 }
 
+async function refreshCurrentTask(taskId: string) {
+  const detail = await backgroundTaskDetailApi({
+    taskId,
+  } satisfies BackgroundTaskDetailRequest);
+
+  if (currentTask.value?.taskId === taskId) {
+    currentTask.value = detail;
+  }
+}
+
+async function pollVisibleBackgroundTasks() {
+  if (!isDocumentVisible.value || isPagePolling) {
+    return;
+  }
+
+  const detailTaskId =
+    isDetailOpen.value &&
+    currentTask.value &&
+    isActiveBackgroundTaskStatus(currentTask.value.status)
+      ? currentTask.value.taskId
+      : '';
+
+  if (!hasActivePageTasks.value && !detailTaskId) {
+    return;
+  }
+
+  isPagePolling = true;
+  try {
+    await Promise.all([
+      gridApi.reload(),
+      detailTaskId ? refreshCurrentTask(detailTaskId) : Promise.resolve(),
+    ]);
+  } catch {
+    // Background refresh should not interrupt the operator's current page.
+  } finally {
+    isPagePolling = false;
+  }
+}
+
 async function cancelTask(row: BackgroundTaskDto) {
   currentTask.value = await backgroundTaskCancelApi({
     taskId: row.taskId,
@@ -211,13 +268,45 @@ function getInitialTaskId() {
   return typeof taskId === 'string' ? taskId.trim() : '';
 }
 
+function readDocumentVisible() {
+  return typeof document === 'undefined'
+    ? true
+    : document.visibilityState === 'visible';
+}
+
+function syncDocumentVisibility() {
+  isDocumentVisible.value = readDocumentVisible();
+  if (isDocumentVisible.value) {
+    void pollVisibleBackgroundTasks();
+  }
+}
+
 onMounted(async () => {
+  if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', syncDocumentVisibility);
+  }
+  if (typeof window !== 'undefined') {
+    pagePollTimer = window.setInterval(
+      pollVisibleBackgroundTasks,
+      BACKGROUND_TASK_PAGE_POLL_INTERVAL_MS,
+    );
+  }
+
   const taskId = getInitialTaskId();
   if (taskId) {
     await gridApi.formApi.setValues({ taskId });
   }
 
   await gridApi.reload();
+});
+
+onBeforeUnmount(() => {
+  if (typeof document !== 'undefined') {
+    document.removeEventListener('visibilitychange', syncDocumentVisibility);
+  }
+  if (pagePollTimer) {
+    window.clearInterval(pagePollTimer);
+  }
 });
 </script>
 

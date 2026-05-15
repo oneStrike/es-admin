@@ -15,6 +15,27 @@ export interface BackgroundTaskProgressView {
   striped: boolean;
 }
 
+const ACTIVE_BACKGROUND_TASK_STATUSES = new Set([1, 2, 3]);
+const TERMINAL_BACKGROUND_TASK_STATUSES = new Set([4, 5, 6, 7]);
+
+export function isActiveBackgroundTaskStatus(status?: null | number) {
+  return (
+    typeof status === 'number' && ACTIVE_BACKGROUND_TASK_STATUSES.has(status)
+  );
+}
+
+export function isTerminalBackgroundTaskStatus(status?: null | number) {
+  return (
+    typeof status === 'number' && TERMINAL_BACKGROUND_TASK_STATUSES.has(status)
+  );
+}
+
+export function hasActiveBackgroundTasks(
+  tasks: Array<{ status?: null | number }> = [],
+) {
+  return tasks.some((task) => isActiveBackgroundTaskStatus(task.status));
+}
+
 function normalizeProgressPercent(progress: Record<string, unknown>) {
   const percent = progress.percent;
   if (typeof percent !== 'number' || !Number.isFinite(percent)) {
@@ -65,7 +86,7 @@ export function resolveBackgroundTaskProgress(
 }
 
 export function canCancelBackgroundTask(task: BackgroundTaskDto) {
-  return task.status === 1 || task.status === 2 || task.status === 3;
+  return isActiveBackgroundTaskStatus(task.status);
 }
 
 export function canRetryBackgroundTask(task: BackgroundTaskDto) {

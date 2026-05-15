@@ -369,20 +369,20 @@ const searchGridOptions: VxeGridProps<SearchComicRow> = {
   columns: [
     {
       field: 'cover',
-      slots: { default: 'searchCover' },
       title: '封面',
       width: 96,
+      cellRender: {
+        name: 'CellImage',
+      },
     },
     {
       field: 'name',
       minWidth: 220,
-      slots: { default: 'searchName' },
       title: '作品',
     },
     {
       field: 'author',
       minWidth: 220,
-      slots: { default: 'searchAuthor' },
       title: '作者',
     },
     {
@@ -1263,29 +1263,6 @@ function openSubmittedTask() {
           <Form />
 
           <SearchGrid class="min-h-0 flex-1">
-            <template #searchCover="{ row }">
-              <div class="flex justify-center">
-                <el-image
-                  :src="row.cover"
-                  class="h-[82px] w-[56px] rounded object-cover"
-                  fit="cover"
-                />
-              </div>
-            </template>
-
-            <template #searchName="{ row }">
-              <div class="line-clamp-2 text-sm font-semibold">
-                {{ row.name }}
-              </div>
-              <div class="mt-1 text-xs text-muted-foreground">
-                ID：{{ row.id ?? '-' }}
-              </div>
-            </template>
-
-            <template #searchAuthor="{ row }">
-              {{ formatTextList(row.author) }}
-            </template>
-
             <template #searchActions="{ row }">
               <el-button
                 link
@@ -1388,7 +1365,7 @@ function openSubmittedTask() {
             <el-radio-button
               v-for="item in importModeOptions"
               :key="item.value"
-              :label="item.value"
+              :value="item.value"
             >
               {{ item.label }}
             </el-radio-button>
@@ -1426,12 +1403,12 @@ function openSubmittedTask() {
               <div class="mb-3">作品封面</div>
               <el-radio-group v-model="workCoverMode" class="mb-3">
                 <el-radio-button
-                  label="provider"
+                  value="provider"
                   :disabled="!canUseProviderCover"
                 >
                   三方封面
                 </el-radio-button>
-                <el-radio-button label="local">本地上传</el-radio-button>
+                <el-radio-button value="local">本地上传</el-radio-button>
               </el-radio-group>
 
               <el-image
