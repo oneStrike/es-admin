@@ -149,6 +149,8 @@ export type BackgroundTaskDto = {
   claimExpiresAt?: null | string;
   /* 创建时间 */
   createdAt: string;
+  /* 后台任务去重键 */
+  dedupeKey?: null | string;
   /* 任务错误信息 */
   error?: null | Record<string, any>;
   /* 进入最终写入时间 */
@@ -175,6 +177,8 @@ export type BackgroundTaskDto = {
   retryCount: number;
   /* 回滚失败诊断 */
   rollbackError?: null | Record<string, any>;
+  /* 后台任务执行串行键 */
+  serialKey?: null | string;
   /* 开始处理时间 */
   startedAt?: null | string;
   /* 任务状态（1=待处理；2=处理中；3=最终写入中；4=成功；5=失败；6=已取消；7=回滚失败） */

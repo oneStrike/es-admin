@@ -40,6 +40,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { backgroundTaskDetailApi } from '#/api/core';
 import {
   contentAuthorCreateApi,
   contentAuthorPageApi,
@@ -69,7 +70,9 @@ import { formSchema as tagFormSchema } from '../../tag-manager/model/shared';
 import { extractRelationIds } from '../../work-relations';
 import {
   canUseProviderWorkCover,
+  canSubmitImportAgain,
   findCreatedOptionByName,
+  hasProviderGroupPathWord,
   resolveExactRelationMatches,
   resolveInitialGroup,
   resolveInitialWorkCoverMode,
@@ -77,6 +80,7 @@ import {
   SERVER_COMIC_CATEGORY_TYPE,
   SERVER_MANGA_AUTHOR_TYPE,
   toApiGroup,
+  wizardSubmissionFingerprint,
 } from './model/helpers';
 
 const wizardSteps = ['检索', '预览', '作品', '章节', '正文'];
@@ -227,6 +231,7 @@ const contentPreview = ref<null | ThirdPartyComicChapterContentDto>(null);
 const submittedTask = ref<ContentComicThirdPartyImportConfirmResponse | null>(
   null,
 );
+const submittedTaskFingerprint = ref('');
 const router = useRouter();
 
 const wizardBusy = computed(
@@ -522,6 +527,7 @@ function resetWizard() {
   activeProviderChapterId.value = '';
   contentPreview.value = null;
   submittedTask.value = null;
+  submittedTaskFingerprint.value = '';
   formApi.setValues({
     keyword: '',
     platform: '',
@@ -604,6 +610,7 @@ async function loadImportPreview(group = selectedGroup.value) {
   previewLoading.value = true;
   contentPreview.value = null;
   submittedTask.value = null;
+  submittedTaskFingerprint.value = '';
   try {
     const res = await contentComicThirdPartyImportPreviewApi({
       comicId: String(comicId),
@@ -1335,18 +1342,49 @@ async function handleImport() {
 
   const request = buildImportRequest();
   if (!request) return;
+  if (!hasProviderGroupPathWord(request)) {
+    useMessage.warning('三方来源分组缺失，请重新预览后再导入');
+    return;
+  }
+
+  const fingerprint = wizardSubmissionFingerprint(request);
 
   importLoading.value = true;
-  submittedTask.value = null;
   try {
+    if (submittedTask.value && submittedTaskFingerprint.value === fingerprint) {
+      submittedTask.value = await refreshSubmittedTask(submittedTask.value);
+    }
+    if (
+      !canSubmitImportAgain(
+        submittedTask.value,
+        submittedTaskFingerprint.value,
+        fingerprint,
+      )
+    ) {
+      useMessage.warning('当前导入配置已提交，请等待任务完成或修改配置后重试');
+      return;
+    }
+
     submittedTask.value = await contentComicThirdPartyImportConfirmApi(request);
+    submittedTaskFingerprint.value = fingerprint;
     useMessage.success(
       `导入任务已提交：${submittedTask.value.taskId.slice(0, 8)}`,
     );
   } catch {
     submittedTask.value = null;
+    submittedTaskFingerprint.value = '';
   } finally {
     importLoading.value = false;
+  }
+}
+
+async function refreshSubmittedTask(
+  task: ContentComicThirdPartyImportConfirmResponse,
+) {
+  try {
+    return await backgroundTaskDetailApi({ taskId: task.taskId });
+  } catch {
+    return task;
   }
 }
 
@@ -1457,6 +1495,13 @@ function openSubmittedTask() {
     name: 'BackgroundTaskManager',
     query: { taskId: submittedTask.value.taskId },
   });
+}
+
+function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
+  const value = (submittedTask.value as Record<string, unknown> | null)?.[
+    field
+  ];
+  return typeof value === 'string' && value ? value : '';
 }
 </script>
 
@@ -2092,6 +2137,18 @@ function openSubmittedTask() {
                     </el-descriptions-item>
                     <el-descriptions-item label="更新时间">
                       {{ formatUTC(submittedTask.updatedAt) || '-' }}
+                    </el-descriptions-item>
+                    <el-descriptions-item
+                      v-if="getSubmittedTaskReservationValue('dedupeKey')"
+                      label="去重键"
+                    >
+                      {{ getSubmittedTaskReservationValue('dedupeKey') }}
+                    </el-descriptions-item>
+                    <el-descriptions-item
+                      v-if="getSubmittedTaskReservationValue('serialKey')"
+                      label="串行键"
+                    >
+                      {{ getSubmittedTaskReservationValue('serialKey') }}
                     </el-descriptions-item>
                   </template>
                 </el-descriptions>

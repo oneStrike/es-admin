@@ -1,9 +1,11 @@
 import type { SelectOption } from './types';
 
 import type {
+  ContentComicThirdPartyImportConfirmRequest,
   ThirdPartyComicCoverOptionsDto,
   ThirdPartyComicGroupDto,
 } from '#/api/types/content';
+import type { BackgroundTaskDto } from '#/api/types/backgroundTask';
 
 export const SERVER_MANGA_AUTHOR_TYPE = 1;
 export const SERVER_COMIC_CATEGORY_TYPE = 1;
@@ -26,6 +28,44 @@ export function resolveInitialGroup(groups: ThirdPartyComicGroupDto[]) {
 
 export function toApiGroup(group: string) {
   return group.trim() || undefined;
+}
+
+export function hasProviderGroupPathWord(
+  request: ContentComicThirdPartyImportConfirmRequest,
+) {
+  return Boolean(request.sourceSnapshot.providerGroupPathWord?.trim());
+}
+
+export function wizardSubmissionFingerprint(
+  request: ContentComicThirdPartyImportConfirmRequest,
+) {
+  const { sourceSnapshot, ...restRequest } = request;
+  const { fetchedAt: _fetchedAt, ...stableSourceSnapshot } = sourceSnapshot;
+  return stableStringify({
+    ...restRequest,
+    sourceSnapshot: stableSourceSnapshot,
+  });
+}
+
+export function canSubmitImportAgain(
+  submittedTask: BackgroundTaskDto | null,
+  submittedTaskFingerprint: string,
+  currentFingerprint: string,
+) {
+  if (
+    !submittedTask ||
+    !submittedTaskFingerprint ||
+    submittedTaskFingerprint !== currentFingerprint
+  ) {
+    return true;
+  }
+  return isBackgroundTaskRetryableCleanStatus(submittedTask.status);
+}
+
+function isBackgroundTaskRetryableCleanStatus(
+  status: BackgroundTaskDto['status'],
+) {
+  return status === 5 || status === 6;
 }
 
 function normalizeOptionLabel(value: string) {
@@ -87,4 +127,35 @@ export function resolveSelectDefault(
     return fallback;
   }
   return '';
+}
+
+function stableStringify(value: unknown): string {
+  return JSON.stringify(toStableJsonValue(value));
+}
+
+function toStableJsonValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) => toStableJsonValue(item));
+  }
+  if (!isPlainObject(value)) {
+    return value;
+  }
+
+  const stableObject: Record<string, unknown> = {};
+  for (const key of Object.keys(value).sort()) {
+    const item = value[key];
+    if (item === undefined) {
+      continue;
+    }
+    stableObject[key] = toStableJsonValue(item);
+  }
+  return stableObject;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
 }

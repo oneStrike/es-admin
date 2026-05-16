@@ -174,6 +174,7 @@ const currentTaskOverview = computed(() => {
   return [
     { label: '操作者', value: formatBackgroundTaskOperator(task) },
     { label: '处理 Worker', value: task.claimedBy || '未分配' },
+    ...buildTaskReservationOverview(task),
     { label: '残留诊断', value: task.residue ? '有残留' : '无残留' },
     { label: '回滚错误', value: task.rollbackError ? '需处理' : '无' },
   ];
@@ -247,6 +248,21 @@ function canCancelTask(task: BackgroundTaskDto) {
 
 function canRetryTask(task: BackgroundTaskDto) {
   return canRetryBackgroundTask(task);
+}
+
+function buildTaskReservationOverview(task: BackgroundTaskDto) {
+  return [
+    { label: '去重键', value: getTaskReservationValue(task, 'dedupeKey') },
+    { label: '串行键', value: getTaskReservationValue(task, 'serialKey') },
+  ].filter((item) => item.value);
+}
+
+function getTaskReservationValue(
+  task: BackgroundTaskDto,
+  field: 'dedupeKey' | 'serialKey',
+) {
+  const value = (task as Record<string, unknown>)[field];
+  return typeof value === 'string' && value ? value : '';
 }
 
 function canApplyDetailResponse(token: number, taskId: string) {
