@@ -14,6 +14,7 @@
 
 - 页面列表行类型必须优先从生成 API 响应中推导，例如 `NonNullable<XxxPageResponse['list']>[number]`。
 - 不要手写一份与 DTO 重复的行类型。
+- 页面或 model 中的 UI 草稿类型如果与 DTO 字段高度重合，应优先用 `Pick`、索引访问、`NonNullable`、`Extract` 等从生成请求/响应类型派生，只在本地类型中补充 UI-only 字段、默认值收窄或表单归一化差异。
 - 创建、更新、查询、确认等提交 payload 必须由生成 API 请求类型约束。
 - 对象字面量处优先使用 `satisfies XxxRequest` 校验。
 - 函数返回类型默认交给 TypeScript 推导，除非公共 API 边界、递归结构或泛型约束确实需要显式返回类型。
@@ -31,4 +32,5 @@
 - model 层应承载同一业务字段的 label、枚举选项、格式化、显示/筛选语义。
 - 页面、弹窗、表格 slot 中不应各自维护一套相同字段定义。
 - model 中的请求构造函数应只传后端契约允许的字段。
+- UI-only 状态（例如选择标记、临时上传路径、展示 label/value option）可以保留本地类型，但其后端字段和值类型应尽量从生成类型或同域 helper 泛型约束中取得。
 - model 中的兼容字段映射、特殊默认值和刻意省略字段，应按 [注释规范](./05-comments.md) 写明原因。

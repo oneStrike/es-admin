@@ -1,21 +1,37 @@
 <script setup lang="ts">
-import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  AuthorPageResponseDto,
-  BaseCategoryDto,
-  BaseTagDto,
+  ChapterAction,
+  ChapterMappingForm,
+  ChapterPreviewRow,
+  ContentAuthorCreateRequest,
+  ContentAuthorPageRequest,
+  ContentCategoryCreateRequest,
+  ContentCategoryPageRequest,
+  ContentComicDetailRequest,
+  ContentComicDetailResponse,
+  ContentComicPageRequest,
+  ContentComicThirdPartyChapterContentDetailRequest,
   ContentComicThirdPartyImportConfirmRequest,
   ContentComicThirdPartyImportConfirmResponse,
+  ContentComicThirdPartyImportPreviewRequest,
   ContentComicThirdPartyImportPreviewResponse,
-  CreateAuthorDto,
-  CreateCategoryDto,
-  CreateTagDto,
-  PageWorkDto,
-  PlatformResponseDto,
-  SearchComicItemDto,
+  ContentTagCreateRequest,
+  ContentTagPageRequest,
+  DictOption,
+  ImportMode,
+  LocalEntityRow,
+  LocalOption,
+  LocalWorkRow,
+  PlatformOption,
+  SearchComicRow,
+  SearchFormValues,
   ThirdPartyComicChapterContentDto,
   ThirdPartyComicImportChapterItemDto,
-} from '#/api/types/content';
+  WorkCoverMode,
+  WorkDraftForm,
+} from './model/types';
+
+import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { EsFormSchema } from '#/types';
 
 import { useRouter } from 'vue-router';
@@ -29,6 +45,7 @@ import {
   contentAuthorPageApi,
   contentCategoryCreateApi,
   contentCategoryPageApi,
+  contentComicDetailApi,
   contentComicPageApi,
   contentComicThirdPartyChapterContentDetailApi,
   contentComicThirdPartyImportConfirmApi,
@@ -49,6 +66,7 @@ import { formatBackgroundTaskStatus } from '#/views/system-manager/background-ta
 import { formSchema as authorFormSchema } from '../../author-manager/model/shared';
 import { formSchema as categoryFormSchema } from '../../category-manager/model/shared';
 import { formSchema as tagFormSchema } from '../../tag-manager/model/shared';
+import { extractRelationIds } from '../../work-relations';
 import {
   canUseProviderWorkCover,
   findCreatedOptionByName,
@@ -60,81 +78,7 @@ import {
   toApiGroup,
 } from './model/helpers';
 
-type ImportMode = ContentComicThirdPartyImportConfirmRequest['mode'];
-type WorkCoverMode = NonNullable<
-  ContentComicThirdPartyImportConfirmRequest['cover']
->['mode'];
-type ChapterAction = ThirdPartyComicImportChapterItemDto['action'];
-
-interface PlatformOption {
-  label: string;
-  value: string;
-}
-
-interface LocalOption {
-  label: string;
-  value: number;
-}
-
-interface DictOption {
-  label: string;
-  value: string;
-}
-
-interface SearchFormValues {
-  keyword?: string;
-  platform?: string;
-}
-
-interface WorkDraftForm {
-  ageRating?: string;
-  alias?: string;
-  authorIds: number[];
-  canComment: boolean;
-  categoryIds: number[];
-  chapterPrice: number;
-  description: string;
-  isHot: boolean;
-  isNew: boolean;
-  isPublished: boolean;
-  isRecommended: boolean;
-  language: string;
-  name: string;
-  originalSource?: string;
-  recommendWeight: number;
-  region: string;
-  remark?: string;
-  serialStatus: number;
-  tagIds: number[];
-  viewRule: number;
-}
-
-interface ChapterMappingForm {
-  action: ChapterAction;
-  canComment: boolean;
-  canDownload: boolean;
-  chapterApiVersion?: number;
-  coverMode: Extract<WorkCoverMode, 'local' | 'skip'>;
-  importImages: boolean;
-  isPreview: boolean;
-  isPublished: boolean;
-  localCoverPath: string;
-  overwriteContent: boolean;
-  price: number;
-  providerChapterId: string;
-  selected: boolean;
-  sortOrder: number;
-  subtitle?: string;
-  targetChapterId?: number;
-  title: string;
-  viewRule: number;
-}
-
-type SearchComicRow = SearchComicItemDto;
-type ChapterPreviewRow =
-  ContentComicThirdPartyImportPreviewResponse['chapters'][number];
-
-const wizardSteps = ['检索', '预览', '作品', '关系', '章节', '正文', '导入'];
+const wizardSteps = ['检索', '预览', '作品', '章节', '正文'];
 
 const importModeOptions: Array<{ label: string; value: ImportMode }> = [
   { label: '新建作品', value: 'createNew' },
@@ -259,13 +203,15 @@ const importLoading = ref(false);
 const nextStepLoading = ref(false);
 const selectingComicId = ref('');
 
-const activeComic = ref<null | SearchComicItemDto>(null);
+const activeComic = ref<null | SearchComicRow>(null);
 const activePlatform = ref('');
 const selectedGroup = ref('');
 const preview = ref<ContentComicThirdPartyImportPreviewResponse | null>(null);
 const importMode = ref<ImportMode>('createNew');
 const targetWorkId = ref<number>();
+const localWorkKeyword = ref('');
 const localWorkOptions = ref<LocalOption[]>([]);
+const localWorkRows = ref<LocalWorkRow[]>([]);
 const workCoverMode =
   ref<Extract<WorkCoverMode, 'local' | 'provider'>>('provider');
 const localWorkCoverPath = ref('');
@@ -496,6 +442,28 @@ const contentPreviewImages = computed(
   () => contentPreview.value?.images.map((item) => item.url) ?? [],
 );
 
+const relationCandidateTags = computed(() => {
+  const candidates = preview.value?.relationCandidates;
+  if (!candidates) {
+    return [];
+  }
+
+  return [
+    ...candidates.authors.map((item) => ({
+      key: `author-${item.providerName}`,
+      label: `作者：${item.providerName}`,
+    })),
+    ...candidates.categories.map((item) => ({
+      key: `category-${item.providerName}`,
+      label: `分类：${item.providerName}`,
+    })),
+    ...candidates.tags.map((item) => ({
+      key: `tag-${item.providerName}`,
+      label: `标签：${item.providerName}`,
+    })),
+  ];
+});
+
 const updateWithoutOverwriteCount = computed(
   () =>
     selectedMappings.value.filter(
@@ -521,7 +489,7 @@ function createEmptyWorkDraft(): WorkDraftForm {
     description: '',
     isHot: false,
     isNew: false,
-    isPublished: false,
+    isPublished: true,
     isRecommended: false,
     language: '',
     name: '',
@@ -542,7 +510,9 @@ function resetWizard() {
   preview.value = null;
   importMode.value = 'createNew';
   targetWorkId.value = undefined;
+  localWorkKeyword.value = '';
   localWorkOptions.value = [];
+  localWorkRows.value = [];
   workCoverMode.value = 'provider';
   localWorkCoverPath.value = '';
   workDraft.value = createEmptyWorkDraft();
@@ -558,11 +528,11 @@ function resetWizard() {
   chapterPreviewGridApi.setGridOptions({ data: [] });
 }
 
-function resolveComicPlatform(item: SearchComicItemDto) {
+function resolveComicPlatform(item: SearchComicRow) {
   return String(item.platform || activePlatform.value || platform.value || '');
 }
 
-function resolveComicId(item: SearchComicItemDto) {
+function resolveComicId(item: SearchComicRow) {
   return String(item.id ?? '');
 }
 
@@ -573,7 +543,7 @@ function formatTextList(values?: string[]) {
 async function loadPlatforms() {
   try {
     const list = await contentComicThirdPartyPlatformListApi();
-    platformOptions.value = (list || []).map((item: PlatformResponseDto) => ({
+    platformOptions.value = (list || []).map((item) => ({
       label: item.name,
       value: item.code,
     }));
@@ -603,7 +573,7 @@ async function loadWorkDictionaries() {
   }
 }
 
-async function selectComic(item: SearchComicItemDto) {
+async function selectComic(item: SearchComicRow) {
   const currentPlatform = resolveComicPlatform(item);
   if (!currentPlatform) {
     useMessage.warning('当前资源缺少平台标识，请重新搜索');
@@ -637,7 +607,7 @@ async function loadImportPreview(group = selectedGroup.value) {
       comicId: String(comicId),
       group: apiGroup,
       platform: activePlatform.value,
-    });
+    } satisfies ContentComicThirdPartyImportPreviewRequest);
     preview.value = res;
     selectedGroup.value = apiGroup ?? resolveInitialGroup(res.groups);
     applyPreviewToDraft(res);
@@ -697,6 +667,62 @@ function applyDictionaryDefaultsToDraft() {
   };
 }
 
+function toDraftOptionalText(value?: null | string) {
+  return value && value.trim() ? value : undefined;
+}
+
+function resolveDraftRelationIds(
+  list: Parameters<typeof extractRelationIds>[0],
+  relationKey: Parameters<typeof extractRelationIds>[1],
+  fallbackIds: number[],
+) {
+  return list ? extractRelationIds(list, relationKey) : fallbackIds;
+}
+
+function applyLocalWorkToDraft(
+  work: ContentComicDetailResponse | LocalWorkRow,
+) {
+  workDraft.value = {
+    ...workDraft.value,
+    ageRating: toDraftOptionalText(work.ageRating),
+    alias: toDraftOptionalText(work.alias),
+    authorIds: resolveDraftRelationIds(
+      work.authors,
+      'author',
+      workDraft.value.authorIds,
+    ),
+    canComment: work.canComment ?? workDraft.value.canComment,
+    categoryIds: resolveDraftRelationIds(
+      work.categories,
+      'category',
+      workDraft.value.categoryIds,
+    ),
+    chapterPrice: work.chapterPrice ?? workDraft.value.chapterPrice,
+    description: work.description ?? workDraft.value.description,
+    isHot: work.isHot ?? workDraft.value.isHot,
+    isNew: work.isNew ?? workDraft.value.isNew,
+    isPublished: work.isPublished ?? workDraft.value.isPublished,
+    isRecommended: work.isRecommended ?? workDraft.value.isRecommended,
+    language: resolveSelectDefault(
+      languageOptions.value,
+      work.language,
+      workDraft.value.language,
+    ),
+    name: work.name ?? workDraft.value.name,
+    originalSource: toDraftOptionalText(work.originalSource),
+    recommendWeight: work.recommendWeight ?? workDraft.value.recommendWeight,
+    region: resolveSelectDefault(
+      regionOptions.value,
+      work.region,
+      workDraft.value.region,
+    ),
+    remark: toDraftOptionalText(work.remark),
+    serialStatus: work.serialStatus ?? workDraft.value.serialStatus,
+    tagIds: resolveDraftRelationIds(work.tags, 'tag', workDraft.value.tagIds),
+    viewRule: work.viewRule ?? workDraft.value.viewRule,
+  };
+}
+
 function createChapterMapping(
   chapter: ContentComicThirdPartyImportPreviewResponse['chapters'][number],
 ): ChapterMappingForm {
@@ -708,7 +734,7 @@ function createChapterMapping(
     coverMode: 'skip',
     importImages: true,
     isPreview: false,
-    isPublished: false,
+    isPublished: true,
     localCoverPath: '',
     overwriteContent: false,
     price: 0,
@@ -720,9 +746,7 @@ function createChapterMapping(
   };
 }
 
-function toLocalOptions(
-  list: Array<{ id: number; name: string }> | undefined,
-): LocalOption[] {
+function toLocalOptions(list: LocalEntityRow[] | undefined): LocalOption[] {
   return (list || []).map((item) => ({
     label: item.name,
     value: item.id,
@@ -735,7 +759,7 @@ function authorPageParams(name?: string) {
     name: name || undefined,
     pageSize: name ? 20 : 500,
     type: JSON.stringify([SERVER_MANGA_AUTHOR_TYPE]),
-  };
+  } satisfies ContentAuthorPageRequest;
 }
 
 function categoryPageParams(name?: string) {
@@ -744,7 +768,7 @@ function categoryPageParams(name?: string) {
     isEnabled: true,
     name: name || undefined,
     pageSize: name ? 20 : 500,
-  };
+  } satisfies ContentCategoryPageRequest;
 }
 
 function tagPageParams(name?: string) {
@@ -752,22 +776,22 @@ function tagPageParams(name?: string) {
     isEnabled: true,
     name: name || undefined,
     pageSize: name ? 20 : 500,
-  };
+  } satisfies ContentTagPageRequest;
 }
 
 async function loadAuthorOptions() {
   const authors = await contentAuthorPageApi(authorPageParams());
-  authorOptions.value = toLocalOptions(authors.list as AuthorPageResponseDto[]);
+  authorOptions.value = toLocalOptions(authors.list);
 }
 
 async function loadCategoryOptions() {
   const categories = await contentCategoryPageApi(categoryPageParams());
-  categoryOptions.value = toLocalOptions(categories.list as BaseCategoryDto[]);
+  categoryOptions.value = toLocalOptions(categories.list);
 }
 
 async function loadTagOptions() {
   const tags = await contentTagPageApi(tagPageParams());
-  tagOptions.value = toLocalOptions(tags.list as BaseTagDto[]);
+  tagOptions.value = toLocalOptions(tags.list);
 }
 
 async function loadRelationOptions(force = false) {
@@ -847,31 +871,22 @@ function ensureRelationOption(
 
 async function findCreatedAuthor(name: string) {
   const res = await contentAuthorPageApi(authorPageParams(name));
-  return findCreatedOptionByName(
-    toLocalOptions(res.list as AuthorPageResponseDto[]),
-    name,
-  ) as LocalOption | undefined;
+  return findCreatedOptionByName(toLocalOptions(res.list), name);
 }
 
 async function findCreatedCategory(name: string) {
   const res = await contentCategoryPageApi(categoryPageParams(name));
-  return findCreatedOptionByName(
-    toLocalOptions(res.list as BaseCategoryDto[]),
-    name,
-  ) as LocalOption | undefined;
+  return findCreatedOptionByName(toLocalOptions(res.list), name);
 }
 
 async function findCreatedTag(name: string) {
   const res = await contentTagPageApi(tagPageParams(name));
-  return findCreatedOptionByName(
-    toLocalOptions(res.list as BaseTagDto[]),
-    name,
-  ) as LocalOption | undefined;
+  return findCreatedOptionByName(toLocalOptions(res.list), name);
 }
 
-async function handleCreateAuthor(values: CreateAuthorDto) {
+async function handleCreateAuthor(values: ContentAuthorCreateRequest) {
   const name = values.name.trim();
-  const payload: CreateAuthorDto = {
+  const payload = {
     avatar: values.avatar,
     description: values.description,
     gender: values.gender ?? 0,
@@ -879,7 +894,7 @@ async function handleCreateAuthor(values: CreateAuthorDto) {
     nationality: values.nationality,
     remark: values.remark,
     type: [SERVER_MANGA_AUTHOR_TYPE],
-  };
+  } satisfies ContentAuthorCreateRequest;
   await contentAuthorCreateApi(payload);
   const created = await findCreatedAuthor(name);
   await loadAuthorOptions();
@@ -893,16 +908,16 @@ async function handleCreateAuthor(values: CreateAuthorDto) {
   );
 }
 
-async function handleCreateCategory(values: CreateCategoryDto) {
+async function handleCreateCategory(values: ContentCategoryCreateRequest) {
   const name = values.name.trim();
-  const payload: CreateCategoryDto = {
+  const payload = {
     contentType: [SERVER_COMIC_CATEGORY_TYPE],
     description: values.description,
     icon: values.icon,
     isEnabled: values.isEnabled ?? true,
     name,
     sortOrder: values.sortOrder ?? 0,
-  };
+  } satisfies ContentCategoryCreateRequest;
   await contentCategoryCreateApi(payload);
   const created = await findCreatedCategory(name);
   await loadCategoryOptions();
@@ -916,14 +931,14 @@ async function handleCreateCategory(values: CreateCategoryDto) {
   );
 }
 
-async function handleCreateTag(values: CreateTagDto) {
+async function handleCreateTag(values: ContentTagCreateRequest) {
   const name = values.name.trim();
-  const payload: CreateTagDto = {
+  const payload = {
     description: values.description,
     icon: values.icon,
     name,
     sortOrder: values.sortOrder ?? 0,
-  };
+  } satisfies ContentTagCreateRequest;
   await contentTagCreateApi(payload);
   const created = await findCreatedTag(name);
   await loadTagOptions();
@@ -938,23 +953,89 @@ async function handleCreateTag(values: CreateTagDto) {
 }
 
 async function searchLocalWorks(query = '') {
+  const keyword = query.trim();
+  localWorkKeyword.value = keyword;
+  if (!keyword) {
+    localWorkOptions.value = [];
+    localWorkRows.value = [];
+    return;
+  }
+
   localWorkLoading.value = true;
   try {
     const res = await contentComicPageApi({
-      name: query || undefined,
+      name: keyword,
       pageIndex: 1,
       pageSize: 20,
       type: 1,
-    });
-    localWorkOptions.value = (res.list || []).map((item: PageWorkDto) => ({
+    } satisfies ContentComicPageRequest);
+    const list = res.list || [];
+    localWorkRows.value = list;
+    localWorkOptions.value = list.map((item) => ({
       label: `${item.name}（ID: ${item.id}）`,
       value: item.id,
     }));
   } catch {
     localWorkOptions.value = [];
+    localWorkRows.value = [];
   } finally {
     localWorkLoading.value = false;
   }
+}
+
+async function handleTargetWorkChange(id?: number) {
+  if (!id) {
+    return;
+  }
+
+  const fallbackWork = localWorkRows.value.find((item) => item.id === id);
+  if (fallbackWork) {
+    applyLocalWorkToDraft(fallbackWork);
+  }
+
+  localWorkLoading.value = true;
+  try {
+    const detail = await contentComicDetailApi({
+      id,
+    } satisfies ContentComicDetailRequest);
+    if (targetWorkId.value === id) {
+      applyLocalWorkToDraft(detail);
+    }
+  } catch {
+    // 搜索行已先回填，详情加载失败时保留当前表单内容。
+  } finally {
+    localWorkLoading.value = false;
+  }
+}
+
+function handleImportModeChange(
+  mode: boolean | ImportMode | number | string | undefined,
+) {
+  if (mode === 'attachToExisting') {
+    if (targetWorkId.value) {
+      void handleTargetWorkChange(targetWorkId.value);
+    }
+    return;
+  }
+
+  if (preview.value) {
+    applyPreviewToDraft(preview.value);
+  }
+  void loadRelationOptions();
+}
+
+function getDefaultLocalWorkKeyword() {
+  return preview.value?.detail.name?.trim() || workDraft.value.name.trim();
+}
+
+function handleLocalWorkDropdownVisibleChange(visible: boolean) {
+  if (!visible || importMode.value !== 'attachToExisting') {
+    return;
+  }
+  if (localWorkKeyword.value) {
+    return;
+  }
+  void searchLocalWorks(getDefaultLocalWorkKeyword());
 }
 
 function selectAllChapters(selected: boolean) {
@@ -984,7 +1065,7 @@ async function loadActiveChapterContent() {
       comicId: currentPreview.comicId,
       group: toApiGroup(selectedGroup.value),
       platform: currentPreview.platform,
-    });
+    } satisfies ContentComicThirdPartyChapterContentDetailRequest);
   } catch {
     contentPreview.value = null;
   } finally {
@@ -998,10 +1079,10 @@ async function goNext() {
 
   nextStepLoading.value = true;
   try {
-    if (step.value === 2 && importMode.value === 'createNew') {
+    if (step.value === 1 && importMode.value === 'createNew') {
       await loadRelationOptions();
     }
-    if (step.value === 4 && selectedMappings.value.length > 0) {
+    if (step.value === 3 && selectedMappings.value.length > 0) {
       const first = selectedMappings.value[0];
       if (first) {
         activeProviderChapterId.value = first.providerChapterId;
@@ -1029,15 +1110,12 @@ function validateStep(currentStep: number) {
     return false;
   }
   if (currentStep === 2) {
-    return validateWorkStep();
+    return validateWorkStep() && validateRelationStep();
   }
   if (currentStep === 3) {
-    return validateRelationStep();
-  }
-  if (currentStep === 4) {
     return validateChapterStep();
   }
-  if (currentStep === 5 && updateWithoutOverwriteCount.value > 0) {
+  if (currentStep === 4 && updateWithoutOverwriteCount.value > 0) {
     useMessage.warning('更新章节导入图片时必须确认覆盖内容');
     return false;
   }
@@ -1122,7 +1200,7 @@ function validateChapterStep() {
 
 async function handleImport() {
   if (!preview.value) return;
-  for (let index = 2; index <= 5; index++) {
+  for (let index = 2; index <= 4; index++) {
     if (!validateStep(index)) return;
   }
 
@@ -1252,7 +1330,7 @@ function openSubmittedTask() {
 </script>
 
 <template>
-  <Modal class="!h-[70vh] !max-h-[70vh] w-[1280px] max-w-[calc(100vw-32px)]">
+  <Modal class="!h-[86vh] !max-h-[86vh] w-[1280px] max-w-[calc(100vw-32px)]">
     <div class="flex h-full min-h-0 flex-col">
       <el-steps class="mb-4" :active="step" finish-status="success" simple>
         <el-step v-for="item in wizardSteps" :key="item" :title="item" />
@@ -1279,7 +1357,7 @@ function openSubmittedTask() {
           </SearchGrid>
         </div>
 
-        <div v-show="step === 1" class="h-full min-h-0">
+        <div v-show="step === 1" class="h-full min-h-0 pb-4">
           <el-empty v-if="!preview" description="请选择第三方作品" />
           <template v-else>
             <div class="grid h-full min-h-0 grid-cols-12 gap-4">
@@ -1315,7 +1393,7 @@ function openSubmittedTask() {
               </el-card>
 
               <div
-                class="col-span-8 flex h-full min-h-0 flex-col rounded border border-border bg-card p-4"
+                class="col-span-8 flex h-full min-h-0 flex-col rounded border p-4"
               >
                 <div class="mb-4 flex items-center">
                   <div class="shrink-0 mr-4">章节分组</div>
@@ -1360,563 +1438,621 @@ function openSubmittedTask() {
           </template>
         </div>
 
-        <div v-show="step === 2">
-          <el-radio-group v-model="importMode">
-            <el-radio-button
-              v-for="item in importModeOptions"
-              :key="item.value"
-              :value="item.value"
-            >
-              {{ item.label }}
-            </el-radio-button>
-          </el-radio-group>
-
-          <div
-            v-if="importMode === 'attachToExisting'"
-            class="rounded border border-border bg-card p-4"
-          >
-            <el-form label-width="110px">
-              <el-form-item label="目标作品">
-                <el-select
-                  v-model="targetWorkId"
-                  class="w-full"
-                  filterable
-                  remote
-                  reserve-keyword
-                  :loading="localWorkLoading"
-                  :remote-method="searchLocalWorks"
-                  @focus="searchLocalWorks()"
+        <div v-show="step === 2" class="h-full min-h-0 pb-4">
+          <el-scrollbar class="h-full" view-class="h-full">
+            <div class="grid h-full min-h-0 grid-cols-12 gap-4">
+              <div class="col-span-4 flex h-full min-h-0">
+                <el-card
+                  body-class="min-h-0 flex-1 overflow-auto p-4"
+                  class="flex h-full min-h-0 flex-1 flex-col"
+                  shadow="never"
                 >
-                  <el-option
-                    v-for="item in localWorkOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-form>
-          </div>
+                  <template #header>
+                    <div
+                      class="flex flex-wrap items-center justify-between gap-3"
+                    >
+                      <span>作品封面</span>
+                      <el-radio-group v-model="workCoverMode">
+                        <el-radio-button
+                          value="provider"
+                          :disabled="!canUseProviderCover"
+                        >
+                          三方封面
+                        </el-radio-button>
+                        <el-radio-button value="local">
+                          本地上传
+                        </el-radio-button>
+                      </el-radio-group>
+                    </div>
+                  </template>
 
-          <div v-else class="grid grid-cols-12 gap-4">
-            <div class="col-span-4 rounded border border-border bg-card p-4">
-              <div class="mb-3">作品封面</div>
-              <el-radio-group v-model="workCoverMode" class="mb-3">
-                <el-radio-button
-                  value="provider"
-                  :disabled="!canUseProviderCover"
+                  <div class="flex justify-center">
+                    <el-image
+                      v-if="
+                        workCoverMode === 'provider' &&
+                        preview?.coverOptions.provider
+                      "
+                      :src="preview.coverOptions.provider.url"
+                      class="h-[260px] w-[180px] rounded object-cover"
+                      fit="cover"
+                    />
+                    <EsUpload
+                      v-else
+                      v-model="localWorkCoverPath"
+                      :max-count="1"
+                      :multiple="false"
+                      :scene="workCoverScene"
+                      accept="image/*"
+                    />
+                  </div>
+                </el-card>
+              </div>
+
+              <div class="col-span-8 flex h-full min-h-0">
+                <el-card
+                  body-class="min-h-0 flex-1 overflow-auto p-4"
+                  class="flex h-full min-h-0 flex-1 flex-col"
+                  shadow="never"
                 >
-                  三方封面
-                </el-radio-button>
-                <el-radio-button value="local">本地上传</el-radio-button>
-              </el-radio-group>
+                  <el-form class="grid grid-cols-2 gap-x-4" label-width="110px">
+                    <el-form-item
+                      :class="{
+                        'col-span-2': importMode !== 'attachToExisting',
+                      }"
+                      label="导入方式"
+                    >
+                      <el-radio-group
+                        v-model="importMode"
+                        @change="handleImportModeChange"
+                      >
+                        <el-radio-button
+                          v-for="item in importModeOptions"
+                          :key="item.value"
+                          :value="item.value"
+                        >
+                          {{ item.label }}
+                        </el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+                    <el-form-item
+                      v-if="importMode === 'attachToExisting'"
+                      label="目标作品"
+                    >
+                      <el-select
+                        v-model="targetWorkId"
+                        class="w-full"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :loading="localWorkLoading"
+                        :remote-method="searchLocalWorks"
+                        placeholder="展开后默认按三方作品名搜索"
+                        @change="handleTargetWorkChange"
+                        @visible-change="handleLocalWorkDropdownVisibleChange"
+                      >
+                        <el-option
+                          v-for="item in localWorkOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="作品名称">
+                      <el-input v-model="workDraft.name" />
+                    </el-form-item>
+                    <el-form-item label="作品别名">
+                      <el-input v-model="workDraft.alias" />
+                    </el-form-item>
+                    <el-form-item class="col-span-2" label="作品简介">
+                      <el-input
+                        v-model="workDraft.description"
+                        :rows="4"
+                        type="textarea"
+                      />
+                    </el-form-item>
+                    <el-form-item label="语言">
+                      <el-select v-model="workDraft.language" class="w-full">
+                        <el-option
+                          v-for="item in languageOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="地区">
+                      <el-select v-model="workDraft.region" class="w-full">
+                        <el-option
+                          v-for="item in regionOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="连载状态">
+                      <el-select
+                        v-model="workDraft.serialStatus"
+                        class="w-full"
+                      >
+                        <el-option
+                          v-for="item in serialStatusOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="查看规则">
+                      <el-select v-model="workDraft.viewRule" class="w-full">
+                        <el-option
+                          v-for="item in workViewRuleOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="章节价格">
+                      <el-input-number
+                        v-model="workDraft.chapterPrice"
+                        :min="0"
+                        :precision="2"
+                        class="!w-full"
+                      />
+                    </el-form-item>
+                    <el-form-item label="推荐权重">
+                      <el-input-number
+                        v-model="workDraft.recommendWeight"
+                        :min="0"
+                        class="!w-full"
+                      />
+                    </el-form-item>
+                    <el-form-item label="允许评论">
+                      <el-switch v-model="workDraft.canComment" />
+                    </el-form-item>
+                    <el-form-item label="发布">
+                      <el-switch v-model="workDraft.isPublished" />
+                    </el-form-item>
+                    <el-form-item label="热门">
+                      <el-switch v-model="workDraft.isHot" />
+                    </el-form-item>
+                    <el-form-item label="新作">
+                      <el-switch v-model="workDraft.isNew" />
+                    </el-form-item>
+                    <el-form-item label="推荐">
+                      <el-switch v-model="workDraft.isRecommended" />
+                    </el-form-item>
+                    <el-form-item label="原始来源">
+                      <el-input v-model="workDraft.originalSource" />
+                    </el-form-item>
+                    <el-form-item class="col-span-2" label="备注">
+                      <el-input
+                        v-model="workDraft.remark"
+                        :rows="3"
+                        type="textarea"
+                      />
+                    </el-form-item>
 
-              <el-image
-                v-if="
-                  workCoverMode === 'provider' && preview?.coverOptions.provider
-                "
-                :src="preview.coverOptions.provider.url"
-                class="h-[260px] w-[180px] rounded object-cover"
-                fit="cover"
-              />
-              <EsUpload
-                v-else
-                v-model="localWorkCoverPath"
-                :max-count="1"
-                :multiple="false"
-                :scene="workCoverScene"
-                accept="image/*"
-              />
-            </div>
-
-            <el-form
-              class="col-span-8 grid grid-cols-2 gap-x-4 rounded border border-border bg-card p-4"
-              label-width="110px"
-            >
-              <el-form-item label="作品名称">
-                <el-input v-model="workDraft.name" />
-              </el-form-item>
-              <el-form-item label="作品别名">
-                <el-input v-model="workDraft.alias" />
-              </el-form-item>
-              <el-form-item class="col-span-2" label="作品简介">
-                <el-input
-                  v-model="workDraft.description"
-                  :rows="4"
-                  type="textarea"
-                />
-              </el-form-item>
-              <el-form-item label="语言">
-                <el-select v-model="workDraft.language" class="w-full">
-                  <el-option
-                    v-for="item in languageOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="地区">
-                <el-select v-model="workDraft.region" class="w-full">
-                  <el-option
-                    v-for="item in regionOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="连载状态">
-                <el-select v-model="workDraft.serialStatus" class="w-full">
-                  <el-option
-                    v-for="item in serialStatusOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="查看规则">
-                <el-select v-model="workDraft.viewRule" class="w-full">
-                  <el-option
-                    v-for="item in workViewRuleOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="章节价格">
-                <el-input-number
-                  v-model="workDraft.chapterPrice"
-                  :min="0"
-                  :precision="2"
-                  class="!w-full"
-                />
-              </el-form-item>
-              <el-form-item label="推荐权重">
-                <el-input-number
-                  v-model="workDraft.recommendWeight"
-                  :min="0"
-                  class="!w-full"
-                />
-              </el-form-item>
-              <el-form-item label="允许评论">
-                <el-switch v-model="workDraft.canComment" />
-              </el-form-item>
-              <el-form-item label="发布">
-                <el-switch v-model="workDraft.isPublished" />
-              </el-form-item>
-              <el-form-item label="热门">
-                <el-switch v-model="workDraft.isHot" />
-              </el-form-item>
-              <el-form-item label="新作">
-                <el-switch v-model="workDraft.isNew" />
-              </el-form-item>
-              <el-form-item label="推荐">
-                <el-switch v-model="workDraft.isRecommended" />
-              </el-form-item>
-              <el-form-item label="原始来源">
-                <el-input v-model="workDraft.originalSource" />
-              </el-form-item>
-              <el-form-item class="col-span-2" label="备注">
-                <el-input
-                  v-model="workDraft.remark"
-                  :rows="3"
-                  type="textarea"
-                />
-              </el-form-item>
-            </el-form>
-          </div>
-        </div>
-
-        <div v-show="step === 3" v-loading="relationLoading">
-          <el-alert
-            v-if="importMode === 'attachToExisting'"
-            :closable="false"
-            title="挂载已有作品不会修改本地作品元数据、封面、作者、分类或标签"
-            type="info"
-          />
-          <div v-else class="grid grid-cols-12 gap-4">
-            <div class="col-span-5 rounded border border-border bg-card p-4">
-              <div class="mb-3">三方字段</div>
-              <div class="space-y-3 text-sm">
-                <div>
-                  作者：{{
-                    preview?.relationCandidates.authors
-                      .map((item) => item.providerName)
-                      .join('、') || '-'
-                  }}
-                </div>
-                <div>
-                  分类：{{
-                    preview?.relationCandidates.categories
-                      .map((item) => item.providerName)
-                      .join('、') || '-'
-                  }}
-                </div>
-                <div>
-                  标签：{{
-                    preview?.relationCandidates.tags
-                      .map((item) => item.providerName)
-                      .join('、') || '-'
-                  }}
-                </div>
+                    <template v-if="importMode === 'createNew'">
+                      <el-divider class="col-span-2">关系映射</el-divider>
+                      <el-form-item class="col-span-2" label="三方字段">
+                        <div class="flex flex-wrap gap-2">
+                          <el-tag
+                            v-for="item in relationCandidateTags"
+                            :key="item.key"
+                            type="info"
+                          >
+                            {{ item.label }}
+                          </el-tag>
+                          <span
+                            v-if="relationCandidateTags.length === 0"
+                            class="text-muted-foreground"
+                          >
+                            -
+                          </span>
+                        </div>
+                      </el-form-item>
+                      <el-form-item class="col-span-2" label="本地作者">
+                        <div class="flex w-full gap-2">
+                          <el-select
+                            v-model="workDraft.authorIds"
+                            class="flex-1"
+                            filterable
+                            multiple
+                            :loading="relationLoading"
+                          >
+                            <el-option
+                              v-for="item in authorOptions"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                            />
+                          </el-select>
+                          <el-button
+                            type="primary"
+                            :disabled="relationLoading"
+                            @click="openCreateAuthorModal"
+                          >
+                            新增
+                          </el-button>
+                        </div>
+                      </el-form-item>
+                      <el-form-item class="col-span-2" label="本地分类">
+                        <div class="flex w-full gap-2">
+                          <el-select
+                            v-model="workDraft.categoryIds"
+                            class="flex-1"
+                            filterable
+                            multiple
+                            :loading="relationLoading"
+                          >
+                            <el-option
+                              v-for="item in categoryOptions"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                            />
+                          </el-select>
+                          <el-button
+                            type="primary"
+                            :disabled="relationLoading"
+                            @click="openCreateCategoryModal"
+                          >
+                            新增
+                          </el-button>
+                        </div>
+                      </el-form-item>
+                      <el-form-item class="col-span-2" label="本地标签">
+                        <div class="flex w-full gap-2">
+                          <el-select
+                            v-model="workDraft.tagIds"
+                            class="flex-1"
+                            filterable
+                            multiple
+                            :loading="relationLoading"
+                          >
+                            <el-option
+                              v-for="item in tagOptions"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                            />
+                          </el-select>
+                          <el-button
+                            type="primary"
+                            :disabled="relationLoading"
+                            @click="openCreateTagModal"
+                          >
+                            新增
+                          </el-button>
+                        </div>
+                      </el-form-item>
+                    </template>
+                  </el-form>
+                </el-card>
               </div>
             </div>
+          </el-scrollbar>
+        </div>
 
-            <el-form
-              class="col-span-7 rounded border border-border bg-card p-4"
-              label-width="100px"
-            >
-              <el-form-item label="本地作者">
-                <div class="flex w-full gap-2">
-                  <el-select
-                    v-model="workDraft.authorIds"
-                    class="flex-1"
-                    filterable
-                    multiple
+        <div v-show="step === 3" class="h-full min-h-0 pb-4">
+          <el-scrollbar class="h-full" view-class="h-full">
+            <div class="grid h-full min-h-0 grid-cols-12 gap-4">
+              <div class="col-span-5 flex h-full min-h-0">
+                <el-card
+                  body-class="min-h-0 flex-1 overflow-hidden p-0"
+                  class="flex h-full min-h-0 flex-1 flex-col"
+                  shadow="never"
+                >
+                  <template #header>
+                    <div
+                      class="flex flex-wrap items-center justify-between gap-3"
+                    >
+                      <span>
+                        章节映射 {{ selectedMappings.length }} /
+                        {{ chapterMappings.length }}
+                      </span>
+                      <div class="flex gap-2">
+                        <el-button
+                          size="small"
+                          @click="selectAllChapters(true)"
+                        >
+                          全选
+                        </el-button>
+                        <el-button
+                          size="small"
+                          @click="selectAllChapters(false)"
+                        >
+                          清空
+                        </el-button>
+                      </div>
+                    </div>
+                  </template>
+
+                  <el-table
+                    :data="chapterMappings"
+                    height="100%"
+                    highlight-current-row
+                    row-key="providerChapterId"
+                    @row-click="selectActiveMapping"
                   >
-                    <el-option
-                      v-for="item in authorOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                    <el-table-column width="56">
+                      <template #default="{ row }">
+                        <el-checkbox v-model="row.selected" @click.stop />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="序号" prop="sortOrder" width="72" />
+                    <el-table-column
+                      label="章节"
+                      min-width="220"
+                      prop="title"
+                      show-overflow-tooltip
                     />
-                  </el-select>
-                  <el-button type="primary" @click="openCreateAuthorModal">
-                    新增
+                  </el-table>
+                </el-card>
+              </div>
+
+              <div class="col-span-7 flex h-full min-h-0">
+                <el-card
+                  body-class="min-h-0 flex-1 overflow-auto p-4"
+                  class="flex h-full min-h-0 flex-1 flex-col"
+                  shadow="never"
+                >
+                  <el-form
+                    v-if="activeMapping"
+                    class="grid grid-cols-2 gap-x-4"
+                    label-width="110px"
+                  >
+                    <el-form-item class="col-span-2" label="章节标题">
+                      <el-input v-model="activeMapping.title" />
+                    </el-form-item>
+                    <el-form-item label="章节序号">
+                      <el-input-number
+                        v-model="activeMapping.sortOrder"
+                        :min="0"
+                        class="!w-full"
+                      />
+                    </el-form-item>
+                    <el-form-item label="导入动作">
+                      <el-select v-model="activeMapping.action" class="w-full">
+                        <el-option
+                          v-for="item in chapterActionOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item
+                      v-if="activeMapping.action === 'update'"
+                      label="目标章节ID"
+                    >
+                      <el-input-number
+                        v-model="activeMapping.targetChapterId"
+                        :min="1"
+                        class="!w-full"
+                      />
+                    </el-form-item>
+                    <el-form-item label="查看规则">
+                      <el-select
+                        v-model="activeMapping.viewRule"
+                        class="w-full"
+                      >
+                        <el-option
+                          v-for="item in chapterViewRuleOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="章节价格">
+                      <el-input-number
+                        v-model="activeMapping.price"
+                        :min="0"
+                        :precision="2"
+                        class="!w-full"
+                      />
+                    </el-form-item>
+                    <el-form-item label="章节封面">
+                      <el-select
+                        v-model="activeMapping.coverMode"
+                        class="w-full"
+                      >
+                        <el-option
+                          v-for="item in chapterCoverOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="导入图片">
+                      <el-switch v-model="activeMapping.importImages" />
+                    </el-form-item>
+                    <el-form-item
+                      v-if="
+                        activeMapping.action === 'update' &&
+                        activeMapping.importImages
+                      "
+                      label="覆盖内容"
+                    >
+                      <el-switch v-model="activeMapping.overwriteContent" />
+                    </el-form-item>
+                    <el-form-item label="发布">
+                      <el-switch v-model="activeMapping.isPublished" />
+                    </el-form-item>
+                    <el-form-item label="试读">
+                      <el-switch v-model="activeMapping.isPreview" />
+                    </el-form-item>
+                    <el-form-item label="允许评论">
+                      <el-switch v-model="activeMapping.canComment" />
+                    </el-form-item>
+                    <el-form-item label="允许下载">
+                      <el-switch v-model="activeMapping.canDownload" />
+                    </el-form-item>
+                    <el-form-item
+                      v-if="activeMapping.coverMode === 'local'"
+                      class="col-span-2"
+                      label="本地封面"
+                    >
+                      <EsUpload
+                        v-model="activeMapping.localCoverPath"
+                        :max-count="1"
+                        :multiple="false"
+                        :scene="chapterCoverScene"
+                        accept="image/*"
+                      />
+                    </el-form-item>
+                  </el-form>
+                  <el-empty v-else description="请选择章节" />
+                </el-card>
+              </div>
+            </div>
+          </el-scrollbar>
+        </div>
+
+        <div v-show="step === 4" class="h-full min-h-0 pb-4">
+          <el-scrollbar class="h-full" view-class="h-full">
+            <div class="flex h-full min-h-0 flex-col gap-4">
+              <div class="flex flex-wrap items-start gap-3">
+                <el-descriptions :column="4" border class="flex-1" size="small">
+                  <el-descriptions-item label="导入模式">
+                    {{
+                      importMode === 'createNew' ? '新建作品' : '挂载已有作品'
+                    }}
+                  </el-descriptions-item>
+                  <el-descriptions-item label="章节数量">
+                    {{ selectedMappings.length }}
+                  </el-descriptions-item>
+                  <el-descriptions-item label="作品封面">
+                    {{
+                      importMode === 'attachToExisting'
+                        ? '不修改'
+                        : workCoverMode === 'provider'
+                          ? '三方下载'
+                          : '本地上传'
+                    }}
+                  </el-descriptions-item>
+                  <el-descriptions-item label="覆盖确认">
+                    {{
+                      updateWithoutOverwriteCount === 0 ? '已满足' : '未满足'
+                    }}
+                  </el-descriptions-item>
+                  <template v-if="submittedTask">
+                    <el-descriptions-item label="任务ID">
+                      {{ submittedTask.taskId }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="任务状态">
+                      <el-tag
+                        :type="
+                          formatBackgroundTaskStatus(submittedTask.status).type
+                        "
+                      >
+                        {{
+                          formatBackgroundTaskStatus(submittedTask.status).label
+                        }}
+                      </el-tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="创建时间">
+                      {{ formatUTC(submittedTask.createdAt) || '-' }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="更新时间">
+                      {{ formatUTC(submittedTask.updatedAt) || '-' }}
+                    </el-descriptions-item>
+                  </template>
+                </el-descriptions>
+                <div class="flex gap-2">
+                  <el-button
+                    v-if="submittedTask"
+                    type="primary"
+                    @click="openSubmittedTask"
+                  >
+                    查看后台任务
                   </el-button>
                 </div>
-              </el-form-item>
-              <el-form-item label="本地分类">
-                <div class="flex w-full gap-2">
-                  <el-select
-                    v-model="workDraft.categoryIds"
-                    class="flex-1"
-                    filterable
-                    multiple
-                  >
-                    <el-option
-                      v-for="item in categoryOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                  <el-button type="primary" @click="openCreateCategoryModal">
-                    新增
-                  </el-button>
-                </div>
-              </el-form-item>
-              <el-form-item label="本地标签">
-                <div class="flex w-full gap-2">
-                  <el-select
-                    v-model="workDraft.tagIds"
-                    class="flex-1"
-                    filterable
-                    multiple
-                  >
-                    <el-option
-                      v-for="item in tagOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                  <el-button type="primary" @click="openCreateTagModal">
-                    新增
-                  </el-button>
-                </div>
-              </el-form-item>
-            </el-form>
-          </div>
-        </div>
-
-        <div v-show="step === 4" class="grid grid-cols-12 gap-4">
-          <div class="col-span-5 rounded border border-border bg-card p-4">
-            <div class="mb-3 flex items-center justify-between">
-              <div>
-                章节映射 {{ selectedMappings.length }} /
-                {{ chapterMappings.length }}
-              </div>
-              <div class="space-x-2">
-                <el-button size="small" @click="selectAllChapters(true)">
-                  全选
-                </el-button>
-                <el-button size="small" @click="selectAllChapters(false)">
-                  清空
-                </el-button>
-              </div>
-            </div>
-            <div class="max-h-[520px] space-y-2 overflow-y-auto pr-1">
-              <button
-                v-for="mapping in chapterMappings"
-                :key="mapping.providerChapterId"
-                class="flex w-full items-start gap-3 rounded border border-border p-3 text-left hover:border-primary"
-                :class="{
-                  'border-primary bg-primary/10':
-                    mapping.providerChapterId === activeProviderChapterId,
-                }"
-                type="button"
-                @click="selectActiveMapping(mapping)"
-              >
-                <el-checkbox v-model="mapping.selected" @click.stop />
-                <div class="min-w-0 flex-1">
-                  <div class="line-clamp-2 text-sm font-medium">
-                    {{ mapping.title }}
-                  </div>
-                  <div class="mt-1 text-xs text-muted-foreground">
-                    {{ mapping.providerChapterId }}
-                  </div>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <el-form
-            v-if="activeMapping"
-            class="chapter-mapping-form col-span-7 rounded border border-border bg-card p-4"
-            label-width="110px"
-          >
-            <div class="grid grid-cols-2 gap-x-6 gap-y-1">
-              <el-form-item class="col-span-2" label="章节标题">
-                <el-input v-model="activeMapping.title" />
-              </el-form-item>
-              <el-form-item label="章节序号">
-                <el-input-number
-                  v-model="activeMapping.sortOrder"
-                  :min="0"
-                  class="!w-full"
-                />
-              </el-form-item>
-              <el-form-item label="导入动作">
-                <el-select v-model="activeMapping.action" class="w-full">
-                  <el-option
-                    v-for="item in chapterActionOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item
-                v-if="activeMapping.action === 'update'"
-                label="目标章节ID"
-              >
-                <el-input-number
-                  v-model="activeMapping.targetChapterId"
-                  :min="1"
-                  class="!w-full"
-                />
-              </el-form-item>
-              <el-form-item label="查看规则">
-                <el-select v-model="activeMapping.viewRule" class="w-full">
-                  <el-option
-                    v-for="item in chapterViewRuleOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="章节价格">
-                <el-input-number
-                  v-model="activeMapping.price"
-                  :min="0"
-                  :precision="2"
-                  class="!w-full"
-                />
-              </el-form-item>
-              <el-form-item label="导入图片">
-                <el-switch v-model="activeMapping.importImages" />
-              </el-form-item>
-              <el-form-item
-                v-if="
-                  activeMapping.action === 'update' &&
-                  activeMapping.importImages
-                "
-                label="覆盖内容"
-              >
-                <el-switch v-model="activeMapping.overwriteContent" />
-              </el-form-item>
-              <el-form-item label="发布">
-                <el-switch v-model="activeMapping.isPublished" />
-              </el-form-item>
-              <el-form-item label="试读">
-                <el-switch v-model="activeMapping.isPreview" />
-              </el-form-item>
-              <el-form-item label="允许评论">
-                <el-switch v-model="activeMapping.canComment" />
-              </el-form-item>
-              <el-form-item label="允许下载">
-                <el-switch v-model="activeMapping.canDownload" />
-              </el-form-item>
-              <el-form-item label="章节封面">
-                <el-select v-model="activeMapping.coverMode" class="w-full">
-                  <el-option
-                    v-for="item in chapterCoverOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item
-                v-if="activeMapping.coverMode === 'local'"
-                class="col-span-2"
-                label="本地封面"
-              >
-                <EsUpload
-                  v-model="activeMapping.localCoverPath"
-                  :max-count="1"
-                  :multiple="false"
-                  :scene="chapterCoverScene"
-                  accept="image/*"
-                />
-              </el-form-item>
-            </div>
-          </el-form>
-        </div>
-
-        <div v-show="step === 5">
-          <div
-            class="flex items-center gap-3 rounded border border-border bg-card p-4"
-          >
-            <el-select
-              v-model="activeProviderChapterId"
-              class="w-[360px]"
-              @change="loadActiveChapterContent"
-            >
-              <el-option
-                v-for="item in selectedMappings"
-                :key="item.providerChapterId"
-                :label="item.title"
-                :value="item.providerChapterId"
-              />
-            </el-select>
-            <el-button
-              :loading="contentPreviewLoading"
-              type="primary"
-              @click="loadActiveChapterContent"
-            >
-              预览正文
-            </el-button>
-            <el-alert
-              v-if="updateWithoutOverwriteCount > 0"
-              :closable="false"
-              class="flex-1"
-              title="存在更新章节未确认覆盖内容"
-              type="warning"
-            />
-          </div>
-
-          <div
-            class="rounded border border-border bg-card p-4"
-            v-loading="contentPreviewLoading"
-          >
-            <el-empty v-if="!contentPreview" description="请选择章节预览正文" />
-            <template v-else>
-              <div class="mb-3 flex items-center justify-between">
-                <div>
-                  {{ contentPreview.title }}
-                </div>
-                <el-tag>{{ contentPreview.images.length }} 张图片</el-tag>
-              </div>
-              <div class="grid grid-cols-6 gap-3">
-                <el-image
-                  v-for="image in contentPreview.images"
-                  :key="image.providerImageId"
-                  :preview-src-list="contentPreviewImages"
-                  :src="image.url"
-                  class="aspect-[9/14] rounded border border-border object-cover"
-                  fit="cover"
-                  lazy
-                />
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <div v-show="step === 6">
-          <div class="grid grid-cols-4 gap-4">
-            <div class="rounded border border-border bg-card p-4">
-              <div class="text-sm text-muted-foreground">导入模式</div>
-              <div class="mt-2 text-lg">
-                {{ importMode === 'createNew' ? '新建作品' : '挂载已有作品' }}
-              </div>
-            </div>
-            <div class="rounded border border-border bg-card p-4">
-              <div class="text-sm text-muted-foreground">章节数量</div>
-              <div class="mt-2 text-lg">
-                {{ selectedMappings.length }}
-              </div>
-            </div>
-            <div class="rounded border border-border bg-card p-4">
-              <div class="text-sm text-muted-foreground">作品封面</div>
-              <div class="mt-2 text-lg">
-                {{
-                  importMode === 'attachToExisting'
-                    ? '不修改'
-                    : workCoverMode === 'provider'
-                      ? '三方下载'
-                      : '本地上传'
-                }}
-              </div>
-            </div>
-            <div class="rounded border border-border bg-card p-4">
-              <div class="text-sm text-muted-foreground">覆盖确认</div>
-              <div class="mt-2 text-lg">
-                {{ updateWithoutOverwriteCount === 0 ? '已满足' : '未满足' }}
-              </div>
-            </div>
-          </div>
-
-          <el-empty v-if="!submittedTask" description="尚未提交导入任务" />
-          <div v-else>
-            <div class="rounded border border-border bg-card p-4">
-              <div class="mb-3 flex items-center justify-between gap-3">
-                <span>后台任务</span>
-                <el-button type="primary" @click="openSubmittedTask">
-                  查看后台任务
-                </el-button>
               </div>
               <el-alert
+                v-if="submittedTask"
                 :closable="false"
-                class="mb-4"
+                class="mt-3"
                 show-icon
                 title="导入任务已提交后台处理，可前往后台任务查看进度、错误、结果和重试状态。"
                 type="success"
               />
-              <el-descriptions :column="2" border size="small">
-                <el-descriptions-item label="任务ID">
-                  {{ submittedTask.taskId }}
-                </el-descriptions-item>
-                <el-descriptions-item label="任务类型">
-                  {{ submittedTask.taskType }}
-                </el-descriptions-item>
-                <el-descriptions-item label="任务状态">
-                  <el-tag
-                    :type="
-                      formatBackgroundTaskStatus(submittedTask.status).type
-                    "
+
+              <el-card shadow="never">
+                <div class="flex flex-wrap items-center gap-3">
+                  <el-select
+                    v-model="activeProviderChapterId"
+                    class="w-[360px] max-w-full"
+                    @change="loadActiveChapterContent"
                   >
-                    {{ formatBackgroundTaskStatus(submittedTask.status).label }}
-                  </el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item label="重试次数">
-                  {{ submittedTask.retryCount }} /
-                  {{ submittedTask.maxRetries }}
-                </el-descriptions-item>
-                <el-descriptions-item label="创建时间">
-                  {{ formatUTC(submittedTask.createdAt) || '-' }}
-                </el-descriptions-item>
-                <el-descriptions-item label="更新时间">
-                  {{ formatUTC(submittedTask.updatedAt) || '-' }}
-                </el-descriptions-item>
-              </el-descriptions>
+                    <el-option
+                      v-for="item in selectedMappings"
+                      :key="item.providerChapterId"
+                      :label="item.title"
+                      :value="item.providerChapterId"
+                    />
+                  </el-select>
+                  <el-button
+                    :loading="contentPreviewLoading"
+                    type="primary"
+                    @click="loadActiveChapterContent"
+                  >
+                    预览正文
+                  </el-button>
+                  <el-alert
+                    v-if="updateWithoutOverwriteCount > 0"
+                    :closable="false"
+                    class="min-w-[280px] flex-1"
+                    title="存在更新章节未确认覆盖内容"
+                    type="warning"
+                  />
+                </div>
+              </el-card>
+
+              <el-card
+                body-class="min-h-0 flex-1 overflow-hidden p-4"
+                class="flex min-h-0 flex-1 flex-col"
+                shadow="never"
+                v-loading="contentPreviewLoading"
+              >
+                <template #header>
+                  <div class="flex items-center justify-between gap-3">
+                    <span>{{ contentPreview?.title || '正文预览' }}</span>
+                    <el-tag v-if="contentPreview">
+                      {{ contentPreview.images.length }} 张图片
+                    </el-tag>
+                  </div>
+                </template>
+
+                <el-empty
+                  v-if="!contentPreview"
+                  description="请选择章节预览正文"
+                />
+                <el-scrollbar v-else class="h-full">
+                  <div
+                    class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6"
+                  >
+                    <el-image
+                      v-for="(image, imageIndex) in contentPreview.images"
+                      :key="image.providerImageId"
+                      :initial-index="imageIndex"
+                      :preview-src-list="contentPreviewImages"
+                      :src="image.url"
+                      class="aspect-[9/14] rounded border border-border object-cover"
+                      fit="cover"
+                      lazy
+                      preview-teleported
+                    />
+                  </div>
+                </el-scrollbar>
+              </el-card>
             </div>
-          </div>
+          </el-scrollbar>
         </div>
       </div>
 

@@ -4,7 +4,6 @@ import type { EsFormSchema } from '#/types';
 import { formSchemaTransform } from '#/utils';
 
 import { backgroundTaskStatusOptions } from './status';
-import { formatBackgroundTaskType } from './task-type';
 
 const backgroundTaskOperatorOptions = [
   { label: '后台管理员', value: 1 },
@@ -61,64 +60,6 @@ const backgroundTaskListSchema: EsFormSchema = [
   { component: 'DatePicker', fieldName: 'startedAt', label: '开始时间' },
   { component: 'DatePicker', fieldName: 'finishedAt', label: '完成时间' },
 ];
-
-export const backgroundTaskColumns =
-  formSchemaTransform.toTableColumns<BackgroundTaskDto>(
-    backgroundTaskListSchema,
-    {
-      seq: { width: 70 },
-      taskId: { minWidth: 240, showOverflow: 'tooltip' },
-      taskType: {
-        formatter: ({ cellValue }) => formatBackgroundTaskType(cellValue),
-        minWidth: 180,
-        showOverflow: 'tooltip',
-      },
-      operatorType: {
-        formatter: ({ row }) => formatBackgroundTaskOperator(row),
-        minWidth: 140,
-        showOverflow: 'tooltip',
-      },
-      status: {
-        cellRender: {
-          name: 'CellTag',
-          props: { mapOptions: backgroundTaskStatusOptions },
-        },
-        width: 120,
-      },
-      progress: {
-        slots: { default: 'progress' },
-        width: 250,
-      },
-      retryCount: { width: 100 },
-      maxRetries: { width: 100 },
-      claimedBy: {
-        formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 150,
-        showOverflow: 'tooltip',
-      },
-      startedAt: {
-        cellRender: { name: 'CellDate' },
-        sortable: true,
-        width: 170,
-      },
-      finishedAt: {
-        cellRender: { name: 'CellDate' },
-        sortable: true,
-        width: 170,
-      },
-      createdAt: {
-        cellRender: { name: 'CellDate' },
-        sortable: true,
-        width: 170,
-      },
-      updatedAt: {
-        cellRender: { name: 'CellDate' },
-        sortable: true,
-        width: 170,
-      },
-      actions: { show: true, width: 180 },
-    },
-  );
 
 export const backgroundTaskSearchSchema = formSchemaTransform.toSearchSchema(
   backgroundTaskListSchema,

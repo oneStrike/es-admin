@@ -2,15 +2,12 @@ import type { OxlintConfig } from 'oxlint';
 
 import { defineConfig as defineOxlintConfig } from 'oxlint';
 
-import { command } from './command';
-import { comments } from './comments';
 import { ignores } from './ignores';
 import { importPluginConfig } from './import';
 import { javascript } from './javascript';
 import { node } from './node';
 import { overrides } from './overrides';
 import { plugins } from './plugins';
-import { tailwindcss } from './tailwindcss';
 import { test } from './test';
 import { typescript } from './typescript';
 import { unicorn } from './unicorn';
@@ -62,14 +59,13 @@ function mergeOxlintConfigs(...configs: OxlintConfig[]): OxlintConfig {
 const oxlintConfig = defineOxlintConfig(
   mergeOxlintConfigs(
     javascript,
-    command,
-    comments,
     ignores,
     plugins,
     importPluginConfig,
     node,
     overrides,
-    tailwindcss,
+    // JS plugins currently trigger oxlint allocator panics on Windows.
+    // Keep command/comments/tailwindcss exported below so this can be restored.
     test,
     typescript,
     unicorn,
@@ -77,9 +73,11 @@ const oxlintConfig = defineOxlintConfig(
   ),
 );
 
+export { command } from './command';
+export { comments } from './comments';
+export { tailwindcss } from './tailwindcss';
+
 export {
-  command,
-  comments,
   ignores,
   importPluginConfig,
   javascript,
@@ -88,7 +86,6 @@ export {
   overrides,
   oxlintConfig,
   plugins,
-  tailwindcss,
   test,
   typescript,
   unicorn,

@@ -1,12 +1,9 @@
+import type { SelectOption } from './types';
+
 import type {
   ThirdPartyComicCoverOptionsDto,
   ThirdPartyComicGroupDto,
 } from '#/api/types/content';
-
-export interface SelectOption {
-  label: string;
-  value: number | string;
-}
 
 export const SERVER_MANGA_AUTHOR_TYPE = 1;
 export const SERVER_COMIC_CATEGORY_TYPE = 1;
