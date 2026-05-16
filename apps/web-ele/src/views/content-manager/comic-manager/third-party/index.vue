@@ -70,6 +70,7 @@ import { extractRelationIds } from '../../work-relations';
 import {
   canUseProviderWorkCover,
   findCreatedOptionByName,
+  resolveExactRelationMatches,
   resolveInitialGroup,
   resolveInitialWorkCoverMode,
   resolveSelectDefault,
@@ -120,6 +121,7 @@ const chapterCoverOptions: Array<{
 
 const workCoverScene = 'comic' as UploadSceneEnum;
 const chapterCoverScene = 'chapter' as UploadSceneEnum;
+const relationSearchPageSize = 500;
 const mangaAuthorTypeOptions = [
   { label: '漫画家', value: SERVER_MANGA_AUTHOR_TYPE },
 ];
@@ -732,6 +734,8 @@ function createChapterMapping(
     canDownload: false,
     chapterApiVersion: chapter.chapterApiVersion ?? undefined,
     coverMode: 'skip',
+    datetimeCreated: chapter.datetimeCreated ?? undefined,
+    group: chapter.group ?? undefined,
     importImages: true,
     isPreview: false,
     isPublished: true,
@@ -751,6 +755,65 @@ function toLocalOptions(list: LocalEntityRow[] | undefined): LocalOption[] {
     label: item.name,
     value: item.id,
   }));
+}
+
+type RelationCandidateList =
+  ContentComicThirdPartyImportPreviewResponse['relationCandidates']['authors'];
+
+function getRelationProviderNames(candidates: RelationCandidateList) {
+  const names: string[] = [];
+  const seenNames = new Set<string>();
+  for (const item of candidates) {
+    const name = item.providerName.trim();
+    if (!name || seenNames.has(name)) {
+      continue;
+    }
+    seenNames.add(name);
+    names.push(name);
+  }
+  return names;
+}
+
+async function searchExactRelationMatches(
+  candidates: RelationCandidateList,
+  searchOptions: (name: string) => Promise<LocalOption[]>,
+) {
+  const sources = await Promise.all(
+    getRelationProviderNames(candidates).map(async (providerName) => ({
+      options: await searchOptions(providerName),
+      providerName,
+    })),
+  );
+  return resolveExactRelationMatches(sources);
+}
+
+function ensureRelationOptions(
+  options: { value: LocalOption[] },
+  matchedOptions: LocalOption[],
+) {
+  const existingValues = new Set(options.value.map((item) => item.value));
+  const missingOptions = matchedOptions.filter(
+    (item) => !existingValues.has(item.value),
+  );
+  if (missingOptions.length > 0) {
+    options.value = [...missingOptions, ...options.value];
+  }
+}
+
+function selectRelationMatches(
+  selectedIds: number[],
+  matchedOptions: LocalOption[],
+) {
+  const selectedValues = new Set(selectedIds);
+  const nextIds = [...selectedIds];
+  for (const option of matchedOptions) {
+    if (selectedValues.has(option.value)) {
+      continue;
+    }
+    selectedValues.add(option.value);
+    nextIds.push(option.value);
+  }
+  return nextIds;
 }
 
 function authorPageParams(name?: string) {
@@ -779,6 +842,30 @@ function tagPageParams(name?: string) {
   } satisfies ContentTagPageRequest;
 }
 
+async function searchAuthorOptionsByName(name: string) {
+  const authors = await contentAuthorPageApi({
+    ...authorPageParams(name),
+    pageSize: relationSearchPageSize,
+  });
+  return toLocalOptions(authors.list);
+}
+
+async function searchCategoryOptionsByName(name: string) {
+  const categories = await contentCategoryPageApi({
+    ...categoryPageParams(name),
+    pageSize: relationSearchPageSize,
+  });
+  return toLocalOptions(categories.list);
+}
+
+async function searchTagOptionsByName(name: string) {
+  const tags = await contentTagPageApi({
+    ...tagPageParams(name),
+    pageSize: relationSearchPageSize,
+  });
+  return toLocalOptions(tags.list);
+}
+
 async function loadAuthorOptions() {
   const authors = await contentAuthorPageApi(authorPageParams());
   authorOptions.value = toLocalOptions(authors.list);
@@ -795,29 +882,71 @@ async function loadTagOptions() {
 }
 
 async function loadRelationOptions(force = false) {
-  if (
-    !force &&
-    authorOptions.value.length > 0 &&
-    categoryOptions.value.length > 0 &&
-    tagOptions.value.length > 0
-  ) {
+  const shouldLoadBaseOptions =
+    force ||
+    authorOptions.value.length === 0 ||
+    categoryOptions.value.length === 0 ||
+    tagOptions.value.length === 0;
+  if (!shouldLoadBaseOptions && importMode.value !== 'createNew') {
     return;
   }
 
   relationLoading.value = true;
   try {
-    await Promise.all([
-      loadAuthorOptions(),
-      loadCategoryOptions(),
-      loadTagOptions(),
-    ]);
-  } catch {
-    authorOptions.value = [];
-    categoryOptions.value = [];
-    tagOptions.value = [];
+    if (shouldLoadBaseOptions) {
+      try {
+        await Promise.all([
+          loadAuthorOptions(),
+          loadCategoryOptions(),
+          loadTagOptions(),
+        ]);
+      } catch {
+        authorOptions.value = [];
+        categoryOptions.value = [];
+        tagOptions.value = [];
+        return;
+      }
+    }
+
+    if (importMode.value === 'createNew') {
+      try {
+        await applyRelationSearchMatches();
+      } catch {
+        // 自动匹配失败时仍保留手动选择入口。
+      }
+    }
   } finally {
     relationLoading.value = false;
   }
+}
+
+async function applyRelationSearchMatches() {
+  const candidates = preview.value?.relationCandidates;
+  if (!candidates) {
+    return;
+  }
+
+  const [matchedAuthors, matchedCategories, matchedTags] = await Promise.all([
+    searchExactRelationMatches(candidates.authors, searchAuthorOptionsByName),
+    searchExactRelationMatches(
+      candidates.categories,
+      searchCategoryOptionsByName,
+    ),
+    searchExactRelationMatches(candidates.tags, searchTagOptionsByName),
+  ]);
+
+  ensureRelationOptions(authorOptions, matchedAuthors);
+  ensureRelationOptions(categoryOptions, matchedCategories);
+  ensureRelationOptions(tagOptions, matchedTags);
+  workDraft.value = {
+    ...workDraft.value,
+    authorIds: selectRelationMatches(workDraft.value.authorIds, matchedAuthors),
+    categoryIds: selectRelationMatches(
+      workDraft.value.categoryIds,
+      matchedCategories,
+    ),
+    tagIds: selectRelationMatches(workDraft.value.tagIds, matchedTags),
+  };
 }
 
 function openCreateAuthorModal() {
@@ -1303,6 +1432,8 @@ function toChapterImportItem(
         ? { localPath: item.localCoverPath, mode: 'local' }
         : { mode: 'skip' },
     chapterApiVersion: item.chapterApiVersion,
+    datetimeCreated: item.datetimeCreated,
+    group: item.group,
     importImages: item.importImages,
     isPreview: item.isPreview,
     isPublished: item.isPublished,

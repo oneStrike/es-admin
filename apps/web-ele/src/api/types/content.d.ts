@@ -567,6 +567,16 @@ export type ContentComicThirdPartyImportConfirmRequest =
 export type ContentComicThirdPartyImportConfirmResponse = BackgroundTaskDto;
 
 /**
+ *  类型定义 [ContentComicThirdPartySyncLatestRequest]
+ *  @来源 内容管理/漫画管理/三方平台解析
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentComicThirdPartySyncLatestRequest =
+  ThirdPartyComicSyncLatestRequestDto;
+
+export type ContentComicThirdPartySyncLatestResponse = BackgroundTaskDto;
+
+/**
  *  类型定义 [ContentNovelCreateRequest]
  *  @来源 内容管理/小说管理/基础信息
  *  @更新时间 2026-05-09 22:20:06
@@ -1587,6 +1597,8 @@ export type PageWorkDto = {
   cover: string;
   /* 创建时间 */
   createdAt: string;
+  /* 是否存在三方来源绑定 */
+  hasThirdPartySourceBinding: boolean;
   /* 主键id */
   id: number;
   /* 是否热门 */
@@ -2519,6 +2531,10 @@ export type ThirdPartyComicSourceSnapshotDto = {
   pathWord?: null | string;
   /* 三方漫画ID */
   providerComicId: string;
+  /* 三方章节分组路径标识 */
+  providerGroupPathWord: string;
+  /* 三方路径标识 */
+  providerPathWord: string;
 
   /* 三方 UUID */
   uuid?: null | string;
@@ -2741,6 +2757,10 @@ export type ThirdPartyComicImportChapterItemDto = {
   chapterApiVersion?: null | number;
   /* 章节封面处理方式 */
   cover?: ThirdPartyComicImportCoverDto;
+  /* 三方章节创建时间 */
+  datetimeCreated?: null | string;
+  /* 三方章节分组 */
+  group?: null | string;
   /* 是否导入章节图片 */
   importImages: boolean;
   /* 是否试读 */
@@ -2819,6 +2839,19 @@ export type BackgroundTaskDto = {
 
   /* 更新时间 */
   updatedAt: string;
+};
+
+/**
+ *  类型定义 [ThirdPartyComicSyncLatestRequestDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ThirdPartyComicSyncLatestRequestDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 作品ID */
+  workId: number;
 };
 
 /**

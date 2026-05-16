@@ -436,7 +436,7 @@ onBeforeUnmount(() => {
 <template>
   <Page auto-content-height>
     <div class="flex h-full min-h-0 flex-col gap-4 overflow-hidden">
-      <el-card shadow="never" body-class="p-4">
+      <el-card shadow="never">
         <SearchForm :loading="listLoading" />
       </el-card>
 

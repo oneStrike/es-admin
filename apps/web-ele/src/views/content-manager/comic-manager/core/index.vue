@@ -9,6 +9,8 @@ import type {
 } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
+import { useRouter } from 'vue-router';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -18,6 +20,7 @@ import {
   contentComicDeleteApi,
   contentComicDetailApi,
   contentComicPageApi,
+  contentComicThirdPartySyncLatestApi,
   contentComicUpdateApi,
   contentComicUpdateHotApi,
   contentComicUpdateNewApi,
@@ -81,6 +84,7 @@ const tagOptions: BasicOption[] = [];
 const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
 const currentComicRecord = ref<null | Partial<BaseWorkDto>>(null);
+const router = useRouter();
 
 // 加载会员等级选项
 growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
@@ -233,6 +237,22 @@ async function deleteComic(record: BaseWorkDto) {
   gridApi.reload();
 }
 
+async function syncLatestChapters(record: BaseWorkDto) {
+  record.syncLoading = true;
+  try {
+    const task = await contentComicThirdPartySyncLatestApi({
+      workId: record.id,
+    });
+    useMessage.success('同步任务已提交');
+    void router.push({
+      name: 'BackgroundTaskManager',
+      query: { taskId: task.taskId },
+    });
+  } finally {
+    record.syncLoading = false;
+  }
+}
+
 async function toggleStatus(
   record: BaseWorkDto,
   field: 'isHot' | 'isNew' | 'isPublished' | 'isRecommended',
@@ -372,6 +392,21 @@ function openChapterModal(record: BaseWorkDto) {
           <el-button link type="primary" @click="openChapterModal(row)">
             章节
           </el-button>
+          <template v-if="row.hasThirdPartySourceBinding">
+            <el-divider direction="vertical" />
+            <el-popconfirm
+              title="只导入未绑定的新章节，不覆盖现有数据。"
+              confirm-button-text="确认同步"
+              cancel-button-text="取消"
+              @confirm="syncLatestChapters(row)"
+            >
+              <template #reference>
+                <el-button link type="primary" :loading="row.syncLoading">
+                  同步章节
+                </el-button>
+              </template>
+            </el-popconfirm>
+          </template>
           <el-divider direction="vertical" />
           <el-popconfirm
             title="确认删除当前漫画?"

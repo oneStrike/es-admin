@@ -90,6 +90,8 @@ import type {
   ContentComicThirdPartyPlatformListResponse,
   ContentComicThirdPartySearchPageRequest,
   ContentComicThirdPartySearchPageResponse,
+  ContentComicThirdPartySyncLatestRequest,
+  ContentComicThirdPartySyncLatestResponse,
   ContentComicUpdateHotRequest,
   ContentComicUpdateHotResponse,
   ContentComicUpdateNewRequest,
@@ -587,6 +589,18 @@ export async function contentComicThirdPartyImportConfirmApi(
 ): Promise<ContentComicThirdPartyImportConfirmResponse> {
   return requestClient.post<ContentComicThirdPartyImportConfirmResponse>(
     '/api/admin/content/comic/third-party/import/confirm',
+    params,
+  );
+}
+
+/**
+ * 同步第三方漫画最新章节
+ */
+export async function contentComicThirdPartySyncLatestApi(
+  params: ContentComicThirdPartySyncLatestRequest,
+): Promise<ContentComicThirdPartySyncLatestResponse> {
+  return requestClient.post<ContentComicThirdPartySyncLatestResponse>(
+    '/api/admin/content/comic/third-party/sync/latest',
     params,
   );
 }

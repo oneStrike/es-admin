@@ -113,6 +113,8 @@ type ChapterMappingDefaultedField =
   | 'viewRule';
 type ChapterMappingOptionalField =
   | 'chapterApiVersion'
+  | 'datetimeCreated'
+  | 'group'
   | 'subtitle'
   | 'targetChapterId';
 export type ChapterMappingForm = Pick<

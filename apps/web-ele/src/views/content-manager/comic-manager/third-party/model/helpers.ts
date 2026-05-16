@@ -32,6 +32,11 @@ function normalizeOptionLabel(value: string) {
   return value.trim();
 }
 
+export type ExactRelationMatchSource<T extends SelectOption> = {
+  options: T[];
+  providerName?: null | string;
+};
+
 export function findCreatedOptionByName<T extends SelectOption>(
   options: T[],
   name: string,
@@ -40,6 +45,33 @@ export function findCreatedOptionByName<T extends SelectOption>(
   return options.find(
     (option) => normalizeOptionLabel(option.label) === normalizedName,
   );
+}
+
+export function resolveExactRelationMatches<T extends SelectOption>(
+  sources: Array<ExactRelationMatchSource<T>>,
+) {
+  const matchedOptions: T[] = [];
+  const selectedValues = new Set<T['value']>();
+
+  for (const source of sources) {
+    const providerName = normalizeOptionLabel(source.providerName || '');
+    if (!providerName) {
+      continue;
+    }
+
+    const exactMatches = source.options.filter(
+      (option) => normalizeOptionLabel(option.label) === providerName,
+    );
+    for (const option of exactMatches) {
+      if (selectedValues.has(option.value)) {
+        continue;
+      }
+      selectedValues.add(option.value);
+      matchedOptions.push(option);
+    }
+  }
+
+  return matchedOptions;
 }
 
 export function resolveSelectDefault(

@@ -7,6 +7,9 @@ describe('background task type model', () => {
     expect(formatBackgroundTaskType('content.third-party-comic-import')).toBe(
       '第三方漫画导入',
     );
+    expect(formatBackgroundTaskType('content.third-party-comic-sync')).toBe(
+      '第三方漫画章节同步',
+    );
   });
 
   it('keeps unknown task types visible', () => {
