@@ -1,5 +1,6 @@
 import type { TagProps } from 'element-plus';
 
+import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   ContentImportItemDto,
   WorkflowAttemptDto,
@@ -93,7 +94,7 @@ const workflowItemListSchema: EsFormSchema = [
     label: '图片成功数',
   },
   { component: 'InputNumber', fieldName: 'imageTotal', label: '图片总数' },
-  { component: 'Input', fieldName: 'lastErrorMessage', label: '错误' },
+  { component: 'Input', fieldName: 'lastErrorMessage', label: '问题' },
 ];
 
 export const workflowSearchSchema = formSchemaTransform.toSearchSchema(
@@ -163,12 +164,24 @@ export const workflowColumns =
     },
     actions: {
       show: true,
-      width: 210,
+      width: 280,
     },
   });
 
-export const workflowItemColumns =
-  formSchemaTransform.toTableColumns<ContentImportItemDto>(
+const workflowItemSelectionColumn: NonNullable<
+  VxeGridProps<ContentImportItemDto>['columns']
+>[number] = {
+  align: 'center',
+  fixed: 'left',
+  type: 'checkbox',
+  width: 48,
+};
+
+export const workflowItemColumns: NonNullable<
+  VxeGridProps<ContentImportItemDto>['columns']
+> = [
+  workflowItemSelectionColumn,
+  ...formSchemaTransform.toTableColumns<ContentImportItemDto>(
     workflowItemListSchema,
     {
       title: {
@@ -187,12 +200,13 @@ export const workflowItemColumns =
         hide: true,
       },
       lastErrorMessage: {
-        formatter: ({ cellValue }) => cellValue ?? '-',
+        formatter: ({ cellValue }) => formatWorkflowItemErrorMessage(cellValue),
         minWidth: 260,
         showOverflow: 'tooltip',
       },
     },
-  );
+  ),
+];
 
 export interface BuildWorkflowPageRequestOptions {
   currentPage: number;
@@ -302,6 +316,34 @@ export function canCancelWorkflow(task: WorkflowJobDto) {
 
 export function canExpireWorkflow(task: WorkflowJobDto) {
   return workflowRetryableStatuses.has(task.status);
+}
+
+export function canRetryWorkflowItems(
+  task: null | Pick<WorkflowJobDto, 'jobId'>,
+  items: Array<Pick<ContentImportItemDto, 'status'>>,
+) {
+  return (
+    Boolean(task?.jobId) &&
+    items.length > 0 &&
+    items.every((item) => item.status === failedWorkflowItemStatus)
+  );
+}
+
+export function formatWorkflowItemErrorMessage(message: unknown) {
+  if (typeof message !== 'string') {
+    return '-';
+  }
+
+  const text = message.trim();
+  if (!text) {
+    return '-';
+  }
+
+  if (/Request was throttled/i.test(text)) {
+    return '请求太频繁，稍后会自动继续';
+  }
+
+  return text;
 }
 
 export function formatWorkflowStatus(status?: null | number) {

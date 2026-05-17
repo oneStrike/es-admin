@@ -4,8 +4,11 @@ import {
   buildWorkflowItemPageRequest,
   buildWorkflowManagerRoute,
   buildWorkflowPageRequest,
+  canRetryWorkflowItems,
   formatWorkflowAttemptStatus,
   formatWorkflowItemStatus,
+  formatWorkflowItemErrorMessage,
+  workflowItemColumns,
 } from './shared';
 
 describe('workflow manager helpers', () => {
@@ -55,6 +58,44 @@ describe('workflow manager helpers', () => {
       pageSize: 45,
       status: 4,
     });
+  });
+
+  it('prepends a checkbox column before item sequence for retry selection', () => {
+    expect(workflowItemColumns[0]).toMatchObject({
+      fixed: 'left',
+      type: 'checkbox',
+      width: 48,
+    });
+    expect(workflowItemColumns[1]).toMatchObject({
+      title: '序号',
+      type: 'seq',
+    });
+  });
+
+  it('allows retrying selected failed items from an expired workflow', () => {
+    expect(
+      canRetryWorkflowItems({ jobId: 'job-001' }, [
+        { status: 4 },
+        { status: 4 },
+      ]),
+    ).toBe(true);
+  });
+
+  it('does not allow retrying when selection is empty or contains non-failed items', () => {
+    expect(canRetryWorkflowItems({ jobId: 'job-001' }, [])).toBe(false);
+    expect(
+      canRetryWorkflowItems({ jobId: 'job-001' }, [
+        { status: 4 },
+        { status: 3 },
+      ]),
+    ).toBe(false);
+    expect(canRetryWorkflowItems(null, [{ status: 4 }])).toBe(false);
+  });
+
+  it('shows item problem messages without technical wording', () => {
+    expect(formatWorkflowItemErrorMessage('Request was throttled.')).toBe(
+      '请求太频繁，稍后会自动继续',
+    );
   });
 
   it('formats every workflow item status without collapsing states', () => {

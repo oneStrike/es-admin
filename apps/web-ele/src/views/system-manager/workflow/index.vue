@@ -28,6 +28,7 @@ import {
   buildWorkflowPageRequest,
   canCancelWorkflow,
   canExpireWorkflow,
+  canRetryWorkflowItems,
   failedWorkflowItemStatus,
   formatWorkflowAttemptStatus,
   formatWorkflowOperator,
@@ -45,17 +46,13 @@ defineOptions({
 const route = useRoute();
 const currentJob = ref<null | WorkflowJobDetailDto>(null);
 const detailLoading = ref(false);
+const recordJob = ref<null | WorkflowJobDetailDto>(null);
+const recordLoading = ref(false);
 const retrying = ref(false);
 const selectedItems = ref<ContentImportItemDto[]>([]);
 
-const canRetrySelected = computed(
-  () =>
-    !!currentJob.value &&
-    canExpireWorkflow(currentJob.value) &&
-    selectedItems.value.length > 0 &&
-    selectedItems.value.every(
-      (item) => item.status === failedWorkflowItemStatus,
-    ),
+const canRetrySelected = computed(() =>
+  canRetryWorkflowItems(currentJob.value, selectedItems.value),
 );
 
 const gridOptions: VxeGridProps<WorkflowJobDto> = {
@@ -124,13 +121,25 @@ const [ItemGrid, itemGridApi] = useVbenVxeGrid({
 
 const [DetailModal, detailApi] = useVbenModal({
   footer: false,
-  title: '工作流详情',
+  title: '任务详情',
   class: 'w-[1200px] !h-[86vh] !max-h-[86vh]',
   contentClass: 'min-h-0 !overflow-hidden p-4',
   onOpenChange: (isOpen) => {
     if (!isOpen) {
       currentJob.value = null;
       selectedItems.value = [];
+    }
+  },
+});
+
+const [RecordModal, recordApi] = useVbenModal({
+  footer: false,
+  title: '处理记录',
+  class: 'w-[900px] !h-[76vh] !max-h-[76vh]',
+  contentClass: 'min-h-0 !overflow-hidden p-4',
+  onOpenChange: (isOpen) => {
+    if (!isOpen) {
+      recordJob.value = null;
     }
   },
 });
@@ -172,9 +181,22 @@ async function openDetail(jobId: string) {
   await loadDetail(jobId);
 }
 
+async function openRecords(jobId: string) {
+  recordApi.open();
+  recordLoading.value = true;
+  try {
+    recordJob.value = await workflowDetailApi({ jobId });
+  } finally {
+    recordLoading.value = false;
+  }
+}
+
 async function reloadDetailIfCurrent(jobId: string) {
   if (currentJob.value?.jobId === jobId) {
     await loadDetail(jobId);
+  }
+  if (recordJob.value?.jobId === jobId) {
+    recordJob.value = await workflowDetailApi({ jobId });
   }
 }
 
@@ -217,7 +239,8 @@ async function retrySelectedItems() {
 function handleItemSelectionChange(params: {
   records: ContentImportItemDto[];
 }) {
-  selectedItems.value = params.records;
+  selectedItems.value =
+    itemGridApi.grid?.getCheckboxRecords?.() ?? params.records;
 }
 </script>
 
@@ -256,6 +279,9 @@ function handleItemSelectionChange(params: {
       <template #actions="{ row }">
         <el-button link type="primary" @click="openDetail(row.jobId)">
           详情
+        </el-button>
+        <el-button link type="primary" @click="openRecords(row.jobId)">
+          处理记录
         </el-button>
         <el-button
           v-if="canCancelWorkflow(row)"
@@ -337,7 +363,9 @@ function handleItemSelectionChange(params: {
             </div>
           </section>
 
-          <section class="min-h-0 flex-1">
+          <section
+            class="flex min-h-[320px] min-w-0 flex-1 flex-col overflow-hidden"
+          >
             <ItemGrid>
               <template #toolbar-actions>
                 <el-button
@@ -355,40 +383,76 @@ function handleItemSelectionChange(params: {
               </template>
             </ItemGrid>
           </section>
-
-          <section class="grid shrink-0 grid-cols-1 gap-4 lg:grid-cols-2">
-            <div>
-              <h3 class="mb-2 text-base font-semibold">Attempt</h3>
-              <el-timeline>
-                <el-timeline-item
-                  v-for="attempt in currentJob.attempts"
-                  :key="attempt.attemptId"
-                  :timestamp="formatUTC(attempt.updatedAt)"
-                >
-                  #{{ attempt.attemptNo }} ·
-                  {{ formatWorkflowAttemptStatus(attempt.status).label }}
-                  <span class="text-gray-500">
-                    成功 {{ attempt.successItemCount }}，失败
-                    {{ attempt.failedItemCount }}
-                  </span>
-                </el-timeline-item>
-              </el-timeline>
-            </div>
-            <div>
-              <h3 class="mb-2 text-base font-semibold">事件</h3>
-              <el-timeline>
-                <el-timeline-item
-                  v-for="event in currentJob.events"
-                  :key="event.id"
-                  :timestamp="formatUTC(event.createdAt)"
-                >
-                  {{ event.message }}
-                </el-timeline-item>
-              </el-timeline>
-            </div>
-          </section>
         </template>
       </div>
     </DetailModal>
+
+    <RecordModal>
+      <div
+        v-loading="recordLoading"
+        class="flex h-full min-h-0 flex-col overflow-hidden"
+      >
+        <template v-if="recordJob">
+          <el-card class="mb-4 shrink-0" shadow="never">
+            <template #header>
+              <span>{{ recordJob.displayName }}</span>
+            </template>
+            <el-descriptions :column="2" border size="small">
+              <el-descriptions-item label="任务编号">
+                <el-text class="font-mono" truncated>
+                  {{ recordJob.jobId }}
+                </el-text>
+              </el-descriptions-item>
+              <el-descriptions-item label="状态">
+                <el-tag :type="formatWorkflowStatus(recordJob.status).type">
+                  {{ formatWorkflowStatus(recordJob.status).label }}
+                </el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item label="已完成">
+                {{ recordJob.successItemCount }}
+              </el-descriptions-item>
+              <el-descriptions-item label="未完成">
+                {{ recordJob.failedItemCount }}
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-card>
+
+          <el-card
+            body-class="min-h-0 flex-1 overflow-hidden"
+            class="flex min-h-0 flex-1 flex-col"
+            shadow="never"
+          >
+            <template #header>
+              <span>处理记录</span>
+            </template>
+            <el-scrollbar>
+              <el-timeline>
+                <el-timeline-item
+                  v-for="attempt in recordJob.attempts"
+                  :key="attempt.attemptId"
+                  :timestamp="formatUTC(attempt.updatedAt)"
+                >
+                  <el-space direction="vertical" alignment="start" :size="6">
+                    <el-space :size="8" wrap>
+                      <span>第 {{ attempt.attemptNo }} 次处理</span>
+                      <el-tag
+                        size="small"
+                        :type="formatWorkflowAttemptStatus(attempt.status).type"
+                      >
+                        {{ formatWorkflowAttemptStatus(attempt.status).label }}
+                      </el-tag>
+                    </el-space>
+                    <el-text size="small" type="info">
+                      已完成 {{ attempt.successItemCount }} 个，未完成
+                      {{ attempt.failedItemCount }} 个
+                    </el-text>
+                  </el-space>
+                </el-timeline-item>
+              </el-timeline>
+            </el-scrollbar>
+          </el-card>
+        </template>
+      </div>
+    </RecordModal>
   </Page>
 </template>

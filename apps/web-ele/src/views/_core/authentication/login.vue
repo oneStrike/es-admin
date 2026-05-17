@@ -55,7 +55,7 @@ const formSchema = computed((): VbenFormSchema[] => {
             h('img', {
               src: captchaData.value?.captcha,
               alt: '验证码',
-              class: 'cursor-pointer scale-145 ml-6',
+              class: 'cursor-pointer scale-140 -translate-y-2 ml-6',
               onClick: fetchCaptcha,
               title: '点击刷新验证码',
             }),
