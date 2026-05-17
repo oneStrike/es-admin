@@ -105,6 +105,54 @@ describe('background task notifications', () => {
     });
   });
 
+  it('uses the task display name as the active notification title', async () => {
+    const fetchPage = vi.fn(async () => ({
+      list: [createTask({ displayName: '  我独自升级  ' })],
+    }));
+    const state = createBackgroundTaskNotificationState({ fetchPage });
+
+    await state.poll(openGate);
+
+    expect(state.notifications.value[0]).toMatchObject({
+      message: '处理中',
+      title: '我独自升级',
+    });
+  });
+
+  it('keeps the task display name as the terminal notification title', async () => {
+    const notifyTerminal = vi.fn();
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        list: [createTask({ displayName: '我独自升级', status: 2 })],
+      })
+      .mockResolvedValueOnce({
+        list: [
+          createTask({
+            displayName: '我独自升级',
+            progress: { message: '导入完成', percent: 100 },
+            status: 4,
+          }),
+        ],
+      });
+    const state = createBackgroundTaskNotificationState({
+      fetchPage,
+      notifyTerminal,
+    });
+
+    await state.poll(openGate);
+    await state.poll(openGate);
+
+    expect(state.notifications.value[0]).toMatchObject({
+      title: '我独自升级',
+    });
+    expect(notifyTerminal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: '我独自升级',
+      }),
+    );
+  });
+
   it('marks terminal transitions unread even when the active notification was read', async () => {
     const fetchPage = vi
       .fn()

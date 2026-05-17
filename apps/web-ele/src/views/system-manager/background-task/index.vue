@@ -27,6 +27,7 @@ import {
   backgroundTaskSearchSchema,
   canCancelBackgroundTask,
   canRetryBackgroundTask,
+  formatBackgroundTaskDisplayName,
   formatBackgroundTaskOperator,
   formatBackgroundTaskStatus,
   formatBackgroundTaskType,
@@ -144,6 +145,9 @@ const currentTaskTypeLabel = computed(() =>
     ? formatBackgroundTaskType(currentTask.value.taskType)
     : '-',
 );
+const currentTaskDisplayName = computed(() =>
+  currentTask.value ? formatBackgroundTaskDisplayName(currentTask.value) : '',
+);
 const currentErrorMessage = computed(() =>
   currentTask.value ? getDiagnosticMessage(currentTask.value.error) : '',
 );
@@ -170,8 +174,10 @@ const currentTaskOverview = computed(() => {
   if (!task) {
     return [];
   }
+  const displayName = formatBackgroundTaskDisplayName(task);
 
   return [
+    ...(displayName ? [{ label: '作品', value: displayName }] : []),
     { label: '操作者', value: formatBackgroundTaskOperator(task) },
     { label: '处理 Worker', value: task.claimedBy || '未分配' },
     ...buildTaskReservationOverview(task),
@@ -415,6 +421,10 @@ function getTaskTypeLabel(task: BackgroundTaskDto) {
   return formatBackgroundTaskType(task.taskType);
 }
 
+function getTaskDisplayName(task: BackgroundTaskDto) {
+  return formatBackgroundTaskDisplayName(task);
+}
+
 function getTaskWorker(task: BackgroundTaskDto) {
   return task.claimedBy || '未分配';
 }
@@ -497,8 +507,11 @@ onBeforeUnmount(() => {
                       已请求取消
                     </el-tag>
                     <span class="font-medium">
-                      {{ getTaskTypeLabel(task) }}
+                      {{ getTaskDisplayName(task) || getTaskTypeLabel(task) }}
                     </span>
+                    <el-tag v-if="getTaskDisplayName(task)" type="info">
+                      {{ getTaskTypeLabel(task) }}
+                    </el-tag>
                     <el-text class="font-mono" truncated type="info">
                       {{ task.taskId }}
                     </el-text>
@@ -612,6 +625,12 @@ onBeforeUnmount(() => {
                 </el-tag>
               </div>
               <div class="truncate text-base font-semibold">
+                {{ currentTaskDisplayName || currentTaskTypeLabel }}
+              </div>
+              <div
+                v-if="currentTaskDisplayName"
+                class="mt-2 truncate text-sm text-muted-foreground"
+              >
                 {{ currentTaskTypeLabel }}
               </div>
               <div

@@ -21,6 +21,7 @@ import {
   resolveBackgroundTaskProgress,
 } from './progress';
 import { formatBackgroundTaskStatus } from './status';
+import { formatBackgroundTaskDisplayName } from './task-display';
 import { formatBackgroundTaskType } from './task-type';
 
 const BACKGROUND_TASK_ROUTE_NAME = 'BackgroundTaskManager';
@@ -68,6 +69,7 @@ function buildTaskNotificationItem(
   const progress = resolveBackgroundTaskProgress(task);
   const status = formatBackgroundTaskStatus(task.status);
   const typeLabel = formatBackgroundTaskType(task.taskType);
+  const displayName = formatBackgroundTaskDisplayName(task);
   const terminal = isTerminalBackgroundTaskStatus(task.status);
 
   return {
@@ -79,7 +81,7 @@ function buildTaskNotificationItem(
     message: progress.message,
     query: { taskId: task.taskId },
     state: { taskId: task.taskId },
-    title: terminal ? `${typeLabel}：${status.label}` : typeLabel,
+    title: displayName || (terminal ? `${typeLabel}：${status.label}` : typeLabel),
   };
 }
 

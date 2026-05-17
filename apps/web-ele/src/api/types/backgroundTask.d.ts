@@ -149,6 +149,8 @@ export type BackgroundTaskDto = {
   claimExpiresAt?: null | string;
   /* 创建时间 */
   createdAt: string;
+  /* 后台任务展示名称 */
+  displayName?: null | string;
   /* 后台任务去重键 */
   dedupeKey?: null | string;
   /* 任务错误信息 */
@@ -200,6 +202,8 @@ export type BackgroundTaskDto = {
 export type BackgroundTaskNotificationDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 后台任务展示名称 */
+  displayName?: null | string;
   /* 任务进度 */
   progress: BackgroundTaskNotificationProgressDto;
   /* 任务状态（1=待处理；2=处理中；3=最终写入中；4=成功；5=失败；6=已取消；7=回滚失败） */

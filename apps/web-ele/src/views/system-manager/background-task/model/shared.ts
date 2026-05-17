@@ -24,6 +24,7 @@ export {
   backgroundTaskStatusOptions,
   formatBackgroundTaskStatus,
 } from './status';
+export { formatBackgroundTaskDisplayName } from './task-display';
 export {
   backgroundTaskTypeOptions,
   formatBackgroundTaskType,
