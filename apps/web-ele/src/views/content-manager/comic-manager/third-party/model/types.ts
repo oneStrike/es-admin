@@ -84,7 +84,6 @@ type WorkDraftDefaultedField =
   | 'chapterPrice'
   | 'isHot'
   | 'isNew'
-  | 'isPublished'
   | 'isRecommended'
   | 'recommendWeight';
 type WorkDraftOptionalTextField =
@@ -107,7 +106,6 @@ type ChapterMappingDefaultedField =
   | 'canComment'
   | 'canDownload'
   | 'isPreview'
-  | 'isPublished'
   | 'overwriteContent'
   | 'price'
   | 'viewRule';

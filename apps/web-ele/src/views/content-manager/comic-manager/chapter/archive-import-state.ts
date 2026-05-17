@@ -21,21 +21,17 @@ const processingStatuses: Set<number> = new Set([
 ]);
 
 export interface ArchiveImportTaskState {
-  backgroundOwned?: boolean;
   status: number;
 }
 
 export function shouldShowArchiveTaskSummary(
   task: ArchiveImportTaskState | null | undefined,
 ) {
-  return task?.backgroundOwned === true;
+  return Boolean(task && task.status !== ARCHIVE_STATUS.DRAFT);
 }
 
-export function isArchiveBackgroundTask(
+export function isArchiveWorkflowRunning(
   task: ArchiveImportTaskState | null | undefined,
 ) {
-  if (task?.backgroundOwned !== true) {
-    return false;
-  }
-  return processingStatuses.has(task.status);
+  return Boolean(task && processingStatuses.has(task.status));
 }

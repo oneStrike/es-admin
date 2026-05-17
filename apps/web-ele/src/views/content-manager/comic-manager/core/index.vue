@@ -35,6 +35,7 @@ import { useDict } from '#/hooks/useDict';
 import { useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
+import { buildWorkflowManagerRoute } from '#/views/system-manager/workflow/model/shared';
 
 import { extractRelationIds } from '../../work-relations';
 import Chapter from '../chapter/index.vue';
@@ -244,10 +245,7 @@ async function syncLatestChapters(record: BaseWorkDto) {
       workId: record.id,
     });
     useMessage.success('同步任务已提交');
-    void router.push({
-      name: 'BackgroundTaskManager',
-      query: { taskId: task.taskId },
-    });
+    void router.push(buildWorkflowManagerRoute(task.jobId));
   } finally {
     record.syncLoading = false;
   }

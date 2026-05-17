@@ -5,7 +5,7 @@ import type {
   ThirdPartyComicCoverOptionsDto,
   ThirdPartyComicGroupDto,
 } from '#/api/types/content';
-import type { BackgroundTaskDto } from '#/api/types/backgroundTask';
+import type { WorkflowJobDto } from '#/api/types/workflow';
 
 export const SERVER_MANGA_AUTHOR_TYPE = 1;
 export const SERVER_COMIC_CATEGORY_TYPE = 1;
@@ -48,7 +48,7 @@ export function wizardSubmissionFingerprint(
 }
 
 export function canSubmitImportAgain(
-  submittedTask: BackgroundTaskDto | null,
+  submittedTask: null | WorkflowJobDto,
   submittedTaskFingerprint: string,
   currentFingerprint: string,
 ) {
@@ -59,13 +59,7 @@ export function canSubmitImportAgain(
   ) {
     return true;
   }
-  return isBackgroundTaskRetryableCleanStatus(submittedTask.status);
-}
-
-function isBackgroundTaskRetryableCleanStatus(
-  status: BackgroundTaskDto['status'],
-) {
-  return status === 5 || status === 6;
+  return false;
 }
 
 function normalizeOptionLabel(value: string) {
@@ -142,7 +136,7 @@ function toStableJsonValue(value: unknown): unknown {
   }
 
   const stableObject: Record<string, unknown> = {};
-  for (const key of Object.keys(value).sort()) {
+  for (const key of Object.keys(value).toSorted()) {
     const item = value[key];
     if (item === undefined) {
       continue;

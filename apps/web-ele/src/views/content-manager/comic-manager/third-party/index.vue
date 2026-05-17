@@ -40,7 +40,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { backgroundTaskDetailApi } from '#/api/core';
+import { workflowDetailApi } from '#/api/core';
 import {
   contentAuthorCreateApi,
   contentAuthorPageApi,
@@ -62,15 +62,18 @@ import { UploadSceneEnum } from '#/enum/api';
 import { useDict } from '#/hooks/useDict';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions, formatUTC } from '#/utils';
-import { formatBackgroundTaskStatus } from '#/views/system-manager/background-task/model/status';
+import {
+  buildWorkflowManagerRoute,
+  formatWorkflowStatus,
+} from '#/views/system-manager/workflow/model/shared';
 
 import { formSchema as authorFormSchema } from '../../author-manager/model/shared';
 import { formSchema as categoryFormSchema } from '../../category-manager/model/shared';
 import { formSchema as tagFormSchema } from '../../tag-manager/model/shared';
 import { extractRelationIds } from '../../work-relations';
 import {
-  canUseProviderWorkCover,
   canSubmitImportAgain,
+  canUseProviderWorkCover,
   findCreatedOptionByName,
   hasProviderGroupPathWord,
   resolveExactRelationMatches,
@@ -496,7 +499,6 @@ function createEmptyWorkDraft(): WorkDraftForm {
     description: '',
     isHot: false,
     isNew: false,
-    isPublished: true,
     isRecommended: false,
     language: '',
     name: '',
@@ -710,7 +712,6 @@ function applyLocalWorkToDraft(
     description: work.description ?? workDraft.value.description,
     isHot: work.isHot ?? workDraft.value.isHot,
     isNew: work.isNew ?? workDraft.value.isNew,
-    isPublished: work.isPublished ?? workDraft.value.isPublished,
     isRecommended: work.isRecommended ?? workDraft.value.isRecommended,
     language: resolveSelectDefault(
       languageOptions.value,
@@ -745,7 +746,6 @@ function createChapterMapping(
     group: chapter.group ?? undefined,
     importImages: true,
     isPreview: false,
-    isPublished: true,
     localCoverPath: '',
     overwriteContent: false,
     price: 0,
@@ -1368,7 +1368,7 @@ async function handleImport() {
     submittedTask.value = await contentComicThirdPartyImportConfirmApi(request);
     submittedTaskFingerprint.value = fingerprint;
     useMessage.success(
-      `导入任务已提交：${submittedTask.value.taskId.slice(0, 8)}`,
+      `导入任务已提交：${submittedTask.value.jobId.slice(0, 8)}`,
     );
   } catch {
     submittedTask.value = null;
@@ -1382,7 +1382,7 @@ async function refreshSubmittedTask(
   task: ContentComicThirdPartyImportConfirmResponse,
 ) {
   try {
-    return await backgroundTaskDetailApi({ taskId: task.taskId });
+    return await workflowDetailApi({ jobId: task.jobId });
   } catch {
     return task;
   }
@@ -1443,7 +1443,6 @@ function buildImportRequest(): ContentComicThirdPartyImportConfirmRequest | null
       description: draft.description,
       isHot: draft.isHot,
       isNew: draft.isNew,
-      isPublished: draft.isPublished,
       isRecommended: draft.isRecommended,
       language: draft.language,
       name: draft.name,
@@ -1474,7 +1473,6 @@ function toChapterImportItem(
     group: item.group,
     importImages: item.importImages,
     isPreview: item.isPreview,
-    isPublished: item.isPublished,
     overwriteContent: item.overwriteContent,
     price: item.price,
     providerChapterId: item.providerChapterId,
@@ -1491,14 +1489,11 @@ function toChapterImportItem(
 function openSubmittedTask() {
   if (!submittedTask.value) return;
 
-  void router.push({
-    name: 'BackgroundTaskManager',
-    query: { taskId: submittedTask.value.taskId },
-  });
+  void router.push(buildWorkflowManagerRoute(submittedTask.value.jobId));
 }
 
 function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
-  const value = (submittedTask.value as Record<string, unknown> | null)?.[
+  const value = (submittedTask.value as null | Record<string, unknown>)?.[
     field
   ];
   return typeof value === 'string' && value ? value : '';
@@ -1788,9 +1783,6 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                     <el-form-item label="允许评论">
                       <el-switch v-model="workDraft.canComment" />
                     </el-form-item>
-                    <el-form-item label="发布">
-                      <el-switch v-model="workDraft.isPublished" />
-                    </el-form-item>
                     <el-form-item label="热门">
                       <el-switch v-model="workDraft.isHot" />
                     </el-form-item>
@@ -2057,9 +2049,6 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                     >
                       <el-switch v-model="activeMapping.overwriteContent" />
                     </el-form-item>
-                    <el-form-item label="发布">
-                      <el-switch v-model="activeMapping.isPublished" />
-                    </el-form-item>
                     <el-form-item label="试读">
                       <el-switch v-model="activeMapping.isPreview" />
                     </el-form-item>
@@ -2119,17 +2108,13 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                   </el-descriptions-item>
                   <template v-if="submittedTask">
                     <el-descriptions-item label="任务ID">
-                      {{ submittedTask.taskId }}
+                      {{ submittedTask.jobId }}
                     </el-descriptions-item>
                     <el-descriptions-item label="任务状态">
                       <el-tag
-                        :type="
-                          formatBackgroundTaskStatus(submittedTask.status).type
-                        "
+                        :type="formatWorkflowStatus(submittedTask.status).type"
                       >
-                        {{
-                          formatBackgroundTaskStatus(submittedTask.status).label
-                        }}
+                        {{ formatWorkflowStatus(submittedTask.status).label }}
                       </el-tag>
                     </el-descriptions-item>
                     <el-descriptions-item label="创建时间">
@@ -2158,7 +2143,7 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                     type="primary"
                     @click="openSubmittedTask"
                   >
-                    查看后台任务
+                    查看工作流任务
                   </el-button>
                 </div>
               </div>
@@ -2167,7 +2152,7 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                 :closable="false"
                 class="mt-3"
                 show-icon
-                title="导入任务已提交后台处理，可前往后台任务查看进度、错误、结果和重试状态。"
+                title="导入任务已提交工作流处理，可前往工作流任务查看进度、错误、结果和重试状态。"
                 type="success"
               />
 

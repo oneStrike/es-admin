@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
-
 import type { ContentComicThirdPartyImportConfirmRequest } from '#/api/types/content';
+import type { WorkflowJobDto } from '#/api/types/workflow';
+
+import { describe, expect, it } from 'vitest';
 
 import {
   canSubmitImportAgain,
@@ -87,7 +88,6 @@ describe('third-party import submission fingerprint', () => {
           group: 'default',
           importImages: true,
           isPreview: false,
-          isPublished: true,
           overwriteContent: false,
           price: 0,
           providerChapterId: 'chapter-001',
@@ -118,7 +118,6 @@ describe('third-party import submission fingerprint', () => {
         description: '作品简介',
         isHot: false,
         isNew: false,
-        isPublished: true,
         isRecommended: false,
         language: 'zh-CN',
         name: '我独自升级',
@@ -131,8 +130,34 @@ describe('third-party import submission fingerprint', () => {
     };
   }
 
+  function createWorkflowJob(status: WorkflowJobDto['status']): WorkflowJobDto {
+    return {
+      createdAt: '2026-05-11T00:00:00.000Z',
+      displayName: '三方导入',
+      failedItemCount: 0,
+      finishedAt: null,
+      id: status,
+      jobId: `job-${status}`,
+      operatorType: 1,
+      operatorUserId: 1,
+      progressPercent: 0,
+      selectedItemCount: 1,
+      skippedItemCount: 0,
+      status,
+      successItemCount: 0,
+      updatedAt: '2026-05-11T00:00:00.000Z',
+      workflowType: 'content-import.third-party-import',
+    };
+  }
+
   it('ignores only source snapshot fetchedAt', () => {
     const request = createRequest();
+    const [firstChapter] = request.chapters;
+
+    if (!firstChapter) {
+      throw new Error('Expected request fixture to include a chapter');
+    }
+
     const fingerprint = wizardSubmissionFingerprint(request);
 
     expect(
@@ -149,7 +174,7 @@ describe('third-party import submission fingerprint', () => {
         ...request,
         chapters: [
           {
-            ...request.chapters[0]!,
+            ...firstChapter,
             price: 1,
           },
         ],
@@ -171,30 +196,26 @@ describe('third-party import submission fingerprint', () => {
   });
 
   it('blocks only unchanged duplicate submissions', () => {
-    const activeTask = { status: 1, taskId: 'task-001' };
-    const successTask = { status: 4, taskId: 'task-001' };
-    const failedTask = { status: 5, taskId: 'task-001' };
-    const cancelledTask = { status: 6, taskId: 'task-001' };
+    const activeTask = createWorkflowJob(1);
+    const successTask = createWorkflowJob(4);
+    const failedTask = createWorkflowJob(5);
+    const cancelledTask = createWorkflowJob(6);
     const fingerprint = wizardSubmissionFingerprint(createRequest());
 
+    expect(canSubmitImportAgain(activeTask, fingerprint, fingerprint)).toBe(
+      false,
+    );
+    expect(canSubmitImportAgain(successTask, fingerprint, fingerprint)).toBe(
+      false,
+    );
+    expect(canSubmitImportAgain(failedTask, fingerprint, fingerprint)).toBe(
+      false,
+    );
+    expect(canSubmitImportAgain(cancelledTask, fingerprint, fingerprint)).toBe(
+      false,
+    );
     expect(
-      canSubmitImportAgain(activeTask as never, fingerprint, fingerprint),
-    ).toBe(false);
-    expect(
-      canSubmitImportAgain(successTask as never, fingerprint, fingerprint),
-    ).toBe(false);
-    expect(
-      canSubmitImportAgain(failedTask as never, fingerprint, fingerprint),
-    ).toBe(true);
-    expect(
-      canSubmitImportAgain(cancelledTask as never, fingerprint, fingerprint),
-    ).toBe(true);
-    expect(
-      canSubmitImportAgain(
-        activeTask as never,
-        fingerprint,
-        `${fingerprint}:dirty`,
-      ),
+      canSubmitImportAgain(activeTask, fingerprint, `${fingerprint}:dirty`),
     ).toBe(true);
     expect(canSubmitImportAgain(null, fingerprint, fingerprint)).toBe(true);
   });

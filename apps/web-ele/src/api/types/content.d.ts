@@ -367,8 +367,8 @@ export type ContentComicChapterContentArchivePreviewRequest = {
   /* 单章节压缩包对应的章节ID */
   chapterId?: null | number;
 
-  /* 预解析会话任务ID */
-  taskId: string;
+  /* 预解析会话工作流任务ID */
+  jobId: string;
 
   /* 作品ID */
   workId: number;
@@ -385,8 +385,7 @@ export type ContentComicChapterContentArchivePreviewResponse =
 export type ContentComicChapterContentArchiveSessionRequest =
   CreateComicArchiveSessionDto;
 
-export type ContentComicChapterContentArchiveSessionResponse =
-  ComicArchiveTaskIdDto;
+export type ContentComicChapterContentArchiveSessionResponse = WorkflowJobIdDto;
 
 /**
  *  类型定义 [ContentComicChapterContentArchiveDiscardRequest]
@@ -396,7 +395,7 @@ export type ContentComicChapterContentArchiveSessionResponse =
 export type ContentComicChapterContentArchiveDiscardRequest =
   DiscardComicArchiveDto;
 
-export type ContentComicChapterContentArchiveDiscardResponse = boolean;
+export type ContentComicChapterContentArchiveDiscardResponse = WorkflowJobDto;
 
 /**
  *  类型定义 [ContentComicChapterContentArchiveConfirmRequest]
@@ -406,7 +405,7 @@ export type ContentComicChapterContentArchiveDiscardResponse = boolean;
 export type ContentComicChapterContentArchiveConfirmRequest =
   ConfirmComicArchiveDto;
 
-export type ContentComicChapterContentArchiveConfirmResponse = boolean;
+export type ContentComicChapterContentArchiveConfirmResponse = WorkflowJobDto;
 
 /**
  *  类型定义 [ContentComicChapterContentArchiveDetailRequest]
@@ -417,8 +416,8 @@ export type ContentComicChapterContentArchiveDetailRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  /* 导入任务ID */
-  taskId: string;
+  /* 工作流任务ID */
+  jobId: string;
 };
 
 export type ContentComicChapterContentArchiveDetailResponse =
@@ -564,7 +563,7 @@ export type ContentComicThirdPartyImportPreviewResponse =
 export type ContentComicThirdPartyImportConfirmRequest =
   ThirdPartyComicImportRequestDto;
 
-export type ContentComicThirdPartyImportConfirmResponse = BackgroundTaskDto;
+export type ContentComicThirdPartyImportConfirmResponse = WorkflowJobDto;
 
 /**
  *  类型定义 [ContentComicThirdPartySyncLatestRequest]
@@ -574,7 +573,7 @@ export type ContentComicThirdPartyImportConfirmResponse = BackgroundTaskDto;
 export type ContentComicThirdPartySyncLatestRequest =
   ThirdPartyComicSyncLatestRequestDto;
 
-export type ContentComicThirdPartySyncLatestResponse = BackgroundTaskDto;
+export type ContentComicThirdPartySyncLatestResponse = WorkflowJobDto;
 
 /**
  *  类型定义 [ContentNovelCreateRequest]
@@ -2124,14 +2123,14 @@ export type MoveComicContentDto = {
 export type ComicArchiveTaskResponseDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 是否已确认并进入后台任务归属 */
-  backgroundOwned: boolean;
   /* 任务过期时间 */
   expiresAt: string;
   /* 完成处理时间 */
   finishedAt?: null | string;
   /* 被忽略的路径列表 */
   ignoredItems: ComicArchiveIgnoredItemDto[];
+  /* 导入工作流任务ID */
+  jobId: string;
   /* 最后一次错误信息 */
   lastError?: null | string;
   /* 匹配成功的章节列表 */
@@ -2148,8 +2147,6 @@ export type ComicArchiveTaskResponseDto = {
   status: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
   /* 预解析汇总信息 */
   summary: ComicArchiveSummaryDto;
-  /* 导入任务ID */
-  taskId: string;
 
   /* 作品ID */
   workId: number;
@@ -2255,16 +2252,16 @@ export type CreateComicArchiveSessionDto = {
 };
 
 /**
- *  类型定义 [ComicArchiveTaskIdDto]
+ *  类型定义 [WorkflowJobIdDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type ComicArchiveTaskIdDto = {
+export type WorkflowJobIdDto = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  /* 导入任务ID */
-  taskId: string;
+  /* 工作流任务ID */
+  jobId: string;
 };
 
 /**
@@ -2276,8 +2273,59 @@ export type DiscardComicArchiveDto = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  /* 导入任务ID */
-  taskId: string;
+  /* 导入工作流任务ID */
+  jobId: string;
+};
+
+/**
+ *  类型定义 [WorkflowJobDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowJobDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 取消请求时间 */
+  cancelRequestedAt?: null | string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 展示名称 */
+  displayName: string;
+  /* 草稿过期时间 */
+  expiresAt?: null | string;
+  /* 失败条目数 */
+  failedItemCount: number;
+  /* 完成时间 */
+  finishedAt?: null | string;
+  /* 主键ID */
+  id: number;
+  /* 工作流任务ID */
+  jobId: string;
+  /* 操作者类型（1=后台管理员；2=系统） */
+  operatorType: 1 | 2;
+  /* 后台管理员操作者ID；系统任务为空 */
+  operatorUserId?: null | number;
+  /* 进度文案 */
+  progressMessage?: null | string;
+  /* 进度百分比 */
+  progressPercent: number;
+  /* 选中条目数 */
+  selectedItemCount: number;
+  /* 跳过条目数 */
+  skippedItemCount: number;
+  /* 开始处理时间 */
+  startedAt?: null | string;
+  /* 任务状态（1=草稿；2=待处理；3=处理中；4=成功；5=部分失败；6=失败；7=已取消；8=已过期） */
+  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  /* 成功条目数 */
+  successItemCount: number;
+  /* 运行时非查询诊断摘要 */
+  summary?: null | Record<string, any>;
+  /* 更新时间 */
+  updatedAt: string;
+
+  /* 工作流类型 */
+  workflowType: string;
 };
 
 /**
@@ -2291,8 +2339,8 @@ export type ConfirmComicArchiveDto = {
   /* 用户确认要导入的章节ID列表 */
   confirmedChapterIds: number[];
 
-  /* 导入任务ID */
-  taskId: string;
+  /* 导入工作流任务ID */
+  jobId: string;
 };
 
 /**
@@ -2714,8 +2762,6 @@ export type ThirdPartyComicImportWorkDraftDto = {
   isHot?: boolean | null;
   /* 是否新作 */
   isNew?: boolean | null;
-  /* 是否发布 */
-  isPublished?: boolean | null;
   /* 是否推荐 */
   isRecommended?: boolean | null;
   /* 语言代码 */
@@ -2765,8 +2811,6 @@ export type ThirdPartyComicImportChapterItemDto = {
   importImages: boolean;
   /* 是否试读 */
   isPreview?: boolean | null;
-  /* 是否发布 */
-  isPublished?: boolean | null;
   /* 是否覆盖已有章节内容 */
   overwriteContent?: boolean | null;
   /* 章节价格 */
@@ -2784,67 +2828,6 @@ export type ThirdPartyComicImportChapterItemDto = {
 
   /* 查看规则 */
   viewRule?: null | number;
-};
-
-/**
- *  类型定义 [BackgroundTaskDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type BackgroundTaskDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 取消请求时间 */
-  cancelRequestedAt?: null | string;
-  /* 当前处理 worker */
-  claimedBy?: null | string;
-  /* claim 过期时间 */
-  claimExpiresAt?: null | string;
-  /* 创建时间 */
-  createdAt: string;
-  /* 后台任务展示名称 */
-  displayName?: null | string;
-  /* 后台任务去重键 */
-  dedupeKey?: null | string;
-  /* 任务错误信息 */
-  error?: null | Record<string, any>;
-  /* 进入最终写入时间 */
-  finalizingAt?: null | string;
-  /* 完成时间 */
-  finishedAt?: null | string;
-  /* 主键id */
-  id: number;
-  /* 最大允许重试次数 */
-  maxRetries: number;
-  /* 操作者类型（1=后台管理员；2=系统） */
-  operatorType: 1 | 2;
-  /* 后台管理员操作者ID；系统任务为空 */
-  operatorUserId?: null | number;
-  /* 任务负载 */
-  payload: Record<string, any>;
-  /* 任务进度 */
-  progress: Record<string, any>;
-  /* 任务残留诊断 */
-  residue?: null | Record<string, any>;
-  /* 任务成功结果 */
-  result?: null | Record<string, any>;
-  /* 已重试次数 */
-  retryCount: number;
-  /* 回滚失败诊断 */
-  rollbackError?: null | Record<string, any>;
-  /* 后台任务执行串行键 */
-  serialKey?: null | string;
-  /* 开始处理时间 */
-  startedAt?: null | string;
-  /* 任务状态（1=待处理；2=处理中；3=最终写入中；4=成功；5=失败；6=已取消；7=回滚失败） */
-  status: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-  /* 后台任务ID */
-  taskId: string;
-  /* 后台任务类型 */
-  taskType: string;
-
-  /* 更新时间 */
-  updatedAt: string;
 };
 
 /**

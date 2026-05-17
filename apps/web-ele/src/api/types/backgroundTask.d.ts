@@ -149,10 +149,10 @@ export type BackgroundTaskDto = {
   claimExpiresAt?: null | string;
   /* 创建时间 */
   createdAt: string;
-  /* 后台任务展示名称 */
-  displayName?: null | string;
   /* 后台任务去重键 */
   dedupeKey?: null | string;
+  /* 后台任务展示名称 */
+  displayName?: null | string;
   /* 任务错误信息 */
   error?: null | Record<string, any>;
   /* 进入最终写入时间 */

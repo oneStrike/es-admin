@@ -22,16 +22,15 @@ import { requestClient } from '#/api/request';
 import { AlertCircleIcon, ImageLine, UploadLoop } from '#/components/es-icons';
 import { UploadUrlMapEnum } from '#/enum/api';
 import { useMessage } from '#/hooks/useFeedback';
+
 import {
   ARCHIVE_RESULT_STATUS,
   ARCHIVE_STATUS,
-  isArchiveBackgroundTask,
+  isArchiveWorkflowRunning,
   shouldShowArchiveTaskSummary,
 } from './archive-import-state';
 
-type ArchiveTaskDetail = ContentComicChapterContentArchiveDetailResponse & {
-  backgroundOwned?: boolean;
-};
+type ArchiveTaskDetail = ContentComicChapterContentArchiveDetailResponse;
 
 defineOptions({
   name: 'ArchiveImportPanel',
@@ -62,11 +61,11 @@ const archiveFileList = ref<UploadUserFile[]>([]);
 const selectedArchiveFile = ref<File | null>(null);
 const selectedChapterIds = ref<number[]>([]);
 const sourceFileName = ref('');
-const previewTaskId = ref('');
+const previewJobId = ref('');
 const taskDetail = ref<ArchiveTaskDetail | null>(null);
 
 let pollTimer: null | number = null;
-let notifiedTaskId = '';
+let notifiedJobId = '';
 let closingAfterCleanup = false;
 let previewRunId = 0;
 let uploadAbortController: AbortController | null = null;
@@ -174,12 +173,14 @@ const showConfirmStage = computed(
     taskDetail.value.requireConfirm &&
     !cancelling.value,
 );
-const hasBackgroundTask = computed(() =>
+const hasWorkflowTask = computed(() =>
   shouldShowArchiveTaskSummary(taskDetail.value),
 );
-const hasActiveTask = computed(() => isArchiveBackgroundTask(taskDetail.value));
+const hasActiveTask = computed(() =>
+  isArchiveWorkflowRunning(taskDetail.value),
+);
 const showTaskSummary = computed(
-  () => !!taskDetail.value && hasBackgroundTask.value,
+  () => !!taskDetail.value && hasWorkflowTask.value,
 );
 const canConfirm = computed(
   () =>
@@ -254,7 +255,7 @@ const taskHint = computed(() => {
       ? '支持 zip 压缩包，仅处理当前章节。'
       : '支持 zip 压缩包，按章节 ID 批量预解析后确认导入。';
   }
-  return `${sourceFileName.value || '压缩包'} · 任务 ${taskDetail.value.taskId.slice(0, 8)}`;
+  return `${sourceFileName.value || '压缩包'} · 任务 ${taskDetail.value.jobId.slice(0, 8)}`;
 });
 const archiveRuleGroups = computed(() => [
   {
@@ -280,7 +281,7 @@ const archiveRuleGroups = computed(() => [
     title: '导入流程',
     rules: [
       '先选择 zip，再手动开始预解析。',
-      '检查匹配章节和忽略项后，再确认提交后台导入。',
+      '检查匹配章节和忽略项后，再确认提交 workflow 导入。',
     ],
   },
 ]);
@@ -298,7 +299,7 @@ function closePanel() {
 
 function hasPreConfirmServerState() {
   return Boolean(
-    previewTaskId.value ||
+    previewJobId.value ||
     (taskDetail.value && !shouldShowArchiveTaskSummary(taskDetail.value)),
   );
 }
@@ -314,7 +315,7 @@ async function handleBeforeClose() {
   }
 
   if (!hasPreConfirmServerState()) {
-    if (!hasBackgroundTask.value) {
+    if (!hasWorkflowTask.value) {
       resetPreConfirmState();
     }
     return true;
@@ -408,23 +409,20 @@ function toggleChapterSelection(chapterId: number) {
   }
 }
 
-async function fetchTaskDetail(taskId: string) {
+async function fetchTaskDetail(jobId: string) {
   detailLoading.value = true;
   try {
     const detail = (await contentComicChapterContentArchiveDetailApi({
-      taskId,
+      jobId,
     })) as ArchiveTaskDetail;
     taskDetail.value = detail;
     if (processingStatuses.has(detail.status)) {
-      schedulePolling(taskId);
+      schedulePolling(jobId);
     } else {
       stopPolling();
     }
-    if (
-      terminalStatuses.has(detail.status) &&
-      notifiedTaskId !== detail.taskId
-    ) {
-      notifiedTaskId = detail.taskId;
+    if (terminalStatuses.has(detail.status) && notifiedJobId !== detail.jobId) {
+      notifiedJobId = detail.jobId;
       emit('importFinished', detail);
       if (detail.status === ARCHIVE_STATUS.SUCCESS) {
         useMessage.success('压缩包导入完成');
@@ -439,10 +437,10 @@ async function fetchTaskDetail(taskId: string) {
   }
 }
 
-function schedulePolling(taskId: string) {
+function schedulePolling(jobId: string) {
   stopPolling();
   pollTimer = window.setTimeout(() => {
-    void fetchTaskDetail(taskId);
+    void fetchTaskDetail(jobId);
   }, 3000);
 }
 
@@ -459,7 +457,7 @@ function resetPreConfirmState() {
   previewRunId += 1;
   stopPolling();
   uploadAbortController = null;
-  previewTaskId.value = '';
+  previewJobId.value = '';
   uploading.value = false;
   uploadProgress.value = 0;
   confirming.value = false;
@@ -479,13 +477,13 @@ async function createArchivePreviewSession() {
   return contentComicChapterContentArchiveSessionApi(payload);
 }
 
-async function discardArchivePreview(taskId: string) {
-  return contentComicChapterContentArchiveDiscardApi({ taskId });
+async function discardArchivePreview(jobId: string) {
+  return contentComicChapterContentArchiveDiscardApi({ jobId });
 }
 
 async function discardPreConfirmState() {
-  const taskId = previewTaskId.value || taskDetail.value?.taskId || '';
-  if (!taskId) {
+  const jobId = previewJobId.value || taskDetail.value?.jobId || '';
+  if (!jobId) {
     resetPreConfirmState();
     return true;
   }
@@ -497,7 +495,7 @@ async function discardPreConfirmState() {
   stopPolling();
 
   try {
-    await discardArchivePreview(taskId);
+    await discardArchivePreview(jobId);
     resetPreConfirmState();
     return true;
   } catch (error: any) {
@@ -545,7 +543,7 @@ async function handleStartPreview() {
   selectedChapterIds.value = [];
   uploadProgress.value = 0;
   uploading.value = true;
-  previewTaskId.value = '';
+  previewJobId.value = '';
   uploadAbortController = null;
   stopPolling();
 
@@ -554,11 +552,11 @@ async function handleStartPreview() {
   try {
     const session = await createArchivePreviewSession();
     if (runId !== previewRunId) {
-      await discardArchivePreview(session.taskId).catch(() => undefined);
+      await discardArchivePreview(session.jobId).catch(() => undefined);
       return;
     }
-    previewTaskId.value = session.taskId;
-    params.set('taskId', session.taskId);
+    previewJobId.value = session.jobId;
+    params.set('jobId', session.jobId);
     controller = new AbortController();
     uploadAbortController = controller;
     const task = await requestClient.upload<ArchiveTaskDetail>(
@@ -576,7 +574,7 @@ async function handleStartPreview() {
         },
       },
     );
-    if (runId !== previewRunId || previewTaskId.value !== task.taskId) {
+    if (runId !== previewRunId || previewJobId.value !== task.jobId) {
       return;
     }
     taskDetail.value = task;
@@ -619,18 +617,17 @@ async function handleConfirmImport() {
   try {
     await contentComicChapterContentArchiveConfirmApi({
       confirmedChapterIds: selectedChapterIds.value,
-      taskId: taskDetail.value.taskId,
+      jobId: taskDetail.value.jobId,
     } satisfies ContentComicChapterContentArchiveConfirmRequest);
-    useMessage.success('导入任务已提交，正在后台处理');
-    previewTaskId.value = '';
+    useMessage.success('导入任务已提交，正在 workflow 处理');
+    previewJobId.value = '';
     taskDetail.value = {
       ...taskDetail.value,
-      backgroundOwned: true,
       lastError: null,
       resultItems: [],
       status: ARCHIVE_STATUS.PENDING,
     };
-    await fetchTaskDetail(taskDetail.value.taskId);
+    await fetchTaskDetail(taskDetail.value.jobId);
   } finally {
     confirming.value = false;
   }
@@ -1102,7 +1099,9 @@ async function handleConfirmImport() {
                       :key="rule"
                       class="flex gap-2"
                     >
-                      <span class="mt-2 size-1.5 rounded-full bg-slate-300" />
+                      <span
+                        class="mt-2 size-1.5 rounded-full bg-slate-300"
+                      ></span>
                       <span>{{ rule }}</span>
                     </li>
                   </ul>
@@ -1122,7 +1121,7 @@ async function handleConfirmImport() {
                 cancelling
                   ? '正在取消'
                   : hasActiveTask
-                    ? '后台继续处理，先关闭'
+                    ? 'workflow 继续处理，先关闭'
                     : cancelError
                       ? '重试取消并关闭'
                       : '关闭'

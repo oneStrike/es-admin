@@ -61,6 +61,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'WorkflowManager',
+        path: '/system-manager/workflow',
+        component: () => import('#/views/system-manager/workflow/index.vue'),
+        meta: {
+          title: '工作流任务',
+          icon: 'codex:dot-circle',
+        },
+      },
+      {
         name: 'IpGeolocationManager',
         path: '/system-manager/ip-geolocation',
         component: () =>

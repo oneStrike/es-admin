@@ -25,3 +25,4 @@ export * from './systemUser.d';
 export * from './task.d';
 export * from './upload.d';
 export * from './wallet.d';
+export * from './workflow.d';

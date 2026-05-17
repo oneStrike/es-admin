@@ -582,7 +582,7 @@ export async function contentComicThirdPartyImportPreviewApi(
 }
 
 /**
- * 确认第三方漫画导入并创建后台任务（破坏性移除同步结果）
+ * 确认第三方漫画导入并创建工作流任务
  */
 export async function contentComicThirdPartyImportConfirmApi(
   params: ContentComicThirdPartyImportConfirmRequest,
