@@ -13,8 +13,8 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  workflowCancelApi,
   workflowArchiveApi,
+  workflowCancelApi,
   workflowDetailApi,
   workflowExpireApi,
   workflowItemPageApi,
@@ -33,12 +33,13 @@ import {
   canExpireWorkflow,
   canRetryWorkflowItems,
   createWorkflowImageProgressActiveState,
-  failedWorkflowItemStatus,
   formatWorkflowAttemptStatus,
   formatWorkflowItemImageProgress,
+  formatWorkflowItemRetrySummary,
   formatWorkflowJobStatus,
   formatWorkflowOperator,
   formatWorkflowType,
+  getWorkflowItemCheckboxDisabledReason,
   isWorkflowActiveStatus,
   workflowColumns,
   workflowItemColumns,
@@ -86,7 +87,7 @@ const gridOptions: VxeGridProps<WorkflowJobDto> = {
 
 const itemGridOptions: VxeGridProps<ContentImportItemDto> = {
   checkboxConfig: {
-    checkMethod: ({ row }) => row.status === failedWorkflowItemStatus,
+    checkMethod: ({ row }) => !getWorkflowItemCheckboxDisabledReason(row),
     highlight: true,
   },
   columns: workflowItemColumns,
@@ -507,10 +508,22 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
               <template #imageProgress="{ row }">
                 {{
                   formatWorkflowItemImageProgress(row, {
-                    isActive: createWorkflowImageProgressActiveState(currentJob),
+                    isActive:
+                      createWorkflowImageProgressActiveState(currentJob),
                     progressDetail: currentJob?.progressDetail,
                   })
                 }}
+              </template>
+
+              <template #nextRetryAt="{ row }">
+                <el-tooltip
+                  v-if="getWorkflowItemCheckboxDisabledReason(row)"
+                  :content="getWorkflowItemCheckboxDisabledReason(row)"
+                  placement="top"
+                >
+                  <span>{{ formatWorkflowItemRetrySummary(row) }}</span>
+                </el-tooltip>
+                <span v-else>{{ formatWorkflowItemRetrySummary(row) }}</span>
               </template>
             </ItemGrid>
           </section>
@@ -603,37 +616,37 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
 
 .workflow-detail__headline {
   display: flex;
+  gap: 1rem;
   align-items: center;
   justify-content: space-between;
   min-width: 0;
-  gap: 1rem;
 }
 
 .workflow-detail__identity {
   display: flex;
   flex: 1 1 auto;
+  gap: 0.75rem;
   align-items: center;
   min-width: 0;
-  gap: 0.75rem;
 }
 
 .workflow-detail__title-row {
   display: flex;
   flex: 1 1 auto;
+  gap: 0.5rem;
   align-items: center;
   min-width: 0;
-  gap: 0.5rem;
 }
 
 .workflow-detail__job-id {
   flex: 0 1 220px;
   min-width: 120px;
   overflow: hidden;
-  color: hsl(var(--muted-foreground));
+  text-overflow: ellipsis;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   line-height: 1rem;
-  text-overflow: ellipsis;
+  color: hsl(var(--muted-foreground));
   white-space: nowrap;
 }
 
@@ -654,25 +667,25 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
   min-width: 0;
   min-height: 46px;
   padding: 0.4rem 0.625rem;
+  background: hsl(var(--muted) / 45%);
   border: 1px solid hsl(var(--border));
   border-radius: 6px;
-  background: hsl(var(--muted) / 45%);
 
   span {
-    color: hsl(var(--muted-foreground));
     font-size: 0.75rem;
     line-height: 1rem;
+    color: hsl(var(--muted-foreground));
   }
 
   strong {
     min-width: 0;
     margin-top: 0.125rem;
     overflow: hidden;
-    color: hsl(var(--foreground));
+    text-overflow: ellipsis;
     font-size: 0.9375rem;
     font-weight: 600;
     line-height: 1.25rem;
-    text-overflow: ellipsis;
+    color: hsl(var(--foreground));
     white-space: nowrap;
   }
 }
@@ -710,13 +723,13 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
 @media (max-width: 1280px) {
   .workflow-detail__headline,
   .workflow-detail__identity {
-    align-items: flex-start;
     flex-direction: column;
+    align-items: flex-start;
   }
 
   .workflow-detail__metrics {
-    width: 100%;
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
   }
 
   .workflow-detail__job-id {

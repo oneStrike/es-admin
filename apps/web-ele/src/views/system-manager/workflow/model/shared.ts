@@ -10,7 +10,7 @@ import type {
 } from '#/api/types/workflow';
 import type { EsFormSchema } from '#/types';
 
-import { formSchemaTransform } from '#/utils';
+import { formatUTC, formSchemaTransform } from '#/utils';
 
 type WorkflowStatus = WorkflowJobDto['status'];
 type WorkflowItemStatus = ContentImportItemDto['status'];
@@ -21,7 +21,7 @@ type WorkflowSort = {
   order: string;
 };
 type WorkflowArchiveScope = 'active' | 'all' | 'archived';
-type WorkflowProgressDetail = Record<string, unknown> | null | undefined;
+type WorkflowProgressDetail = null | Record<string, unknown> | undefined;
 type WorkflowImageProgressRow = Pick<
   ContentImportItemDto,
   'imageSuccessCount' | 'imageTotal' | 'itemId' | 'providerChapterId'
@@ -73,6 +73,7 @@ export const workflowTerminalStatuses = new Set<WorkflowStatus>([
 ]);
 export const workflowRetryableStatuses = new Set<WorkflowStatus>([5, 6]);
 export const failedWorkflowItemStatus: WorkflowItemStatus = 4;
+export const retryingWorkflowItemStatus: WorkflowItemStatus = 5;
 export const defaultWorkflowArchiveScope: WorkflowArchiveScope = 'active';
 
 export const workflowArchiveScopeOptions = [
@@ -135,6 +136,7 @@ const workflowItemListSchema: EsFormSchema = [
     label: '图片成功数',
   },
   { component: 'InputNumber', fieldName: 'imageTotal', label: '图片总数' },
+  { component: 'Input', fieldName: 'nextRetryAt', label: '自动重试' },
   { component: 'Input', fieldName: 'lastErrorMessage', label: '问题' },
 ];
 
@@ -271,6 +273,12 @@ export const workflowItemColumns: NonNullable<
       },
       imageTotal: {
         hide: true,
+      },
+      nextRetryAt: {
+        formatter: ({ row }) => formatWorkflowItemRetrySummary(row),
+        minWidth: 260,
+        showOverflow: 'tooltip',
+        slots: { default: 'nextRetryAt' },
       },
       lastErrorMessage: {
         formatter: ({ cellValue }) => formatWorkflowItemErrorMessage(cellValue),
@@ -436,6 +444,10 @@ export function canExpireWorkflow(task: WorkflowJobDto) {
   return workflowRetryableStatuses.has(task.status);
 }
 
+export function canManualRetryItem(item: Pick<ContentImportItemDto, 'status'>) {
+  return item.status === failedWorkflowItemStatus;
+}
+
 export function canRetryWorkflowItems(
   task: null | Pick<WorkflowJobDto, 'jobId'>,
   items: Array<Pick<ContentImportItemDto, 'status'>>,
@@ -443,8 +455,73 @@ export function canRetryWorkflowItems(
   return (
     Boolean(task?.jobId) &&
     items.length > 0 &&
-    items.every((item) => item.status === failedWorkflowItemStatus)
+    items.every((item) => canManualRetryItem(item))
   );
+}
+
+export function getWorkflowItemCheckboxDisabledReason(
+  item: Pick<ContentImportItemDto, 'nextRetryAt' | 'status'>,
+) {
+  if (item.status === retryingWorkflowItemStatus) {
+    const retryCopy = item.nextRetryAt ? '等待自动重试' : '等待恢复执行';
+    return `${retryCopy}，终态失败后才可手动重试`;
+  }
+  if (!canManualRetryItem(item)) {
+    return '仅终态失败章节可手动重试';
+  }
+  return '';
+}
+
+function formatRetryCount(
+  item: Pick<ContentImportItemDto, 'autoRetryCount' | 'maxAutoRetries'>,
+) {
+  const count =
+    typeof item.autoRetryCount === 'number' ? item.autoRetryCount : 0;
+  if (count <= 0) {
+    return '';
+  }
+  const max =
+    typeof item.maxAutoRetries === 'number' ? item.maxAutoRetries : undefined;
+  return max === undefined ? `${count}` : `${count}/${max}`;
+}
+
+export function formatWorkflowItemRetrySummary(
+  item: Pick<
+    ContentImportItemDto,
+    | 'autoRetryCount'
+    | 'lastRetryCode'
+    | 'lastRetryReason'
+    | 'maxAutoRetries'
+    | 'nextRetryAt'
+    | 'status'
+  >,
+) {
+  const parts: string[] = [];
+
+  if (item.status === retryingWorkflowItemStatus) {
+    parts.push(item.nextRetryAt ? '等待自动重试' : '等待恢复执行');
+  }
+
+  if (item.nextRetryAt) {
+    parts.push(`预计 ${formatUTC(item.nextRetryAt)}`);
+  }
+
+  const retryCount = formatRetryCount(item);
+  if (retryCount) {
+    parts.push(`自动重试 ${retryCount}`);
+  }
+
+  const reason = item.lastRetryReason?.trim();
+  if (reason) {
+    parts.push(reason);
+  }
+
+  const code = item.lastRetryCode?.trim();
+  if (code) {
+    parts.push(`错误码 ${code}`);
+  }
+
+  return parts.length > 0 ? parts.join('，') : '-';
 }
 
 export function formatWorkflowItemErrorMessage(message: unknown) {

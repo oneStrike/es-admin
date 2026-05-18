@@ -6,17 +6,20 @@ import {
   buildWorkflowPageRequest,
   canArchiveWorkflow,
   canCancelWorkflow,
+  canManualRetryItem,
   canRetryWorkflowItems,
   createWorkflowImageProgressActiveState,
   formatWorkflowAttemptStatus,
-  formatWorkflowItemImageProgress,
-  formatWorkflowJobStatus,
-  formatWorkflowItemStatus,
   formatWorkflowItemErrorMessage,
+  formatWorkflowItemImageProgress,
+  formatWorkflowItemRetrySummary,
+  formatWorkflowItemStatus,
+  formatWorkflowJobStatus,
+  getWorkflowItemCheckboxDisabledReason,
+  workflowItemColumns,
   workflowItemSearchSchema,
   workflowSearchSchema,
   workflowTypeOptions,
-  workflowItemColumns,
 } from './shared';
 
 describe('workflow manager helpers', () => {
@@ -136,6 +139,19 @@ describe('workflow manager helpers', () => {
     });
   });
 
+  it('shows automatic retry diagnostics as a dedicated item column', () => {
+    expect(workflowItemColumns).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          field: 'nextRetryAt',
+          formatter: expect.any(Function),
+          slots: { default: 'nextRetryAt' },
+          title: '自动重试',
+        }),
+      ]),
+    );
+  });
+
   it('allows retrying selected failed items from an expired workflow', () => {
     expect(
       canRetryWorkflowItems({ jobId: 'job-001' }, [
@@ -143,6 +159,11 @@ describe('workflow manager helpers', () => {
         { status: 4 },
       ]),
     ).toBe(true);
+  });
+
+  it('allows manual retry only for terminal failed items', () => {
+    expect(canManualRetryItem({ status: 4 })).toBe(true);
+    expect(canManualRetryItem({ status: 5 })).toBe(false);
   });
 
   it('shows active cancellation as canceling and suppresses duplicate cancel', () => {
@@ -191,6 +212,59 @@ describe('workflow manager helpers', () => {
       ]),
     ).toBe(false);
     expect(canRetryWorkflowItems(null, [{ status: 4 }])).toBe(false);
+  });
+
+  it('explains disabled retry selection for auto retry and other item states', () => {
+    expect(
+      getWorkflowItemCheckboxDisabledReason({
+        nextRetryAt: '2026-05-18T08:30:00.000Z',
+        status: 5,
+      }),
+    ).toBe('等待自动重试，终态失败后才可手动重试');
+    expect(
+      getWorkflowItemCheckboxDisabledReason({ nextRetryAt: null, status: 5 }),
+    ).toBe('等待恢复执行，终态失败后才可手动重试');
+    expect(getWorkflowItemCheckboxDisabledReason({ status: 3 })).toBe(
+      '仅终态失败章节可手动重试',
+    );
+    expect(getWorkflowItemCheckboxDisabledReason({ status: 4 })).toBe('');
+  });
+
+  it('formats item auto retry schedule and diagnostics', () => {
+    expect(
+      formatWorkflowItemRetrySummary({
+        autoRetryCount: 2,
+        lastRetryCode: 'HTTP_429',
+        lastRetryReason: 'Request was throttled.',
+        maxAutoRetries: 3,
+        nextRetryAt: '2026-05-18T08:30:00.000Z',
+        status: 5,
+      }),
+    ).toBe(
+      '等待自动重试，预计 2026-05-18 16:30:00，自动重试 2/3，Request was throttled.，错误码 HTTP_429',
+    );
+    expect(
+      formatWorkflowItemRetrySummary({
+        autoRetryCount: 2,
+        lastRetryCode: 'ATTEMPT_LEASE_EXPIRED',
+        lastRetryReason: 'workflow attempt claim 已过期',
+        maxAutoRetries: 3,
+        nextRetryAt: null,
+        status: 5,
+      }),
+    ).toBe(
+      '等待恢复执行，自动重试 2/3，workflow attempt claim 已过期，错误码 ATTEMPT_LEASE_EXPIRED',
+    );
+    expect(
+      formatWorkflowItemRetrySummary({
+        autoRetryCount: 0,
+        lastRetryCode: null,
+        lastRetryReason: null,
+        maxAutoRetries: 3,
+        nextRetryAt: null,
+        status: 4,
+      }),
+    ).toBe('-');
   });
 
   it('overlays live image progress for the matching running workflow item', () => {
