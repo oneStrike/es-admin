@@ -576,6 +576,54 @@ export type ContentComicThirdPartySyncLatestRequest =
 export type ContentComicThirdPartySyncLatestResponse = WorkflowJobDto;
 
 /**
+ *  类型定义 [ContentComicThirdPartyImportItemPageRequest]
+ *  @来源 内容管理/漫画管理/三方平台解析
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentComicThirdPartyImportItemPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 工作流任务ID */
+  jobId?: string;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+
+  /* 条目状态（1=待处理；2=处理中；3=成功；4=失败；5=重试中；6=已跳过） */
+  status?: number;
+};
+
+export type ContentComicThirdPartyImportItemPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: ContentImportItemDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
  *  类型定义 [ContentNovelCreateRequest]
  *  @来源 内容管理/小说管理/基础信息
  *  @更新时间 2026-05-09 22:20:06
@@ -2841,6 +2889,59 @@ export type ThirdPartyComicSyncLatestRequestDto = {
 
   /* 作品ID */
   workId: number;
+};
+
+/**
+ *  类型定义 [ContentImportItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentImportItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 已安排自动重试次数 */
+  autoRetryCount: number;
+  /* 失败次数 */
+  failureCount: number;
+  /* 主键ID */
+  id: number;
+  /* 图片成功数 */
+  imageSuccessCount: number;
+  /* 图片总数 */
+  imageTotal: number;
+  /* 内容导入条目ID */
+  itemId: string;
+  /* 条目类型（1=漫画章节） */
+  itemType: 1;
+  /* 最近错误码 */
+  lastErrorCode?: null | string;
+  /* 最近错误信息 */
+  lastErrorMessage?: null | string;
+  /* 最近自动重试错误码 */
+  lastRetryCode?: null | string;
+  /* 最近自动重试原因 */
+  lastRetryReason?: null | string;
+  /* 本地章节ID */
+  localChapterId?: null | number;
+  /* 最大自动重试次数 */
+  maxAutoRetries: number;
+  /* 条目元数据 */
+  metadata?: null | Record<string, any>;
+  /* 自动重试下次可执行时间 */
+  nextRetryAt?: null | string;
+  /* 三方章节ID */
+  providerChapterId?: null | string;
+  /* 排序值 */
+  sortOrder: number;
+  /* 当前阶段（1=预览中；2=读取来源；3=准备元数据；4=读取内容；5=导入图片；6=写入内容；7=清理残留；8=已完成） */
+  stage: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  /* 条目状态（1=待处理；2=处理中；3=成功；4=失败；5=重试中；6=已跳过） */
+  status: 1 | 2 | 3 | 4 | 5 | 6;
+  /* 章节标题 */
+  title: string;
+
+  /* 更新时间 */
+  updatedAt: string;
 };
 
 /**

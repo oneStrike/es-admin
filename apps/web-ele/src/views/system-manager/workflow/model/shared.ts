@@ -2,11 +2,14 @@ import type { TagProps } from 'element-plus';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  ContentComicThirdPartyImportItemPageRequest,
   ContentImportItemDto,
+} from '#/api/types/content';
+import type {
   WorkflowAttemptDto,
-  WorkflowItemPageRequest,
   WorkflowJobDto,
   WorkflowPageRequest,
+  WorkflowRecordPageRequest,
 } from '#/api/types/workflow';
 import type { EsFormSchema } from '#/types';
 
@@ -231,6 +234,12 @@ export interface BuildWorkflowItemPageRequestOptions {
   status?: number;
 }
 
+export interface BuildWorkflowRecordPageRequestOptions {
+  currentPage: number;
+  jobId: string;
+  pageSize: number;
+}
+
 function getTrimmedString(value: unknown) {
   return typeof value === 'string' && value.trim() ? value.trim() : undefined;
 }
@@ -307,8 +316,8 @@ export function buildWorkflowItemPageRequest({
   jobId,
   pageSize,
   status,
-}: BuildWorkflowItemPageRequestOptions): WorkflowItemPageRequest {
-  const request: WorkflowItemPageRequest = {
+}: BuildWorkflowItemPageRequestOptions): ContentComicThirdPartyImportItemPageRequest {
+  const request: ContentComicThirdPartyImportItemPageRequest = {
     jobId: jobId.trim(),
     pageIndex: currentPage,
     pageSize,
@@ -317,6 +326,18 @@ export function buildWorkflowItemPageRequest({
     request.status = status;
   }
   return request;
+}
+
+export function buildWorkflowRecordPageRequest({
+  currentPage,
+  jobId,
+  pageSize,
+}: BuildWorkflowRecordPageRequestOptions): WorkflowRecordPageRequest {
+  return {
+    jobId: jobId.trim(),
+    pageIndex: currentPage,
+    pageSize,
+  };
 }
 
 export function canCancelWorkflow(task: WorkflowJobDto) {
@@ -343,10 +364,11 @@ export function canRetryWorkflowItems(
 }
 
 export function getWorkflowItemCheckboxDisabledReason(
-  item: Pick<ContentImportItemDto, 'status'>,
+  item: Pick<ContentImportItemDto, 'nextRetryAt' | 'status'>,
 ) {
   if (item.status === retryingWorkflowItemStatus) {
-    return '等待自动重试，终态失败后才可手动重试';
+    const retryCopy = item.nextRetryAt ? '等待自动重试' : '等待恢复执行';
+    return `${retryCopy}，终态失败后才可手动重试`;
   }
   if (!canManualRetryItem(item)) {
     return '仅终态失败章节可手动重试';
@@ -381,7 +403,7 @@ export function formatWorkflowItemRetrySummary(
   const parts: string[] = [];
 
   if (item.status === retryingWorkflowItemStatus) {
-    parts.push('等待自动重试');
+    parts.push(item.nextRetryAt ? '等待自动重试' : '等待恢复执行');
   }
 
   if (item.nextRetryAt) {

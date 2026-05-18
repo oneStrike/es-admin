@@ -12,6 +12,7 @@ import {
   forumSectionsPageApi,
 } from '#/api/core';
 import { formSchemaTransform } from '#/utils';
+import { moderatorPermissionOptions } from './payload';
 
 const ACTIVE_DELETED_SCOPE = 0;
 
@@ -170,6 +171,23 @@ const sectionField: EsFormSchema[number] = {
   label: '管理板块',
 };
 
+const permissionField: EsFormSchema[number] = {
+  component: 'CheckboxGroup',
+  componentProps: {
+    class: 'w-full',
+    options: moderatorPermissionOptions,
+  },
+  dependencies: {
+    rules: ({ isEnabled, roleType }) =>
+      isEnabled !== false && Number(roleType) !== 1 ? 'arrayRequired' : null,
+    triggerFields: ['isEnabled', 'roleType'],
+  },
+  fieldName: 'permissions',
+  formItemClass: 'col-span-2',
+  help: '超级版主默认拥有全部权限；启用的分组/板块版主必须至少选择一个基础权限',
+  label: '基础权限',
+};
+
 const enabledField: EsFormSchema[number] = {
   component: 'RadioGroup',
   componentProps: {
@@ -206,6 +224,7 @@ export const createFormSchema: EsFormSchema = [
   roleField,
   groupField,
   sectionField,
+  permissionField,
   enabledField,
   remarkField,
 ];
@@ -214,6 +233,7 @@ export const editFormSchema: EsFormSchema = [
   roleField,
   groupField,
   sectionField,
+  permissionField,
   enabledField,
   remarkField,
 ];
@@ -223,6 +243,12 @@ export const assignSectionFormSchema: EsFormSchema = [
     ...sectionField,
     help: '未额外填写权限时，后端会沿用版主基础权限',
     rules: 'arrayRequired',
+  },
+  {
+    ...permissionField,
+    dependencies: undefined,
+    help: '可选。留空表示当前板块继承版主基础权限；选择后作为这些板块的自定义权限',
+    label: '板块自定义权限',
   },
 ];
 
@@ -392,6 +418,7 @@ export function mapModeratorToFormRecord(record: ForumModeratorDto) {
   return {
     groupId: record.groupId ?? undefined,
     isEnabled: record.isEnabled,
+    permissions: record.permissions ?? [],
     remark: record.remark ?? '',
     roleType: record.roleType,
     sectionIds: record.sections?.map((item) => item.id) ?? [],

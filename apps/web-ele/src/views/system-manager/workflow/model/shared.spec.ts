@@ -4,6 +4,7 @@ import {
   buildWorkflowItemPageRequest,
   buildWorkflowManagerRoute,
   buildWorkflowPageRequest,
+  buildWorkflowRecordPageRequest,
   canManualRetryItem,
   canRetryWorkflowItems,
   formatWorkflowAttemptStatus,
@@ -63,6 +64,20 @@ describe('workflow manager helpers', () => {
     });
   });
 
+  it('builds workflow record page request with bounded pagination', () => {
+    expect(
+      buildWorkflowRecordPageRequest({
+        currentPage: 2,
+        jobId: ' job-001 ',
+        pageSize: 20,
+      }),
+    ).toEqual({
+      jobId: 'job-001',
+      pageIndex: 2,
+      pageSize: 20,
+    });
+  });
+
   it('prepends a checkbox column before item sequence for retry selection', () => {
     expect(workflowItemColumns[0]).toMatchObject({
       fixed: 'left',
@@ -107,9 +122,17 @@ describe('workflow manager helpers', () => {
   });
 
   it('explains disabled retry selection for auto retry and other item states', () => {
-    expect(getWorkflowItemCheckboxDisabledReason({ status: 5 })).toBe(
+    expect(
+      getWorkflowItemCheckboxDisabledReason({
+        nextRetryAt: '2026-05-18T08:30:00.000Z',
+        status: 5,
+      }),
+    ).toBe(
       '等待自动重试，终态失败后才可手动重试',
     );
+    expect(
+      getWorkflowItemCheckboxDisabledReason({ nextRetryAt: null, status: 5 }),
+    ).toBe('等待恢复执行，终态失败后才可手动重试');
     expect(getWorkflowItemCheckboxDisabledReason({ status: 3 })).toBe(
       '仅终态失败章节可手动重试',
     );
@@ -128,6 +151,18 @@ describe('workflow manager helpers', () => {
       }),
     ).toBe(
       '等待自动重试，预计 2026-05-18 16:30:00，自动重试 2/3，Request was throttled.，错误码 HTTP_429',
+    );
+    expect(
+      formatWorkflowItemRetrySummary({
+        autoRetryCount: 2,
+        lastRetryCode: 'ATTEMPT_LEASE_EXPIRED',
+        lastRetryReason: 'workflow attempt claim 已过期',
+        maxAutoRetries: 3,
+        nextRetryAt: null,
+        status: 5,
+      }),
+    ).toBe(
+      '等待恢复执行，自动重试 2/3，workflow attempt claim 已过期，错误码 ATTEMPT_LEASE_EXPIRED',
     );
     expect(
       formatWorkflowItemRetrySummary({

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { ContentImportItemDto } from '#/api/types/content';
 import type {
-  ContentImportItemDto,
   WorkflowJobDetailDto,
   WorkflowJobDto,
+  WorkflowRecordDto,
 } from '#/api/types/workflow';
 
 import { computed, nextTick, onMounted, ref } from 'vue';
@@ -13,11 +14,12 @@ import { Page, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  contentComicThirdPartyImportItemPageApi,
   workflowCancelApi,
   workflowDetailApi,
   workflowExpireApi,
-  workflowItemPageApi,
   workflowPageApi,
+  workflowRecordPageApi,
   workflowRetryItemsApi,
 } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
@@ -26,11 +28,11 @@ import { createSearchFormOptions, formatUTC } from '#/utils';
 import {
   buildWorkflowItemPageRequest,
   buildWorkflowPageRequest,
+  buildWorkflowRecordPageRequest,
   canCancelWorkflow,
   canExpireWorkflow,
   canManualRetryItem,
   canRetryWorkflowItems,
-  formatWorkflowAttemptStatus,
   formatWorkflowItemRetrySummary,
   formatWorkflowOperator,
   formatWorkflowStatus,
@@ -48,7 +50,7 @@ defineOptions({
 const route = useRoute();
 const currentJob = ref<null | WorkflowJobDetailDto>(null);
 const detailLoading = ref(false);
-const recordJob = ref<null | WorkflowJobDetailDto>(null);
+const recordJob = ref<null | WorkflowJobDto>(null);
 const recordLoading = ref(false);
 const retrying = ref(false);
 const selectedItems = ref<ContentImportItemDto[]>([]);
@@ -96,8 +98,44 @@ const itemGridOptions: VxeGridProps<ContentImportItemDto> = {
         if (!jobId) {
           return { list: [], total: 0 };
         }
-        return await workflowItemPageApi(
+        return await contentComicThirdPartyImportItemPageApi(
           buildWorkflowItemPageRequest({
+            currentPage: page.currentPage,
+            jobId,
+            pageSize: page.pageSize,
+          }),
+        );
+      },
+    },
+  },
+};
+
+const recordGridOptions: VxeGridProps<WorkflowRecordDto> = {
+  columns: [
+    {
+      field: 'createdAt',
+      formatter: ({ cellValue }) => formatUTC(cellValue),
+      title: '时间',
+      width: 180,
+    },
+    { field: 'attemptNo', title: 'attempt', width: 90 },
+    { field: 'message', minWidth: 220, title: '记录' },
+    { field: 'eventType', title: '类型', width: 90 },
+  ],
+  height: 'auto',
+  pagerConfig: {
+    pageSize: 20,
+    pageSizes: [20, 50, 100],
+  },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        const jobId = recordJob.value?.jobId;
+        if (!jobId) {
+          return { list: [], total: 0 };
+        }
+        return await workflowRecordPageApi(
+          buildWorkflowRecordPageRequest({
             currentPage: page.currentPage,
             jobId,
             pageSize: page.pageSize,
@@ -119,6 +157,11 @@ const [ItemGrid, itemGridApi] = useVbenVxeGrid({
     checkboxChange: handleItemSelectionChange,
   },
   gridOptions: itemGridOptions,
+  showSearchForm: false,
+});
+
+const [RecordGrid, recordGridApi] = useVbenVxeGrid({
+  gridOptions: recordGridOptions,
   showSearchForm: false,
 });
 
@@ -184,11 +227,13 @@ async function openDetail(jobId: string) {
   await loadDetail(jobId);
 }
 
-async function openRecords(jobId: string) {
+async function openRecords(job: WorkflowJobDto) {
   recordApi.open();
   recordLoading.value = true;
   try {
-    recordJob.value = await workflowDetailApi({ jobId });
+    recordJob.value = job;
+    await nextTick();
+    await recordGridApi.reload({ page: { currentPage: 1 } });
   } finally {
     recordLoading.value = false;
   }
@@ -199,7 +244,11 @@ async function reloadDetailIfCurrent(jobId: string) {
     await loadDetail(jobId);
   }
   if (recordJob.value?.jobId === jobId) {
-    recordJob.value = await workflowDetailApi({ jobId });
+    if (currentJob.value?.jobId === jobId) {
+      recordJob.value = currentJob.value;
+    }
+    await nextTick();
+    await recordGridApi.reload();
   }
 }
 
@@ -283,7 +332,7 @@ function handleItemSelectionChange(params: {
         <el-button link type="primary" @click="openDetail(row.jobId)">
           详情
         </el-button>
-        <el-button link type="primary" @click="openRecords(row.jobId)">
+        <el-button link type="primary" @click="openRecords(row)">
           处理记录
         </el-button>
         <el-button
@@ -432,38 +481,14 @@ function handleItemSelectionChange(params: {
           </el-card>
 
           <el-card
-            body-class="min-h-0 flex-1 overflow-hidden"
-            class="flex min-h-0 flex-1 flex-col"
+            body-class="min-h-0 h-full overflow-hidden"
+            class="min-h-0 flex-1"
             shadow="never"
           >
             <template #header>
               <span>处理记录</span>
             </template>
-            <el-scrollbar>
-              <el-timeline>
-                <el-timeline-item
-                  v-for="attempt in recordJob.attempts"
-                  :key="attempt.attemptId"
-                  :timestamp="formatUTC(attempt.updatedAt)"
-                >
-                  <el-space direction="vertical" alignment="start" :size="6">
-                    <el-space :size="8" wrap>
-                      <span>第 {{ attempt.attemptNo }} 次处理</span>
-                      <el-tag
-                        size="small"
-                        :type="formatWorkflowAttemptStatus(attempt.status).type"
-                      >
-                        {{ formatWorkflowAttemptStatus(attempt.status).label }}
-                      </el-tag>
-                    </el-space>
-                    <el-text size="small" type="info">
-                      已完成 {{ attempt.successItemCount }} 个，未完成
-                      {{ attempt.failedItemCount }} 个
-                    </el-text>
-                  </el-space>
-                </el-timeline-item>
-              </el-timeline>
-            </el-scrollbar>
+            <RecordGrid />
           </el-card>
         </template>
       </div>

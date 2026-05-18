@@ -65,6 +65,57 @@ export type WorkflowDetailRequest = {
 export type WorkflowDetailResponse = WorkflowJobDetailDto;
 
 /**
+ *  类型定义 [WorkflowRecordPageRequest]
+ *  @来源 系统管理/工作流
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowRecordPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 工作流 attempt ID */
+  attemptId?: null | string;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 事件类型过滤；不传时默认返回关键生命周期/诊断记录 */
+  eventTypes?: any[];
+
+  /* 工作流任务ID */
+  jobId: string;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+};
+
+export type WorkflowRecordPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: WorkflowRecordDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
  *  类型定义 [WorkflowItemPageRequest]
  *  @来源 系统管理/工作流
  *  @更新时间 2026-05-09 22:20:06
@@ -206,8 +257,6 @@ export type WorkflowJobDetailDto = {
   createdAt: string;
   /* 展示名称 */
   displayName: string;
-  /* 事件列表 */
-  events: WorkflowEventDto[];
   /* 草稿过期时间 */
   expiresAt?: null | string;
   /* 失败条目数 */
@@ -295,13 +344,17 @@ export type WorkflowAttemptDto = {
 };
 
 /**
- *  类型定义 [WorkflowEventDto]
+ *  类型定义 [WorkflowRecordDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type WorkflowEventDto = {
+export type WorkflowRecordDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 工作流 attempt ID */
+  attemptId?: null | string;
+  /* attempt 序号 */
+  attemptNo?: null | number;
   /* 创建时间 */
   createdAt: string;
   /* 事件诊断详情 */
@@ -323,8 +376,8 @@ export type WorkflowEventDto = {
 export type ContentImportItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 自动重试次数 */
-  autoRetryCount?: number;
+  /* 已安排自动重试次数 */
+  autoRetryCount: number;
   /* 失败次数 */
   failureCount: number;
   /* 主键ID */
@@ -348,18 +401,18 @@ export type ContentImportItemDto = {
   /* 本地章节ID */
   localChapterId?: null | number;
   /* 最大自动重试次数 */
-  maxAutoRetries?: number;
+  maxAutoRetries: number;
   /* 条目元数据 */
   metadata?: null | Record<string, any>;
-  /* 下次自动重试时间 */
+  /* 自动重试下次可执行时间 */
   nextRetryAt?: null | string;
   /* 三方章节ID */
   providerChapterId?: null | string;
   /* 排序值 */
   sortOrder: number;
-  /* 当前阶段 */
+  /* 当前阶段（1=预览中；2=读取来源；3=准备元数据；4=读取内容；5=导入图片；6=写入内容；7=清理残留；8=已完成） */
   stage: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-  /* 条目状态 */
+  /* 条目状态（1=待处理；2=处理中；3=成功；4=失败；5=重试中；6=已跳过） */
   status: 1 | 2 | 3 | 4 | 5 | 6;
   /* 章节标题 */
   title: string;
