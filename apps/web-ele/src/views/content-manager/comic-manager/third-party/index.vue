@@ -1368,7 +1368,7 @@ async function handleImport() {
     submittedTask.value = await contentComicThirdPartyImportConfirmApi(request);
     submittedTaskFingerprint.value = fingerprint;
     useMessage.success(
-      `导入任务已提交：${submittedTask.value.jobId.slice(0, 8)}`,
+      `导入任务已提交：${submittedTask.value.jobId.slice(0, 8)}，将按章节处理，限流时自动重试`,
     );
   } catch {
     submittedTask.value = null;
@@ -2153,6 +2153,7 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                 class="mt-3"
                 show-icon
                 title="导入任务已提交工作流处理，可前往工作流任务查看进度、错误、结果和重试状态。"
+                description="章节会逐个处理；遇到三方限流会按等待窗口自动重试。"
                 type="success"
               />
 

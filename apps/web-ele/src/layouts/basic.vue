@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-import type { HistoryState, LocationQueryRaw } from 'vue-router';
-
-import type { NotificationItem } from '@vben/layouts';
-
 import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -10,22 +6,14 @@ import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
 import { useWatermark } from '@vben/hooks';
 import { BookOpenText, CircleHelp, SvgGithubIcon } from '@vben/icons';
-import {
-  BasicLayout,
-  LockScreen,
-  Notification,
-  UserDropdown,
-} from '@vben/layouts';
+import { BasicLayout, LockScreen, UserDropdown } from '@vben/layouts';
 import { preferences, usePreferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
-import { ElNotification } from 'element-plus';
-
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
-import { useBackgroundTaskNotifications } from '#/views/system-manager/background-task/model/notifications';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -33,26 +21,6 @@ const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
 const { isDark } = usePreferences();
-const {
-  clear: handleNoticeClear,
-  markAllRead: handleMakeAll,
-  markRead,
-  notifications,
-  remove,
-  viewAll,
-} = useBackgroundTaskNotifications({
-  notifyTerminal: (item) => {
-    ElNotification({
-      duration: 5000,
-      message: item.message,
-      title: item.title,
-      type: item.title.includes('成功') ? 'success' : 'warning',
-    });
-  },
-});
-const showDot = computed(() =>
-  notifications.value.some((item) => !item.isRead),
-);
 
 const menus = computed(() => [
   {
@@ -97,35 +65,6 @@ const avatar = computed(() => {
 
 async function handleLogout() {
   await authStore.logout(false);
-}
-
-const handleClick = (item: NotificationItem) => {
-  // 如果通知项有链接，点击时跳转
-  if (item.link) {
-    navigateTo(
-      item.link,
-      item.query as LocationQueryRaw | undefined,
-      item.state as HistoryState | undefined,
-    );
-  }
-};
-
-function navigateTo(
-  link: string,
-  query?: LocationQueryRaw,
-  state?: HistoryState,
-) {
-  if (link.startsWith('http://') || link.startsWith('https://')) {
-    // 外部链接，在新标签页打开
-    window.open(link, '_blank');
-  } else {
-    // 内部路由链接，支持 query 参数和 state
-    router.push({
-      path: link,
-      query: query || {},
-      state,
-    });
-  }
 }
 
 watch(
@@ -178,18 +117,6 @@ watch(
         description="ann.vben@gmail.com"
         tag-text="Pro"
         @logout="handleLogout"
-      />
-    </template>
-    <template #notification>
-      <Notification
-        :dot="showDot"
-        :notifications="notifications"
-        @clear="handleNoticeClear"
-        @read="(item) => item.id && markRead(item.id)"
-        @remove="(item) => item.id && remove(item.id)"
-        @make-all="handleMakeAll"
-        @on-click="handleClick"
-        @view-all="viewAll"
       />
     </template>
     <template #extra>

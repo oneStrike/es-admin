@@ -28,12 +28,14 @@ import {
   buildWorkflowPageRequest,
   canCancelWorkflow,
   canExpireWorkflow,
+  canManualRetryItem,
   canRetryWorkflowItems,
-  failedWorkflowItemStatus,
   formatWorkflowAttemptStatus,
+  formatWorkflowItemRetrySummary,
   formatWorkflowOperator,
   formatWorkflowStatus,
   formatWorkflowType,
+  getWorkflowItemCheckboxDisabledReason,
   workflowColumns,
   workflowItemColumns,
   workflowSearchSchema,
@@ -77,7 +79,8 @@ const gridOptions: VxeGridProps<WorkflowJobDto> = {
 
 const itemGridOptions: VxeGridProps<ContentImportItemDto> = {
   checkboxConfig: {
-    checkMethod: ({ row }) => row.status === failedWorkflowItemStatus,
+    checkMethod: ({ row }) => canManualRetryItem(row),
+    labelField: 'title',
     highlight: true,
   },
   columns: workflowItemColumns,
@@ -380,6 +383,17 @@ function handleItemSelectionChange(params: {
 
               <template #imageProgress="{ row }">
                 {{ row.imageSuccessCount }}/{{ row.imageTotal }}
+              </template>
+
+              <template #nextRetryAt="{ row }">
+                <el-tooltip
+                  v-if="getWorkflowItemCheckboxDisabledReason(row)"
+                  :content="getWorkflowItemCheckboxDisabledReason(row)"
+                  placement="top"
+                >
+                  <span>{{ formatWorkflowItemRetrySummary(row) }}</span>
+                </el-tooltip>
+                <span v-else>{{ formatWorkflowItemRetrySummary(row) }}</span>
               </template>
             </ItemGrid>
           </section>

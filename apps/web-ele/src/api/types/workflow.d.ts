@@ -275,6 +275,8 @@ export type WorkflowAttemptDto = {
   heartbeatAt?: null | string;
   /* 主键ID */
   id: number;
+  /* 最早可被 worker 消费的时间 */
+  notBeforeAt?: null | string;
   /* 选中条目数 */
   selectedItemCount: number;
   /* 跳过条目数 */
@@ -321,6 +323,8 @@ export type WorkflowEventDto = {
 export type ContentImportItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 自动重试次数 */
+  autoRetryCount?: number;
   /* 失败次数 */
   failureCount: number;
   /* 主键ID */
@@ -337,10 +341,18 @@ export type ContentImportItemDto = {
   lastErrorCode?: null | string;
   /* 最近错误信息 */
   lastErrorMessage?: null | string;
+  /* 最近自动重试错误码 */
+  lastRetryCode?: null | string;
+  /* 最近自动重试原因 */
+  lastRetryReason?: null | string;
   /* 本地章节ID */
   localChapterId?: null | number;
+  /* 最大自动重试次数 */
+  maxAutoRetries?: number;
   /* 条目元数据 */
   metadata?: null | Record<string, any>;
+  /* 下次自动重试时间 */
+  nextRetryAt?: null | string;
   /* 三方章节ID */
   providerChapterId?: null | string;
   /* 排序值 */
