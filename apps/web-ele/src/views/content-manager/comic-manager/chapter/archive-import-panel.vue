@@ -26,6 +26,7 @@ import { useMessage } from '#/hooks/useFeedback';
 import {
   ARCHIVE_RESULT_STATUS,
   ARCHIVE_STATUS,
+  formatArchiveResultImageProgress,
   isArchiveWorkflowRunning,
   shouldShowArchiveTaskSummary,
 } from './archive-import-state';
@@ -67,6 +68,7 @@ const taskDetail = ref<ArchiveTaskDetail | null>(null);
 let pollTimer: null | number = null;
 let notifiedJobId = '';
 let closingAfterCleanup = false;
+let detailRunId = 0;
 let previewRunId = 0;
 let uploadAbortController: AbortController | null = null;
 
@@ -82,6 +84,12 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.setState({
         title: panelTitle.value,
       });
+      if (taskDetail.value && processingStatuses.has(taskDetail.value.status)) {
+        void fetchTaskDetail(taskDetail.value.jobId);
+      }
+    } else {
+      stopDetailPolling();
+      detailLoading.value = false;
     }
   },
 });
@@ -334,11 +342,16 @@ watch(
 );
 
 onBeforeUnmount(() => {
-  stopPolling();
+  stopDetailPolling();
   if (hasPreConfirmServerState()) {
     void discardPreConfirmState();
   }
 });
+
+function stopDetailPolling() {
+  detailRunId += 1;
+  stopPolling();
+}
 
 function stopPolling() {
   if (pollTimer) {
@@ -410,11 +423,15 @@ function toggleChapterSelection(chapterId: number) {
 }
 
 async function fetchTaskDetail(jobId: string) {
+  const runId = ++detailRunId;
   detailLoading.value = true;
   try {
     const detail = (await contentComicChapterContentArchiveDetailApi({
       jobId,
     })) as ArchiveTaskDetail;
+    if (runId !== detailRunId) {
+      return null;
+    }
     taskDetail.value = detail;
     if (processingStatuses.has(detail.status)) {
       schedulePolling(jobId);
@@ -432,8 +449,11 @@ async function fetchTaskDetail(jobId: string) {
         useMessage.error(detail.lastError || '压缩包导入失败');
       }
     }
+    return detail;
   } finally {
-    detailLoading.value = false;
+    if (runId === detailRunId) {
+      detailLoading.value = false;
+    }
   }
 }
 
@@ -455,7 +475,7 @@ function resetPreviewDraft() {
 
 function resetPreConfirmState() {
   previewRunId += 1;
-  stopPolling();
+  stopDetailPolling();
   uploadAbortController = null;
   previewJobId.value = '';
   uploading.value = false;
@@ -1006,7 +1026,12 @@ async function handleConfirmImport() {
                         </div>
                         <div class="mt-2 text-xs text-slate-500">
                           章节 #{{ item.chapterId }} · 导入
-                          {{ item.importedImageCount }}
+                          {{
+                            formatArchiveResultImageProgress(item, {
+                              isActive: hasActiveTask,
+                              progressDetail: taskDetail.progressDetail,
+                            })
+                          }}
                           张
                         </div>
                         <div class="mt-1 text-xs leading-5 text-slate-500">

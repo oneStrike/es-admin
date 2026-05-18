@@ -1,4 +1,6 @@
 import type {
+  WorkflowArchiveRequest,
+  WorkflowArchiveResponse,
   WorkflowCancelRequest,
   WorkflowCancelResponse,
   WorkflowDetailRequest,
@@ -9,6 +11,8 @@ import type {
   WorkflowItemPageResponse,
   WorkflowPageRequest,
   WorkflowPageResponse,
+  WorkflowRecordPageRequest,
+  WorkflowRecordPageResponse,
   WorkflowRetryItemsRequest,
   WorkflowRetryItemsResponse,
 } from '../types/workflow.d';
@@ -39,7 +43,19 @@ export async function workflowDetailApi(
 }
 
 /**
- * 分页查询工作流内容导入条目
+ * 分页查询工作流处理记录
+ */
+export async function workflowRecordPageApi(
+  params: WorkflowRecordPageRequest,
+): Promise<WorkflowRecordPageResponse> {
+  return requestClient.get<WorkflowRecordPageResponse>(
+    '/api/admin/workflow/record/page',
+    { params },
+  );
+}
+
+/**
+ * 兼容分页查询工作流内容导入条目
  */
 export async function workflowItemPageApi(
   params?: WorkflowItemPageRequest,
@@ -58,6 +74,18 @@ export async function workflowCancelApi(
 ): Promise<WorkflowCancelResponse> {
   return requestClient.post<WorkflowCancelResponse>(
     '/api/admin/workflow/cancel',
+    params,
+  );
+}
+
+/**
+ * 归档工作流任务
+ */
+export async function workflowArchiveApi(
+  params: WorkflowArchiveRequest,
+): Promise<WorkflowArchiveResponse> {
+  return requestClient.post<WorkflowArchiveResponse>(
+    '/api/admin/workflow/archive',
     params,
   );
 }

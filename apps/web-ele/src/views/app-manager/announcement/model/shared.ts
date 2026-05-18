@@ -132,6 +132,17 @@ for (const item of publishStatus) {
   };
 }
 
+export const booleanOptions = [
+  {
+    label: '是',
+    value: true,
+  },
+  {
+    label: '否',
+    value: false,
+  },
+];
+
 // 获取发布状态的函数
 function normalizePublishEndTime(publishEndTime?: null | string) {
   if (!publishEndTime) {
@@ -217,6 +228,16 @@ export const formSchema: EsFormSchema = [
     },
   },
   {
+    label: '实时公告',
+    fieldName: 'isRealtime',
+    component: 'RadioGroup',
+    defaultValue: false,
+    componentProps: {
+      placeholder: '请选择是否实时公告',
+      options: booleanOptions,
+    },
+  },
+  {
     label: '跳转页面',
     fieldName: 'pageId',
     component: 'Select',
@@ -243,16 +264,7 @@ export const formSchema: EsFormSchema = [
     defaultValue: false,
     componentProps: {
       placeholder: '请选择是否置顶',
-      options: [
-        {
-          label: '是',
-          value: true,
-        },
-        {
-          label: '否',
-          value: false,
-        },
-      ],
+      options: booleanOptions,
     },
   },
   {
@@ -262,16 +274,7 @@ export const formSchema: EsFormSchema = [
     defaultValue: false,
     componentProps: {
       placeholder: '请选择是否首页弹窗展示',
-      options: [
-        {
-          label: '是',
-          value: true,
-        },
-        {
-          label: '否',
-          value: false,
-        },
-      ],
+      options: booleanOptions,
     },
   },
   {
@@ -322,6 +325,13 @@ export function createAnnouncementColumns(
     isPinned: {
       hide: true,
     },
+    isRealtime: {
+      title: '实时公告',
+      width: 100,
+      cellRender: {
+        name: 'CellTag',
+      },
+    },
     popupBackgroundImage: {
       hide: true,
     },
@@ -335,6 +345,18 @@ export function createAnnouncementColumns(
     title: {
       slots: { default: 'title' },
       showOverflow: 'tooltip',
+    },
+    announcementType: {
+      cellRender: {
+        name: 'CellTag',
+        props: { textColor: '#fff' },
+      },
+    },
+    priorityLevel: {
+      cellRender: {
+        name: 'CellTag',
+        props: { textColor: '#fff' },
+      },
     },
     dateTimeRange: {
       title: '发布时间',
@@ -378,14 +400,17 @@ export const announcementFilter = formSchemaTransform.toSearchSchema(
     priorityLevel: {
       sort: 96,
     },
-    enablePlatform: {
+    isRealtime: {
       sort: 95,
     },
-    pageId: {
+    enablePlatform: {
       sort: 94,
     },
-    isPinned: {
+    pageId: {
       sort: 93,
+    },
+    isPinned: {
+      sort: 92,
     },
   },
 );

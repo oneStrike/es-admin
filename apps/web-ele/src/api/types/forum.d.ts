@@ -906,6 +906,60 @@ export type ForumHashtagsUpdateAuditStatusRequest =
 export type ForumHashtagsUpdateAuditStatusResponse = boolean;
 
 /**
+ *  类型定义 [ForumModeratorActionLogPageRequest]
+ *  @来源 论坛管理/版主操作日志
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumModeratorActionLogPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 操作类型（1=置顶主题；2=取消置顶主题；3=加精主题；4=取消加精主题；5=锁定主题；6=取消锁定主题；7=删除主题；8=移动主题；9=审核主题；10=删除评论；11=隐藏主题；12=取消隐藏主题；13=审核评论；14=隐藏评论；15=取消隐藏评论） */
+  actionType?: number;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 版主ID */
+  moderatorId?: number;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+
+  /* 操作目标ID */
+  targetId?: number;
+
+  /* 操作目标类型（1=论坛主题；2=论坛评论） */
+  targetType?: number;
+};
+
+export type ForumModeratorActionLogPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: ForumModeratorActionLogDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
  *  类型定义 [ForumModeratorDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -2509,4 +2563,33 @@ export type UpdateForumHashtagAuditStatusDto = {
 
   /* 主键id */
   id: number;
+};
+
+/**
+ *  类型定义 [ForumModeratorActionLogDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumModeratorActionLogDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 操作描述 */
+  actionDescription: string;
+  /* 操作类型（1=置顶主题；2=取消置顶主题；3=加精主题；4=取消加精主题；5=锁定主题；6=取消锁定主题；7=删除主题；8=移动主题；9=审核主题；10=删除评论；11=隐藏主题；12=取消隐藏主题；13=审核评论；14=隐藏评论；15=取消隐藏评论） */
+  actionType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+  /* 操作后数据快照 */
+  afterData?: null | string;
+  /* 操作前数据快照 */
+  beforeData?: null | string;
+  /* 操作时间 */
+  createdAt: string;
+  /* 主键id */
+  id: number;
+  /* 版主ID */
+  moderatorId: number;
+  /* 操作目标ID */
+  targetId: number;
+
+  /* 操作目标类型（1=论坛主题；2=论坛评论） */
+  targetType: 1 | 2;
 };

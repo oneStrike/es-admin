@@ -31,6 +31,9 @@ export type AnnouncementPageRequest = {
   /* 是否仅筛选已发布公告 */
   isPublished?: boolean | null;
 
+  /* 是否实时公告 */
+  isRealtime?: boolean;
+
   /* 排序字段，json格式 */
   orderBy?: null | string;
 
@@ -137,6 +140,8 @@ export type CreateAnnouncementDto = {
   enablePlatform?: (1 | 2 | 3)[];
   /* 是否置顶 */
   isPinned: boolean;
+  /* 是否实时公告 */
+  isRealtime: boolean;
   /* 关联页面 id */
   pageId?: null | number;
   /* 公告弹窗背景图片 URL */
@@ -180,6 +185,8 @@ export type BaseAnnouncementDto = {
   isPinned: boolean;
   /* 是否发布 */
   isPublished: boolean;
+  /* 是否实时公告 */
+  isRealtime: boolean;
   /* 关联页面 id */
   pageId?: null | number;
   /* 公告弹窗背景图片 URL */
@@ -229,6 +236,8 @@ export type AnnouncementDetailDto = {
   isPinned: boolean;
   /* 是否发布 */
   isPublished: boolean;
+  /* 是否实时公告 */
+  isRealtime: boolean;
   /* 关联页面 id */
   pageId?: null | number;
   /* 公告弹窗背景图片 URL */
@@ -291,6 +300,8 @@ export type UpdateAnnouncementDto = {
   id: number;
   /* 是否置顶 */
   isPinned?: boolean;
+  /* 是否实时公告 */
+  isRealtime?: boolean;
   /* 关联页面 id */
   pageId?: null | number;
   /* 公告弹窗背景图片 URL */

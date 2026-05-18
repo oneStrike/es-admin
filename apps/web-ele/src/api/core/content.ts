@@ -85,6 +85,8 @@ import type {
   ContentComicThirdPartyDetailResponse,
   ContentComicThirdPartyImportConfirmRequest,
   ContentComicThirdPartyImportConfirmResponse,
+  ContentComicThirdPartyImportItemPageRequest,
+  ContentComicThirdPartyImportItemPageResponse,
   ContentComicThirdPartyImportPreviewRequest,
   ContentComicThirdPartyImportPreviewResponse,
   ContentComicThirdPartyPlatformListResponse,
@@ -602,6 +604,18 @@ export async function contentComicThirdPartySyncLatestApi(
   return requestClient.post<ContentComicThirdPartySyncLatestResponse>(
     '/api/admin/content/comic/third-party/sync/latest',
     params,
+  );
+}
+
+/**
+ * 分页查询三方解析内容导入条目
+ */
+export async function contentComicThirdPartyImportItemPageApi(
+  params?: ContentComicThirdPartyImportItemPageRequest,
+): Promise<ContentComicThirdPartyImportItemPageResponse> {
+  return requestClient.get<ContentComicThirdPartyImportItemPageResponse>(
+    '/api/admin/content/comic/third-party/import/item/page',
+    { params },
   );
 }
 

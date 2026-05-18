@@ -7,6 +7,9 @@ export type WorkflowPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
+  /* 归档筛选范围（active=未归档；archived=已归档；all=全部） */
+  archiveScope?: null | string;
+
   /* 结束时间 */
   endDate?: null | string;
 
@@ -63,6 +66,57 @@ export type WorkflowDetailRequest = {
 };
 
 export type WorkflowDetailResponse = WorkflowJobDetailDto;
+
+/**
+ *  类型定义 [WorkflowRecordPageRequest]
+ *  @来源 系统管理/工作流
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowRecordPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 工作流 attempt ID */
+  attemptId?: null | string;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 事件类型过滤；不传时默认返回关键生命周期/诊断记录 */
+  eventTypes?: any[];
+
+  /* 工作流任务ID */
+  jobId: string;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+};
+
+export type WorkflowRecordPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: WorkflowRecordDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
 
 /**
  *  类型定义 [WorkflowItemPageRequest]
@@ -122,6 +176,15 @@ export type WorkflowCancelRequest = WorkflowJobIdDto;
 export type WorkflowCancelResponse = WorkflowJobDto;
 
 /**
+ *  类型定义 [WorkflowArchiveRequest]
+ *  @来源 系统管理/工作流
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowArchiveRequest = WorkflowArchiveDto;
+
+export type WorkflowArchiveResponse = WorkflowJobDto;
+
+/**
  *  类型定义 [WorkflowRetryItemsRequest]
  *  @来源 系统管理/工作流
  *  @更新时间 2026-05-09 22:20:06
@@ -147,6 +210,8 @@ export type WorkflowExpireResponse = WorkflowJobDto;
 export type WorkflowJobDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 归档时间；为空表示未归档 */
+  archivedAt?: null | string;
   /* 取消请求时间 */
   cancelRequestedAt?: null | string;
   /* 创建时间 */
@@ -167,6 +232,8 @@ export type WorkflowJobDto = {
   operatorType: 1 | 2;
   /* 后台管理员操作者ID；系统任务为空 */
   operatorUserId?: null | number;
+  /* 结构化进度详情快照；用于展示当前运行中的子进度 */
+  progressDetail?: null | Record<string, any>;
   /* 进度文案 */
   progressMessage?: null | string;
   /* 进度百分比 */
@@ -198,6 +265,8 @@ export type WorkflowJobDto = {
 export type WorkflowJobDetailDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 归档时间；为空表示未归档 */
+  archivedAt?: null | string;
   /* attempt 列表 */
   attempts: WorkflowAttemptDto[];
   /* 取消请求时间 */
@@ -206,8 +275,6 @@ export type WorkflowJobDetailDto = {
   createdAt: string;
   /* 展示名称 */
   displayName: string;
-  /* 事件列表 */
-  events: WorkflowEventDto[];
   /* 草稿过期时间 */
   expiresAt?: null | string;
   /* 失败条目数 */
@@ -222,6 +289,8 @@ export type WorkflowJobDetailDto = {
   operatorType: 1 | 2;
   /* 后台管理员操作者ID；系统任务为空 */
   operatorUserId?: null | number;
+  /* 结构化进度详情快照；用于展示当前运行中的子进度 */
+  progressDetail?: null | Record<string, any>;
   /* 进度文案 */
   progressMessage?: null | string;
   /* 进度百分比 */
@@ -275,6 +344,8 @@ export type WorkflowAttemptDto = {
   heartbeatAt?: null | string;
   /* 主键ID */
   id: number;
+  /* 最早可被 worker 消费的时间 */
+  notBeforeAt?: null | string;
   /* 选中条目数 */
   selectedItemCount: number;
   /* 跳过条目数 */
@@ -293,13 +364,17 @@ export type WorkflowAttemptDto = {
 };
 
 /**
- *  类型定义 [WorkflowEventDto]
+ *  类型定义 [WorkflowRecordDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type WorkflowEventDto = {
+export type WorkflowRecordDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 工作流 attempt ID */
+  attemptId?: null | string;
+  /* attempt 序号 */
+  attemptNo?: null | number;
   /* 创建时间 */
   createdAt: string;
   /* 事件诊断详情 */
@@ -321,6 +396,8 @@ export type WorkflowEventDto = {
 export type ContentImportItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 已安排自动重试次数 */
+  autoRetryCount: number;
   /* 失败次数 */
   failureCount: number;
   /* 主键ID */
@@ -337,17 +414,25 @@ export type ContentImportItemDto = {
   lastErrorCode?: null | string;
   /* 最近错误信息 */
   lastErrorMessage?: null | string;
+  /* 最近自动重试错误码 */
+  lastRetryCode?: null | string;
+  /* 最近自动重试原因 */
+  lastRetryReason?: null | string;
   /* 本地章节ID */
   localChapterId?: null | number;
+  /* 最大自动重试次数 */
+  maxAutoRetries: number;
   /* 条目元数据 */
   metadata?: null | Record<string, any>;
+  /* 自动重试下次可执行时间 */
+  nextRetryAt?: null | string;
   /* 三方章节ID */
   providerChapterId?: null | string;
   /* 排序值 */
   sortOrder: number;
-  /* 当前阶段 */
+  /* 当前阶段（1=预览中；2=读取来源；3=准备元数据；4=读取内容；5=导入图片；6=写入内容；7=清理残留；8=已完成） */
   stage: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-  /* 条目状态 */
+  /* 条目状态（1=待处理；2=处理中；3=成功；4=失败；5=重试中；6=已跳过） */
   status: 1 | 2 | 3 | 4 | 5 | 6;
   /* 章节标题 */
   title: string;
@@ -362,6 +447,19 @@ export type ContentImportItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type WorkflowJobIdDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 工作流任务ID */
+  jobId: string;
+};
+
+/**
+ *  类型定义 [WorkflowArchiveDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowArchiveDto = {
   /** 任意合法数值 */
   [property: string]: any;
 

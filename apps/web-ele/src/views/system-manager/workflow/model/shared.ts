@@ -20,6 +20,15 @@ type WorkflowSort = {
   field: string;
   order: string;
 };
+type WorkflowArchiveScope = 'active' | 'all' | 'archived';
+type WorkflowProgressDetail = Record<string, unknown> | null | undefined;
+type WorkflowImageProgressRow = Pick<
+  ContentImportItemDto,
+  'imageSuccessCount' | 'imageTotal' | 'itemId' | 'providerChapterId'
+> & {
+  localChapterId?: null | number;
+  status?: null | number;
+};
 
 type StatusOption<T extends number> = {
   label: string;
@@ -59,13 +68,36 @@ export const workflowAttemptStatusOptions = [
 ] as const satisfies readonly StatusOption<WorkflowAttemptStatus>[];
 
 export const workflowActiveStatuses = new Set<WorkflowStatus>([1, 2, 3]);
+export const workflowTerminalStatuses = new Set<WorkflowStatus>([
+  4, 5, 6, 7, 8,
+]);
 export const workflowRetryableStatuses = new Set<WorkflowStatus>([5, 6]);
 export const failedWorkflowItemStatus: WorkflowItemStatus = 4;
+export const defaultWorkflowArchiveScope: WorkflowArchiveScope = 'active';
+
+export const workflowArchiveScopeOptions = [
+  { label: '未归档', value: 'active' },
+  { label: '已归档', value: 'archived' },
+  { label: '全部', value: 'all' },
+] as const;
+
+export const workflowTypeOptions = [
+  { label: '三方导入', value: 'content-import.third-party-import' },
+  { label: '三方同步', value: 'content-import.third-party-sync' },
+  { label: '压缩包导入', value: 'content-import.archive-import' },
+] as const;
 
 const workflowListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'displayName', label: '任务' },
   { component: 'Input', fieldName: 'jobId', label: '任务ID' },
-  { component: 'Input', fieldName: 'workflowType', label: '工作流类型' },
+  {
+    component: 'Select',
+    componentProps: {
+      options: workflowTypeOptions,
+    },
+    fieldName: 'workflowType',
+    label: '工作流类型',
+  },
   {
     component: 'Select',
     componentProps: {
@@ -73,6 +105,15 @@ const workflowListSchema: EsFormSchema = [
     },
     fieldName: 'status',
     label: '任务状态',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      clearable: false,
+      options: workflowArchiveScopeOptions,
+    },
+    fieldName: 'archiveScope',
+    label: '归档范围',
   },
   { component: 'InputNumber', fieldName: 'progressPercent', label: '进度' },
   { component: 'InputNumber', fieldName: 'operatorUserId', label: '操作者' },
@@ -118,6 +159,10 @@ export const workflowSearchSchema = formSchemaTransform.toSearchSchema(
         placeholder: '状态',
       },
     },
+    archiveScope: {
+      show: true,
+      defaultValue: defaultWorkflowArchiveScope,
+    },
     dateRange: {
       component: 'DatePicker',
       componentProps: {
@@ -129,6 +174,33 @@ export const workflowSearchSchema = formSchemaTransform.toSearchSchema(
       },
       fieldName: 'dateRange',
       label: '创建时间',
+      show: true,
+    },
+  },
+);
+
+export const workflowItemSearchSchema = formSchemaTransform.toSearchSchema(
+  workflowItemListSchema,
+  {
+    status: {
+      show: true,
+      componentProps: {
+        class: 'w-[180px]',
+        placeholder: '章节状态',
+      },
+    },
+    dateRange: {
+      component: 'DatePicker',
+      componentProps: {
+        class: 'w-[400px]',
+        endPlaceholder: '结束时间',
+        format: 'YYYY-MM-DD HH:mm:ss',
+        startPlaceholder: '开始时间',
+        type: 'datetimerange',
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+      },
+      fieldName: 'dateRange',
+      label: '更新时间',
       show: true,
     },
   },
@@ -148,6 +220,7 @@ export const workflowColumns =
       slots: { default: 'workflowType' },
     },
     status: {
+      slots: { default: 'status' },
       width: 120,
     },
     progressPercent: {
@@ -217,8 +290,10 @@ export interface BuildWorkflowPageRequestOptions {
 
 export interface BuildWorkflowItemPageRequestOptions {
   currentPage: number;
+  filters?: Record<string, unknown>;
   jobId: string;
   pageSize: number;
+  sorts?: WorkflowSort[];
   status?: number;
 }
 
@@ -249,6 +324,12 @@ function formatStatusOption<T extends number>(
   );
 }
 
+function getWorkflowArchiveScope(value: unknown): WorkflowArchiveScope {
+  return workflowArchiveScopeOptions.some((item) => item.value === value)
+    ? (value as WorkflowArchiveScope)
+    : defaultWorkflowArchiveScope;
+}
+
 export function buildWorkflowManagerRoute(jobId: string) {
   return {
     name: WORKFLOW_MANAGER_ROUTE_NAME,
@@ -271,6 +352,7 @@ export function buildWorkflowPageRequest({
   const workflowType = getTrimmedString(filters.workflowType);
   const orderBy = formatSorts(sorts);
 
+  request.archiveScope = getWorkflowArchiveScope(filters.archiveScope);
   if (jobId) {
     request.jobId = jobId;
   }
@@ -295,8 +377,10 @@ export function buildWorkflowPageRequest({
 
 export function buildWorkflowItemPageRequest({
   currentPage,
+  filters = {},
   jobId,
   pageSize,
+  sorts = [],
   status,
 }: BuildWorkflowItemPageRequestOptions): WorkflowItemPageRequest {
   const request: WorkflowItemPageRequest = {
@@ -304,14 +388,48 @@ export function buildWorkflowItemPageRequest({
     pageIndex: currentPage,
     pageSize,
   };
-  if (typeof status === 'number') {
-    request.status = status;
+  const dateRange = getDateRange(filters);
+  const itemStatus =
+    typeof filters.status === 'number' ? filters.status : status;
+  const orderBy = formatSorts(sorts);
+
+  if (typeof itemStatus === 'number') {
+    request.status = itemStatus;
+  }
+  if (typeof dateRange[0] === 'string') {
+    request.startDate = dateRange[0];
+  }
+  if (typeof dateRange[1] === 'string') {
+    request.endDate = dateRange[1];
+  }
+  if (orderBy) {
+    request.orderBy = orderBy;
   }
   return request;
 }
 
-export function canCancelWorkflow(task: WorkflowJobDto) {
-  return workflowActiveStatuses.has(task.status);
+export function canCancelWorkflow(
+  task: Pick<WorkflowJobDto, 'cancelRequestedAt' | 'status'>,
+) {
+  return workflowActiveStatuses.has(task.status) && !task.cancelRequestedAt;
+}
+
+export function canArchiveWorkflow(
+  task: Pick<WorkflowJobDto, 'archivedAt' | 'status'>,
+) {
+  return workflowTerminalStatuses.has(task.status) && !task.archivedAt;
+}
+
+export function isWorkflowActiveStatus(status: null | number | undefined) {
+  return workflowActiveStatuses.has(status as WorkflowStatus);
+}
+
+export function createWorkflowImageProgressActiveState(
+  job: null | Pick<WorkflowJobDto, 'cancelRequestedAt' | 'status'> | undefined,
+) {
+  return Boolean(
+    job && isWorkflowActiveStatus(job.status) && !job.cancelRequestedAt,
+  );
 }
 
 export function canExpireWorkflow(task: WorkflowJobDto) {
@@ -346,8 +464,79 @@ export function formatWorkflowItemErrorMessage(message: unknown) {
   return text;
 }
 
+export function formatWorkflowItemImageProgress(
+  row: WorkflowImageProgressRow,
+  options: { isActive: boolean; progressDetail: WorkflowProgressDetail },
+) {
+  const fallback = `${row.imageSuccessCount}/${row.imageTotal}`;
+  if (!options.isActive || row.status !== 2) {
+    return fallback;
+  }
+
+  const detail = parseContentImportImageProgressDetail(options.progressDetail);
+  if (!detail || !matchesWorkflowItemImageProgress(row, detail)) {
+    return fallback;
+  }
+
+  return `${detail.imageIndex}/${detail.imageTotal}`;
+}
+
+function parseContentImportImageProgressDetail(detail: WorkflowProgressDetail) {
+  if (!detail || typeof detail !== 'object') {
+    return null;
+  }
+  if (detail.kind !== 'content-import.image') {
+    return null;
+  }
+  const imageIndex = Number(detail.imageIndex);
+  const imageTotal = Number(detail.imageTotal);
+  if (!Number.isFinite(imageIndex) || !Number.isFinite(imageTotal)) {
+    return null;
+  }
+  if (imageIndex <= 0 || imageTotal <= 0) {
+    return null;
+  }
+  return {
+    imageIndex,
+    imageTotal,
+    itemId: typeof detail.itemId === 'string' ? detail.itemId : undefined,
+    localChapterId:
+      typeof detail.localChapterId === 'number'
+        ? detail.localChapterId
+        : undefined,
+    providerChapterId:
+      typeof detail.providerChapterId === 'string'
+        ? detail.providerChapterId
+        : undefined,
+  };
+}
+
+function matchesWorkflowItemImageProgress(
+  row: WorkflowImageProgressRow,
+  detail: NonNullable<ReturnType<typeof parseContentImportImageProgressDetail>>,
+) {
+  if (detail.itemId) {
+    return row.itemId === detail.itemId;
+  }
+  if (detail.providerChapterId) {
+    return row.providerChapterId === detail.providerChapterId;
+  }
+  if (detail.localChapterId !== undefined) {
+    return row.localChapterId === detail.localChapterId;
+  }
+  return false;
+}
+
 export function formatWorkflowStatus(status?: null | number) {
   return formatStatusOption(workflowStatusOptions, status);
+}
+
+export function formatWorkflowJobStatus(
+  job: Pick<WorkflowJobDto, 'cancelRequestedAt' | 'status'>,
+) {
+  return workflowActiveStatuses.has(job.status) && job.cancelRequestedAt
+    ? { label: '取消中', type: 'warning' as const, value: job.status }
+    : formatWorkflowStatus(job.status);
 }
 
 export function formatWorkflowItemStatus(status?: null | number) {
@@ -359,10 +548,7 @@ export function formatWorkflowAttemptStatus(status?: null | number) {
 }
 
 export function formatWorkflowType(type: string) {
-  if (type === 'content-import.third-party-import') return '三方导入';
-  if (type === 'content-import.third-party-sync') return '三方同步';
-  if (type === 'content-import.archive-import') return '压缩包导入';
-  return type;
+  return workflowTypeOptions.find((item) => item.value === type)?.label ?? type;
 }
 
 export function formatWorkflowOperator(job: WorkflowJobDto) {

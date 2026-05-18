@@ -42,7 +42,12 @@ type AnnouncementSubmitValues =
 type AnnouncementSearchValues = Partial<
   Pick<
     AnnouncementPageRequest,
-    'announcementType' | 'isPinned' | 'pageId' | 'priorityLevel' | 'title'
+    | 'announcementType'
+    | 'isPinned'
+    | 'isRealtime'
+    | 'pageId'
+    | 'priorityLevel'
+    | 'title'
   >
 > & {
   dateTimeRange?: unknown;
@@ -173,6 +178,9 @@ function buildAnnouncementPageQuery(
   if (formValues.isPinned !== undefined) {
     query.isPinned = formValues.isPinned;
   }
+  if (formValues.isRealtime !== undefined) {
+    query.isRealtime = formValues.isRealtime;
+  }
 
   return query;
 }
@@ -203,6 +211,7 @@ function buildAnnouncementPayload(values: AnnouncementSubmitValues) {
       pageId: values.pageId,
       publishStartTime: values.publishStartTime,
       publishEndTime: values.publishEndTime,
+      isRealtime: values.isRealtime ?? false,
       isPinned: values.isPinned ?? false,
       showAsPopup: values.showAsPopup ?? false,
       popupBackgroundImage: values.popupBackgroundImage,
@@ -220,6 +229,7 @@ function buildAnnouncementPayload(values: AnnouncementSubmitValues) {
     pageId: values.pageId,
     publishStartTime: values.publishStartTime,
     publishEndTime: values.publishEndTime,
+    isRealtime: values.isRealtime ?? false,
     isPinned: values.isPinned ?? false,
     showAsPopup: values.showAsPopup ?? false,
     popupBackgroundImage: values.popupBackgroundImage,
@@ -299,6 +309,14 @@ const [DetailModal, detailApi] = useVbenModal({
           </el-tag>
           <el-tag class="mr-2" type="danger" v-if="row.isPinned" size="small">
             顶
+          </el-tag>
+          <el-tag
+            class="mr-2"
+            type="warning"
+            v-if="row.isRealtime"
+            size="small"
+          >
+            实时
           </el-tag>
         </div>
         <el-text

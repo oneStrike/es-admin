@@ -85,6 +85,13 @@ export function getDetailCards(detail: AnnouncementDetailResponse) {
           tagText: detail?.isPinned ? '是' : '否',
         },
         {
+          label: '实时公告',
+          value: detail?.isRealtime,
+          type: 'tag' as const,
+          tagType: detail?.isRealtime ? 'success' : 'info',
+          tagText: detail?.isRealtime ? '是' : '否',
+        },
+        {
           label: '首页弹窗',
           value: detail?.showAsPopup,
           type: 'tag' as const,

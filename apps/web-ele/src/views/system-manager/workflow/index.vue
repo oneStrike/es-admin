@@ -6,7 +6,7 @@ import type {
   WorkflowJobDto,
 } from '#/api/types/workflow';
 
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -14,28 +14,35 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   workflowCancelApi,
+  workflowArchiveApi,
   workflowDetailApi,
   workflowExpireApi,
   workflowItemPageApi,
   workflowPageApi,
   workflowRetryItemsApi,
 } from '#/api/core';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions, formatUTC } from '#/utils';
 
+import { createWorkflowDetailPolling } from './model/detail-polling';
 import {
   buildWorkflowItemPageRequest,
   buildWorkflowPageRequest,
+  canArchiveWorkflow,
   canCancelWorkflow,
   canExpireWorkflow,
   canRetryWorkflowItems,
+  createWorkflowImageProgressActiveState,
   failedWorkflowItemStatus,
   formatWorkflowAttemptStatus,
+  formatWorkflowItemImageProgress,
+  formatWorkflowJobStatus,
   formatWorkflowOperator,
-  formatWorkflowStatus,
   formatWorkflowType,
+  isWorkflowActiveStatus,
   workflowColumns,
   workflowItemColumns,
+  workflowItemSearchSchema,
   workflowSearchSchema,
 } from './model/shared';
 
@@ -50,6 +57,8 @@ const recordJob = ref<null | WorkflowJobDetailDto>(null);
 const recordLoading = ref(false);
 const retrying = ref(false);
 const selectedItems = ref<ContentImportItemDto[]>([]);
+let activeDetailJobId = '';
+let detailSessionId = 0;
 
 const canRetrySelected = computed(() =>
   canRetryWorkflowItems(currentJob.value, selectedItems.value),
@@ -88,7 +97,7 @@ const itemGridOptions: VxeGridProps<ContentImportItemDto> = {
   },
   proxyConfig: {
     ajax: {
-      query: async ({ page }) => {
+      query: async ({ page, sorts }, formValues) => {
         const jobId = currentJob.value?.jobId;
         if (!jobId) {
           return { list: [], total: 0 };
@@ -96,12 +105,15 @@ const itemGridOptions: VxeGridProps<ContentImportItemDto> = {
         return await workflowItemPageApi(
           buildWorkflowItemPageRequest({
             currentPage: page.currentPage,
+            filters: formValues,
             jobId,
             pageSize: page.pageSize,
+            sorts,
           }),
         );
       },
     },
+    sort: true,
   },
 };
 
@@ -111,12 +123,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 const [ItemGrid, itemGridApi] = useVbenVxeGrid({
+  formOptions: createSearchFormOptions(workflowItemSearchSchema, {
+    actionLayout: 'inline',
+    actionPosition: 'right',
+    actionWrapperClass:
+      'workflow-detail__filter-actions ml-auto shrink-0 !pb-0',
+    layout: 'inline',
+    showCollapseButton: false,
+    wrapperClass: 'workflow-detail__filter-row flex-nowrap items-center gap-3',
+  }),
   gridEvents: {
     checkboxAll: handleItemSelectionChange,
     checkboxChange: handleItemSelectionChange,
   },
   gridOptions: itemGridOptions,
-  showSearchForm: false,
+});
+
+const detailPolling = createWorkflowDetailPolling<WorkflowJobDetailDto>({
+  isActive: (job) => isWorkflowActiveStatus(job.status),
+  load: loadDetailPoll,
 });
 
 const [DetailModal, detailApi] = useVbenModal({
@@ -126,8 +151,7 @@ const [DetailModal, detailApi] = useVbenModal({
   contentClass: 'min-h-0 !overflow-hidden p-4',
   onOpenChange: (isOpen) => {
     if (!isOpen) {
-      currentJob.value = null;
-      selectedItems.value = [];
+      closeDetailSession();
     }
   },
 });
@@ -156,29 +180,74 @@ onMounted(async () => {
   await openDetail(queryJobId);
 });
 
+onBeforeUnmount(() => {
+  closeDetailSession();
+});
+
 function getInitialJobId() {
   const rawJobId = route.query.jobId;
   const jobId = Array.isArray(rawJobId) ? rawJobId[0] : rawJobId;
   return typeof jobId === 'string' ? jobId.trim() : '';
 }
 
-async function loadDetail(jobId: string) {
+async function loadDetail(jobId: string, options: { reset?: boolean } = {}) {
+  const reset = options.reset ?? true;
+  const sessionId = detailSessionId;
+  if (!isCurrentDetailSession(jobId, sessionId)) {
+    return null;
+  }
   detailLoading.value = true;
-  selectedItems.value = [];
-  itemGridApi.grid?.clearCheckboxRow?.();
+  if (reset) {
+    selectedItems.value = [];
+    itemGridApi.grid?.clearCheckboxRow?.();
+  }
   try {
-    currentJob.value = await workflowDetailApi({ jobId });
+    const job = await workflowDetailApi({ jobId });
+    if (!isCurrentDetailSession(jobId, sessionId)) {
+      return null;
+    }
+    currentJob.value = job;
     await nextTick();
-    await itemGridApi.reload({ page: { currentPage: 1 } });
+    if (!isCurrentDetailSession(jobId, sessionId)) {
+      return null;
+    }
+    if (reset) {
+      await itemGridApi.formApi.resetForm();
+      await itemGridApi.reload({ page: { currentPage: 1 } });
+    } else {
+      await itemGridApi.reload();
+    }
+    return currentJob.value;
   } finally {
-    detailLoading.value = false;
+    if (isCurrentDetailSession(jobId, sessionId)) {
+      detailLoading.value = false;
+    }
   }
 }
 
+async function loadDetailPoll(jobId: string) {
+  const job = await workflowDetailApi({ jobId });
+  if (!isCurrentDetailSession(jobId, detailSessionId)) {
+    return job;
+  }
+  currentJob.value = job;
+  await nextTick();
+  if (isCurrentDetailSession(jobId, detailSessionId)) {
+    await itemGridApi.reload();
+  }
+  return job;
+}
+
 async function openDetail(jobId: string) {
+  openDetailSession(jobId);
   detailApi.open();
   await nextTick();
-  await loadDetail(jobId);
+  const job = await loadDetail(jobId);
+  if (currentJob.value && isWorkflowActiveStatus(currentJob.value.status)) {
+    void detailPolling.start(jobId);
+  } else if (job && !isWorkflowActiveStatus(job.status)) {
+    detailPolling.stop();
+  }
 }
 
 async function openRecords(jobId: string) {
@@ -194,6 +263,11 @@ async function openRecords(jobId: string) {
 async function reloadDetailIfCurrent(jobId: string) {
   if (currentJob.value?.jobId === jobId) {
     await loadDetail(jobId);
+    if (currentJob.value && isWorkflowActiveStatus(currentJob.value.status)) {
+      void detailPolling.start(jobId);
+    } else {
+      detailPolling.stop();
+    }
   }
   if (recordJob.value?.jobId === jobId) {
     recordJob.value = await workflowDetailApi({ jobId });
@@ -203,6 +277,23 @@ async function reloadDetailIfCurrent(jobId: string) {
 async function cancelJob(job: WorkflowJobDto) {
   await workflowCancelApi({ jobId: job.jobId });
   useMessage.success('已请求取消');
+  await gridApi.reload();
+  await reloadDetailIfCurrent(job.jobId);
+}
+
+async function archiveJob(job: WorkflowJobDto) {
+  const result = await useConfirm({
+    confirmText: '归档',
+    content: `归档后任务「${job.displayName}」将从默认列表隐藏，可通过归档范围筛选查看。`,
+    successMessage: false,
+    title: '归档工作流任务',
+  });
+  if (result === 'cancel') {
+    return;
+  }
+
+  await workflowArchiveApi({ jobId: job.jobId });
+  useMessage.success('已归档');
   await gridApi.reload();
   await reloadDetailIfCurrent(job.jobId);
 }
@@ -231,6 +322,9 @@ async function retrySelectedItems() {
     itemGridApi.grid?.clearCheckboxRow?.();
     await gridApi.reload();
     await loadDetail(jobId);
+    if (currentJob.value && isWorkflowActiveStatus(currentJob.value.status)) {
+      void detailPolling.start(jobId);
+    }
   } finally {
     retrying.value = false;
   }
@@ -242,34 +336,52 @@ function handleItemSelectionChange(params: {
   selectedItems.value =
     itemGridApi.grid?.getCheckboxRecords?.() ?? params.records;
 }
+
+function openDetailSession(jobId: string) {
+  detailSessionId += 1;
+  activeDetailJobId = jobId;
+  detailPolling.stop();
+}
+
+function closeDetailSession() {
+  detailSessionId += 1;
+  activeDetailJobId = '';
+  detailPolling.stop();
+  detailLoading.value = false;
+  currentJob.value = null;
+  selectedItems.value = [];
+}
+
+function isCurrentDetailSession(jobId: string, sessionId: number) {
+  return activeDetailJobId === jobId && detailSessionId === sessionId;
+}
 </script>
 
 <template>
   <Page auto-content-height>
     <Grid>
       <template #displayName="{ row }">
-        <div class="flex flex-col gap-1">
-          <button
-            class="text-left text-sm font-medium text-primary hover:underline"
-            type="button"
-            @click="openDetail(row.jobId)"
-          >
-            {{ row.displayName }}
-          </button>
-          <span class="font-mono text-xs text-gray-500">{{ row.jobId }}</span>
-        </div>
+        <el-text
+          class="cursor-pointer hover:opacity-50"
+          type="primary"
+          @click="openDetail(row.jobId)"
+        >
+          {{ row.displayName }}
+        </el-text>
       </template>
 
       <template #workflowType="{ row }">
         {{ formatWorkflowType(row.workflowType) }}
       </template>
 
+      <template #status="{ row }">
+        <el-tag :type="formatWorkflowJobStatus(row).type">
+          {{ formatWorkflowJobStatus(row).label }}
+        </el-tag>
+      </template>
+
       <template #progress="{ row }">
         <el-progress :percentage="row.progressPercent" :stroke-width="8" />
-        <div class="mt-1 text-xs text-gray-500">
-          {{ row.successItemCount }}/{{ row.selectedItemCount }} 成功，失败
-          {{ row.failedItemCount }}
-        </div>
       </template>
 
       <template #operator="{ row }">
@@ -282,6 +394,14 @@ function handleItemSelectionChange(params: {
         </el-button>
         <el-button link type="primary" @click="openRecords(row.jobId)">
           处理记录
+        </el-button>
+        <el-button
+          v-if="canArchiveWorkflow(row)"
+          link
+          type="primary"
+          @click="archiveJob(row)"
+        >
+          归档
         </el-button>
         <el-button
           v-if="canCancelWorkflow(row)"
@@ -305,81 +425,92 @@ function handleItemSelectionChange(params: {
     <DetailModal>
       <div
         v-loading="detailLoading"
-        class="flex h-full min-h-0 flex-col gap-5 overflow-hidden"
+        class="workflow-detail flex h-full min-h-0 flex-col overflow-hidden"
       >
         <template v-if="currentJob">
-          <section class="shrink-0 border-b border-border pb-4">
-            <div class="flex flex-wrap items-start justify-between gap-4">
-              <div class="min-w-0 flex-1">
-                <div class="mb-3 flex flex-wrap items-center gap-3">
-                  <el-tag :type="formatWorkflowStatus(currentJob.status).type">
-                    {{ formatWorkflowStatus(currentJob.status).label }}
+          <section class="workflow-detail__summary">
+            <div class="workflow-detail__headline">
+              <div class="workflow-detail__identity">
+                <div class="workflow-detail__title-row">
+                  <el-tag :type="formatWorkflowJobStatus(currentJob).type">
+                    {{ formatWorkflowJobStatus(currentJob).label }}
                   </el-tag>
                   <el-tag type="info">
                     {{ formatWorkflowType(currentJob.workflowType) }}
                   </el-tag>
+                  <span class="truncate text-base font-semibold">
+                    {{ currentJob.displayName }}
+                  </span>
                 </div>
-                <div class="truncate text-base font-semibold">
-                  {{ currentJob.displayName }}
-                </div>
-                <div class="mt-3 truncate font-mono text-xs text-gray-500">
+                <div class="workflow-detail__job-id">
                   {{ currentJob.jobId }}
                 </div>
               </div>
-              <div class="grid grid-cols-2 gap-4 text-sm lg:grid-cols-4">
-                <div>
-                  <div class="text-xs text-gray-500">成功</div>
-                  <div>{{ currentJob.successItemCount }}</div>
+
+              <div class="workflow-detail__metrics">
+                <div class="workflow-detail__metric">
+                  <span>成功</span>
+                  <strong>{{ currentJob.successItemCount }}</strong>
                 </div>
-                <div>
-                  <div class="text-xs text-gray-500">失败</div>
-                  <div>{{ currentJob.failedItemCount }}</div>
+                <div class="workflow-detail__metric">
+                  <span>失败</span>
+                  <strong>{{ currentJob.failedItemCount }}</strong>
                 </div>
-                <div>
-                  <div class="text-xs text-gray-500">跳过</div>
-                  <div>{{ currentJob.skippedItemCount }}</div>
+                <div class="workflow-detail__metric">
+                  <span>跳过</span>
+                  <strong>{{ currentJob.skippedItemCount }}</strong>
                 </div>
-                <div>
-                  <div class="text-xs text-gray-500">更新</div>
-                  <div>{{ formatUTC(currentJob.updatedAt) }}</div>
+                <div
+                  class="workflow-detail__metric workflow-detail__metric--time"
+                >
+                  <span>更新</span>
+                  <strong>{{ formatUTC(currentJob.updatedAt) }}</strong>
                 </div>
               </div>
             </div>
 
-            <div class="mt-4">
-              <div class="mb-2 flex items-center justify-between gap-4">
-                <span class="truncate text-sm text-gray-500">
+            <div class="workflow-detail__progress">
+              <div class="mb-1 flex items-center justify-between gap-4">
+                <span class="truncate text-sm text-muted-foreground">
                   {{ currentJob.progressMessage || '等待进度更新' }}
                 </span>
-                <span class="shrink-0 font-mono text-sm">
+                <span class="shrink-0 font-mono text-sm font-medium">
                   {{ currentJob.progressPercent }}%
                 </span>
               </div>
               <el-progress
                 :percentage="currentJob.progressPercent"
                 :show-text="false"
-                :stroke-width="10"
+                :stroke-width="8"
               />
             </div>
           </section>
 
-          <section
-            class="flex min-h-[320px] min-w-0 flex-1 flex-col overflow-hidden"
-          >
-            <ItemGrid>
+          <section class="workflow-detail__grid">
+            <ItemGrid class="workflow-detail__item-grid">
               <template #toolbar-actions>
-                <el-button
-                  :disabled="!canRetrySelected"
-                  :loading="retrying"
-                  type="primary"
-                  @click="retrySelectedItems"
-                >
-                  重试所选失败章节
-                </el-button>
+                <div class="flex w-full flex-wrap items-center gap-2">
+                  <el-button
+                    :disabled="!canRetrySelected"
+                    :loading="retrying"
+                    type="primary"
+                    @click="retrySelectedItems"
+                  >
+                    重试所选失败章节
+                  </el-button>
+                  <el-text size="small" type="info">
+                    已选 {{ selectedItems.length }} 个失败章节
+                  </el-text>
+                </div>
               </template>
 
               <template #imageProgress="{ row }">
-                {{ row.imageSuccessCount }}/{{ row.imageTotal }}
+                {{
+                  formatWorkflowItemImageProgress(row, {
+                    isActive: createWorkflowImageProgressActiveState(currentJob),
+                    progressDetail: currentJob?.progressDetail,
+                  })
+                }}
               </template>
             </ItemGrid>
           </section>
@@ -404,8 +535,8 @@ function handleItemSelectionChange(params: {
                 </el-text>
               </el-descriptions-item>
               <el-descriptions-item label="状态">
-                <el-tag :type="formatWorkflowStatus(recordJob.status).type">
-                  {{ formatWorkflowStatus(recordJob.status).label }}
+                <el-tag :type="formatWorkflowJobStatus(recordJob).type">
+                  {{ formatWorkflowJobStatus(recordJob).label }}
                 </el-tag>
               </el-descriptions-item>
               <el-descriptions-item label="已完成">
@@ -456,3 +587,141 @@ function handleItemSelectionChange(params: {
     </RecordModal>
   </Page>
 </template>
+
+<style lang="scss">
+.workflow-detail {
+  gap: 1rem;
+}
+
+.workflow-detail__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem 0 0.875rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.workflow-detail__headline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 1rem;
+}
+
+.workflow-detail__identity {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  gap: 0.75rem;
+}
+
+.workflow-detail__title-row {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+.workflow-detail__job-id {
+  flex: 0 1 220px;
+  min-width: 120px;
+  overflow: hidden;
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workflow-detail__metrics {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(3, minmax(72px, max-content)) minmax(
+      132px,
+      168px
+    );
+  gap: 0.5rem;
+}
+
+.workflow-detail__metric {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0.4rem 0.625rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+  background: hsl(var(--muted) / 45%);
+
+  span {
+    color: hsl(var(--muted-foreground));
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  strong {
+    min-width: 0;
+    margin-top: 0.125rem;
+    overflow: hidden;
+    color: hsl(var(--foreground));
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.workflow-detail__metric--time strong {
+  font-size: 0.8125rem;
+}
+
+.workflow-detail__progress {
+  width: 100%;
+}
+
+.workflow-detail__grid,
+.workflow-detail__item-grid {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workflow-detail__grid {
+  flex: 1 1 0;
+}
+
+.workflow-detail__item-grid {
+  height: 100%;
+}
+
+.workflow-detail__filter-row {
+  width: 100%;
+}
+
+.workflow-detail__filter-actions {
+  align-self: center;
+}
+
+@media (max-width: 1280px) {
+  .workflow-detail__headline,
+  .workflow-detail__identity {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .workflow-detail__metrics {
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .workflow-detail__job-id {
+    flex-basis: auto;
+    width: 100%;
+  }
+}
+</style>

@@ -1501,7 +1501,7 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
 </script>
 
 <template>
-  <Modal class="!h-[86vh] !max-h-[86vh] w-[1280px] max-w-[calc(100vw-32px)]">
+  <Modal class="!h-[86vh] w-[1280px]">
     <div class="flex h-full min-h-0 flex-col">
       <el-steps class="mb-4" :active="step" finish-status="success" simple>
         <el-step v-for="item in wizardSteps" :key="item" :title="item" />

@@ -73,19 +73,27 @@ function resolveOptionDisplay(options: unknown, value: unknown) {
   };
 }
 
+function resolveTagTextStyle(textColor: unknown) {
+  return typeof textColor === 'string' && textColor
+    ? { style: { color: textColor } }
+    : {};
+}
+
 function resolveTagDisplayProps(
   optionDisplay: ReturnType<typeof resolveOptionDisplay>,
   fallbackType: TagProps['type'] = 'primary',
+  textColor?: unknown,
 ) {
   const displayType = optionDisplay.type ?? optionDisplay.color;
 
   if (isTagType(displayType)) {
-    return { type: displayType };
+    return { type: displayType, ...resolveTagTextStyle(textColor) };
   }
 
   return {
     color: typeof displayType === 'string' ? displayType : undefined,
     type: fallbackType,
+    ...resolveTagTextStyle(textColor),
   };
 }
 
@@ -250,6 +258,7 @@ setupVbenVxeTable({
                 ...resolveTagDisplayProps(
                   optionDisplay,
                   props?.type || 'primary',
+                  props?.textColor,
                 ),
                 size: props?.size || 'small',
                 class: idx + 1 === tagItems.length ? '' : 'mr-1',
@@ -269,6 +278,7 @@ setupVbenVxeTable({
               ...resolveTagDisplayProps(
                 optionDisplay,
                 props?.type || 'primary',
+                props?.textColor,
               ),
               size: props?.size || 'small',
             },

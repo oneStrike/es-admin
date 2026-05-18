@@ -24,6 +24,14 @@ export interface ArchiveImportTaskState {
   status: number;
 }
 
+type ArchiveProgressDetail = Record<string, unknown> | null | undefined;
+
+export interface ArchiveResultImageProgressItem {
+  chapterId: number;
+  importedImageCount: number;
+  status: number;
+}
+
 export function shouldShowArchiveTaskSummary(
   task: ArchiveImportTaskState | null | undefined,
 ) {
@@ -34,4 +42,34 @@ export function isArchiveWorkflowRunning(
   task: ArchiveImportTaskState | null | undefined,
 ) {
   return Boolean(task && processingStatuses.has(task.status));
+}
+
+export function formatArchiveResultImageProgress(
+  item: ArchiveResultImageProgressItem,
+  options: { isActive: boolean; progressDetail: ArchiveProgressDetail },
+) {
+  const fallback = String(item.importedImageCount);
+  if (!options.isActive || item.status !== ARCHIVE_RESULT_STATUS.PENDING) {
+    return fallback;
+  }
+  const detail = options.progressDetail;
+  if (!detail || typeof detail !== 'object') {
+    return fallback;
+  }
+  if (
+    detail.kind !== 'content-import.image' ||
+    detail.workflowType !== 'content-import.archive-import' ||
+    detail.localChapterId !== item.chapterId
+  ) {
+    return fallback;
+  }
+  const imageIndex = Number(detail.imageIndex);
+  const imageTotal = Number(detail.imageTotal);
+  if (!Number.isFinite(imageIndex) || !Number.isFinite(imageTotal)) {
+    return fallback;
+  }
+  if (imageIndex <= 0 || imageTotal <= 0) {
+    return fallback;
+  }
+  return `${imageIndex}/${imageTotal}`;
 }

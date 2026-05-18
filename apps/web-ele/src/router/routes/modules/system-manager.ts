@@ -51,16 +51,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'BackgroundTaskManager',
-        path: '/system-manager/background-task',
-        component: () =>
-          import('#/views/system-manager/background-task/index.vue'),
-        meta: {
-          title: '后台任务',
-          icon: 'codex:dot-circle',
-        },
-      },
-      {
         name: 'WorkflowManager',
         path: '/system-manager/workflow',
         component: () => import('#/views/system-manager/workflow/index.vue'),

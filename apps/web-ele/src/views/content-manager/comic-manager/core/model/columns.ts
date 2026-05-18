@@ -190,7 +190,7 @@ export const comicColumns = ({
     },
     actions: {
       show: true,
-      width: 160,
+      width: 230,
     },
   });
 };

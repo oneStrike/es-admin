@@ -11,6 +11,8 @@ import type {
   ForumHashtagsUpdateHiddenResponse,
   ForumHashtagsUpdateRequest,
   ForumHashtagsUpdateResponse,
+  ForumModeratorActionLogPageRequest,
+  ForumModeratorActionLogPageResponse,
   ForumModeratorApplicationAuditRequest,
   ForumModeratorApplicationAuditResponse,
   ForumModeratorApplicationDeleteRequest,
@@ -778,5 +780,17 @@ export async function forumHashtagsUpdateAuditStatusApi(
   return requestClient.post<ForumHashtagsUpdateAuditStatusResponse>(
     '/api/admin/forum/hashtags/update-audit-status',
     params,
+  );
+}
+
+/**
+ * 查看版主操作日志
+ */
+export async function forumModeratorActionLogPageApi(
+  params?: ForumModeratorActionLogPageRequest,
+): Promise<ForumModeratorActionLogPageResponse> {
+  return requestClient.get<ForumModeratorActionLogPageResponse>(
+    '/api/admin/forum/moderator-action-log/page',
+    { params },
   );
 }

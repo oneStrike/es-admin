@@ -390,21 +390,6 @@ function openChapterModal(record: BaseWorkDto) {
           <el-button link type="primary" @click="openChapterModal(row)">
             章节
           </el-button>
-          <template v-if="row.hasThirdPartySourceBinding">
-            <el-divider direction="vertical" />
-            <el-popconfirm
-              title="只导入未绑定的新章节，不覆盖现有数据。"
-              confirm-button-text="确认同步"
-              cancel-button-text="取消"
-              @confirm="syncLatestChapters(row)"
-            >
-              <template #reference>
-                <el-button link type="primary" :loading="row.syncLoading">
-                  同步章节
-                </el-button>
-              </template>
-            </el-popconfirm>
-          </template>
           <el-divider direction="vertical" />
           <el-popconfirm
             title="确认删除当前漫画?"
@@ -416,6 +401,12 @@ function openChapterModal(record: BaseWorkDto) {
               <el-button link type="danger">删除</el-button>
             </template>
           </el-popconfirm>
+          <el-divider direction="vertical" />
+          <template v-if="row.hasThirdPartySourceBinding">
+            <el-button link type="primary" :loading="row.syncLoading"  @confirm="syncLatestChapters(row)">
+              同步章节
+            </el-button>
+          </template>
         </div>
       </template>
     </Grid>
