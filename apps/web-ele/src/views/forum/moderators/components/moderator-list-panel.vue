@@ -1,11 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type {
-  ForumModeratorDto,
-  ForumModeratorsAssignSectionRequest,
-  ForumModeratorsCreateRequest,
-  ForumModeratorsUpdateRequest,
-} from '#/api/types';
+import type { ForumModeratorDto } from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -23,6 +18,12 @@ import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from '../model/detail';
+import {
+  buildAssignModeratorSectionPayload,
+  buildCreateModeratorPayload,
+  buildUpdateModeratorPayload,
+  ModeratorPayloadValidationError,
+} from '../model/payload';
 import {
   assignSectionFormSchema,
   createFormSchema,
@@ -135,80 +136,41 @@ function openAssignModal(row: ForumModeratorRow) {
     .open();
 }
 
-function normalizeModeratorFields(values: Record<string, any>) {
-  const sectionIds = Array.isArray(values.sectionIds)
-    ? values.sectionIds.map(Number).filter(Boolean)
-    : [];
-  const groupId = values.groupId ? Number(values.groupId) : undefined;
-
-  if (values.roleType === 2 && !groupId) {
-    useMessage.warning('分组版主需要选择所属分组');
-    throw new Error('missing group');
+function showPayloadValidationError(error: unknown) {
+  if (error instanceof ModeratorPayloadValidationError) {
+    useMessage.warning(error.message);
   }
-
-  if (values.roleType === 3 && sectionIds.length === 0) {
-    useMessage.warning('板块版主至少需要选择一个管理板块');
-    throw new Error('missing sections');
-  }
-
-  return {
-    groupId: values.roleType === 2 ? groupId : undefined,
-    isEnabled: !!values.isEnabled,
-    remark: values.remark?.trim?.() || undefined,
-    roleType: values.roleType,
-    sectionIds: values.roleType === 3 ? sectionIds : undefined,
-  };
+  throw error;
 }
 
-function normalizeCreateModeratorPayload(values: Record<string, any>) {
-  const selectedUserIds = Array.isArray(values.selectedUserIds)
-    ? values.selectedUserIds
-    : [];
-
-  if (selectedUserIds.length === 0) {
-    useMessage.warning('请选择一个用户');
-    throw new Error('missing user');
+async function handleCreateSubmit(values: Record<string, unknown>) {
+  try {
+    await forumModeratorsCreateApi(buildCreateModeratorPayload(values));
+  } catch (error) {
+    showPayloadValidationError(error);
   }
-
-  return {
-    ...normalizeModeratorFields(values),
-    userId: Number(selectedUserIds[0]),
-  } satisfies ForumModeratorsCreateRequest;
-}
-
-function normalizeEditModeratorPayload(values: Record<string, any>) {
-  return {
-    ...normalizeModeratorFields(values),
-    id: Number(values.id),
-  } satisfies ForumModeratorsUpdateRequest;
-}
-
-async function handleCreateSubmit(values: Record<string, any>) {
-  await forumModeratorsCreateApi(normalizeCreateModeratorPayload(values));
   useMessage.success('操作成功');
   await moderatorGridApi.reload();
 }
 
-async function handleEditSubmit(values: Record<string, any>) {
-  await forumModeratorsUpdateApi(normalizeEditModeratorPayload(values));
+async function handleEditSubmit(values: Record<string, unknown>) {
+  try {
+    await forumModeratorsUpdateApi(buildUpdateModeratorPayload(values));
+  } catch (error) {
+    showPayloadValidationError(error);
+  }
   useMessage.success('操作成功');
   await moderatorGridApi.reload();
 }
 
-async function handleAssignSubmit(values: Record<string, any>) {
-  const sectionIds = Array.isArray(values.sectionIds)
-    ? values.sectionIds.map(Number).filter(Boolean)
-    : [];
-
-  if (sectionIds.length === 0) {
-    useMessage.warning('请至少选择一个板块');
-    throw new Error('missing sections');
+async function handleAssignSubmit(values: Record<string, unknown>) {
+  try {
+    await forumModeratorsAssignSectionApi(
+      buildAssignModeratorSectionPayload(values, currentModerator.value.id),
+    );
+  } catch (error) {
+    showPayloadValidationError(error);
   }
-
-  await forumModeratorsAssignSectionApi({
-    moderatorId: currentModerator.value.id,
-    sectionIds,
-  } satisfies ForumModeratorsAssignSectionRequest);
   useMessage.success('分配成功');
   await moderatorGridApi.reload();
 }

@@ -149,6 +149,7 @@ export const formSchema: EsFormSchema = [
     },
     fieldName: 'tagIds',
     label: '标签',
+    rules: 'arrayRequired',
   },
   {
     component: 'RichText',
