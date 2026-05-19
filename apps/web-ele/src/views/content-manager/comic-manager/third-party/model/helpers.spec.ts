@@ -86,6 +86,7 @@ describe('third-party import submission fingerprint', () => {
           chapterApiVersion: 2,
           datetimeCreated: '2026-05-11T00:00:00.000Z',
           group: 'default',
+          imageCount: 53,
           importImages: true,
           isPreview: false,
           overwriteContent: false,
@@ -176,6 +177,17 @@ describe('third-party import submission fingerprint', () => {
           {
             ...firstChapter,
             price: 1,
+          },
+        ],
+      }),
+    ).not.toBe(fingerprint);
+    expect(
+      wizardSubmissionFingerprint({
+        ...request,
+        chapters: [
+          {
+            ...firstChapter,
+            imageCount: 52,
           },
         ],
       }),

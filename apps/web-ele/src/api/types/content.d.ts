@@ -278,6 +278,16 @@ export type ContentComicChapterBatchDeleteRequest = IdsDto;
 export type ContentComicChapterBatchDeleteResponse = boolean;
 
 /**
+ *  类型定义 [ContentComicChapterBatchUpdateStatusRequest]
+ *  @来源 内容管理/漫画管理/章节管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentComicChapterBatchUpdateStatusRequest =
+  BatchUpdatePublishedStatusDto;
+
+export type ContentComicChapterBatchUpdateStatusResponse = boolean;
+
+/**
  *  类型定义 [ContentComicChapterSwapSortOrderRequest]
  *  @来源 内容管理/漫画管理/章节管理
  *  @更新时间 2026-05-09 22:20:06
@@ -2067,6 +2077,21 @@ export type IdsDto = {
 };
 
 /**
+ *  类型定义 [BatchUpdatePublishedStatusDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BatchUpdatePublishedStatusDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 主键id集合 */
+  ids: number[];
+
+  /* 发布状态 true发布 false取消发布 */
+  isPublished: boolean;
+};
+
+/**
  *  类型定义 [DragReorderDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -2527,7 +2552,7 @@ export type ThirdPartyComicChapterDto = {
   /* 三方章节分组 */
   group?: null | string;
   /* 三方章节图片数 */
-  imageCount?: null | number;
+  imageCount: number;
   /* 三方章节ID */
   providerChapterId: string;
   /* 章节排序 */
@@ -2861,6 +2886,8 @@ export type ThirdPartyComicImportChapterItemDto = {
   datetimeCreated?: null | string;
   /* 三方章节分组 */
   group?: null | string;
+  /* 三方章节预期图片数 */
+  imageCount: number;
   /* 是否导入章节图片 */
   importImages: boolean;
   /* 是否试读 */

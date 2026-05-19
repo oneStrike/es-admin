@@ -3,6 +3,7 @@ import type { ComicChapterRecord } from './model/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
+  ContentComicChapterBatchUpdateStatusRequest,
   ContentComicChapterContentArchiveDetailResponse,
   ContentComicChapterCreateRequest,
   ContentComicChapterPageResponse,
@@ -14,6 +15,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   contentComicChapterBatchDeleteApi,
+  contentComicChapterBatchUpdateStatusApi,
   contentComicChapterCreateApi,
   contentComicChapterDeleteApi,
   contentComicChapterDetailApi,
@@ -30,6 +32,10 @@ import { createSearchFormOptions } from '#/utils';
 
 import ArchiveImportPanel from './archive-import-panel.vue';
 import ContentManager from './content-manager.vue';
+import {
+  isComicChapterBulkActionCommand,
+  resolveComicChapterBulkAction,
+} from './model/bulk-actions';
 import { chapterColumns } from './model/columns';
 import { getDetailCards } from './model/detail';
 import { chapterFormSchema, chapterSearchFormSchema } from './model/form';
@@ -47,9 +53,6 @@ type ShareData = { workId: number; workName: string };
 const shareData = ref<ShareData>();
 const currentChapterRecord = ref<null | Partial<ComicChapterRecord>>(null);
 const selectedChapterRows = ref<ComicChapterRecord[]>([]);
-const selectedChapterIds = computed(() =>
-  selectedChapterRows.value.map((item) => item.id),
-);
 
 // ========== 弹窗定义 ==========
 
@@ -188,6 +191,11 @@ function handleChapterSelectionChange(params: {
   selectedChapterRows.value = params.records;
 }
 
+function clearChapterSelection() {
+  selectedChapterRows.value = [];
+  gridApi.grid?.clearCheckboxRow?.();
+}
+
 /**
  * 打开章节详情弹窗
  * @param record 章节数据
@@ -306,17 +314,11 @@ function buildComicChapterPayload(
 async function deleteChapter(record: ComicChapterRecord) {
   await contentComicChapterDeleteApi({ id: record.id });
   useMessage.success('章节删除成功');
-  selectedChapterRows.value = [];
-  gridApi.grid?.clearCheckboxRow?.();
+  clearChapterSelection();
   await gridApi.reload();
 }
 
-async function batchDeleteChapters() {
-  const ids = selectedChapterIds.value;
-  if (ids.length === 0) {
-    useMessage.warning('请先选择要删除的章节');
-    return;
-  }
+async function batchDeleteChapters(ids: number[]) {
   await useConfirm({
     type: 'delete',
     content: `确认删除选中的 ${ids.length} 个章节？此操作不可恢复`,
@@ -324,11 +326,48 @@ async function batchDeleteChapters() {
       await contentComicChapterBatchDeleteApi({
         ids,
       });
-      selectedChapterRows.value = [];
-      gridApi.grid?.clearCheckboxRow?.();
+      clearChapterSelection();
       await gridApi.reload();
     },
   });
+}
+
+async function batchUpdatePublishStatus(action: {
+  ids: number[];
+  isPublished: boolean;
+  successMessage: string;
+}) {
+  await contentComicChapterBatchUpdateStatusApi({
+    ids: action.ids,
+    isPublished: action.isPublished,
+  } satisfies ContentComicChapterBatchUpdateStatusRequest);
+
+  useMessage.success(action.successMessage);
+  clearChapterSelection();
+  await gridApi.reload();
+}
+
+async function handleBulkAction(command: string) {
+  if (!isComicChapterBulkActionCommand(command)) {
+    return;
+  }
+
+  const action = resolveComicChapterBulkAction(
+    command,
+    selectedChapterRows.value,
+  );
+
+  if (action.kind === 'warning') {
+    useMessage.warning(action.message);
+    return;
+  }
+
+  if (action.kind === 'delete') {
+    await batchDeleteChapters(action.ids);
+    return;
+  }
+
+  await batchUpdatePublishStatus(action);
 }
 
 /**
@@ -358,13 +397,18 @@ async function toggleStatus(row: ComicChapterRecord) {
         <el-button type="primary" @click="openFormModal()">
           添加章节
         </el-button>
-        <el-button
-          :disabled="selectedChapterIds.length === 0"
-          type="danger"
-          @click="batchDeleteChapters"
-        >
-          批量删除
-        </el-button>
+        <el-dropdown @command="handleBulkAction">
+          <el-button>批量操作</el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="delete">批量删除</el-dropdown-item>
+              <el-dropdown-item command="publish">批量发布</el-dropdown-item>
+              <el-dropdown-item command="unpublish">
+                批量取消发布
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
         <ArchiveImportPanel
           v-if="shareData"
           :work-id="shareData.workId"

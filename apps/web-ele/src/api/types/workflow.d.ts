@@ -119,6 +119,31 @@ export type WorkflowRecordPageResponse = {
 };
 
 /**
+ *  类型定义 [WorkflowNotificationListRequest]
+ *  @来源 系统管理/工作流
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowNotificationListRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 同一游标时间下已读取的最后通知事件ID */
+  afterId?: null | number;
+
+  /* 游标时间；只返回该时间之后的通知事件 */
+  createdAfter?: null | string;
+
+  /* 通知事实类型过滤；不传时返回执行完成、异常重试、最终失败 */
+  kinds?: any[];
+
+  /* 返回条数；默认20，最大50 */
+  limit?: null | number;
+};
+
+export type WorkflowNotificationListResponse =
+  WorkflowNotificationListResponseDto;
+
+/**
  *  类型定义 [WorkflowItemPageRequest]
  *  @来源 系统管理/工作流
  *  @更新时间 2026-05-09 22:20:06
@@ -201,31 +226,6 @@ export type WorkflowRetryItemsResponse = WorkflowJobDto;
 export type WorkflowExpireRequest = WorkflowExpireDto;
 
 export type WorkflowExpireResponse = WorkflowJobDto;
-
-/**
- *  类型定义 [WorkflowNotificationListRequest]
- *  @来源 系统管理/工作流
- *  @更新时间 2026-05-09 22:20:06
- */
-export type WorkflowNotificationListRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 同一游标时间下已读取的最后通知事件ID */
-  afterId?: null | number;
-
-  /* 游标时间；只返回该时间之后的通知事件 */
-  createdAfter?: null | string;
-
-  /* 通知事实类型过滤；不传时返回执行完成、异常重试、最终失败 */
-  kinds?: any[];
-
-  /* 返回条数；默认20，最大50 */
-  limit?: null | number;
-};
-
-export type WorkflowNotificationListResponse =
-  WorkflowNotificationListResponseDto;
 
 /**
  *  类型定义 [WorkflowJobDto]
@@ -414,6 +414,62 @@ export type WorkflowRecordDto = {
 };
 
 /**
+ *  类型定义 [WorkflowNotificationListResponseDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowNotificationListResponseDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 工作流通知事实列表 */
+  list: WorkflowNotificationItemDto[];
+  /* 同一游标时间下下一次轮询游标ID */
+  nextAfterId?: null | number;
+  /* 下一次轮询游标时间 */
+  nextCreatedAfter?: null | string;
+
+  /* 服务端当前时间；用于首次进入时静默建立游标 */
+  serverTime: string;
+};
+
+/**
+ *  类型定义 [WorkflowNotificationItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowNotificationItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 通知事件创建时间 */
+  createdAt: string;
+  /* 展示名称 */
+  displayName: string;
+  /* 失败条目数 */
+  failedItemCount: number;
+  /* 通知事件ID */
+  id: number;
+  /* 工作流任务ID */
+  jobId: string;
+  /* 通知事实类型（success=执行完成；retrying=异常后正在系统重试；failed=最终失败） */
+  kind: 'failed' | 'retrying' | 'success';
+  /* 下次系统重试时间；仅重试中通知可能存在 */
+  nextRetryAt?: null | string;
+  /* 选中条目数 */
+  selectedItemCount: number;
+  /* 跳过条目数 */
+  skippedItemCount: number;
+  /* 任务状态（1=草稿；2=待处理；3=处理中；4=成功；5=部分失败；6=失败；7=已取消；8=已过期） */
+  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  /* 成功条目数 */
+  successItemCount: number;
+  /* 更新时间 */
+  updatedAt: string;
+
+  /* 工作流类型 */
+  workflowType: string;
+};
+
+/**
  *  类型定义 [ContentImportItemDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -518,60 +574,4 @@ export type WorkflowExpireDto = {
 
   /* 工作流任务ID */
   jobId: string;
-};
-
-/**
- *  类型定义 [WorkflowNotificationListResponseDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type WorkflowNotificationListResponseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 工作流通知事实列表 */
-  list: WorkflowNotificationItemDto[];
-  /* 同一游标时间下下一次轮询游标ID */
-  nextAfterId?: null | number;
-  /* 下一次轮询游标时间 */
-  nextCreatedAfter?: null | string;
-
-  /* 服务端当前时间；用于首次进入时静默建立游标 */
-  serverTime: string;
-};
-
-/**
- *  类型定义 [WorkflowNotificationItemDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type WorkflowNotificationItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 通知事件创建时间 */
-  createdAt: string;
-  /* 展示名称 */
-  displayName: string;
-  /* 失败条目数 */
-  failedItemCount: number;
-  /* 通知事件ID */
-  id: number;
-  /* 工作流任务ID */
-  jobId: string;
-  /* 通知事实类型（success=执行完成；retrying=异常后正在系统重试；failed=最终失败） */
-  kind: 'failed' | 'retrying' | 'success';
-  /* 下次系统重试时间；仅重试中通知可能存在 */
-  nextRetryAt?: null | string;
-  /* 选中条目数 */
-  selectedItemCount: number;
-  /* 跳过条目数 */
-  skippedItemCount: number;
-  /* 任务状态（1=草稿；2=待处理；3=处理中；4=成功；5=部分失败；6=失败；7=已取消；8=已过期） */
-  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-  /* 成功条目数 */
-  successItemCount: number;
-  /* 更新时间 */
-  updatedAt: string;
-
-  /* 工作流类型 */
-  workflowType: string;
 };

@@ -229,6 +229,7 @@ const authorOptions = ref<LocalOption[]>([]);
 const categoryOptions = ref<LocalOption[]>([]);
 const tagOptions = ref<LocalOption[]>([]);
 const chapterMappings = ref<ChapterMappingForm[]>([]);
+const selectedChapterMappings = ref<ChapterMappingForm[]>([]);
 const activeProviderChapterId = ref('');
 const contentPreview = ref<null | ThirdPartyComicChapterContentDto>(null);
 const submittedTask = ref<ContentComicThirdPartyImportConfirmResponse | null>(
@@ -414,6 +415,37 @@ const chapterPreviewGridOptions: VxeGridProps<ChapterPreviewRow> = {
   },
 };
 
+const chapterMappingGridOptions: VxeGridProps<ChapterMappingForm> = {
+  checkboxConfig: {
+    highlight: true,
+    trigger: 'row',
+  },
+  columns: [
+    { type: 'checkbox', width: 46 },
+    { field: 'sortOrder', title: '序号', width: 70 },
+    { field: 'title', minWidth: 200, title: '章节' },
+    {
+      field: 'imageCount',
+      formatter: ({ cellValue }) => cellValue ?? '-',
+      title: '图片数',
+      width: 100,
+    },
+    { field: 'providerChapterId', minWidth: 260, title: '三方章节ID' },
+  ],
+  data: [],
+  height: '100%',
+  pagerConfig: { enabled: false },
+  rowConfig: {
+    keyField: 'providerChapterId',
+  },
+  toolbarConfig: {
+    custom: false,
+    export: false,
+    refresh: false,
+    zoom: false,
+  },
+};
+
 const [SearchGrid, searchGridApi] = useVbenVxeGrid<SearchComicRow>({
   gridOptions: searchGridOptions,
   showSearchForm: false,
@@ -421,6 +453,18 @@ const [SearchGrid, searchGridApi] = useVbenVxeGrid<SearchComicRow>({
 const [ChapterPreviewGrid, chapterPreviewGridApi] =
   useVbenVxeGrid<ChapterPreviewRow>({
     gridOptions: chapterPreviewGridOptions,
+    showSearchForm: false,
+  });
+const [ChapterMappingGrid, chapterMappingGridApi] =
+  useVbenVxeGrid<ChapterMappingForm>({
+    gridEvents: {
+      cellClick({ row }: { row: ChapterMappingForm }) {
+        selectActiveMapping(row);
+      },
+      checkboxAll: handleChapterMappingSelectionChange,
+      checkboxChange: handleChapterMappingSelectionChange,
+    },
+    gridOptions: chapterMappingGridOptions,
     showSearchForm: false,
   });
 
@@ -434,9 +478,7 @@ const [TagForm, tagFormApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-const selectedMappings = computed(() =>
-  chapterMappings.value.filter((item) => item.selected),
-);
+const selectedMappings = computed(() => selectedChapterMappings.value);
 
 const activeMapping = computed(() =>
   chapterMappings.value.find(
@@ -526,6 +568,7 @@ function resetWizard() {
   localWorkCoverPath.value = '';
   workDraft.value = createEmptyWorkDraft();
   chapterMappings.value = [];
+  selectedChapterMappings.value = [];
   activeProviderChapterId.value = '';
   contentPreview.value = null;
   submittedTask.value = null;
@@ -536,6 +579,8 @@ function resetWizard() {
   });
   searchGridApi.setGridOptions({ data: [] });
   chapterPreviewGridApi.setGridOptions({ data: [] });
+  chapterMappingGridApi.setGridOptions({ data: [] });
+  chapterMappingGridApi.grid?.clearCheckboxRow?.();
 }
 
 function resolveComicPlatform(item: SearchComicRow) {
@@ -628,10 +673,14 @@ async function loadImportPreview(group = selectedGroup.value) {
     activeProviderChapterId.value =
       chapterMappings.value[0]?.providerChapterId || '';
     chapterPreviewGridApi.setGridOptions({ data: res.chapters });
+    await syncChapterMappingGrid(chapterMappings.value);
   } catch {
     preview.value = null;
     chapterMappings.value = [];
+    selectedChapterMappings.value = [];
     chapterPreviewGridApi.setGridOptions({ data: [] });
+    chapterMappingGridApi.setGridOptions({ data: [] });
+    chapterMappingGridApi.grid?.clearCheckboxRow?.();
   } finally {
     previewLoading.value = false;
   }
@@ -744,13 +793,13 @@ function createChapterMapping(
     coverMode: 'skip',
     datetimeCreated: chapter.datetimeCreated ?? undefined,
     group: chapter.group ?? undefined,
+    imageCount: chapter.imageCount,
     importImages: true,
     isPreview: false,
     localCoverPath: '',
     overwriteContent: false,
     price: 0,
     providerChapterId: chapter.providerChapterId,
-    selected: true,
     sortOrder: chapter.sortOrder,
     title: chapter.title,
     viewRule: -1,
@@ -1174,10 +1223,19 @@ function handleLocalWorkDropdownVisibleChange(visible: boolean) {
   void searchLocalWorks(getDefaultLocalWorkKeyword());
 }
 
-function selectAllChapters(selected: boolean) {
-  chapterMappings.value.forEach((item) => {
-    item.selected = selected;
-  });
+async function syncChapterMappingGrid(rows: ChapterMappingForm[]) {
+  selectedChapterMappings.value = [...rows];
+  chapterMappingGridApi.setGridOptions({ data: rows });
+  await nextTick();
+  chapterMappingGridApi.grid?.clearCheckboxRow?.();
+  chapterMappingGridApi.grid?.setCheckboxRow?.(rows, true);
+}
+
+function handleChapterMappingSelectionChange(params: {
+  records: ChapterMappingForm[];
+}) {
+  selectedChapterMappings.value =
+    chapterMappingGridApi.grid?.getCheckboxRecords?.() ?? params.records;
 }
 
 function selectActiveMapping(mapping: ChapterMappingForm) {
@@ -1471,6 +1529,7 @@ function toChapterImportItem(
     chapterApiVersion: item.chapterApiVersion,
     datetimeCreated: item.datetimeCreated,
     group: item.group,
+    imageCount: item.imageCount,
     importImages: item.importImages,
     isPreview: item.isPreview,
     overwriteContent: item.overwriteContent,
@@ -1908,7 +1967,7 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
         <div v-show="step === 3" class="h-full min-h-0 pb-4">
           <el-scrollbar class="h-full" view-class="h-full">
             <div class="grid h-full min-h-0 grid-cols-12 gap-4">
-              <div class="col-span-5 flex h-full min-h-0">
+              <div class="col-span-6 flex h-full min-h-0">
                 <el-card
                   body-class="min-h-0 flex-1 overflow-hidden p-0"
                   class="flex h-full min-h-0 flex-1 flex-col"
@@ -1922,56 +1981,25 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                         章节映射 {{ selectedMappings.length }} /
                         {{ chapterMappings.length }}
                       </span>
-                      <div class="flex gap-2">
-                        <el-button
-                          size="small"
-                          @click="selectAllChapters(true)"
-                        >
-                          全选
-                        </el-button>
-                        <el-button
-                          size="small"
-                          @click="selectAllChapters(false)"
-                        >
-                          清空
-                        </el-button>
-                      </div>
                     </div>
                   </template>
 
-                  <el-table
-                    :data="chapterMappings"
-                    height="100%"
-                    highlight-current-row
-                    row-key="providerChapterId"
-                    @row-click="selectActiveMapping"
-                  >
-                    <el-table-column width="56">
-                      <template #default="{ row }">
-                        <el-checkbox v-model="row.selected" @click.stop />
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="序号" prop="sortOrder" width="72" />
-                    <el-table-column
-                      label="章节"
-                      min-width="220"
-                      prop="title"
-                      show-overflow-tooltip
-                    />
-                  </el-table>
+                  <ChapterMappingGrid
+                    class="chapter-mapping-grid min-h-0 flex-1"
+                  />
                 </el-card>
               </div>
 
-              <div class="col-span-7 flex h-full min-h-0">
+              <div class="col-span-6 flex h-full min-h-0">
                 <el-card
-                  body-class="min-h-0 flex-1 overflow-auto p-4"
+                  body-class="min-h-0 flex-1 overflow-auto"
                   class="flex h-full min-h-0 flex-1 flex-col"
                   shadow="never"
                 >
                   <el-form
                     v-if="activeMapping"
                     class="grid grid-cols-2 gap-x-4"
-                    label-width="110px"
+                    label-width="70px"
                   >
                     <el-form-item class="col-span-2" label="章节标题">
                       <el-input v-model="activeMapping.title" />
@@ -2270,3 +2298,10 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
   />
   <TagForm :on-submit="handleCreateTag" :schema="thirdPartyTagFormSchema" />
 </template>
+
+<style scoped>
+.chapter-mapping-grid :deep(.vxe-table--body .vxe-body--row),
+.chapter-mapping-grid :deep(.vxe-table--body .vxe-body--column) {
+  cursor: pointer;
+}
+</style>

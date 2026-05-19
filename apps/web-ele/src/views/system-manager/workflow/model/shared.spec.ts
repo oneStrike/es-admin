@@ -389,6 +389,24 @@ describe('workflow manager helpers', () => {
     ).toBe('2/5');
   });
 
+  it('shows expected image total for a pending inactive import row', () => {
+    expect(
+      formatWorkflowItemImageProgress(
+        {
+          imageSuccessCount: 0,
+          imageTotal: 53,
+          itemId: 'item-1',
+          providerChapterId: 'chapter-1',
+          status: 1,
+        },
+        {
+          isActive: false,
+          progressDetail: undefined,
+        },
+      ),
+    ).toBe('0/53');
+  });
+
   it('shows item problem messages without technical wording', () => {
     expect(formatWorkflowItemErrorMessage('Request was throttled.')).toBe(
       '请求太频繁，稍后会自动继续',

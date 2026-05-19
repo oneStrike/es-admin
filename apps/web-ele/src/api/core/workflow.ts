@@ -57,6 +57,18 @@ export async function workflowRecordPageApi(
 }
 
 /**
+ * 查询工作流通知列表
+ */
+export async function workflowNotificationListApi(
+  params?: WorkflowNotificationListRequest,
+): Promise<WorkflowNotificationListResponse> {
+  return requestClient.get<WorkflowNotificationListResponse>(
+    '/api/admin/workflow/notification/list',
+    { params },
+  );
+}
+
+/**
  * 兼容分页查询工作流内容导入条目
  */
 export async function workflowItemPageApi(
@@ -113,17 +125,5 @@ export async function workflowExpireApi(
   return requestClient.post<WorkflowExpireResponse>(
     '/api/admin/workflow/expire',
     params,
-  );
-}
-
-/**
- * 查询工作流通知列表
- */
-export async function workflowNotificationListApi(
-  params?: WorkflowNotificationListRequest,
-): Promise<WorkflowNotificationListResponse> {
-  return requestClient.get<WorkflowNotificationListResponse>(
-    '/api/admin/workflow/notification/list',
-    { params },
   );
 }

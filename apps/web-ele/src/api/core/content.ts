@@ -35,6 +35,8 @@ import type {
   ContentCategoryUpdateStatusResponse,
   ContentComicChapterBatchDeleteRequest,
   ContentComicChapterBatchDeleteResponse,
+  ContentComicChapterBatchUpdateStatusRequest,
+  ContentComicChapterBatchUpdateStatusResponse,
   ContentComicChapterContentArchiveConfirmRequest,
   ContentComicChapterContentArchiveConfirmResponse,
   ContentComicChapterContentArchiveDetailRequest,
@@ -366,6 +368,18 @@ export async function contentComicChapterBatchDeleteApi(
 ): Promise<ContentComicChapterBatchDeleteResponse> {
   return requestClient.post<ContentComicChapterBatchDeleteResponse>(
     '/api/admin/content/comic/chapter/batch-delete',
+    params,
+  );
+}
+
+/**
+ * 批量更新漫画章节发布状态
+ */
+export async function contentComicChapterBatchUpdateStatusApi(
+  params: ContentComicChapterBatchUpdateStatusRequest,
+): Promise<ContentComicChapterBatchUpdateStatusResponse> {
+  return requestClient.post<ContentComicChapterBatchUpdateStatusResponse>(
+    '/api/admin/content/comic/chapter/batch-update-status',
     params,
   );
 }
