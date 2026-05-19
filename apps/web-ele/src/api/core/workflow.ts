@@ -9,6 +9,8 @@ import type {
   WorkflowExpireResponse,
   WorkflowItemPageRequest,
   WorkflowItemPageResponse,
+  WorkflowNotificationListRequest,
+  WorkflowNotificationListResponse,
   WorkflowPageRequest,
   WorkflowPageResponse,
   WorkflowRecordPageRequest,
@@ -111,5 +113,17 @@ export async function workflowExpireApi(
   return requestClient.post<WorkflowExpireResponse>(
     '/api/admin/workflow/expire',
     params,
+  );
+}
+
+/**
+ * 查询工作流通知列表
+ */
+export async function workflowNotificationListApi(
+  params?: WorkflowNotificationListRequest,
+): Promise<WorkflowNotificationListResponse> {
+  return requestClient.get<WorkflowNotificationListResponse>(
+    '/api/admin/workflow/notification/list',
+    { params },
   );
 }

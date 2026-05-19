@@ -19,6 +19,7 @@ import { openWindow } from '@vben/utils';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
+import { useWorkflowGlobalNotifications } from '#/views/system-manager/workflow/model/notification-polling';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -26,8 +27,6 @@ const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
 const { isDark } = usePreferences();
-const notifications = computed(() => []);
-const showDot = computed(() => false);
 
 const menus = computed(() => [
   {
@@ -70,9 +69,45 @@ const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
 
+const {
+  clear: clearWorkflowNotifications,
+  makeAll: makeAllWorkflowNotifications,
+  markRead: markWorkflowNotificationRead,
+  notifications,
+  openNotification: openWorkflowNotification,
+  remove: removeWorkflowNotification,
+  showDot,
+  start: startWorkflowNotifications,
+  stop: stopWorkflowNotifications,
+  viewAll: viewAllWorkflowNotifications,
+} = useWorkflowGlobalNotifications({
+  avatar: () => avatar.value,
+  isEnabled: () =>
+    Boolean(accessStore.accessToken) &&
+    accessStore.isAccessChecked &&
+    !accessStore.loginExpired,
+  router,
+});
+
 async function handleLogout() {
   await authStore.logout(false);
 }
+
+watch(
+  () => ({
+    accessToken: accessStore.accessToken,
+    isAccessChecked: accessStore.isAccessChecked,
+    loginExpired: accessStore.loginExpired,
+  }),
+  ({ accessToken, isAccessChecked, loginExpired }) => {
+    if (accessToken && isAccessChecked && !loginExpired) {
+      startWorkflowNotifications();
+    } else {
+      stopWorkflowNotifications();
+    }
+  },
+  { immediate: true },
+);
 
 watch(
   () => ({
@@ -127,7 +162,16 @@ watch(
       />
     </template>
     <template #notification>
-      <Notification :dot="showDot" :notifications="notifications" />
+      <Notification
+        :dot="showDot"
+        :notifications="notifications"
+        @clear="clearWorkflowNotifications"
+        @make-all="makeAllWorkflowNotifications"
+        @on-click="openWorkflowNotification"
+        @read="markWorkflowNotificationRead"
+        @remove="removeWorkflowNotification"
+        @view-all="viewAllWorkflowNotifications"
+      />
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal

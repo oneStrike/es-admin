@@ -10,6 +10,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { RotateCw } from '@vben/icons';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -24,7 +25,6 @@ import {
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions, formatUTC } from '#/utils';
 
-import { createWorkflowDetailPolling } from './model/detail-polling';
 import {
   buildWorkflowItemPageRequest,
   buildWorkflowPageRequest,
@@ -40,7 +40,6 @@ import {
   formatWorkflowOperator,
   formatWorkflowType,
   getWorkflowItemCheckboxDisabledReason,
-  isWorkflowActiveStatus,
   workflowColumns,
   workflowItemColumns,
   workflowItemSearchSchema,
@@ -140,11 +139,6 @@ const [ItemGrid, itemGridApi] = useVbenVxeGrid({
   gridOptions: itemGridOptions,
 });
 
-const detailPolling = createWorkflowDetailPolling<WorkflowJobDetailDto>({
-  isActive: (job) => isWorkflowActiveStatus(job.status),
-  load: loadDetailPoll,
-});
-
 const [DetailModal, detailApi] = useVbenModal({
   footer: false,
   title: '任务详情',
@@ -226,29 +220,11 @@ async function loadDetail(jobId: string, options: { reset?: boolean } = {}) {
   }
 }
 
-async function loadDetailPoll(jobId: string) {
-  const job = await workflowDetailApi({ jobId });
-  if (!isCurrentDetailSession(jobId, detailSessionId)) {
-    return job;
-  }
-  currentJob.value = job;
-  await nextTick();
-  if (isCurrentDetailSession(jobId, detailSessionId)) {
-    await itemGridApi.reload();
-  }
-  return job;
-}
-
 async function openDetail(jobId: string) {
   openDetailSession(jobId);
   detailApi.open();
   await nextTick();
-  const job = await loadDetail(jobId);
-  if (currentJob.value && isWorkflowActiveStatus(currentJob.value.status)) {
-    void detailPolling.start(jobId);
-  } else if (job && !isWorkflowActiveStatus(job.status)) {
-    detailPolling.stop();
-  }
+  await loadDetail(jobId);
 }
 
 async function openRecords(jobId: string) {
@@ -264,15 +240,18 @@ async function openRecords(jobId: string) {
 async function reloadDetailIfCurrent(jobId: string) {
   if (currentJob.value?.jobId === jobId) {
     await loadDetail(jobId);
-    if (currentJob.value && isWorkflowActiveStatus(currentJob.value.status)) {
-      void detailPolling.start(jobId);
-    } else {
-      detailPolling.stop();
-    }
   }
   if (recordJob.value?.jobId === jobId) {
     recordJob.value = await workflowDetailApi({ jobId });
   }
+}
+
+async function refreshCurrentDetail() {
+  const jobId = currentJob.value?.jobId;
+  if (!jobId) {
+    return;
+  }
+  await loadDetail(jobId, { reset: false });
 }
 
 async function cancelJob(job: WorkflowJobDto) {
@@ -323,9 +302,6 @@ async function retrySelectedItems() {
     itemGridApi.grid?.clearCheckboxRow?.();
     await gridApi.reload();
     await loadDetail(jobId);
-    if (currentJob.value && isWorkflowActiveStatus(currentJob.value.status)) {
-      void detailPolling.start(jobId);
-    }
   } finally {
     retrying.value = false;
   }
@@ -341,13 +317,11 @@ function handleItemSelectionChange(params: {
 function openDetailSession(jobId: string) {
   detailSessionId += 1;
   activeDetailJobId = jobId;
-  detailPolling.stop();
 }
 
 function closeDetailSession() {
   detailSessionId += 1;
   activeDetailJobId = '';
-  detailPolling.stop();
   detailLoading.value = false;
   currentJob.value = null;
   selectedItems.value = [];
@@ -491,6 +465,13 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
             <ItemGrid class="workflow-detail__item-grid">
               <template #toolbar-actions>
                 <div class="flex w-full flex-wrap items-center gap-2">
+                  <el-button
+                    :loading="detailLoading"
+                    @click="refreshCurrentDetail"
+                  >
+                    <RotateCw class="mr-1 size-4" />
+                    刷新详情
+                  </el-button>
                   <el-button
                     :disabled="!canRetrySelected"
                     :loading="retrying"

@@ -11,9 +11,23 @@ const basicVueSource = readFileSync(
 
 describe('basic layout imports', () => {
   it('imports the notification widget when rendering the notification slot', () => {
-    expect(basicVueSource).toContain('<Notification ');
+    expect(basicVueSource).toMatch(/<Notification[\s>]/);
     expect(basicVueSource).toMatch(
       /import\s*\{[^}]*\bNotification\b[^}]*\}\s*from\s*'@vben\/layouts'/s,
+    );
+  });
+
+  it('wires workflow notification state and header actions', () => {
+    expect(basicVueSource).toContain('useWorkflowGlobalNotifications');
+    expect(basicVueSource).toContain('@read="markWorkflowNotificationRead"');
+    expect(basicVueSource).toContain('@remove="removeWorkflowNotification"');
+    expect(basicVueSource).toContain('@clear="clearWorkflowNotifications"');
+    expect(basicVueSource).toContain(
+      '@make-all="makeAllWorkflowNotifications"',
+    );
+    expect(basicVueSource).toContain('@on-click="openWorkflowNotification"');
+    expect(basicVueSource).toContain(
+      '@view-all="viewAllWorkflowNotifications"',
     );
   });
 });
