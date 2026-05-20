@@ -19,6 +19,7 @@ describe('workflow manager detail modal source wiring', () => {
   it('exposes a manual detail refresh that preserves the current item grid state', () => {
     expect(workflowVueSource).toContain('function refreshCurrentDetail');
     expect(workflowVueSource).toContain('loadDetail(jobId, { reset: false })');
+    expect(workflowVueSource).toContain('await itemGridApi.reload();');
     expect(workflowVueSource).toContain('@click="refreshCurrentDetail"');
     expect(workflowVueSource).toContain('刷新详情');
   });
