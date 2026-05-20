@@ -1,5 +1,13 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
+import {
+  formatWorkflowErrorTitle,
+  knownWorkflowErrorCodes,
+  workflowErrorPresenters,
+} from './error-presenter';
 import {
   buildWorkflowItemPageRequest,
   buildWorkflowManagerRoute,
@@ -10,10 +18,11 @@ import {
   canRetryWorkflowItems,
   createWorkflowImageProgressActiveState,
   formatWorkflowAttemptStatus,
-  formatWorkflowItemErrorMessage,
   formatWorkflowItemImageProgress,
+  formatWorkflowItemProblem,
   formatWorkflowItemRetrySummary,
   formatWorkflowItemStatus,
+  formatWorkflowJobProgress,
   formatWorkflowJobStatus,
   getWorkflowItemCheckboxDisabledReason,
   workflowItemColumns,
@@ -21,6 +30,52 @@ import {
   workflowSearchSchema,
   workflowTypeOptions,
 } from './shared';
+
+function readServerWorkflowErrorCodes() {
+  const relativePath = [
+    'libs',
+    'platform',
+    'src',
+    'modules',
+    'workflow',
+    'workflow-error-facts.ts',
+  ];
+  const candidates = [
+    resolve(process.cwd(), '..', 'es-server', ...relativePath),
+    resolve(process.cwd(), 'es-server', ...relativePath),
+  ];
+  const sourcePath = candidates.find((candidate) => existsSync(candidate));
+  if (!sourcePath) {
+    throw new Error('Cannot locate server workflow error registry');
+  }
+
+  const source = readFileSync(sourcePath, 'utf8');
+  const enumBody = source.match(
+    /export enum WorkflowErrorCodeEnum \{([\s\S]*?)\n\}/,
+  );
+  const registryBody = source.match(
+    /export const WORKFLOW_ERROR_CODES = \{([\s\S]*?)\n\} as const satisfies/,
+  );
+  if (!enumBody?.[1] || !registryBody?.[1]) {
+    throw new Error('Cannot parse server workflow error registry');
+  }
+
+  const enumValues = new Map(
+    [...enumBody[1].matchAll(/([A-Z0-9_]+)\s*=\s*'([^']+)'/g)].map(
+      ([, key, value]) => [key, value],
+    ),
+  );
+
+  return [
+    ...registryBody[1].matchAll(/\[WorkflowErrorCodeEnum\.([A-Z0-9_]+)\]/g),
+  ].map(([, key]) => {
+    const value = enumValues.get(key);
+    if (!value) {
+      throw new Error(`Unknown server workflow error enum key: ${key}`);
+    }
+    return value;
+  });
+}
 
 describe('workflow manager helpers', () => {
   it('builds workflow manager route with jobId query', () => {
@@ -234,32 +289,41 @@ describe('workflow manager helpers', () => {
     expect(
       formatWorkflowItemRetrySummary({
         autoRetryCount: 2,
-        lastRetryCode: 'HTTP_429',
-        lastRetryReason: 'Request was throttled.',
+        lastRetry: {
+          code: 'CONTENT_IMPORT_RATE_LIMITED',
+          context: { nextRetryAt: '2026-05-18T08:30:00.000Z' },
+          domain: 'content-import',
+          retryable: true,
+          severity: 'warning',
+          stage: 'rate-limit',
+        },
         maxAutoRetries: 3,
         nextRetryAt: '2026-05-18T08:30:00.000Z',
         status: 5,
       }),
     ).toBe(
-      '等待自动重试，预计 2026-05-18 16:30:00，自动重试 2/3，Request was throttled.，错误码 HTTP_429',
+      '等待自动重试，预计 2026-05-18 16:30:00，自动重试 2/3，请求太频繁，稍后会自动继续',
     );
     expect(
       formatWorkflowItemRetrySummary({
         autoRetryCount: 2,
-        lastRetryCode: 'ATTEMPT_LEASE_EXPIRED',
-        lastRetryReason: 'workflow attempt claim 已过期',
+        lastRetry: {
+          code: 'ATTEMPT_LEASE_EXPIRED',
+          context: {},
+          domain: 'workflow',
+          retryable: false,
+          severity: 'error',
+          stage: 'lease-recovery',
+        },
         maxAutoRetries: 3,
         nextRetryAt: null,
         status: 5,
       }),
-    ).toBe(
-      '等待恢复执行，自动重试 2/3，workflow attempt claim 已过期，错误码 ATTEMPT_LEASE_EXPIRED',
-    );
+    ).toBe('等待恢复执行，自动重试 2/3，执行占用已过期，系统已进入恢复处理');
     expect(
       formatWorkflowItemRetrySummary({
         autoRetryCount: 0,
-        lastRetryCode: null,
-        lastRetryReason: null,
+        lastRetry: null,
         maxAutoRetries: 3,
         nextRetryAt: null,
         status: 4,
@@ -407,10 +471,54 @@ describe('workflow manager helpers', () => {
     ).toBe('0/53');
   });
 
-  it('shows item problem messages without technical wording', () => {
-    expect(formatWorkflowItemErrorMessage('Request was throttled.')).toBe(
-      '请求太频繁，稍后会自动继续',
+  it('shows item problems from frontend-owned mappings', () => {
+    expect(
+      formatWorkflowItemProblem({
+        code: 'CONTENT_IMPORT_RATE_LIMITED',
+        context: {},
+        domain: 'content-import',
+        retryable: true,
+        severity: 'warning',
+        stage: 'rate-limit',
+      }),
+    ).toBe('请求太频繁，稍后会自动继续');
+  });
+
+  it('formats workflow progress from frontend-owned mappings', () => {
+    expect(
+      formatWorkflowJobProgress({
+        progressCode: 'CONTENT_IMPORT_PROGRESS_UPDATED',
+        progressContext: {
+          completedItemCount: 2,
+          imageSuccessCount: 19,
+          imageTotal: 21,
+          progressState: 'updated',
+          selectedItemCount: 5,
+          workflowType: 'content-import.third-party-import',
+        },
+        progressDetail: null,
+      }),
+    ).toBe('章节导入进度：图片 19/21，章节 2/5');
+  });
+
+  it('keeps the local presenter code list in sync with the server registry', () => {
+    expect([...knownWorkflowErrorCodes].toSorted()).toEqual(
+      readServerWorkflowErrorCodes().toSorted(),
     );
+  });
+
+  it('has a presenter mapping for every server workflow/archive code', () => {
+    for (const code of readServerWorkflowErrorCodes()) {
+      expect(
+        workflowErrorPresenters[code as keyof typeof workflowErrorPresenters],
+      ).toBeTypeOf('function');
+    }
+  });
+
+  it('uses a stable fallback for unknown workflow error codes', () => {
+    expect(
+      formatWorkflowErrorTitle({ code: 'NEW_SERVER_CODE', context: {} }),
+    ).toBe('未知错误（NEW_SERVER_CODE）');
   });
 
   it('formats every workflow item status without collapsing states', () => {

@@ -12,6 +12,8 @@ import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';
 
+import { formatWorkflowErrorTitle } from './error-presenter';
+
 type WorkflowStatus = WorkflowJobDto['status'];
 type WorkflowItemStatus = ContentImportItemDto['status'];
 type WorkflowAttemptStatus = WorkflowAttemptDto['status'];
@@ -137,7 +139,7 @@ const workflowItemListSchema: EsFormSchema = [
   },
   { component: 'InputNumber', fieldName: 'imageTotal', label: '图片总数' },
   { component: 'Input', fieldName: 'nextRetryAt', label: '自动重试' },
-  { component: 'Input', fieldName: 'lastErrorMessage', label: '问题' },
+  { component: 'Input', fieldName: 'lastError', label: '问题' },
 ];
 
 export const workflowSearchSchema = formSchemaTransform.toSearchSchema(
@@ -280,8 +282,8 @@ export const workflowItemColumns: NonNullable<
         showOverflow: 'tooltip',
         slots: { default: 'nextRetryAt' },
       },
-      lastErrorMessage: {
-        formatter: ({ cellValue }) => formatWorkflowItemErrorMessage(cellValue),
+      lastError: {
+        formatter: ({ row }) => formatWorkflowItemProblem(row.lastError),
         minWidth: 260,
         showOverflow: 'tooltip',
       },
@@ -488,12 +490,7 @@ function formatRetryCount(
 export function formatWorkflowItemRetrySummary(
   item: Pick<
     ContentImportItemDto,
-    | 'autoRetryCount'
-    | 'lastRetryCode'
-    | 'lastRetryReason'
-    | 'maxAutoRetries'
-    | 'nextRetryAt'
-    | 'status'
+    'autoRetryCount' | 'lastRetry' | 'maxAutoRetries' | 'nextRetryAt' | 'status'
   >,
 ) {
   const parts: string[] = [];
@@ -511,34 +508,33 @@ export function formatWorkflowItemRetrySummary(
     parts.push(`自动重试 ${retryCount}`);
   }
 
-  const reason = item.lastRetryReason?.trim();
-  if (reason) {
-    parts.push(reason);
-  }
-
-  const code = item.lastRetryCode?.trim();
-  if (code) {
-    parts.push(`错误码 ${code}`);
+  const retryTitle = formatWorkflowErrorTitle(item.lastRetry, '');
+  if (retryTitle) {
+    parts.push(retryTitle);
   }
 
   return parts.length > 0 ? parts.join('，') : '-';
 }
 
-export function formatWorkflowItemErrorMessage(message: unknown) {
-  if (typeof message !== 'string') {
-    return '-';
-  }
+export function formatWorkflowItemProblem(
+  error: ContentImportItemDto['lastError'],
+) {
+  return formatWorkflowErrorTitle(error);
+}
 
-  const text = message.trim();
-  if (!text) {
-    return '-';
-  }
-
-  if (/Request was throttled/i.test(text)) {
-    return '请求太频繁，稍后会自动继续';
-  }
-
-  return text;
+export function formatWorkflowJobProgress(
+  job: Pick<
+    WorkflowJobDto,
+    'progressCode' | 'progressContext' | 'progressDetail'
+  >,
+) {
+  return formatWorkflowErrorTitle(
+    {
+      code: job.progressCode,
+      context: job.progressContext ?? job.progressDetail ?? {},
+    },
+    '等待进度更新',
+  );
 }
 
 export function formatWorkflowItemImageProgress(

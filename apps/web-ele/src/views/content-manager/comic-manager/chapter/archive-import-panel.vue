@@ -22,6 +22,7 @@ import { requestClient } from '#/api/request';
 import { AlertCircleIcon, ImageLine, UploadLoop } from '#/components/es-icons';
 import { UploadUrlMapEnum } from '#/enum/api';
 import { useMessage } from '#/hooks/useFeedback';
+import { formatWorkflowErrorTitle } from '#/views/system-manager/workflow/model/error-presenter';
 
 import {
   ARCHIVE_RESULT_STATUS,
@@ -52,7 +53,7 @@ const emit = defineEmits<{
 }>();
 
 const detailLoading = ref(false);
-const errorMessage = ref('');
+const uploadErrorText = ref('');
 const uploading = ref(false);
 const uploadProgress = ref(0);
 const confirming = ref(false);
@@ -256,7 +257,7 @@ const taskHint = computed(() => {
     if (selectedArchiveFile.value && sourceFileName.value) {
       return `${sourceFileName.value} · 等待预解析`;
     }
-    if (errorMessage.value && sourceFileName.value) {
+    if (uploadErrorText.value && sourceFileName.value) {
       return `${sourceFileName.value} · 预解析失败`;
     }
     return isSingleChapterMode.value
@@ -389,7 +390,7 @@ const handleArchiveFileChange: UploadProps['onChange'] = (uploadFile) => {
 
   selectedArchiveFile.value = rawFile;
   sourceFileName.value = rawFile.name;
-  errorMessage.value = '';
+  uploadErrorText.value = '';
   archiveFileList.value = [uploadFile as UploadUserFile];
 };
 
@@ -403,7 +404,7 @@ const handleArchiveFileExceed: UploadProps['onExceed'] = (files) => {
 
   selectedArchiveFile.value = file;
   sourceFileName.value = file.name;
-  errorMessage.value = '';
+  uploadErrorText.value = '';
   archiveFileList.value = [
     {
       name: file.name,
@@ -446,7 +447,8 @@ async function fetchTaskDetail(jobId: string) {
       } else if (detail.status === ARCHIVE_STATUS.PARTIAL_FAILED) {
         useMessage.warning('压缩包导入完成，但有部分章节失败');
       } else {
-        useMessage.error(detail.lastError || '压缩包导入失败');
+        const { lastError: taskError } = detail;
+        useMessage.error(formatWorkflowErrorTitle(taskError, '压缩包导入失败'));
       }
     }
     return detail;
@@ -469,7 +471,7 @@ function resetPreviewDraft() {
   selectedArchiveFile.value = null;
   sourceFileName.value = '';
   uploadProgress.value = 0;
-  errorMessage.value = '';
+  uploadErrorText.value = '';
   cancelError.value = '';
 }
 
@@ -556,7 +558,7 @@ async function handleStartPreview() {
     params.set('chapterId', String(props.chapterId));
   }
 
-  errorMessage.value = '';
+  uploadErrorText.value = '';
   cancelError.value = '';
   sourceFileName.value = file.name;
   taskDetail.value = null;
@@ -614,7 +616,7 @@ async function handleStartPreview() {
     if (controller?.signal.aborted || runId !== previewRunId) {
       return;
     }
-    errorMessage.value = getApiErrorMessage(
+    uploadErrorText.value = getApiErrorMessage(
       error,
       '压缩包预解析失败，请稍后重试',
     );
@@ -773,11 +775,11 @@ async function handleConfirmImport() {
 
           <template v-else>
             <el-alert
-              v-if="errorMessage"
+              v-if="uploadErrorText"
               :closable="false"
               show-icon
               type="error"
-              :title="errorMessage"
+              :title="uploadErrorText"
             />
             <el-alert
               v-if="cancelError"
@@ -807,7 +809,7 @@ async function handleConfirmImport() {
                 :closable="false"
                 show-icon
                 type="error"
-                :title="taskDetail.lastError"
+                :title="formatWorkflowErrorTitle(taskDetail.lastError)"
               />
 
               <div class="grid grid-cols-12 gap-4">
@@ -903,13 +905,18 @@ async function handleConfirmImport() {
                               </div>
                             </div>
                             <div class="mt-3 text-sm text-slate-600">
-                              {{ item.message }}
+                              {{
+                                formatWorkflowErrorTitle({
+                                  code: item.statusCode,
+                                  context: item.statusContext,
+                                })
+                              }}
                             </div>
                             <div
-                              v-if="item.warningMessage"
+                              v-if="item.warning"
                               class="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700"
                             >
-                              {{ item.warningMessage }}
+                              {{ formatWorkflowErrorTitle(item.warning) }}
                             </div>
                           </div>
                         </div>
@@ -982,7 +989,12 @@ async function handleConfirmImport() {
                           {{ item.path }}
                         </div>
                         <div class="mt-1 text-xs leading-5 text-slate-500">
-                          {{ item.message }}
+                          {{
+                            formatWorkflowErrorTitle({
+                              code: item.code,
+                              context: item.context,
+                            })
+                          }}
                         </div>
                       </div>
                       <div
@@ -1034,8 +1046,11 @@ async function handleConfirmImport() {
                           }}
                           张
                         </div>
-                        <div class="mt-1 text-xs leading-5 text-slate-500">
-                          {{ item.message }}
+                        <div
+                          v-if="item.error"
+                          class="mt-1 text-xs leading-5 text-slate-500"
+                        >
+                          {{ formatWorkflowErrorTitle(item.error) }}
                         </div>
                       </div>
                       <div

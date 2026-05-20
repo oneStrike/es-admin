@@ -257,10 +257,12 @@ export type WorkflowJobDto = {
   operatorType: 1 | 2;
   /* 后台管理员操作者ID；系统任务为空 */
   operatorUserId?: null | number;
+  /* 当前进度展示代码；后台根据代码和上下文生成文案 */
+  progressCode?: null | string;
+  /* 当前进度展示上下文 */
+  progressContext?: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
   progressDetail?: null | Record<string, any>;
-  /* 进度文案 */
-  progressMessage?: null | string;
   /* 进度百分比 */
   progressPercent: number;
   /* 选中条目数 */
@@ -314,10 +316,12 @@ export type WorkflowJobDetailDto = {
   operatorType: 1 | 2;
   /* 后台管理员操作者ID；系统任务为空 */
   operatorUserId?: null | number;
+  /* 当前进度展示代码；后台根据代码和上下文生成文案 */
+  progressCode?: null | string;
+  /* 当前进度展示上下文 */
+  progressContext?: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
   progressDetail?: null | Record<string, any>;
-  /* 进度文案 */
-  progressMessage?: null | string;
   /* 进度百分比 */
   progressPercent: number;
   /* 选中条目数 */
@@ -340,9 +344,31 @@ export type WorkflowJobDetailDto = {
 };
 
 /**
+ *  类型定义 [WorkflowErrorFactsDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-20 18:30:00
+ */
+export type WorkflowErrorFactsDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 错误或状态码 */
+  code: string;
+  /* 可公开给 admin 表达层使用的事实 */
+  context: Record<string, any>;
+  /* 错误领域 */
+  domain: string;
+  /* 是否可重试 */
+  retryable: boolean;
+  /* 严重级别 */
+  severity: string;
+  /* 错误阶段 */
+  stage: string;
+};
+
+/**
  *  类型定义 [WorkflowAttemptDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
+ *  @更新时间 2026-05-20 18:30:00
  */
 export type WorkflowAttemptDto = {
   /** 任意合法数值 */
@@ -357,10 +383,8 @@ export type WorkflowAttemptDto = {
   claimExpiresAt?: null | string;
   /* 创建时间 */
   createdAt: string;
-  /* 错误码 */
-  errorCode?: null | string;
-  /* 错误信息 */
-  errorMessage?: null | string;
+  /* 错误事实；admin 负责根据 code/context 表达 */
+  error?: null | WorkflowErrorFactsDto;
   /* 失败条目数 */
   failedItemCount: number;
   /* 完成时间 */
@@ -404,13 +428,13 @@ export type WorkflowRecordDto = {
   createdAt: string;
   /* 事件诊断详情 */
   detail?: null | Record<string, any>;
+  /* 事件码 */
+  eventCode: string;
   /* 事件类型（1=创建草稿；2=确认任务；3=claim attempt；4=心跳；5=进度更新；6=条目成功；7=条目失败；8=attempt完成；9=请求取消；10=人工重试；11=草稿过期；12=资源清理） */
   eventType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+
   /* 主键ID */
   id: number;
-
-  /* 事件文案 */
-  message: string;
 };
 
 /**
@@ -491,14 +515,10 @@ export type ContentImportItemDto = {
   itemId: string;
   /* 条目类型（1=漫画章节） */
   itemType: 1;
-  /* 最近错误码 */
-  lastErrorCode?: null | string;
-  /* 最近错误信息 */
-  lastErrorMessage?: null | string;
-  /* 最近自动重试错误码 */
-  lastRetryCode?: null | string;
-  /* 最近自动重试原因 */
-  lastRetryReason?: null | string;
+  /* 最近错误事实；admin 负责根据 code/context 表达 */
+  lastError?: null | WorkflowErrorFactsDto;
+  /* 最近自动重试事实；admin 负责根据 code/context 表达 */
+  lastRetry?: null | WorkflowErrorFactsDto;
   /* 本地章节ID */
   localChapterId?: null | number;
   /* 最大自动重试次数 */

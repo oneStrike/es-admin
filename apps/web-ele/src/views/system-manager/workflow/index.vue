@@ -36,6 +36,7 @@ import {
   formatWorkflowAttemptStatus,
   formatWorkflowItemImageProgress,
   formatWorkflowItemRetrySummary,
+  formatWorkflowJobProgress,
   formatWorkflowJobStatus,
   formatWorkflowOperator,
   formatWorkflowType,
@@ -447,7 +448,7 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
             <div class="workflow-detail__progress">
               <div class="mb-1 flex items-center justify-between gap-4">
                 <span class="truncate text-sm text-muted-foreground">
-                  {{ currentJob.progressMessage || '等待进度更新' }}
+                  {{ formatWorkflowJobProgress(currentJob) }}
                 </span>
                 <span class="shrink-0 font-mono text-sm font-medium">
                   {{ currentJob.progressPercent }}%

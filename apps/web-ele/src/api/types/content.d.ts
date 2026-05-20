@@ -2189,9 +2189,31 @@ export type MoveComicContentDto = {
 };
 
 /**
+ *  类型定义 [WorkflowErrorFactsDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-20 18:30:00
+ */
+export type WorkflowErrorFactsDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 错误或状态码 */
+  code: string;
+  /* 可公开给 admin 表达层使用的事实 */
+  context: Record<string, any>;
+  /* 错误领域 */
+  domain: string;
+  /* 是否可重试 */
+  retryable: boolean;
+  /* 严重级别 */
+  severity: string;
+  /* 错误阶段 */
+  stage: string;
+};
+
+/**
  *  类型定义 [ComicArchiveTaskResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
+ *  @更新时间 2026-05-20 18:30:00
  */
 export type ComicArchiveTaskResponseDto = {
   /** 任意合法数值 */
@@ -2204,12 +2226,16 @@ export type ComicArchiveTaskResponseDto = {
   ignoredItems: ComicArchiveIgnoredItemDto[];
   /* 导入工作流任务ID */
   jobId: string;
-  /* 最后一次错误信息 */
-  lastError?: null | string;
+  /* 最后一次错误事实；admin 负责表达 */
+  lastError?: null | WorkflowErrorFactsDto;
   /* 匹配成功的章节列表 */
   matchedItems: ComicArchiveMatchedItemDto[];
   /* 预解析模式（1=单章节压缩包；2=多章节压缩包） */
   mode: 1 | 2;
+  /* 当前进度展示代码；后台根据代码和上下文生成文案 */
+  progressCode?: null | string;
+  /* 当前进度展示上下文 */
+  progressContext?: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
   progressDetail?: null | Record<string, any>;
   /* 是否需要用户确认 */
@@ -2247,13 +2273,15 @@ export type ComicArchiveMatchedItemDto = {
   imageCount: number;
   /* 导入模式 */
   importMode: string;
-  /* 匹配结果说明 */
-  message: string;
   /* 匹配来源路径 */
   path: string;
+  /* 匹配结果表达码 */
+  statusCode: string;
+  /* 匹配结果表达事实 */
+  statusContext: Record<string, any>;
 
-  /* 覆盖提示信息 */
-  warningMessage: string;
+  /* 覆盖风险事实；admin 负责表达 */
+  warning?: null | WorkflowErrorFactsDto;
 };
 
 /**
@@ -2264,8 +2292,10 @@ export type ComicArchiveMatchedItemDto = {
 export type ComicArchiveIgnoredItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 友好提示信息 */
-  message: string;
+  /* 忽略项表达码 */
+  code: string;
+  /* 忽略项表达事实 */
+  context: Record<string, any>;
   /* 被忽略的路径 */
   path: string;
 
@@ -2285,10 +2315,10 @@ export type ComicArchiveResultItemDto = {
   chapterId: number;
   /* 章节标题 */
   chapterTitle: string;
+  /* 失败事实；admin 负责表达 */
+  error?: null | WorkflowErrorFactsDto;
   /* 已导入图片数量 */
   importedImageCount: number;
-  /* 执行结果说明 */
-  message: string;
 
   /* 执行状态（0=待处理；1=成功；2=失败） */
   status: 0 | 1 | 2;
@@ -2382,10 +2412,12 @@ export type WorkflowJobDto = {
   operatorType: 1 | 2;
   /* 后台管理员操作者ID；系统任务为空 */
   operatorUserId?: null | number;
+  /* 当前进度展示代码；后台根据代码和上下文生成文案 */
+  progressCode?: null | string;
+  /* 当前进度展示上下文 */
+  progressContext?: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
   progressDetail?: null | Record<string, any>;
-  /* 进度文案 */
-  progressMessage?: null | string;
   /* 进度百分比 */
   progressPercent: number;
   /* 选中条目数 */
@@ -2944,14 +2976,10 @@ export type ContentImportItemDto = {
   itemId: string;
   /* 条目类型（1=漫画章节） */
   itemType: 1;
-  /* 最近错误码 */
-  lastErrorCode?: null | string;
-  /* 最近错误信息 */
-  lastErrorMessage?: null | string;
-  /* 最近自动重试错误码 */
-  lastRetryCode?: null | string;
-  /* 最近自动重试原因 */
-  lastRetryReason?: null | string;
+  /* 最近错误事实；admin 负责根据 code/context 表达 */
+  lastError?: null | WorkflowErrorFactsDto;
+  /* 最近自动重试事实；admin 负责根据 code/context 表达 */
+  lastRetry?: null | WorkflowErrorFactsDto;
   /* 本地章节ID */
   localChapterId?: null | number;
   /* 最大自动重试次数 */
