@@ -98,7 +98,6 @@ export type WorkDraftForm = Pick<ImportWorkDraft, WorkDraftRequiredField> & {
 };
 type ChapterMappingRequiredField =
   | 'action'
-  | 'imageCount'
   | 'importImages'
   | 'providerChapterId'
   | 'sortOrder'
@@ -130,5 +129,6 @@ export type ChapterMappingForm = Pick<
   >;
 } & {
   coverMode: Extract<WorkCoverMode, 'local' | 'skip'>;
+  imageCount: ChapterPreviewRow['imageCount'];
   localCoverPath: string;
 };

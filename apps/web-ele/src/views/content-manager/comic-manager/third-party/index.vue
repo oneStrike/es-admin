@@ -26,7 +26,6 @@ import type {
   SearchComicRow,
   SearchFormValues,
   ThirdPartyComicChapterContentDto,
-  ThirdPartyComicImportChapterItemDto,
   WorkCoverMode,
   WorkDraftForm,
 } from './model/types';
@@ -83,6 +82,7 @@ import {
   SERVER_COMIC_CATEGORY_TYPE,
   SERVER_MANGA_AUTHOR_TYPE,
   toApiGroup,
+  toChapterImportItem,
   wizardSubmissionFingerprint,
 } from './model/helpers';
 
@@ -1513,36 +1513,6 @@ function buildImportRequest(): ContentComicThirdPartyImportConfirmRequest | null
       viewRule: draft.viewRule,
     },
   } satisfies ContentComicThirdPartyImportConfirmRequest;
-}
-
-function toChapterImportItem(
-  item: ChapterMappingForm,
-): ThirdPartyComicImportChapterItemDto {
-  const chapterItem = {
-    action: item.action,
-    canComment: item.canComment,
-    canDownload: item.canDownload,
-    cover:
-      item.coverMode === 'local'
-        ? { localPath: item.localCoverPath, mode: 'local' }
-        : { mode: 'skip' },
-    chapterApiVersion: item.chapterApiVersion,
-    datetimeCreated: item.datetimeCreated,
-    group: item.group,
-    imageCount: item.imageCount,
-    importImages: item.importImages,
-    isPreview: item.isPreview,
-    overwriteContent: item.overwriteContent,
-    price: item.price,
-    providerChapterId: item.providerChapterId,
-    sortOrder: item.sortOrder,
-    subtitle: item.subtitle || undefined,
-    targetChapterId: item.targetChapterId,
-    title: item.title,
-    viewRule: item.viewRule,
-  } satisfies ThirdPartyComicImportChapterItemDto;
-
-  return chapterItem;
 }
 
 function openSubmittedTask() {

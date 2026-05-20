@@ -7,6 +7,7 @@ import {
   canSubmitImportAgain,
   hasProviderGroupPathWord,
   resolveExactRelationMatches,
+  toChapterImportItem,
   wizardSubmissionFingerprint,
 } from './helpers';
 
@@ -79,10 +80,11 @@ describe('third-party import submission fingerprint', () => {
   function createRequest(): ContentComicThirdPartyImportConfirmRequest {
     return {
       chapters: [
-        {
+        toChapterImportItem({
           action: 'create',
           canComment: true,
           canDownload: true,
+          coverMode: 'skip',
           chapterApiVersion: 2,
           datetimeCreated: '2026-05-11T00:00:00.000Z',
           group: 'default',
@@ -96,7 +98,7 @@ describe('third-party import submission fingerprint', () => {
           subtitle: '序章',
           title: '第1话',
           viewRule: -1,
-        },
+        }),
       ],
       comicId: 'woduzishenji',
       cover: {
@@ -185,13 +187,13 @@ describe('third-party import submission fingerprint', () => {
       wizardSubmissionFingerprint({
         ...request,
         chapters: [
-          {
+          toChapterImportItem({
             ...firstChapter,
             imageCount: 52,
-          },
+          }),
         ],
       }),
-    ).not.toBe(fingerprint);
+    ).toBe(fingerprint);
   });
 
   it('detects whether provider group path word is present', () => {
@@ -230,5 +232,44 @@ describe('third-party import submission fingerprint', () => {
       canSubmitImportAgain(activeTask, fingerprint, `${fingerprint}:dirty`),
     ).toBe(true);
     expect(canSubmitImportAgain(null, fingerprint, fingerprint)).toBe(true);
+  });
+});
+
+describe('third-party import request builder', () => {
+  it('builds confirm chapter payload without imageCount', () => {
+    const chapter = toChapterImportItem({
+      action: 'create',
+      canComment: true,
+      canDownload: true,
+      coverMode: 'local',
+      chapterApiVersion: 2,
+      datetimeCreated: '2026-05-11T00:00:00.000Z',
+      group: 'default',
+      imageCount: 53,
+      importImages: true,
+      isPreview: false,
+      localCoverPath: '/uploads/chapter-cover.jpg',
+      overwriteContent: false,
+      price: 0,
+      providerChapterId: 'chapter-001',
+      sortOrder: 1,
+      subtitle: '序章',
+      targetChapterId: undefined,
+      title: '第1话',
+      viewRule: -1,
+    });
+
+    expect(chapter).toEqual(
+      expect.objectContaining({
+        importImages: true,
+        providerChapterId: 'chapter-001',
+        title: '第1话',
+        cover: {
+          localPath: '/uploads/chapter-cover.jpg',
+          mode: 'local',
+        },
+      }),
+    );
+    expect(chapter).not.toHaveProperty('imageCount');
   });
 });

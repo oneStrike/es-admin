@@ -4,6 +4,7 @@ import type {
   ContentComicThirdPartyImportConfirmRequest,
   ThirdPartyComicCoverOptionsDto,
   ThirdPartyComicGroupDto,
+  ThirdPartyComicImportChapterItemDto,
 } from '#/api/types/content';
 import type { WorkflowJobDto } from '#/api/types/workflow';
 
@@ -45,6 +46,41 @@ export function wizardSubmissionFingerprint(
     ...restRequest,
     sourceSnapshot: stableSourceSnapshot,
   });
+}
+
+export type ChapterImportItemForm = ThirdPartyComicImportChapterItemDto & {
+  coverMode?: 'local' | 'skip';
+  imageCount?: number;
+  localCoverPath?: string;
+};
+
+export function toChapterImportItem(
+  item: ChapterImportItemForm,
+): ThirdPartyComicImportChapterItemDto {
+  const chapterItem = {
+    action: item.action,
+    canComment: item.canComment,
+    canDownload: item.canDownload,
+    cover:
+      item.coverMode === 'local'
+        ? { localPath: item.localCoverPath, mode: 'local' }
+        : (item.cover ?? { mode: 'skip' }),
+    chapterApiVersion: item.chapterApiVersion,
+    datetimeCreated: item.datetimeCreated,
+    group: item.group,
+    importImages: item.importImages,
+    isPreview: item.isPreview,
+    overwriteContent: item.overwriteContent,
+    price: item.price,
+    providerChapterId: item.providerChapterId,
+    sortOrder: item.sortOrder,
+    subtitle: item.subtitle || undefined,
+    targetChapterId: item.targetChapterId,
+    title: item.title,
+    viewRule: item.viewRule,
+  } satisfies ThirdPartyComicImportChapterItemDto;
+
+  return chapterItem;
 }
 
 export function canSubmitImportAgain(

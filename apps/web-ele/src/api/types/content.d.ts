@@ -2886,8 +2886,6 @@ export type ThirdPartyComicImportChapterItemDto = {
   datetimeCreated?: null | string;
   /* 三方章节分组 */
   group?: null | string;
-  /* 三方章节预期图片数 */
-  imageCount: number;
   /* 是否导入章节图片 */
   importImages: boolean;
   /* 是否试读 */
