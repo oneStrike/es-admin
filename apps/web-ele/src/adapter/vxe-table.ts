@@ -12,8 +12,9 @@ import {
   setupVbenVxeTable,
   useVbenVxeGrid as useGrid,
 } from '@vben/plugins/vxe-table';
+import { JsonViewer } from '@vben/common-ui';
 
-import { ElButton, ElImage, ElTag, ElText } from 'element-plus';
+import { ElButton, ElImage, ElTag, ElText, ElTooltip } from 'element-plus';
 
 import { ImageLine } from '#/components/es-icons';
 import { formatUTC } from '#/utils';
@@ -117,6 +118,43 @@ function getCellValue(row: unknown, field: unknown) {
   }
 
   return (row as GridRow)[String(field)];
+}
+
+function isJsonRecord(value: unknown): value is Record<string, unknown> {
+  return Object.prototype.toString.call(value) === '[object Object]';
+}
+
+function normalizeJsonCellValue(value: unknown) {
+  if (typeof value !== 'string') return value;
+
+  const trimmed = value.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+    return value;
+  }
+
+  try {
+    return JSON.parse(trimmed) as unknown;
+  } catch {
+    return value;
+  }
+}
+
+function isJsonViewerValue(value: unknown) {
+  return Array.isArray(value) || isJsonRecord(value);
+}
+
+function stringifyJsonCellValue(value: unknown) {
+  if (value === null || value === undefined || value === '') return '-';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
 }
 
 setupVbenVxeTable({
@@ -224,6 +262,54 @@ setupVbenVxeTable({
           ElButton,
           { size: 'small', link: true, class: 'line-clamp-1 w-full', type },
           { default: () => text },
+        );
+      },
+    });
+
+    // 表格配置项可以用 cellRender: { name: 'CellJson' },
+    vxeUI.renderer.add('CellJson', {
+      renderTableDefault({ props }, params) {
+        const { column, row } = params;
+        const value = getCellValue(row, column.field);
+        const viewerValue = normalizeJsonCellValue(value);
+        const preview = stringifyJsonCellValue(viewerValue);
+
+        if (!isJsonViewerValue(viewerValue)) {
+          return h(ElText, {}, { default: () => preview });
+        }
+
+        return h(
+          ElTooltip,
+          {
+            effect: 'light',
+            enterable: true,
+            placement: props?.placement ?? 'left',
+            popperClass: props?.popperClass ?? 'cell-json-tooltip',
+            showAfter: props?.showAfter ?? 200,
+            teleported: true,
+          },
+          {
+            content: () =>
+              h('div', { class: 'max-h-[60vh] w-[520px] overflow-auto' }, [
+                h(JsonViewer, {
+                  boxed: true,
+                  copyable: true,
+                  expanded: true,
+                  expandDepth: props?.expandDepth ?? 2,
+                  showDoubleQuotes: true,
+                  value: viewerValue,
+                }),
+              ]),
+            default: () =>
+              h(
+                ElText,
+                {
+                  class: 'block w-full cursor-help truncate',
+                  type: props?.type ?? 'primary',
+                },
+                { default: () => preview },
+              ),
+          },
         );
       },
     });

@@ -368,7 +368,6 @@ export const taskDefinitionColumns =
       },
       title: {
         fixed: 'left',
-        formatter: undefined,
         minWidth: 220,
         showOverflow: 'tooltip',
         slots: { default: 'title' },

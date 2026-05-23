@@ -241,7 +241,6 @@ export const pageColumns =
     dateRange: { hide: true },
     displayName: {
       fixed: 'left',
-      formatter: undefined,
       minWidth: 180,
       showOverflow: 'tooltip',
       slots: { default: 'displayName' },
@@ -251,7 +250,6 @@ export const pageColumns =
       showOverflow: 'tooltip',
     },
     isHidden: {
-      formatter: undefined,
       slots: { default: 'isHidden' },
     },
     manualBoost: {

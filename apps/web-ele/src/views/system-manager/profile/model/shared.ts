@@ -3,9 +3,14 @@ import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';
 
+import { formatAuditDeviceField } from '../../model/audit-log-display';
+
 const loginHistoryListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'ip', label: '登录IP' },
-  { component: 'Input', fieldName: 'device', label: '浏览器' },
+  { component: 'Input', fieldName: 'deviceOs', label: '操作系统' },
+  { component: 'Input', fieldName: 'deviceType', label: '设备' },
+  { component: 'Input', fieldName: 'deviceBrowser', label: '浏览器' },
+  { component: 'Input', fieldName: 'deviceVersion', label: '版本' },
   { component: 'Select', fieldName: 'isSuccess', label: '登录结果' },
 ];
 
@@ -13,12 +18,26 @@ export const loginHistortColumn =
   formSchemaTransform.toTableColumns<AuditItemDto>(loginHistoryListSchema, {
     seq: { width: 50 },
     ip: {
-      formatter: undefined,
       width: 140,
     },
-    device: {
-      formatter: undefined,
-      minWidth: 200,
+    deviceOs: {
+      formatter: ({ row }) => formatAuditDeviceField(row.device, 'os'),
+      minWidth: 100,
+      showOverflow: 'tooltip',
+    },
+    deviceType: {
+      formatter: ({ row }) => formatAuditDeviceField(row.device, 'device'),
+      minWidth: 100,
+      showOverflow: 'tooltip',
+    },
+    deviceBrowser: {
+      formatter: ({ row }) => formatAuditDeviceField(row.device, 'browser'),
+      minWidth: 110,
+      showOverflow: 'tooltip',
+    },
+    deviceVersion: {
+      formatter: ({ row }) => formatAuditDeviceField(row.device, 'version'),
+      minWidth: 90,
       showOverflow: 'tooltip',
     },
     createdAt: {
@@ -27,7 +46,6 @@ export const loginHistortColumn =
       width: 160,
     },
     isSuccess: {
-      formatter: undefined,
       slots: { default: 'isSuccess' },
       width: 120,
     },

@@ -3,55 +3,21 @@ import type { EsFormSchema } from '#/types';
 
 import { formatUTC, formSchemaTransform } from '#/utils';
 
+import { formatAuditDeviceField } from '../../../model/audit-log-display';
+
 const loginResultOptions = [
   { label: '成功', value: true },
   { label: '失败', value: false },
 ];
 
-type LoginLogSchemaField = EsFormSchema[number];
-
-const loginLogFieldCatalog = {
-  ip: {
-    component: 'Input',
-    fieldName: 'ip',
-    label: '登录IP',
-  },
-  isSuccess: {
-    component: 'Select',
-    fieldName: 'isSuccess',
-    label: '登录结果',
-  },
-  username: {
-    component: 'Input',
-    fieldName: 'username',
-    label: '用户名',
-  },
-} satisfies Record<string, LoginLogSchemaField>;
-
-function createLoginLogField(
-  field: keyof typeof loginLogFieldCatalog,
-  overrides: Partial<LoginLogSchemaField> = {},
-): LoginLogSchemaField {
-  const base = loginLogFieldCatalog[field] as LoginLogSchemaField;
-  const componentProps = overrides.componentProps ?? base.componentProps;
-
-  return {
-    ...base,
-    ...overrides,
-    componentProps:
-      componentProps &&
-      typeof componentProps === 'object' &&
-      !Array.isArray(componentProps)
-        ? { ...componentProps }
-        : componentProps,
-  };
-}
-
 const loginLogListSchema: EsFormSchema = [
-  createLoginLogField('username'),
-  createLoginLogField('ip'),
-  { component: 'Input', fieldName: 'userAgent', label: '用户代理' },
-  createLoginLogField('isSuccess'),
+  { component: 'Input', fieldName: 'username', label: '用户名' },
+  { component: 'Input', fieldName: 'ip', label: '登录IP' },
+  { component: 'Input', fieldName: 'deviceOs', label: '操作系统' },
+  { component: 'Input', fieldName: 'deviceType', label: '设备' },
+  { component: 'Input', fieldName: 'deviceBrowser', label: '浏览器' },
+  { component: 'Input', fieldName: 'deviceVersion', label: '版本' },
+  { component: 'Select', fieldName: 'isSuccess', label: '登录结果' },
   { component: 'Input', fieldName: 'content', label: '日志内容' },
 ];
 
@@ -60,17 +26,31 @@ export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
   {
     seq: { width: 60 },
     username: {
-      formatter: undefined,
       showOverflow: 'tooltip',
       width: 120,
     },
     ip: {
-      formatter: undefined,
       width: 140,
     },
-    userAgent: {
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 250,
+    deviceOs: {
+      formatter: ({ row }) => formatAuditDeviceField(row.device, 'os'),
+      minWidth: 100,
+      showOverflow: 'tooltip',
+    },
+    deviceType: {
+      formatter: ({ row }) => formatAuditDeviceField(row.device, 'device'),
+      minWidth: 100,
+      showOverflow: 'tooltip',
+    },
+    deviceBrowser: {
+      formatter: ({ row }) =>
+        formatAuditDeviceField(row.device ?? row.userAgent, 'browser'),
+      minWidth: 110,
+      showOverflow: 'tooltip',
+    },
+    deviceVersion: {
+      formatter: ({ row }) => formatAuditDeviceField(row.device, 'version'),
+      minWidth: 90,
       showOverflow: 'tooltip',
     },
     createdAt: {
@@ -80,7 +60,6 @@ export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
       width: 160,
     },
     isSuccess: {
-      formatter: undefined,
       slots: { default: 'isSuccess' },
       width: 120,
     },

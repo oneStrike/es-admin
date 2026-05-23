@@ -132,7 +132,6 @@ export const deliveryColumns =
         width: 100,
       },
       categoryKey: {
-        formatter: undefined,
         minWidth: 160,
         slots: { default: 'category' },
       },
@@ -194,7 +193,6 @@ export const deliveryColumns =
         sortable: true,
       },
       status: {
-        formatter: undefined,
         minWidth: 130,
         slots: { default: 'deliveryStatus' },
       },
@@ -210,7 +208,6 @@ export const deliveryColumns =
         sortable: true,
       },
       usedTemplate: {
-        formatter: undefined,
         minWidth: 130,
         slots: { default: 'usedTemplate' },
       },

@@ -491,7 +491,6 @@ export const topicColumns =
       seq: { width: 60 },
       title: {
         fixed: 'left',
-        formatter: undefined,
         minWidth: 260,
         showOverflow: 'tooltip',
         slots: { default: 'title' },
@@ -502,29 +501,23 @@ export const topicColumns =
         showOverflow: 'tooltip',
       },
       userSummary: {
-        formatter: undefined,
         minWidth: 180,
         slots: { default: 'userSummary' },
       },
       sectionSummary: {
-        formatter: undefined,
         minWidth: 180,
         slots: { default: 'sectionSummary' },
       },
       isPinned: {
-        formatter: undefined,
         slots: { default: 'isPinned' },
       },
       isFeatured: {
-        formatter: undefined,
         slots: { default: 'isFeatured' },
       },
       isLocked: {
-        formatter: undefined,
         slots: { default: 'isLocked' },
       },
       isHidden: {
-        formatter: undefined,
         slots: { default: 'isHidden' },
       },
       viewCount: {

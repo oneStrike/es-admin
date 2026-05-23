@@ -81,13 +81,11 @@ const packGridOptions: VxeGridProps<BaseEmojiPackDto> = {
     {
       seq: { width: 70 },
       name: {
-        formatter: undefined,
         headerAlign: 'center',
         minWidth: 220,
         slots: { default: 'packName' },
       },
       isEnabled: {
-        formatter: undefined,
         minWidth: 110,
         slots: { default: 'packStatus' },
       },

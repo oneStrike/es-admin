@@ -176,12 +176,10 @@ export const applicationColumns =
       applicantId: { hide: true },
       applicant: {
         fixed: 'left',
-        formatter: undefined,
         minWidth: 180,
         slots: { default: 'applicant' },
       },
       section: {
-        formatter: undefined,
         minWidth: 160,
         slots: { default: 'section' },
       },

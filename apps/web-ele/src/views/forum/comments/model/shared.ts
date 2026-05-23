@@ -421,7 +421,6 @@ export const pageColumns =
   formSchemaTransform.toTableColumns<AdminCommentPageItemDto>(pageListSchema, {
     seq: { width: 60 },
     user: {
-      formatter: undefined,
       minWidth: 180,
       slots: { default: 'user' },
     },
@@ -431,40 +430,32 @@ export const pageColumns =
       showOverflow: 'tooltip',
     },
     targetType: {
-      formatter: undefined,
       minWidth: 120,
       slots: { default: 'targetType' },
     },
     targetTitle: {
-      formatter: undefined,
       minWidth: 220,
       slots: { default: 'targetTitle' },
     },
     targetExtra: {
-      formatter: undefined,
       minWidth: 180,
       slots: { default: 'targetExtra' },
     },
     replyToSummary: {
-      formatter: undefined,
       minWidth: 240,
       slots: { default: 'replyToSummary' },
     },
     isHidden: {
-      formatter: undefined,
       slots: { default: 'isHidden' },
     },
     likeCount: {
-      formatter: undefined,
       sortable: true,
     },
     floor: {
-      formatter: undefined,
       minWidth: 90,
       sortable: true,
     },
     sensitiveWordHits: {
-      formatter: undefined,
       minWidth: 160,
       slots: { default: 'sensitiveWords' },
     },

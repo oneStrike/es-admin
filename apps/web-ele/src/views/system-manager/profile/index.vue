@@ -41,14 +41,14 @@ const loading = ref(false);
 // 登录历史表格配置
 const gridOptions: VxeGridProps<AuditItemDto> = {
   columns: loginHistortColumn,
-  height: 'auto',
+  height: '100%',
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }) => {
         if (!userInfo.value) return { list: [], total: 0 };
         const params: AuditPageRequest = {
           username: userInfo.value.username,
-          path: '/api/admin/user/user-login',
+          path: '/api/admin/auth/login',
         };
 
         return await auditPageApi(
@@ -189,10 +189,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Page auto-content-height>
-    <div class="grid h-full grid-cols-1 gap-6 lg:grid-cols-5">
+  <Page auto-content-height content-class="es-full-height-page-content">
+    <div
+      class="grid h-full min-h-0 grid-cols-1 gap-6 overflow-hidden lg:grid-cols-5"
+    >
       <!-- 左侧用户信息 -->
-      <div class="h-full lg:col-span-2">
+      <div class="h-full min-h-0 lg:col-span-2">
         <div
           v-loading="loading"
           class="flex h-full flex-col rounded-lg border border-border bg-background p-6 shadow-sm"
@@ -263,6 +265,9 @@ onMounted(async () => {
                 <el-descriptions-item label="创建时间">
                   {{ formatTime(userInfo.createdAt) }}
                 </el-descriptions-item>
+                <el-descriptions-item label="更新时间">
+                  {{ formatTime(userInfo.updatedAt) }}
+                </el-descriptions-item>
               </el-descriptions>
             </div>
           </div>
@@ -270,20 +275,20 @@ onMounted(async () => {
       </div>
 
       <!-- 右侧登录历史 -->
-      <div class="h-full lg:col-span-3">
+      <div class="h-full min-h-0 lg:col-span-3">
         <div
-          class="h-full rounded-lg border border-border bg-background p-6 shadow-sm"
+          class="es-full-height-pane rounded-lg border border-border bg-background p-6 shadow-sm"
         >
-          <h2 class="text-lg font-semibold text-foreground">登录历史记录</h2>
-          <div class="h-[93%]">
-            <Grid>
-              <template #isSuccess="{ row }">
-                <el-tag :type="row.isSuccess ? 'success' : 'danger'">
-                  {{ row.isSuccess ? '登录成功' : row.content }}
-                </el-tag>
-              </template>
-            </Grid>
-          </div>
+          <h2 class="mb-4 shrink-0 text-lg font-semibold text-foreground">
+            登录历史记录
+          </h2>
+          <Grid class="es-full-height-grid">
+            <template #isSuccess="{ row }">
+              <el-tag :type="row.isSuccess ? 'success' : 'danger'">
+                {{ row.isSuccess ? '登录成功' : row.content }}
+              </el-tag>
+            </template>
+          </Grid>
         </div>
       </div>
     </div>

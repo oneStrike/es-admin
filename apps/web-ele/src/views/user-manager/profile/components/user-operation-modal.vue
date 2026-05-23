@@ -323,7 +323,6 @@ const pointRecordColumns =
         title: '操作时间',
       },
       points: {
-        formatter: undefined,
         slots: { default: 'pointsDelta' },
         width: 110,
       },
@@ -386,7 +385,6 @@ const experienceRecordColumns =
         title: '操作时间',
       },
       experience: {
-        formatter: undefined,
         slots: { default: 'experienceDelta' },
         width: 110,
       },
@@ -419,7 +417,6 @@ const userBadgeColumns = formSchemaTransform.toTableColumns<UserBadgeItemDto>(
       width: 60,
     },
     badge: {
-      formatter: undefined,
       minWidth: 260,
       slots: { default: 'badgeInfo' },
     },

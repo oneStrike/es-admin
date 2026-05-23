@@ -25,6 +25,9 @@ defineOptions({
   name: 'IpGeolocationManager',
 });
 
+const IP2REGION_UPLOAD_URL = '/api/admin/system/ip2region/upload';
+type UploadError = Parameters<UploadRequestOptions['onError']>[0];
+
 const statusLoading = ref(false);
 const uploading = ref(false);
 const uploadProgress = ref(0);
@@ -45,13 +48,26 @@ const statusSummary = computed(() => {
   if (!statusData.value.ready) return '当前进程尚未加载可用属地库';
   return '当前进程已加载可用属地库';
 });
-const inlineCodeClass = 'rounded bg-slate-100 px-1 py-0.5 text-slate-700';
+const inlineCodeClass = 'rounded px-1 py-0.5 font-mono';
+const inlineCodeStyle = {
+  backgroundColor: 'var(--el-fill-color-light)',
+  color: 'var(--el-text-color-regular)',
+};
 
 function formatDateTime(value?: null | string) {
   if (!value) return '-';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return date.toLocaleString();
+}
+
+function createUploadError(message: string): UploadError {
+  const uploadError = new Error(message) as UploadError;
+  uploadError.name = 'UploadAjaxError';
+  uploadError.status = 0;
+  uploadError.method = 'post';
+  uploadError.url = IP2REGION_UPLOAD_URL;
+  return uploadError;
 }
 
 async function loadStatus() {
@@ -83,7 +99,7 @@ async function handleUpload(options: UploadRequestOptions) {
 
   try {
     const result = await requestClient.upload<SystemIp2regionUploadResponse>(
-      '/api/admin/system/ip2region/upload',
+      IP2REGION_UPLOAD_URL,
       { file },
       {
         timeout: 180_000,
@@ -100,9 +116,10 @@ async function handleUpload(options: UploadRequestOptions) {
     statusData.value = result;
     options.onSuccess?.(result as never);
     useMessage.success('IP 属地库上传并切换成功');
-  } catch (error: any) {
-    options.onError?.(error);
-    useMessage.error(getApiErrorMessage(error, 'IP 属地库上传失败'));
+  } catch (error: unknown) {
+    const errorMessage = getApiErrorMessage(error, 'IP 属地库上传失败');
+    options.onError?.(createUploadError(errorMessage));
+    useMessage.error(errorMessage);
   } finally {
     uploading.value = false;
   }
@@ -114,107 +131,134 @@ onMounted(loadStatus);
 <template>
   <Page auto-content-height>
     <main class="space-y-6">
-      <section
-        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-      >
+      <el-card shadow="never">
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div class="space-y-2">
-            <div class="flex items-center gap-3">
-              <h1 class="text-xl font-semibold text-slate-900">
+            <div class="flex flex-wrap items-center gap-3">
+              <el-text tag="h1" class="text-xl font-semibold">
                 IP 属地库管理
-              </h1>
+              </el-text>
               <el-tag :type="statusTagType" effect="light">
                 {{ statusSummary }}
               </el-tag>
             </div>
-            <p class="max-w-3xl text-sm leading-6 text-slate-500">
+            <el-text
+              tag="p"
+              class="max-w-3xl leading-6"
+              size="small"
+              type="info"
+            >
               用于上传并切换当前进程使用的
-              <code :class="inlineCodeClass">ip2region_v4.xdb</code>
+              <el-text
+                tag="code"
+                :class="inlineCodeClass"
+                :style="inlineCodeStyle"
+                size="small"
+              >
+                ip2region_v4.xdb
+              </el-text>
               文件。当前能力只保证接收上传请求的 API
               进程立即生效，不处理跨进程或跨实例同步。
-            </p>
+            </el-text>
           </div>
           <el-button :loading="statusLoading" @click="loadStatus">
             刷新状态
           </el-button>
         </div>
-      </section>
+      </el-card>
 
       <section
         class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,2fr)_360px]"
       >
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div class="mb-4 flex items-center justify-between gap-3">
-            <h2 class="text-base font-semibold text-slate-900">当前状态</h2>
-            <div class="text-xs text-slate-400">
-              {{ statusData ? '已同步' : '等待加载' }}
+        <el-card shadow="never">
+          <template #header>
+            <div class="flex items-center justify-between gap-3">
+              <el-text tag="h2" class="text-base font-semibold">
+                当前状态
+              </el-text>
+              <el-text size="small" type="info">
+                {{ statusData ? '已同步' : '等待加载' }}
+              </el-text>
             </div>
-          </div>
+          </template>
 
           <el-alert
             v-if="statusData && !statusData.ready"
             :closable="false"
+            class="mb-4"
             show-icon
             title="当前进程未加载可用属地库，可上传新的 xdb 文件后立即切换。"
             type="warning"
           />
 
-          <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <div class="text-xs text-slate-500">当前来源</div>
-              <div class="mt-2 text-sm font-medium text-slate-900">
-                {{ getSourceLabel(statusData?.source) }}
-              </div>
-            </div>
-            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <div class="text-xs text-slate-500">当前文件名</div>
-              <div class="mt-2 break-all text-sm font-medium text-slate-900">
+          <el-descriptions :column="2" border label-width="96px" size="small">
+            <el-descriptions-item label="当前来源">
+              <el-text>{{ getSourceLabel(statusData?.source) }}</el-text>
+            </el-descriptions-item>
+            <el-descriptions-item label="当前文件名">
+              <el-text class="break-all">
                 {{ statusData?.fileName || '-' }}
-              </div>
-            </div>
-            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <div class="text-xs text-slate-500">文件大小</div>
-              <div class="mt-2 text-sm font-medium text-slate-900">
-                {{ formatFileSize(statusData?.fileSize) }}
-              </div>
-            </div>
-            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <div class="text-xs text-slate-500">生效时间</div>
-              <div class="mt-2 text-sm font-medium text-slate-900">
+              </el-text>
+            </el-descriptions-item>
+            <el-descriptions-item label="文件大小">
+              <el-text>{{ formatFileSize(statusData?.fileSize) }}</el-text>
+            </el-descriptions-item>
+            <el-descriptions-item label="生效时间">
+              <el-text>
                 {{ formatDateTime(statusData?.activatedAt) }}
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <div class="text-xs text-slate-500">文件路径</div>
-            <div class="mt-2 break-all text-sm text-slate-900">
-              {{ statusData?.filePath || '-' }}
-            </div>
-          </div>
-
-          <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <div class="text-xs text-slate-500">存储目录</div>
-            <div class="mt-2 break-all text-sm text-slate-900">
-              {{ statusData?.storageDir || '-' }}
-            </div>
-          </div>
-        </div>
+              </el-text>
+            </el-descriptions-item>
+            <el-descriptions-item label="文件路径" :span="2">
+              <el-text class="break-all font-mono" size="small">
+                {{ statusData?.filePath || '-' }}
+              </el-text>
+            </el-descriptions-item>
+            <el-descriptions-item label="存储目录" :span="2">
+              <el-text class="break-all font-mono" size="small">
+                {{ statusData?.storageDir || '-' }}
+              </el-text>
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-card>
 
         <div class="space-y-6">
-          <section
-            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-          >
-            <h2 class="text-base font-semibold text-slate-900">上传新库</h2>
-            <p class="mt-2 text-sm leading-6 text-slate-500">
+          <el-card shadow="never">
+            <template #header>
+              <el-text tag="h2" class="text-base font-semibold">
+                上传新库
+              </el-text>
+            </template>
+
+            <el-text tag="p" class="leading-6" size="small" type="info">
               仅支持上传
-              <code :class="inlineCodeClass">ip2region_v4.xdb</code>
+              <el-text
+                tag="code"
+                :class="inlineCodeClass"
+                :style="inlineCodeStyle"
+                size="small"
+              >
+                ip2region_v4.xdb
+              </el-text>
               。上传成功后会写入
-              <code :class="inlineCodeClass">versions</code>
+              <el-text
+                tag="code"
+                :class="inlineCodeClass"
+                :style="inlineCodeStyle"
+                size="small"
+              >
+                versions
+              </el-text>
               和
-              <code :class="inlineCodeClass">active</code>
+              <el-text
+                tag="code"
+                :class="inlineCodeClass"
+                :style="inlineCodeStyle"
+                size="small"
+              >
+                active
+              </el-text>
               目录，并切换当前进程查询器。
-            </p>
+            </el-text>
 
             <el-upload
               class="mt-4 w-full"
@@ -241,30 +285,66 @@ onMounted(loadStatus);
             </el-upload>
 
             <div v-if="uploading" class="mt-4">
-              <div
-                class="mb-2 flex items-center justify-between text-xs text-slate-500"
-              >
-                <span>{{ lastUploadFileName || '上传中' }}</span>
-                <span>{{ uploadProgress }}%</span>
+              <div class="mb-2 flex items-center justify-between gap-3">
+                <el-text class="min-w-0" size="small" type="info" truncated>
+                  {{ lastUploadFileName || '上传中' }}
+                </el-text>
+                <el-text size="small" type="info">
+                  {{ uploadProgress }}%
+                </el-text>
               </div>
               <el-progress :percentage="uploadProgress" :stroke-width="10" />
             </div>
-          </section>
+          </el-card>
 
-          <section
-            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-          >
-            <h2 class="text-base font-semibold text-slate-900">操作说明</h2>
-            <ul class="mt-3 space-y-3 text-sm leading-6 text-slate-500">
-              <li>1. 上传失败不会影响当前在线查询能力。</li>
-              <li>2. 同一时刻只允许一个热切换流程执行。</li>
-              <li>3. 服务重启后会优先尝试从 active 目录恢复当前生效库。</li>
+          <el-card shadow="never">
+            <template #header>
+              <el-text tag="h2" class="text-base font-semibold">
+                操作说明
+              </el-text>
+            </template>
+
+            <ul class="space-y-3 leading-6">
               <li>
-                4. 若 `admin-api` 与 `app-api`
-                分离运行，本页上传只影响当前接收请求的进程。
+                <el-text size="small" type="info">
+                  1. 上传失败不会影响当前在线查询能力。
+                </el-text>
+              </li>
+              <li>
+                <el-text size="small" type="info">
+                  2. 同一时刻只允许一个热切换流程执行。
+                </el-text>
+              </li>
+              <li>
+                <el-text size="small" type="info">
+                  3. 服务重启后会优先尝试从 active 目录恢复当前生效库。
+                </el-text>
+              </li>
+              <li>
+                <el-text size="small" type="info">
+                  4. 若
+                  <el-text
+                    tag="code"
+                    :class="inlineCodeClass"
+                    :style="inlineCodeStyle"
+                    size="small"
+                  >
+                    admin-api
+                  </el-text>
+                  与
+                  <el-text
+                    tag="code"
+                    :class="inlineCodeClass"
+                    :style="inlineCodeStyle"
+                    size="small"
+                  >
+                    app-api
+                  </el-text>
+                  分离运行，本页上传只影响当前接收请求的进程。
+                </el-text>
               </li>
             </ul>
-          </section>
+          </el-card>
         </div>
       </section>
     </main>

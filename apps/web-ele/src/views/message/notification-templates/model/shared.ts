@@ -179,7 +179,6 @@ export const pageColumns =
       },
       categoryKey: { hide: true },
       categoryLabel: {
-        formatter: undefined,
         minWidth: 180,
         sort: 0.5,
         slots: { default: 'category' },
@@ -194,7 +193,6 @@ export const pageColumns =
         showOverflow: 'tooltip',
       },
       isEnabled: {
-        formatter: undefined,
         minWidth: 110,
         slots: { default: 'isEnabled' },
       },

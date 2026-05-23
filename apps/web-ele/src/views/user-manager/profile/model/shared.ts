@@ -440,17 +440,14 @@ export const userColumns =
   formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(userListSchema, {
     seq: { width: 60 },
     avatarUrl: {
-      formatter: undefined,
       slots: { default: 'avatarUrl' },
       width: 80,
     },
     account: {
-      formatter: undefined,
       minWidth: 140,
       showOverflow: 'tooltip',
     },
     nickname: {
-      formatter: undefined,
       minWidth: 140,
       showOverflow: 'tooltip',
     },
@@ -464,7 +461,6 @@ export const userColumns =
       showOverflow: 'tooltip',
     },
     genderType: {
-      formatter: undefined,
       slots: { default: 'genderType' },
       width: 90,
     },
@@ -473,12 +469,10 @@ export const userColumns =
       minWidth: 120,
     },
     points: {
-      formatter: undefined,
       sortable: true,
       width: 100,
     },
     experience: {
-      formatter: undefined,
       sortable: true,
       width: 100,
     },
@@ -493,18 +487,15 @@ export const userColumns =
       width: 100,
     },
     isEnabled: {
-      formatter: undefined,
       slots: { default: 'isEnabled' },
       title: '启用状态',
       width: 110,
     },
     status: {
-      formatter: undefined,
       minWidth: 120,
       slots: { default: 'status' },
     },
     banUntil: {
-      formatter: undefined,
       minWidth: 160,
       slots: { default: 'banUntil' },
     },

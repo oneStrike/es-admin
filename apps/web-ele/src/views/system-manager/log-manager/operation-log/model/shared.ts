@@ -43,76 +43,14 @@ const actionTypeMap = Object.fromEntries(
   actionTypeOptions.map((item) => [item.value, item]),
 ) as Record<number, (typeof actionTypeOptions)[number]>;
 
-type OperationLogSchemaField = EsFormSchema[number];
-
-const operationLogFieldCatalog = {
-  actionType: {
-    component: 'Select',
-    fieldName: 'actionType',
-    label: '操作类型',
-  },
-  apiType: {
-    component: 'Select',
-    fieldName: 'apiType',
-    label: '接口类型',
-  },
-  ip: {
-    component: 'Input',
-    fieldName: 'ip',
-    label: 'IP地址',
-  },
-  isSuccess: {
-    component: 'Select',
-    fieldName: 'isSuccess',
-    label: '操作结果',
-  },
-  method: {
-    component: 'Select',
-    fieldName: 'method',
-    label: '请求方法',
-  },
-  path: {
-    component: 'Input',
-    fieldName: 'path',
-    label: '请求路径',
-  },
-  username: {
-    component: 'Input',
-    fieldName: 'username',
-    label: '用户名',
-  },
-} satisfies Record<string, OperationLogSchemaField>;
-
-function createOperationLogField(
-  field: keyof typeof operationLogFieldCatalog,
-  overrides: Partial<OperationLogSchemaField> = {},
-): OperationLogSchemaField {
-  const base = operationLogFieldCatalog[field] as OperationLogSchemaField;
-  const componentProps = overrides.componentProps ?? base.componentProps;
-
-  return {
-    ...base,
-    ...overrides,
-    componentProps:
-      componentProps &&
-      typeof componentProps === 'object' &&
-      !Array.isArray(componentProps)
-        ? { ...componentProps }
-        : componentProps,
-  };
-}
-
 const operationLogListSchema: EsFormSchema = [
-  { component: 'InputNumber', fieldName: 'id', label: 'ID' },
-  createOperationLogField('username'),
-  { component: 'InputNumber', fieldName: 'userId', label: '用户ID' },
-  createOperationLogField('apiType'),
-  createOperationLogField('method'),
-  createOperationLogField('path'),
-  createOperationLogField('actionType'),
-  createOperationLogField('ip'),
-  createOperationLogField('isSuccess'),
-  { component: 'Input', fieldName: 'userAgent', label: '用户代理' },
+  { component: 'Input', fieldName: 'username', label: '用户名' },
+  { component: 'Select', fieldName: 'apiType', label: '接口类型' },
+  { component: 'Select', fieldName: 'method', label: '请求方法' },
+  { component: 'Input', fieldName: 'path', label: '请求路径' },
+  { component: 'Select', fieldName: 'actionType', label: '操作类型' },
+  { component: 'Input', fieldName: 'ip', label: 'IP地址' },
+  { component: 'Select', fieldName: 'isSuccess', label: '操作结果' },
   { component: 'Input', fieldName: 'device', label: '设备信息' },
   { component: 'Input', fieldName: 'params', label: '请求参数' },
   { component: 'Input', fieldName: 'content', label: '日志内容' },
@@ -120,19 +58,10 @@ const operationLogListSchema: EsFormSchema = [
 
 export const operationLogColumns =
   formSchemaTransform.toTableColumns<AuditItemDto>(operationLogListSchema, {
-    seq: { width: 60 },
-    id: {
-      formatter: undefined,
-      width: 80,
-    },
     username: {
       formatter: ({ cellValue }) => cellValue ?? '-',
       showOverflow: 'tooltip',
       width: 120,
-    },
-    userId: {
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      width: 80,
     },
     apiType: {
       formatter: ({ cellValue }) => {
@@ -141,12 +70,10 @@ export const operationLogColumns =
       width: 100,
     },
     method: {
-      formatter: undefined,
       slots: { default: 'method' },
       width: 100,
     },
     path: {
-      formatter: undefined,
       minWidth: 200,
       showOverflow: 'tooltip',
     },
@@ -163,34 +90,16 @@ export const operationLogColumns =
       width: 140,
     },
     isSuccess: {
-      formatter: undefined,
       slots: { default: 'isSuccess' },
       width: 100,
     },
-    userAgent: {
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 250,
-      showOverflow: 'tooltip',
-    },
     device: {
-      formatter: ({ cellValue }) => {
-        if (!cellValue) return '-';
-        try {
-          const device = JSON.parse(cellValue);
-          return (
-            `${device.browser || ''} ${device.os || ''}`.trim() || cellValue
-          );
-        } catch {
-          return cellValue;
-        }
-      },
+      cellRender: { name: 'CellJson' },
       minWidth: 200,
-      showOverflow: 'tooltip',
     },
     params: {
-      formatter: ({ cellValue }) => cellValue ?? '-',
+      cellRender: { name: 'CellJson' },
       minWidth: 200,
-      showOverflow: 'tooltip',
     },
     content: {
       formatter: ({ cellValue }) => cellValue ?? '-',

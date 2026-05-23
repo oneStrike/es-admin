@@ -518,37 +518,30 @@ export const pageColumns =
   formSchemaTransform.toTableColumns<AdminReportPageItemDto>(pageListSchema, {
     seq: { width: 60 },
     reporterSummary: {
-      formatter: undefined,
       minWidth: 180,
       slots: { default: 'reporterSummary' },
     },
     targetType: {
-      formatter: undefined,
       minWidth: 120,
       slots: { default: 'targetType' },
     },
     targetTitle: {
-      formatter: undefined,
       minWidth: 220,
       slots: { default: 'targetTitle' },
     },
     targetExtra: {
-      formatter: undefined,
       minWidth: 180,
       slots: { default: 'targetExtra' },
     },
     sceneType: {
-      formatter: undefined,
       minWidth: 120,
       slots: { default: 'sceneType' },
     },
     sceneTitle: {
-      formatter: undefined,
       minWidth: 220,
       slots: { default: 'sceneTitle' },
     },
     sceneExtra: {
-      formatter: undefined,
       minWidth: 180,
       slots: { default: 'sceneExtra' },
     },
@@ -564,12 +557,10 @@ export const pageColumns =
       showOverflow: 'tooltip',
     },
     handlerSummary: {
-      formatter: undefined,
       minWidth: 180,
       slots: { default: 'handlerSummary' },
     },
     evidenceUrl: {
-      formatter: undefined,
       minWidth: 90,
       slots: { default: 'evidence' },
     },

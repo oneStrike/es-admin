@@ -256,11 +256,13 @@ export const formSchemaTransform: FormSchemaTransform = {
           align: 'center',
           minWidth: 100,
           sortValue: columnExtra?.sort ?? idx,
-          formatter: columnExtra?.cellRender
-            ? undefined
-            : ({ cellValue }) => {
-                return cellValue ?? '-';
-              },
+          ...(!columnExtra?.cellRender && !hasDefaultSlot(columnExtra)
+            ? {
+                formatter: ({ cellValue }) => {
+                  return cellValue ?? '-';
+                },
+              }
+            : {}),
           ...columnExtra,
         });
       }

@@ -21,6 +21,7 @@ import App from './app.vue';
 import { router } from './router';
 
 import './adapter/vxe-table';
+import './components/es-full-height-tabs/full-height-tabs.css';
 
 async function bootstrap(namespace: string) {
   // 初始化组件适配器

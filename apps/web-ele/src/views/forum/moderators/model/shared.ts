@@ -332,7 +332,6 @@ export const moderatorColumns =
     userId: { hide: true },
     moderatorUser: {
       field: 'nickname',
-      formatter: undefined,
       fixed: 'left',
       minWidth: 180,
       slots: { default: 'moderatorUser' },
@@ -359,7 +358,6 @@ export const moderatorColumns =
       minWidth: 220,
     },
     isEnabled: {
-      formatter: undefined,
       minWidth: 110,
       slots: { default: 'isEnabled' },
     },
