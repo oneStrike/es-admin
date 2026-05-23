@@ -12,7 +12,7 @@ import {
   membershipAutoRenewAgreementPageApi,
 } from '#/api/core';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
   normalizeSearchNumber,
@@ -103,6 +103,18 @@ async function cancelAgreement(row: AutoRenewAgreementRow) {
     row.cancelLoading = false;
   }
 }
+
+async function confirmCancelAgreement(row: AutoRenewAgreementRow) {
+  if (row.status !== 1 || row.cancelLoading) return;
+
+  const confirmed = await useConfirm({
+    content: '确认取消当前自动续费协议？',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await cancelAgreement(row);
+}
 </script>
 
 <template>
@@ -124,23 +136,15 @@ async function cancelAgreement(row: AutoRenewAgreementRow) {
             详情
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认取消当前自动续费协议？"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="cancelAgreement(row)"
+          <el-button
+            :disabled="row.status !== 1"
+            :loading="row.cancelLoading"
+            link
+            type="danger"
+            @click="confirmCancelAgreement(row)"
           >
-            <template #reference>
-              <el-button
-                :disabled="row.status !== 1"
-                :loading="row.cancelLoading"
-                link
-                type="danger"
-              >
-                取消协议
-              </el-button>
-            </template>
-          </el-popconfirm>
+            取消协议
+          </el-button>
         </div>
       </template>
     </Grid>

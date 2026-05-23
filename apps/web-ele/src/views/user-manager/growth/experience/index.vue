@@ -19,7 +19,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
 import { getDetailCards } from './modules/model/detail';
@@ -113,6 +113,16 @@ async function deleteExperienceRule(record: BaseGrowthRewardRuleDto) {
   gridApi.reload();
 }
 
+async function confirmDeleteExperienceRule(record: BaseGrowthRewardRuleDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前经验规则?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteExperienceRule(record);
+}
+
 async function toggleEnableStatus(
   row: BaseGrowthRewardRuleDto & { loading?: boolean },
 ) {
@@ -170,16 +180,13 @@ async function toggleEnableStatus(
             编辑
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前经验规则?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteExperienceRule(row)"
+          <el-button
+            link
+            type="danger"
+            @click="confirmDeleteExperienceRule(row)"
           >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

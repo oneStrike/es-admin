@@ -42,7 +42,7 @@ import {
 } from '#/components/es-icons';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
@@ -315,6 +315,16 @@ async function deleteSection(record: BaseForumSectionDto) {
   await loadSectionGroups();
 }
 
+async function confirmDeleteSection(record: BaseForumSectionDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前项?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteSection(record);
+}
+
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: EsRecordDetail,
   title: '板块详情',
@@ -358,6 +368,16 @@ async function deleteSectionGroup(record: SectionGroupNode) {
   await loadSectionGroups();
 }
 
+async function confirmDeleteSectionGroup(record: SectionGroupNode) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前项?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteSectionGroup(record);
+}
+
 function allowDrop(dragNode: any, dropNode: any, type: string) {
   if (dragNode.data?.isUngrouped || dropNode.data?.isUngrouped) {
     return false;
@@ -394,6 +414,16 @@ async function rebuildAllSectionFollowCount() {
   await forumSectionsRebuildFollowCountAllApi();
   useMessage.success('已提交全量重建关注数');
   await gridApi.reload();
+}
+
+async function confirmRebuildAllSectionFollowCount() {
+  const confirmed = await useConfirm({
+    content: '确认全量重建所有板块关注数?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await rebuildAllSectionFollowCount();
 }
 
 function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
@@ -492,27 +522,18 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
                       />
                     </div>
                   </el-tooltip>
-                  <el-popconfirm
+                  <el-tooltip
                     v-if="!data.isUngrouped"
-                    title="确认删除当前项?"
-                    confirm-button-text="确认"
-                    cancel-button-text="取消"
-                    @confirm="deleteSectionGroup(data)"
+                    content="删除"
+                    placement="top"
+                    :show-after="300"
                   >
-                    <template #reference>
-                      <div @click.stop>
-                        <el-tooltip
-                          content="删除"
-                          placement="top"
-                          :show-after="300"
-                        >
-                          <DeleteBinIcon
-                            class="cursor-pointer text-base hover:text-red-600"
-                          />
-                        </el-tooltip>
-                      </div>
-                    </template>
-                  </el-popconfirm>
+                    <div @click.stop="confirmDeleteSectionGroup(data)">
+                      <DeleteBinIcon
+                        class="cursor-pointer text-base hover:text-red-600"
+                      />
+                    </div>
+                  </el-tooltip>
                 </el-space>
               </div>
             </template>
@@ -524,16 +545,9 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
           <el-button class="ml-2" type="primary" @click="openFormModal()">
             添加
           </el-button>
-          <el-popconfirm
-            title="确认全量重建所有板块关注数?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="rebuildAllSectionFollowCount"
-          >
-            <template #reference>
-              <el-button class="ml-2">全量重建关注数</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button class="ml-2" @click="confirmRebuildAllSectionFollowCount">
+            全量重建关注数
+          </el-button>
         </template>
 
         <template #isEnabled="{ row }">
@@ -568,16 +582,9 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
               重建关注数
             </el-button>
             <el-divider direction="vertical" />
-            <el-popconfirm
-              title="确认删除当前项?"
-              confirm-button-text="确认"
-              cancel-button-text="取消"
-              @confirm="deleteSection(row)"
-            >
-              <template #reference>
-                <el-button link type="danger">删除</el-button>
-              </template>
-            </el-popconfirm>
+            <el-button link type="danger" @click="confirmDeleteSection(row)">
+              删除
+            </el-button>
           </div>
         </template>
       </Grid>

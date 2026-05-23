@@ -19,7 +19,7 @@ import {
   dictionaryItemUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
 import {
@@ -165,6 +165,16 @@ async function deleteDictionary(row: BaseDictionaryItemDto) {
   useMessage.success('操作成功');
   gridApi.reload();
 }
+
+async function confirmDeleteDictionary(row: BaseDictionaryItemDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前项?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteDictionary(row);
+}
 </script>
 
 <template>
@@ -189,16 +199,9 @@ async function deleteDictionary(row: BaseDictionaryItemDto) {
           编辑
         </el-button>
         <el-divider direction="vertical" />
-        <el-popconfirm
-          title="确认删除当前项?"
-          confirm-button-text="确认"
-          cancel-button-text="取消"
-          @confirm="deleteDictionary(row)"
-        >
-          <template #reference>
-            <el-button link type="danger">删除</el-button>
-          </template>
-        </el-popconfirm>
+        <el-button link type="danger" @click="confirmDeleteDictionary(row)">
+          删除
+        </el-button>
       </template>
     </Grid>
 

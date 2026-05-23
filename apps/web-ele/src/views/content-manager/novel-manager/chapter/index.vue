@@ -24,7 +24,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
@@ -251,6 +251,16 @@ async function deleteChapter(record: NovelChapterRecord) {
   await gridApi.reload();
 }
 
+async function confirmDeleteChapter(record: NovelChapterRecord) {
+  const confirmed = await useConfirm({
+    content: '确认删除该章节？此操作不可恢复',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteChapter(record);
+}
+
 async function batchDeleteChapters() {
   const ids = selectedChapterIds.value;
   if (ids.length === 0) {
@@ -265,6 +275,16 @@ async function batchDeleteChapters() {
   selectedChapterRows.value = [];
   gridApi.grid?.clearCheckboxRow?.();
   await gridApi.reload();
+}
+
+async function confirmBatchDeleteChapters() {
+  const confirmed = await useConfirm({
+    content: `确认删除选中的 ${selectedChapterIds.value.length} 个章节？此操作不可恢复`,
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await batchDeleteChapters();
 }
 
 async function toggleStatus(row: NovelChapterRecord) {
@@ -289,22 +309,13 @@ async function toggleStatus(row: NovelChapterRecord) {
         <el-button type="primary" @click="openFormModal()">
           添加章节
         </el-button>
-        <el-popconfirm
-          :title="`确认删除选中的 ${selectedChapterIds.length} 个章节？此操作不可恢复`"
-          cancel-button-text="取消"
-          confirm-button-text="确认"
-          type="warning"
-          @confirm="batchDeleteChapters"
+        <el-button
+          :disabled="selectedChapterIds.length === 0"
+          type="danger"
+          @click="confirmBatchDeleteChapters"
         >
-          <template #reference>
-            <el-button
-              :disabled="selectedChapterIds.length === 0"
-              type="danger"
-            >
-              批量删除
-            </el-button>
-          </template>
-        </el-popconfirm>
+          批量删除
+        </el-button>
       </template>
 
       <template #title="{ row }">
@@ -337,17 +348,9 @@ async function toggleStatus(row: NovelChapterRecord) {
             编辑
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除该章节？此操作不可恢复"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            type="warning"
-            @confirm="deleteChapter(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteChapter(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

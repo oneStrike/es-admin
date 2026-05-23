@@ -32,7 +32,7 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useDict } from '#/hooks/useDict';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import { buildWorkflowManagerRoute } from '#/views/system-manager/workflow/model/shared';
@@ -238,6 +238,16 @@ async function deleteComic(record: BaseWorkDto) {
   gridApi.reload();
 }
 
+async function confirmDeleteComic(record: BaseWorkDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前漫画?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteComic(record);
+}
+
 async function syncLatestChapters(record: BaseWorkDto) {
   record.syncLoading = true;
   try {
@@ -391,19 +401,17 @@ function openChapterModal(record: BaseWorkDto) {
             章节
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前漫画?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteComic(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteComic(row)">
+            删除
+          </el-button>
           <el-divider direction="vertical" />
           <template v-if="row.hasThirdPartySourceBinding">
-            <el-button link type="primary" :loading="row.syncLoading"  @confirm="syncLatestChapters(row)">
+            <el-button
+              link
+              type="primary"
+              :loading="row.syncLoading"
+              @click="syncLatestChapters(row)"
+            >
               同步章节
             </el-button>
           </template>

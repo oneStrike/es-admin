@@ -24,7 +24,7 @@ export interface UseConfirmOptions {
   type?: ConfirmType;
 }
 
-export type UseConfirmResult = 'cancel' | 'confirm';
+export type UseConfirmResult = boolean;
 
 export type UseConfirm = (
   options: UseConfirmOptions,
@@ -75,7 +75,7 @@ export const useConfirm: UseConfirm = async (options) => {
     });
   } catch {
     await options.onCancel?.();
-    return 'cancel';
+    return false;
   }
 
   await options.onConfirm?.();
@@ -84,5 +84,5 @@ export const useConfirm: UseConfirm = async (options) => {
     useMessage.success(successMessage);
   }
 
-  return 'confirm';
+  return true;
 };

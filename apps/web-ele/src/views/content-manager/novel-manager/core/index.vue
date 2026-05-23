@@ -29,7 +29,7 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useDict } from '#/hooks/useDict';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
@@ -230,6 +230,16 @@ async function deleteNovel(record: BaseWorkDto) {
   await gridApi.reload();
 }
 
+async function confirmDeleteNovel(record: BaseWorkDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前小说?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteNovel(record);
+}
+
 async function toggleStatus(
   record: BaseWorkDto,
   field: 'isHot' | 'isNew' | 'isPublished' | 'isRecommended',
@@ -366,16 +376,9 @@ function openChapterModal(record: BaseWorkDto) {
             章节
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前小说?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteNovel(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteNovel(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

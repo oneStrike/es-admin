@@ -24,7 +24,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './model/detail';
@@ -256,6 +256,16 @@ async function deleteAnnouncement(record: AnnouncementRow) {
   gridApi.reload();
 }
 
+async function confirmDeleteAnnouncement(record: AnnouncementRow) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前项?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteAnnouncement(record);
+}
+
 async function togglePublishStatus(record: AnnouncementRow) {
   const newStatus = !record.isPublished;
   await announcementUpdateStatusApi({
@@ -264,6 +274,16 @@ async function togglePublishStatus(record: AnnouncementRow) {
   });
   useMessage.success(newStatus ? '发布成功' : '取消发布成功');
   gridApi.reload();
+}
+
+async function confirmTogglePublishStatus(record: AnnouncementRow) {
+  const confirmed = await useConfirm({
+    content: record.isPublished ? '确认取消发布当前公告?' : '确认发布当前公告?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await togglePublishStatus(record);
 }
 
 function getPublishButtonText(record: AnnouncementRow): string {
@@ -361,22 +381,14 @@ const [DetailModal, detailApi] = useVbenModal({
           </el-button>
 
           <el-divider direction="vertical" />
-          <el-popconfirm
+          <el-button
             v-if="canPublish(row)"
-            :title="
-              row.isPublished ? '确认取消发布当前公告?' : '确认发布当前公告?'
-            "
-            width="180"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="togglePublishStatus(row)"
+            link
+            :type="canPublish(row) ? 'primary' : 'danger'"
+            @click="confirmTogglePublishStatus(row)"
           >
-            <template #reference>
-              <el-button link :type="canPublish(row) ? 'primary' : 'danger'">
-                {{ getPublishButtonText(row) }}
-              </el-button>
-            </template>
-          </el-popconfirm>
+            {{ getPublishButtonText(row) }}
+          </el-button>
           <el-button
             link
             v-else
@@ -388,16 +400,9 @@ const [DetailModal, detailApi] = useVbenModal({
             {{ getPublishButtonText(row) }}
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前项?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteAnnouncement(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteAnnouncement(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

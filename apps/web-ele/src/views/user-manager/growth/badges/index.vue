@@ -29,7 +29,7 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsModalTable from '#/components/es-modal-table';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions, formSchemaTransform } from '#/utils';
 
 import { getDetailCards } from './modules/model/detail';
@@ -160,6 +160,16 @@ async function deleteBadge(record: BaseUserBadgeDto) {
   gridApi.reload();
 }
 
+async function confirmDeleteBadge(record: BaseUserBadgeDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前徽章?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteBadge(record);
+}
+
 async function toggleEnableStatus(record: BaseUserBadgeDto) {
   record.loading = true;
   try {
@@ -287,16 +297,9 @@ async function handleRevokeConfirm(rows: BadgeUserPageItemDto[]) {
             撤销
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前徽章?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteBadge(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteBadge(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

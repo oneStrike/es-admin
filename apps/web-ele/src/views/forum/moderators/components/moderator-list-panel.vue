@@ -15,7 +15,7 @@ import {
 import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from '../model/detail';
@@ -183,6 +183,16 @@ async function deleteModerator(row: ForumModeratorRow) {
   await moderatorGridApi.reload();
 }
 
+async function confirmDeleteModerator(row: ForumModeratorRow) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前版主?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteModerator(row);
+}
+
 async function toggleEnableStatus(row: ForumModeratorRow) {
   row.loading = true;
   try {
@@ -252,16 +262,9 @@ defineExpose({
             分配板块
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前版主?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteModerator(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteModerator(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </ModeratorGrid>

@@ -32,7 +32,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsModalTable from '#/components/es-modal-table';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { formSchemaTransform } from '#/utils';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -876,6 +876,18 @@ async function revokeBadge(row: GridSearchValues) {
   await refreshAll();
   await notifyParentUpdated();
 }
+
+async function confirmRevokeBadge(row: GridSearchValues) {
+  if (!canOperate.value) return;
+
+  const confirmed = await useConfirm({
+    content: '确认撤销当前徽章？',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await revokeBadge(row);
+}
 </script>
 
 <template>
@@ -1055,19 +1067,14 @@ async function revokeBadge(row: GridSearchValues) {
               </template>
 
               <template #badgeActions="{ row }">
-                <el-popconfirm
-                  title="确认撤销当前徽章？"
-                  confirm-button-text="确认"
-                  cancel-button-text="取消"
+                <el-button
+                  link
+                  type="danger"
                   :disabled="!canOperate"
-                  @confirm="revokeBadge(row)"
+                  @click="confirmRevokeBadge(row)"
                 >
-                  <template #reference>
-                    <el-button link type="danger" :disabled="!canOperate">
-                      撤销
-                    </el-button>
-                  </template>
-                </el-popconfirm>
+                  撤销
+                </el-button>
               </template>
             </BadgeGrid>
           </div>

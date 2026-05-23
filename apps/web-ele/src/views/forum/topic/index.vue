@@ -26,7 +26,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailCards } from './model/detail';
@@ -275,6 +275,16 @@ async function deleteTopic(row: ForumTopicRow) {
   await gridApi.reload();
 }
 
+async function confirmDeleteTopic(row: ForumTopicRow) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前帖子?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteTopic(row);
+}
+
 async function toggleTopicBoolean(
   row: ForumTopicRow,
   field: 'isFeatured' | 'isHidden' | 'isLocked' | 'isPinned',
@@ -465,16 +475,9 @@ async function toggleTopicBoolean(
             审核
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前帖子?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteTopic(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteTopic(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

@@ -16,7 +16,7 @@ import {
   contentTagUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
 import { formSchema, tagColumns, tagSearchSchema } from './model/shared';
@@ -139,6 +139,16 @@ async function deleteTag(row: BaseTagDto): Promise<void> {
   await contentTagDeleteApi({ id: row.id });
   handleSuccessReload(gridApi);
 }
+
+async function confirmDeleteTag(row: BaseTagDto): Promise<void> {
+  const confirmed = await useConfirm({
+    content: '确认删除当前项?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteTag(row);
+}
 </script>
 
 <template>
@@ -165,18 +175,14 @@ async function deleteTag(row: BaseTagDto): Promise<void> {
           编辑
         </el-button>
         <el-divider direction="vertical" />
-        <el-popconfirm
-          title="确认删除当前项?"
-          confirm-button-text="确认"
-          cancel-button-text="取消"
-          @confirm="deleteTag(row)"
+        <el-button
+          link
+          type="danger"
+          :disabled="!!row.isEnabled"
+          @click="confirmDeleteTag(row)"
         >
-          <template #reference>
-            <el-button link type="danger" :disabled="!!row.isEnabled">
-              删除
-            </el-button>
-          </template>
-        </el-popconfirm>
+          删除
+        </el-button>
       </template>
     </Grid>
 

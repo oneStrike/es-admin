@@ -30,7 +30,7 @@ import {
   contentEmojiPackUpdateEnabledApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions, formSchemaTransform } from '#/utils';
 
@@ -461,6 +461,16 @@ async function deletePack(row: BaseEmojiPackDto) {
   );
 }
 
+async function confirmDeletePack(row: BaseEmojiPackDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前表情包?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deletePack(row);
+}
+
 async function togglePackEnableStatus(row: BaseEmojiPackDto) {
   row.enableLoading = true as never;
   try {
@@ -479,6 +489,16 @@ async function deleteAsset(row: BaseEmojiAssetDto) {
   await contentEmojiAssetDeleteApi({ id: row.id });
   useMessage.success('删除成功');
   await assetGridApi.reload();
+}
+
+async function confirmDeleteAsset(row: BaseEmojiAssetDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前表情资源?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteAsset(row);
 }
 
 async function toggleAssetEnableStatus(row: BaseEmojiAssetDto) {
@@ -548,16 +568,9 @@ onMounted(() => {
               编辑
             </el-button>
             <el-divider direction="vertical" />
-            <el-popconfirm
-              cancel-button-text="取消"
-              confirm-button-text="确认"
-              title="确认删除当前表情包?"
-              @confirm="deletePack(row)"
-            >
-              <template #reference>
-                <el-button link type="danger"> 删除 </el-button>
-              </template>
-            </el-popconfirm>
+            <el-button link type="danger" @click="confirmDeletePack(row)">
+              删除
+            </el-button>
           </div>
         </template>
       </PackGrid>
@@ -614,18 +627,14 @@ onMounted(() => {
               编辑
             </el-button>
             <el-divider direction="vertical" />
-            <el-popconfirm
-              cancel-button-text="取消"
-              confirm-button-text="确认"
-              title="确认删除当前表情资源?"
-              @confirm="deleteAsset(row)"
+            <el-button
+              link
+              type="danger"
+              :disabled="row.isEnabled"
+              @click="confirmDeleteAsset(row)"
             >
-              <template #reference>
-                <el-button link type="danger" :disabled="row.isEnabled">
-                  删除
-                </el-button>
-              </template>
-            </el-popconfirm>
+              删除
+            </el-button>
           </div>
         </template>
       </AssetGrid>

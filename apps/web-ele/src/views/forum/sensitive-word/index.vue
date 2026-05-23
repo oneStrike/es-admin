@@ -20,7 +20,7 @@ import {
   forumSensitiveWordUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import SensitiveWordDetectDrawer from './components/sensitive-word-detect-drawer.vue';
@@ -97,6 +97,16 @@ async function deleteSensitiveWord(record: BaseSensitiveWordDto) {
   gridApi.reload();
 }
 
+async function confirmDeleteSensitiveWord(record: BaseSensitiveWordDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前敏感词?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteSensitiveWord(record);
+}
+
 async function toggleEnableStatus(record: BaseSensitiveWordDto) {
   record.loading = true;
   try {
@@ -146,16 +156,13 @@ async function toggleEnableStatus(record: BaseSensitiveWordDto) {
             编辑
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前敏感词?"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteSensitiveWord(row)"
+          <el-button
+            link
+            type="danger"
+            @click="confirmDeleteSensitiveWord(row)"
           >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

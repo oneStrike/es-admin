@@ -18,7 +18,7 @@ import {
   messageMonitorWsSummaryApi,
 } from '#/api/core';
 import EsFullHeightTabs from '#/components/es-full-height-tabs';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { deliveryColumns, deliverySearchFormSchema } from './model/delivery';
@@ -184,6 +184,16 @@ async function retryDelivery(row: MessageNotificationDeliveryItemDto) {
   await refreshOverview();
 }
 
+async function confirmRetryDelivery(row: MessageNotificationDeliveryItemDto) {
+  const confirmed = await useConfirm({
+    content: `确认重新发送任务 ${formatNullable(row.dispatchId)} 对应的通知？`,
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await retryDelivery(row);
+}
+
 onMounted(refreshOverview);
 </script>
 
@@ -278,17 +288,14 @@ onMounted(refreshOverview);
               </template>
 
               <template #actions="{ row }">
-                <el-popconfirm
+                <el-button
                   v-if="canRetryDelivery(row)"
-                  :title="`确认重新发送任务 ${formatNullable(row.dispatchId)} 对应的通知？`"
-                  cancel-button-text="取消"
-                  confirm-button-text="确认"
-                  @confirm="retryDelivery(row)"
+                  link
+                  type="primary"
+                  @click="confirmRetryDelivery(row)"
                 >
-                  <template #reference>
-                    <el-button link type="primary">重新发送</el-button>
-                  </template>
-                </el-popconfirm>
+                  重新发送
+                </el-button>
                 <span v-else>-</span>
               </template>
             </DeliveryGrid>

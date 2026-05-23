@@ -318,6 +318,16 @@ async function deleteChapter(record: ComicChapterRecord) {
   await gridApi.reload();
 }
 
+async function confirmDeleteChapter(record: ComicChapterRecord) {
+  const confirmed = await useConfirm({
+    content: '确认删除该章节？此操作不可恢复',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteChapter(record);
+}
+
 async function batchDeleteChapters(ids: number[]) {
   await useConfirm({
     type: 'delete',
@@ -450,17 +460,9 @@ async function toggleStatus(row: ComicChapterRecord) {
             编辑
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除该章节？此操作不可恢复"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            type="warning"
-            @confirm="deleteChapter(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteChapter(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

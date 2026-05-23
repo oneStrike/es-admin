@@ -25,7 +25,7 @@ import {
 import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import {
@@ -273,6 +273,16 @@ async function deleteTask(row: TaskDefinitionRow) {
   await gridApi.reload();
 }
 
+async function confirmDeleteTask(row: TaskDefinitionRow) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前任务？',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteTask(row);
+}
+
 async function updateTaskStatus(row: TaskDefinitionRow, status: 0 | 1 | 2 | 3) {
   if (row.status === status) {
     return;
@@ -354,16 +364,9 @@ onMounted(async () => {
             </template>
           </el-dropdown>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            title="确认删除当前任务？"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="deleteTask(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteTask(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

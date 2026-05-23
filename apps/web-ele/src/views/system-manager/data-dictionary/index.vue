@@ -12,7 +12,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as Api from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
 import DictionaryItem from './item.vue';
@@ -52,6 +52,16 @@ async function deleteDictionary(row: BaseDictionaryDto) {
   await Api.dictionaryDeleteApi({ id: row.id });
   useMessage.success('操作成功');
   gridApi.reload();
+}
+
+async function confirmDeleteDictionary(row: BaseDictionaryDto) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前项?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteDictionary(row);
 }
 
 const [Form, formApi] = useVbenModal({
@@ -152,16 +162,9 @@ const [Detail, detailApi] = useVbenModal({
           编辑
         </el-button>
         <el-divider direction="vertical" />
-        <el-popconfirm
-          title="确认删除当前项?"
-          confirm-button-text="确认"
-          cancel-button-text="取消"
-          @confirm="deleteDictionary(row)"
-        >
-          <template #reference>
-            <el-button link type="danger">删除</el-button>
-          </template>
-        </el-popconfirm>
+        <el-button link type="danger" @click="confirmDeleteDictionary(row)">
+          删除
+        </el-button>
       </template>
     </Grid>
 

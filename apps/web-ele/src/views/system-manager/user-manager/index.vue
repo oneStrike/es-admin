@@ -20,7 +20,7 @@ import {
 } from '#/api/core';
 import { QuestionIcon } from '#/components/es-icons';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import {
@@ -163,6 +163,18 @@ async function unlockUser(record: SystemUserRow) {
   }
 }
 
+async function confirmUnlockUser(record: SystemUserRow) {
+  if (!record.isLocked || record.loading) return;
+
+  const confirmed = await useConfirm({
+    content: '解除当前账号登录锁定状态，是否解除？',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await unlockUser(record);
+}
+
 async function resetUserPassword(record: SystemUserRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
@@ -174,6 +186,16 @@ async function resetUserPassword(record: SystemUserRow) {
   });
   useMessage.success('密码重置成功');
   gridApi.reload();
+}
+
+async function confirmResetUserPassword(record: SystemUserRow) {
+  const confirmed = await useConfirm({
+    content: '是否重置当前账户为默认密码？',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await resetUserPassword(record);
 }
 </script>
 
@@ -247,38 +269,24 @@ async function resetUserPassword(record: SystemUserRow) {
             </el-button>
 
             <el-divider direction="vertical" />
-            <el-popconfirm
-              title="是否重置当前账户为默认密码？"
-              width="180"
-              confirm-button-text="确认"
-              cancel-button-text="取消"
-              @confirm="resetUserPassword(row)"
+            <el-button
+              link
+              type="warning"
+              @click="confirmResetUserPassword(row)"
             >
-              <template #reference>
-                <el-button link type="warning"> 重置密码 </el-button>
-              </template>
-            </el-popconfirm>
+              重置密码
+            </el-button>
 
             <el-divider direction="vertical" />
-            <el-popconfirm
-              title="解除当前账号登录锁定状态，是否解除？"
-              width="180"
-              confirm-button-text="确认"
-              cancel-button-text="取消"
+            <el-button
+              link
+              type="warning"
               :disabled="!row.isLocked || row.loading"
-              @confirm="unlockUser(row)"
+              :loading="row.loading"
+              @click="confirmUnlockUser(row)"
             >
-              <template #reference>
-                <el-button
-                  link
-                  type="warning"
-                  :disabled="!row.isLocked || row.loading"
-                  :loading="row.loading"
-                >
-                  解除锁定
-                </el-button>
-              </template>
-            </el-popconfirm>
+              解除锁定
+            </el-button>
           </template>
 
           <div v-if="!isSuperAdmin" class="text-gray-400">无操作权限</div>

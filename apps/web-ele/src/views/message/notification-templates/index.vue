@@ -22,7 +22,7 @@ import {
   messageNotificationTemplatesUpdateEnabledApi,
 } from '#/api/core';
 import EsRecordDetail from '#/components/es-record-detail';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import {
@@ -232,6 +232,16 @@ async function deleteTemplate(row: TemplateRow) {
   useMessage.success('删除成功');
   await gridApi.reload();
 }
+
+async function confirmDeleteTemplate(row: TemplateRow) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前通知模板?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteTemplate(row);
+}
 </script>
 
 <template>
@@ -276,16 +286,9 @@ async function deleteTemplate(row: TemplateRow) {
             编辑
           </el-button>
           <el-divider direction="vertical" />
-          <el-popconfirm
-            cancel-button-text="取消"
-            confirm-button-text="确认"
-            title="确认删除当前通知模板?"
-            @confirm="deleteTemplate(row)"
-          >
-            <template #reference>
-              <el-button link type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
+          <el-button link type="danger" @click="confirmDeleteTemplate(row)">
+            删除
+          </el-button>
         </div>
       </template>
     </Grid>

@@ -263,13 +263,13 @@ async function cancelJob(job: WorkflowJobDto) {
 }
 
 async function archiveJob(job: WorkflowJobDto) {
-  const result = await useConfirm({
+  const confirmed = await useConfirm({
     confirmText: '归档',
     content: `归档后任务「${job.displayName}」将从默认列表隐藏，可通过归档范围筛选查看。`,
     successMessage: false,
     title: '归档工作流任务',
   });
-  if (result === 'cancel') {
+  if (!confirmed) {
     return;
   }
 
