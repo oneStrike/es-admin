@@ -12,6 +12,7 @@ import {
   forumModeratorsPageApi,
   forumModeratorsUpdateApi,
 } from '#/api/core';
+import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -139,6 +140,7 @@ function openAssignModal(row: ForumModeratorRow) {
 function showPayloadValidationError(error: unknown) {
   if (error instanceof ModeratorPayloadValidationError) {
     useMessage.warning(error.message);
+    throw markHandledFormError(error);
   }
   throw error;
 }

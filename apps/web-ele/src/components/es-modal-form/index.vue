@@ -4,8 +4,10 @@ import type { EsModalFormProps } from './types';
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { getApiErrorMessage } from '#/api/error';
+import { getApiErrorMessage, isNormalizedApiError } from '#/api/error';
 import { useMessage } from '#/hooks/useFeedback';
+
+import { isHandledFormError } from './error';
 
 defineOptions({
   name: 'EsModalForm',
@@ -78,7 +80,9 @@ const [BaseForm, formApi] = useVbenForm({
       });
       modalApi.close();
     } catch (error) {
-      useMessage.error(getApiErrorMessage(error, '操作失败'));
+      if (!isNormalizedApiError(error) && !isHandledFormError(error)) {
+        useMessage.warning(getApiErrorMessage(error, '操作失败'));
+      }
       throw error;
     } finally {
       modalApi.unlock();

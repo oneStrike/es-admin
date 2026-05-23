@@ -9,6 +9,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   CouponDefinitionPageRequest,
   CouponDefinitionUpdateStatusRequest,
+  CouponGrantCreateRequest,
 } from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -21,6 +22,7 @@ import {
   couponDefinitionUpdateStatusApi,
   couponGrantCreateApi,
 } from '#/api/core';
+import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -160,15 +162,18 @@ async function handleEditSubmit(values: CouponFormValues) {
 }
 
 async function handleGrant(values: CouponGrantFormValues) {
+  let payload: CouponGrantCreateRequest;
   try {
-    await couponGrantCreateApi(buildCouponGrantPayload(values));
-    useMessage.success('发券成功');
-    grantFormApi.close();
-    await couponGridApi.reload();
+    payload = buildCouponGrantPayload(values);
   } catch (error) {
     useMessage.warning(error instanceof Error ? error.message : '发券失败');
-    throw error;
+    throw markHandledFormError(error);
   }
+
+  await couponGrantCreateApi(payload);
+  useMessage.success('发券成功');
+  grantFormApi.close();
+  await couponGridApi.reload();
 }
 
 async function toggleEnableStatus(row: CouponRow) {

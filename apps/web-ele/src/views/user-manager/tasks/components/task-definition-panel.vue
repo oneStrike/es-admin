@@ -22,6 +22,7 @@ import {
   taskUpdateApi,
   taskUpdateStatusApi,
 } from '#/api/core';
+import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -89,11 +90,8 @@ async function loadTemplateOptions() {
   try {
     const response = await taskTemplateOptionsApi();
     templateOptions.value = response.list || [];
-  } catch (error) {
+  } catch {
     templateOptions.value = [];
-    useMessage.warning(
-      error instanceof Error ? error.message : '任务模板选项加载失败',
-    );
   }
 }
 
@@ -251,17 +249,22 @@ async function openFormModal(row?: TaskDefinitionRow) {
 }
 
 async function handleSubmit(values: Record<string, any>) {
+  let payload: TaskCreateRequest | TaskUpdateRequest;
   try {
-    await (values.id
-      ? taskUpdateApi(buildUpdateTaskPayload(values))
-      : taskCreateApi(buildCreateTaskPayload(values)));
-    useMessage.success('操作成功');
-    formApi.close();
-    await gridApi.reload();
+    payload = values.id
+      ? buildUpdateTaskPayload(values)
+      : buildCreateTaskPayload(values);
   } catch (error) {
     useMessage.warning(error instanceof Error ? error.message : '提交失败');
-    throw error;
+    throw markHandledFormError(error);
   }
+
+  await (values.id
+    ? taskUpdateApi(payload as TaskUpdateRequest)
+    : taskCreateApi(payload as TaskCreateRequest));
+  useMessage.success('操作成功');
+  formApi.close();
+  await gridApi.reload();
 }
 
 async function deleteTask(row: TaskDefinitionRow) {

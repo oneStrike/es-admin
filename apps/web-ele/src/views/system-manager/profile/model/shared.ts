@@ -1,9 +1,23 @@
 import type { AuditItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { formatUTC, formSchemaTransform } from '#/utils';
+import { formatUTC, formSchemaTransform, safeParseJson } from '#/utils';
 
-import { formatAuditDeviceField } from '../../model/audit-log-display';
+function parseLoginHistoryDevice(value: unknown) {
+  const device = typeof value === 'string' ? safeParseJson(value) : value;
+
+  return device && typeof device === 'object'
+    ? (device as Record<string, unknown>)
+    : undefined;
+}
+
+function getLoginHistoryDeviceField(value: unknown, field: string) {
+  const fieldValue = parseLoginHistoryDevice(value)?.[field];
+
+  return fieldValue === null || fieldValue === undefined || fieldValue === ''
+    ? '-'
+    : String(fieldValue);
+}
 
 const loginHistoryListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'ip', label: '登录IP' },
@@ -21,22 +35,22 @@ export const loginHistortColumn =
       width: 140,
     },
     deviceOs: {
-      formatter: ({ row }) => formatAuditDeviceField(row.device, 'os'),
+      formatter: ({ row }) => getLoginHistoryDeviceField(row.device, 'os'),
       minWidth: 100,
       showOverflow: 'tooltip',
     },
     deviceType: {
-      formatter: ({ row }) => formatAuditDeviceField(row.device, 'device'),
+      formatter: ({ row }) => getLoginHistoryDeviceField(row.device, 'device'),
       minWidth: 100,
       showOverflow: 'tooltip',
     },
     deviceBrowser: {
-      formatter: ({ row }) => formatAuditDeviceField(row.device, 'browser'),
+      formatter: ({ row }) => getLoginHistoryDeviceField(row.device, 'browser'),
       minWidth: 110,
       showOverflow: 'tooltip',
     },
     deviceVersion: {
-      formatter: ({ row }) => formatAuditDeviceField(row.device, 'version'),
+      formatter: ({ row }) => getLoginHistoryDeviceField(row.device, 'version'),
       minWidth: 90,
       showOverflow: 'tooltip',
     },

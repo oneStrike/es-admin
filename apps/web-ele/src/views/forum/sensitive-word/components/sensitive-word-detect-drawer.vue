@@ -150,7 +150,7 @@ async function loadStatus() {
     status.value = statusData;
     count.value = countData;
   } catch {
-    useMessage.error('检测器状态加载失败');
+    // 全局请求拦截器会展示接口错误提示。
   } finally {
     statusLoading.value = false;
   }
@@ -166,7 +166,7 @@ async function detectContent() {
       content: nextContent,
     });
   } catch {
-    useMessage.error('敏感词检测失败');
+    // 全局请求拦截器会展示接口错误提示。
   } finally {
     detecting.value = false;
   }
@@ -183,7 +183,7 @@ async function previewReplace() {
       replaceChar: replaceChar.value || '*',
     });
   } catch {
-    useMessage.error('替换预览失败');
+    // 全局请求拦截器会展示接口错误提示。
   } finally {
     replacing.value = false;
   }

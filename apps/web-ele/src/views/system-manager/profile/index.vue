@@ -20,6 +20,7 @@ import {
   systemUserProfileApi,
   systemUserProfileUpdateApi,
 } from '#/api/core';
+import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import { useMessage } from '#/hooks/useFeedback';
 
@@ -78,7 +79,7 @@ const fetchUserInfo = async () => {
     loading.value = true;
     userInfo.value = await systemUserProfileApi();
   } catch {
-    useMessage.error('获取用户信息失败');
+    // 全局请求拦截器会展示接口错误提示。
   } finally {
     loading.value = false;
   }
@@ -86,7 +87,7 @@ const fetchUserInfo = async () => {
 
 function buildProfileUpdatePayload(values: UpdateUserDto): UpdateUserDto {
   if (!userInfo.value) {
-    throw new Error('User profile is not loaded');
+    throw new Error('用户信息尚未加载，请刷新后重试');
   }
 
   return {
@@ -111,39 +112,32 @@ function buildPasswordChangePayload(
 
 // 提交：编辑用户信息
 async function handleEditSubmit(values: UpdateUserDto) {
-  try {
-    await systemUserProfileUpdateApi(buildProfileUpdatePayload(values));
-    useMessage.success('用户信息更新成功');
-    await fetchUserInfo();
-    // 更新全局用户信息
-    if (userInfo.value) {
-      userStore.setUserInfo({
-        ...userStore.userInfo,
-        username: userInfo.value.username,
-        avatar: userInfo.value.avatar || '',
-        realName: userInfo.value.username,
-        userId: String(userInfo.value.id),
-      });
-    }
-    editFormApi.close();
-  } catch {
-    useMessage.error('更新用户信息失败');
+  await systemUserProfileUpdateApi(buildProfileUpdatePayload(values));
+  useMessage.success('用户信息更新成功');
+  await fetchUserInfo();
+  // 更新全局用户信息
+  if (userInfo.value) {
+    userStore.setUserInfo({
+      ...userStore.userInfo,
+      username: userInfo.value.username,
+      avatar: userInfo.value.avatar || '',
+      realName: userInfo.value.username,
+      userId: String(userInfo.value.id),
+    });
   }
+  editFormApi.close();
 }
 
 // 提交：修改密码
 async function handlePasswordSubmit(values: ChangePasswordDto) {
   if (values.newPassword !== values.confirmPassword) {
-    useMessage.error('新密码和确认密码不一致');
-    return;
+    const error = new Error('新密码和确认密码不一致');
+    useMessage.warning(error.message);
+    throw markHandledFormError(error);
   }
-  try {
-    await systemUserPasswordChangeApi(buildPasswordChangePayload(values));
-    useMessage.success('密码修改成功');
-    passwordFormApi.close();
-  } catch {
-    useMessage.error('密码修改失败');
-  }
+  await systemUserPasswordChangeApi(buildPasswordChangePayload(values));
+  useMessage.success('密码修改成功');
+  passwordFormApi.close();
 }
 
 // 打开编辑对话框

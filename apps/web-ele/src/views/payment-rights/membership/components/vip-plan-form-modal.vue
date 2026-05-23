@@ -14,6 +14,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { couponDefinitionPageApi, membershipBenefitPageApi } from '#/api/core';
+import { getApiErrorMessage, isNormalizedApiError } from '#/api/error';
 import { useMessage } from '#/hooks/useFeedback';
 import { getOptionLabel } from '#/utils/options';
 
@@ -364,7 +365,12 @@ async function handleConfirm() {
       return;
     }
     const values = await formApi.getValues();
-    validateBenefitRows();
+    try {
+      validateBenefitRows();
+    } catch (error) {
+      message.warning(error instanceof Error ? error.message : '提交失败');
+      return;
+    }
     await props.onSubmit?.({
       ...values,
       benefitIds: [...selectedBenefitIds.value],
@@ -373,7 +379,9 @@ async function handleConfirm() {
     });
     modalApi.close();
   } catch (error) {
-    message.warning(error instanceof Error ? error.message : '提交失败');
+    if (!isNormalizedApiError(error)) {
+      message.warning(getApiErrorMessage(error, '提交失败'));
+    }
   } finally {
     modalApi.unlock();
   }

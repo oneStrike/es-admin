@@ -35,6 +35,7 @@
 - 操作列通过 `actions: { show: true }` 显式开启即可。
 - `toTableColumns(...)` 已默认提供 `title: '操作'`、`fixed: 'right'`、`slots: { default: 'actions' }` 和默认宽度。
 - 业务侧只在按钮数量较多、较少或使用非默认 slot 时补充 `width`、`minWidth`、`slots` 等真实差异。
+- 表格操作列中需要二次确认的操作，禁止在 slot 内使用 `el-popconfirm`；应在脚本中调用 `#/hooks/useFeedback` 的 `useConfirm` 完成确认后再执行业务动作。
 - 表格列不要重复声明 `vxe-table` 适配层和 `toTableColumns(...)` 已经提供的默认行为，例如 `align: 'center'`、普通列默认 `minWidth: 100`、全局 `showOverflow`、默认 toolbar、默认分页大小、默认远程多排序、默认行 hover 和 `keyField: 'id'`。
 - 只有需要改变默认值时才写覆盖项。
 

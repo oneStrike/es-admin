@@ -75,7 +75,7 @@ async function loadStatus() {
   try {
     statusData.value = await systemIp2regionStatusApi();
   } catch {
-    useMessage.error('获取 IP 属地库状态失败');
+    // 全局请求拦截器会展示错误提示，这里只负责收尾 loading 状态。
   } finally {
     statusLoading.value = false;
   }
@@ -119,7 +119,6 @@ async function handleUpload(options: UploadRequestOptions) {
   } catch (error: unknown) {
     const errorMessage = getApiErrorMessage(error, 'IP 属地库上传失败');
     options.onError?.(createUploadError(errorMessage));
-    useMessage.error(errorMessage);
   } finally {
     uploading.value = false;
   }

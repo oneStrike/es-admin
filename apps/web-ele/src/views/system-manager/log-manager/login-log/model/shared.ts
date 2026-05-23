@@ -1,9 +1,23 @@
 import type { AuditItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { formatUTC, formSchemaTransform } from '#/utils';
+import { formatUTC, formSchemaTransform, safeParseJson } from '#/utils';
 
-import { formatAuditDeviceField } from '../../../model/audit-log-display';
+function parseLoginLogDevice(value: unknown) {
+  const device = typeof value === 'string' ? safeParseJson(value) : value;
+
+  return device && typeof device === 'object'
+    ? (device as Record<string, unknown>)
+    : undefined;
+}
+
+function getLoginLogDeviceField(value: unknown, field: string) {
+  const fieldValue = parseLoginLogDevice(value)?.[field];
+
+  return fieldValue === null || fieldValue === undefined || fieldValue === ''
+    ? '-'
+    : String(fieldValue);
+}
 
 const loginResultOptions = [
   { label: '成功', value: true },
@@ -33,23 +47,23 @@ export const loginLogColumns = formSchemaTransform.toTableColumns<AuditItemDto>(
       width: 140,
     },
     deviceOs: {
-      formatter: ({ row }) => formatAuditDeviceField(row.device, 'os'),
+      formatter: ({ row }) => getLoginLogDeviceField(row.device, 'os'),
       minWidth: 100,
       showOverflow: 'tooltip',
     },
     deviceType: {
-      formatter: ({ row }) => formatAuditDeviceField(row.device, 'device'),
+      formatter: ({ row }) => getLoginLogDeviceField(row.device, 'device'),
       minWidth: 100,
       showOverflow: 'tooltip',
     },
     deviceBrowser: {
       formatter: ({ row }) =>
-        formatAuditDeviceField(row.device ?? row.userAgent, 'browser'),
+        getLoginLogDeviceField(row.device ?? row.userAgent, 'browser'),
       minWidth: 110,
       showOverflow: 'tooltip',
     },
     deviceVersion: {
-      formatter: ({ row }) => formatAuditDeviceField(row.device, 'version'),
+      formatter: ({ row }) => getLoginLogDeviceField(row.device, 'version'),
       minWidth: 90,
       showOverflow: 'tooltip',
     },

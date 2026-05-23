@@ -5,12 +5,16 @@ import type {
 } from '../model/order';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { PaymentOrderPageRequest } from '#/api/types';
+import type {
+  PaymentOrderPageRequest,
+  PaymentOrderUpdateStatusRequest,
+} from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { paymentOrderPageApi, paymentOrderUpdateStatusApi } from '#/api/core';
+import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
 import { useMessage } from '#/hooks/useFeedback';
@@ -106,15 +110,18 @@ function openConfirmForm(row: PaymentOrderRow) {
 }
 
 async function handleConfirm(values: PaymentOrderConfirmFormValues) {
+  let payload: PaymentOrderUpdateStatusRequest;
   try {
-    await paymentOrderUpdateStatusApi(buildPaymentOrderConfirmPayload(values));
-    useMessage.success('确认成功');
-    confirmFormApi.close();
-    await gridApi.reload();
+    payload = buildPaymentOrderConfirmPayload(values);
   } catch (error) {
     useMessage.warning(error instanceof Error ? error.message : '确认失败');
-    throw error;
+    throw markHandledFormError(error);
   }
+
+  await paymentOrderUpdateStatusApi(payload);
+  useMessage.success('确认成功');
+  confirmFormApi.close();
+  await gridApi.reload();
 }
 </script>
 

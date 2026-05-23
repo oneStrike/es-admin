@@ -191,7 +191,7 @@ async function loadLevelOptions() {
       userLevelRuleId: levelOptions.value,
     });
   } catch {
-    useMessage.error('访问等级规则加载失败');
+    // 全局请求拦截器会展示接口错误提示。
   }
 }
 loadLevelOptions();

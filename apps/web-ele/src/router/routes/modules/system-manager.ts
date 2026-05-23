@@ -41,16 +41,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'ServerStatus',
-        path: '/system-manager/server-status',
-        component: () =>
-          import('#/views/system-manager/server-status/index.vue'),
-        meta: {
-          title: '系统状态',
-          icon: 'codex:dot-circle',
-        },
-      },
-      {
         name: 'WorkflowManager',
         path: '/system-manager/workflow',
         component: () => import('#/views/system-manager/workflow/index.vue'),
