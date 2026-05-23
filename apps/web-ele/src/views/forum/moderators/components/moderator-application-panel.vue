@@ -19,7 +19,7 @@ import EsRecordDetail from '#/components/es-record-detail';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from '../../moderator-application/model/detail';
+import { getDetailCards } from '../model/application/detail';
 import {
   applicationColumns,
   auditFormSchema,
@@ -27,7 +27,7 @@ import {
   formatApplicationSection,
   formatApplicationUser,
   searchFormSchema,
-} from '../../moderator-application/model/shared';
+} from '../model/application/shared';
 
 const emit = defineEmits<{
   approved: [];

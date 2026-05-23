@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/system-manager',
     meta: {
       title: '系统管理',
-      order: 998,
+      order: 80,
       icon: 'majesticons:cog-line',
     },
     children: [
@@ -31,14 +31,44 @@ const routes: RouteRecordRaw[] = [
       },
 
       {
-        name: 'SystemUserManager',
-        path: '/system-manager/user-manager',
+        name: 'SystemAccountManager',
+        path: '/system-manager/accounts',
         component: () =>
-          import('#/views/system-manager/user-manager/index.vue'),
+          import('#/views/system-manager/account-manager/index.vue'),
         meta: {
-          title: '用户管理',
+          title: '后台账号',
           icon: 'codex:dot-circle',
         },
+      },
+      {
+        name: 'LogManager',
+        path: '/system-manager/log-manager',
+        meta: {
+          title: '日志管理',
+          icon: 'codex:dot-circle',
+        },
+        children: [
+          {
+            name: 'LoginLog',
+            path: '/system-manager/log-manager/login-log',
+            component: () =>
+              import('#/views/system-manager/log-manager/login-log/index.vue'),
+            meta: {
+              title: '登录日志',
+              icon: 'codex:dot-circle',
+            },
+          },
+          {
+            name: 'OperationLog',
+            path: '/system-manager/log-manager/operation-log',
+            component: () =>
+              import('#/views/system-manager/log-manager/operation-log/index.vue'),
+            meta: {
+              title: '操作日志',
+              icon: 'codex:dot-circle',
+            },
+          },
+        ],
       },
       {
         name: 'WorkflowManager',

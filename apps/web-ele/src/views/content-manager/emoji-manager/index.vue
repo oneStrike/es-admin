@@ -49,7 +49,7 @@ import {
 } from './model/shared';
 
 defineOptions({
-  name: 'EmojiManager',
+  name: 'ContentEmojiManager',
 });
 
 const packKeyword = ref('');

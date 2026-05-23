@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/config-manager',
     meta: {
       title: '配置管理',
-      order: 997,
+      order: 70,
       icon: 'lucide:sliders-horizontal',
     },
     children: [

@@ -4,7 +4,7 @@ const routes: RouteRecordRaw[] = [
   {
     meta: {
       icon: 'lucide:layout-dashboard',
-      order: 2,
+      order: 30,
       title: '论坛管理',
     },
     name: 'Forum',
@@ -29,23 +29,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'ForumModeratorApplication',
-        path: '/forum/moderator-application',
-        redirect: (to) => ({
-          path: '/forum/moderators',
-          query: {
-            ...to.query,
-            tab: 'applications',
-          },
-        }),
-        meta: {
-          icon: 'codex:dot-circle',
-          hideInMenu: true,
-          title: '版主申请',
-        },
-      },
-
-      {
         name: 'ForumSections',
         path: '/forum/sections',
         component: () => import('#/views/forum/sections/index.vue'),
@@ -62,6 +45,25 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'codex:dot-circle',
           title: '话题管理',
+        },
+      },
+      {
+        name: 'ForumSensitiveWord',
+        path: '/forum/sensitive-word',
+        component: () => import('#/views/forum/sensitive-word/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '敏感词管理',
+        },
+      },
+      {
+        name: 'ForumSensitiveWordStatistics',
+        path: '/forum/sensitive-word-statistics',
+        component: () =>
+          import('#/views/forum/sensitive-word-statistics/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '敏感词统计',
         },
       },
     ],

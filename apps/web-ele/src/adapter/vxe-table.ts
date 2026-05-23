@@ -1,8 +1,7 @@
-import type { TagProps } from 'element-plus';
-
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import type { ComponentPropsMap, ComponentType } from './component';
+import type { CellTagType } from './vxe-table-cell-tag';
 
 import type { Options } from '#/utils/options';
 
@@ -20,10 +19,16 @@ import { ImageLine } from '#/components/es-icons';
 import { formatUTC } from '#/utils';
 
 import { useVbenForm } from './form';
+import {
+  createCellTagProps,
+  isCellTagType,
+  resolveBooleanCellTagDisplay,
+  resolveCellTagType,
+} from './vxe-table-cell-tag';
 
 type OptionWithDisplay = Options & {
   color?: string;
-  type?: string | TagProps['type'];
+  type?: string | CellTagType;
 };
 
 type GridRow = Record<string, unknown>;
@@ -47,12 +52,6 @@ type PageQuery<T extends GridRow> = T & {
   pageIndex: number;
   pageSize: number;
 };
-
-const tagTypes = new Set(['danger', 'info', 'primary', 'success', 'warning']);
-
-function isTagType(value: unknown): value is TagProps['type'] {
-  return typeof value === 'string' && tagTypes.has(value);
-}
 
 function findOption(options: unknown, value: unknown) {
   if (!Array.isArray(options)) {
@@ -82,12 +81,12 @@ function resolveTagTextStyle(textColor: unknown) {
 
 function resolveTagDisplayProps(
   optionDisplay: ReturnType<typeof resolveOptionDisplay>,
-  fallbackType: TagProps['type'] = 'primary',
+  fallbackType: CellTagType = 'primary',
   textColor?: unknown,
 ) {
   const displayType = optionDisplay.type ?? optionDisplay.color;
 
-  if (isTagType(displayType)) {
+  if (isCellTagType(displayType)) {
     return { type: displayType, ...resolveTagTextStyle(textColor) };
   }
 
@@ -103,7 +102,7 @@ function resolveTextDisplayProps(
 ) {
   const displayType = optionDisplay.type ?? optionDisplay.color;
 
-  if (isTagType(displayType)) {
+  if (isCellTagType(displayType)) {
     return { type: displayType };
   }
 
@@ -318,12 +317,12 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellTag', {
       renderTableDefault({ props }, params) {
         const { column, row } = params;
-        let tags = getCellValue(row, column.field);
-        let type: TagProps['type'] = props?.type || 'primary';
+        const cellValue = getCellValue(row, column.field);
+        let tags = cellValue;
 
         // 处理格式化函数
         if (props?.formatter) {
-          tags = props.formatter(getCellValue(row, column.field));
+          tags = props.formatter(cellValue);
         }
 
         // 处理数组情况
@@ -336,19 +335,26 @@ setupVbenVxeTable({
 
           return tagItems.map((tag, idx) => {
             const optionDisplay = resolveOptionDisplay(props?.mapOptions, tag);
+            const tagType = resolveCellTagType(
+              props?.type,
+              tag,
+              'primary',
+              row,
+            );
 
             return h(
               ElTag,
-              {
-                ...props,
+              createCellTagProps(props, tag, tagType, row, {
                 ...resolveTagDisplayProps(
                   optionDisplay,
-                  props?.type || 'primary',
+                  tagType,
                   props?.textColor,
                 ),
-                size: props?.size || 'small',
-                class: idx + 1 === tagItems.length ? '' : 'mr-1',
-              },
+                class: [
+                  props?.class,
+                  idx + 1 === tagItems.length ? '' : 'mr-1',
+                ],
+              }),
               { default: () => optionDisplay.label },
             );
           });
@@ -356,35 +362,33 @@ setupVbenVxeTable({
         // 处理 mapOptions 映射情况
         else if (props?.mapOptions) {
           const optionDisplay = resolveOptionDisplay(props.mapOptions, tags);
+          const tagType = resolveCellTagType(
+            props?.type,
+            cellValue,
+            'primary',
+            row,
+          );
 
           return h(
             ElTag,
-            {
-              ...props,
-              ...resolveTagDisplayProps(
-                optionDisplay,
-                props?.type || 'primary',
-                props?.textColor,
-              ),
-              size: props?.size || 'small',
-            },
+            createCellTagProps(
+              props,
+              cellValue,
+              tagType,
+              row,
+              resolveTagDisplayProps(optionDisplay, tagType, props?.textColor),
+            ),
             { default: () => optionDisplay.label },
           );
         }
         // 处理布尔值情况
         else if (typeof tags === 'boolean') {
-          type = tags ? 'primary' : 'danger';
-          const booleanMap = props?.map || {};
-          tags = booleanMap[String(tags)] || (tags ? '是' : '否');
+          const booleanDisplay = resolveBooleanCellTagDisplay(tags, props?.map);
 
           return h(
             ElTag,
-            {
-              type,
-              size: props?.size || 'small',
-              ...props,
-            },
-            { default: () => tags },
+            createCellTagProps(props, cellValue, booleanDisplay.type, row),
+            { default: () => booleanDisplay.label },
           );
         }
         // 处理字符串和其他单一值情况
@@ -395,11 +399,7 @@ setupVbenVxeTable({
 
           return h(
             ElTag,
-            {
-              type,
-              size: props?.size || 'small',
-              ...props,
-            },
+            createCellTagProps(props, cellValue, 'primary', row),
             { default: () => displayValue },
           );
         }

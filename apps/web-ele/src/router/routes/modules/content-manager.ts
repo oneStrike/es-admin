@@ -2,11 +2,11 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'ContentManger',
+    name: 'ContentManager',
     path: '/content-manager',
     meta: {
       title: '内容管理',
-      order: 2,
+      order: 10,
       icon: 'majesticons:book-open-line',
     },
     children: [
@@ -57,6 +57,16 @@ const routes: RouteRecordRaw[] = [
           import('#/views/content-manager/tag-manager/index.vue'),
         meta: {
           title: '标签管理',
+          icon: 'codex:dot-circle',
+        },
+      },
+      {
+        name: 'ContentEmojiManager',
+        path: '/content-manager/emoji-manager',
+        component: () =>
+          import('#/views/content-manager/emoji-manager/index.vue'),
+        meta: {
+          title: '表情管理',
           icon: 'codex:dot-circle',
         },
       },

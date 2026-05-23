@@ -32,6 +32,10 @@ import {
   userRoleObj,
 } from './model/shared';
 
+defineOptions({
+  name: 'SystemAccountManager',
+});
+
 const userStore = useUserStore();
 
 // 检查是否为超级管理员 (role: 1)
@@ -75,7 +79,7 @@ async function openFormModal(row?: SystemUserRow) {
   }
   formApi
     .setData({
-      title: '用户',
+      title: '后台账号',
       record,
       schema: row ? editFormSchema : createFormSchema,
     })

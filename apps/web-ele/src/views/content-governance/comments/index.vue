@@ -35,7 +35,7 @@ import {
 } from './model/shared';
 
 defineOptions({
-  name: 'ForumComments',
+  name: 'ContentGovernanceComments',
 });
 
 type CommentRow = AdminCommentPageItemDto & {

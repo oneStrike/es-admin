@@ -4,7 +4,7 @@ const routes: RouteRecordRaw[] = [
   {
     meta: {
       icon: 'lucide:layout-dashboard',
-      order: 995,
+      order: 60,
       title: '统计管理',
     },
     name: 'StatisticsManager',

@@ -29,7 +29,7 @@ import {
 } from './model/shared';
 
 defineOptions({
-  name: 'ForumReports',
+  name: 'ContentGovernanceReports',
 });
 
 const gridOptions: VxeGridProps<AdminReportPageItemDto> = {
