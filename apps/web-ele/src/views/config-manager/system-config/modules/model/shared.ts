@@ -1,5 +1,7 @@
 import type { EsFormSchema } from '#/types';
 
+import { z } from '#/adapter/form';
+
 // ========== 站点基础配置 ==========
 export const siteFormSchema: EsFormSchema = [
   {
@@ -67,7 +69,13 @@ export const siteFormSchema: EsFormSchema = [
     component: 'Input',
     fieldName: 'contactEmail',
     label: '联系邮箱',
-    rules: 'email',
+    rules: z
+      .string()
+      .regex(
+        /^$|^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+        '请输入正确的邮箱地址',
+      )
+      .optional(),
     componentProps: {
       placeholder: '请输入联系邮箱',
       maxlength: 100,
@@ -247,11 +255,7 @@ export const contentReviewFormSchema: EsFormSchema = [
     renderComponentContent: () => {
       return {
         default: () =>
-          h(
-            'div',
-            { class: 'text-base font-medium text-gray-600' },
-            '轻微敏感词处理策略',
-          ),
+          h('div', { class: 'text-base font-medium' }, '轻微敏感词处理策略'),
       };
     },
   },
@@ -288,11 +292,7 @@ export const contentReviewFormSchema: EsFormSchema = [
     renderComponentContent: () => {
       return {
         default: () =>
-          h(
-            'div',
-            { class: 'text-base font-medium text-gray-600' },
-            '一般敏感词处理策略',
-          ),
+          h('div', { class: 'text-base font-medium' }, '一般敏感词处理策略'),
       };
     },
   },
@@ -329,11 +329,7 @@ export const contentReviewFormSchema: EsFormSchema = [
     renderComponentContent: () => {
       return {
         default: () =>
-          h(
-            'div',
-            { class: 'text-base font-medium text-gray-600' },
-            '严重敏感词处理策略',
-          ),
+          h('div', { class: 'text-base font-medium' }, '严重敏感词处理策略'),
       };
     },
   },
@@ -526,12 +522,7 @@ export const uploadFormSchema: EsFormSchema = [
     },
     renderComponentContent: () => {
       return {
-        default: () =>
-          h(
-            'div',
-            { class: 'text-base font-medium text-gray-600' },
-            '七牛配置',
-          ),
+        default: () => h('div', { class: 'text-base font-medium' }, '七牛配置'),
       };
     },
   },
@@ -649,11 +640,7 @@ export const uploadFormSchema: EsFormSchema = [
     renderComponentContent: () => {
       return {
         default: () =>
-          h(
-            'div',
-            { class: 'text-base font-medium text-gray-600' },
-            'Superbed 配置',
-          ),
+          h('div', { class: 'text-base font-medium' }, 'Superbed 配置'),
       };
     },
   },

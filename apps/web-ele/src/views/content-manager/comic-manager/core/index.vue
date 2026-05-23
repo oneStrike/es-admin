@@ -249,6 +249,11 @@ async function confirmDeleteComic(record: BaseWorkDto) {
 }
 
 async function syncLatestChapters(record: BaseWorkDto) {
+  const confirmed = await useConfirm({
+    content: '是否后台同步当前作品章节?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
   record.syncLoading = true;
   try {
     const task = await contentComicThirdPartySyncLatestApi({

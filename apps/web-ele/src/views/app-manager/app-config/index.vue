@@ -1,80 +1,50 @@
 <script setup lang="ts">
-/**
- * 应用配置页面组件
- * 用于查看和编辑系统应用配置
- */
 import type { AppConfigUpdateRequest, BaseAppConfigDto } from '#/api/types';
 
 import { Page } from '@vben/common-ui';
+
+import { ElCard } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { appConfigActiveApi, appConfigUpdateApi } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
 
-import { formSchema } from './modules/model/shared';
+import {
+  buildAppConfigFormValues,
+  buildAppConfigUpdatePayload,
+  formSchema,
+} from './modules/model/shared';
 
 defineOptions({
   name: 'AppConfig',
 });
 
-// 加载状态
 const loading = ref(false);
-
-// 当前配置数据
 const currentConfig = ref<BaseAppConfigDto | null>(null);
 
-function buildAppConfigUpdatePayload(
-  values: AppConfigUpdateRequest,
-): AppConfigUpdateRequest {
-  return {
-    appName: values.appName,
-    appDesc: values.appDesc,
-    version: values.version,
-    appLogo: values.appLogo,
-    onboardingImage: values.onboardingImage,
-    themeColor: values.themeColor,
-    secondaryColor: values.secondaryColor,
-    optionalThemeColors: values.optionalThemeColors,
-    enableMaintenanceMode: values.enableMaintenanceMode,
-    maintenanceMessage: values.maintenanceMessage,
-  };
-}
-
-// 表单配置
 const [Form, formApi] = useVbenForm({
   schema: formSchema,
   layout: 'horizontal',
   wrapperClass: 'grid-cols-1 md:grid-cols-2 gap-6',
   handleSubmit: async (values) => {
-    await handleSaveConfig(
-      buildAppConfigUpdatePayload(values as AppConfigUpdateRequest),
-    );
+    await handleSaveConfig(buildAppConfigUpdatePayload(values));
   },
   handleReset: async () => {
-    if (currentConfig.value) {
-      await formApi.setValues(currentConfig.value);
-    }
+    await formApi.setValues(buildAppConfigFormValues(currentConfig.value));
   },
 });
 
-/**
- * 加载应用配置
- */
 async function loadConfig() {
   loading.value = true;
   try {
     const result = await appConfigActiveApi();
     currentConfig.value = result;
-    await formApi.setValues(result);
+    await formApi.setValues(buildAppConfigFormValues(result));
   } finally {
     loading.value = false;
   }
 }
 
-/**
- * 保存应用配置
- * @param values 配置数据
- */
 async function handleSaveConfig(request: AppConfigUpdateRequest) {
   loading.value = true;
   try {
@@ -86,9 +56,6 @@ async function handleSaveConfig(request: AppConfigUpdateRequest) {
   }
 }
 
-/**
- * 组件挂载时加载配置
- */
 onMounted(async () => {
   await loadConfig();
 });
@@ -96,10 +63,8 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <div class="rounded-lg bg-white p-6 shadow">
+    <ElCard body-class="h-full overflow-auto p-6" class="h-full" shadow="never">
       <Form :loading="loading" />
-    </div>
+    </ElCard>
   </Page>
 </template>
-
-<style scoped></style>

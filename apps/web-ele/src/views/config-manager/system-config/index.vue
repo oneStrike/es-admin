@@ -10,7 +10,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { ElMenu, ElMenuItem, ElScrollbar } from 'element-plus';
+import { ElCard, ElMenu, ElMenuItem, ElScrollbar } from 'element-plus';
 import forge from 'node-forge';
 
 import { useVbenForm } from '#/adapter/form';
@@ -179,12 +179,16 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <div class="flex h-full overflow-hidden rounded-lg bg-white shadow">
-      <div class="w-48 flex-shrink-0 border-r border-gray-200 bg-gray-50">
-        <ElScrollbar>
+    <ElCard
+      body-class="flex h-full overflow-hidden p-0"
+      class="h-full"
+      shadow="never"
+    >
+      <div class="h-full w-48 flex-shrink-0">
+        <ElScrollbar class="h-full" view-class="h-full">
           <ElMenu
             :default-active="activeMenu"
-            class="border-r-0!"
+            class="h-full"
             @select="handleMenuSelect"
           >
             <ElMenuItem
@@ -201,6 +205,6 @@ onMounted(() => {
       <div class="flex-1 overflow-auto p-6">
         <Form :loading="loading" />
       </div>
-    </div>
+    </ElCard>
   </Page>
 </template>

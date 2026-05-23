@@ -1,10 +1,29 @@
+import type { AppConfigUpdateRequest, BaseAppConfigDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+
+import { ElText } from 'element-plus';
 
 import { UploadSceneEnum } from '#/enum/api';
 
-// 应用设置表单配置
+export type AppConfigFormValues = Record<string, unknown>;
+
+function textValue(value: unknown) {
+  return typeof value === 'string' ? value : undefined;
+}
+
+function booleanValue(value: unknown) {
+  return typeof value === 'boolean' ? value : undefined;
+}
+
+function sectionTitle(title: string) {
+  return () =>
+    h(ElText, { class: 'text-base font-medium', tag: 'span' }, () => title);
+}
+
+/**
+ * 应用配置编辑表单源 schema，同时作为回填与提交 payload 白名单的字段来源。
+ */
 export const formSchema: EsFormSchema = [
-  // 应用基本信息分隔符
   {
     component: 'Divider',
     fieldName: 'divider_base',
@@ -12,11 +31,10 @@ export const formSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     renderComponentContent: () => {
       return {
-        default: () => h('div', { class: 'text-red-400' }, '应用基本信息'),
+        default: sectionTitle('应用基本信息'),
       };
     },
   },
-  // 应用名称输入框
   {
     component: 'Input',
     fieldName: 'appName',
@@ -26,7 +44,6 @@ export const formSchema: EsFormSchema = [
     },
     rules: 'required',
   },
-  // 应用描述输入框
   {
     component: 'Input',
     fieldName: 'appDesc',
@@ -37,7 +54,6 @@ export const formSchema: EsFormSchema = [
       rows: 3,
     },
   },
-  // 配置版本号输入框
   {
     component: 'Input',
     fieldName: 'version',
@@ -47,7 +63,6 @@ export const formSchema: EsFormSchema = [
     },
     rules: 'required',
   },
-  // 应用Logo上传
   {
     component: 'Upload',
     fieldName: 'appLogo',
@@ -58,7 +73,6 @@ export const formSchema: EsFormSchema = [
       placeholder: '请上传应用Logo',
     },
   },
-  // 引导页图片上传
   {
     component: 'Upload',
     fieldName: 'onboardingImage',
@@ -70,7 +84,6 @@ export const formSchema: EsFormSchema = [
       placeholder: '请上传引导页图片，最多5张',
     },
   },
-  // 主题色选择器
   {
     component: 'ColorPicker',
     fieldName: 'themeColor',
@@ -80,7 +93,6 @@ export const formSchema: EsFormSchema = [
     },
     rules: 'selectRequired',
   },
-  // 第二主题色选择器
   {
     component: 'ColorPicker',
     fieldName: 'secondaryColor',
@@ -89,7 +101,6 @@ export const formSchema: EsFormSchema = [
       placeholder: '请选择第二主题色',
     },
   },
-  // 可选主题色多选器
   {
     component: 'MultiColorPicker',
     fieldName: 'optionalThemeColors',
@@ -98,7 +109,6 @@ export const formSchema: EsFormSchema = [
       placeholder: '请选择可选主题色，可自定义颜色名称',
     },
   },
-  // 维护模式设置分隔符
   {
     component: 'Divider',
     fieldName: 'divider_maintenance',
@@ -106,18 +116,16 @@ export const formSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     renderComponentContent: () => {
       return {
-        default: () => h('div', { class: 'text-red-400' }, '维护模式设置'),
+        default: sectionTitle('维护模式设置'),
       };
     },
   },
-  // 维护模式开关
   {
     component: 'Switch',
     fieldName: 'enableMaintenanceMode',
     label: '启用维护模式',
     help: '启用后，普通用户将无法访问系统',
   },
-  // 维护提示信息输入框
   {
     component: 'Input',
     fieldName: 'maintenanceMessage',
@@ -134,3 +142,39 @@ export const formSchema: EsFormSchema = [
     },
   },
 ];
+
+export function buildAppConfigFormValues(
+  config: BaseAppConfigDto | null,
+): AppConfigFormValues {
+  if (!config) {
+    return {};
+  }
+
+  return {
+    appDesc: config.appDesc,
+    appLogo: config.appLogo,
+    appName: config.appName,
+    enableMaintenanceMode: config.enableMaintenanceMode,
+    maintenanceMessage: config.maintenanceMessage,
+    onboardingImage: config.onboardingImage,
+    optionalThemeColors: config.optionalThemeColors,
+    secondaryColor: config.secondaryColor,
+    themeColor: config.themeColor,
+    version: config.version,
+  };
+}
+
+export function buildAppConfigUpdatePayload(values: AppConfigFormValues) {
+  return {
+    appDesc: textValue(values.appDesc) ?? null,
+    appLogo: textValue(values.appLogo) ?? null,
+    appName: textValue(values.appName) ?? '',
+    enableMaintenanceMode: booleanValue(values.enableMaintenanceMode) ?? false,
+    maintenanceMessage: textValue(values.maintenanceMessage) ?? null,
+    onboardingImage: textValue(values.onboardingImage) ?? null,
+    optionalThemeColors: textValue(values.optionalThemeColors) ?? null,
+    secondaryColor: textValue(values.secondaryColor) ?? null,
+    themeColor: textValue(values.themeColor) ?? '',
+    version: textValue(values.version) ?? '',
+  } satisfies AppConfigUpdateRequest;
+}
