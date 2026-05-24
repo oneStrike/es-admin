@@ -29,6 +29,7 @@ package-lock.json
 **/auto-imports.d.ts
 **/components.d.ts
 
+.pnpm-store
 # local env files
 .env.local
 .env.*.local
@@ -63,3 +64,5 @@ vite.config.ts.*
 .claude
 .codex
 skills-lock.json
+.atomcode
+datalog

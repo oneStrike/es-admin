@@ -154,8 +154,8 @@ const MultiColorPicker = defineAsyncComponent(
   () => import('#/components/es-multi-color-picker'),
 );
 
-const withDefaultPlaceholder = <T extends Component>(
-  component: T,
+const withDefaultPlaceholder = (
+  component: Component,
   type: 'input' | 'select',
   componentProps: Recordable<any> = {},
 ) => {
