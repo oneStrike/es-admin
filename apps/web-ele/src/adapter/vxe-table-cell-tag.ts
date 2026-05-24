@@ -5,14 +5,14 @@ type GridRow = Record<string, unknown>;
 export type CellTagType = TagProps['type'];
 
 type CellTagRenderProps = Record<string, unknown> & {
-  type?: CellTagType | ((value: unknown, row?: GridRow) => unknown);
+  type?: ((value: unknown, row?: GridRow) => unknown) | CellTagType;
 };
 
 type CellTagComponentProps = Partial<TagProps> & {
+  [key: string]: unknown;
   class?: unknown;
   color?: unknown;
   style?: unknown;
-  [key: string]: unknown;
 };
 
 type BooleanCellTagMap = Record<string, unknown>;

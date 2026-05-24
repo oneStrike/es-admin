@@ -114,14 +114,15 @@ function normalizeModeratorFields(values: Record<string, unknown>) {
 
 export function buildCreateModeratorPayload(values: Record<string, unknown>) {
   const selectedUserIds = toPositiveNumbers(values.selectedUserIds);
+  const userId = selectedUserIds[0];
 
-  if (selectedUserIds.length === 0) {
+  if (userId === undefined) {
     throw new ModeratorPayloadValidationError('请选择一个用户');
   }
 
   return {
     ...normalizeModeratorFields(values),
-    userId: selectedUserIds[0]!,
+    userId,
   } satisfies ForumModeratorsCreateRequest;
 }
 

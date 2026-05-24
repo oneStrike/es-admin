@@ -1,10 +1,8 @@
-// 定义字段类型
 export type FieldType = 'date' | 'image' | 'tag' | 'text' | 'title';
 
-// 定义字段配置
 export interface DetailField {
   label: string;
-  value: any;
+  value: unknown;
   type: FieldType;
   tagType?: string;
   tagText?: string;
@@ -12,7 +10,6 @@ export interface DetailField {
   color?: string;
 }
 
-// 定义卡片配置
 export interface DetailCard {
   title: string;
   show: boolean;

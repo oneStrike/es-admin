@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { EsTableSelectProps } from './types';
+import type {
+  EsTableSelectEmits,
+  EsTableSelectProps,
+  TableSelectRow,
+  TableSelectValue,
+} from './types';
 
 import { computed, ref, watch } from 'vue';
 
@@ -7,15 +12,12 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { createSearchFormOptions } from '#/utils';
 
-// 导入自定义组件
 import EsModalTable from '../es-modal-table';
 
-// 定义组件名称
 defineOptions({
   name: 'EsTableSelect',
 });
 
-// 定义组件属性
 const props = withDefaults(defineProps<EsTableSelectProps>(), {
   placeholder: '请选择',
   disabled: false,
@@ -26,22 +28,17 @@ const props = withDefaults(defineProps<EsTableSelectProps>(), {
   keyField: 'id',
   displayField: 'name',
 });
-// 定义事件
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: number[]): void;
-  (e: 'selectChange', options: any[]): void;
-}>();
-// 选中的完整数据记录
-const selectedRows = ref<any[]>([]);
+const emit = defineEmits<EsTableSelectEmits>();
+const selectedRows = ref<TableSelectRow[]>([]);
 
-// 监听绑定值变化（非深度监听，性能更好）
 watch(
   () => props.modelValue,
   (newValue) => {
     if (Array.isArray(newValue)) {
       if (newValue.length > 0) {
-        if (newValue[0]?.[props.keyField]) {
-          confirmSelection(newValue);
+        const firstValue = newValue[0];
+        if (isTableSelectRow(firstValue) && firstValue[props.keyField]) {
+          confirmSelection(newValue as TableSelectRow[]);
         }
       } else {
         selectedRows.value = [];
@@ -53,10 +50,17 @@ watch(
   { immediate: true },
 );
 
-// 使用 computed 计算显示值，避免手动管理响应式
 const displayValue = computed<string[]>(() => {
   if (!selectedRows.value?.length) return [];
-  return selectedRows.value.map((item) => item?.[props.displayField] ?? '');
+  return selectedRows.value.map((item) =>
+    String(item[props.displayField] ?? ''),
+  );
+});
+
+const modalSearchSchema = computed(() => {
+  return props.searchSchema
+    ? createSearchFormOptions(props.searchSchema)
+    : undefined;
 });
 
 const [ModalTable, modalTableApi] = useVbenModal({
@@ -64,7 +68,6 @@ const [ModalTable, modalTableApi] = useVbenModal({
   title: props.title,
 });
 
-// 打开表格模态框
 function openTableModal() {
   if (!props.disabled) {
     modalTableApi
@@ -82,12 +85,12 @@ function openTableModal() {
   }
 }
 
-// 确认选择
-function confirmSelection(selectedRowsData: any[] = []) {
+function confirmSelection(selectedRowsData: TableSelectRow[] = []) {
   selectedRows.value = selectedRowsData;
-  const values = selectedRows.value.map((item: any) => item[props.keyField]);
+  const values = selectedRows.value.map(
+    (item) => item[props.keyField] as TableSelectValue,
+  );
 
-  // 触发事件
   emit('update:modelValue', props.onlyKey ? values : selectedRows.value);
 }
 
@@ -99,10 +102,14 @@ function handleRemoveTag(_value: string, idx: number) {
 defineExpose({
   getSelectedData: () => selectedRows.value,
 });
+
+function isTableSelectRow(value: unknown): value is TableSelectRow {
+  return typeof value === 'object' && value !== null;
+}
 </script>
 
 <template>
-  <div class="relative w-full">
+  <div class="es-table-select relative w-full">
     <el-input-tag
       v-if="displayValue.length > 0"
       :model-value="displayValue"
@@ -112,20 +119,16 @@ defineExpose({
     />
     <el-input v-else :placeholder="props.placeholder" @click="openTableModal" />
 
-    <!-- 使用表格模态框组件 -->
     <ModalTable
-      :search-schema="createSearchFormOptions(props.searchSchema!)"
+      :search-schema="modalSearchSchema"
       @confirm="confirmSelection"
     />
   </div>
 </template>
 
-<style scoped lang="scss">
-::v-deep(.el-input-tag__input) {
-  cursor: pointer;
-}
-
-::v-deep(.el-input__inner) {
+<style lang="scss">
+.es-table-select .el-input-tag__input,
+.es-table-select .el-input__inner {
   cursor: pointer;
 }
 </style>

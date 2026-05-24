@@ -120,7 +120,7 @@ export function buildSystemConfigFormValues(
     case 'thirdPartyResourceParse': {
       const thirdPartyResourceParseConfig = {
         ...THIRD_PARTY_RESOURCE_PARSE_DEFAULTS,
-        ...(config?.thirdPartyResourceParseConfig ?? {}),
+        ...config?.thirdPartyResourceParseConfig,
       };
       values.thirdPartyResourceParseEnabled =
         thirdPartyResourceParseConfig.enabled ??

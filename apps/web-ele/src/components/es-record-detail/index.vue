@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import type { DetailCard } from './types';
 
-import { computed, ref, watch } from 'vue';
+import { computed, defineComponent, h, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { getApiErrorMessage } from '#/api/error';
+import { useMessage } from '#/hooks/useFeedback';
 import { formatUTC } from '#/utils';
+
+type DetailRecord = Record<string, unknown>;
+type DetailTagType = 'danger' | 'info' | 'primary' | 'success' | 'warning';
+
+interface Props {
+  title?: string;
+  api?: (params: { id: number }) => Promise<DetailRecord>;
+  recordId?: number;
+  data?: DetailRecord;
+  cards: (data: DetailRecord, extraData?: DetailRecord) => DetailCard[];
+}
 
 defineOptions({
   name: 'EsRecordDetail',
@@ -19,37 +30,46 @@ const props = withDefaults(defineProps<Props>(), {
   data: undefined,
 });
 
-// 定义组件事件
 const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'confirm'): void;
 }>();
 
-// 定义组件属性
-interface Props {
-  title?: string;
-  api?: (params: any) => Promise<any>;
-  recordId?: number;
-  data?: any;
-  cards: (data: any, extraData?: any) => DetailCard[];
-}
+const TrustedHtmlContent = defineComponent({
+  name: 'TrustedHtmlContent',
+  props: {
+    html: {
+      type: String,
+      default: '',
+    },
+  },
+  setup(componentProps) {
+    return () =>
+      h('div', {
+        class: 'prose max-w-none dark:prose-invert',
+        innerHTML: componentProps.html || '-',
+      });
+  },
+});
 
 const sharedData = ref<Props>();
 
-// 创建 Modal 实例
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      const modalData = modalApi.getData<DetailRecord & Props>() || {};
       sharedData.value = {
         ...props,
-        ...modalApi.getData<Props>(),
+        ...modalData,
       };
+      detail.value = sharedData.value.data ?? props.data;
+      extraData.value = modalData;
       modalApi.setState({
         title: sharedData.value?.title || '详情',
       });
-    }
-    if (isOpen && props.api) {
-      getDetail();
+      if (sharedData.value.api) {
+        getDetail();
+      }
     }
   },
   onConfirm() {
@@ -61,12 +81,10 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-// 定义响应式数据
-const detail = ref<any>(props.data);
+const detail = ref<DetailRecord | undefined>(props.data);
 const loading = ref(false);
-const extraData = ref<any>({});
+const extraData = ref<DetailRecord>({});
 
-// 监听 data 变化，更新 detail
 watch(
   () => props.data,
   (newData) => {
@@ -76,41 +94,55 @@ watch(
   },
 );
 
-// 获取详情数据
 async function getDetail() {
-  if (!props.api) return;
+  const api = sharedData.value?.api;
+  if (!api) return;
 
   try {
     loading.value = true;
-    // 优先从 modalApi.getData() 获取 recordId，其次使用 props.recordId
-    const modalData = modalApi.getData<{
-      [key: string]: any;
-      recordId: number;
-    }>();
-    const recordId = modalData?.recordId || props.recordId;
-    // 保存额外数据
-    extraData.value = modalData || {};
+    const recordId = sharedData.value?.recordId;
 
-    if (!recordId) {
-      console.error('获取详情失败: 缺少 recordId');
+    if (recordId === undefined || recordId === null) {
+      useMessage.warning('缺少详情记录ID');
       return;
     }
 
-    detail.value = await props.api({ id: recordId });
-  } catch (error) {
-    console.error('获取详情失败:', getApiErrorMessage(error, '获取详情失败'));
+    detail.value = await api({ id: recordId });
+  } catch {
+    // API failures are reported by the global request interceptor.
   } finally {
     loading.value = false;
   }
 }
 
-// 计算卡片配置
+function formatDetailDate(value: unknown, dateType?: string) {
+  return formatUTC(
+    value as Parameters<typeof formatUTC>[0],
+    dateType || 'YYYY-MM-DD HH:mm:ss',
+  );
+}
+
+function resolveTagType(type?: string): DetailTagType {
+  const tagTypes: DetailTagType[] = [
+    'danger',
+    'info',
+    'primary',
+    'success',
+    'warning',
+  ];
+  return tagTypes.includes(type as DetailTagType)
+    ? (type as DetailTagType)
+    : 'info';
+}
+
 const detailCards = computed(() => {
   if (!detail.value) return [];
-  return props.cards(detail.value, extraData.value);
+  return (sharedData.value?.cards || props.cards)(
+    detail.value,
+    extraData.value,
+  );
 });
 
-// 过滤出可渲染卡片，图片卡片必须有图片地址
 const availableDetailCards = computed(() => {
   return detailCards.value.filter((card) => {
     if (!card.show) return false;
@@ -119,7 +151,6 @@ const availableDetailCards = computed(() => {
   });
 });
 
-// 图片卡片默认置顶展示，可通过 pinTop: false 关闭
 const topImageCards = computed(() => {
   return availableDetailCards.value.filter(
     (card) => card.type === 'image' && card.pinTop !== false,
@@ -132,7 +163,6 @@ const normalDetailCards = computed(() => {
   );
 });
 
-// 暴露方法给父组件
 defineExpose({
   setData: modalApi.setData,
   open: modalApi.open,
@@ -143,7 +173,6 @@ defineExpose({
 <template>
   <Modal class="w-[1000px]">
     <div v-loading="loading" class="space-y-6">
-      <!-- 置顶图片卡片 -->
       <div
         v-for="(card, index) in topImageCards"
         :key="`top-image-${card.title || 'image'}-${index}`"
@@ -152,43 +181,36 @@ defineExpose({
         <el-image
           :src="card.imageUrl || ''"
           :preview-src-list="card.imageUrl ? [card.imageUrl] : []"
-          class="h-64 w-48 rounded-xl border-4 border-white object-cover shadow-lg dark:border-gray-800"
+          class="es-record-detail__top-image h-64 w-48 rounded-xl border-4 object-cover shadow-lg"
           fit="cover"
           preview-teleported
         />
       </div>
-      <!-- 动态渲染卡片 -->
       <template
         v-for="(card, index) in normalDetailCards"
         :key="`detail-card-${card.title || 'card'}-${index}`"
       >
-        <el-card
-          shadow="hover"
-          class="rounded-lg border border-gray-200 dark:border-gray-700"
-        >
+        <el-card shadow="hover">
           <template v-if="card.title" #header>
             <div class="flex items-center">
-              <span
-                class="text-lg font-semibold text-gray-800 dark:text-gray-100"
-              >
+              <el-text tag="span" size="large" class="font-semibold">
                 {{ card.title }}
-              </span>
+              </el-text>
             </div>
           </template>
 
-          <!-- 使用 Descriptions 组件展示字段 -->
           <div v-if="card.fields">
-            <!-- 标题类型字段 -->
             <div v-for="field in card.fields" :key="field.label" class="mb-4">
-              <h2
+              <el-text
                 v-if="field.type === 'title'"
-                class="mb-2 text-center text-2xl font-bold text-gray-800 dark:text-gray-100"
+                tag="h2"
+                size="large"
+                class="mb-2 block text-center font-bold"
               >
                 {{ field.value || '-' }}
-              </h2>
+              </el-text>
             </div>
 
-            <!-- 其他字段 -->
             <el-descriptions
               :column="card.title ? 2 : 4"
               :border="false"
@@ -198,40 +220,32 @@ defineExpose({
                 v-for="field in card.fields.filter((f) => f.type !== 'title')"
                 :key="field.label"
                 :label="`${field.label}：`"
-                class="!text-gray-600 dark:!text-gray-300"
               >
-                <!-- 普通文本 -->
                 <el-text
                   v-if="field.type === 'text' || field.type === 'date'"
                   :style="field.color ? { color: field.color } : undefined"
                   class="text-sm"
-                  :class="[!field.color && 'text-gray-900 dark:text-gray-100']"
                 >
                   {{
                     field.value === null || field.value === undefined
                       ? '-'
                       : field.type === 'date'
-                        ? formatUTC(
-                            field.value,
-                            field.dateType || 'YYYY-MM-DD HH:mm:ss',
-                          )
+                        ? formatDetailDate(field.value, field.dateType)
                         : field.value
                   }}
                 </el-text>
 
-                <!-- 标签 -->
                 <el-tag
                   v-else-if="field.type === 'tag' && 'tagText' in field"
-                  :type="('tagType' in field ? field.tagType : 'info') as any"
+                  :type="resolveTagType(field.tagType)"
                   size="small"
                 >
                   {{ field.tagText || '-' }}
                 </el-tag>
 
-                <!-- 图片 -->
                 <el-image
                   v-else-if="field.type === 'image' && field.value"
-                  :src="field.value"
+                  :src="String(field.value)"
                   :alt="field.label"
                   class="max-h-[100px] max-w-[100px] rounded"
                   fit="cover"
@@ -241,7 +255,6 @@ defineExpose({
             </el-descriptions>
           </div>
 
-          <!-- 图片类型 -->
           <div
             v-else-if="card.type === 'image' && card.imageUrl"
             class="flex justify-center"
@@ -255,26 +268,18 @@ defineExpose({
             />
           </div>
 
-          <!-- HTML 类型 -->
           <div
             v-else-if="card.type === 'html'"
-            class="rounded-lg bg-gray-50 p-4 text-gray-900 dark:bg-gray-800 dark:text-gray-100"
+            class="es-record-detail__content"
           >
-            <div
-              v-html="card.content"
-              class="prose max-w-none dark:prose-invert"
-            ></div>
+            <TrustedHtmlContent :html="card.content || '-'" />
           </div>
 
-          <!-- 文本内容类型 -->
           <div
             v-else-if="card.type === 'text'"
-            class="rounded-lg bg-gray-50 p-4 text-gray-900 dark:bg-gray-800 dark:text-gray-100"
+            class="es-record-detail__content"
           >
-            <div
-              v-html="card.content"
-              class="prose max-w-none dark:prose-invert"
-            ></div>
+            <TrustedHtmlContent :html="card.content || '-'" />
           </div>
         </el-card>
       </template>
@@ -282,6 +287,15 @@ defineExpose({
   </Modal>
 </template>
 
-<style scoped>
-/* 组件样式 */
+<style scoped lang="scss">
+.es-record-detail__top-image {
+  border-color: var(--el-bg-color-overlay);
+}
+
+.es-record-detail__content {
+  padding: 16px;
+  color: var(--el-text-color-primary);
+  background-color: var(--el-fill-color-lighter);
+  border-radius: var(--el-border-radius-base);
+}
 </style>

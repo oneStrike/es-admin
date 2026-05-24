@@ -8,25 +8,25 @@ export type ComicChapterBulkActionRow = {
 export type ComicChapterBulkActionResult =
   | {
       ids: number[];
-      kind: 'delete';
-    }
-  | {
-      ids: number[];
       isPublished: boolean;
       kind: 'publishStatus';
       successMessage: string;
+    }
+  | {
+      ids: number[];
+      kind: 'delete';
     }
   | {
       kind: 'warning';
       message: string;
     };
 
-const BULK_ACTION_COMMANDS = ['delete', 'publish', 'unpublish'];
+const BULK_ACTION_COMMANDS = new Set(['delete', 'publish', 'unpublish']);
 
 export function isComicChapterBulkActionCommand(
   command: string,
 ): command is ComicChapterBulkActionCommand {
-  return BULK_ACTION_COMMANDS.includes(command);
+  return BULK_ACTION_COMMANDS.has(command);
 }
 
 export function getComicChapterBulkActionRows<

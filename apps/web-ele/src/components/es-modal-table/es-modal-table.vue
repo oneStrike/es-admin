@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
-import type { EsModalTableEmits, EsModalTableProps } from './types';
+import type {
+  EsModalTableEmits,
+  EsModalTableProps,
+  EsModalTableRow,
+} from './types';
 
 import { nextTick, ref, watch } from 'vue';
 
@@ -24,26 +28,29 @@ const props = withDefaults(defineProps<EsModalTableProps>(), {
 const emit = defineEmits<EsModalTableEmits>();
 
 const sharedData = ref<EsModalTableProps>();
-// 存储当前选中行数据
-const selectedRows = ref<any[]>([]);
-// 表格容器引用
+const selectedRows = ref<EsModalTableRow[]>([]);
+
+type SelectionChangeParams = {
+  records?: EsModalTableRow[];
+};
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: props.searchSchema,
   gridEvents: {
-    radioChange(params: any) {
+    radioChange(params: SelectionChangeParams) {
       handleRadioChange(params);
     },
-    checkboxChange(params: any) {
+    checkboxChange(params: SelectionChangeParams) {
       handleCheckboxChange(params);
     },
-    checkboxAll(params: any) {
+    checkboxAll(params: SelectionChangeParams) {
       handleCheckboxChange(params);
     },
   },
 });
 
 function getGridOptions(data: EsModalTableProps) {
-  const options: VxeGridProps<any> = {
+  const options: VxeGridProps<EsModalTableRow> = {
     columns: data.columns,
     ...data.gridProps,
   };
@@ -69,7 +76,7 @@ function getGridOptions(data: EsModalTableProps) {
   const firstColumn = options.columns?.[0];
   if (!firstColumn?.field) return options;
 
-  const labelField = firstColumn.field;
+  const labelField = String(firstColumn.field);
 
   if (data.selectionMode === 'multiple') {
     options.checkboxConfig = {
@@ -88,27 +95,23 @@ function getGridOptions(data: EsModalTableProps) {
   return options;
 }
 
-// 处理复选框选择变化
-function handleCheckboxChange(params: any) {
-  handleSelectionChange(params.records);
+function handleCheckboxChange(params: SelectionChangeParams) {
+  handleSelectionChange(params.records || []);
 }
 
-// 处理单选框选择变化
-function handleRadioChange(params: any) {
-  handleSelectionChange(params.records);
+function handleRadioChange(params: SelectionChangeParams) {
+  handleSelectionChange(params.records || []);
 }
-// 处理选择变化
-function handleSelectionChange(records: any[]) {
+
+function handleSelectionChange(records: EsModalTableRow[]) {
   const data = sharedData.value;
   if (!data) return;
 
-  // 多选模式下的限制处理
   if (
     data.selectionMode === 'multiple' &&
     data.multipleLimit &&
     records.length > data.multipleLimit
   ) {
-    // 超过限制，恢复之前的选择状态
     gridApi.grid?.clearCheckboxRow();
     selectedRows.value.forEach((row) =>
       gridApi.grid?.setCheckboxRow(row, true),
@@ -122,39 +125,31 @@ function handleSelectionChange(records: any[]) {
   emit('select', records);
 }
 
-// 单个取消选择
-function handleRemoveItem(item: any) {
+function handleRemoveItem(item: EsModalTableRow) {
   const data = sharedData.value;
   if (!data) return;
 
   if (data.selectionMode === 'multiple') {
-    // 从选中列表中移除该项
     const newSelectedRows = selectedRows.value.filter(
       (row) => row.id !== item.id,
     );
-    // 更新表格选择状态
     gridApi.grid?.clearCheckboxRow();
     newSelectedRows.forEach((row) => gridApi.grid?.setCheckboxRow(row, true));
-    // 更新选中数据
     selectedRows.value = newSelectedRows;
     emit('select', newSelectedRows);
   } else if (data.selectionMode === 'single') {
-    // 单选模式下直接清空选择
     gridApi.grid?.clearRadioRow();
     selectedRows.value = [];
     emit('select', []);
   }
 }
 
-// 批量取消选择
 function handleBatchRemove() {
   const data = sharedData.value;
   if (!data) return;
 
   if (data.selectionMode === 'multiple') {
-    // 清空表格选择状态
     gridApi.grid?.clearCheckboxRow();
-    // 更新选中数据
     selectedRows.value = [];
     emit('select', []);
   }
@@ -168,16 +163,10 @@ const [Modal, modalApi] = useVbenModal({
         ...props,
         ...modalApi.getData<EsModalTableProps>(),
       };
-      // 如果调用方传入了初始已选数据，则优先使用
-      selectedRows.value = (sharedData.value as any)?.selectedRows || [];
+      selectedRows.value = sharedData.value.selectedRows || [];
       gridApi.setGridOptions(getGridOptions(sharedData.value));
-
-      // if (sharedData.value?.searchSchema) {
-      //   gridApi.formApi.updateSchema(sharedData.value.searchSchema);
-      // }
       nextTick(() => {
         gridApi.reload().then(() => {
-          // 表格数据刷新后恢复选中回显
           restoreGridSelection();
         });
       });
@@ -192,14 +181,12 @@ const [Modal, modalApi] = useVbenModal({
 const tableHeight = ref('70vh');
 const state = modalApi.useStore();
 watch(
-  () => state.value.fullscreen, // 注意要访问 .value
+  () => state.value.fullscreen,
   (isFullscreen) => {
-    // 全屏状态变化时重新计算表格高度
     tableHeight.value = isFullscreen ? '90vh' : '70vh';
   },
 );
 
-// 将组件内的 selectedRows 同步到表格，用于打开时回显
 function restoreGridSelection() {
   const data = sharedData.value;
   const table = gridApi.grid;
@@ -217,12 +204,16 @@ function restoreGridSelection() {
     }
   }
 }
+
+function getRowLabel(item: EsModalTableRow) {
+  const field = sharedData.value?.columns?.[0]?.field;
+  return field ? String(item[String(field)] ?? '') : '';
+}
 </script>
 
 <template>
   <Modal v-if="sharedData?.columns" class="w-[1200px]">
     <el-row :gutter="20" class="h-full">
-      <!-- 左侧表格区域 -->
       <el-col :span="16" class="flex h-full flex-col">
         <div :style="{ height: tableHeight }">
           <Grid
@@ -231,15 +222,14 @@ function restoreGridSelection() {
           />
         </div>
       </el-col>
-      <!-- 右侧回显面板 -->
       <el-col :span="8" :style="{ height: tableHeight }">
         <el-card class="h-full" shadow="never">
-          <!-- 面板标题 -->
           <div class="mb-3 flex justify-between">
-            <h3 class="text-lg font-semibold">已选择数据</h3>
+            <el-text tag="h3" size="large" class="font-semibold">
+              已选择数据
+            </el-text>
             <div class="flex items-center space-x-3">
-              <span class="text-gray-500"> {{ selectedRows.length }} 项 </span>
-              <!-- 批量取消选择按钮 -->
+              <el-text type="info"> {{ selectedRows.length }} 项 </el-text>
               <el-button
                 v-if="
                   selectedRows.length > 0 &&
@@ -252,24 +242,16 @@ function restoreGridSelection() {
               </el-button>
             </div>
           </div>
-          <!-- 面板内容 -->
           <div class="flex flex-col overflow-y-auto">
-            <!-- 选中项列表 -->
             <template v-if="selectedRows.length > 0">
               <el-tag
                 v-for="(item, index) in selectedRows"
                 :key="item.id || index"
-                class="mb-3"
+                class="es-modal-table__selected-tag mb-3"
                 size="large"
               >
                 <div class="flex w-full items-center justify-between text-sm">
-                  <!-- 选中项信息 -->
-                  {{
-                    sharedData.columns?.[0]?.field
-                      ? item[sharedData.columns[0].field]
-                      : ''
-                  }}
-                  <!-- 取消选择按钮 -->
+                  {{ getRowLabel(item) }}
                   <DeleteBinIcon
                     class="cursor-pointer text-lg transition-colors duration-300 hover:text-red-600"
                     @click="handleRemoveItem(item)"
@@ -277,7 +259,6 @@ function restoreGridSelection() {
                 </div>
               </el-tag>
             </template>
-            <!-- 空状态 -->
             <el-empty v-else />
           </div>
         </el-card>
@@ -286,8 +267,8 @@ function restoreGridSelection() {
   </Modal>
 </template>
 
-<style scoped lang="scss">
-::v-deep(.el-tag__content) {
+<style lang="scss">
+.es-modal-table__selected-tag .el-tag__content {
   width: 100%;
 }
 </style>

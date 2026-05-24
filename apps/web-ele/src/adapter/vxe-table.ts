@@ -7,11 +7,11 @@ import type { Options } from '#/utils/options';
 
 import { h } from 'vue';
 
+import { JsonViewer } from '@vben/common-ui';
 import {
   setupVbenVxeTable,
   useVbenVxeGrid as useGrid,
 } from '@vben/plugins/vxe-table';
-import { JsonViewer } from '@vben/common-ui';
 
 import { ElButton, ElImage, ElTag, ElText, ElTooltip } from 'element-plus';
 
@@ -28,7 +28,7 @@ import {
 
 type OptionWithDisplay = Options & {
   color?: string;
-  type?: string | CellTagType;
+  type?: CellTagType | string;
 };
 
 type GridRow = Record<string, unknown>;

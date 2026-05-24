@@ -12,6 +12,7 @@ import {
   forumSectionsPageApi,
 } from '#/api/core';
 import { formSchemaTransform } from '#/utils';
+
 import { moderatorPermissionOptions } from './payload';
 
 const ACTIVE_DELETED_SCOPE = 0;
@@ -112,7 +113,7 @@ export const moderatorUserColumns =
   );
 
 const userSelectComponentProps = () => ({
-  api: async (params: Record<string, any>) =>
+  api: async (params: Record<string, unknown>) =>
     appUsersPageApi({
       ...params,
       deletedScope: ACTIVE_DELETED_SCOPE,

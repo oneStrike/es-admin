@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { EsModalFormProps } from './types';
 
+import type { EsFormSchema } from '#/types';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
@@ -55,13 +57,12 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-// 根据弹窗宽度动态计算网格列数
 const dynamicWrapperClass = computed(() => {
   return `grid-cols-${sharedData.value.cols || 2} gap-x-4`;
 });
 
-const normalizedSchema = computed(
-  () => (sharedData.value.schema || props.schema) as any,
+const normalizedSchema = computed<EsFormSchema>(
+  () => (sharedData.value.schema || props.schema || []) as EsFormSchema,
 );
 
 const [BaseForm, formApi] = useVbenForm({

@@ -7,7 +7,7 @@ import { useMessage } from './useFeedback';
 export async function useUpload(
   uploadUrl: string,
   file: File,
-  params: Record<string, any> = {},
+  params: Record<string, unknown> = {},
   onProgress?: (progressEvent: {
     loaded: number;
     percent: number;
@@ -15,15 +15,20 @@ export async function useUpload(
   }) => void,
 ): Promise<unknown | UploadFileUploadResponse> {
   try {
-    const requestParams = [];
-    for (const paramKey in params) {
-      requestParams.push(`${paramKey}=${params[paramKey]}`);
+    const searchParams = new URLSearchParams();
+    for (const [paramKey, paramValue] of Object.entries(params)) {
+      if (paramValue !== undefined && paramValue !== null) {
+        searchParams.append(paramKey, String(paramValue));
+      }
     }
-    // 使用requestClient.upload方法处理文件上传，它会自动处理FormData和Content-Type
+    const queryString = searchParams.toString();
+    const separator = uploadUrl.includes('?') ? '&' : '?';
+    const requestUrl = queryString
+      ? `${uploadUrl}${separator}${queryString}`
+      : uploadUrl;
+
     const result = await requestClient.upload(
-      uploadUrl.includes('?')
-        ? `${uploadUrl}&${requestParams.join('&')}`
-        : `${uploadUrl}?${requestParams.join('&')}`,
+      requestUrl,
       {
         ...params,
         file,

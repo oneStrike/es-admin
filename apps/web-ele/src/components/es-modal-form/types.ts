@@ -2,14 +2,16 @@ import type { VbenFormProps } from '@vben/common-ui';
 
 import type { EsFormSchema } from '#/types';
 
+export type EsModalFormValues = Record<string, unknown>;
+
 export interface EsModalFormProps {
   cols?: number;
   title?: string;
   width?: number;
-  record?: Record<string, any>;
-  // 表单配置项，props和sharedData必须传一个
+  record?: EsModalFormValues;
+  /** Form schema from props or modal shared data. */
   schema?: EsFormSchema;
   bitMaskField?: string[];
   fieldMappingTime?: VbenFormProps['fieldMappingTime'];
-  onSubmit?: (values: Record<string, any>) => Promise<void> | void;
+  onSubmit?: (values: EsModalFormValues) => Promise<void> | void;
 }

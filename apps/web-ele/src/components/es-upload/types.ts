@@ -11,7 +11,7 @@ export interface EsUploadProps {
   /** 允许上传的文件类型 */
   accept?: string;
   /** 上传时附带的额外参数 */
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   /** 是否禁用上传组件 */
   disabled?: boolean;
   /** 上传列表的内建样式 */
@@ -29,10 +29,10 @@ export interface EsUploadProps {
   /** 是否显示上传进度 */
   showProgress?: boolean;
   /** 进度条样式 */
-  progressProps?: Record<string, any>;
+  progressProps?: Record<string, unknown>;
   /** 上传文件的返回数据类型 */
   returnDataType?: 'array' | 'json' | 'url';
-  // 是否显示已经上传的文件列表
+  /** 是否显示已经上传的文件列表 */
   showList?: boolean;
 }
 
