@@ -275,24 +275,16 @@ async function initializeDrag() {
       <div
         v-if="contentList.length > 0"
         ref="gridContainer"
-        class="flex flex-wrap justify-start gap-2 overflow-y-auto"
-        style="
-          flex: 1;
-          min-height: 0;
-          overflow-y: auto;
-          scrollbar-color: #888 #f1f1f1;
-          scrollbar-width: thin;
-        "
+        class="flex min-h-0 flex-1 flex-wrap justify-start gap-2 overflow-y-auto [scrollbar-color:#888_#f1f1f1] [scrollbar-width:thin]"
       >
         <div
           v-for="(url, index) in contentList"
           :key="`${url}-${index}`"
-          class="group relative h-[300px] w-[16%] overflow-hidden rounded-lg border-2 border-transparent transition-all duration-200 hover:border-blue-500 hover:shadow-md"
+          class="group relative box-border aspect-[9/16] h-[300px] w-[16%] overflow-hidden rounded-lg border-2 border-transparent transition-all duration-200 hover:border-blue-500 hover:shadow-md"
           :class="{
             'border-blue-500 shadow-lg ring-2 ring-blue-300':
               selectedIndices.includes(index),
           }"
-          style="box-sizing: border-box; aspect-ratio: 9/16"
         >
           <div
             class="absolute left-2 top-2 z-10 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-white/90 shadow-sm transition-all duration-200 group-hover:opacity-100"

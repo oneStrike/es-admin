@@ -228,9 +228,8 @@ defineExpose({
 
 <template>
   <div
-    style="height: 100%; overflow: visible"
     ref="containerRef"
-    :class="tinymceContainerClassName"
+    :class="[tinymceContainerClassName, 'h-full overflow-visible']"
   >
     <Editor
       :id="tinymceId"
