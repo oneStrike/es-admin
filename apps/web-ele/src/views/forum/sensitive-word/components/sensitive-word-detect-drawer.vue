@@ -131,6 +131,14 @@ function formatHitPosition(hit: SensitiveWordHitDto) {
   return `${hit.start}-${hit.end}`;
 }
 
+function formatHitLevel(hit: SensitiveWordHitDto) {
+  return getLevelOption(hit.level)?.label || String(hit.level ?? '-');
+}
+
+function formatHitType(hit: SensitiveWordHitDto) {
+  return getTypeOption(hit.type)?.label || String(hit.type ?? '-');
+}
+
 function resolveContent() {
   if (!content.value.trim()) {
     useMessage.warning('请输入待检测文本');
@@ -278,38 +286,34 @@ function clearContent() {
 
         <el-empty v-if="!detectResult" description="暂无检测结果" />
         <el-empty v-else-if="hits.length === 0" description="未命中敏感词" />
-        <el-table v-else :data="hits" border max-height="280" size="small">
-          <el-table-column label="敏感词" min-width="130" prop="word" />
-          <el-table-column label="级别" min-width="100">
-            <template #default="{ row }">
-              <el-tag :type="getLevelTagType(row.level)">
-                {{ getLevelOption(row.level)?.label || row.level }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="类型" min-width="120">
-            <template #default="{ row }">
-              <el-tag type="info">
-                {{ getTypeOption(row.type)?.label || row.type }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="命中字段" min-width="100">
-            <template #default="{ row }">
-              {{ formatHitField(row.field) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="位置" min-width="100">
-            <template #default="{ row }">
-              {{ formatHitPosition(row) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="替换词" min-width="120">
-            <template #default="{ row }">
-              {{ row.replaceWord || '-' }}
-            </template>
-          </el-table-column>
-        </el-table>
+        <div v-else class="max-h-[280px] overflow-y-auto">
+          <div
+            class="grid grid-cols-[minmax(110px,1.2fr)_88px_104px_88px_88px_minmax(100px,1fr)] gap-2 border-b border-border px-2 py-2 text-xs font-medium text-muted-foreground"
+          >
+            <span>敏感词</span>
+            <span>级别</span>
+            <span>类型</span>
+            <span>命中字段</span>
+            <span>位置</span>
+            <span>替换词</span>
+          </div>
+          <div
+            v-for="hit in hits"
+            :key="`${hit.word}-${hit.field}-${hit.start}-${hit.end}`"
+            class="grid grid-cols-[minmax(110px,1.2fr)_88px_104px_88px_88px_minmax(100px,1fr)] items-center gap-2 border-b border-border px-2 py-2 text-sm last:border-b-0"
+          >
+            <span class="truncate" :title="hit.word">{{ hit.word }}</span>
+            <el-tag :type="getLevelTagType(hit.level)">
+              {{ formatHitLevel(hit) }}
+            </el-tag>
+            <el-tag type="info">{{ formatHitType(hit) }}</el-tag>
+            <span>{{ formatHitField(hit.field) }}</span>
+            <span>{{ formatHitPosition(hit) }}</span>
+            <span class="truncate" :title="hit.replaceWord || '-'">
+              {{ hit.replaceWord || '-' }}
+            </span>
+          </div>
+        </div>
       </el-card>
 
       <el-card shadow="never">

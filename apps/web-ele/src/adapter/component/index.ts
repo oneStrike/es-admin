@@ -157,12 +157,12 @@ const MultiColorPicker = defineAsyncComponent(
 const withDefaultPlaceholder = (
   component: Component,
   type: 'input' | 'select',
-  componentProps: Recordable<any> = {},
+  componentProps: Recordable<unknown> = {},
 ) => {
   return defineComponent({
     name: component.name,
     inheritAttrs: false,
-    setup: (props: any, { attrs, expose, slots }) => {
+    setup: (props: Record<string, unknown>, { attrs, expose, slots }) => {
       const placeholder =
         props?.placeholder ||
         attrs?.placeholder ||
@@ -188,22 +188,31 @@ const withDefaultPlaceholder = (
   });
 };
 
-function resolveOptions(props: Recordable<any>, attrs: Recordable<any>) {
+function resolveOptions(
+  props: Recordable<unknown>,
+  attrs: Recordable<unknown>,
+) {
   const options = props.options ?? attrs.options;
   return Array.isArray(options) ? options : [];
 }
 
-function normalizeRadioOption(option: Recordable<any>) {
+function normalizeRadioOption(option: unknown): Record<string, unknown> {
   if (
     option &&
     typeof option === 'object' &&
     !Array.isArray(option) &&
-    option.value === undefined &&
-    option.label !== undefined
+    (option as Record<string, unknown>).value === undefined &&
+    (option as Record<string, unknown>).label !== undefined
   ) {
-    return { ...option, value: option.label };
+    const normalizedOption = option as Record<string, unknown>;
+    return { ...normalizedOption, value: normalizedOption.label };
   }
-  return option;
+
+  if (option && typeof option === 'object' && !Array.isArray(option)) {
+    return option as Record<string, unknown>;
+  }
+
+  return { label: String(option ?? ''), value: option };
 }
 
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
@@ -362,7 +371,7 @@ async function initComponentAdapter() {
     Switch: ElSwitch,
     TimePicker: (props, { attrs, slots }) => {
       const { name, id, isRange } = props;
-      const extraProps: Recordable<any> = {};
+      const extraProps: Recordable<unknown> = {};
       if (isRange) {
         if (name && !Array.isArray(name)) {
           extraProps.name = [name, `${name}_end`];
@@ -383,7 +392,7 @@ async function initComponentAdapter() {
     },
     DatePicker: (props, { attrs, slots }) => {
       const { name, id, type } = props;
-      const extraProps: Recordable<any> = {};
+      const extraProps: Recordable<unknown> = {};
       if (type && type.includes('range')) {
         if (name && !Array.isArray(name)) {
           extraProps.name = [name, `${name}_end`];

@@ -5,7 +5,9 @@ import type {
   RewardConfigValue,
 } from './reward-config.types';
 
-import { computed, reactive, watch } from 'vue';
+import { reactive, watch } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
 
 import EsUpload from '#/components/es-upload/es-upload.vue';
 import { UploadSceneEnum } from '#/enum/api';
@@ -58,9 +60,15 @@ const emit = defineEmits<{
   'update:visible': [value: boolean];
 }>();
 
-const useDialogVisible = computed({
-  get: () => props.visible,
-  set: (value: boolean) => emit('update:visible', value),
+const [Modal, modalApi] = useVbenModal({
+  class: 'w-[980px]',
+  contentClass: 'px-4',
+  destroyOnClose: true,
+  onOpenChange(isOpen) {
+    if (props.visible !== isOpen) {
+      emit('update:visible', isOpen);
+    }
+  },
 });
 
 const draft = reactive<RewardConfigValue>(createEmptyRewardConfigValue());
@@ -69,10 +77,14 @@ watch(
   () => props.visible,
   (visible) => {
     if (!visible) {
+      modalApi.close();
       return;
     }
     Object.assign(draft, cloneRewardConfigValue(props.modelValue));
+    modalApi.setState({ title: props.title });
+    modalApi.open();
   },
+  { immediate: true },
 );
 
 function addRewardItem() {
@@ -138,7 +150,7 @@ function handleConfirm() {
       ? normalizeOptionalString(draft.rewardOverviewIconUrl)
       : undefined,
   });
-  useDialogVisible.value = false;
+  modalApi.close();
 }
 
 function handleClear() {
@@ -148,12 +160,7 @@ function handleClear() {
 </script>
 
 <template>
-  <el-dialog
-    v-model="useDialogVisible"
-    :title="title"
-    width="980px"
-    destroy-on-close
-  >
+  <Modal>
     <div class="space-y-5">
       <slot name="prepend"></slot>
 
@@ -305,12 +312,12 @@ function handleClear() {
           {{ clearButtonText }}
         </el-button>
         <div class="ml-auto flex gap-3">
-          <el-button @click="useDialogVisible = false">取消</el-button>
+          <el-button @click="modalApi.close()">取消</el-button>
           <el-button type="primary" @click="handleConfirm">
             {{ confirmText }}
           </el-button>
         </div>
       </div>
     </template>
-  </el-dialog>
+  </Modal>
 </template>

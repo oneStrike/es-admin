@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
 
+import type { AuthLoginRequest } from '#/api/types';
+
 import { computed } from 'vue';
 
 import { AuthenticationLogin, z } from '@vben/common-ui';
@@ -13,10 +15,27 @@ defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
 const captchaData = ref();
+
+type LoginFormValues = Pick<
+  AuthLoginRequest,
+  'captcha' | 'password' | 'username'
+>;
+
 async function fetchCaptcha() {
   captchaData.value = await authCaptchaApi();
 }
 fetchCaptcha();
+
+function isLoginFormValues(
+  value: Record<string, unknown>,
+): value is LoginFormValues {
+  return (
+    typeof value.username === 'string' &&
+    typeof value.password === 'string' &&
+    typeof value.captcha === 'string'
+  );
+}
+
 const formSchema = computed((): VbenFormSchema[] => {
   return [
     {
@@ -68,10 +87,23 @@ const formSchema = computed((): VbenFormSchema[] => {
   ];
 });
 
-async function onSubmit(values: any) {
+async function onSubmit(values: Record<string, unknown>) {
+  if (!isLoginFormValues(values)) {
+    await fetchCaptcha();
+    return;
+  }
+
   try {
-    values.captchaId = captchaData.value?.captchaId;
-    await authStore.authLogin(values);
+    const captchaId = captchaData.value?.captchaId;
+    if (!captchaId) {
+      await fetchCaptcha();
+      return;
+    }
+
+    await authStore.authLogin({
+      ...values,
+      captchaId,
+    });
   } catch {
     fetchCaptcha();
   }

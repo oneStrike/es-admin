@@ -29,10 +29,14 @@ import {
   formSchema,
 } from './model/shared';
 
+type CategoryRow = BaseCategoryDto & {
+  loading?: boolean;
+};
+
 /**
  * 通用的成功处理：提示 + 刷新（遵循DRY原则封装重复逻辑）
  */
-function handleSuccessReload(gridApi: any, message = '操作成功'): void {
+function handleSuccessReload(message = '操作成功') {
   useMessage.success(message);
   gridApi.reload();
 }
@@ -40,7 +44,7 @@ function handleSuccessReload(gridApi: any, message = '操作成功'): void {
 /**
  * VxeGrid 的选项配置：
  */
-const gridOptions: VxeGridProps<BaseCategoryDto> = {
+const gridOptions: VxeGridProps<CategoryRow> = {
   columns: categoryColumns,
   height: 'auto',
   rowConfig: {
@@ -86,7 +90,7 @@ const [Form, formApi] = useVbenModal({
 /**
  * 打开表单弹窗
  */
-async function openFormModal(row?: BaseCategoryDto): Promise<void> {
+async function openFormModal(row?: CategoryRow) {
   let record: BaseCategoryDto | undefined;
   if (row) {
     record = await contentCategoryDetailApi({ id: row.id });
@@ -103,26 +107,24 @@ async function openFormModal(row?: BaseCategoryDto): Promise<void> {
 /**
  * 切换启用状态
  */
-async function toggleEnableStatus(row: BaseCategoryDto): Promise<void> {
-  row.loading = true as any;
+async function toggleEnableStatus(row: CategoryRow) {
+  row.loading = true;
   try {
     await contentCategoryUpdateStatusApi({
       id: row.id,
       isEnabled: !row.isEnabled,
     });
-    handleSuccessReload(gridApi);
+    handleSuccessReload();
   } finally {
-    row.loading = false as any;
+    row.loading = false;
   }
 }
 
 /**
  * 新增或更新分类
  */
-type CategoryFormValues = CreateCategoryDto | UpdateCategoryDto;
-
 function buildCategoryPayload(
-  values: CategoryFormValues,
+  values: CreateCategoryDto | UpdateCategoryDto,
 ): CreateCategoryDto | UpdateCategoryDto {
   const payload = {
     icon: values.icon,
@@ -138,7 +140,9 @@ function buildCategoryPayload(
     : (payload as CreateCategoryDto);
 }
 
-async function addOrUpdateCategory(values: CategoryFormValues): Promise<void> {
+async function addOrUpdateCategory(
+  values: CreateCategoryDto | UpdateCategoryDto,
+) {
   const payload = buildCategoryPayload(values);
 
   await ('id' in payload && typeof payload.id === 'number'
@@ -151,14 +155,14 @@ async function addOrUpdateCategory(values: CategoryFormValues): Promise<void> {
 /**
  * 删除分类
  */
-async function deleteCategory(row: BaseCategoryDto): Promise<void> {
+async function deleteCategory(row: CategoryRow) {
   await contentCategoryDeleteApi({
     id: row.id,
   });
-  handleSuccessReload(gridApi);
+  handleSuccessReload();
 }
 
-async function confirmDeleteCategory(row: BaseCategoryDto): Promise<void> {
+async function confirmDeleteCategory(row: CategoryRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前项?',
     successMessage: false,

@@ -72,10 +72,6 @@ const overviewItems = computed(() => [
   },
   ...getWsSummaryItems(wsSummary.value),
 ]);
-const overviewGridStyle = computed(() => ({
-  gridTemplateColumns: `repeat(${Math.ceil(overviewItems.value.length / 2)}, minmax(150px, 1fr))`,
-}));
-
 const dispatchGridOptions: VxeGridProps<MessageDispatchPageItemDto> = {
   columns: dispatchColumns,
   height: '100%',
@@ -233,8 +229,7 @@ onMounted(refreshOverview);
 
       <div
         v-loading="overviewLoading"
-        class="grid shrink-0 grid-rows-2 gap-3 overflow-x-auto pb-1"
-        :style="overviewGridStyle"
+        class="grid shrink-0 grid-flow-col grid-rows-2 auto-cols-[minmax(150px,1fr)] gap-3 overflow-x-auto pb-1"
       >
         <el-card v-for="item in overviewItems" :key="item.label" shadow="never">
           <div class="text-xs text-gray-400">{{ item.label }}</div>

@@ -29,10 +29,14 @@ import { createSearchFormOptions } from '#/utils';
 import { getDetailCards } from './model/detail';
 import { authorColumns, authorSearchSchema, formSchema } from './model/shared';
 
+type AuthorRow = AuthorPageResponseDto & {
+  loading?: boolean;
+};
+
 /**
  * 通用的成功处理：提示 + 刷新（遵循DRY原则封装重复逻辑）
  */
-function handleSuccessReload(gridApi: any, message = '操作成功'): void {
+function handleSuccessReload(message = '操作成功') {
   useMessage.success(message);
   gridApi.reload();
 }
@@ -40,7 +44,7 @@ function handleSuccessReload(gridApi: any, message = '操作成功'): void {
 /**
  * VxeGrid 的选项配置
  */
-const gridOptions: VxeGridProps<AuthorPageResponseDto> = {
+const gridOptions: VxeGridProps<AuthorRow> = {
   columns: authorColumns,
   proxyConfig: {
     ajax: {
@@ -90,8 +94,8 @@ const [DetailModal, detailApi] = useVbenModal({
 /**
  * 打开表单弹窗
  */
-async function openFormModal(row?: AuthorPageResponseDto): Promise<void> {
-  let record: any;
+async function openFormModal(row?: AuthorRow) {
+  let record;
   if (row) {
     record = await contentAuthorDetailApi({ id: row.id });
   }
@@ -107,44 +111,40 @@ async function openFormModal(row?: AuthorPageResponseDto): Promise<void> {
 /**
  * 切换启用状态
  */
-async function toggleEnableStatus(row: AuthorPageResponseDto): Promise<void> {
-  row.loading = true as any;
+async function toggleEnableStatus(row: AuthorRow) {
+  row.loading = true;
   try {
     await contentAuthorUpdateStatusApi({
       id: row.id,
       isEnabled: !row.isEnabled,
     });
-    handleSuccessReload(gridApi);
+    handleSuccessReload();
   } finally {
-    row.loading = false as any;
+    row.loading = false;
   }
 }
 
 /**
  * 切换推荐状态
  */
-async function toggleIsRecommendedStatus(
-  row: AuthorPageResponseDto,
-): Promise<void> {
-  row.loading = true as any;
+async function toggleIsRecommendedStatus(row: AuthorRow) {
+  row.loading = true;
   try {
     await contentAuthorUpdateRecommendedApi({
       id: row.id,
       isRecommended: !row.isRecommended,
     });
-    handleSuccessReload(gridApi);
+    handleSuccessReload();
   } finally {
-    row.loading = false as any;
+    row.loading = false;
   }
 }
 
 /**
  * 新增或更新作者
  */
-type AuthorFormValues = CreateAuthorDto | UpdateAuthorDto;
-
 function buildAuthorPayload(
-  values: AuthorFormValues,
+  values: CreateAuthorDto | UpdateAuthorDto,
 ): CreateAuthorDto | UpdateAuthorDto {
   const payload = {
     avatar: values.avatar,
@@ -161,7 +161,7 @@ function buildAuthorPayload(
     : (payload as CreateAuthorDto);
 }
 
-async function addOrUpdateAuthor(values: AuthorFormValues): Promise<void> {
+async function addOrUpdateAuthor(values: CreateAuthorDto | UpdateAuthorDto) {
   const payload = buildAuthorPayload(values);
 
   await ('id' in payload && typeof payload.id === 'number'
@@ -174,14 +174,14 @@ async function addOrUpdateAuthor(values: AuthorFormValues): Promise<void> {
 /**
  * 删除作者
  */
-async function deleteAuthor(row: AuthorPageResponseDto): Promise<void> {
+async function deleteAuthor(row: AuthorRow) {
   await contentAuthorDeleteApi({
     id: row.id,
   });
-  handleSuccessReload(gridApi);
+  handleSuccessReload();
 }
 
-async function confirmDeleteAuthor(row: AuthorPageResponseDto): Promise<void> {
+async function confirmDeleteAuthor(row: AuthorRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前项?',
     successMessage: false,

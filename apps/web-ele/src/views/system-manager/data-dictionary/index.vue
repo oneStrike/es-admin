@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Recordable } from '@vben/types';
-
+import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseDictionaryDto,
   CreateDictionaryDto,
@@ -22,39 +21,36 @@ import {
   formSchema,
 } from './model/shared';
 
-const [Grid, gridApi] = useVbenVxeGrid<BaseDictionaryDto>({
-  gridOptions: {
-    columns: dictionaryColumns,
-    proxyConfig: {
-      ajax: {
-        query: async (
-          {
-            page,
-            sorts,
-          }: {
-            page: { currentPage: number; pageSize: number };
-            sorts: any[];
-          },
-          formValues: Recordable<any>,
-        ) => {
-          return await Api.dictionaryPageApi(
-            formatQuery({ page, sorts, formValues }),
-          );
-        },
+type DictionaryRow = BaseDictionaryDto & {
+  loading?: boolean;
+};
+
+const gridOptions: VxeGridProps<DictionaryRow> = {
+  columns: dictionaryColumns,
+  proxyConfig: {
+    ajax: {
+      query: async ({ page, sorts }, formValues) => {
+        return await Api.dictionaryPageApi(
+          formatQuery({ page, sorts, formValues }),
+        );
       },
-      sort: true,
     },
+    sort: true,
   },
+};
+
+const [Grid, gridApi] = useVbenVxeGrid<DictionaryRow>({
+  gridOptions,
   formOptions: createSearchFormOptions(dictionarySearchSchema),
 });
 
-async function deleteDictionary(row: BaseDictionaryDto) {
+async function deleteDictionary(row: DictionaryRow) {
   await Api.dictionaryDeleteApi({ id: row.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function confirmDeleteDictionary(row: BaseDictionaryDto) {
+async function confirmDeleteDictionary(row: DictionaryRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前项?',
     successMessage: false,
@@ -67,7 +63,7 @@ async function confirmDeleteDictionary(row: BaseDictionaryDto) {
 const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
-async function openFormModal(row?: BaseDictionaryDto) {
+async function openFormModal(row?: DictionaryRow) {
   let record;
   if (row) {
     record = await Api.dictionaryDetailApi({ id: row.id });
@@ -81,7 +77,7 @@ async function openFormModal(row?: BaseDictionaryDto) {
     .open();
 }
 
-async function toggleEnableStatus(row: BaseDictionaryDto) {
+async function toggleEnableStatus(row: DictionaryRow) {
   const newStatus = !row.isEnabled;
   row.loading = true;
   try {
@@ -96,31 +92,44 @@ async function toggleEnableStatus(row: BaseDictionaryDto) {
   }
 }
 
-// 添加数据字典
-type DictionaryFormValues = CreateDictionaryDto | UpdateDictionaryDto;
-
 function buildDictionaryPayload(
-  values: DictionaryFormValues,
-): CreateDictionaryDto | UpdateDictionaryDto {
+  values: Partial<
+    Pick<
+      CreateDictionaryDto,
+      'code' | 'cover' | 'description' | 'isEnabled' | 'name'
+    >
+  > &
+    Pick<Partial<UpdateDictionaryDto>, 'id'>,
+) {
+  const code = values.code?.trim();
+  const name = values.name?.trim();
+
+  if (!code || !name || typeof values.isEnabled !== 'boolean') {
+    useMessage.warning('请完整填写字典名称、编码和状态');
+    throw new Error('invalid dictionary payload');
+  }
+
   const payload = {
-    cover: values.cover,
-    name: values.name,
-    code: values.code,
+    cover: values.cover || undefined,
+    name,
+    code,
     isEnabled: values.isEnabled,
-    description: values.description,
-  };
+    description: values.description?.trim?.() || undefined,
+  } satisfies CreateDictionaryDto;
 
   return 'id' in values && typeof values.id === 'number'
-    ? ({ id: values.id, ...payload } as UpdateDictionaryDto)
-    : (payload as CreateDictionaryDto);
+    ? ({ id: values.id, ...payload } satisfies UpdateDictionaryDto)
+    : payload;
 }
 
-async function addDictionary(values: DictionaryFormValues) {
+async function addDictionary(
+  values: Parameters<typeof buildDictionaryPayload>[0],
+) {
   const payload = buildDictionaryPayload(values);
 
   await ('id' in payload && typeof payload.id === 'number'
-    ? Api.dictionaryUpdateApi(payload as UpdateDictionaryDto)
-    : Api.dictionaryCreateApi(payload as CreateDictionaryDto));
+    ? Api.dictionaryUpdateApi(payload)
+    : Api.dictionaryCreateApi(payload));
   useMessage.success('操作成功');
   formApi.close();
   gridApi.reload();

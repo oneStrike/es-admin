@@ -15,21 +15,19 @@ export const userRole = [
     label: '普通管理员',
     value: 0,
     color: '#1890ff', // 蓝色
+    tagType: 'primary',
   },
   {
     label: '超级管理员',
     value: 1,
     color: '#ff4d4f', // 红色
+    tagType: 'danger',
   },
-];
+] as const;
 
-export const userRoleObj: Record<number, { color: string; label: string }> = {};
-for (const item of userRole) {
-  userRoleObj[item.value] = {
-    label: item.label,
-    color: item.color,
-  };
-}
+export const userRoleObj = Object.fromEntries(
+  userRole.map((item) => [item.value, item] as const),
+);
 
 // 用户状态配置
 export const userStatus = [
@@ -37,22 +35,19 @@ export const userStatus = [
     label: '启用',
     value: true,
     color: '#52c41a', // 绿色
+    tagType: 'success',
   },
   {
     label: '禁用',
     value: false,
     color: '#ff4d4f', // 红色
+    tagType: 'danger',
   },
-];
+] as const;
 
-export const userStatusObj: Record<string, { color: string; label: string }> =
-  {};
-for (const item of userStatus) {
-  userStatusObj[String(item.value)] = {
-    label: item.label,
-    color: item.color,
-  };
-}
+export const userStatusObj = Object.fromEntries(
+  userStatus.map((item) => [String(item.value), item] as const),
+);
 
 // 锁定状态配置
 export const lockStatus = [
@@ -60,22 +55,19 @@ export const lockStatus = [
     label: '未锁定',
     value: false,
     color: '#52c41a', // 绿色
+    tagType: 'success',
   },
   {
     label: '已锁定',
     value: true,
     color: '#ff4d4f', // 红色
+    tagType: 'danger',
   },
-];
+] as const;
 
-export const lockStatusObj: Record<string, { color: string; label: string }> =
-  {};
-for (const item of lockStatus) {
-  lockStatusObj[String(item.value)] = {
-    label: item.label,
-    color: item.color,
-  };
-}
+export const lockStatusObj = Object.fromEntries(
+  lockStatus.map((item) => [String(item.value), item] as const),
+);
 
 // 表单配置
 export const formSchema: EsFormSchema = [
@@ -219,7 +211,7 @@ export const userColumns = formSchemaTransform.toTableColumns<SystemUserRow>(
     },
     lastLoginAt: {
       title: '最近登录时间',
-      formatter: ({ row }: any) => {
+      formatter: ({ row }) => {
         return row.lastLoginAt ? formatUTC(row.lastLoginAt) : '-';
       },
       sortable: true,

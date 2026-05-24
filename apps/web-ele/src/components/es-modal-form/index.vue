@@ -6,10 +6,6 @@ import type { EsFormSchema } from '#/types';
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { getApiErrorMessage, isNormalizedApiError } from '#/api/error';
-import { useMessage } from '#/hooks/useFeedback';
-
-import { isHandledFormError } from './error';
 
 defineOptions({
   name: 'EsModalForm',
@@ -81,9 +77,6 @@ const [BaseForm, formApi] = useVbenForm({
       });
       modalApi.close();
     } catch (error) {
-      if (!isNormalizedApiError(error) && !isHandledFormError(error)) {
-        useMessage.warning(getApiErrorMessage(error, '操作失败'));
-      }
       throw error;
     } finally {
       modalApi.unlock();
@@ -95,7 +88,6 @@ const [BaseForm, formApi] = useVbenForm({
   <Modal
     class="px-4"
     :class="sharedData.cols === 1 ? 'w-[700px]' : 'w-[1000px]'"
-    :style="{ width: `${sharedData.width}px` }"
   >
     <template #prepend-footer>
       <el-button @click="formApi.resetForm()">重置</el-button>

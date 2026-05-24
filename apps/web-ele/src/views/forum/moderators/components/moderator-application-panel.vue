@@ -75,6 +75,12 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '版主申请详情',
 });
 
+type ModeratorAuditFormValues = Partial<
+  Pick<AuditForumModeratorApplicationDto, 'auditReason' | 'id' | 'remark'> & {
+    status: 1 | 2 | number | string;
+  }
+>;
+
 async function openAuditModal(row: ForumModeratorApplicationDto) {
   const detail = await forumModeratorApplicationDetailApi({ id: row.id });
 
@@ -94,7 +100,7 @@ async function openAuditModal(row: ForumModeratorApplicationDto) {
     .open();
 }
 
-async function handleAuditSubmit(values: Record<string, any>) {
+async function handleAuditSubmit(values: ModeratorAuditFormValues) {
   if (values.status === 2 && !values.auditReason?.trim?.()) {
     useMessage.warning('拒绝申请时请填写审核意见');
     throw new Error('missing audit reason');

@@ -59,6 +59,22 @@ const modelValue = defineModel({ type: String, default: '' });
 const { isDark } = usePreferences();
 const editorKey = computed(() => `tinymce-${isDark.value ? 'dark' : 'light'}`);
 
+type EditorBlobInfo = {
+  blob: () => File;
+};
+
+function resolveUploadedFilePath(result: unknown) {
+  if (!result || typeof result !== 'object') {
+    return '';
+  }
+
+  const uploadResult = result as {
+    filePath?: string;
+    success?: Array<{ filePath?: string }>;
+  };
+  return uploadResult.filePath ?? uploadResult.success?.[0]?.filePath ?? '';
+}
+
 // 定义一个对象 init初始化
 const init = reactive({
   selector: `#${tinymceId.value}`, // 富文本编辑器的id,
@@ -121,11 +137,11 @@ const init = reactive({
   content_css: isDark.value
     ? '/libs/tinymce/skins/content/dark/content.css'
     : '/libs/tinymce/skins/content/default/content.css', // 以css文件方式自定义可编辑区域的css样式，css文件需自己创建并引入
-  images_upload_handler(blobInfo: any) {
+  images_upload_handler(blobInfo: EditorBlobInfo) {
     return new Promise((resolve, reject) => {
       useUpload('/api/admin/upload/file/upload', blobInfo.blob()).then(
-        (result: any) => {
-          const filePath = result?.filePath ?? result?.success?.[0]?.filePath;
+        (result) => {
+          const filePath = resolveUploadedFilePath(result);
           if (filePath) {
             resolve(filePath);
             return;
@@ -229,7 +245,8 @@ defineExpose({
 <template>
   <div
     ref="containerRef"
-    :class="[tinymceContainerClassName, 'h-full overflow-visible']"
+    class="h-full overflow-visible"
+    :class="tinymceContainerClassName"
   >
     <Editor
       :id="tinymceId"

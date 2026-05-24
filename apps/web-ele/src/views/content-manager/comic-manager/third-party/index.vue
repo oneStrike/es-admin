@@ -2269,9 +2269,9 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
   <TagForm :on-submit="handleCreateTag" :schema="thirdPartyTagFormSchema" />
 </template>
 
-<style scoped>
-.chapter-mapping-grid :deep(.vxe-table--body .vxe-body--row),
-.chapter-mapping-grid :deep(.vxe-table--body .vxe-body--column) {
+<style>
+.chapter-mapping-grid .vxe-table--body .vxe-body--row,
+.chapter-mapping-grid .vxe-table--body .vxe-body--column {
   cursor: pointer;
 }
 </style>

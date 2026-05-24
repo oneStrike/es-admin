@@ -180,7 +180,7 @@ export const dictionaryItemColumns =
       slots: { default: 'isEnabled' },
     },
     description: {
-      formatter: ({ cellValue }: any) => {
+      formatter: ({ cellValue }) => {
         return cellValue ?? '-';
       },
     },

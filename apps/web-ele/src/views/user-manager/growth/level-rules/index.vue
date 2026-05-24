@@ -133,6 +133,10 @@ async function toggleEnableStatus(
     row.loading = false;
   }
 }
+
+function getLevelColorStyle(color?: null | string) {
+  return color ? { '--level-rule-color': color } : undefined;
+}
 </script>
 
 <template>
@@ -147,8 +151,8 @@ async function toggleEnableStatus(
       <template #color="{ row }">
         <div class="flex items-center justify-center">
           <div
-            class="h-6 w-6 rounded-md"
-            :style="{ backgroundColor: row.color || undefined }"
+            class="level-rule-color-swatch h-6 w-6 rounded-md"
+            :style="getLevelColorStyle(row.color)"
           ></div>
           <span class="ml-2">{{ row.color }}</span>
         </div>
@@ -193,5 +197,11 @@ async function toggleEnableStatus(
     />
   </Page>
 </template>
+
+<style scoped>
+.level-rule-color-swatch {
+  background-color: var(--level-rule-color, var(--el-fill-color-light));
+}
+</style>
 
 <style scoped></style>

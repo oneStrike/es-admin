@@ -1,4 +1,5 @@
 import type {
+  CheckInRewardItemDto as ApiCheckInRewardItemDto,
   BaseCheckInPatternRewardRuleDto,
   CheckInReconciliationPageItemDto,
   CheckInStreakRuleDetailResponseDto,
@@ -13,10 +14,9 @@ import {
 
 export type CheckInReconciliationRow = CheckInReconciliationPageItemDto;
 export type CheckInRewardItemDto = {
-  [property: string]: any;
-  amount: number;
+  amount: ApiCheckInRewardItemDto['amount'];
   assetKey?: string;
-  assetType: 1 | 2 | 3 | 4 | 5;
+  assetType: ApiCheckInRewardItemDto['assetType'];
   iconUrl?: string;
 };
 

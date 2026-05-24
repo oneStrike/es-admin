@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
-import type { Recordable } from '@vben/types';
 
 import type {
   BadgeUserPageItemDto,
@@ -215,7 +214,7 @@ function openRevokeModal(record: BaseUserBadgeDto) {
     .setData({
       title: `撤销徽章用户 - ${record.name}`,
       columns: userColumns,
-      api: (params: Recordable<any>) =>
+      api: (params: Record<string, unknown>) =>
         growthBadgesUserPageApi({ ...params, badgeId: record.id }),
       selectionMode: 'multiple',
       multipleLimit: 50,

@@ -14,7 +14,6 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { couponDefinitionPageApi, membershipBenefitPageApi } from '#/api/core';
-import { getApiErrorMessage, isNormalizedApiError } from '#/api/error';
 import { useMessage } from '#/hooks/useFeedback';
 import { getOptionLabel } from '#/utils/options';
 
@@ -379,9 +378,7 @@ async function handleConfirm() {
     });
     modalApi.close();
   } catch (error) {
-    if (!isNormalizedApiError(error)) {
-      message.warning(getApiErrorMessage(error, '提交失败'));
-    }
+    throw error;
   } finally {
     modalApi.unlock();
   }

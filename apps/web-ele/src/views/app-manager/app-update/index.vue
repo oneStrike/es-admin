@@ -26,6 +26,7 @@ import { getDetailCards } from './model/detail';
 import {
   appUpdateColumns,
   appUpdateFilter,
+  type AppUpdateFormValues,
   buildAppUpdateSubmitPayload,
   formSchema,
   mapAppUpdateDetailToFormValues,
@@ -74,10 +75,8 @@ async function openFormModal(row?: AppUpdateReleaseListItemDto) {
   formApi.setData({ title: '版本更新', record, width: 900 }).open();
 }
 
-async function handleSubmit(
-  values: CreateAppUpdateReleaseDto | UpdateAppUpdateReleaseDto,
-) {
-  const payload = buildAppUpdateSubmitPayload(values as Record<string, any>);
+async function handleSubmit(values: AppUpdateFormValues) {
+  const payload = buildAppUpdateSubmitPayload(values);
 
   await ('id' in payload && typeof payload.id === 'number'
     ? appUpdateUpdateApi(payload as UpdateAppUpdateReleaseDto)

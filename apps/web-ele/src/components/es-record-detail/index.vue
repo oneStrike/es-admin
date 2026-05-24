@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DetailCard } from './types';
+import type { DetailCard, DetailTagType } from './types';
 
 import { computed, defineComponent, h, ref, watch } from 'vue';
 
@@ -9,8 +9,6 @@ import { useMessage } from '#/hooks/useFeedback';
 import { formatUTC } from '#/utils';
 
 type DetailRecord = Record<string, unknown>;
-type DetailTagType = 'danger' | 'info' | 'primary' | 'success' | 'warning';
-
 interface Props {
   title?: string;
   api?: (params: { id: number }) => Promise<DetailRecord>;
@@ -223,7 +221,6 @@ defineExpose({
               >
                 <el-text
                   v-if="field.type === 'text' || field.type === 'date'"
-                  :style="field.color ? { color: field.color } : undefined"
                   class="text-sm"
                 >
                   {{

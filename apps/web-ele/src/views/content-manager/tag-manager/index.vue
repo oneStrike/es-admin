@@ -21,10 +21,14 @@ import { createSearchFormOptions } from '#/utils';
 
 import { formSchema, tagColumns, tagSearchSchema } from './model/shared';
 
+type TagRow = BaseTagDto & {
+  loading?: boolean;
+};
+
 /**
  * 通用的成功处理：提示 + 刷新（遵循DRY原则封装重复逻辑）
  */
-function handleSuccessReload(gridApi: any, message = '操作成功'): void {
+function handleSuccessReload(message = '操作成功') {
   useMessage.success(message);
   gridApi.reload();
 }
@@ -32,7 +36,7 @@ function handleSuccessReload(gridApi: any, message = '操作成功'): void {
 /**
  * VxeGrid 的选项配置：
  */
-const gridOptions: VxeGridProps<BaseTagDto> = {
+const gridOptions: VxeGridProps<TagRow> = {
   columns: tagColumns,
   rowConfig: {
     drag: true,
@@ -74,7 +78,7 @@ const [Form, formApi] = useVbenModal({
 /**
  * 打开表单弹窗
  */
-async function openFormModal(row?: BaseTagDto): Promise<void> {
+async function openFormModal(row?: TagRow) {
   let record: BaseTagDto | undefined;
   if (row) {
     record = await contentTagDetailApi({ id: row.id });
@@ -91,25 +95,25 @@ async function openFormModal(row?: BaseTagDto): Promise<void> {
 /**
  * 切换启用状态
  */
-async function toggleEnableStatus(row: BaseTagDto): Promise<void> {
-  row.loading = true as any;
+async function toggleEnableStatus(row: TagRow) {
+  row.loading = true;
   try {
     await contentTagUpdateStatusApi({
       id: row.id,
       isEnabled: !row.isEnabled,
     });
-    handleSuccessReload(gridApi);
+    handleSuccessReload();
   } finally {
-    row.loading = false as any;
+    row.loading = false;
   }
 }
 
 /**
  * 新增或更新标签
  */
-type TagFormValues = CreateTagDto | UpdateTagDto;
-
-function buildTagPayload(values: TagFormValues): CreateTagDto | UpdateTagDto {
+function buildTagPayload(
+  values: CreateTagDto | UpdateTagDto,
+): CreateTagDto | UpdateTagDto {
   const payload = {
     icon: values.icon,
     name: values.name,
@@ -122,7 +126,7 @@ function buildTagPayload(values: TagFormValues): CreateTagDto | UpdateTagDto {
     : (payload as CreateTagDto);
 }
 
-async function addOrUpdateTag(values: TagFormValues): Promise<void> {
+async function addOrUpdateTag(values: CreateTagDto | UpdateTagDto) {
   const payload = buildTagPayload(values);
 
   await ('id' in payload && typeof payload.id === 'number'
@@ -135,12 +139,12 @@ async function addOrUpdateTag(values: TagFormValues): Promise<void> {
 /**
  * 删除标签
  */
-async function deleteTag(row: BaseTagDto): Promise<void> {
+async function deleteTag(row: TagRow) {
   await contentTagDeleteApi({ id: row.id });
-  handleSuccessReload(gridApi);
+  handleSuccessReload();
 }
 
-async function confirmDeleteTag(row: BaseTagDto): Promise<void> {
+async function confirmDeleteTag(row: TagRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前项?',
     successMessage: false,

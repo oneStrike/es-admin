@@ -46,6 +46,13 @@ type TemplateRow = AdminMessageNotificationTemplateDto & {
   enabledLoading?: boolean;
 };
 
+type TemplateFormValues = Partial<
+  Pick<
+    MessageNotificationTemplatesCreateRequest,
+    'categoryKey' | 'contentTemplate' | 'isEnabled' | 'remark' | 'titleTemplate'
+  >
+>;
+
 const editingRecord = ref<AdminMessageNotificationTemplateDto | null>(null);
 const selectedCategoryKey = ref('');
 
@@ -53,7 +60,7 @@ const availableTemplateVariables = computed(() =>
   getTemplateVariables(selectedCategoryKey.value),
 );
 
-function removeEmptyValues<T extends Record<string, any>>(values: T) {
+function removeEmptyValues<T extends Record<string, unknown>>(values: T) {
   return Object.fromEntries(
     Object.entries(values).filter(
       ([, value]) => value !== '' && value !== null && value !== undefined,
@@ -162,23 +169,34 @@ async function handleCategoryChange(categoryKey?: string) {
   });
 }
 
-async function handleSubmit(values: Record<string, any>) {
+async function handleSubmit(values: TemplateFormValues) {
+  if (!isNotificationCategoryKey(values.categoryKey)) {
+    useMessage.warning('请先选择通知分类');
+    return;
+  }
+
+  const titleTemplate = values.titleTemplate?.trim();
+  const contentTemplate = values.contentTemplate?.trim();
+
+  if (!titleTemplate || !contentTemplate) {
+    useMessage.warning('请完整填写标题模板和正文模板');
+    return;
+  }
+
   const payload = {
-    categoryKey: values.categoryKey?.trim?.(),
-    contentTemplate: values.contentTemplate,
+    categoryKey: values.categoryKey,
+    contentTemplate,
     isEnabled: values.isEnabled ?? true,
     remark: values.remark?.trim?.() || undefined,
-    titleTemplate: values.titleTemplate,
-  };
+    titleTemplate,
+  } satisfies MessageNotificationTemplatesCreateRequest;
 
   await (editingRecord.value
     ? messageNotificationTemplatesUpdateApi({
         ...payload,
         id: editingRecord.value.id,
       } satisfies MessageNotificationTemplatesUpdateRequest)
-    : messageNotificationTemplatesCreateApi(
-        payload satisfies MessageNotificationTemplatesCreateRequest,
-      ));
+    : messageNotificationTemplatesCreateApi(payload));
 
   templateModalApi.close();
   useMessage.success('操作成功');

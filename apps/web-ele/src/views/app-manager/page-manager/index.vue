@@ -143,9 +143,9 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
       </template>
 
       <template #accessLevel="{ row }">
-        <el-text :style="{ color: accessLevelObj[row.accessLevel]?.color }">
+        <el-tag :type="accessLevelObj[row.accessLevel]?.tagType || 'info'">
           {{ accessLevelObj[row.accessLevel]?.label }}
-        </el-text>
+        </el-tag>
       </template>
       <template #isEnabled="{ row }">
         <el-switch

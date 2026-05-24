@@ -48,11 +48,8 @@ const statusSummary = computed(() => {
   if (!statusData.value.ready) return '当前进程尚未加载可用属地库';
   return '当前进程已加载可用属地库';
 });
-const inlineCodeClass = 'rounded px-1 py-0.5 font-mono';
-const inlineCodeStyle = {
-  backgroundColor: 'var(--el-fill-color-light)',
-  color: 'var(--el-text-color-regular)',
-};
+const inlineCodeClass =
+  'ip-geolocation-inline-code rounded px-1 py-0.5 font-mono';
 
 function formatDateTime(value?: null | string) {
   if (!value) return '-';
@@ -148,12 +145,7 @@ onMounted(loadStatus);
               type="info"
             >
               用于上传并切换当前进程使用的
-              <el-text
-                tag="code"
-                :class="inlineCodeClass"
-                :style="inlineCodeStyle"
-                size="small"
-              >
+              <el-text tag="code" :class="inlineCodeClass" size="small">
                 ip2region_v4.xdb
               </el-text>
               文件。当前能力只保证接收上传请求的 API
@@ -230,30 +222,15 @@ onMounted(loadStatus);
 
             <el-text tag="p" class="leading-6" size="small" type="info">
               仅支持上传
-              <el-text
-                tag="code"
-                :class="inlineCodeClass"
-                :style="inlineCodeStyle"
-                size="small"
-              >
+              <el-text tag="code" :class="inlineCodeClass" size="small">
                 ip2region_v4.xdb
               </el-text>
               。上传成功后会写入
-              <el-text
-                tag="code"
-                :class="inlineCodeClass"
-                :style="inlineCodeStyle"
-                size="small"
-              >
+              <el-text tag="code" :class="inlineCodeClass" size="small">
                 versions
               </el-text>
               和
-              <el-text
-                tag="code"
-                :class="inlineCodeClass"
-                :style="inlineCodeStyle"
-                size="small"
-              >
+              <el-text tag="code" :class="inlineCodeClass" size="small">
                 active
               </el-text>
               目录，并切换当前进程查询器。
@@ -322,21 +299,11 @@ onMounted(loadStatus);
               <li>
                 <el-text size="small" type="info">
                   4. 若
-                  <el-text
-                    tag="code"
-                    :class="inlineCodeClass"
-                    :style="inlineCodeStyle"
-                    size="small"
-                  >
+                  <el-text tag="code" :class="inlineCodeClass" size="small">
                     admin-api
                   </el-text>
                   与
-                  <el-text
-                    tag="code"
-                    :class="inlineCodeClass"
-                    :style="inlineCodeStyle"
-                    size="small"
-                  >
+                  <el-text tag="code" :class="inlineCodeClass" size="small">
                     app-api
                   </el-text>
                   分离运行，本页上传只影响当前接收请求的进程。
@@ -349,3 +316,10 @@ onMounted(loadStatus);
     </main>
   </Page>
 </template>
+
+<style scoped>
+.ip-geolocation-inline-code {
+  color: var(--el-text-color-regular);
+  background-color: var(--el-fill-color-light);
+}
+</style>

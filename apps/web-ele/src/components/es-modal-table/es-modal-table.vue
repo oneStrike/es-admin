@@ -178,12 +178,12 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-const tableHeight = ref('70vh');
+const tableHeightClass = ref('h-[70vh]');
 const state = modalApi.useStore();
 watch(
   () => state.value.fullscreen,
   (isFullscreen) => {
-    tableHeight.value = isFullscreen ? '90vh' : '70vh';
+    tableHeightClass.value = isFullscreen ? 'h-[90vh]' : 'h-[70vh]';
   },
 );
 
@@ -215,14 +215,14 @@ function getRowLabel(item: EsModalTableRow) {
   <Modal v-if="sharedData?.columns" class="w-[1200px]">
     <el-row :gutter="20" class="h-full">
       <el-col :span="16" class="flex h-full flex-col">
-        <div :style="{ height: tableHeight }">
+        <div :class="tableHeightClass">
           <Grid
             @checkbox-change="handleCheckboxChange"
             @radio-change="handleRadioChange"
           />
         </div>
       </el-col>
-      <el-col :span="8" :style="{ height: tableHeight }">
+      <el-col :span="8" :class="tableHeightClass">
         <el-card class="h-full" shadow="never">
           <div class="mb-3 flex justify-between">
             <el-text tag="h3" size="large" class="font-semibold">

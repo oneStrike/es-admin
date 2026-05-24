@@ -18,7 +18,10 @@ export const useBitMask = {
   /**
    * 获取所有被设置的 bit 对应的label值
    */
-  getLabels(bitmask: number, labels: any[]): string[] {
+  getLabels(
+    bitmask: number,
+    labels: Array<{ label: string; value: number }>,
+  ): string[] {
     const result: string[] = [];
     this.split(bitmask).forEach((flag) => {
       const option = labels.find((item) => item.value === flag);

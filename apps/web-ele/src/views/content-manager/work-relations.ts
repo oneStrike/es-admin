@@ -5,7 +5,7 @@ type RelationEntity = {
   name?: null | string;
 };
 
-type RelationItem = null | Record<string, any> | undefined;
+type RelationItem = null | Record<string, unknown> | undefined;
 
 function unwrapRelationItem(
   item: RelationItem,

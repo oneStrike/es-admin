@@ -211,8 +211,9 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
         {
           label: '当前状态',
           value: getUserStatusText(detail.status),
-          type: 'text' as const,
-          color: currentStatus?.color,
+          type: 'tag' as const,
+          tagText: getUserStatusText(detail.status),
+          tagType: currentStatus?.tagType,
         },
         {
           label: '处理原因',

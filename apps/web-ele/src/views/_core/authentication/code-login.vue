@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { Recordable } from '@vben/types';
 
 import { computed, ref } from 'vue';
 
@@ -41,7 +40,6 @@ const formSchema = computed((): VbenFormSchema[] => {
         },
         placeholder: $t('authentication.code'),
         handleSendCode: async () => {
-          console.warn('发送验证码前校验等逻辑');
           throw new Error('手机号校验失败');
         },
       },
@@ -58,7 +56,7 @@ const formSchema = computed((): VbenFormSchema[] => {
  * Asynchronously handle the login process
  * @param values 登录表单数据
  */
-async function handleLogin(values: Recordable<any>) {
+async function handleLogin(values: Record<string, unknown>) {
   void values;
 }
 </script>

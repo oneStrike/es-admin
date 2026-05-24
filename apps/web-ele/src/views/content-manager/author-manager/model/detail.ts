@@ -6,13 +6,20 @@ import { getOptionLabel } from '#/utils/options';
 
 import { typeOptions } from './shared';
 
+type AuthorDetailExtraData = {
+  nationalityMap?: Record<string, string>;
+};
+
 /**
  * 获取作者详情卡片配置
  * @param detail 作者详情数据
  * @param extraData 额外数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: BaseAuthorDto, extraData?: any) {
+export function getDetailCards(
+  detail: BaseAuthorDto,
+  extraData?: AuthorDetailExtraData,
+) {
   // 解析作者类型
   const authorTypes = getOptionLabel(typeOptions, detail.type ?? []);
 

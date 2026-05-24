@@ -44,8 +44,9 @@ export function getDetailCards(detail: BaseAppPageDto) {
         {
           label: '权限级别',
           value: accessLevelInfo?.label,
-          type: 'text' as const,
-          color: accessLevelInfo?.color,
+          type: 'tag' as const,
+          tagText: accessLevelInfo?.label,
+          tagType: accessLevelInfo?.tagType,
         },
         {
           label: '启用平台',

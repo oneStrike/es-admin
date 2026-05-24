@@ -520,7 +520,7 @@ async function discardPreConfirmState() {
     await discardArchivePreview(jobId);
     resetPreConfirmState();
     return true;
-  } catch (error: any) {
+  } catch (error) {
     cancelling.value = false;
     uploading.value = false;
     uploadAbortController = null;
@@ -612,7 +612,7 @@ async function handleStartPreview() {
     } else {
       useMessage.warning('预解析完成，但没有可导入的章节');
     }
-  } catch (error: any) {
+  } catch (error) {
     if (controller?.signal.aborted || runId !== previewRunId) {
       return;
     }

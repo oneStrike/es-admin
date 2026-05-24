@@ -1,13 +1,18 @@
 export type FieldType = 'date' | 'image' | 'tag' | 'text' | 'title';
+export type DetailTagType =
+  | 'danger'
+  | 'info'
+  | 'primary'
+  | 'success'
+  | 'warning';
 
 export interface DetailField {
   label: string;
   value: unknown;
   type: FieldType;
-  tagType?: string;
+  tagType?: DetailTagType | string;
   tagText?: string;
   dateType?: string;
-  color?: string;
 }
 
 export interface DetailCard {

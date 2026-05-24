@@ -220,7 +220,7 @@ onMounted(async () => {
 
             <!-- 详细信息区域 -->
             <div class="flex-1 overflow-auto">
-              <el-descriptions :column="1" border>
+              <el-descriptions class="profile-descriptions" :column="1" border>
                 <el-descriptions-item label="用户ID">
                   <span class="font-mono text-foreground">{{
                     userInfo.id
@@ -296,17 +296,13 @@ onMounted(async () => {
   </Page>
 </template>
 
-<style scoped>
-.el-descriptions :deep(.el-descriptions__label) {
+<style>
+.profile-descriptions .el-descriptions__label {
   font-weight: 600;
   color: hsl(var(--foreground));
 }
 
-.el-descriptions :deep(.el-descriptions__content) {
+.profile-descriptions .el-descriptions__content {
   color: hsl(var(--foreground));
-}
-
-.font-mono {
-  font-family: 'Courier New', monospace;
 }
 </style>

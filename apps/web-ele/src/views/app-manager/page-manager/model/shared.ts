@@ -10,32 +10,31 @@ export const accessLevel = [
     label: '公开访问',
     value: 0,
     color: '#52c41a', // 绿色
+    tagType: 'success',
   },
   {
     label: '登录访问',
     value: 1,
     color: '#1890ff', // 蓝色
+    tagType: 'primary',
   },
   {
     label: '会员访问',
     value: 2,
     color: '#fa8c16', // 橙色
+    tagType: 'warning',
   },
   {
     label: 'VIP访问',
     value: 3,
     color: '#ff4d4f', // 红色
+    tagType: 'danger',
   },
-];
+] as const;
 
-export const accessLevelObj: Record<number, { color: string; label: string }> =
-  {};
-for (const item of accessLevel) {
-  accessLevelObj[item.value] = {
-    label: item.label,
-    color: item.color,
-  };
-}
+export const accessLevelObj = Object.fromEntries(
+  accessLevel.map((item) => [item.value, item] as const),
+);
 
 // 表单配置
 export const formSchema: EsFormSchema = [

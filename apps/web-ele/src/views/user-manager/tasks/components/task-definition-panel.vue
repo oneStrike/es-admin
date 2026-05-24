@@ -4,7 +4,6 @@ import type { TaskDefinitionRow } from '../model/definition';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   TaskCreateRequest,
-  TaskDetailResponse,
   TaskEventTemplateOptionDto,
   TaskTemplateFilterValueDto,
   TaskUpdateRequest,
@@ -45,6 +44,32 @@ import {
 
 const templateOptions = ref<TaskEventTemplateOptionDto[]>([]);
 const editingTemplateKey = ref<string>();
+
+type TaskFormValues = Partial<
+  Pick<
+    TaskCreateRequest,
+    | 'claimMode'
+    | 'cover'
+    | 'description'
+    | 'endAt'
+    | 'repeatType'
+    | 'sceneType'
+    | 'sortOrder'
+    | 'startAt'
+    | 'status'
+    | 'title'
+  >
+> &
+  Pick<Partial<TaskUpdateRequest>, 'id'> & {
+    rewardExperience?: number | string;
+    rewardPoints?: number | string;
+    stepDedupeScope?: null | number | string;
+    stepDescription?: null | string;
+    stepFiltersText?: string;
+    stepTargetValue?: number | string;
+    stepTemplateKey?: null | string;
+    stepTriggerMode?: 1 | 2 | number | string;
+  };
 
 const gridOptions: VxeGridProps<TaskDefinitionRow> = {
   columns: taskDefinitionColumns,
@@ -132,7 +157,7 @@ function shouldBlockUnselectableTemplate(
   return editingTemplateKey.value !== selectedTemplate.templateKey;
 }
 
-function buildTaskPayloadBase(values: Record<string, any>): TaskCreateRequest {
+function buildTaskPayloadBase(values: TaskFormValues) {
   const title = parseTextValue(values.title);
 
   if (!title) {
@@ -207,28 +232,22 @@ function buildTaskPayloadBase(values: Record<string, any>): TaskCreateRequest {
       triggerMode: stepTriggerMode,
     },
     title,
-  };
+  } satisfies TaskCreateRequest;
 }
 
-function buildCreateTaskPayload(
-  values: Record<string, any>,
-): TaskCreateRequest {
-  return buildTaskPayloadBase(values);
-}
-
-function buildUpdateTaskPayload(
-  values: Record<string, any>,
-): TaskUpdateRequest {
+function buildUpdateTaskPayload(values: TaskFormValues) {
   return {
     ...buildTaskPayloadBase(values),
     id: Number(values.id),
-  };
+  } satisfies TaskUpdateRequest;
 }
 
 async function openFormModal(row?: TaskDefinitionRow) {
   await ensureTemplateOptionsLoaded();
 
-  let record: Record<string, any> | TaskDetailResponse | undefined;
+  let record:
+    | ReturnType<typeof mapTaskDefinitionDetailToFormRecord>
+    | undefined;
   if (row) {
     const detail = await taskDetailApi({ id: row.id });
     editingTemplateKey.value = detail.steps?.[0]?.templateKey ?? undefined;
@@ -248,20 +267,16 @@ async function openFormModal(row?: TaskDefinitionRow) {
     .open();
 }
 
-async function handleSubmit(values: Record<string, any>) {
-  let payload: TaskCreateRequest | TaskUpdateRequest;
+async function handleSubmit(values: TaskFormValues) {
   try {
-    payload = values.id
-      ? buildUpdateTaskPayload(values)
-      : buildCreateTaskPayload(values);
+    await (values.id
+      ? taskUpdateApi(buildUpdateTaskPayload(values))
+      : taskCreateApi(buildTaskPayloadBase(values)));
   } catch (error) {
     useMessage.warning(error instanceof Error ? error.message : '提交失败');
     throw markHandledFormError(error);
   }
 
-  await (values.id
-    ? taskUpdateApi(payload as TaskUpdateRequest)
-    : taskCreateApi(payload as TaskCreateRequest));
   useMessage.success('操作成功');
   formApi.close();
   await gridApi.reload();

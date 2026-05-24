@@ -41,6 +41,21 @@ type ForumHashtagRow = BaseForumHashtagDto & {
   hiddenLoading?: boolean;
 };
 
+type HashtagCreateFormValues = Pick<
+  ForumHashtagsCreateRequest,
+  'description' | 'displayName' | 'manualBoost'
+>;
+
+type HashtagUpdateFormValues = Pick<
+  ForumHashtagsUpdateRequest,
+  'description' | 'id' | 'manualBoost'
+>;
+
+type HashtagAuditFormValues = Pick<
+  ForumHashtagsUpdateAuditStatusRequest,
+  'auditReason' | 'auditStatus' | 'id'
+>;
+
 const gridOptions: VxeGridProps<ForumHashtagRow> = {
   columns: pageColumns,
   proxyConfig: {
@@ -144,7 +159,7 @@ function normalizeManualBoost(value: unknown) {
 }
 
 function normalizeCreatePayload(
-  values: Record<string, any>,
+  values: HashtagCreateFormValues,
 ): ForumHashtagsCreateRequest {
   const displayName = values.displayName?.trim?.();
   if (!displayName) {
@@ -160,7 +175,7 @@ function normalizeCreatePayload(
 }
 
 function normalizeUpdatePayload(
-  values: Record<string, any>,
+  values: HashtagUpdateFormValues,
 ): ForumHashtagsUpdateRequest {
   return {
     description: normalizeDescription(values.description),
@@ -169,21 +184,21 @@ function normalizeUpdatePayload(
   };
 }
 
-async function handleCreateSubmit(values: Record<string, any>) {
+async function handleCreateSubmit(values: HashtagCreateFormValues) {
   await forumHashtagsCreateApi(normalizeCreatePayload(values));
   createFormApi.close();
   useMessage.success('操作成功');
   await gridApi.reload();
 }
 
-async function handleEditSubmit(values: Record<string, any>) {
+async function handleEditSubmit(values: HashtagUpdateFormValues) {
   await forumHashtagsUpdateApi(normalizeUpdatePayload(values));
   editFormApi.close();
   useMessage.success('操作成功');
   await gridApi.reload();
 }
 
-async function handleAuditSubmit(values: Record<string, any>) {
+async function handleAuditSubmit(values: HashtagAuditFormValues) {
   if (Number(values.auditStatus) === 2 && !values.auditReason?.trim?.()) {
     useMessage.warning('拒绝时请填写审核意见');
     throw new Error('missing audit reason');

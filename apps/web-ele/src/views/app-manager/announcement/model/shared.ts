@@ -17,39 +17,37 @@ export const announcementType = [
     label: '平台公告',
     value: 0,
     color: '#1890ff', // 蓝色 - 代表官方、权威
+    tagType: 'primary',
   },
   {
     label: '活动公告',
     value: 1,
     color: '#52c41a', // 绿色 - 代表活力、活动
+    tagType: 'success',
   },
   {
     label: '维护公告',
     value: 2,
     color: '#faad14', // 橙色 - 代表警示、注意
+    tagType: 'warning',
   },
   {
     label: '更新公告',
     value: 3,
     color: '#722ed1', // 紫色 - 代表创新、更新
+    tagType: 'primary',
   },
   {
     label: '政策公告',
     value: 4,
     color: '#eb2f96', // 洋红色 - 代表重要、规则
+    tagType: 'danger',
   },
-];
+] as const;
 
-export const announcementTypeObj: Record<
-  number,
-  { color: string; label: string }
-> = {};
-for (const item of announcementType) {
-  announcementTypeObj[item.value] = {
-    label: item.label,
-    color: item.color,
-  };
-}
+export const announcementTypeObj = Object.fromEntries(
+  announcementType.map((item) => [item.value, item] as const),
+);
 
 // 启用平台配置
 export const enablePlatform = [
@@ -73,34 +71,31 @@ export const announcementPriority = [
     label: '低优先级',
     value: 0,
     color: '#52c41a',
+    tagType: 'success',
   },
   {
     label: '中等优先级',
     value: 1,
     color: '#1890ff',
+    tagType: 'primary',
   },
   {
     label: '高优先级',
     value: 2,
     color: '#fa8c16',
+    tagType: 'warning',
   },
   {
     label: '紧急',
     value: 3,
     color: '#ff4d4f',
+    tagType: 'danger',
   },
-];
+] as const;
 
-export const announcementPriorityObj: Record<
-  number,
-  { color: string; label: string }
-> = {};
-for (const item of announcementPriority) {
-  announcementPriorityObj[item.value] = {
-    label: item.label,
-    color: item.color,
-  };
-}
+export const announcementPriorityObj = Object.fromEntries(
+  announcementPriority.map((item) => [item.value, item] as const),
+);
 
 // 发布状态配置
 export const publishStatus = [
@@ -108,29 +103,25 @@ export const publishStatus = [
     label: '未发布',
     value: 'unpublished',
     color: '#8c8c8c', // 灰色
+    tagType: 'info',
   },
   {
     label: '已发布',
     value: 'published',
     color: '#52c41a', // 绿色
+    tagType: 'success',
   },
   {
     label: '已过期',
     value: 'expired',
     color: '#ff4d4f', // 红色
+    tagType: 'danger',
   },
-];
+] as const;
 
-export const publishStatusObj: Record<
-  string,
-  { color: string; label: string }
-> = {};
-for (const item of publishStatus) {
-  publishStatusObj[item.value] = {
-    label: item.label,
-    color: item.color,
-  };
-}
+export const publishStatusObj = Object.fromEntries(
+  publishStatus.map((item) => [item.value, item] as const),
+);
 
 export const booleanOptions = [
   {

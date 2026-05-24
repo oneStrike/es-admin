@@ -128,7 +128,7 @@ async function toggleUserStatus(record: SystemUserRow) {
   }
 
   const newStatus = !record.isEnabled;
-  record.loading = true as any;
+  record.loading = true;
   try {
     await systemUserProfileUpdateApi({
       id: record.id,
@@ -141,7 +141,7 @@ async function toggleUserStatus(record: SystemUserRow) {
     useMessage.success(newStatus ? '启用成功' : '禁用成功');
     gridApi.reload();
   } finally {
-    record.loading = false as any;
+    record.loading = false;
   }
 }
 
@@ -155,7 +155,7 @@ async function unlockUser(record: SystemUserRow) {
     return;
   }
 
-  record.loading = true as any;
+  record.loading = true;
   try {
     await systemUserUnlockApi({
       id: record.id,
@@ -163,7 +163,7 @@ async function unlockUser(record: SystemUserRow) {
     useMessage.success('解除锁定成功');
     gridApi.reload();
   } finally {
-    record.loading = false as any;
+    record.loading = false;
   }
 }
 
@@ -243,9 +243,9 @@ async function confirmResetUserPassword(record: SystemUserRow) {
       </template>
 
       <template #role="{ row }">
-        <el-text :style="{ color: userRoleObj[row.role]?.color }">
+        <el-tag :type="userRoleObj[row.role]?.tagType || 'info'">
           {{ userRoleObj[row.role]?.label }}
-        </el-text>
+        </el-tag>
       </template>
 
       <template #isEnabled="{ row }">
@@ -260,9 +260,9 @@ async function confirmResetUserPassword(record: SystemUserRow) {
       </template>
 
       <template #isLocked="{ row }">
-        <el-text :style="{ color: lockStatusObj[String(row.isLocked)]?.color }">
+        <el-tag :type="lockStatusObj[String(row.isLocked)]?.tagType || 'info'">
           {{ lockStatusObj[String(row.isLocked)]?.label }}
-        </el-text>
+        </el-tag>
       </template>
 
       <template #actions="{ row }">

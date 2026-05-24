@@ -68,6 +68,10 @@ type ForumSectionRow = BaseForumSectionDto & {
   rebuildLoading?: boolean;
 };
 
+type SectionGroupTreeNode = {
+  data?: Partial<SectionGroupNode>;
+};
+
 // 当前板块分组
 const currentSectionGroup = ref<null | SectionGroupNode>(null);
 // 板块列表
@@ -378,7 +382,11 @@ async function confirmDeleteSectionGroup(record: SectionGroupNode) {
   await deleteSectionGroup(record);
 }
 
-function allowDrop(dragNode: any, dropNode: any, type: string) {
+function allowDrop(
+  dragNode: SectionGroupTreeNode,
+  dropNode: SectionGroupTreeNode,
+  type: string,
+) {
   if (dragNode.data?.isUngrouped || dropNode.data?.isUngrouped) {
     return false;
   }
@@ -386,8 +394,15 @@ function allowDrop(dragNode: any, dropNode: any, type: string) {
   return type !== 'inner';
 }
 
-async function handleSectionGroupDrop(dragNode: any, dropNode: any) {
+async function handleSectionGroupDrop(
+  dragNode: SectionGroupTreeNode,
+  dropNode: SectionGroupTreeNode,
+) {
   if (dragNode.data?.isUngrouped || dropNode.data?.isUngrouped) {
+    return;
+  }
+
+  if (!dragNode.data?.id || !dropNode.data?.id) {
     return;
   }
 

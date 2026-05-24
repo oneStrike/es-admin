@@ -63,7 +63,7 @@ export const formSchema: EsFormSchema = [
     component: 'TableSelect',
     componentProps: () => {
       return {
-        api: async (value: Record<string, any>) => {
+        api: async (value: Record<string, unknown>) => {
           return contentAuthorPageApi({
             ...value,
             isEnabled: true,

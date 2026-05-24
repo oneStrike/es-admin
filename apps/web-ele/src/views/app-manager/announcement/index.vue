@@ -349,20 +349,19 @@ const [DetailModal, detailApi] = useVbenModal({
       </template>
 
       <template #publishStatus="{ row }">
-        <el-text
-          :style="{
-            color:
-              publishStatusObj[
-                getPublishStatus(row.isPublished, row.publishEndTime)
-              ]?.color,
-          }"
+        <el-tag
+          :type="
+            publishStatusObj[
+              getPublishStatus(row.isPublished, row.publishEndTime)
+            ]?.tagType || 'info'
+          "
         >
           {{
             publishStatusObj[
               getPublishStatus(row.isPublished, row.publishEndTime)
             ]?.label
           }}
-        </el-text>
+        </el-tag>
       </template>
 
       <template #actions="{ row }">
@@ -389,14 +388,7 @@ const [DetailModal, detailApi] = useVbenModal({
           >
             {{ getPublishButtonText(row) }}
           </el-button>
-          <el-button
-            link
-            v-else
-            disabled
-            :style="{
-              color: '#d9d9d9',
-            }"
-          >
+          <el-button link v-else disabled>
             {{ getPublishButtonText(row) }}
           </el-button>
           <el-divider direction="vertical" />

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { Recordable } from '@vben/types';
 
 import { computed, h, ref } from 'vue';
 
@@ -81,7 +80,7 @@ const formSchema = computed((): VbenFormSchema[] => {
   ];
 });
 
-function handleSubmit(value: Recordable<any>) {
+function handleSubmit(value: Record<string, unknown>) {
   void value;
 }
 </script>

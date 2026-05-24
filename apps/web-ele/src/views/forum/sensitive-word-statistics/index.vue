@@ -2,8 +2,10 @@
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import type {
+  SensitiveWordLevelStatisticsDto,
   SensitiveWordStatisticsDataDto,
   SensitiveWordTopHitStatisticsDto,
+  SensitiveWordTypeStatisticsDto,
 } from '#/api/types';
 
 import { onMounted, ref } from 'vue';
@@ -153,10 +155,12 @@ function renderCharts() {
         animationType: 'scale',
         avoidLabelOverlap: false,
         color: ['#5ab1ef', '#b6a2de', '#67e0e3'],
-        data: statisticsData.value.levelStatistics.map((item: any) => ({
-          name: item.levelName,
-          value: item.count,
-        })),
+        data: statisticsData.value.levelStatistics.map(
+          (item: SensitiveWordLevelStatisticsDto) => ({
+            name: item.levelName,
+            value: item.count,
+          }),
+        ),
         emphasis: {
           label: {
             fontSize: '12',
@@ -199,10 +203,12 @@ function renderCharts() {
         animationType: 'scale',
         avoidLabelOverlap: false,
         color: ['#5ab1ef', '#b6a2de', '#67e0e3', '#2ec7c9', '#ffb980'],
-        data: statisticsData.value.typeStatistics.map((item: any) => ({
-          name: item.typeName,
-          value: item.count,
-        })),
+        data: statisticsData.value.typeStatistics.map(
+          (item: SensitiveWordTypeStatisticsDto) => ({
+            name: item.typeName,
+            value: item.count,
+          }),
+        ),
         emphasis: {
           label: {
             fontSize: '12',

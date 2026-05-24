@@ -11,7 +11,6 @@ export type RewardConfigAssetOption = {
 };
 
 export type RewardConfigItemValue = {
-  [property: string]: any;
   amount: number;
   assetKey?: string;
   assetType: RewardAssetType;

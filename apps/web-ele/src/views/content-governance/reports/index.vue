@@ -71,6 +71,10 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '举报详情',
 });
 
+type ReportHandleFormValues = Partial<
+  Pick<ReportHandleRequest, 'handlingNote' | 'id' | 'status'>
+>;
+
 function canHandleReport(row: AdminReportPageItemDto) {
   return row.status !== 3 && row.status !== 4;
 }
@@ -91,7 +95,7 @@ function openHandleModal(row: AdminReportPageItemDto) {
     .open();
 }
 
-async function handleReportSubmit(values: Record<string, any>) {
+async function handleReportSubmit(values: ReportHandleFormValues) {
   const status = Number(values.status) as 3 | 4;
 
   if (status !== 3 && status !== 4) {

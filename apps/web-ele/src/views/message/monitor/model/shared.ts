@@ -59,7 +59,9 @@ export const attentionSummaryQueries = {
   retryingDelivery: { pageIndex: 1, pageSize: 1, status: 3 },
 } as const;
 
-export function removeEmptyValues<T extends Record<string, any>>(values: T) {
+export function removeEmptyValues<T extends Record<string, unknown>>(
+  values: T,
+) {
   return Object.fromEntries(
     Object.entries(values).filter(
       ([, value]) => value !== '' && value !== null && value !== undefined,
@@ -67,7 +69,7 @@ export function removeEmptyValues<T extends Record<string, any>>(values: T) {
   ) as Partial<T>;
 }
 
-export function splitDateRange(formValues?: Record<string, any>) {
+export function splitDateRange(formValues?: Record<string, unknown>) {
   const { dateRange, ...restFormValues } = formValues || {};
   const [startDate, endDate] = Array.isArray(dateRange) ? dateRange : [];
 

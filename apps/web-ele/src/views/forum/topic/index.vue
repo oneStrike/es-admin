@@ -5,6 +5,10 @@ import type {
   ForumTopicCreateRequest,
   ForumTopicMoveRequest,
   ForumTopicUpdateAuditStatusRequest,
+  ForumTopicUpdateFeaturedRequest,
+  ForumTopicUpdateHiddenRequest,
+  ForumTopicUpdateLockedRequest,
+  ForumTopicUpdatePinnedRequest,
   ForumTopicUpdateRequest,
 } from '#/api/types';
 
@@ -57,6 +61,32 @@ type ForumTopicRow = AdminForumTopicPageItemDto & {
   hiddenLoading?: boolean;
   lockedLoading?: boolean;
   pinnedLoading?: boolean;
+};
+
+type TopicCreateFormValues = Pick<
+  ForumTopicCreateRequest,
+  'sectionId' | 'title'
+> & {
+  content?: string;
+  selectedUserIds?: number[];
+};
+
+type TopicEditFormValues = Pick<ForumTopicUpdateRequest, 'id' | 'title'> & {
+  content?: string;
+};
+
+type TopicAuditFormValues = Pick<
+  ForumTopicUpdateAuditStatusRequest,
+  'auditReason' | 'auditStatus' | 'id'
+>;
+
+type TopicMoveFormValues = Pick<ForumTopicMoveRequest, 'id' | 'sectionId'>;
+
+type TopicBooleanFieldMap = {
+  isFeatured: ForumTopicUpdateFeaturedRequest;
+  isHidden: ForumTopicUpdateHiddenRequest;
+  isLocked: ForumTopicUpdateLockedRequest;
+  isPinned: ForumTopicUpdatePinnedRequest;
 };
 
 void fetchTopicSectionOptions();
@@ -179,7 +209,7 @@ async function openMoveModal(row: ForumTopicRow) {
     .open();
 }
 
-function normalizeCreatePayload(values: Record<string, any>) {
+function normalizeCreatePayload(values: TopicCreateFormValues) {
   const selectedUserIds = Array.isArray(values.selectedUserIds)
     ? values.selectedUserIds
     : [];
@@ -207,7 +237,7 @@ function normalizeCreatePayload(values: Record<string, any>) {
   } satisfies ForumTopicCreateRequest;
 }
 
-function normalizeEditPayload(values: Record<string, any>) {
+function normalizeEditPayload(values: TopicEditFormValues) {
   if (!values.title?.trim?.() || !values.content?.trim?.()) {
     useMessage.warning('请完整填写标题和内容');
     throw new Error('missing content');
@@ -220,19 +250,19 @@ function normalizeEditPayload(values: Record<string, any>) {
   } satisfies ForumTopicUpdateRequest;
 }
 
-async function handleCreateSubmit(values: Record<string, any>) {
+async function handleCreateSubmit(values: TopicCreateFormValues) {
   await forumTopicCreateApi(normalizeCreatePayload(values));
   useMessage.success('操作成功');
   await gridApi.reload();
 }
 
-async function handleEditSubmit(values: Record<string, any>) {
+async function handleEditSubmit(values: TopicEditFormValues) {
   await forumTopicUpdateApi(normalizeEditPayload(values));
   useMessage.success('操作成功');
   await gridApi.reload();
 }
 
-async function handleAuditSubmit(values: Record<string, any>) {
+async function handleAuditSubmit(values: TopicAuditFormValues) {
   if (values.auditStatus === 2 && !values.auditReason?.trim?.()) {
     useMessage.warning('拒绝时请填写审核意见');
     throw new Error('missing audit reason');
@@ -247,7 +277,7 @@ async function handleAuditSubmit(values: Record<string, any>) {
   await gridApi.reload();
 }
 
-async function handleMoveSubmit(values: Record<string, any>) {
+async function handleMoveSubmit(values: TopicMoveFormValues) {
   const nextSectionId = Number(values.sectionId);
 
   if (!nextSectionId) {
@@ -285,10 +315,10 @@ async function confirmDeleteTopic(row: ForumTopicRow) {
   await deleteTopic(row);
 }
 
-async function toggleTopicBoolean(
+async function toggleTopicBoolean<Field extends keyof TopicBooleanFieldMap>(
   row: ForumTopicRow,
-  field: 'isFeatured' | 'isHidden' | 'isLocked' | 'isPinned',
-  api: (params: any) => Promise<any>,
+  field: Field,
+  api: (params: TopicBooleanFieldMap[Field]) => Promise<unknown>,
   loadingKey:
     | 'featuredLoading'
     | 'hiddenLoading'
@@ -297,10 +327,11 @@ async function toggleTopicBoolean(
 ) {
   row[loadingKey] = true;
   try {
-    await api({
+    const payload = {
       [field]: !row[field],
       id: row.id,
-    });
+    } as TopicBooleanFieldMap[Field];
+    await api(payload);
     useMessage.success('操作成功');
     await gridApi.reload();
   } finally {

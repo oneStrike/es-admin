@@ -53,8 +53,51 @@ defineOptions({
 });
 
 const packKeyword = ref('');
-const packs = ref<BaseEmojiPackDto[]>([]);
-const currentPack = ref<BaseEmojiPackDto | null>(null);
+type EmojiPackRow = BaseEmojiPackDto & {
+  enableLoading?: boolean;
+};
+
+type EmojiAssetRow = BaseEmojiAssetDto & {
+  enableLoading?: boolean;
+};
+
+type EmojiPackFormValues = Partial<
+  Pick<
+    ContentEmojiPackCreateRequest,
+    | 'code'
+    | 'description'
+    | 'iconUrl'
+    | 'isEnabled'
+    | 'name'
+    | 'sortOrder'
+    | 'visibleInPicker'
+  >
+> &
+  Pick<Partial<ContentEmojiPackUpdateRequest>, 'id'> & {
+    sceneType?: ContentEmojiPackCreateRequest['sceneType'] | null | string;
+  };
+
+type EmojiAssetFormValues = Partial<
+  Pick<
+    ContentEmojiAssetCreateRequest,
+    | 'category'
+    | 'imageUrl'
+    | 'isAnimated'
+    | 'isEnabled'
+    | 'keywords'
+    | 'packId'
+    | 'shortcode'
+    | 'sortOrder'
+    | 'staticUrl'
+    | 'unicodeSequence'
+  >
+> &
+  Pick<Partial<ContentEmojiAssetUpdateRequest>, 'id'> & {
+    kind?: ContentEmojiAssetCreateRequest['kind'] | number | string;
+  };
+
+const packs = ref<EmojiPackRow[]>([]);
+const currentPack = ref<EmojiPackRow | null>(null);
 
 const filteredPacks = computed(() => {
   const keyword = packKeyword.value.trim().toLowerCase();
@@ -75,27 +118,24 @@ const packListSchema: EsFormSchema = [
   { component: 'Switch', fieldName: 'isEnabled', label: '状态' },
 ];
 
-const packGridOptions: VxeGridProps<BaseEmojiPackDto> = {
-  columns: formSchemaTransform.toTableColumns<BaseEmojiPackDto>(
-    packListSchema,
-    {
-      seq: { width: 70 },
-      name: {
-        headerAlign: 'center',
-        minWidth: 220,
-        slots: { default: 'packName' },
-      },
-      isEnabled: {
-        minWidth: 110,
-        slots: { default: 'packStatus' },
-      },
-      actions: {
-        minWidth: 150,
-        show: true,
-        slots: { default: 'packActions' },
-      },
+const packGridOptions: VxeGridProps<EmojiPackRow> = {
+  columns: formSchemaTransform.toTableColumns<EmojiPackRow>(packListSchema, {
+    seq: { width: 70 },
+    name: {
+      headerAlign: 'center',
+      minWidth: 220,
+      slots: { default: 'packName' },
     },
-  ),
+    isEnabled: {
+      minWidth: 110,
+      slots: { default: 'packStatus' },
+    },
+    actions: {
+      minWidth: 150,
+      show: true,
+      slots: { default: 'packActions' },
+    },
+  }),
   data: [],
   height: '100%',
   rowConfig: {
@@ -115,7 +155,7 @@ const packGridOptions: VxeGridProps<BaseEmojiPackDto> = {
   },
 };
 
-const assetGridOptions: VxeGridProps<BaseEmojiAssetDto> = {
+const assetGridOptions: VxeGridProps<EmojiAssetRow> = {
   columns: createEmojiAssetColumns([], {
     hidePackColumn: true,
   }),
@@ -164,7 +204,7 @@ const assetGridOptions: VxeGridProps<BaseEmojiAssetDto> = {
 const [PackGrid, packGridApi] = useVbenVxeGrid({
   gridOptions: packGridOptions,
   gridEvents: {
-    cellClick({ row }: { row: BaseEmojiPackDto }) {
+    cellClick({ row }: { row: EmojiPackRow }) {
       selectPack(row);
     },
   },
@@ -225,7 +265,7 @@ function isUpdateAssetPayload(
   return 'id' in payload && Number.isFinite(payload.id);
 }
 
-function selectPack(pack: BaseEmojiPackDto) {
+function selectPack(pack: EmojiPackRow) {
   if (currentPack.value?.id === pack.id) {
     void syncCurrentPackRow();
     return;
@@ -269,9 +309,7 @@ async function loadPacks(preferredPackId?: number) {
   await assetGridApi.reload();
 }
 
-function normalizePackPayload(
-  values: Record<string, any>,
-): ContentEmojiPackCreateRequest | ContentEmojiPackUpdateRequest {
+function normalizePackPayload(values: EmojiPackFormValues) {
   const code = values.code?.trim?.();
   const name = values.name?.trim?.();
   const sceneType = normalizeSceneTypeValue(values.sceneType);
@@ -287,22 +325,20 @@ function normalizePackPayload(
     iconUrl: values.iconUrl || undefined,
     isEnabled: values.isEnabled ?? true,
     name,
-    sceneType: sceneType as ContentEmojiPackCreateRequest['sceneType'],
+    sceneType,
     sortOrder: Number(values.sortOrder ?? 0),
     visibleInPicker: values.visibleInPicker ?? true,
-  };
+  } satisfies ContentEmojiPackCreateRequest;
 
   return values.id
     ? ({
         ...payload,
         id: Number(values.id),
-      } as ContentEmojiPackUpdateRequest)
-    : (payload as ContentEmojiPackCreateRequest);
+      } satisfies ContentEmojiPackUpdateRequest)
+    : payload;
 }
 
-function normalizeAssetPayload(
-  values: Record<string, any>,
-): ContentEmojiAssetCreateRequest | ContentEmojiAssetUpdateRequest {
+function normalizeAssetPayload(values: EmojiAssetFormValues) {
   const kind = Number(values.kind ?? 2) as 1 | 2;
   const packId = Number(values.packId ?? currentPack.value?.id);
 
@@ -319,7 +355,16 @@ function normalizeAssetPayload(
     kind,
     packId,
     sortOrder: Number(values.sortOrder ?? 0),
-  };
+  } satisfies Pick<
+    ContentEmojiAssetCreateRequest,
+    | 'category'
+    | 'isAnimated'
+    | 'isEnabled'
+    | 'keywords'
+    | 'kind'
+    | 'packId'
+    | 'sortOrder'
+  >;
 
   if (kind === 1) {
     const unicodeSequence = values.unicodeSequence?.trim?.();
@@ -341,8 +386,8 @@ function normalizeAssetPayload(
       ? ({
           ...unicodePayload,
           id: Number(values.id),
-        } as ContentEmojiAssetUpdateRequest)
-      : (unicodePayload as ContentEmojiAssetCreateRequest);
+        } satisfies ContentEmojiAssetUpdateRequest)
+      : (unicodePayload satisfies ContentEmojiAssetCreateRequest);
   }
 
   const shortcode = values.shortcode?.trim?.();
@@ -366,12 +411,12 @@ function normalizeAssetPayload(
     ? ({
         ...customPayload,
         id: Number(values.id),
-      } as ContentEmojiAssetUpdateRequest)
-    : (customPayload as ContentEmojiAssetCreateRequest);
+      } satisfies ContentEmojiAssetUpdateRequest)
+    : (customPayload satisfies ContentEmojiAssetCreateRequest);
 }
 
-async function openPackFormModal(row?: BaseEmojiPackDto) {
-  let record: Record<string, any> | undefined;
+async function openPackFormModal(row?: EmojiPackRow) {
+  let record: EmojiPackFormValues | undefined;
   if (row) {
     const detail = await contentEmojiPackDetailApi({ id: row.id });
     record = {
@@ -391,14 +436,14 @@ async function openPackFormModal(row?: BaseEmojiPackDto) {
     .open();
 }
 
-async function openAssetFormModal(row?: BaseEmojiAssetDto, packId?: number) {
+async function openAssetFormModal(row?: EmojiAssetRow, packId?: number) {
   const targetPackId = packId ?? currentPack.value?.id;
   if (!targetPackId) {
     useMessage.warning('请先选择表情包');
     return;
   }
 
-  const record: Record<string, any> | undefined = row
+  const record: EmojiAssetFormValues | undefined = row
     ? await contentEmojiAssetDetailApi({ id: row.id })
     : {
         isEnabled: true,
@@ -424,7 +469,7 @@ async function openAssetFormModal(row?: BaseEmojiAssetDto, packId?: number) {
     .open();
 }
 
-async function handlePackSubmit(values: Record<string, any>) {
+async function handlePackSubmit(values: EmojiPackFormValues) {
   const payload = normalizePackPayload(values);
 
   await (isUpdatePackPayload(payload)
@@ -437,7 +482,7 @@ async function handlePackSubmit(values: Record<string, any>) {
   );
 }
 
-async function handleAssetSubmit(values: Record<string, any>) {
+async function handleAssetSubmit(values: EmojiAssetFormValues) {
   const payload = normalizeAssetPayload(values);
 
   await (isUpdateAssetPayload(payload)
@@ -448,7 +493,7 @@ async function handleAssetSubmit(values: Record<string, any>) {
   await assetGridApi.reload();
 }
 
-async function deletePack(row: BaseEmojiPackDto) {
+async function deletePack(row: EmojiPackRow) {
   if (row.isEnabled) {
     useMessage.warning('请先禁用表情包后再删除');
     return;
@@ -461,7 +506,7 @@ async function deletePack(row: BaseEmojiPackDto) {
   );
 }
 
-async function confirmDeletePack(row: BaseEmojiPackDto) {
+async function confirmDeletePack(row: EmojiPackRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前表情包?',
     successMessage: false,
@@ -471,8 +516,8 @@ async function confirmDeletePack(row: BaseEmojiPackDto) {
   await deletePack(row);
 }
 
-async function togglePackEnableStatus(row: BaseEmojiPackDto) {
-  row.enableLoading = true as never;
+async function togglePackEnableStatus(row: EmojiPackRow) {
+  row.enableLoading = true;
   try {
     await contentEmojiPackUpdateEnabledApi({
       id: row.id,
@@ -481,17 +526,17 @@ async function togglePackEnableStatus(row: BaseEmojiPackDto) {
     useMessage.success('操作成功');
     await loadPacks(row.id);
   } finally {
-    row.enableLoading = false as never;
+    row.enableLoading = false;
   }
 }
 
-async function deleteAsset(row: BaseEmojiAssetDto) {
+async function deleteAsset(row: EmojiAssetRow) {
   await contentEmojiAssetDeleteApi({ id: row.id });
   useMessage.success('删除成功');
   await assetGridApi.reload();
 }
 
-async function confirmDeleteAsset(row: BaseEmojiAssetDto) {
+async function confirmDeleteAsset(row: EmojiAssetRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前表情资源?',
     successMessage: false,
@@ -501,8 +546,8 @@ async function confirmDeleteAsset(row: BaseEmojiAssetDto) {
   await deleteAsset(row);
 }
 
-async function toggleAssetEnableStatus(row: BaseEmojiAssetDto) {
-  row.enableLoading = true as never;
+async function toggleAssetEnableStatus(row: EmojiAssetRow) {
+  row.enableLoading = true;
   try {
     await contentEmojiAssetUpdateEnabledApi({
       id: row.id,
@@ -511,7 +556,7 @@ async function toggleAssetEnableStatus(row: BaseEmojiAssetDto) {
     useMessage.success('操作成功');
     await assetGridApi.reload();
   } finally {
-    row.enableLoading = false as never;
+    row.enableLoading = false;
   }
 }
 
@@ -522,7 +567,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <div class="flex h-full gap-4">
+    <div class="content-emoji-manager flex h-full gap-4">
       <PackGrid class="emoji-pack-grid h-full w-[600px] shrink-0">
         <template #toolbar-actions>
           <div class="flex w-full items-center gap-2">
@@ -645,27 +690,31 @@ onMounted(() => {
   </Page>
 </template>
 
-<style scoped>
-:deep(.emoji-pack-grid) {
+<style>
+.content-emoji-manager .emoji-pack-grid {
   --vxe-ui-table-row-current-background-color: var(--el-color-primary-light-8);
   --vxe-ui-table-row-hover-current-background-color: var(
     --el-color-primary-light-7
   );
 }
 
-:deep(.emoji-pack-grid .vxe-body--row) {
+.content-emoji-manager .emoji-pack-grid .vxe-body--row {
   cursor: pointer;
 }
 
-:deep(.emoji-pack-grid .vxe-body--row.row--current > .vxe-body--column) {
+.content-emoji-manager
+  .emoji-pack-grid
+  .vxe-body--row.row--current
+  > .vxe-body--column {
   box-shadow:
     inset 0 1px 0 rgb(59 130 246 / 18%),
     inset 0 -1px 0 rgb(59 130 246 / 18%);
 }
 
-:deep(
-  .emoji-pack-grid .vxe-body--row.row--current > .vxe-body--column:first-child
-) {
+.content-emoji-manager
+  .emoji-pack-grid
+  .vxe-body--row.row--current
+  > .vxe-body--column:first-child {
   box-shadow:
     inset 4px 0 0 var(--el-color-primary),
     inset 0 1px 0 rgb(59 130 246 / 18%),

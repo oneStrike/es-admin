@@ -42,6 +42,11 @@ type CommentRow = AdminCommentPageItemDto & {
   hiddenLoading?: boolean;
 };
 
+type CommentAuditFormValues = Pick<
+  CommentUpdateAuditStatusRequest,
+  'auditReason' | 'auditStatus' | 'id'
+>;
+
 const gridOptions: VxeGridProps<CommentRow> = {
   columns: pageColumns,
   proxyConfig: {
@@ -97,7 +102,7 @@ function openAuditModal(row: CommentRow) {
     .open();
 }
 
-async function handleAuditSubmit(values: Record<string, any>) {
+async function handleAuditSubmit(values: CommentAuditFormValues) {
   const auditStatus = Number(values.auditStatus) as 0 | 1 | 2;
   const auditReason = values.auditReason?.trim?.() || undefined;
 

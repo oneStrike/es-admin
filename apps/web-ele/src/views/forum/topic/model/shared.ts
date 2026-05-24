@@ -247,7 +247,7 @@ const userColumns = formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(
 );
 
 const userSelectComponentProps = () => ({
-  api: async (params: Record<string, any>) =>
+  api: async (params: Record<string, unknown>) =>
     appUsersPageApi({
       ...params,
       deletedScope: ACTIVE_DELETED_SCOPE,

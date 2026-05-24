@@ -10,6 +10,16 @@ import type { EsFormSchema } from '#/types';
 import { UploadSceneEnum } from '#/enum/api';
 import { formSchemaTransform, safeParseJson } from '#/utils';
 
+export type AppUpdateFormValues = Partial<
+  CreateAppUpdateReleaseDto & UpdateAppUpdateReleaseDto
+> & {
+  customPageUrl?: string;
+  packageOriginalName?: null | string;
+  packageUpload?: unknown;
+  packageUrlUpload?: unknown;
+  popupBackgroundImageUpload?: unknown;
+};
+
 // 发布平台配置
 export const platformOptions = [
   {
@@ -333,7 +343,10 @@ export const appUpdateFilter = formSchemaTransform.toSearchSchema(formSchema, {
  * - url 模式：取手动输入的值（packageUrl）
  */
 export function resolvePackageUrl(
-  values: Record<string, any>,
+  values: Pick<
+    AppUpdateFormValues,
+    'packageSourceType' | 'packageUpload' | 'packageUrl' | 'packageUrlUpload'
+  >,
 ): string | undefined {
   const directUrl = normalizeOptionalString(values.packageUrl);
 
@@ -433,7 +446,7 @@ function createPopupBackgroundImageUploadValue(
 
 export function mapAppUpdateDetailToFormValues(
   detail: AppUpdateReleaseDetailDto,
-): Record<string, any> {
+): AppUpdateFormValues {
   // 根据安装包来源，将 packageUrl 映射到对应的表单字段
   let packageUrl: string | undefined;
   let customPageUrl: string | undefined;
@@ -454,7 +467,7 @@ export function mapAppUpdateDetailToFormValues(
 }
 
 export function buildAppUpdateSubmitPayload(
-  values: Record<string, any>,
+  values: AppUpdateFormValues,
 ): CreateAppUpdateReleaseDto | UpdateAppUpdateReleaseDto {
   const uploadedFile = normalizeUploadValue(
     values.packageUpload ?? values.packageUrlUpload,
@@ -483,7 +496,8 @@ export function buildAppUpdateSubmitPayload(
         normalizeOptionalString(uploadedFile?.originalName) ||
         normalizeOptionalString(uploadedFile?.filename) ||
         normalizeOptionalString(values.packageOriginalName);
-      packageFileSize = uploadedFile?.fileSize ?? values.packageFileSize;
+      packageFileSize =
+        uploadedFile?.fileSize ?? values.packageFileSize ?? undefined;
       packageMimeType =
         normalizeOptionalString(uploadedFile?.mimeType) ||
         normalizeOptionalString(values.packageMimeType);
