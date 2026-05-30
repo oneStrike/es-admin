@@ -3,7 +3,6 @@ import { Page } from '@vben/common-ui';
 
 import EsFullHeightTabs from '#/components/es-full-height-tabs';
 
-import VipAutoRenewAgreementPanel from './components/vip-auto-renew-agreement-panel.vue';
 import VipBenefitPanel from './components/vip-benefit-panel.vue';
 import VipPageConfigPanel from './components/vip-page-config-panel.vue';
 import VipPlanPanel from './components/vip-plan-panel.vue';
@@ -12,7 +11,7 @@ defineOptions({
   name: 'MembershipManager',
 });
 
-type TabKey = 'agreement' | 'benefit' | 'pageConfig' | 'plan';
+type TabKey = 'benefit' | 'pageConfig' | 'plan';
 
 const activeTab = ref<TabKey>('plan');
 </script>
@@ -30,10 +29,6 @@ const activeTab = ref<TabKey>('plan');
 
       <el-tab-pane label="订阅页配置" name="pageConfig">
         <VipPageConfigPanel />
-      </el-tab-pane>
-
-      <el-tab-pane label="自动续费协议" name="agreement">
-        <VipAutoRenewAgreementPanel />
       </el-tab-pane>
     </EsFullHeightTabs>
   </Page>

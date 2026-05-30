@@ -150,8 +150,6 @@ export type PaymentOrderUpdateStatusResponse = PaymentOrderResultDto;
 export type BasePaymentProviderConfigDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 自动续费签约通知地址 */
-  agreementNotifyUrl?: null | string;
   /* H5 允许返回域名列表 */
   allowedReturnDomains?: string[];
   /* 微信 APIv3 key 引用 */
@@ -202,8 +200,6 @@ export type BasePaymentProviderConfigDto = {
   rootCertRef?: null | string;
   /* 排序值 */
   sortOrder?: null | number;
-  /* 是否支持自动续费签约 */
-  supportsAutoRenew?: boolean | null;
 
   /* 更新时间 */
   updatedAt: string;
@@ -217,8 +213,6 @@ export type BasePaymentProviderConfigDto = {
 export type CreatePaymentProviderConfigDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 自动续费签约通知地址 */
-  agreementNotifyUrl?: null | string;
   /* H5 允许返回域名列表 */
   allowedReturnDomains?: string[];
   /* 微信 APIv3 key 引用 */
@@ -263,11 +257,9 @@ export type CreatePaymentProviderConfigDto = {
   returnUrl?: null | string;
   /* 根证书引用 */
   rootCertRef?: null | string;
+
   /* 排序值 */
   sortOrder?: null | number;
-
-  /* 是否支持自动续费签约 */
-  supportsAutoRenew?: boolean | null;
 };
 
 /**
@@ -278,8 +270,6 @@ export type CreatePaymentProviderConfigDto = {
 export type UpdatePaymentProviderConfigDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 自动续费签约通知地址 */
-  agreementNotifyUrl?: null | string;
   /* H5 允许返回域名列表 */
   allowedReturnDomains?: string[];
   /* 微信 APIv3 key 引用 */
@@ -326,11 +316,9 @@ export type UpdatePaymentProviderConfigDto = {
   returnUrl?: null | string;
   /* 根证书引用 */
   rootCertRef?: null | string;
+
   /* 排序值 */
   sortOrder?: null | number;
-
-  /* 是否支持自动续费签约 */
-  supportsAutoRenew?: boolean | null;
 };
 
 /**
@@ -356,8 +344,6 @@ export type UpdateEnabledStatusDto = {
 export type AdminPaymentOrderPageItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 自动续费协议 ID，非自动续费订单为空 */
-  autoRenewAgreementId?: null | number;
   /* 支付渠道（1=支付宝；2=微信） */
   channel: 1 | 2;
   /* 客户端应用键 */
@@ -396,8 +382,8 @@ export type AdminPaymentOrderPageItemDto = {
   refundedAt?: null | string;
   /* 订单状态（1=待支付；2=已支付；3=已关闭；4=退款中；5=已退款） */
   status: 1 | 2 | 3 | 4 | 5;
-  /* 订阅模式（1=一次性；2=自动续费签约首单；3=自动续费代扣订单） */
-  subscriptionMode: 1 | 2 | 3;
+  /* 订阅模式（1=一次性） */
+  subscriptionMode: 1;
   /* 业务目标 ID，例如充值包 ID 或 VIP 套餐 ID */
   targetId: number;
   /* 更新时间 */
@@ -445,6 +431,6 @@ export type PaymentOrderResultDto = {
   /* 订单状态（1=待支付；2=已支付；3=已关闭；4=退款中；5=已退款） */
   status: 1 | 2 | 3 | 4 | 5;
 
-  /* 订阅模式（1=一次性；2=自动续费签约首单；3=自动续费代扣订单） */
+  /* 订阅模式（1=一次性） */
   subscriptionMode?: null | number;
 };

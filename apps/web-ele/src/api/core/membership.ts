@@ -1,8 +1,4 @@
 import type {
-  MembershipAutoRenewAgreementCancellationCreateRequest,
-  MembershipAutoRenewAgreementCancellationCreateResponse,
-  MembershipAutoRenewAgreementPageRequest,
-  MembershipAutoRenewAgreementPageResponse,
   MembershipBenefitCreateRequest,
   MembershipBenefitCreateResponse,
   MembershipBenefitPageRequest,
@@ -171,30 +167,6 @@ export async function membershipPageConfigUpdateStatusApi(
 ): Promise<MembershipPageConfigUpdateStatusResponse> {
   return requestClient.post<MembershipPageConfigUpdateStatusResponse>(
     '/api/admin/membership/page-config/update-status',
-    params,
-  );
-}
-
-/**
- * 分页查询 VIP 自动续费协议
- */
-export async function membershipAutoRenewAgreementPageApi(
-  params?: MembershipAutoRenewAgreementPageRequest,
-): Promise<MembershipAutoRenewAgreementPageResponse> {
-  return requestClient.get<MembershipAutoRenewAgreementPageResponse>(
-    '/api/admin/membership/auto-renew-agreement/page',
-    { params },
-  );
-}
-
-/**
- * 取消 VIP 自动续费协议
- */
-export async function membershipAutoRenewAgreementCancellationCreateApi(
-  params: MembershipAutoRenewAgreementCancellationCreateRequest,
-): Promise<MembershipAutoRenewAgreementCancellationCreateResponse> {
-  return requestClient.post<MembershipAutoRenewAgreementCancellationCreateResponse>(
-    '/api/admin/membership/auto-renew-agreement/cancellation/create',
     params,
   );
 }

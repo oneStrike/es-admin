@@ -48,10 +48,3 @@ export const environmentOptions = [
   { label: '沙箱', value: 1, color: 'warning' },
   { label: '正式', value: 2, color: 'success' },
 ];
-
-export const autoRenewStatusOptions = [
-  { label: '有效', value: 1, color: 'success' },
-  { label: '已取消', value: 2, color: 'info' },
-  { label: '已过期', value: 3, color: 'warning' },
-  { label: '签约失败', value: 4, color: 'danger' },
-];

@@ -31,7 +31,6 @@ export type VipPlanBenefitConfigRow = Partial<MembershipPlanBenefitInputDto> & {
   benefitValue?: null | VipPlanBenefitValue;
 };
 export type VipPlanFormValues = {
-  autoRenewEnabled?: unknown;
   benefitIds?: unknown;
   benefitRows?: unknown;
   benefits?: unknown;
@@ -283,7 +282,6 @@ function buildPlanBenefitInputs(values: VipPlanFormValues) {
 
 function buildVipPlanBase(values: VipPlanFormValues) {
   return {
-    autoRenewEnabled: normalizeBoolean(values.autoRenewEnabled),
     benefits: buildPlanBenefitInputs(values),
     bonusPointAmount: normalizeNullableNumber(values.bonusPointAmount),
     displayTag: normalizeNullableText(values.displayTag),
@@ -393,13 +391,6 @@ export const vipPlanBaseFormSchema: EsFormSchema = [
     fieldName: 'isEnabled',
     label: '启用状态',
   },
-  {
-    component: 'RadioGroup',
-    componentProps: { class: 'w-full', options: enabledStatusOptions },
-    defaultValue: false,
-    fieldName: 'autoRenewEnabled',
-    label: '支持自动续费',
-  },
 ];
 
 export const vipPlanSearchSchema = formSchemaTransform.toSearchSchema(
@@ -455,7 +446,6 @@ export const vipPlanColumns = formSchemaTransform.toTableColumns<VipPlanRow>(
       minWidth: 120,
       title: '原价',
     },
-    autoRenewEnabled: { hide: true },
     planKey: { minWidth: 160, sort: 0.5, title: '业务键' },
     priceAmount: {
       formatter: ({ cellValue }: { cellValue: unknown }) =>
@@ -551,11 +541,6 @@ export function getVipPlanDetailCards(record: VipPlanRow) {
           tagText: formatOptionText(enabledStatusOptions, record.isEnabled),
           type: 'tag',
           value: record.isEnabled,
-        },
-        {
-          label: '自动续费',
-          type: 'text',
-          value: record.autoRenewEnabled ? '支持' : '不支持',
         },
         { label: '创建时间', type: 'date', value: record.createdAt },
         { label: '更新时间', type: 'date', value: record.updatedAt },

@@ -289,8 +289,6 @@ export { membershipPageConfigPageApi } from './membership';
 export { membershipPageConfigCreateApi } from './membership';
 export { membershipPageConfigUpdateApi } from './membership';
 export { membershipPageConfigUpdateStatusApi } from './membership';
-export { membershipAutoRenewAgreementPageApi } from './membership';
-export { membershipAutoRenewAgreementCancellationCreateApi } from './membership';
 export { messageMonitorDeliveryPageApi } from './message';
 export { messageMonitorDeliveryRetryApi } from './message';
 export { messageMonitorDispatchPageApi } from './message';

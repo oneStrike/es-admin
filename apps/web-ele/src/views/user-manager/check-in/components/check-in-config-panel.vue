@@ -352,6 +352,8 @@ function handleScopeChange(nextScope: CheckInConfigEditorKind) {
   syncRewardEditorFromScope();
 }
 
+// 保存奖励配置时，若 scope 发生变化需先清理原位置规则再写入新位置（迁移语义），
+// 最后触发服务端持久化并刷新表单状态。
 async function handleSaveRewardEditor(value: RewardConfigValue) {
   if (
     rewardEditor.originalScope &&
@@ -471,6 +473,8 @@ function formatPatternRuleLabel(
   return '每月最后一天';
 }
 
+// scope 解析优先级：具体日期规则 > 周期模式规则(weekday/monthDay/monthLastDay) > 默认 date。
+// 周模式下 weekday 优先于 date；月模式下 monthDay/monthLastDay 优先于 date；月末最后一天仅月模式生效。
 function resolveDefaultScope(
   cell: CheckInConfigPreviewDay,
 ): Exclude<CheckInConfigEditorKind, 'base'> {
@@ -526,6 +530,7 @@ function resolveEditorTitleFromCurrentState() {
   return `编辑 ${rewardEditor.targetDate} 奖励`;
 }
 
+// 编辑器打开或切换 scope 时，从 formState 中按 scope 类型提取对应规则数据同步到 rewardEditor。
 function syncRewardEditorFromScope() {
   switch (rewardEditor.scope) {
     case 'date': {
@@ -570,9 +575,9 @@ onMounted(async () => {
   <div v-loading="loading" class="check-in-theme es-scroll-pane space-y-5">
     <el-card shadow="never">
       <div class="flex items-center justify-between gap-4">
-        <div class="text-base font-semibold text-slate-900">签到基础配置</div>
+        <el-text class="text-base font-semibold">签到基础配置</el-text>
         <div class="flex items-center gap-3">
-          <span class="text-sm text-slate-500">签到开关</span>
+          <el-text class="text-sm" type="info">签到开关</el-text>
           <el-switch
             :model-value="isEnabled"
             :loading="toggleLoading"
@@ -584,19 +589,20 @@ onMounted(async () => {
       <div class="mt-4 space-y-5">
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
           <el-card shadow="never">
-            <div class="mb-2 text-sm font-medium text-slate-700">图标配置</div>
+            <el-text class="mb-2 block text-sm font-medium">图标配置</el-text>
             <div class="grid grid-cols-2 gap-4">
               <div class="min-w-0 rounded-lg p-3">
-                <div class="mb-2 text-xs font-medium leading-4 text-slate-600">
+                <el-text class="mb-2 block text-xs font-medium leading-4">
                   补签图标
-                </div>
+                </el-text>
                 <EsUpload
                   :model-value="formState.makeupIconUrl || ''"
                   :max-count="1"
- Upl              accept="image/*"
+                  accept="image/*"
                   list-type="picture-card"
                   return-data-type="url"
                   :scene="UploadSceneEnum.SHARED"
+                  class="mt-4"
                   @update:model-value="
                     (value) => (formState.makeupIconUrl = value as string)
                   "
@@ -604,9 +610,9 @@ onMounted(async () => {
               </div>
 
               <div class="min-w-0 rounded-lg p-3">
-                <div class="mb-2 text-xs font-medium leading-4 text-slate-600">
+                <el-text class="mb-2 block text-xs font-medium leading-4">
                   汇总图标
-                </div>
+                </el-text>
                 <EsUpload
                   :model-value="formState.rewardOverviewIconUrl || ''"
                   :max-count="1"
@@ -614,6 +620,7 @@ onMounted(async () => {
                   list-type="picture-card"
                   return-data-type="url"
                   :scene="UploadSceneEnum.SHARED"
+                  class="mt-4"
                   @update:model-value="
                     (value) =>
                       (formState.rewardOverviewIconUrl = value as string)
@@ -624,53 +631,49 @@ onMounted(async () => {
           </el-card>
 
           <el-card shadow="never">
-            <div class="mb-2 text-sm font-medium text-slate-700">签到周期</div>
-            <div class="text-xs text-slate-500">
-              控制补签额度的自然周期范围。
-            </div>
-            <div class="mt-3">
-              <el-select
-                :model-value="formState.makeupPeriodType"
-                class="!w-full"
-                @update:model-value="
-                  (value: unknown) =>
-                    handleMakeupPeriodTypeChange(value as 1 | 2)
-                "
-              >
-                <el-option
-                  v-for="item in checkInMakeupPeriodTypeOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+            <div class="flex flex-col justify-between">
+              <div>
+                <el-text class="mb-2 block text-sm font-medium">
+                  签到周期
+                </el-text>
+                <el-select
+                  :model-value="formState.makeupPeriodType"
+                  class="!w-full mt-3"
+                  @update:model-value="
+                    (value: unknown) =>
+                      handleMakeupPeriodTypeChange(value as 1 | 2)
+                  "
+                >
+                  <el-option
+                    v-for="item in checkInMakeupPeriodTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </div>
+              <div>
+                <el-text class="mb-2 block text-sm font-medium">
+                  每周期补签额度
+                </el-text>
+                <el-input-number
+                  placeholder="按当前签到周期发放的补签次数上限。"
+                  v-model="formState.periodicAllowance"
+                  class="!w-full mt-3"
+                  :min="0"
+                  :max="formState.makeupPeriodType === 1 ? 7 : 31"
                 />
-              </el-select>
+              </div>
             </div>
           </el-card>
 
           <el-card shadow="never">
-            <div class="mb-2 text-sm font-medium text-slate-700">
-              每周期补签额度
-            </div>
-            <div class="text-xs text-slate-500">
-              按当前签到周期发放的补签次数上限。
-            </div>
-            <div class="mt-3">
-              <el-input-number
-                v-model="formState.periodicAllowance"
-                class="!w-full"
-                :min="0"
-                :max="formState.makeupPeriodType === 1 ? 7 : 31"
-              />
-            </div>
-          </el-card>
-
-          <el-card shadow="never">
-            <div class="mb-2 text-sm font-medium text-slate-700">
+            <el-text class="mb-2 block text-sm font-medium">
               默认积分奖励
-            </div>
-            <div class="text-xs text-slate-500">
+            </el-text>
+            <el-text class="text-xs" type="info">
               未命中特殊奖励时发放的默认积分。
-            </div>
+            </el-text>
             <div class="mt-3">
               <el-input-number
                 class="!w-full"
@@ -684,16 +687,18 @@ onMounted(async () => {
                 "
               />
             </div>
-            <div class="mt-2 text-xs text-slate-500">0 或不填表示不发积分</div>
+            <el-text class="mt-2 text-xs" type="info">
+              0 或不填表示不发积分
+            </el-text>
           </el-card>
 
           <el-card shadow="never">
-            <div class="mb-2 text-sm font-medium text-slate-700">
+            <el-text class="mb-2 block text-sm font-medium">
               默认经验奖励
-            </div>
-            <div class="text-xs text-slate-500">
+            </el-text>
+            <el-text class="text-xs" type="info">
               未命中特殊奖励时发放的默认经验。
-            </div>
+            </el-text>
             <div class="mt-3">
               <el-input-number
                 class="!w-full"
@@ -707,14 +712,12 @@ onMounted(async () => {
                 "
               />
             </div>
-            <div class="mt-2 text-xs text-slate-500">0 或不填表示不发经验</div>
+            <el-text class="mt-2 text-xs" type="info">
+              0 或不填表示不发经验
+            </el-text>
           </el-card>
 
           <el-card shadow="never">
-            <div class="mb-2 text-sm font-medium text-slate-700">操作</div>
-            <div class="text-xs text-slate-500">
-              查看奖励总览或保存当前基础配置。
-            </div>
             <div class="mt-4 flex flex-col gap-3">
               <el-button class="!ml-0 w-full" @click="openDateOverview">
                 具体日期总览
@@ -739,7 +742,7 @@ onMounted(async () => {
     <el-card shadow="never">
       <div class="mb-4 flex items-center justify-between gap-3">
         <div>
-          <div class="text-base font-semibold text-slate-900">奖励预览</div>
+          <el-text class="text-base font-semibold">奖励预览</el-text>
         </div>
       </div>
 
@@ -748,9 +751,9 @@ onMounted(async () => {
           class="check-in-preview-toolbar mb-4 flex items-center justify-between gap-3 px-4 py-3"
         >
           <el-button @click="goPrevWeek">上一周</el-button>
-          <div class="text-base font-semibold text-slate-900">
+          <el-text class="text-base font-semibold">
             {{ weekTitle }}
-          </div>
+          </el-text>
           <el-button @click="goNextWeek">下一周</el-button>
         </div>
         <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
@@ -835,9 +838,9 @@ onMounted(async () => {
           class="check-in-preview-toolbar mb-4 flex items-center justify-between gap-3 px-4 py-3"
         >
           <el-button @click="goPrevMonth">上一月</el-button>
-          <div class="text-base font-semibold text-slate-900">
+          <el-text class="text-base font-semibold">
             {{ monthTitle }}
-          </div>
+          </el-text>
           <el-button @click="goNextMonth">下一月</el-button>
         </div>
         <div class="grid grid-cols-7 gap-2">
@@ -946,9 +949,9 @@ onMounted(async () => {
     >
       <template #prepend>
         <el-card v-if="rewardEditor.scopeOptions.length > 1" shadow="never">
-          <div class="mb-3 text-sm font-medium text-slate-700">
+          <el-text class="mb-3 block text-sm font-medium">
             奖励作用范围
-          </div>
+          </el-text>
           <el-radio-group
             :model-value="rewardEditor.scope"
             @update:model-value="
@@ -972,9 +975,9 @@ onMounted(async () => {
       <div class="space-y-3">
         <div
           v-if="dateRuleSummaryGroups.length === 0"
-          class="rounded-lg border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-400"
+          class="rounded-lg border border-dashed px-4 py-8 text-center text-sm"
         >
-          暂未配置具体日期奖励
+          <el-text type="info">暂未配置具体日期奖励</el-text>
         </div>
         <div v-else class="space-y-3">
           <div
@@ -983,21 +986,21 @@ onMounted(async () => {
             class="overflow-hidden rounded-lg border border-slate-200"
           >
             <button
-              class="flex w-full items-center justify-between gap-4 bg-slate-50/70 px-4 py-3 text-left transition hover:bg-slate-100/80"
+              class="flex w-full items-center justify-between gap-4 check-in-overview-group-header px-4 py-3 text-left transition"
               type="button"
               @click="toggleDateRuleMonth(group.key)"
             >
               <div>
-                <div class="text-sm font-semibold text-slate-900">
+                <el-text class="text-sm font-semibold">
                   {{ group.label }}
-                </div>
-                <div class="mt-1 text-xs text-slate-500">
+                </el-text>
+                <el-text class="mt-1 text-xs" type="info">
                   共 {{ group.rules.length }} 条具体日期奖励
-                </div>
+                </el-text>
               </div>
-              <div class="text-xs font-medium text-slate-400">
+              <el-text class="text-xs font-medium" type="info">
                 {{ isDateRuleMonthExpanded(group.key) ? '收起' : '展开' }}
-              </div>
+              </el-text>
             </button>
 
             <div
@@ -1010,8 +1013,8 @@ onMounted(async () => {
                 class="w-full rounded-lg border border-slate-200 px-4 py-3 text-left transition"
                 :class="
                   rule.editable
-                    ? 'bg-slate-50/70 hover:border-sky-200 hover:bg-sky-50/60'
-                    : 'cursor-not-allowed bg-slate-100 text-slate-400'
+                    ? 'check-in-overview-item--editable'
+                    : 'check-in-overview-item--readonly'
                 "
                 :disabled="!rule.editable"
                 type="button"
@@ -1023,24 +1026,25 @@ onMounted(async () => {
                   })
                 "
               >
-                <div class="text-sm font-semibold text-slate-900">
+                <el-text class="text-sm font-semibold">
                   {{ rule.label }}
-                </div>
+                </el-text>
                 <img
                   v-if="rule.rewardOverviewIconUrl"
                   :src="rule.rewardOverviewIconUrl"
                   alt="日期奖励总览图标"
                   class="mt-2 h-10 w-10 rounded-lg border border-slate-200 object-cover"
                 />
-                <div class="mt-1 text-xs text-slate-500">
+                <el-text class="mt-1 text-xs" type="info">
                   {{ rule.rewardSummary }}
-                </div>
-                <div
+                </el-text>
+                <el-text
                   v-if="!rule.editable"
-                  class="mt-2 text-[11px] text-slate-400"
+                  class="mt-2 block text-[11px]"
+                  type="info"
                 >
                   历史日期只读
-                </div>
+                </el-text>
               </button>
             </div>
           </div>
@@ -1052,15 +1056,15 @@ onMounted(async () => {
       <div class="space-y-3">
         <div
           v-if="patternRuleSummaries.length === 0"
-          class="rounded-lg border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-400"
+          class="rounded-lg border border-dashed px-4 py-8 text-center text-sm"
         >
-          暂未配置周期模式奖励
+          <el-text type="info">暂未配置周期模式奖励</el-text>
         </div>
         <div v-else class="space-y-3">
           <button
             v-for="rule in patternRuleSummaries"
             :key="rule.key"
-            class="w-full rounded-lg border border-slate-200 bg-slate-50/70 px-4 py-3 text-left transition hover:border-sky-200 hover:bg-sky-50/60"
+            class="w-full rounded-lg border border-slate-200 check-in-overview-item--editable px-4 py-3 text-left transition"
             type="button"
             @click="
               openRuleSummaryEditor(
@@ -1085,18 +1089,18 @@ onMounted(async () => {
               )
             "
           >
-            <div class="text-sm font-semibold text-slate-900">
+            <el-text class="text-sm font-semibold">
               {{ rule.label }}
-            </div>
+            </el-text>
             <img
               v-if="rule.rewardOverviewIconUrl"
               :src="rule.rewardOverviewIconUrl"
               alt="周期奖励总览图标"
               class="mt-2 h-10 w-10 rounded-lg border border-slate-200 object-cover"
             />
-            <div class="mt-1 text-xs text-slate-500">
+            <el-text class="mt-1 text-xs" type="info">
               {{ rule.rewardSummary }}
-            </div>
+            </el-text>
           </button>
         </div>
       </div>
@@ -1106,43 +1110,20 @@ onMounted(async () => {
   </div>
 </template>
 
-<style>
-.check-in-theme [class*='text-slate-900'] {
-  color: var(--el-text-color-primary) !important;
-}
-
-.check-in-theme [class*='text-slate-700'],
-.check-in-theme [class*='text-slate-600'],
-.check-in-theme [class*='text-slate-500'],
-.check-in-theme [class*='text-slate-400'],
-.check-in-theme [class*='text-slate-300'] {
-  color: var(--el-text-color-regular) !important;
-}
-
-.check-in-theme [class*='border-slate-200'],
-.check-in-theme [class*='border-slate-100'] {
-  border-color: var(--el-border-color) !important;
-}
-
-.check-in-theme [class*='bg-white'] {
-  background-color: var(--el-bg-color) !important;
-}
-
-.check-in-theme [class*='bg-slate-50'],
-.check-in-theme [class*='bg-slate-100'] {
-  background-color: var(--el-fill-color-light) !important;
-}
-
+<style scoped>
+/* ===== 工具栏 ===== */
 .check-in-preview-toolbar {
   background-color: var(--el-fill-color-light);
   border: 1px solid var(--el-border-color-light);
   border-radius: 10px;
 }
 
+/* ===== 星期标题 ===== */
 .check-in-preview-weekday {
   color: var(--el-text-color-secondary);
 }
 
+/* ===== 预览格子容器 ===== */
 .check-in-preview-cell,
 .check-in-month-cell {
   background-color: var(--el-bg-color);
@@ -1180,6 +1161,7 @@ onMounted(async () => {
   );
 }
 
+/* ===== 格子内部文本 ===== */
 .check-in-cell-title--editable {
   color: var(--el-text-color-primary);
 }
@@ -1203,5 +1185,68 @@ onMounted(async () => {
 
 .check-in-preview-status--readonly {
   color: var(--el-text-color-placeholder);
+}
+
+/* ===== 总览列表项（Drawer 内使用，通过 .check-in-theme 命名空间兜底） ===== */
+.check-in-overview-group-header {
+  background-color: var(--el-fill-color-light);
+}
+
+.check-in-overview-group-header:hover {
+  background-color: var(--el-fill-color);
+}
+
+.check-in-overview-item--editable {
+  background-color: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  transition: all 0.2s;
+}
+
+.check-in-overview-item--editable:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--el-color-primary) 4%,
+    var(--el-bg-color)
+  );
+  border-color: var(--el-color-primary-light-5);
+}
+
+.check-in-overview-item--readonly {
+  color: var(--el-text-color-placeholder);
+  cursor: not-allowed;
+  background-color: var(--el-fill-color);
+}
+</style>
+
+<!-- Drawer 内容通过 useVbenDrawer teleport 到 body，scoped 可能失效；
+     此非 scoped 块作为兜底，选择器限制在 .check-in-theme 命名空间下。 -->
+<style>
+.check-in-theme .check-in-overview-group-header {
+  background-color: var(--el-fill-color-light);
+}
+
+.check-in-theme .check-in-overview-group-header:hover {
+  background-color: var(--el-fill-color);
+}
+
+.check-in-theme .check-in-overview-item--editable {
+  background-color: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color);
+  transition: all 0.2s;
+}
+
+.check-in-theme .check-in-overview-item--editable:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--el-color-primary) 4%,
+    var(--el-bg-color)
+  );
+  border-color: var(--el-color-primary-light-5);
+}
+
+.check-in-theme .check-in-overview-item--readonly {
+  color: var(--el-text-color-placeholder);
+  cursor: not-allowed;
+  background-color: var(--el-fill-color);
 }
 </style>

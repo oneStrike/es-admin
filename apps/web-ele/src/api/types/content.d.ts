@@ -223,7 +223,7 @@ export type ContentComicChapterPageResponse = {
   [property: string]: any;
 
   /* 列表数据 */
-  list?: IdDto[];
+  list?: AdminWorkChapterPageItemDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -858,7 +858,7 @@ export type ContentNovelChapterPageResponse = {
   [property: string]: any;
 
   /* 列表数据 */
-  list?: IdDto[];
+  list?: AdminWorkChapterPageItemDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -2017,6 +2017,51 @@ export type CreateWorkChapterDto = {
 };
 
 /**
+ *  类型定义 [AdminWorkChapterPageItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type AdminWorkChapterPageItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 是否允许评论 */
+  canComment: boolean;
+  /* 是否允许下载 */
+  canDownload: boolean;
+  /* 章节封面 */
+  cover?: null | string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 主键id */
+  id: number;
+  /* 是否试读 */
+  isPreview: boolean;
+  /* 是否发布 */
+  isPublished: boolean;
+  /* 章节价格 */
+  price: number;
+  /* 发布时间 */
+  publishAt?: null | string;
+  /* 历史阅读等级ID（目标态不参与阅读权限） */
+  requiredViewLevelId?: null | number;
+  /* 排序值 */
+  sortOrder: number;
+  /* 章节副标题 */
+  subtitle?: null | string;
+  /* 章节标题 */
+  title: string;
+  /* 更新时间 */
+  updatedAt: string;
+  /* 查看规则（-1=继承作品；0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
+  viewRule: -1 | 0 | 1 | 2 | 3;
+  /* 作品ID */
+  workId: number;
+
+  /* 作品类型（1=漫画；2=小说） */
+  workType: 1 | 2;
+};
+
+/**
  *  类型定义 [UpdateWorkChapterDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -2189,31 +2234,9 @@ export type MoveComicContentDto = {
 };
 
 /**
- *  类型定义 [WorkflowErrorFactsDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-20 18:30:00
- */
-export type WorkflowErrorFactsDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 错误或状态码 */
-  code: string;
-  /* 可公开给 admin 表达层使用的事实 */
-  context: Record<string, any>;
-  /* 错误领域 */
-  domain: string;
-  /* 是否可重试 */
-  retryable: boolean;
-  /* 严重级别 */
-  severity: string;
-  /* 错误阶段 */
-  stage: string;
-};
-
-/**
  *  类型定义 [ComicArchiveTaskResponseDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-20 18:30:00
+ *  @更新时间 2026-05-09 22:20:06
  */
 export type ComicArchiveTaskResponseDto = {
   /** 任意合法数值 */
@@ -2227,7 +2250,7 @@ export type ComicArchiveTaskResponseDto = {
   /* 导入工作流任务ID */
   jobId: string;
   /* 最后一次错误事实；admin 负责表达 */
-  lastError?: null | WorkflowErrorFactsDto;
+  lastError?: WorkflowErrorFactsDto;
   /* 匹配成功的章节列表 */
   matchedItems: ComicArchiveMatchedItemDto[];
   /* 预解析模式（1=单章节压缩包；2=多章节压缩包） */
@@ -2281,7 +2304,54 @@ export type ComicArchiveMatchedItemDto = {
   statusContext: Record<string, any>;
 
   /* 覆盖风险事实；admin 负责表达 */
-  warning?: null | WorkflowErrorFactsDto;
+  warning?: WorkflowErrorFactsDto;
+};
+
+/**
+ *  类型定义 [WorkflowErrorFactsDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowErrorFactsDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 错误或状态码 */
+  code:
+    | 'ARCHIVE_CHAPTER_IMPORT_FAILED'
+    | 'ARCHIVE_IMPORT_CHAPTER_NOT_FOUND'
+    | 'ARCHIVE_IMPORT_DEPTH_EXCEEDED'
+    | 'ARCHIVE_IMPORT_INVALID_CHAPTER_ID_DIR'
+    | 'ARCHIVE_IMPORT_ITEM_IGNORED'
+    | 'ARCHIVE_IMPORT_MATCHED'
+    | 'ARCHIVE_IMPORT_MISSING_CHAPTER_ID'
+    | 'ARCHIVE_IMPORT_NO_IMAGES'
+    | 'ARCHIVE_IMPORT_OVERWRITE_WARNING'
+    | 'ARCHIVE_IMPORT_PROGRESS_UPDATED'
+    | 'ATTEMPT_LEASE_EXPIRED'
+    | 'CONTENT_IMPORT_IMAGE_PROGRESS_UPDATED'
+    | 'CONTENT_IMPORT_ITEM_FAILED'
+    | 'CONTENT_IMPORT_PROGRESS_UPDATED'
+    | 'CONTENT_IMPORT_RATE_LIMITED'
+    | 'CONTENT_IMPORT_RETRY_EXHAUSTED'
+    | 'DATABASE_WRITE_FAILED'
+    | 'THIRD_PARTY_CHAPTER_IMPORT_FAILED'
+    | 'THIRD_PARTY_IMAGE_IMPORT_FAILED'
+    | 'THIRD_PARTY_IMPORT_COMPLETED'
+    | 'THIRD_PARTY_RESOURCE_PARSE_FAILED'
+    | 'THIRD_PARTY_SYNC_COMPLETED'
+    | 'UNKNOWN_WORKFLOW_ERROR'
+    | 'UNKNOWN_WORKFLOW_PROGRESS';
+  /* 可公开给 admin 表达层使用的事实 */
+  context: Record<string, any>;
+  /* 错误领域 */
+  domain: string;
+  /* 是否可重试 */
+  retryable: boolean;
+  /* 严重级别 */
+  severity: string;
+
+  /* 错误阶段 */
+  stage: string;
 };
 
 /**
@@ -2316,7 +2386,7 @@ export type ComicArchiveResultItemDto = {
   /* 章节标题 */
   chapterTitle: string;
   /* 失败事实；admin 负责表达 */
-  error?: null | WorkflowErrorFactsDto;
+  error?: WorkflowErrorFactsDto;
   /* 已导入图片数量 */
   importedImageCount: number;
 
@@ -2977,9 +3047,9 @@ export type ContentImportItemDto = {
   /* 条目类型（1=漫画章节） */
   itemType: 1;
   /* 最近错误事实；admin 负责根据 code/context 表达 */
-  lastError?: null | WorkflowErrorFactsDto;
+  lastError?: WorkflowErrorFactsDto;
   /* 最近自动重试事实；admin 负责根据 code/context 表达 */
-  lastRetry?: null | WorkflowErrorFactsDto;
+  lastRetry?: WorkflowErrorFactsDto;
   /* 本地章节ID */
   localChapterId?: null | number;
   /* 最大自动重试次数 */

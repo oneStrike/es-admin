@@ -22,6 +22,4 @@ export const paymentOrderStatusOptions = [
  */
 export const subscriptionModeOptions = [
   { label: '一次性', value: 1, color: 'primary' },
-  { label: '自动续费签约首单', value: 2, color: 'warning' },
-  { label: '自动续费代扣订单', value: 3, color: 'success' },
 ];

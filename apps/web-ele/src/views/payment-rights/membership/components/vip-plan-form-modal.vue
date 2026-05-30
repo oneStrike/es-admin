@@ -153,7 +153,6 @@ async function applyRecord(record?: VipPlanFormValues) {
     benefitRows.value = normalizeRows(record.benefitRows);
   } else {
     await formApi.setValues({
-      autoRenewEnabled: false,
       bonusPointAmount: 0,
       durationDays: 30,
       isEnabled: true,
@@ -377,8 +376,6 @@ async function handleConfirm() {
       id: sharedData.value.record?.id,
     });
     modalApi.close();
-  } catch (error) {
-    throw error;
   } finally {
     modalApi.unlock();
   }

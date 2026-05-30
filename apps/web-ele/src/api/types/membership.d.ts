@@ -235,72 +235,6 @@ export type MembershipPageConfigUpdateStatusRequest = UpdateEnabledStatusDto;
 export type MembershipPageConfigUpdateStatusResponse = boolean;
 
 /**
- *  类型定义 [MembershipAutoRenewAgreementPageRequest]
- *  @来源 会员管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type MembershipAutoRenewAgreementPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 支付渠道（1=支付宝；2=微信） */
-  channel?: number;
-
-  /* 结束时间 */
-  endDate?: null | string;
-
-  /* 排序字段，json格式 */
-  orderBy?: null | string;
-
-  /* 当前页码（从1开始） */
-  pageIndex?: null | number;
-
-  /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
-
-  /* 支付场景（1=App；2=H5；3=小程序） */
-  paymentScene?: number;
-
-  /* VIP 套餐 ID */
-  planId?: number;
-
-  /* 开始时间 */
-  startDate?: null | string;
-
-  /* 协议状态（1=有效；2=已取消；3=已过期；4=签约失败） */
-  status?: number;
-
-  /* 用户 ID */
-  userId?: number;
-};
-
-export type MembershipAutoRenewAgreementPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 列表数据 */
-  list?: BaseMembershipAutoRenewAgreementDto[];
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 每页条数 */
-  pageSize?: number;
-
-  /* 总条数 */
-  total?: number;
-};
-
-/**
- *  类型定义 [MembershipAutoRenewAgreementCancellationCreateRequest]
- *  @来源 会员管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type MembershipAutoRenewAgreementCancellationCreateRequest = IdDto;
-
-export type MembershipAutoRenewAgreementCancellationCreateResponse = boolean;
-
-/**
  *  类型定义 [MembershipPlanItemDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -308,8 +242,6 @@ export type MembershipAutoRenewAgreementCancellationCreateResponse = boolean;
 export type MembershipPlanItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 是否支持自动续费签约 */
-  autoRenewEnabled?: boolean | null;
   /* 套餐关联权益列表 */
   benefits?: MembershipPlanBenefitItemDto[];
   /* 开通赠送积分数量 */
@@ -411,8 +343,6 @@ export type BaseMembershipBenefitDefinitionDto = {
 export type CreateMembershipPlanDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 是否支持自动续费签约 */
-  autoRenewEnabled?: boolean | null;
   /* 套餐关联权益列表 */
   benefits?: MembershipPlanBenefitInputDto[];
   /* 开通赠送积分数量 */
@@ -465,8 +395,6 @@ export type MembershipPlanBenefitInputDto = {
 export type UpdateMembershipPlanDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 是否支持自动续费签约 */
-  autoRenewEnabled?: boolean | null;
   /* 套餐关联权益列表 */
   benefits?: MembershipPlanBenefitInputDto[];
   /* 开通赠送积分数量 */
@@ -565,8 +493,6 @@ export type MembershipPageConfigItemDto = {
   [property: string]: any;
   /* 关联协议列表 */
   agreements?: MembershipPageAgreementItemDto[];
-  /* 自动续费提示 */
-  autoRenewNotice?: null | string;
   /* 确认开通协议提示文案 */
   checkoutAgreementText?: null | string;
   /* 创建时间 */
@@ -629,8 +555,6 @@ export type MembershipPageAgreementItemDto = {
 export type BaseMembershipPlanDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 是否支持自动续费签约 */
-  autoRenewEnabled?: boolean | null;
   /* 开通赠送积分数量 */
   bonusPointAmount?: null | number;
   /* 创建时间 */
@@ -670,8 +594,6 @@ export type CreateMembershipPageConfigDto = {
   [property: string]: any;
   /* 关联协议 ID 列表，按输入顺序展示 */
   agreementIds?: number[];
-  /* 自动续费提示 */
-  autoRenewNotice?: null | string;
   /* 确认开通协议提示文案 */
   checkoutAgreementText?: null | string;
   /* 是否启用 */
@@ -699,8 +621,6 @@ export type UpdateMembershipPageConfigDto = {
   [property: string]: any;
   /* 关联协议 ID 列表，按输入顺序展示 */
   agreementIds?: number[];
-  /* 自动续费提示 */
-  autoRenewNotice?: null | string;
   /* 确认开通协议提示文案 */
   checkoutAgreementText?: null | string;
   /* 主键id */
@@ -718,64 +638,4 @@ export type UpdateMembershipPageConfigDto = {
 
   /* 页面标题 */
   title?: string;
-};
-
-/**
- *  类型定义 [BaseMembershipAutoRenewAgreementDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type BaseMembershipAutoRenewAgreementDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 第三方签约协议号 */
-  agreementNo: string;
-  /* 取消时间 */
-  cancelledAt?: null | string;
-  /* 支付渠道（1=支付宝；2=微信） */
-  channel: 1 | 2;
-  /* 客户端应用键 */
-  clientAppKey: string;
-  /* 创建时间 */
-  createdAt: string;
-  /* 密钥版本引用快照 */
-  credentialVersionRef: string;
-  /* 运行环境（1=沙箱；2=正式） */
-  environment: 1 | 2;
-  /* 主键id */
-  id: number;
-  /* 下次预计续扣时间 */
-  nextRenewAt?: null | string;
-  /* 支付场景（1=App；2=H5；3=小程序） */
-  paymentScene: 1 | 2 | 3;
-  /* VIP 套餐 ID */
-  planId: number;
-  /* 客户端平台（1=Android；2=iOS；3=HarmonyOS；4=Web；5=小程序） */
-  platform: 1 | 2 | 3 | 4 | 5;
-  /* 支付 provider 配置 ID */
-  providerConfigId: number;
-  /* provider 配置版本快照 */
-  providerConfigVersion: number;
-  /* 签约成功时间 */
-  signedAt?: null | string;
-  /* 协议状态（1=有效；2=已取消；3=已过期；4=签约失败） */
-  status: 1 | 2 | 3 | 4;
-  /* 更新时间 */
-  updatedAt: string;
-
-  /* 用户 ID */
-  userId: number;
-};
-
-/**
- *  类型定义 [IdDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 主键id */
-  id: number;
 };

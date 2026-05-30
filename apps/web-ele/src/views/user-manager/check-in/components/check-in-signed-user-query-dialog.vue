@@ -249,7 +249,9 @@ function formatGrantSummary(row: AdminCheckInSignedUserPageItemDto) {
 </script>
 
 <template>
-  <Modal class="top-[5vh] !h-[86vh] !max-h-[86vh] w-[1180px] max-w-[calc(100vw-32px)]">
+  <Modal
+    class="top-[5vh] !h-[86vh] !max-h-[86vh] w-[1180px] max-w-[calc(100vw-32px)]"
+  >
     <div class="check-in-theme flex h-full min-h-0 flex-col gap-3">
       <div
         class="shrink-0 rounded-lg border border-slate-200 bg-white px-5 py-4"

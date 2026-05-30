@@ -20,7 +20,6 @@ export type VipPageConfigRow = NonNullable<
 
 export type VipPageConfigFormValues = {
   agreementIds?: unknown;
-  autoRenewNotice?: unknown;
   checkoutAgreementText?: unknown;
   id?: unknown;
   isEnabled?: unknown;
@@ -276,7 +275,6 @@ export function mapVipPageConfigToFormRecord(values: VipPageConfigRow) {
 function buildVipPageConfigBase(values: VipPageConfigFormValues) {
   return {
     agreementIds: normalizeAgreementIds(values.agreementIds),
-    autoRenewNotice: normalizeNullableText(values.autoRenewNotice),
     checkoutAgreementText: normalizeNullableText(values.checkoutAgreementText),
     isEnabled: normalizeBoolean(values.isEnabled),
     memberNoticeItems: normalizeStringArray(values.memberNoticeItemsText),
@@ -361,17 +359,6 @@ export const vipPageConfigFormSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
-      placeholder: '请输入自动续费提示',
-      rows: 4,
-      type: 'textarea',
-    },
-    fieldName: 'autoRenewNotice',
-    formItemClass: 'col-span-2',
-    label: '自动续费提示',
-  },
-  {
-    component: 'Input',
-    componentProps: {
       placeholder: '请输入确认开通协议提示文案',
       rows: 4,
       type: 'textarea',
@@ -435,7 +422,6 @@ export const vipPageConfigColumns =
         title: '关联协议',
       },
       agreementIds: { hide: true },
-      autoRenewNotice: { hide: true },
       checkoutAgreementText: { hide: true },
       isEnabled: {
         minWidth: 110,

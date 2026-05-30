@@ -635,21 +635,23 @@ async function handleConfirmImport() {
     cancelling.value
   )
     return;
+  const currentTask = taskDetail.value;
   confirming.value = true;
   try {
     await contentComicChapterContentArchiveConfirmApi({
       confirmedChapterIds: selectedChapterIds.value,
-      jobId: taskDetail.value.jobId,
+      jobId: currentTask.jobId,
     } satisfies ContentComicChapterContentArchiveConfirmRequest);
     useMessage.success('导入任务已提交，正在 workflow 处理');
     previewJobId.value = '';
-    taskDetail.value = {
-      ...taskDetail.value,
-      lastError: null,
+    const nextTask: ArchiveTaskDetail = {
+      ...currentTask,
       resultItems: [],
       status: ARCHIVE_STATUS.PENDING,
     };
-    await fetchTaskDetail(taskDetail.value.jobId);
+    delete nextTask.lastError;
+    taskDetail.value = nextTask;
+    await fetchTaskDetail(currentTask.jobId);
   } finally {
     confirming.value = false;
   }

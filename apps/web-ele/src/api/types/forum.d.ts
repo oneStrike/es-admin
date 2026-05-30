@@ -1691,7 +1691,7 @@ export type ForumTopicContentPreviewSegmentDto = {
   /* 片段展示文本 */
   text: string;
   /* 片段类型：text=普通文本；mention=@用户；hashtag=#话题；emoji=表情 */
-  type: string;
+  type: 'emoji' | 'hashtag' | 'mention' | 'text';
   /* Unicode 表情序列；type=emoji 且 kind=1 时返回 */
   unicodeSequence?: null | string;
 

@@ -344,31 +344,9 @@ export type WorkflowJobDetailDto = {
 };
 
 /**
- *  类型定义 [WorkflowErrorFactsDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-20 18:30:00
- */
-export type WorkflowErrorFactsDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 错误或状态码 */
-  code: string;
-  /* 可公开给 admin 表达层使用的事实 */
-  context: Record<string, any>;
-  /* 错误领域 */
-  domain: string;
-  /* 是否可重试 */
-  retryable: boolean;
-  /* 严重级别 */
-  severity: string;
-  /* 错误阶段 */
-  stage: string;
-};
-
-/**
  *  类型定义 [WorkflowAttemptDto]
  *  @来源 components.schemas
- *  @更新时间 2026-05-20 18:30:00
+ *  @更新时间 2026-05-09 22:20:06
  */
 export type WorkflowAttemptDto = {
   /** 任意合法数值 */
@@ -384,7 +362,7 @@ export type WorkflowAttemptDto = {
   /* 创建时间 */
   createdAt: string;
   /* 错误事实；admin 负责根据 code/context 表达 */
-  error?: null | WorkflowErrorFactsDto;
+  error?: WorkflowErrorFactsDto;
   /* 失败条目数 */
   failedItemCount: number;
   /* 完成时间 */
@@ -410,6 +388,53 @@ export type WorkflowAttemptDto = {
 
   /* 更新时间 */
   updatedAt: string;
+};
+
+/**
+ *  类型定义 [WorkflowErrorFactsDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowErrorFactsDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 错误或状态码 */
+  code:
+    | 'ARCHIVE_CHAPTER_IMPORT_FAILED'
+    | 'ARCHIVE_IMPORT_CHAPTER_NOT_FOUND'
+    | 'ARCHIVE_IMPORT_DEPTH_EXCEEDED'
+    | 'ARCHIVE_IMPORT_INVALID_CHAPTER_ID_DIR'
+    | 'ARCHIVE_IMPORT_ITEM_IGNORED'
+    | 'ARCHIVE_IMPORT_MATCHED'
+    | 'ARCHIVE_IMPORT_MISSING_CHAPTER_ID'
+    | 'ARCHIVE_IMPORT_NO_IMAGES'
+    | 'ARCHIVE_IMPORT_OVERWRITE_WARNING'
+    | 'ARCHIVE_IMPORT_PROGRESS_UPDATED'
+    | 'ATTEMPT_LEASE_EXPIRED'
+    | 'CONTENT_IMPORT_IMAGE_PROGRESS_UPDATED'
+    | 'CONTENT_IMPORT_ITEM_FAILED'
+    | 'CONTENT_IMPORT_PROGRESS_UPDATED'
+    | 'CONTENT_IMPORT_RATE_LIMITED'
+    | 'CONTENT_IMPORT_RETRY_EXHAUSTED'
+    | 'DATABASE_WRITE_FAILED'
+    | 'THIRD_PARTY_CHAPTER_IMPORT_FAILED'
+    | 'THIRD_PARTY_IMAGE_IMPORT_FAILED'
+    | 'THIRD_PARTY_IMPORT_COMPLETED'
+    | 'THIRD_PARTY_RESOURCE_PARSE_FAILED'
+    | 'THIRD_PARTY_SYNC_COMPLETED'
+    | 'UNKNOWN_WORKFLOW_ERROR'
+    | 'UNKNOWN_WORKFLOW_PROGRESS';
+  /* 可公开给 admin 表达层使用的事实 */
+  context: Record<string, any>;
+  /* 错误领域 */
+  domain: string;
+  /* 是否可重试 */
+  retryable: boolean;
+  /* 严重级别 */
+  severity: string;
+
+  /* 错误阶段 */
+  stage: string;
 };
 
 /**
@@ -516,9 +541,9 @@ export type ContentImportItemDto = {
   /* 条目类型（1=漫画章节） */
   itemType: 1;
   /* 最近错误事实；admin 负责根据 code/context 表达 */
-  lastError?: null | WorkflowErrorFactsDto;
+  lastError?: WorkflowErrorFactsDto;
   /* 最近自动重试事实；admin 负责根据 code/context 表达 */
-  lastRetry?: null | WorkflowErrorFactsDto;
+  lastRetry?: WorkflowErrorFactsDto;
   /* 本地章节ID */
   localChapterId?: null | number;
   /* 最大自动重试次数 */

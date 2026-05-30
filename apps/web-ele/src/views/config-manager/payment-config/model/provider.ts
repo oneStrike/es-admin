@@ -25,7 +25,6 @@ export type PaymentProviderConfigRow = NonNullable<
 };
 
 export type PaymentProviderFormValues = {
-  agreementNotifyUrl?: unknown;
   allowedReturnDomainsText?: unknown;
   apiV3KeyRef?: unknown;
   appCertRef?: unknown;
@@ -50,7 +49,6 @@ export type PaymentProviderFormValues = {
   returnUrl?: unknown;
   rootCertRef?: unknown;
   sortOrder?: unknown;
-  supportsAutoRenew?: unknown;
 };
 
 function normalizeText(value: unknown) {
@@ -188,7 +186,6 @@ export function mapProviderToFormRecord(values: PaymentProviderConfigRow) {
 
 function buildPaymentProviderBase(values: PaymentProviderFormValues) {
   return {
-    agreementNotifyUrl: normalizeNullableText(values.agreementNotifyUrl),
     allowedReturnDomains: normalizeStringArray(values.allowedReturnDomainsText),
     apiV3KeyRef: normalizeNullableText(values.apiV3KeyRef),
     appCertRef: normalizeNullableText(values.appCertRef),
@@ -220,7 +217,6 @@ function buildPaymentProviderBase(values: PaymentProviderFormValues) {
     returnUrl: normalizeNullableText(values.returnUrl),
     rootCertRef: normalizeNullableText(values.rootCertRef),
     sortOrder: normalizeNullableNumber(values.sortOrder),
-    supportsAutoRenew: normalizeBoolean(values.supportsAutoRenew),
   } satisfies PaymentProviderCreateRequest;
 }
 
@@ -387,12 +383,6 @@ export const paymentProviderFormSchema: EsFormSchema = [
   },
   {
     component: 'Input',
-    componentProps: { clearable: true, placeholder: '请输入签约通知地址' },
-    fieldName: 'agreementNotifyUrl',
-    label: '签约通知地址',
-  },
-  {
-    component: 'Input',
     componentProps: { clearable: true, placeholder: '请输入 H5 返回地址' },
     fieldName: 'returnUrl',
     label: 'H5 返回地址',
@@ -413,13 +403,6 @@ export const paymentProviderFormSchema: EsFormSchema = [
     defaultValue: true,
     fieldName: 'isEnabled',
     label: '启用状态',
-  },
-  {
-    component: 'RadioGroup',
-    componentProps: { class: 'w-full', options: enabledStatusOptions },
-    defaultValue: false,
-    fieldName: 'supportsAutoRenew',
-    label: '支持自动续费',
   },
   {
     component: 'Input',
@@ -488,7 +471,6 @@ export const paymentProviderColumns =
         minWidth: 180,
         slots: { default: 'detail' },
       },
-      agreementNotifyUrl: { hide: true },
       allowedReturnDomainsText: { hide: true },
       apiV3KeyRef: { hide: true },
       appCertRef: { hide: true },
@@ -509,7 +491,6 @@ export const paymentProviderColumns =
       returnUrl: { hide: true },
       rootCertRef: { hide: true },
       sortOrder: { hide: true },
-      supportsAutoRenew: { hide: true },
     },
   );
 
