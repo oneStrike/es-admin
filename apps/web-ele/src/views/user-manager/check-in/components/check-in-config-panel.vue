@@ -630,9 +630,9 @@ onMounted(async () => {
             </div>
           </el-card>
 
-          <el-card shadow="never">
-            <div class="flex flex-col justify-between">
-              <div>
+          <el-card shadow="never" class="flex flex-col">
+            <div class="flex flex-1 flex-col justify-between gap-4">
+              <div class="flex-1">
                 <el-text class="mb-2 block text-sm font-medium">
                   签到周期
                 </el-text>
@@ -652,7 +652,7 @@ onMounted(async () => {
                   />
                 </el-select>
               </div>
-              <div>
+              <div class="flex-1">
                 <el-text class="mb-2 block text-sm font-medium">
                   每周期补签额度
                 </el-text>
