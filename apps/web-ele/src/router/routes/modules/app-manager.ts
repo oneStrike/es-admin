@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/app-manager',
     meta: {
       title: 'APP管理',
-      order: 50,
+      order: 8,
       icon: 'majesticons:device-mobile-line',
     },
     children: [

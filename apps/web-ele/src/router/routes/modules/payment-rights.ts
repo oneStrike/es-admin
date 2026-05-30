@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/payment-rights',
     meta: {
       title: '支付与权益',
-      order: -2,
+      order: 6,
       icon: 'majesticons:creditcard-line',
     },
     children: [

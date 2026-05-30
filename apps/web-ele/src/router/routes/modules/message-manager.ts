@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/message',
     meta: {
       title: '消息管理',
-      order: 40,
+      order: 7,
       icon: 'lucide:message-square-text',
     },
     children: [

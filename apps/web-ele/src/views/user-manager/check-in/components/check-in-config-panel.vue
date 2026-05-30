@@ -112,9 +112,7 @@ const [PatternOverviewDrawer, patternOverviewDrawerApi] = useVbenDrawer({
 });
 
 const [SignedUserQueryModal, signedUserQueryModalApi] = useVbenModal({
-  class: 'top-[5vh] h-[86vh] max-h-[86vh] w-[1180px] max-w-[calc(100vw-32px)]',
   connectedComponent: CheckInSignedUserQueryDialog,
-  contentClass: 'min-h-0 !overflow-hidden p-3',
   footer: false,
   title: '已签用户查询',
 });
@@ -595,7 +593,7 @@ onMounted(async () => {
                 <EsUpload
                   :model-value="formState.makeupIconUrl || ''"
                   :max-count="1"
-                  accept="image/*"
+ Upl              accept="image/*"
                   list-type="picture-card"
                   return-data-type="url"
                   :scene="UploadSceneEnum.SHARED"

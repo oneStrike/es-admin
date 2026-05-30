@@ -4,7 +4,7 @@ const routes: RouteRecordRaw[] = [
   {
     meta: {
       icon: 'lucide:layout-dashboard',
-      order: 30,
+      order: 4,
       title: '论坛管理',
     },
     name: 'Forum',

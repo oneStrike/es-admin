@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/system-manager',
     meta: {
       title: '系统管理',
-      order: 80,
+      order: 11,
       icon: 'majesticons:cog-line',
     },
     children: [

@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/content-manager',
     meta: {
       title: '内容管理',
-      order: 10,
+      order: 2,
       icon: 'majesticons:book-open-line',
     },
     children: [

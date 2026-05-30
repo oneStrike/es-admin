@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/user-manager',
     meta: {
       title: '用户管理',
-      order: -1,
+      order: 5,
       icon: 'majesticons:user-line',
     },
     children: [

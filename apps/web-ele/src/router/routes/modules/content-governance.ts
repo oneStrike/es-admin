@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     path: '/content-governance',
     meta: {
       title: '内容治理',
-      order: 20,
+      order: 3,
       icon: 'lucide:shield-check',
     },
     children: [

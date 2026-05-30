@@ -125,6 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 const [Modal, modalApi] = useVbenModal({
+  contentClass: 'min-h-0 !overflow-hidden p-3',
   footer: false,
   onOpenChange(isOpen) {
     if (!isOpen) {
@@ -248,7 +249,7 @@ function formatGrantSummary(row: AdminCheckInSignedUserPageItemDto) {
 </script>
 
 <template>
-  <Modal>
+  <Modal class="top-[5vh] !h-[86vh] !max-h-[86vh] w-[1180px] max-w-[calc(100vw-32px)]">
     <div class="check-in-theme flex h-full min-h-0 flex-col gap-3">
       <div
         class="shrink-0 rounded-lg border border-slate-200 bg-white px-5 py-4"
