@@ -17,7 +17,6 @@ import {
   resolveRef,
   toCamelCase,
   toPascalCase,
-  wrapArrayItemType,
 } from './utils';
 
 /**
@@ -252,6 +251,13 @@ export class OpenAPIGenerator {
     return grouped;
   }
 
+  private applySchemaNullable(schema: any, type: string): string {
+    return this.isNullableSchema(schema) &&
+      !type.split(/\s*\|\s*/).includes('null')
+      ? `${type} | null`
+      : type;
+  }
+
   private buildOperationContexts(): OperationContext[] {
     const contexts: OperationContext[] = [];
 
@@ -423,7 +429,7 @@ export class OpenAPIGenerator {
       return [`  /* 联合类型 */\n  data: ${mapSchemaToType(schema)}`];
     }
 
-    if (schema.type === 'object' && schema.properties) {
+    if (this.hasSchemaType(schema, 'object') && schema.properties) {
       for (const [propName, propSchema] of Object.entries(schema.properties)) {
         const prop = propSchema as any;
         const required = schema.required?.includes(propName) ? '' : '?';
@@ -440,10 +446,9 @@ export class OpenAPIGenerator {
             .join('\n'),
         );
       }
-    } else if (schema.type === 'array') {
+    } else if (this.hasSchemaType(schema, 'array')) {
       // 处理数组类型
-      const itemType = mapSchemaToType(schema.items);
-      return [`  /* 数组数据 */\n  items: ${wrapArrayItemType(itemType)}[]`];
+      return [`  /* 数组数据 */\n  items: ${mapSchemaToType(schema)}`];
     } else if (schema.enum) {
       // 处理枚举类型
       const enumType = mapSchemaToType(schema);
@@ -533,25 +538,25 @@ ${properties.join('\n\n')}
       return `export type ${typeName} = undefined`;
     }
 
-    if (dataSchema.type === 'array') {
-      const itemType = mapSchemaToType(dataSchema.items);
-      return `export type ${typeName} = ${wrapArrayItemType(itemType)}[]`;
+    if (this.hasSchemaType(dataSchema, 'array')) {
+      return `export type ${typeName} = ${mapSchemaToType(dataSchema)}`;
     }
 
     if (
       dataSchema.type &&
-      ['boolean', 'integer', 'number', 'string'].includes(dataSchema.type)
+      ['boolean', 'integer', 'number', 'string'].some((type) =>
+        this.hasSchemaType(dataSchema, type),
+      )
     ) {
       const baseType = mapSchemaToType(dataSchema);
       return `export type ${typeName} = ${baseType}`;
     }
 
     if (dataSchema.$ref) {
-      const refType = resolveRef(dataSchema.$ref);
-      return `export type ${typeName} = ${refType}`;
+      return `export type ${typeName} = ${mapSchemaToType(dataSchema)}`;
     }
 
-    if (dataSchema.type !== 'object' || !dataSchema.properties) {
+    if (!this.hasSchemaType(dataSchema, 'object') || !dataSchema.properties) {
       const mappedType = mapSchemaToType(dataSchema);
       return `export type ${typeName} = ${mappedType || 'undefined'}`;
     }
@@ -562,12 +567,16 @@ ${properties.join('\n\n')}
       return `export type ${typeName} = undefined`;
     }
 
-    return `export type ${typeName} = {
+    const objectType = `{
 ${properties.join('\n\n')}
 
   /** 任意合法数值 */
   [property: string]: any
 }`;
+    return `export type ${typeName} = ${this.applySchemaNullable(
+      dataSchema,
+      objectType,
+    )}`;
   }
 
   /**
@@ -595,7 +604,7 @@ ${properties.join('\n\n')}
         updateTime,
       );
       return `${comment}
-export type ${typeName} = ${schema.nullable ? `${types.join(' & ')} | null` : types.join(' & ')}`;
+export type ${typeName} = ${this.applySchemaNullable(schema, types.join(' & '))}`;
     }
 
     // 处理 oneOf/anyOf 联合类型
@@ -615,20 +624,18 @@ export type ${typeName} = ${schema.nullable ? `${types.join(' & ')} | null` : ty
         updateTime,
       );
       return `${comment}
-export type ${typeName} = ${schema.nullable ? `${types.join(' | ')} | null` : types.join(' | ')}`;
+export type ${typeName} = ${this.applySchemaNullable(schema, types.join(' | '))}`;
     }
 
     // 检查是否是基础类型数组
-    if (schema.type === 'array') {
-      const itemType = mapSchemaToType(schema.items);
-
+    if (this.hasSchemaType(schema, 'array')) {
       const comment = TEMPLATES.typeComment(
         typeName,
         'components.schemas',
         updateTime,
       );
       return `${comment}
-export type ${typeName} = ${wrapArrayItemType(itemType)}[]`;
+export type ${typeName} = ${mapSchemaToType(schema)}`;
     }
 
     // 检查是否是枚举类型
@@ -646,7 +653,9 @@ export type ${typeName} = ${enumType}`;
     // 检查是否是基础类型
     if (
       schema.type &&
-      ['boolean', 'integer', 'number', 'string'].includes(schema.type)
+      ['boolean', 'integer', 'number', 'string'].some((type) =>
+        this.hasSchemaType(schema, type),
+      )
     ) {
       const baseType = mapSchemaToType(schema);
       const comment = TEMPLATES.typeComment(
@@ -675,7 +684,10 @@ export type ${typeName} = ${baseType}`;
           updateTime,
         );
         return `${comment}
-export type ${typeName} = Record<string, ${valueType}>`;
+export type ${typeName} = ${this.applySchemaNullable(
+  schema,
+  `Record<string, ${valueType}>`,
+)}`;
       }
       return null;
     }
@@ -687,13 +699,14 @@ export type ${typeName} = Record<string, ${valueType}>`;
     );
 
     // 对象类型添加索引签名
-    return `${comment}
-export type ${typeName} = {
+    const objectType = `{
 ${properties.join('\n')}
 
   /** 任意合法数值 */
   [property: string]: any
 }`;
+    return `${comment}
+export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;
   }
 
   private getModuleDirectory(
@@ -808,6 +821,12 @@ ${properties.join('\n')}
     return this.getRequestParameters(operation).length > 0;
   }
 
+  private hasSchemaType(schema: any, type: string): boolean {
+    return Array.isArray(schema?.type)
+      ? schema.type.includes(type)
+      : schema?.type === type;
+  }
+
   /**
    * 判断请求所有字段是否为可选
    * - 若存在任一必填的 query/path 参数，返回 false
@@ -839,6 +858,13 @@ ${properties.join('\n')}
     return hasAny;
   }
 
+  private isNullableSchema(schema: any): boolean {
+    return Boolean(
+      schema?.nullable ||
+        (Array.isArray(schema?.type) && schema.type.includes('null')),
+    );
+  }
+
   /**
    * 判断一个 schema 在我们生成规则下是否“全可选”
    */
@@ -857,7 +883,7 @@ ${properties.join('\n')}
     }
 
     // 对象：若无 required 列表或为空，则顶层属性均可选
-    if (schema.type === 'object') {
+    if (this.hasSchemaType(schema, 'object')) {
       if (!schema.properties) {
         // 无属性即无必填，视为可选
         return true;

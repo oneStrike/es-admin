@@ -55,8 +55,10 @@ export function wrapArrayItemType(type: string): string {
 export function mapSchemaToType(schema: any, depth: number = 0): string {
   if (!schema) return 'any';
 
+  const allowsNull =
+    schema.nullable || (Array.isArray(schema.type) && schema.type.includes('null'));
   const applyNullable = (type: string) =>
-    schema.nullable && !type.split(/\s*\|\s*/).includes('null')
+    allowsNull && !type.split(/\s*\|\s*/).includes('null')
       ? `${type} | null`
       : type;
 
@@ -81,11 +83,12 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
   }
 
   if (Array.isArray(schema.type)) {
-    return applyNullable(
-      schema.type
-        .map((t: string) => mapOpenAPIType(t, schema.format))
-        .join(' | '),
+    const types = schema.type.map((type: string) =>
+      type === 'null'
+        ? 'null'
+        : mapSchemaToType({ ...schema, nullable: false, type }, depth),
     );
+    return applyNullable(joinTypes(types, ' | '));
   }
 
   switch (schema.type) {
