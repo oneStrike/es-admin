@@ -7,18 +7,24 @@ import type {
 } from '../model/config';
 import type { CheckInRewardItemDto } from '../model/shared';
 
+import type {
+  AdminCheckInCalendarOverviewResponseDto,
+  CheckInCalendarOverviewRequest,
+} from '#/api/types';
+
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 
 import {
+  checkInCalendarOverviewApi,
   checkInConfigDetailApi,
   checkInConfigUpdateApi,
   checkInConfigUpdateEnabledApi,
 } from '#/api/core';
 import EsUpload from '#/components/es-upload/es-upload.vue';
 import { UploadSceneEnum } from '#/enum/api';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { dayjs } from '#/utils';
 
 import RewardConfigModal from '../../shared/reward-config/reward-config-modal.vue';
@@ -77,6 +83,32 @@ const loading = ref(false);
 const saving = ref(false);
 const toggleLoading = ref(false);
 const isEnabled = ref(false);
+const calendarOverview = ref<AdminCheckInCalendarOverviewResponseDto | null>(
+  null,
+);
+const todayOverviewLoading = ref(false);
+const todayOverviewLoadFailed = ref(false);
+
+interface PeriodOverviewData {
+  totalSigned: number;
+  totalNormal: number;
+  totalMakeup: number;
+  periodLabel: string;
+}
+const todayOverview = computed(() => calendarOverview.value?.targetDay ?? null);
+const periodOverview = computed<null | PeriodOverviewData>(() => {
+  const overview = calendarOverview.value;
+  if (!overview) {
+    return null;
+  }
+
+  return {
+    totalSigned: overview.periodToDate.signedCount,
+    totalNormal: overview.periodToDate.normalSignCount,
+    totalMakeup: overview.periodToDate.makeupSignCount,
+    periodLabel: overview.periodType === 1 ? '按自然周' : '按自然月',
+  };
+});
 const formState = reactive<CheckInConfigFormState>(
   createDefaultConfigFormState(),
 );
@@ -209,6 +241,15 @@ async function loadConfig() {
 
 async function handleToggleEnabled(nextValue: boolean | number | string) {
   const nextEnabled = !!nextValue;
+  const confirmed = await useConfirm({
+    type: nextEnabled ? 'enable' : 'disable',
+    title: nextEnabled ? '启用签到功能' : '停用签到功能',
+    content: nextEnabled ? '确认启用签到功能吗？' : '确认停用签到功能吗？',
+    successMessage: false,
+  });
+  if (!confirmed) {
+    return;
+  }
   const previousEnabled = isEnabled.value;
   isEnabled.value = nextEnabled;
   toggleLoading.value = true;
@@ -566,27 +607,33 @@ function syncRewardEditorFromScope() {
   }
 }
 
+async function loadTodayOverview() {
+  todayOverviewLoading.value = true;
+  todayOverviewLoadFailed.value = false;
+  try {
+    const today = dayjs().format('YYYY-MM-DD');
+    const params = {
+      targetDate: today,
+    } satisfies CheckInCalendarOverviewRequest;
+    calendarOverview.value = await checkInCalendarOverviewApi(params);
+  } catch {
+    calendarOverview.value = null;
+    todayOverviewLoadFailed.value = true;
+  } finally {
+    todayOverviewLoading.value = false;
+  }
+}
+
 onMounted(async () => {
   await loadConfig();
+  loadTodayOverview();
 });
 </script>
 
 <template>
   <div v-loading="loading" class="check-in-theme es-scroll-pane space-y-5">
     <el-card shadow="never">
-      <div class="flex items-center justify-between gap-4">
-        <el-text class="text-base font-semibold">签到基础配置</el-text>
-        <div class="flex items-center gap-3">
-          <el-text class="text-sm" type="info">签到开关</el-text>
-          <el-switch
-            :model-value="isEnabled"
-            :loading="toggleLoading"
-            @change="handleToggleEnabled"
-          />
-        </div>
-      </div>
-
-      <div class="mt-4 space-y-5">
+      <div class="space-y-5">
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
           <el-card shadow="never">
             <el-text class="mb-2 block text-sm font-medium">图标配置</el-text>
@@ -630,9 +677,9 @@ onMounted(async () => {
             </div>
           </el-card>
 
-          <el-card shadow="never" class="flex flex-col">
+          <el-card shadow="never">
             <div class="flex flex-1 flex-col justify-between gap-4">
-              <div class="flex-1">
+              <div>
                 <el-text class="mb-2 block text-sm font-medium">
                   签到周期
                 </el-text>
@@ -652,7 +699,7 @@ onMounted(async () => {
                   />
                 </el-select>
               </div>
-              <div class="flex-1">
+              <div class="mt-6">
                 <el-text class="mb-2 block text-sm font-medium">
                   每周期补签额度
                 </el-text>
@@ -667,58 +714,68 @@ onMounted(async () => {
             </div>
           </el-card>
 
-          <el-card shadow="never">
-            <el-text class="mb-2 block text-sm font-medium">
-              默认积分奖励
-            </el-text>
-            <el-text class="text-xs" type="info">
-              未命中特殊奖励时发放的默认积分。
-            </el-text>
-            <div class="mt-3">
-              <el-input-number
-                class="!w-full"
-                controls-position="right"
-                :min="0"
-                :model-value="baseRewardValues.points"
-                :step="1"
-                @update:model-value="
-                  (value: unknown) =>
-                    handleBaseRewardAmountChange(1, value as number | undefined)
-                "
-              />
+          <el-card
+            shadow="never"
+            class="[&_.el-card__body]:flex [&_.el-card__body]:flex-col"
+          >
+            <div class="flex flex-1 flex-col justify-between gap-4">
+              <div class="flex-1">
+                <el-text class="mb-2 block text-sm font-medium">
+                  默认积分奖励
+                </el-text>
+                <div class="mt-3">
+                  <el-input-number
+                    class="!w-full"
+                    controls-position="right"
+                    :min="0"
+                    :model-value="baseRewardValues.points"
+                    :step="1"
+                    placeholder="0 或不填表示不发积分"
+                    @update:model-value="
+                      (value: unknown) =>
+                        handleBaseRewardAmountChange(
+                          1,
+                          value as number | undefined,
+                        )
+                    "
+                  />
+                </div>
+              </div>
+              <div class="flex-1 mt-6">
+                <el-text class="mb-2 block text-sm font-medium">
+                  默认经验奖励
+                </el-text>
+                <div class="mt-3">
+                  <el-input-number
+                    class="!w-full"
+                    controls-position="right"
+                    :min="0"
+                    :model-value="baseRewardValues.experience"
+                    :step="1"
+                    placeholder="0 或不填表示不发经验"
+                    @update:model-value="
+                      (value: unknown) =>
+                        handleBaseRewardAmountChange(
+                          2,
+                          value as number | undefined,
+                        )
+                    "
+                  />
+                </div>
+              </div>
             </div>
-            <el-text class="mt-2 text-xs" type="info">
-              0 或不填表示不发积分
-            </el-text>
           </el-card>
 
           <el-card shadow="never">
-            <el-text class="mb-2 block text-sm font-medium">
-              默认经验奖励
-            </el-text>
-            <el-text class="text-xs" type="info">
-              未命中特殊奖励时发放的默认经验。
-            </el-text>
-            <div class="mt-3">
-              <el-input-number
-                class="!w-full"
-                controls-position="right"
-                :min="0"
-                :model-value="baseRewardValues.experience"
-                :step="1"
-                @update:model-value="
-                  (value: unknown) =>
-                    handleBaseRewardAmountChange(2, value as number | undefined)
-                "
-              />
-            </div>
-            <el-text class="mt-2 text-xs" type="info">
-              0 或不填表示不发经验
-            </el-text>
-          </el-card>
-
-          <el-card shadow="never">
-            <div class="mt-4 flex flex-col gap-3">
+            <div class="flex flex-col gap-4">
+              <el-button
+                class="!ml-0 w-full"
+                :loading="toggleLoading"
+                :type="isEnabled ? 'warning' : 'success'"
+                @click="handleToggleEnabled(!isEnabled)"
+              >
+                {{ isEnabled ? '停用签到功能' : '启用签到功能' }}
+              </el-button>
               <el-button class="!ml-0 w-full" @click="openDateOverview">
                 具体日期总览
               </el-button>
@@ -733,6 +790,130 @@ onMounted(async () => {
               >
                 保存基础信息
               </el-button>
+            </div>
+          </el-card>
+
+          <el-card shadow="never">
+            <div class="mb-2 flex items-center gap-2">
+              <el-text class="text-sm font-medium">今日概况</el-text>
+              <el-text class="text-xs" type="info">
+                {{ dayjs().format('MM-DD') }}
+              </el-text>
+            </div>
+            <div v-loading="todayOverviewLoading" class="flex flex-col gap-3">
+              <template v-if="todayOverviewLoadFailed">
+                <el-text class="text-xs" type="danger">
+                  今日概况加载失败
+                </el-text>
+                <el-button
+                  class="!ml-0"
+                  size="small"
+                  @click="loadTodayOverview"
+                >
+                  重试
+                </el-button>
+              </template>
+              <template v-else-if="todayOverview">
+                <div
+                  class="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5"
+                >
+                  <span class="text-xs text-slate-500">签到人数</span>
+                  <span class="text-xl font-bold text-slate-800">
+                    {{ todayOverview.signedCount }}
+                  </span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div
+                    class="check-in-stat-item check-in-stat-item--primary rounded-md border border-slate-200 px-3 py-2.5 text-center"
+                  >
+                    <div class="check-in-stat-label--primary text-xs">
+                      正常签到
+                    </div>
+                    <div
+                      class="mt-1 check-in-stat-value--primary text-lg font-semibold"
+                    >
+                      {{ todayOverview.normalSignCount }}
+                    </div>
+                  </div>
+                  <div
+                    class="check-in-stat-item check-in-stat-item--warning rounded-md border border-slate-200 px-3 py-2.5 text-center"
+                  >
+                    <div class="check-in-stat-label--warning text-xs">
+                      补签签到
+                    </div>
+                    <div
+                      class="mt-1 check-in-stat-value--warning text-lg font-semibold"
+                    >
+                      {{ todayOverview.makeupSignCount }}
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <el-text v-else class="text-xs" type="info">
+                暂无今日数据
+              </el-text>
+            </div>
+          </el-card>
+
+          <el-card shadow="never">
+            <div class="mb-2 flex items-center gap-2">
+              <el-text class="text-sm font-medium">周期概览</el-text>
+              <el-text v-if="periodOverview" class="text-xs" type="info">
+                {{ periodOverview.periodLabel }}
+              </el-text>
+            </div>
+            <div v-loading="todayOverviewLoading" class="flex flex-col gap-3">
+              <template v-if="todayOverviewLoadFailed">
+                <el-text class="text-xs" type="danger">
+                  周期概览加载失败
+                </el-text>
+                <el-button
+                  class="!ml-0"
+                  size="small"
+                  @click="loadTodayOverview"
+                >
+                  重试
+                </el-button>
+              </template>
+              <template v-else-if="periodOverview">
+                <div
+                  class="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5"
+                >
+                  <span class="text-xs text-slate-500">周期签到</span>
+                  <span class="text-xl font-bold text-slate-800">
+                    {{ periodOverview.totalSigned }}
+                  </span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div
+                    class="check-in-stat-item check-in-stat-item--primary rounded-md border border-slate-200 px-3 py-2.5 text-center"
+                  >
+                    <div class="check-in-stat-label--primary text-xs">
+                      正常签到
+                    </div>
+                    <div
+                      class="mt-1 check-in-stat-value--primary text-lg font-semibold"
+                    >
+                      {{ periodOverview.totalNormal }}
+                    </div>
+                  </div>
+                  <div
+                    class="check-in-stat-item check-in-stat-item--warning rounded-md border border-slate-200 px-3 py-2.5 text-center"
+                  >
+                    <div class="check-in-stat-label--warning text-xs">
+                      补签签到
+                    </div>
+                    <div
+                      class="mt-1 check-in-stat-value--warning text-lg font-semibold"
+                    >
+                      {{ periodOverview.totalMakeup }}
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <el-text v-else class="text-xs" type="info">
+                暂无周期数据
+              </el-text>
             </div>
           </el-card>
         </div>
@@ -936,8 +1117,7 @@ onMounted(async () => {
       :allow-clear="true"
       :allow-empty-confirm="true"
       :asset-options="checkInRewardAssetOptions"
-      clear-button-text="清空当前配置"
-      confirm-text="应用到当前配置"
+      clear-button-text="清空"
       :model-value="{
         rewardItems: rewardEditor.rewardItems,
         rewardOverviewIconUrl: rewardEditor.rewardOverviewIconUrl,
@@ -1216,37 +1396,23 @@ onMounted(async () => {
   cursor: not-allowed;
   background-color: var(--el-fill-color);
 }
-</style>
 
-<!-- Drawer 内容通过 useVbenDrawer teleport 到 body，scoped 可能失效；
-     此非 scoped 块作为兜底，选择器限制在 .check-in-theme 命名空间下。 -->
-<style>
-.check-in-theme .check-in-overview-group-header {
-  background-color: var(--el-fill-color-light);
+/* ===== 概览统计卡片（左侧色条方案） ===== */
+.check-in-stat-item--primary {
+  border-left: 3px solid var(--el-color-primary);
 }
 
-.check-in-theme .check-in-overview-group-header:hover {
-  background-color: var(--el-fill-color);
+.check-in-stat-item--warning {
+  border-left: 3px solid #f59e0b;
 }
 
-.check-in-theme .check-in-overview-item--editable {
-  background-color: var(--el-fill-color-light);
-  border: 1px solid var(--el-border-color);
-  transition: all 0.2s;
+.check-in-stat-label--primary,
+.check-in-stat-value--primary {
+  color: var(--el-color-primary);
 }
 
-.check-in-theme .check-in-overview-item--editable:hover {
-  background-color: color-mix(
-    in srgb,
-    var(--el-color-primary) 4%,
-    var(--el-bg-color)
-  );
-  border-color: var(--el-color-primary-light-5);
-}
-
-.check-in-theme .check-in-overview-item--readonly {
-  color: var(--el-text-color-placeholder);
-  cursor: not-allowed;
-  background-color: var(--el-fill-color);
+.check-in-stat-label--warning,
+.check-in-stat-value--warning {
+  color: #d97706;
 }
 </style>

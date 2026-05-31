@@ -7,7 +7,7 @@ export type CouponDefinitionPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=免广告卡；5=补签卡） */
+  /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
   couponType?: number;
 
   /* 结束时间 */
@@ -27,9 +27,6 @@ export type CouponDefinitionPageRequest = {
 
   /* 开始时间 */
   startDate?: null | string;
-
-  /* 适用目标范围（1=章节；2=VIP；3=广告；4=签到） */
-  targetScope?: number;
 };
 
 export type CouponDefinitionPageResponse = {
@@ -93,12 +90,12 @@ export type CouponGrantCreateResponse = boolean;
 export type BaseCouponDefinitionDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 预算上限，0=不限制 */
-  budgetLimit?: null | number;
-  /* 额外配置快照 */
-  configPayload?: null | Record<string, any>;
-  /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=免广告卡；5=补签卡） */
-  couponType: 1 | 2 | 3 | 4 | 5;
+  /* 补签次数 */
+  benefitCount?: null | number;
+  /* VIP 试用天数 */
+  benefitDays?: null | number;
+  /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
+  couponType: 1 | 2 | 3 | 4;
   /* 创建时间 */
   createdAt: string;
   /* 折扣金额 */
@@ -111,8 +108,6 @@ export type BaseCouponDefinitionDto = {
   isEnabled?: boolean | null;
   /* 券名称 */
   name: string;
-  /* 适用目标范围（1=章节；2=VIP；3=广告；4=签到） */
-  targetScope: 1 | 2 | 3 | 4;
   /* 更新时间 */
   updatedAt: string;
   /* 单张券可用次数 */
@@ -130,12 +125,12 @@ export type BaseCouponDefinitionDto = {
 export type CreateCouponDefinitionDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 预算上限，0=不限制 */
-  budgetLimit?: null | number;
-  /* 额外配置快照 */
-  configPayload?: null | Record<string, any>;
-  /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=免广告卡；5=补签卡） */
-  couponType: 1 | 2 | 3 | 4 | 5;
+  /* 补签次数 */
+  benefitCount?: null | number;
+  /* VIP 试用天数 */
+  benefitDays?: null | number;
+  /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
+  couponType: 1 | 2 | 3 | 4;
   /* 折扣金额 */
   discountAmount?: null | number;
   /* 折扣率基点，10000=不打折 */
@@ -144,8 +139,6 @@ export type CreateCouponDefinitionDto = {
   isEnabled?: boolean | null;
   /* 券名称 */
   name: string;
-  /* 适用目标范围（1=章节；2=VIP；3=广告；4=签到） */
-  targetScope: 1 | 2 | 3 | 4;
   /* 单张券可用次数 */
   usageLimit?: null | number;
 
@@ -161,12 +154,12 @@ export type CreateCouponDefinitionDto = {
 export type UpdateCouponDefinitionDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 预算上限，0=不限制 */
-  budgetLimit?: null | number;
-  /* 额外配置快照 */
-  configPayload?: null | Record<string, any>;
-  /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=免广告卡；5=补签卡） */
-  couponType?: 1 | 2 | 3 | 4 | 5;
+  /* 补签次数 */
+  benefitCount?: null | number;
+  /* VIP 试用天数 */
+  benefitDays?: null | number;
+  /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
+  couponType?: 1 | 2 | 3 | 4;
   /* 折扣金额 */
   discountAmount?: null | number;
   /* 折扣率基点，10000=不打折 */
@@ -177,8 +170,6 @@ export type UpdateCouponDefinitionDto = {
   isEnabled?: boolean | null;
   /* 券名称 */
   name?: string;
-  /* 适用目标范围（1=章节；2=VIP；3=广告；4=签到） */
-  targetScope?: 1 | 2 | 3 | 4;
   /* 单张券可用次数 */
   usageLimit?: null | number;
 
@@ -211,10 +202,12 @@ export type GrantCouponDto = {
   [property: string]: any;
   /* 券定义 ID */
   couponDefinitionId: number;
+  /* 发放数量 */
+  quantity?: null | number;
   /* 来源 ID */
   sourceId?: null | number;
-  /* 券来源（1=任务发放；2=积分兑换；3=后台发放；4=购买补偿） */
-  sourceType: 1 | 2 | 3 | 4;
+  /* 券来源（1=任务发放；2=积分兑换；3=后台发放；4=购买补偿；5=会员权益发放） */
+  sourceType: 1 | 2 | 3 | 4 | 5;
 
   /* 用户 ID */
   userId: number;

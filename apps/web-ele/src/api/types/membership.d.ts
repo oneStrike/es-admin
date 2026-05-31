@@ -285,7 +285,7 @@ export type MembershipPlanBenefitItemDto = {
   benefit: BaseMembershipBenefitDefinitionDto;
   /* 会员权益定义 ID */
   benefitId: number;
-  /* 权益配置值，按权益类型使用闭集结构：券发放 couponDefinitionId/grantCount/validDays，道具 assetType/assetKey/grantCount/validDays，无广告 adScope/durationPolicy，优先看 contentScope/advanceHours */
+  /* 权益配置值，按权益类型使用闭集结构：券发放 couponDefinitionId/grantCount，可选 validDays 覆盖赠券有效期；道具 assetType/assetKey/grantCount/validDays，无广告 adScope/durationPolicy，优先看 contentScope/advanceHours */
   benefitValue?: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
@@ -376,7 +376,7 @@ export type MembershipPlanBenefitInputDto = {
   [property: string]: any;
   /* 会员权益定义 ID */
   benefitId: number;
-  /* 权益配置值，按权益类型使用闭集结构：券发放 couponDefinitionId/grantCount/validDays，道具 assetType/assetKey/grantCount/validDays，无广告 adScope/durationPolicy，优先看 contentScope/advanceHours */
+  /* 权益配置值，按权益类型使用闭集结构：券发放 couponDefinitionId/grantCount，可选 validDays 覆盖赠券有效期；道具 assetType/assetKey/grantCount/validDays，无广告 adScope/durationPolicy，优先看 contentScope/advanceHours */
   benefitValue?: null | Record<string, any>;
   /* 发放策略（1=仅展示；2=开通时自动发放；3=每日可领取；4=订阅期内持续生效；5=手动领取一次） */
   grantPolicy: 1 | 2 | 3 | 4 | 5;

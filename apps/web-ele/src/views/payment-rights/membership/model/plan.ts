@@ -191,6 +191,13 @@ function normalizeBenefitValue(
   return value as VipPlanBenefitValue;
 }
 
+function normalizeCouponBenefitValue(value: VipPlanBenefitValue) {
+  return {
+    couponDefinitionId: requireInteger(value.couponDefinitionId, '优惠券'),
+    grantCount: requireInteger(value.grantCount, '发放数量'),
+  };
+}
+
 function normalizePlanBenefitRows(value: unknown): VipPlanBenefitConfigRow[] {
   if (!Array.isArray(value)) {
     return [];
@@ -265,9 +272,14 @@ function buildPlanBenefitInputs(values: VipPlanFormValues) {
       );
     }
 
+    const normalizedBenefitValue =
+      benefit?.benefitType === 2 && benefitValue
+        ? normalizeCouponBenefitValue(benefitValue)
+        : benefitValue;
+
     return {
       benefitId,
-      benefitValue,
+      benefitValue: normalizedBenefitValue,
       grantPolicy: requireInteger(config.grantPolicy, '发放策略') as
         | 1
         | 2
@@ -456,6 +468,21 @@ export const vipPlanColumns = formSchemaTransform.toTableColumns<VipPlanRow>(
   },
 );
 
+function formatPlanBenefitValue(value: unknown) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return '';
+  }
+
+  const record = value as Record<string, unknown>;
+  const couponDefinitionId = record.couponDefinitionId;
+  const grantCount = normalizeOptionalNumber(record.grantCount);
+  if (couponDefinitionId !== undefined) {
+    return `，赠送优惠券 #${couponDefinitionId} x${grantCount ?? 1}`;
+  }
+
+  return '';
+}
+
 function createPlanBenefitConfigCard(record: VipPlanRow) {
   const benefits = Array.isArray(record.benefits) ? record.benefits : [];
   if (benefits.length === 0) {
@@ -471,9 +498,7 @@ function createPlanBenefitConfigCard(record: VipPlanRow) {
         item.grantPolicy,
       );
       const enabledText = item.isEnabled === false ? '禁用' : '启用';
-      const valueText = item.benefitValue
-        ? `，配置：${JSON.stringify(item.benefitValue)}`
-        : '';
+      const valueText = formatPlanBenefitValue(item.benefitValue);
 
       return `<li>${escapeHtml(name)}：${escapeHtml(grantPolicy)}，${escapeHtml(
         enabledText,

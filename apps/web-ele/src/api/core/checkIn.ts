@@ -1,6 +1,8 @@
 import type {
   CheckInCalendarDetailRequest,
   CheckInCalendarDetailResponse,
+  CheckInCalendarOverviewRequest,
+  CheckInCalendarOverviewResponse,
   CheckInCalendarSignedUserPageRequest,
   CheckInCalendarSignedUserPageResponse,
   CheckInCalendarUserDetailRequest,
@@ -24,6 +26,8 @@ import type {
   CheckInStreakPageResponse,
   CheckInStreakPublishRequest,
   CheckInStreakPublishResponse,
+  CheckInStreakRepairRequest,
+  CheckInStreakRepairResponse,
   CheckInStreakTerminateRequest,
   CheckInStreakTerminateResponse,
 } from '../types/checkIn.d';
@@ -47,6 +51,18 @@ export async function checkInCalendarDetailApi(
 ): Promise<CheckInCalendarDetailResponse> {
   return requestClient.get<CheckInCalendarDetailResponse>(
     '/api/admin/check-in/calendar/detail',
+    { params },
+  );
+}
+
+/**
+ * 查询目标周期签到轻量概览
+ */
+export async function checkInCalendarOverviewApi(
+  params: CheckInCalendarOverviewRequest,
+): Promise<CheckInCalendarOverviewResponse> {
+  return requestClient.get<CheckInCalendarOverviewResponse>(
+    '/api/admin/check-in/calendar/overview',
     { params },
   );
 }
@@ -191,6 +207,18 @@ export async function checkInReconciliationRepairApi(
 ): Promise<CheckInReconciliationRepairResponse> {
   return requestClient.post<CheckInReconciliationRepairResponse>(
     '/api/admin/check-in/reconciliation/repair',
+    params,
+  );
+}
+
+/**
+ * 重算连续签到进度
+ */
+export async function checkInStreakRepairApi(
+  params: CheckInStreakRepairRequest,
+): Promise<CheckInStreakRepairResponse> {
+  return requestClient.post<CheckInStreakRepairResponse>(
+    '/api/admin/check-in/streak/repair',
     params,
   );
 }

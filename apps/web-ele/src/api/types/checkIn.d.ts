@@ -17,6 +17,22 @@ export type CheckInCalendarDetailResponse =
   AdminCheckInCalendarDetailResponseDto;
 
 /**
+ *  类型定义 [CheckInCalendarOverviewRequest]
+ *  @来源 签到管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type CheckInCalendarOverviewRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 目标日期；服务端按该日期推导所属签到周期。 */
+  targetDate: string;
+};
+
+export type CheckInCalendarOverviewResponse =
+  AdminCheckInCalendarOverviewResponseDto;
+
+/**
  *  类型定义 [CheckInCalendarUserDetailRequest]
  *  @来源 签到管理
  *  @更新时间 2026-05-09 22:20:06
@@ -302,6 +318,15 @@ export type CheckInReconciliationRepairResponse =
   RepairCheckInRewardResponseDto;
 
 /**
+ *  类型定义 [CheckInStreakRepairRequest]
+ *  @来源 签到管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type CheckInStreakRepairRequest = RepairCheckInStreakDto;
+
+export type CheckInStreakRepairResponse = RepairCheckInStreakResponseDto;
+
+/**
  *  类型定义 [CheckInConfigDetailResponseDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -448,6 +473,71 @@ export type AdminCheckInCalendarDayDto = {
 };
 
 /**
+ *  类型定义 [AdminCheckInCalendarOverviewResponseDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type AdminCheckInCalendarOverviewResponseDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 周期统计截止日期，未来目标周期最多统计到今天。 */
+  cutoffDate: string;
+  /* 当前补签周期结束日期。 */
+  periodEndDate: string;
+  /* 当前补签周期键。 */
+  periodKey: string;
+  /* 当前补签周期开始日期。 */
+  periodStartDate: string;
+  /* 目标周期截至统计截止日期的概览。 */
+  periodToDate: AdminCheckInCalendarOverviewCounterDto;
+  /* 补签周期类型（1=按自然周；2=按自然月）。 */
+  periodType: number;
+
+  /* 目标日期当天概览。 */
+  targetDay: AdminCheckInCalendarOverviewTargetDto;
+};
+
+/**
+ *  类型定义 [AdminCheckInCalendarOverviewTargetDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type AdminCheckInCalendarOverviewTargetDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 补签用户数（按 distinct userId 统计）。 */
+  makeupSignCount: number;
+  /* 正常签到用户数（按 distinct userId 统计）。 */
+  normalSignCount: number;
+  /* 目标自然日。 */
+  signDate: string;
+  /* 已签到用户数（按 distinct userId 统计）。 */
+  signedCount: number;
+
+  /* 连续奖励触发次数（按 grant 行数统计，不做用户去重）。 */
+  streakRewardTriggerCount: number;
+};
+
+/**
+ *  类型定义 [AdminCheckInCalendarOverviewCounterDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type AdminCheckInCalendarOverviewCounterDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 补签用户数（按 distinct userId 统计）。 */
+  makeupSignCount: number;
+  /* 正常签到用户数（按 distinct userId 统计）。 */
+  normalSignCount: number;
+  /* 已签到用户数（按 distinct userId 统计）。 */
+  signedCount: number;
+
+  /* 连续奖励触发次数（按 grant 行数统计，不做用户去重）。 */
+  streakRewardTriggerCount: number;
+};
+
+/**
  *  类型定义 [AdminUserCheckInCalendarDetailResponseDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -493,7 +583,7 @@ export type CheckInCalendarDayDto = {
   /* 该日基础奖励概览图标 URL。 */
   rewardOverviewIconUrl?: null | string;
   /* 该日基础奖励补偿摘要。 */
-  rewardSettlement?: CheckInRewardSettlementSummaryDto;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
 
   /* 自然日。 */
   signDate: string;
@@ -553,7 +643,7 @@ export type AdminCheckInSignedUserPageItemDto = {
   /* 基础奖励解析来源（1=默认基础奖励；2=具体日期奖励；3=周期模式奖励）。 */
   resolvedRewardSourceType?: null | number;
   /* 基础奖励补偿摘要。 */
-  rewardSettlement?: CheckInRewardSettlementSummaryDto;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
   /* 关联的奖励补偿记录 ID。 */
   rewardSettlementId?: null | number;
   /* 签到自然日。 */
@@ -562,7 +652,7 @@ export type AdminCheckInSignedUserPageItemDto = {
   updatedAt: string;
 
   /* 已签用户信息。 */
-  user?: AdminCheckInSignedUserDto;
+  user?: AdminCheckInSignedUserDto | null;
 };
 
 /**
@@ -584,7 +674,7 @@ export type CheckInGrantItemDto = {
   /* 冻结的连续奖励概览图标 URL。 */
   rewardOverviewIconUrl?: null | string;
   /* 连续奖励补偿摘要。 */
-  rewardSettlement?: CheckInRewardSettlementSummaryDto;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
   /* 关联的奖励补偿记录 ID。 */
   rewardSettlementId?: null | number;
   /* 连续奖励规则编码。 */
@@ -761,7 +851,7 @@ export type CheckInReconciliationPageItemDto = {
   /* 基础奖励解析来源（1=默认基础奖励；2=具体日期奖励；3=周期模式奖励）。 */
   resolvedRewardSourceType?: null | number;
   /* 基础奖励补偿摘要。 */
-  rewardSettlement?: CheckInRewardSettlementSummaryDto;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
   /* 关联的奖励补偿记录 ID。 */
   rewardSettlementId?: null | number;
   /* 签到自然日。 */
@@ -807,4 +897,40 @@ export type RepairCheckInRewardResponseDto = {
 
   /* 补偿目标类型（1=基础奖励；2=连续奖励）。 */
   targetType: 1 | 2;
+};
+
+/**
+ *  类型定义 [RepairCheckInStreakDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type RepairCheckInStreakDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 需要重算连续签到进度和连续奖励的用户 ID。 */
+  userId: number;
+};
+
+/**
+ *  类型定义 [RepairCheckInStreakResponseDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type RepairCheckInStreakResponseDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 本次补齐创建的连续奖励发放 ID 列表。 */
+  createdGrantIds: number[];
+  /* 重算后的当前连续签到天数。 */
+  currentStreak: number;
+  /* 重算后的最近签到日期；无签到记录时为空。 */
+  lastSignedDate: null | string;
+  /* 本次成功补偿落账的连续奖励发放 ID 列表。 */
+  settledGrantIds: number[];
+  /* 重算后的当前连续区间开始日期；无连续记录时为空。 */
+  streakStartedAt: null | string;
+
+  /* 已重算的用户 ID。 */
+  userId: number;
 };

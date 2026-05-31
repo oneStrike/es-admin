@@ -4,9 +4,10 @@ import type {
   CheckInGrantItemDto,
   CheckInReconciliationPageItemDto,
   CheckInReconciliationRepairRequest,
+  CheckInStreakRepairResponse,
 } from '#/api/types';
 
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
 import { ElMessageBox } from 'element-plus';
 
@@ -14,6 +15,7 @@ import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   checkInReconciliationPageApi,
   checkInReconciliationRepairApi,
+  checkInStreakRepairApi,
 } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
@@ -37,6 +39,9 @@ defineOptions({
 
 const baseRepairingMap = reactive<Record<number, boolean>>({});
 const grantRepairingMap = reactive<Record<number, boolean>>({});
+const streakRepairUserId = ref<number>();
+const streakRepairing = ref(false);
+const streakRepairResult = ref<CheckInStreakRepairResponse>();
 
 const reconciliationGridOptions: VxeGridProps<CheckInReconciliationPageItemDto> =
   {
@@ -116,6 +121,30 @@ async function repairGrantReward(grant: CheckInGrantItemDto) {
   }
 }
 
+async function repairStreakByUserId(userId?: number) {
+  const normalizedUserId = Number(userId);
+  if (!Number.isInteger(normalizedUserId) || normalizedUserId <= 0) {
+    useMessage.warning('请输入有效用户ID');
+    return;
+  }
+
+  const confirmed = await confirmStreakRepair(normalizedUserId);
+  if (!confirmed) {
+    return;
+  }
+
+  streakRepairing.value = true;
+  try {
+    streakRepairResult.value = await checkInStreakRepairApi({
+      userId: normalizedUserId,
+    });
+    useMessage.success('连续签到已重算');
+    await reconciliationGridApi.reload();
+  } finally {
+    streakRepairing.value = false;
+  }
+}
+
 async function confirmRepair(params: {
   grantId?: number;
   recordId?: number;
@@ -140,11 +169,25 @@ async function confirmRepair(params: {
   }
 }
 
+async function confirmStreakRepair(userId: number) {
+  try {
+    await ElMessageBox.confirm(
+      `确认重算用户 ${userId} 的连续签到进度和连续奖励吗？`,
+      '重算连续签到',
+      {
+        confirmButtonText: '确认重算',
+        draggable: true,
+        type: 'warning',
+      },
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function hasRepairableBaseReward(row: CheckInReconciliationPageItemDto) {
-  return (
-    row.rewardSettlement?.settlementStatus === 0 ||
-    row.rewardSettlement?.settlementStatus === 2
-  );
+  return row.rewardSettlement?.settlementStatus === 0;
 }
 
 function hasBaseRewardSettlement(row: CheckInReconciliationPageItemDto) {
@@ -154,10 +197,7 @@ function hasBaseRewardSettlement(row: CheckInReconciliationPageItemDto) {
 }
 
 function hasRepairableGrant(grant: CheckInGrantItemDto) {
-  return (
-    grant.rewardSettlement?.settlementStatus === 0 ||
-    grant.rewardSettlement?.settlementStatus === 2
-  );
+  return grant.rewardSettlement?.settlementStatus === 0;
 }
 </script>
 
@@ -328,7 +368,7 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
       </template>
 
       <template #reconciliationActions="{ row }">
-        <div class="flex min-h-12 items-center">
+        <div class="flex min-h-12 flex-wrap items-center gap-2">
           <el-button
             v-if="hasRepairableBaseReward(row)"
             :loading="baseRepairingMap[row.recordId]"
@@ -338,7 +378,45 @@ function hasRepairableGrant(grant: CheckInGrantItemDto) {
           >
             补基础奖励
           </el-button>
-          <el-text v-else class="text-xs text-slate-400">无需补偿</el-text>
+          <el-button
+            :loading="streakRepairing"
+            link
+            type="primary"
+            @click="repairStreakByUserId(row.userId)"
+          >
+            重算连续
+          </el-button>
+          <el-text
+            v-if="!hasRepairableBaseReward(row)"
+            class="text-xs text-slate-400"
+          >
+            基础无需补偿
+          </el-text>
+        </div>
+      </template>
+
+      <template #toolbar-actions>
+        <div class="ml-2 flex flex-wrap items-center gap-2">
+          <el-input-number
+            v-model="streakRepairUserId"
+            :controls="false"
+            :min="1"
+            class="!w-36"
+            placeholder="用户ID"
+          />
+          <el-button
+            :loading="streakRepairing"
+            type="primary"
+            @click="repairStreakByUserId(streakRepairUserId)"
+          >
+            重算连续签到
+          </el-button>
+          <el-text v-if="streakRepairResult" class="text-xs text-slate-500">
+            用户 {{ streakRepairResult.userId }} 当前连续
+            {{ streakRepairResult.currentStreak }} 天，新建
+            {{ streakRepairResult.createdGrantIds.length }} 条，补偿
+            {{ streakRepairResult.settledGrantIds.length }} 条
+          </el-text>
         </div>
       </template>
     </ReconciliationGrid>

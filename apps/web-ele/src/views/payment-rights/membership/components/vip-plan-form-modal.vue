@@ -17,6 +17,7 @@ import { couponDefinitionPageApi, membershipBenefitPageApi } from '#/api/core';
 import { useMessage } from '#/hooks/useFeedback';
 import { getOptionLabel } from '#/utils/options';
 
+import { formatCouponAbility } from '../../coupon-definition/model/coupon';
 import { benefitTypeOptions, grantPolicyOptions } from '../model/options';
 import { vipPlanBaseFormSchema } from '../model/plan';
 
@@ -61,7 +62,7 @@ const benefitOptions = computed(() =>
 
 const couponOptions = computed(() =>
   couponRecords.value.map((item) => ({
-    label: item.name,
+    label: `${item.name} | ${formatCouponAbility(item)}`,
     value: item.id,
   })),
 );
@@ -229,7 +230,7 @@ function createDefaultBenefitValue(benefitType: number): BenefitValue | null {
     return null;
   }
   if (benefitType === couponGrantBenefitType) {
-    return { couponDefinitionId: undefined, grantCount: 1, validDays: 0 };
+    return { couponDefinitionId: undefined, grantCount: 1 };
   }
   if (benefitType === itemGrantBenefitType) {
     return { assetKey: '', assetType: 1, grantCount: 1, validDays: 0 };
@@ -328,9 +329,8 @@ function validateBenefitRows() {
       throw new Error(`${benefitName}必须完善权益配置`);
     }
     if (isCouponBenefit(row)) {
-      assertPositiveInteger(value.couponDefinitionId, `${benefitName}的券定义`);
+      assertPositiveInteger(value.couponDefinitionId, `${benefitName}的优惠券`);
       assertPositiveInteger(value.grantCount, `${benefitName}的发放数量`);
-      assertNonNegativeInteger(value.validDays, `${benefitName}的有效天数`);
     } else if (isItemBenefit(row)) {
       assertPositiveInteger(value.assetType, `${benefitName}的资产类型`);
       assertText(value.assetKey, `${benefitName}的资产键`);
@@ -466,19 +466,13 @@ async function handleConfirm() {
                 class="w-full"
                 filterable
                 :options="couponOptions"
-                placeholder="券定义"
+                placeholder="选择优惠券"
               />
               <el-input-number
                 v-model="ensureBenefitValue(row).grantCount"
                 class="!w-full"
                 :min="1"
                 placeholder="数量"
-              />
-              <el-input-number
-                v-model="ensureBenefitValue(row).validDays"
-                class="!w-full"
-                :min="0"
-                placeholder="有效天数"
               />
             </template>
             <template v-else-if="isItemBenefit(row)">

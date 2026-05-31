@@ -4,18 +4,29 @@ import type {
   CouponDefinitionUpdateRequest,
   CouponGrantCreateRequest,
 } from '#/api/types';
-import type { DetailCard } from '#/components/es-record-detail';
+import type { DetailCard, DetailField } from '#/components/es-record-detail';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
 import { getOptionLabel } from '#/utils/options';
 
-import {
-  couponSourceTypeOptions,
-  couponTargetScopeOptions,
-  couponTypeOptions,
-  enabledStatusOptions,
-} from './options';
+import { couponTypeOptions, enabledStatusOptions } from './options';
+
+type CouponDefinitionFormFields = Pick<
+  CouponDefinitionCreateRequest,
+  | 'benefitCount'
+  | 'benefitDays'
+  | 'couponType'
+  | 'discountAmount'
+  | 'discountRateBps'
+  | 'isEnabled'
+  | 'name'
+  | 'usageLimit'
+  | 'validDays'
+>;
+
+type CouponTypeValue = CouponDefinitionCreateRequest['couponType'];
+type CouponDiscountMode = 'amount' | 'percent';
 
 export type CouponRow = NonNullable<
   CouponDefinitionPageResponse['list']
@@ -23,26 +34,26 @@ export type CouponRow = NonNullable<
   statusLoading?: boolean;
 };
 
-export type CouponFormValues = {
-  budgetLimit?: unknown;
-  configPayloadText?: unknown;
-  couponType?: unknown;
-  discountAmount?: unknown;
-  discountRateBps?: unknown;
-  id?: unknown;
-  isEnabled?: unknown;
-  name?: unknown;
-  targetScope?: unknown;
-  usageLimit?: unknown;
-  validDays?: unknown;
+export type CouponFormValues = Partial<CouponDefinitionFormFields> &
+  Pick<Partial<CouponDefinitionUpdateRequest>, 'id'> & {
+    discountMode?: unknown;
+    discountPercent?: unknown;
+  };
+
+export type CouponGrantFormValues = Pick<
+  Partial<CouponGrantCreateRequest>,
+  'quantity' | 'userId'
+> & {
+  couponAbility?: unknown;
+  couponName?: unknown;
 };
 
-export type CouponGrantFormValues = {
-  couponDefinitionId?: unknown;
-  sourceId?: unknown;
-  sourceType?: unknown;
-  userId?: unknown;
-};
+const couponTypeValues = [1, 2, 3, 4] satisfies CouponTypeValue[];
+
+const couponDiscountModeOptions = [
+  { label: '立减金额', value: 'amount' },
+  { label: '按比例折扣', value: 'percent' },
+];
 
 function normalizeText(value: unknown) {
   if (typeof value !== 'string') {
@@ -62,8 +73,18 @@ function normalizeOptionalNumber(value: unknown) {
   return Number.isFinite(numberValue) ? numberValue : undefined;
 }
 
-function normalizeNullableNumber(value: unknown) {
-  return normalizeOptionalNumber(value) ?? null;
+function normalizeBoolean(value: unknown) {
+  return typeof value === 'boolean' ? value : null;
+}
+
+function requireText(value: unknown, label: string) {
+  const text = normalizeText(value);
+
+  if (!text) {
+    throw new Error(`${label}不能为空`);
+  }
+
+  return text;
 }
 
 function requireInteger(value: unknown, label: string) {
@@ -80,56 +101,46 @@ function requireInteger(value: unknown, label: string) {
   return numberValue;
 }
 
-function requireText(value: unknown, label: string) {
-  const text = normalizeText(value);
+function requirePositiveInteger(value: unknown, label: string) {
+  const numberValue = requireInteger(value, label);
 
-  if (!text) {
-    throw new Error(`${label}不能为空`);
+  if (numberValue < 1) {
+    throw new RangeError(`${label}必须大于 0`);
   }
 
-  return text;
+  return numberValue;
 }
 
-function normalizeBoolean(value: unknown) {
-  return typeof value === 'boolean' ? value : null;
+function requireCouponType(value: unknown) {
+  const couponType = requireInteger(value, '券类型');
+
+  if (!couponTypeValues.includes(couponType as CouponTypeValue)) {
+    throw new RangeError('券类型不支持');
+  }
+
+  return couponType as CouponTypeValue;
 }
 
-function formatJsonTextarea(value: unknown) {
-  if (value === null || value === undefined || value === '') {
-    return '';
+function requireDiscountMode(value: unknown) {
+  if (value === 'amount' || value === 'percent') {
+    return value satisfies CouponDiscountMode;
   }
 
-  return JSON.stringify(value, null, 2);
+  throw new Error('折扣方式不能为空');
 }
 
-function parseJsonObjectText(value: unknown, label: string) {
-  const text = normalizeText(value);
+function requireDiscountPercent(value: unknown) {
+  const percent = normalizeOptionalNumber(value);
 
-  if (!text) {
-    return null;
+  if (percent === undefined) {
+    throw new TypeError('折扣比例不能为空');
   }
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    throw new Error(`${label}必须是合法 JSON 对象`);
+  if (percent < 0 || percent >= 100) {
+    throw new RangeError('折扣比例必须小于 100');
   }
 
-  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new TypeError(`${label}必须是合法 JSON 对象`);
-  }
-
-  return parsed as Record<string, unknown>;
-}
-
-function escapeHtml(value: unknown) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+  return percent;
 }
 
 function formatOptionText(
@@ -142,37 +153,143 @@ function formatOptionText(
   );
 }
 
+function formatPlainNumber(value: number) {
+  return Number.isInteger(value)
+    ? String(value)
+    : value.toFixed(2).replace(/\.?0+$/, '');
+}
+
+function formatDiscountRate(value: unknown) {
+  const rateBps = normalizeOptionalNumber(value);
+
+  if (rateBps === undefined || rateBps >= 10_000) {
+    return undefined;
+  }
+
+  if (rateBps <= 0) {
+    return '免费';
+  }
+
+  return `${formatPlainNumber(rateBps / 1000)} 折`;
+}
+
+function formatAmount(value: unknown) {
+  const amount = normalizeOptionalNumber(value);
+  return amount === undefined ? '-' : formatPlainNumber(amount);
+}
+
+function formatValidity(value: unknown) {
+  const days = normalizeOptionalNumber(value);
+
+  if (days === undefined) {
+    return '-';
+  }
+
+  return days === 0 ? '按实例有效期控制' : `${days} 天`;
+}
+
+function getDiscountMode(record: Pick<CouponRow, 'discountAmount'>) {
+  return (record.discountAmount ?? 0) > 0 ? 'amount' : 'percent';
+}
+
+export function formatCouponAbility(
+  record: Pick<
+    CouponRow,
+    | 'benefitCount'
+    | 'benefitDays'
+    | 'couponType'
+    | 'discountAmount'
+    | 'discountRateBps'
+    | 'usageLimit'
+  >,
+) {
+  if (record.couponType === 1) {
+    return `可阅读 ${record.usageLimit ?? 1} 章`;
+  }
+
+  if (record.couponType === 2) {
+    const discountTexts = [
+      formatDiscountRate(record.discountRateBps),
+      (record.discountAmount ?? 0) > 0
+        ? `立减 ${formatAmount(record.discountAmount)}`
+        : undefined,
+    ].filter(Boolean);
+
+    return discountTexts.length > 0 ? discountTexts.join(' + ') : '折扣未配置';
+  }
+
+  if (record.couponType === 3) {
+    return `VIP 试用 ${record.benefitDays ?? 1} 天`;
+  }
+
+  if (record.couponType === 4) {
+    return `补签 ${record.benefitCount ?? 1} 次`;
+  }
+
+  return '-';
+}
+
 export function mapCouponToFormRecord(values: CouponRow) {
   return {
     ...values,
-    configPayloadText: formatJsonTextarea(values.configPayload),
+    discountMode: getDiscountMode(values),
+    discountPercent:
+      (values.discountRateBps ?? 10_000) < 10_000
+        ? (values.discountRateBps ?? 10_000) / 100
+        : 90,
   };
 }
 
 function buildCouponBase(values: CouponFormValues) {
-  return {
-    budgetLimit: normalizeNullableNumber(values.budgetLimit),
-    configPayload: parseJsonObjectText(
-      values.configPayloadText,
-      '额外配置快照',
-    ),
-    couponType: requireInteger(values.couponType, '券类型') as
-      | 1
-      | 2
-      | 3
-      | 4
-      | 5,
-    discountAmount: normalizeNullableNumber(values.discountAmount),
-    discountRateBps: normalizeNullableNumber(values.discountRateBps),
+  const couponType = requireCouponType(values.couponType);
+  const validDays = normalizeOptionalNumber(values.validDays) ?? 0;
+  const base = {
+    couponType,
     isEnabled: normalizeBoolean(values.isEnabled),
     name: requireText(values.name, '券名称'),
-    targetScope: requireInteger(values.targetScope, '适用目标范围') as
-      | 1
-      | 2
-      | 3
-      | 4,
-    usageLimit: normalizeNullableNumber(values.usageLimit),
-    validDays: normalizeNullableNumber(values.validDays),
+    validDays,
+  };
+
+  if (couponType === 1) {
+    return {
+      ...base,
+      usageLimit: requirePositiveInteger(values.usageLimit, '可阅读章节数'),
+    } satisfies CouponDefinitionCreateRequest;
+  }
+
+  if (couponType === 2) {
+    const discountMode = requireDiscountMode(values.discountMode);
+
+    if (discountMode === 'amount') {
+      return {
+        ...base,
+        discountAmount: requirePositiveInteger(
+          values.discountAmount,
+          '立减金额',
+        ),
+        discountRateBps: 10_000,
+      } satisfies CouponDefinitionCreateRequest;
+    }
+
+    return {
+      ...base,
+      discountAmount: 0,
+      discountRateBps: Math.round(
+        requireDiscountPercent(values.discountPercent) * 100,
+      ),
+    } satisfies CouponDefinitionCreateRequest;
+  }
+
+  if (couponType === 3) {
+    return {
+      ...base,
+      benefitDays: requirePositiveInteger(values.benefitDays, 'VIP 试用天数'),
+    } satisfies CouponDefinitionCreateRequest;
+  }
+
+  return {
+    ...base,
+    benefitCount: requirePositiveInteger(values.benefitCount, '补签次数'),
   } satisfies CouponDefinitionCreateRequest;
 }
 
@@ -187,15 +304,14 @@ export function buildCouponUpdatePayload(values: CouponFormValues) {
   } satisfies CouponDefinitionUpdateRequest;
 }
 
-export function buildCouponGrantPayload(values: CouponGrantFormValues) {
+export function buildCouponGrantPayload(
+  values: CouponGrantFormValues,
+  couponDefinitionId: unknown,
+) {
   return {
-    couponDefinitionId: requireInteger(values.couponDefinitionId, '券定义 ID'),
-    sourceId: normalizeOptionalNumber(values.sourceId) ?? null,
-    sourceType: (normalizeOptionalNumber(values.sourceType) ?? 3) as
-      | 1
-      | 2
-      | 3
-      | 4,
+    couponDefinitionId: requireInteger(couponDefinitionId, '券定义 ID'),
+    quantity: requirePositiveInteger(values.quantity ?? 1, '发放数量'),
+    sourceType: 3,
     userId: requireInteger(values.userId, '用户 ID'),
   } satisfies CouponGrantCreateRequest;
 }
@@ -212,27 +328,113 @@ export const couponFormSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    component: 'Select',
+    component: 'RadioGroup',
     componentProps: {
       class: 'w-full',
-      clearable: true,
       options: couponTypeOptions,
-      placeholder: '请选择券类型',
     },
+    defaultValue: 1,
     fieldName: 'couponType',
     label: '券类型',
     rules: 'required',
   },
   {
-    component: 'Select',
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '请输入可阅读章节数',
+    },
+    defaultValue: 1,
+    dependencies: {
+      show: ({ couponType }) => Number(couponType) === 1,
+      triggerFields: ['couponType'],
+    },
+    fieldName: 'usageLimit',
+    label: '可阅读章节数',
+    rules: 'required',
+  },
+  {
+    component: 'RadioGroup',
     componentProps: {
       class: 'w-full',
-      clearable: true,
-      options: couponTargetScopeOptions,
-      placeholder: '请选择适用目标范围',
+      options: couponDiscountModeOptions,
     },
-    fieldName: 'targetScope',
-    label: '适用目标范围',
+    defaultValue: 'amount',
+    dependencies: {
+      show: ({ couponType }) => Number(couponType) === 2,
+      triggerFields: ['couponType'],
+    },
+    fieldName: 'discountMode',
+    label: '折扣方式',
+    rules: 'required',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '请输入立减金额',
+    },
+    dependencies: {
+      show: ({ couponType, discountMode }) =>
+        Number(couponType) === 2 && discountMode === 'amount',
+      triggerFields: ['couponType', 'discountMode'],
+    },
+    fieldName: 'discountAmount',
+    label: '立减金额',
+    rules: 'required',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      max: 99.99,
+      min: 0,
+      placeholder: '请输入折后售价比例',
+      precision: 2,
+      step: 5,
+    },
+    defaultValue: 90,
+    dependencies: {
+      show: ({ couponType, discountMode }) =>
+        Number(couponType) === 2 && discountMode === 'percent',
+      triggerFields: ['couponType', 'discountMode'],
+    },
+    fieldName: 'discountPercent',
+    label: '折后售价比例（%）',
+    rules: 'required',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '请输入 VIP 试用天数',
+    },
+    defaultValue: 7,
+    dependencies: {
+      show: ({ couponType }) => Number(couponType) === 3,
+      triggerFields: ['couponType'],
+    },
+    fieldName: 'benefitDays',
+    label: 'VIP 试用天数',
+    rules: 'required',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      class: '!w-full',
+      min: 1,
+      placeholder: '请输入补签次数',
+    },
+    defaultValue: 1,
+    dependencies: {
+      show: ({ couponType }) => Number(couponType) === 4,
+      triggerFields: ['couponType'],
+    },
+    fieldName: 'benefitCount',
+    label: '补签次数',
     rules: 'required',
   },
   {
@@ -240,50 +442,11 @@ export const couponFormSchema: EsFormSchema = [
     componentProps: {
       class: '!w-full',
       min: 0,
-      placeholder: '请输入折扣金额',
+      placeholder: '请输入领取后有效天数',
     },
-    fieldName: 'discountAmount',
-    label: '折扣金额',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入折扣率基点',
-    },
-    fieldName: 'discountRateBps',
-    label: '折扣率基点',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入单张券可用次数',
-    },
-    fieldName: 'usageLimit',
-    label: '单张券可用次数',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入有效天数',
-    },
+    defaultValue: 0,
     fieldName: 'validDays',
-    label: '有效天数',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入预算上限',
-    },
-    fieldName: 'budgetLimit',
-    label: '预算上限',
+    label: '领取后有效天数',
   },
   {
     component: 'RadioGroup',
@@ -295,24 +458,12 @@ export const couponFormSchema: EsFormSchema = [
     fieldName: 'isEnabled',
     label: '启用状态',
   },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入 JSON 对象，例如 {"maxChapterCount":5}',
-      rows: 4,
-      type: 'textarea',
-    },
-    fieldName: 'configPayloadText',
-    formItemClass: 'col-span-2',
-    label: '额外配置快照',
-  },
 ];
 
 export const couponSearchSchema = formSchemaTransform.toSearchSchema(
   couponFormSchema,
   {
     couponType: { show: true },
-    targetScope: { show: true },
     isEnabled: {
       show: true,
       component: 'Select',
@@ -342,19 +493,49 @@ export const couponColumns = formSchemaTransform.toTableColumns<CouponRow>(
       minWidth: 230,
       show: true,
     },
-    budgetLimit: { title: '预算' },
-    configPayloadText: { hide: true },
+    abilitySummary: {
+      field: 'abilitySummary',
+      formatter: ({ row }) => formatCouponAbility(row),
+      minWidth: 180,
+      sort: 3,
+      title: '券能力',
+    },
+    benefitCount: { hide: true },
+    benefitDays: { hide: true },
+    discountAmount: { hide: true },
+    discountMode: { hide: true },
+    discountPercent: { hide: true },
     isEnabled: {
       minWidth: 110,
       slots: { default: 'isEnabled' },
     },
     name: { fixed: 'left', minWidth: 180, slots: { default: 'detail' } },
-    discountRateBps: { title: '折扣率' },
-    usageLimit: { title: '次数' },
+    usageLimit: { hide: true },
+    validDays: {
+      formatter: ({ cellValue }) => formatValidity(cellValue),
+      minWidth: 150,
+      title: '有效期',
+    },
   },
 );
 
 export const couponGrantFormSchema: EsFormSchema = [
+  {
+    component: 'Input',
+    componentProps: {
+      disabled: true,
+    },
+    fieldName: 'couponName',
+    label: '券名称',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      disabled: true,
+    },
+    fieldName: 'couponAbility',
+    label: '券能力',
+  },
   {
     component: 'InputNumber',
     componentProps: {
@@ -371,35 +552,67 @@ export const couponGrantFormSchema: EsFormSchema = [
     componentProps: {
       class: '!w-full',
       min: 1,
-      placeholder: '请输入券定义 ID',
+      placeholder: '请输入发放数量',
     },
-    fieldName: 'couponDefinitionId',
-    label: '券定义 ID',
+    defaultValue: 1,
+    fieldName: 'quantity',
+    label: '发放数量',
     rules: 'required',
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      class: 'w-full',
-      clearable: true,
-      options: couponSourceTypeOptions,
-      placeholder: '请选择券来源',
-    },
-    fieldName: 'sourceType',
-    label: '券来源',
-    rules: 'required',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '请输入来源 ID',
-    },
-    fieldName: 'sourceId',
-    label: '来源 ID',
   },
 ];
+
+function getCouponAbilityFields(record: CouponRow): DetailField[] {
+  if (record.couponType === 1) {
+    return [
+      {
+        label: '可阅读章节数',
+        type: 'text',
+        value: `${record.usageLimit ?? 1} 章`,
+      },
+    ];
+  }
+
+  if (record.couponType === 2) {
+    return [
+      ...((record.discountRateBps ?? 10_000) < 10_000
+        ? [
+            {
+              label: '折扣比例',
+              type: 'text',
+              value: formatDiscountRate(record.discountRateBps),
+            } satisfies DetailField,
+          ]
+        : []),
+      ...((record.discountAmount ?? 0) > 0
+        ? [
+            {
+              label: '立减金额',
+              type: 'text',
+              value: formatAmount(record.discountAmount),
+            } satisfies DetailField,
+          ]
+        : []),
+    ];
+  }
+
+  if (record.couponType === 3) {
+    return [
+      {
+        label: 'VIP 试用天数',
+        type: 'text',
+        value: `${record.benefitDays ?? 1} 天`,
+      },
+    ];
+  }
+
+  return [
+    {
+      label: '补签次数',
+      type: 'text',
+      value: `${record.benefitCount ?? 1} 次`,
+    },
+  ];
+}
 
 export function getCouponDetailCards(record: CouponRow) {
   return [
@@ -414,27 +627,16 @@ export function getCouponDetailCards(record: CouponRow) {
           value: record.couponType,
         },
         {
-          label: '适用范围',
-          tagText: formatOptionText(
-            couponTargetScopeOptions,
-            record.targetScope,
-          ),
-          type: 'tag',
-          value: record.targetScope,
-        },
-        {
-          label: '折扣金额',
+          label: '券能力',
           type: 'text',
-          value: record.discountAmount ?? '-',
+          value: formatCouponAbility(record),
         },
+        ...getCouponAbilityFields(record),
         {
-          label: '折扣率基点',
+          label: '有效期',
           type: 'text',
-          value: record.discountRateBps ?? '-',
+          value: formatValidity(record.validDays),
         },
-        { label: '可用次数', type: 'text', value: record.usageLimit ?? '-' },
-        { label: '有效天数', type: 'text', value: record.validDays ?? '-' },
-        { label: '预算上限', type: 'text', value: record.budgetLimit ?? '-' },
         {
           label: '启用状态',
           tagText: formatOptionText(enabledStatusOptions, record.isEnabled),
@@ -447,17 +649,5 @@ export function getCouponDetailCards(record: CouponRow) {
       show: true,
       title: '券定义',
     },
-    ...(record.configPayload
-      ? [
-          {
-            content: `<pre class="whitespace-pre-wrap break-all text-xs">${escapeHtml(
-              formatJsonTextarea(record.configPayload),
-            )}</pre>`,
-            show: true,
-            title: '额外配置快照',
-            type: 'text',
-          } satisfies DetailCard,
-        ]
-      : []),
   ] satisfies DetailCard[];
 }

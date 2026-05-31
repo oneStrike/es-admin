@@ -416,20 +416,11 @@ export class OpenAPIGenerator {
 
     // 处理 allOf, oneOf, anyOf
     if (schema.allOf) {
-      const types = schema.allOf.map((s: any) => {
-        if (s.$ref) return resolveRef(s.$ref);
-        return mapSchemaToType(s);
-      });
-      return [`  /* 组合类型 */\n  data: ${types.join(' & ')}`];
+      return [`  /* 组合类型 */\n  data: ${mapSchemaToType(schema)}`];
     }
 
     if (schema.oneOf || schema.anyOf) {
-      const schemas = schema.oneOf || schema.anyOf;
-      const types = schemas.map((s: any) => {
-        if (s.$ref) return resolveRef(s.$ref);
-        return mapSchemaToType(s);
-      });
-      return [`  /* 联合类型 */\n  data: ${types.join(' | ')}`];
+      return [`  /* 联合类型 */\n  data: ${mapSchemaToType(schema)}`];
     }
 
     if (schema.type === 'object' && schema.properties) {
@@ -438,9 +429,7 @@ export class OpenAPIGenerator {
         const required = schema.required?.includes(propName) ? '' : '?';
 
         // 使用改进的类型映射
-        const type = prop.$ref
-          ? (resolveRef(prop.$ref) as string)
-          : mapSchemaToType(prop);
+        const type = mapSchemaToType(prop);
 
         const description = prop.description
           ? `  /* ${prop.description} */`
@@ -453,9 +442,7 @@ export class OpenAPIGenerator {
       }
     } else if (schema.type === 'array') {
       // 处理数组类型
-      const itemType = schema.items?.$ref
-        ? (resolveRef(schema.items.$ref) as string)
-        : mapSchemaToType(schema.items);
+      const itemType = mapSchemaToType(schema.items);
       return [`  /* 数组数据 */\n  items: ${wrapArrayItemType(itemType)}[]`];
     } else if (schema.enum) {
       // 处理枚举类型
@@ -595,9 +582,6 @@ ${properties.join('\n\n')}
     // 处理 allOf 组合类型
     if (schema.allOf) {
       const types = schema.allOf.map((s: any) => {
-        if (s.$ref) {
-          return resolveRef(s.$ref);
-        }
         if (s.properties) {
           const props = this.generatePropertiesFromSchema(s);
           return `{\n${props.join('\n')}\n  /** 任意合法数值 */\n  [property: string]: any\n}`;
@@ -611,16 +595,13 @@ ${properties.join('\n\n')}
         updateTime,
       );
       return `${comment}
-export type ${typeName} = ${types.join(' & ')}`;
+export type ${typeName} = ${schema.nullable ? `${types.join(' & ')} | null` : types.join(' & ')}`;
     }
 
     // 处理 oneOf/anyOf 联合类型
     if (schema.oneOf || schema.anyOf) {
       const schemas = schema.oneOf || schema.anyOf;
       const types = schemas.map((s: any) => {
-        if (s.$ref) {
-          return resolveRef(s.$ref);
-        }
         if (s.properties) {
           const props = this.generatePropertiesFromSchema(s);
           return `{\n${props.join('\n')}\n  /** 任意合法数值 */\n  [property: string]: any\n}`;
@@ -634,14 +615,12 @@ export type ${typeName} = ${types.join(' & ')}`;
         updateTime,
       );
       return `${comment}
-export type ${typeName} = ${types.join(' | ')}`;
+export type ${typeName} = ${schema.nullable ? `${types.join(' | ')} | null` : types.join(' | ')}`;
     }
 
     // 检查是否是基础类型数组
     if (schema.type === 'array') {
-      const itemType = schema.items?.$ref
-        ? (resolveRef(schema.items.$ref) as string)
-        : mapSchemaToType(schema.items);
+      const itemType = mapSchemaToType(schema.items);
 
       const comment = TEMPLATES.typeComment(
         typeName,

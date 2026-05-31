@@ -55,51 +55,61 @@ export function wrapArrayItemType(type: string): string {
 export function mapSchemaToType(schema: any, depth: number = 0): string {
   if (!schema) return 'any';
 
+  const applyNullable = (type: string) =>
+    schema.nullable && !type.split(/\s*\|\s*/).includes('null')
+      ? `${type} | null`
+      : type;
+
+  const joinTypes = (types: string[], separator: ' & ' | ' | ') =>
+    [...new Set(types)].join(separator);
+
   // 处理 $ref 引用
   if (schema.$ref) {
-    return resolveRef(schema.$ref) as string;
+    return applyNullable(resolveRef(schema.$ref) as string);
   }
 
   // 处理 allOf, oneOf, anyOf
   if (schema.allOf) {
     const types = schema.allOf.map((s: any) => mapSchemaToType(s, depth + 1));
-    return types.join(' & ');
+    return applyNullable(joinTypes(types, ' & '));
   }
 
   if (schema.oneOf || schema.anyOf) {
     const schemas = schema.oneOf || schema.anyOf;
     const types = schemas.map((s: any) => mapSchemaToType(s, depth + 1));
-    return types.join(' | ');
+    return applyNullable(joinTypes(types, ' | '));
   }
 
   if (Array.isArray(schema.type)) {
-    return schema.type
-      .map((t: string) => mapOpenAPIType(t, schema.format))
-      .join(' | ');
+    return applyNullable(
+      schema.type
+        .map((t: string) => mapOpenAPIType(t, schema.format))
+        .join(' | '),
+    );
   }
 
   switch (schema.type) {
     case 'array': {
       if (!schema.items) return 'any[]';
       const itemType = mapSchemaToType(schema.items, depth + 1);
-      return `${wrapArrayItemType(itemType)}[]`;
+      return applyNullable(`${wrapArrayItemType(itemType)}[]`);
     }
     case 'boolean': {
-      return 'boolean';
+      return applyNullable('boolean');
     }
     case 'integer':
     case 'number': {
       // 处理枚举值
       if (schema.enum && Array.isArray(schema.enum)) {
-        return schema.enum.join(' | ');
+        return applyNullable(schema.enum.join(' | '));
       }
-      return 'number';
+      return applyNullable('number');
     }
     case 'object': {
       if (schema.properties) {
         // 避免过深的嵌套，超过8层使用通用类型
         if (depth > 8) {
-          return 'Record<string, any>';
+          return applyNullable('Record<string, any>');
         }
 
         // 生成内联对象类型
@@ -115,7 +125,9 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
           return 'Record<string, any>';
         }
 
-        return `{\n${props.join(';\n')};\n  /** 任意合法数值 */\n  [property: string]: any;\n}`;
+        return applyNullable(
+          `{\n${props.join(';\n')};\n  /** 任意合法数值 */\n  [property: string]: any;\n}`,
+        );
       }
 
       // 处理 additionalProperties
@@ -125,35 +137,37 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
             schema.additionalProperties,
             depth + 1,
           );
-          return `Record<string, ${valueType}>`;
+          return applyNullable(`Record<string, ${valueType}>`);
         }
-        return 'Record<string, any>';
+        return applyNullable('Record<string, any>');
       }
 
-      return 'Record<string, any>';
+      return applyNullable('Record<string, any>');
     }
     case 'string': {
       // 处理字符串枚举
       if (schema.enum && Array.isArray(schema.enum)) {
-        return schema.enum.map((val: any) => `'${val}'`).join(' | ');
+        return applyNullable(
+          schema.enum.map((val: any) => `'${val}'`).join(' | '),
+        );
       }
 
       // 处理格式化字符串
       switch (schema.format) {
         case 'binary': {
-          return 'File | Blob';
+          return applyNullable('File | Blob');
         }
         case 'date':
         case 'date-time': {
-          return 'string';
+          return applyNullable('string');
         } // 可以考虑使用 Date 类型
         case 'email':
         case 'uri':
         case 'uuid': {
-          return 'string';
+          return applyNullable('string');
         }
         default: {
-          return 'string';
+          return applyNullable('string');
         }
       }
     }
@@ -170,13 +184,15 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
       if (schema.enum && Array.isArray(schema.enum)) {
         const firstType = typeof schema.enum[0];
         if (firstType === 'string') {
-          return schema.enum.map((val: string) => `'${val}'`).join(' | ');
+          return applyNullable(
+            schema.enum.map((val: string) => `'${val}'`).join(' | '),
+          );
         } else if (firstType === 'number') {
-          return schema.enum.join(' | ');
+          return applyNullable(schema.enum.join(' | '));
         }
       }
 
-      return 'any';
+      return applyNullable('any');
     }
   }
 }

@@ -41,6 +41,7 @@ import {
   couponFormSchema,
   couponGrantFormSchema,
   couponSearchSchema,
+  formatCouponAbility,
   getCouponDetailCards,
   mapCouponToFormRecord,
 } from '../model/coupon';
@@ -49,10 +50,10 @@ type CouponSearchValues = {
   couponType?: unknown;
   dateRange?: unknown;
   isEnabled?: unknown;
-  targetScope?: unknown;
 };
 
 const currentCoupon = ref({} as CouponRow);
+const currentGrantCoupon = ref<CouponRow>();
 
 const couponGridOptions: VxeGridProps<CouponRow> = {
   columns: couponColumns,
@@ -102,7 +103,6 @@ function buildCouponSearchValues(formValues: CouponSearchValues = {}) {
     endDate,
     isEnabled: normalizeSearchBoolean(formValues.isEnabled),
     startDate,
-    targetScope: normalizeSearchNumber(formValues.targetScope),
   } satisfies Partial<CouponDefinitionPageRequest>;
 }
 
@@ -130,12 +130,14 @@ function openEditModal(row: CouponRow) {
 }
 
 function openGrantModal(row: CouponRow) {
+  currentGrantCoupon.value = row;
   grantFormApi
     .setData({
       cols: 2,
       record: {
-        couponDefinitionId: row.id,
-        sourceType: 3,
+        couponAbility: formatCouponAbility(row),
+        couponName: row.name,
+        quantity: 1,
       },
       schema: couponGrantFormSchema,
       title: '发券',
@@ -150,13 +152,29 @@ function openDetailModal(row: CouponRow) {
 }
 
 async function handleCreateSubmit(values: CouponFormValues) {
-  await couponDefinitionCreateApi(buildCouponCreatePayload(values));
+  let payload;
+  try {
+    payload = buildCouponCreatePayload(values);
+  } catch (error) {
+    useMessage.warning(error instanceof Error ? error.message : '创建失败');
+    throw markHandledFormError(error);
+  }
+
+  await couponDefinitionCreateApi(payload);
   useMessage.success('操作成功');
   await couponGridApi.reload();
 }
 
 async function handleEditSubmit(values: CouponFormValues) {
-  await couponDefinitionUpdateApi(buildCouponUpdatePayload(values));
+  let payload;
+  try {
+    payload = buildCouponUpdatePayload(values);
+  } catch (error) {
+    useMessage.warning(error instanceof Error ? error.message : '编辑失败');
+    throw markHandledFormError(error);
+  }
+
+  await couponDefinitionUpdateApi(payload);
   useMessage.success('操作成功');
   await couponGridApi.reload();
 }
@@ -164,7 +182,7 @@ async function handleEditSubmit(values: CouponFormValues) {
 async function handleGrant(values: CouponGrantFormValues) {
   let payload: CouponGrantCreateRequest;
   try {
-    payload = buildCouponGrantPayload(values);
+    payload = buildCouponGrantPayload(values, currentGrantCoupon.value?.id);
   } catch (error) {
     useMessage.warning(error instanceof Error ? error.message : '发券失败');
     throw markHandledFormError(error);
