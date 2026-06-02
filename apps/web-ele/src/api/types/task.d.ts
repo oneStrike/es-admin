@@ -275,7 +275,7 @@ export type CreateTaskStepDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 去重范围（1=按周期唯一；2=终身唯一） */
-  dedupeScope?: null | number;
+  dedupeScope?: 1 | 2 | null;
   /* 步骤描述 */
   description?: null | string;
   /* 步骤过滤条件列表 */
@@ -560,7 +560,7 @@ export type TaskStepSummaryDto = {
   /* 创建时间 */
   createdAt: string;
   /* 去重范围（1=按周期唯一；2=终身唯一） */
-  dedupeScope?: null | number;
+  dedupeScope?: 1 | 2 | null;
   /* 步骤描述 */
   description?: null | string;
   /* 步骤过滤条件列表 */
@@ -681,7 +681,7 @@ export type TaskRewardSettlementSummaryDto = {
   /* 最近一次补偿状态落定时间 */
   settledAt?: null | string;
   /* 补偿结果类型（1=真实落账；2=命中幂等；3=本次处理失败） */
-  settlementResultType?: null | number;
+  settlementResultType?: 1 | 2 | 3 | null;
 
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus: 0 | 1 | 2;

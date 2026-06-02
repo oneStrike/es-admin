@@ -73,11 +73,11 @@ export type AuditItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 操作类型（1=登录；2=登出；3=创建；4=更新；5=删除；6=上传；7=下载；8=导出；9=导入） */
-  actionType?: null | number;
+  actionType?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
   /* 操作类型展示文案 */
   actionTypeLabel?: null | string;
   /* 接口类型（1=管理端；2=应用端；3=系统端；4=公共端） */
-  apiType?: null | number;
+  apiType?: 1 | 2 | 3 | 4 | null;
   /* 自定义日志内容 */
   content: string;
   /* 创建时间 */

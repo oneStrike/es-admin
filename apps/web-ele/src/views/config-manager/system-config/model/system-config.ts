@@ -21,6 +21,11 @@ type BuildSystemConfigUpdatePayloadInput = {
   values: SystemConfigFormValues;
 };
 
+type ContentReviewAction = NonNullable<
+  NonNullable<BaseSystemConfigDto['contentReviewPolicy']>['lightAction']
+>;
+type ContentReviewAuditStatus = NonNullable<ContentReviewAction['auditStatus']>;
+
 const THIRD_PARTY_RESOURCE_PARSE_DEFAULTS = {
   apiIntervalMs: 3000,
   enabled: true,
@@ -44,6 +49,17 @@ function numberValue(value: unknown) {
 
 function booleanValue(value: unknown) {
   return typeof value === 'boolean' ? value : undefined;
+}
+
+// Generated API narrows audit status to the backend enum, so filter form values.
+function contentReviewAuditStatusValue(value: unknown) {
+  const status = numberValue(value);
+
+  if (status === 0 || status === 1 || status === 2) {
+    return status satisfies ContentReviewAuditStatus;
+  }
+
+  return undefined;
 }
 
 function uploadProviderValue(value: unknown): 'local' | 'qiniu' | 'superbed' {
@@ -230,17 +246,23 @@ export function buildSystemConfigUpdatePayload({
         recordHits: booleanValue(values.recordHits),
         lightAction: {
           ...currentPolicy.lightAction,
-          auditStatus: numberValue(values.lightActionAuditStatus),
+          auditStatus: contentReviewAuditStatusValue(
+            values.lightActionAuditStatus,
+          ),
           isHidden: booleanValue(values.lightActionIsHidden),
         },
         generalAction: {
           ...currentPolicy.generalAction,
-          auditStatus: numberValue(values.generalActionAuditStatus),
+          auditStatus: contentReviewAuditStatusValue(
+            values.generalActionAuditStatus,
+          ),
           isHidden: booleanValue(values.generalActionIsHidden),
         },
         severeAction: {
           ...currentPolicy.severeAction,
-          auditStatus: numberValue(values.severeActionAuditStatus),
+          auditStatus: contentReviewAuditStatusValue(
+            values.severeActionAuditStatus,
+          ),
           isHidden: booleanValue(values.severeActionIsHidden),
         },
       };

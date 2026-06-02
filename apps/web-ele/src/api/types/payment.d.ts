@@ -432,5 +432,5 @@ export type PaymentOrderResultDto = {
   status: 1 | 2 | 3 | 4 | 5;
 
   /* 订阅模式（1=一次性） */
-  subscriptionMode?: null | number;
+  subscriptionMode?: 1 | null;
 };

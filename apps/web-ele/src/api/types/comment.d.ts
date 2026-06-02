@@ -117,7 +117,7 @@ export type AdminCommentPageItemDto = {
   /* 审核原因 */
   auditReason?: null | string;
   /* 审核角色（0=版主；1=管理员） */
-  auditRole?: null | number;
+  auditRole?: 0 | 1 | null;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2;
   /* 创建时间 */
@@ -208,7 +208,7 @@ export type InteractionCommentTargetSummaryDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 目标审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: null | number;
+  auditStatus?: 0 | 1 | 2 | null;
   /* 目标删除时间 */
   deletedAt?: null | string;
   /* 目标是否隐藏 */
@@ -254,7 +254,7 @@ export type InteractionReplyCommentSummaryDto = {
   userNickname?: null | string;
 
   /* 被回复评论用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  userStatus?: null | number;
+  userStatus?: 1 | 2 | 3 | 4 | 5 | null;
 };
 
 /**
@@ -276,7 +276,7 @@ export type AdminCommentDetailDto = {
   /* 审核原因 */
   auditReason?: null | string;
   /* 审核角色（0=版主；1=管理员） */
-  auditRole?: null | number;
+  auditRole?: 0 | 1 | null;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2;
   /* 创建时间 */

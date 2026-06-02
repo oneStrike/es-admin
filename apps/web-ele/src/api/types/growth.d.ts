@@ -606,7 +606,54 @@ export type UserExperienceRecordDto = {
   /* 关联的规则ID */
   ruleId?: null | number;
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?:
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 16
+    | 100
+    | 101
+    | 102
+    | 103
+    | 104
+    | 200
+    | 201
+    | 202
+    | 203
+    | 204
+    | 300
+    | 301
+    | 302
+    | 303
+    | 304
+    | 305
+    | 306
+    | 400
+    | 401
+    | 402
+    | 403
+    | 404
+    | 405
+    | 406
+    | 600
+    | 601
+    | 602
+    | 700
+    | 701
+    | 702
+    | 703
+    | 800
+    | 801
+    | null;
   /* 账本来源（如 growth_rule、task_bonus、purchase） */
   source?: null | string;
   /* 关联目标ID */
@@ -647,7 +694,54 @@ export type UserExperienceRecordDetailDto = {
   /* 关联的规则ID */
   ruleId?: null | number;
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?:
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 16
+    | 100
+    | 101
+    | 102
+    | 103
+    | 104
+    | 200
+    | 201
+    | 202
+    | 203
+    | 204
+    | 300
+    | 301
+    | 302
+    | 303
+    | 304
+    | 305
+    | 306
+    | 400
+    | 401
+    | 402
+    | 403
+    | 404
+    | 405
+    | 406
+    | 600
+    | 601
+    | 602
+    | 700
+    | 701
+    | 702
+    | 703
+    | 800
+    | 801
+    | null;
   /* 账本来源（如 growth_rule、task_bonus、purchase） */
   source?: null | string;
   /* 关联目标ID */
@@ -1397,7 +1491,54 @@ export type GrowthRewardSettlementPageItemDto = {
   /* 创建时间 */
   createdAt: string;
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  eventCode?: null | number;
+  eventCode?:
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 16
+    | 100
+    | 101
+    | 102
+    | 103
+    | 104
+    | 200
+    | 201
+    | 202
+    | 203
+    | 204
+    | 300
+    | 301
+    | 302
+    | 303
+    | 304
+    | 305
+    | 306
+    | 400
+    | 401
+    | 402
+    | 403
+    | 404
+    | 405
+    | 406
+    | 600
+    | 601
+    | 602
+    | 700
+    | 701
+    | 702
+    | 703
+    | 800
+    | 801
+    | null;
   /* 成长事件 key */
   eventKey?: null | string;
   /* 原始事件发生时间 */
@@ -1417,7 +1558,7 @@ export type GrowthRewardSettlementPageItemDto = {
   /* 最近一次补偿状态落定时间 */
   settledAt?: null | string;
   /* 补偿结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
-  settlementResultType?: null | number;
+  settlementResultType?: 1 | 2 | 3 | null;
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus: 0 | 1 | 2;
   /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */

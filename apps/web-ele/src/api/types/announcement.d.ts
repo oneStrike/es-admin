@@ -147,7 +147,17 @@ export type CreateAnnouncementDto = {
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string;
   /* 弹窗背景图片位置（CSS background-position 值，默认 center=居中） */
-  popupBackgroundPosition?: null | string;
+  popupBackgroundPosition?:
+    | 'bottom center'
+    | 'bottom left'
+    | 'bottom right'
+    | 'center'
+    | 'left center'
+    | 'right center'
+    | 'top center'
+    | 'top left'
+    | 'top right'
+    | null;
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
@@ -192,7 +202,17 @@ export type BaseAnnouncementDto = {
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string;
   /* 弹窗背景图片位置（CSS background-position 值，默认 center=居中） */
-  popupBackgroundPosition?: null | string;
+  popupBackgroundPosition?:
+    | 'bottom center'
+    | 'bottom left'
+    | 'bottom right'
+    | 'center'
+    | 'left center'
+    | 'right center'
+    | 'top center'
+    | 'top left'
+    | 'top right'
+    | null;
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
@@ -243,7 +263,17 @@ export type AnnouncementDetailDto = {
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string;
   /* 弹窗背景图片位置（CSS background-position 值，默认 center=居中） */
-  popupBackgroundPosition?: null | string;
+  popupBackgroundPosition?:
+    | 'bottom center'
+    | 'bottom left'
+    | 'bottom right'
+    | 'center'
+    | 'left center'
+    | 'right center'
+    | 'top center'
+    | 'top left'
+    | 'top right'
+    | null;
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
@@ -307,7 +337,17 @@ export type UpdateAnnouncementDto = {
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string;
   /* 弹窗背景图片位置（CSS background-position 值，默认 center=居中） */
-  popupBackgroundPosition?: null | string;
+  popupBackgroundPosition?:
+    | 'bottom center'
+    | 'bottom left'
+    | 'bottom right'
+    | 'center'
+    | 'left center'
+    | 'right center'
+    | 'top center'
+    | 'top left'
+    | 'top right'
+    | null;
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel?: 0 | 1 | 2 | 3;
   /* 发布结束时间 */

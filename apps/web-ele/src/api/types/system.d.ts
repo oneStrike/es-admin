@@ -225,7 +225,7 @@ export type ContentReviewActionDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: null | number;
+  auditStatus?: 0 | 1 | 2 | null;
 
   /* 是否隐藏 */
   isHidden?: boolean | null;
@@ -240,7 +240,7 @@ export type UploadConfigDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 上传提供方（local=本地存储；qiniu=七牛云存储；superbed=Superbed图床） */
-  provider?: null | string;
+  provider?: 'local' | 'qiniu' | 'superbed' | null;
   /* 七牛上传配置 */
   qiniu?: QiniuUploadConfigDto;
   /* Superbed 上传配置 */

@@ -113,7 +113,7 @@ export type BaseCouponDefinitionDto = {
   /* 单张券可用次数 */
   usageLimit?: null | number;
 
-  /* 有效天数，0=按实例过期时间控制 */
+  /* 有效天数，后台创建的券定义必须为正整数 */
   validDays?: null | number;
 };
 
@@ -142,7 +142,7 @@ export type CreateCouponDefinitionDto = {
   /* 单张券可用次数 */
   usageLimit?: null | number;
 
-  /* 有效天数，0=按实例过期时间控制 */
+  /* 有效天数，后台创建的券定义必须为正整数 */
   validDays?: null | number;
 };
 
@@ -173,7 +173,7 @@ export type UpdateCouponDefinitionDto = {
   /* 单张券可用次数 */
   usageLimit?: null | number;
 
-  /* 有效天数，0=按实例过期时间控制 */
+  /* 有效天数，后台创建的券定义必须为正整数 */
   validDays?: null | number;
 };
 
@@ -202,12 +202,14 @@ export type GrantCouponDto = {
   [property: string]: any;
   /* 券定义 ID */
   couponDefinitionId: number;
+  /* 后台发券操作幂等 ID，同一用户内相同操作 ID 重试不会重复发券 */
+  operationId: string;
   /* 发放数量 */
   quantity?: null | number;
   /* 来源 ID */
   sourceId?: null | number;
-  /* 券来源（1=任务发放；2=积分兑换；3=后台发放；4=购买补偿；5=会员权益发放） */
-  sourceType: 1 | 2 | 3 | 4 | 5;
+  /* 兼容旧客户端字段；后台发券服务端固定按后台发放记录 */
+  sourceType?: 1 | 2 | 3 | 4 | 5 | null;
 
   /* 用户 ID */
   userId: number;

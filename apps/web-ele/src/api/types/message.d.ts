@@ -267,7 +267,18 @@ export type MessageNotificationDeliveryItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 通知分类键，表示通知所属业务分类 */
-  categoryKey?: null | string;
+  categoryKey?:
+    | 'comment_like'
+    | 'comment_mention'
+    | 'comment_reply'
+    | 'system_announcement'
+    | 'task_reminder'
+    | 'topic_commented'
+    | 'topic_favorited'
+    | 'topic_like'
+    | 'topic_mentioned'
+    | 'user_followed'
+    | null;
   /* 通知分类中文标签 */
   categoryLabel?: null | string;
   /* 创建时间 */
@@ -335,7 +346,7 @@ export type MessageDispatchPageItemDto = {
   /* 领域事件消费者标识 */
   consumer: string;
   /* 通知投影业务状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
-  deliveryStatus?: null | number;
+  deliveryStatus?: 1 | 2 | 3 | 4 | null;
   /* dispatch ID（正整数字符串） */
   dispatchId: string;
   /* 领域事件 dispatch 技术状态（0=待处理；1=处理中；2=成功；3=失败） */

@@ -27,6 +27,9 @@ type CouponDefinitionFormFields = Pick<
 
 type CouponTypeValue = CouponDefinitionCreateRequest['couponType'];
 type CouponDiscountMode = 'amount' | 'percent';
+export type CouponGrantPayload = CouponGrantCreateRequest & {
+  operationId: string;
+};
 
 export type CouponRow = NonNullable<
   CouponDefinitionPageResponse['list']
@@ -143,6 +146,16 @@ function requireDiscountPercent(value: unknown) {
   return percent;
 }
 
+export function createCouponGrantOperationId() {
+  const randomUUID = globalThis.crypto?.randomUUID;
+
+  if (typeof randomUUID === 'function') {
+    return randomUUID.call(globalThis.crypto);
+  }
+
+  return `coupon-grant-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 function formatOptionText(
   options: Array<{ label: string; value: boolean | number | string }>,
   value: unknown,
@@ -185,7 +198,7 @@ function formatValidity(value: unknown) {
     return '-';
   }
 
-  return days === 0 ? '按实例有效期控制' : `${days} 天`;
+  return days === 0 ? '历史实例控制' : `${days} 天`;
 }
 
 function getDiscountMode(record: Pick<CouponRow, 'discountAmount'>) {
@@ -242,7 +255,10 @@ export function mapCouponToFormRecord(values: CouponRow) {
 
 function buildCouponBase(values: CouponFormValues) {
   const couponType = requireCouponType(values.couponType);
-  const validDays = normalizeOptionalNumber(values.validDays) ?? 0;
+  const validDays = requirePositiveInteger(
+    values.validDays ?? 7,
+    '领取后有效天数',
+  );
   const base = {
     couponType,
     isEnabled: normalizeBoolean(values.isEnabled),
@@ -307,13 +323,14 @@ export function buildCouponUpdatePayload(values: CouponFormValues) {
 export function buildCouponGrantPayload(
   values: CouponGrantFormValues,
   couponDefinitionId: unknown,
+  operationId: unknown,
 ) {
   return {
     couponDefinitionId: requireInteger(couponDefinitionId, '券定义 ID'),
+    operationId: requireText(operationId, '发券操作 ID'),
     quantity: requirePositiveInteger(values.quantity ?? 1, '发放数量'),
-    sourceType: 3,
     userId: requireInteger(values.userId, '用户 ID'),
-  } satisfies CouponGrantCreateRequest;
+  } satisfies CouponGrantPayload;
 }
 
 export const couponFormSchema: EsFormSchema = [
@@ -441,12 +458,13 @@ export const couponFormSchema: EsFormSchema = [
     component: 'InputNumber',
     componentProps: {
       class: '!w-full',
-      min: 0,
+      min: 1,
       placeholder: '请输入领取后有效天数',
     },
-    defaultValue: 0,
+    defaultValue: 7,
     fieldName: 'validDays',
     label: '领取后有效天数',
+    rules: 'required',
   },
   {
     component: 'RadioGroup',

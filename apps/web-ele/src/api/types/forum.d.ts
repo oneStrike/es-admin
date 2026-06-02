@@ -1385,7 +1385,7 @@ export type SensitiveWordDetectResponseDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 最高敏感等级（1=严重；2=一般；3=轻微） */
-  highestLevel?: null | number;
+  highestLevel?: 1 | 2 | 3 | null;
 
   /* 命中的敏感词列表 */
   hits: SensitiveWordHitDto[];
@@ -1428,7 +1428,7 @@ export type SensitiveWordStatisticsResponseDto = {
   data: Record<string, any>[];
 
   /* 统计类型（按级别统计；按类型统计；热门敏感词统计；最近命中统计） */
-  type?: null | string;
+  type?: 'level' | 'recentHits' | 'topHits' | 'type' | null;
 };
 
 /**
@@ -1561,7 +1561,7 @@ export type SensitiveWordHighestLevelResponseDto = {
   [property: string]: any;
 
   /* 最高敏感等级（1=严重；2=一般；3=轻微） */
-  highestLevel?: null | number;
+  highestLevel?: 1 | 2 | 3 | null;
 };
 
 /**
@@ -1681,7 +1681,7 @@ export type ForumTopicContentPreviewSegmentDto = {
   /* 话题 ID；type=hashtag 时返回 */
   hashtagId?: null | number;
   /* 表情资源类型（1=Unicode 表情；2=自定义表情）；type=emoji 时返回 */
-  kind?: null | number;
+  kind?: 1 | 2 | null;
   /* 被提及用户昵称；type=mention 时返回 */
   nickname?: null | string;
   /* 自定义表情短码；type=emoji 且 kind=2 时返回 */
@@ -2463,7 +2463,7 @@ export type BaseForumHashtagDto = {
   /* 审核原因 */
   auditReason?: null | string;
   /* 审核角色（0=版主；1=管理员） */
-  auditRole?: null | number;
+  auditRole?: 0 | 1 | null;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2;
   /* 可见评论引用数 */

@@ -2,6 +2,7 @@
 import type {
   CouponFormValues,
   CouponGrantFormValues,
+  CouponGrantPayload,
   CouponRow,
 } from '../model/coupon';
 
@@ -9,7 +10,6 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   CouponDefinitionPageRequest,
   CouponDefinitionUpdateStatusRequest,
-  CouponGrantCreateRequest,
 } from '#/api/types';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -40,6 +40,7 @@ import {
   couponColumns,
   couponFormSchema,
   couponGrantFormSchema,
+  createCouponGrantOperationId,
   couponSearchSchema,
   formatCouponAbility,
   getCouponDetailCards,
@@ -54,6 +55,7 @@ type CouponSearchValues = {
 
 const currentCoupon = ref({} as CouponRow);
 const currentGrantCoupon = ref<CouponRow>();
+const currentGrantOperationId = ref('');
 
 const couponGridOptions: VxeGridProps<CouponRow> = {
   columns: couponColumns,
@@ -131,6 +133,7 @@ function openEditModal(row: CouponRow) {
 
 function openGrantModal(row: CouponRow) {
   currentGrantCoupon.value = row;
+  currentGrantOperationId.value = createCouponGrantOperationId();
   grantFormApi
     .setData({
       cols: 2,
@@ -180,9 +183,13 @@ async function handleEditSubmit(values: CouponFormValues) {
 }
 
 async function handleGrant(values: CouponGrantFormValues) {
-  let payload: CouponGrantCreateRequest;
+  let payload: CouponGrantPayload;
   try {
-    payload = buildCouponGrantPayload(values, currentGrantCoupon.value?.id);
+    payload = buildCouponGrantPayload(
+      values,
+      currentGrantCoupon.value?.id,
+      currentGrantOperationId.value,
+    );
   } catch (error) {
     useMessage.warning(error instanceof Error ? error.message : '发券失败');
     throw markHandledFormError(error);

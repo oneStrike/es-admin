@@ -335,7 +335,7 @@ export type CheckInConfigDetailResponseDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 默认基础奖励项。 */
-  baseRewardItems?: CheckInRewardItemDto[];
+  baseRewardItems?: CheckInRewardItemDto[] | null;
   /* 创建时间 */
   createdAt: string;
   /* 具体日期奖励规则列表。 */
@@ -360,6 +360,23 @@ export type CheckInConfigDetailResponseDto = {
 };
 
 /**
+ *  类型定义 [CheckInDateRewardRuleFieldsDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type CheckInDateRewardRuleFieldsDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 奖励生效日期，格式为 YYYY-MM-DD。 */
+  rewardDate: string;
+  /* 具体日期奖励项列表。 */
+  rewardItems: CheckInRewardItemDto[];
+
+  /* 该日期奖励概览图标 URL。 */
+  rewardOverviewIconUrl?: null | string;
+};
+
+/**
  *  类型定义 [CheckInRewardItemDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -376,23 +393,6 @@ export type CheckInRewardItemDto = {
 
   /* 签到奖励图标 URL。 */
   iconUrl?: null | string;
-};
-
-/**
- *  类型定义 [CheckInDateRewardRuleFieldsDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type CheckInDateRewardRuleFieldsDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 奖励生效日期，格式为 YYYY-MM-DD。 */
-  rewardDate: string;
-  /* 具体日期奖励项列表。 */
-  rewardItems: CheckInRewardItemDto[];
-
-  /* 该日期奖励概览图标 URL。 */
-  rewardOverviewIconUrl?: null | string;
 };
 
 /**
@@ -446,11 +446,11 @@ export type AdminCheckInCalendarDayDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 按签到事实冻结奖励快照聚合出的当日基础奖励实际概览。 */
-  baseRewardActualOverview?: CheckInRewardItemDto[];
+  baseRewardActualOverview?: CheckInRewardItemDto[] | null;
   /* 按签到事实冻结奖励快照聚合出的当日基础奖励概览图标 URL。 */
   baseRewardActualOverviewIconUrl?: null | string;
   /* 当前生效配置对该日期的奖励规则投影视图；这是 current-config projection，不是历史冻结配置快照。 */
-  baseRewardConfigProjectionOverview?: CheckInRewardItemDto[];
+  baseRewardConfigProjectionOverview?: CheckInRewardItemDto[] | null;
   /* 当前生效配置对该日期的奖励概览图标 URL。 */
   baseRewardConfigProjectionOverviewIconUrl?: null | string;
   /* 当前周期内展示序号。 */
@@ -579,11 +579,11 @@ export type CheckInCalendarDayDto = {
   /* 该日补签图标 URL；普通签到日或未签到日为空。 */
   makeupIconUrl?: null | string;
   /* 该日基础奖励快照。 */
-  rewardItems?: CheckInRewardItemDto[];
+  rewardItems?: CheckInRewardItemDto[] | null;
   /* 该日基础奖励概览图标 URL。 */
   rewardOverviewIconUrl?: null | string;
   /* 该日基础奖励补偿摘要。 */
-  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto;
 
   /* 自然日。 */
   signDate: string;
@@ -610,7 +610,7 @@ export type CheckInRewardSettlementSummaryDto = {
   /* 最近一次补偿状态落定时间 */
   settledAt?: null | string;
   /* 补偿结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
-  settlementResultType?: null | number;
+  settlementResultType?: 1 | 2 | 3 | null;
 
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus: 0 | 1 | 2;
@@ -635,15 +635,15 @@ export type AdminCheckInSignedUserPageItemDto = {
   /* 冻结的补签图标 URL；普通签到时为空。 */
   resolvedMakeupIconUrl?: null | string;
   /* 冻结的基础奖励快照。 */
-  resolvedRewardItems?: CheckInRewardItemDto[];
+  resolvedRewardItems?: CheckInRewardItemDto[] | null;
   /* 冻结的基础奖励概览图标 URL。 */
   resolvedRewardOverviewIconUrl?: null | string;
   /* 基础奖励命中的规则键。 */
   resolvedRewardRuleKey?: null | string;
   /* 基础奖励解析来源（1=默认基础奖励；2=具体日期奖励；3=周期模式奖励）。 */
-  resolvedRewardSourceType?: null | number;
+  resolvedRewardSourceType?: 1 | 2 | 3 | null;
   /* 基础奖励补偿摘要。 */
-  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto;
   /* 关联的奖励补偿记录 ID。 */
   rewardSettlementId?: null | number;
   /* 签到自然日。 */
@@ -652,7 +652,7 @@ export type AdminCheckInSignedUserPageItemDto = {
   updatedAt: string;
 
   /* 已签用户信息。 */
-  user?: AdminCheckInSignedUserDto | null;
+  user?: AdminCheckInSignedUserDto;
 };
 
 /**
@@ -674,7 +674,7 @@ export type CheckInGrantItemDto = {
   /* 冻结的连续奖励概览图标 URL。 */
   rewardOverviewIconUrl?: null | string;
   /* 连续奖励补偿摘要。 */
-  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto;
   /* 关联的奖励补偿记录 ID。 */
   rewardSettlementId?: null | number;
   /* 连续奖励规则编码。 */
@@ -718,7 +718,7 @@ export type UpdateCheckInConfigDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 默认基础奖励项。 */
-  baseRewardItems?: CheckInRewardItemDto[];
+  baseRewardItems?: CheckInRewardItemDto[] | null;
   /* 具体日期奖励规则列表。 */
   dateRewardRules?: CheckInDateRewardRuleFieldsDto[];
   /* 是否启用签到功能。 */
@@ -778,7 +778,7 @@ export type CheckInStreakRuleDetailResponseDto = {
   /* 连续奖励规则编码。 */
   ruleCode: string;
   /* 记录状态（0=草稿；1=已排期；2=生效中；3=已过期；4=已终止）。 */
-  status?: null | number;
+  status?: 0 | 1 | 2 | 3 | 4 | null;
   /* 命中奖励所需的连续签到天数。 */
   streakDays: number;
   /* 更新时间 */
@@ -843,15 +843,15 @@ export type CheckInReconciliationPageItemDto = {
   /* 冻结的补签图标 URL；普通签到时为空。 */
   resolvedMakeupIconUrl?: null | string;
   /* 冻结的基础奖励快照。 */
-  resolvedRewardItems?: CheckInRewardItemDto[];
+  resolvedRewardItems?: CheckInRewardItemDto[] | null;
   /* 冻结的基础奖励概览图标 URL。 */
   resolvedRewardOverviewIconUrl?: null | string;
   /* 基础奖励命中的规则键。 */
   resolvedRewardRuleKey?: null | string;
   /* 基础奖励解析来源（1=默认基础奖励；2=具体日期奖励；3=周期模式奖励）。 */
-  resolvedRewardSourceType?: null | number;
+  resolvedRewardSourceType?: 1 | 2 | 3 | null;
   /* 基础奖励补偿摘要。 */
-  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto;
   /* 关联的奖励补偿记录 ID。 */
   rewardSettlementId?: null | number;
   /* 签到自然日。 */

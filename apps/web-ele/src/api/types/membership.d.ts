@@ -267,7 +267,7 @@ export type MembershipPlanItemDto = {
   /* 排序值 */
   sortOrder?: null | number;
   /* 套餐层级（1=VIP；2=超级 VIP） */
-  tier?: null | number;
+  tier?: 1 | 2 | null;
 
   /* 更新时间 */
   updatedAt: string;
@@ -363,7 +363,7 @@ export type CreateMembershipPlanDto = {
   sortOrder?: null | number;
 
   /* 套餐层级（1=VIP；2=超级 VIP） */
-  tier?: null | number;
+  tier?: 1 | 2 | null;
 };
 
 /**
@@ -417,7 +417,7 @@ export type UpdateMembershipPlanDto = {
   sortOrder?: null | number;
 
   /* 套餐层级（1=VIP；2=超级 VIP） */
-  tier?: null | number;
+  tier?: 1 | 2 | null;
 };
 
 /**
@@ -578,7 +578,7 @@ export type BaseMembershipPlanDto = {
   /* 排序值 */
   sortOrder?: null | number;
   /* 套餐层级（1=VIP；2=超级 VIP） */
-  tier?: null | number;
+  tier?: 1 | 2 | null;
 
   /* 更新时间 */
   updatedAt: string;

@@ -100,7 +100,7 @@ export type AdminReportPageItemDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 评论层级（1=根评论；2=回复评论） */
-  commentLevel?: null | number;
+  commentLevel?: 1 | 2 | null;
   /* 创建时间 */
   createdAt: string;
   /* 详细说明 */
@@ -193,7 +193,7 @@ export type InteractionReportTargetSummaryDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 目标审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: null | number;
+  auditStatus?: 0 | 1 | 2 | null;
   /* 作者头像 URL */
   authorAvatarUrl?: null | string;
   /* 作者昵称 */
@@ -209,7 +209,7 @@ export type InteractionReportTargetSummaryDto = {
   /* 举报目标名称 */
   name?: null | string;
   /* 目标用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status?: null | number;
+  status?: 1 | 2 | 3 | 4 | 5 | null;
   /* 举报目标 ID */
   targetId: number;
   /* 举报目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
@@ -255,7 +255,7 @@ export type AdminReportDetailDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 评论层级（1=根评论；2=回复评论） */
-  commentLevel?: null | number;
+  commentLevel?: 1 | 2 | null;
   /* 被举报评论展示摘要；仅举报目标为评论时返回 */
   commentSummary?: InteractionReportCommentSummaryDto;
   /* 创建时间 */
@@ -325,7 +325,7 @@ export type InteractionReportCommentSummaryDto = {
   userNickname?: null | string;
 
   /* 评论用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  userStatus?: null | number;
+  userStatus?: 1 | 2 | 3 | 4 | 5 | null;
 };
 
 /**

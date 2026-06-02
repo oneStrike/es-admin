@@ -155,7 +155,7 @@ export type AppUpdateReleaseDetailDto = {
   /* 上传安装包原始文件名 */
   packageOriginalName?: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
-  packageSourceType?: null | number;
+  packageSourceType?: 1 | 2 | 3 | null;
   /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
   packageUrl?: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
@@ -163,7 +163,17 @@ export type AppUpdateReleaseDetailDto = {
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string;
   /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
-  popupBackgroundPosition?: null | string;
+  popupBackgroundPosition?:
+    | 'bottom center'
+    | 'bottom left'
+    | 'bottom right'
+    | 'center'
+    | 'left center'
+    | 'right center'
+    | 'top center'
+    | 'top left'
+    | 'top right'
+    | null;
   /* 发布时间 */
   publishedAt?: null | string;
   /* 更新说明 */
@@ -196,7 +206,7 @@ export type CreateAppUpdateReleaseDto = {
   /* 上传安装包原始文件名 */
   packageOriginalName?: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
-  packageSourceType?: null | number;
+  packageSourceType?: 1 | 2 | 3 | null;
   /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
   packageUrl?: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
@@ -204,7 +214,17 @@ export type CreateAppUpdateReleaseDto = {
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string;
   /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
-  popupBackgroundPosition?: null | string;
+  popupBackgroundPosition?:
+    | 'bottom center'
+    | 'bottom left'
+    | 'bottom right'
+    | 'center'
+    | 'left center'
+    | 'right center'
+    | 'top center'
+    | 'top left'
+    | 'top right'
+    | null;
   /* 更新说明 */
   releaseNotes?: null | string;
 
@@ -233,7 +253,7 @@ export type UpdateAppUpdateReleaseDto = {
   /* 上传安装包原始文件名 */
   packageOriginalName?: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
-  packageSourceType?: null | number;
+  packageSourceType?: 1 | 2 | 3 | null;
   /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
   packageUrl?: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
@@ -241,7 +261,17 @@ export type UpdateAppUpdateReleaseDto = {
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string;
   /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
-  popupBackgroundPosition?: null | string;
+  popupBackgroundPosition?:
+    | 'bottom center'
+    | 'bottom left'
+    | 'bottom right'
+    | 'center'
+    | 'left center'
+    | 'right center'
+    | 'top center'
+    | 'top left'
+    | 'top right'
+    | null;
   /* 更新说明 */
   releaseNotes?: null | string;
 
