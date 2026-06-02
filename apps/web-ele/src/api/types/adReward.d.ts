@@ -8,25 +8,25 @@ export type AdRewardProviderPageRequest = {
   [property: string]: any;
 
   /* 客户端应用键 */
-  clientAppKey?: null | string;
+  clientAppKey?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 运行环境（1=沙箱；2=正式） */
   environment?: number;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 广告位 key */
   placementKey?: string;
@@ -38,7 +38,7 @@ export type AdRewardProviderPageRequest = {
   provider?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type AdRewardProviderPageResponse = {

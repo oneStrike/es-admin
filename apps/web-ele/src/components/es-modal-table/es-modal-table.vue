@@ -23,12 +23,14 @@ defineOptions({
 const props = withDefaults(defineProps<EsModalTableProps>(), {
   title: '选择数据',
   width: 800,
+  displayField: 'name',
+  keyField: 'id',
 });
 
 const emit = defineEmits<EsModalTableEmits>();
 
 const sharedData = ref<EsModalTableProps>();
-const selectedRows = ref<EsModalTableRow[]>([]);
+const currentSelectedRows = ref<EsModalTableRow[]>([]);
 
 type SelectionChangeParams = {
   records?: EsModalTableRow[];
@@ -53,6 +55,10 @@ function getGridOptions(data: EsModalTableProps) {
   const options: VxeGridProps<EsModalTableRow> = {
     columns: data.columns,
     ...data.gridProps,
+    rowConfig: {
+      ...data.gridProps?.rowConfig,
+      keyField: data.keyField || props.keyField,
+    },
   };
 
   if (data.api) {
@@ -76,7 +82,7 @@ function getGridOptions(data: EsModalTableProps) {
   const firstColumn = options.columns?.[0];
   if (!firstColumn?.field) return options;
 
-  const labelField = String(firstColumn.field);
+  const labelField = data.displayField || props.displayField;
 
   if (data.selectionMode === 'multiple') {
     options.checkboxConfig = {
@@ -113,7 +119,7 @@ function handleSelectionChange(records: EsModalTableRow[]) {
     records.length > data.multipleLimit
   ) {
     gridApi.grid?.clearCheckboxRow();
-    selectedRows.value.forEach((row) =>
+    currentSelectedRows.value.forEach((row) =>
       gridApi.grid?.setCheckboxRow(row, true),
     );
     useMessage.warning(`最多只能选择 ${data.multipleLimit} 项`);
@@ -121,25 +127,27 @@ function handleSelectionChange(records: EsModalTableRow[]) {
   }
 
   // 更新选中数据
-  selectedRows.value = records;
+  currentSelectedRows.value = records;
   emit('select', records);
 }
 
 function handleRemoveItem(item: EsModalTableRow) {
   const data = sharedData.value;
   if (!data) return;
+  const keyField = data.keyField || props.keyField;
+  const itemKey = item[keyField];
 
   if (data.selectionMode === 'multiple') {
-    const newSelectedRows = selectedRows.value.filter(
-      (row) => row.id !== item.id,
+    const newSelectedRows = currentSelectedRows.value.filter(
+      (row) => row[keyField] !== itemKey,
     );
     gridApi.grid?.clearCheckboxRow();
     newSelectedRows.forEach((row) => gridApi.grid?.setCheckboxRow(row, true));
-    selectedRows.value = newSelectedRows;
+    currentSelectedRows.value = newSelectedRows;
     emit('select', newSelectedRows);
   } else if (data.selectionMode === 'single') {
     gridApi.grid?.clearRadioRow();
-    selectedRows.value = [];
+    currentSelectedRows.value = [];
     emit('select', []);
   }
 }
@@ -150,7 +158,7 @@ function handleBatchRemove() {
 
   if (data.selectionMode === 'multiple') {
     gridApi.grid?.clearCheckboxRow();
-    selectedRows.value = [];
+    currentSelectedRows.value = [];
     emit('select', []);
   }
 }
@@ -163,7 +171,7 @@ const [Modal, modalApi] = useVbenModal({
         ...props,
         ...modalApi.getData<EsModalTableProps>(),
       };
-      selectedRows.value = sharedData.value.selectedRows || [];
+      currentSelectedRows.value = sharedData.value.selectedRows || [];
       gridApi.setGridOptions(getGridOptions(sharedData.value));
       nextTick(() => {
         gridApi.reload().then(() => {
@@ -173,7 +181,7 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
   onConfirm() {
-    emit('confirm', selectedRows.value);
+    emit('confirm', currentSelectedRows.value);
     modalApi.close();
   },
 });
@@ -194,20 +202,33 @@ function restoreGridSelection() {
 
   if (data.selectionMode === 'multiple') {
     table.clearCheckboxRow?.();
-    selectedRows.value.forEach((row) => {
+    currentSelectedRows.value.forEach((row) => {
       table.setCheckboxRow?.(row, true);
     });
   } else if (data.selectionMode === 'single') {
     table.clearRadioRow?.();
-    if (selectedRows.value && selectedRows.value.length > 0) {
-      table.setRadioRow?.(selectedRows.value[0]);
+    if (currentSelectedRows.value && currentSelectedRows.value.length > 0) {
+      table.setRadioRow?.(currentSelectedRows.value[0]);
     }
   }
 }
 
 function getRowLabel(item: EsModalTableRow) {
-  const field = sharedData.value?.columns?.[0]?.field;
+  const field =
+    sharedData.value?.displayField ||
+    props.displayField ||
+    sharedData.value?.columns?.[0]?.field;
   return field ? String(item[String(field)] ?? '') : '';
+}
+
+function getRowKey(item: EsModalTableRow, index: number) {
+  const keyField = sharedData.value?.keyField || props.keyField;
+  const key = item[keyField];
+  return typeof key === 'number' ||
+    typeof key === 'string' ||
+    typeof key === 'symbol'
+    ? key
+    : index;
 }
 </script>
 
@@ -229,10 +250,12 @@ function getRowLabel(item: EsModalTableRow) {
               已选择数据
             </el-text>
             <div class="flex items-center space-x-3">
-              <el-text type="info"> {{ selectedRows.length }} 项 </el-text>
+              <el-text type="info">
+                {{ currentSelectedRows.length }} 项
+              </el-text>
               <el-button
                 v-if="
-                  selectedRows.length > 0 &&
+                  currentSelectedRows.length > 0 &&
                   sharedData.selectionMode === 'multiple'
                 "
                 type="text"
@@ -243,10 +266,10 @@ function getRowLabel(item: EsModalTableRow) {
             </div>
           </div>
           <div class="flex flex-col overflow-y-auto">
-            <template v-if="selectedRows.length > 0">
+            <template v-if="currentSelectedRows.length > 0">
               <el-tag
-                v-for="(item, index) in selectedRows"
-                :key="item.id || index"
+                v-for="(item, index) in currentSelectedRows"
+                :key="getRowKey(item, index)"
                 class="es-modal-table__selected-tag mb-3"
                 size="large"
               >

@@ -269,7 +269,7 @@ async function handleAuditSubmit(values: TopicAuditFormValues) {
   }
 
   await forumTopicUpdateAuditStatusApi({
-    auditReason: values.auditReason?.trim?.() || undefined,
+    auditReason: values.auditReason?.trim?.() || null,
     auditStatus: Number(values.auditStatus) as 0 | 1 | 2,
     id: Number(values.id),
   } satisfies ForumTopicUpdateAuditStatusRequest);

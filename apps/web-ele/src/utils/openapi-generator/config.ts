@@ -48,6 +48,8 @@ export interface NamingConfig {
 export interface OpenAPIGeneratorConfig {
   /** OpenAPI 规范 URL */
   openApiUrl: string;
+  /** 获取 OpenAPI 规范的请求方式 */
+  openApiMethod: 'GET' | 'POST';
   /** 输出目录 */
   outputDir: string;
   /** 类型定义输出目录 */
@@ -76,7 +78,13 @@ export interface OpenAPIGeneratorConfig {
  * 默认配置
  */
 export const defaultConfig: OpenAPIGeneratorConfig = {
-  openApiUrl: `https://api.apifox.com/v1/projects/${process.env.VITE_APIFOX_PROJECT_ID}/export-openapi?locale=zh-CN`,
+  openApiUrl:
+    process.env.OPENAPI_GENERATOR_URL ||
+    `https://api.apifox.com/v1/projects/${process.env.VITE_APIFOX_PROJECT_ID}/export-openapi?locale=zh-CN`,
+  openApiMethod:
+    process.env.OPENAPI_GENERATOR_METHOD?.toUpperCase() === 'GET'
+      ? 'GET'
+      : 'POST',
   proxyConfig: {
     headers: {
       Authorization: `Bearer ${process.env.VITE_APIFOX_API_KEY}`,

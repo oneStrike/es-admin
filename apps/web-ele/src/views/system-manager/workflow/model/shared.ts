@@ -2,8 +2,8 @@ import type { TagProps } from 'element-plus';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  ContentImportItemDto,
   WorkflowAttemptDto,
+  WorkflowItemDto,
   WorkflowItemPageRequest,
   WorkflowJobDto,
   WorkflowPageRequest,
@@ -15,7 +15,7 @@ import { formatUTC, formSchemaTransform } from '#/utils';
 import { formatWorkflowErrorTitle } from './error-presenter';
 
 type WorkflowStatus = WorkflowJobDto['status'];
-type WorkflowItemStatus = ContentImportItemDto['status'];
+type WorkflowItemStatus = WorkflowItemDto['status'];
 type WorkflowAttemptStatus = WorkflowAttemptDto['status'];
 type WorkflowTagType = TagProps['type'];
 type WorkflowSort = {
@@ -23,14 +23,6 @@ type WorkflowSort = {
   order: string;
 };
 type WorkflowArchiveScope = 'active' | 'all' | 'archived';
-type WorkflowProgressDetail = null | Record<string, unknown> | undefined;
-type WorkflowImageProgressRow = Pick<
-  ContentImportItemDto,
-  'imageSuccessCount' | 'imageTotal' | 'itemId' | 'providerChapterId'
-> & {
-  localChapterId?: null | number;
-  status?: null | number;
-};
 
 type StatusOption<T extends number> = {
   label: string;
@@ -88,6 +80,7 @@ export const workflowTypeOptions = [
   { label: '三方导入', value: 'content-import.third-party-import' },
   { label: '三方同步', value: 'content-import.third-party-sync' },
   { label: '压缩包导入', value: 'content-import.archive-import' },
+  { label: '批量发券', value: 'coupon.admin-grant-batch' },
 ] as const;
 
 const workflowListSchema: EsFormSchema = [
@@ -123,7 +116,8 @@ const workflowListSchema: EsFormSchema = [
 ];
 
 const workflowItemListSchema: EsFormSchema = [
-  { component: 'Input', fieldName: 'title', label: '章节' },
+  { component: 'Input', fieldName: 'title', label: '条目' },
+  { component: 'Input', fieldName: 'subjectLabel', label: '对象' },
   {
     component: 'Select',
     componentProps: {
@@ -132,12 +126,9 @@ const workflowItemListSchema: EsFormSchema = [
     fieldName: 'status',
     label: '状态',
   },
-  {
-    component: 'InputNumber',
-    fieldName: 'imageSuccessCount',
-    label: '图片成功数',
-  },
-  { component: 'InputNumber', fieldName: 'imageTotal', label: '图片总数' },
+  { component: 'InputNumber', fieldName: 'successCount', label: '成功数' },
+  { component: 'InputNumber', fieldName: 'totalCount', label: '总数' },
+  { component: 'InputNumber', fieldName: 'failureCount', label: '失败次数' },
   { component: 'Input', fieldName: 'nextRetryAt', label: '自动重试' },
   { component: 'Input', fieldName: 'lastError', label: '问题' },
 ];
@@ -190,7 +181,7 @@ export const workflowItemSearchSchema = formSchemaTransform.toSearchSchema(
       show: true,
       componentProps: {
         class: 'w-[180px]',
-        placeholder: '章节状态',
+        placeholder: '条目状态',
       },
     },
     dateRange: {
@@ -246,7 +237,7 @@ export const workflowColumns =
   });
 
 const workflowItemSelectionColumn: NonNullable<
-  VxeGridProps<ContentImportItemDto>['columns']
+  VxeGridProps<WorkflowItemDto>['columns']
 >[number] = {
   align: 'center',
   fixed: 'left',
@@ -255,26 +246,34 @@ const workflowItemSelectionColumn: NonNullable<
 };
 
 export const workflowItemColumns: NonNullable<
-  VxeGridProps<ContentImportItemDto>['columns']
+  VxeGridProps<WorkflowItemDto>['columns']
 > = [
   workflowItemSelectionColumn,
-  ...formSchemaTransform.toTableColumns<ContentImportItemDto>(
+  ...formSchemaTransform.toTableColumns<WorkflowItemDto>(
     workflowItemListSchema,
     {
       title: {
         minWidth: 220,
         showOverflow: 'tooltip',
       },
+      subjectLabel: {
+        formatter: ({ row }) => formatWorkflowItemSubject(row),
+        minWidth: 180,
+        showOverflow: 'tooltip',
+      },
       status: {
         width: 110,
       },
-      imageSuccessCount: {
-        slots: { default: 'imageProgress' },
-        title: '图片',
-        width: 120,
+      successCount: {
+        formatter: ({ row }) => formatWorkflowItemCount(row),
+        title: '数量',
+        width: 140,
       },
-      imageTotal: {
+      totalCount: {
         hide: true,
+      },
+      failureCount: {
+        width: 110,
       },
       nextRetryAt: {
         formatter: ({ row }) => formatWorkflowItemRetrySummary(row),
@@ -430,29 +429,17 @@ export function canArchiveWorkflow(
   return workflowTerminalStatuses.has(task.status) && !task.archivedAt;
 }
 
-export function isWorkflowActiveStatus(status: null | number | undefined) {
-  return workflowActiveStatuses.has(status as WorkflowStatus);
-}
-
-export function createWorkflowImageProgressActiveState(
-  job: null | Pick<WorkflowJobDto, 'cancelRequestedAt' | 'status'> | undefined,
-) {
-  return Boolean(
-    job && isWorkflowActiveStatus(job.status) && !job.cancelRequestedAt,
-  );
-}
-
 export function canExpireWorkflow(task: WorkflowJobDto) {
   return workflowRetryableStatuses.has(task.status);
 }
 
-export function canManualRetryItem(item: Pick<ContentImportItemDto, 'status'>) {
+export function canManualRetryItem(item: Pick<WorkflowItemDto, 'status'>) {
   return item.status === failedWorkflowItemStatus;
 }
 
 export function canRetryWorkflowItems(
   task: null | Pick<WorkflowJobDto, 'jobId'>,
-  items: Array<Pick<ContentImportItemDto, 'status'>>,
+  items: Array<Pick<WorkflowItemDto, 'status'>>,
 ) {
   return (
     Boolean(task?.jobId) &&
@@ -462,35 +449,31 @@ export function canRetryWorkflowItems(
 }
 
 export function getWorkflowItemCheckboxDisabledReason(
-  item: Pick<ContentImportItemDto, 'nextRetryAt' | 'status'>,
+  item: Pick<WorkflowItemDto, 'nextRetryAt' | 'status'>,
 ) {
   if (item.status === retryingWorkflowItemStatus) {
     const retryCopy = item.nextRetryAt ? '等待自动重试' : '等待恢复执行';
     return `${retryCopy}，终态失败后才可手动重试`;
   }
   if (!canManualRetryItem(item)) {
-    return '仅终态失败章节可手动重试';
+    return '仅终态失败条目可手动重试';
   }
   return '';
 }
 
-function formatRetryCount(
-  item: Pick<ContentImportItemDto, 'autoRetryCount' | 'maxAutoRetries'>,
-) {
-  const count =
-    typeof item.autoRetryCount === 'number' ? item.autoRetryCount : 0;
+function formatRetryCount(item: Pick<WorkflowItemDto, 'metadata'>) {
+  const count = readMetadataNumber(item.metadata, 'autoRetryCount') ?? 0;
   if (count <= 0) {
     return '';
   }
-  const max =
-    typeof item.maxAutoRetries === 'number' ? item.maxAutoRetries : undefined;
+  const max = readMetadataNumber(item.metadata, 'maxAutoRetries');
   return max === undefined ? `${count}` : `${count}/${max}`;
 }
 
 export function formatWorkflowItemRetrySummary(
   item: Pick<
-    ContentImportItemDto,
-    'autoRetryCount' | 'lastRetry' | 'maxAutoRetries' | 'nextRetryAt' | 'status'
+    WorkflowItemDto,
+    'lastError' | 'metadata' | 'nextRetryAt' | 'status'
   >,
 ) {
   const parts: string[] = [];
@@ -508,26 +491,23 @@ export function formatWorkflowItemRetrySummary(
     parts.push(`自动重试 ${retryCount}`);
   }
 
-  const retryTitle = formatWorkflowErrorTitle(item.lastRetry, '');
-  if (retryTitle) {
-    parts.push(retryTitle);
-  }
-
   return parts.length > 0 ? parts.join('，') : '-';
 }
 
-export function formatWorkflowItemProblem(
-  error: ContentImportItemDto['lastError'],
-) {
+export function formatWorkflowItemProblem(error: WorkflowItemDto['lastError']) {
   return formatWorkflowErrorTitle(error);
 }
 
 export function formatWorkflowJobProgress(
   job: Pick<
     WorkflowJobDto,
-    'progressCode' | 'progressContext' | 'progressDetail'
+    'progressCode' | 'progressContext' | 'progressDetail' | 'workflowType'
   >,
 ) {
+  if (job.workflowType === 'coupon.admin-grant-batch' && !job.progressCode) {
+    return formatCouponGrantProgress(job.progressContext);
+  }
+
   return formatWorkflowErrorTitle(
     {
       code: job.progressCode,
@@ -537,67 +517,35 @@ export function formatWorkflowJobProgress(
   );
 }
 
-export function formatWorkflowItemImageProgress(
-  row: WorkflowImageProgressRow,
-  options: { isActive: boolean; progressDetail: WorkflowProgressDetail },
+function readMetadataNumber(
+  metadata: null | Record<string, any> | undefined,
+  key: string,
 ) {
-  const fallback = `${row.imageSuccessCount}/${row.imageTotal}`;
-  if (!options.isActive || row.status !== 2) {
-    return fallback;
-  }
-
-  const detail = parseContentImportImageProgressDetail(options.progressDetail);
-  if (!detail || !matchesWorkflowItemImageProgress(row, detail)) {
-    return fallback;
-  }
-
-  return `${detail.imageIndex}/${detail.imageTotal}`;
+  const value = metadata?.[key];
+  return typeof value === 'number' && Number.isFinite(value)
+    ? value
+    : undefined;
 }
 
-function parseContentImportImageProgressDetail(detail: WorkflowProgressDetail) {
-  if (!detail || typeof detail !== 'object') {
-    return null;
-  }
-  if (detail.kind !== 'content-import.image') {
-    return null;
-  }
-  const imageIndex = Number(detail.imageIndex);
-  const imageTotal = Number(detail.imageTotal);
-  if (!Number.isFinite(imageIndex) || !Number.isFinite(imageTotal)) {
-    return null;
-  }
-  if (imageIndex <= 0 || imageTotal <= 0) {
-    return null;
-  }
-  return {
-    imageIndex,
-    imageTotal,
-    itemId: typeof detail.itemId === 'string' ? detail.itemId : undefined,
-    localChapterId:
-      typeof detail.localChapterId === 'number'
-        ? detail.localChapterId
-        : undefined,
-    providerChapterId:
-      typeof detail.providerChapterId === 'string'
-        ? detail.providerChapterId
-        : undefined,
-  };
+function formatWorkflowItemSubject(item: WorkflowItemDto) {
+  return item.subjectLabel || item.title || item.itemId;
 }
 
-function matchesWorkflowItemImageProgress(
-  row: WorkflowImageProgressRow,
-  detail: NonNullable<ReturnType<typeof parseContentImportImageProgressDetail>>,
-) {
-  if (detail.itemId) {
-    return row.itemId === detail.itemId;
+function formatWorkflowItemCount(item: WorkflowItemDto) {
+  const imageTotal = readMetadataNumber(item.metadata, 'imageTotal');
+  if (imageTotal !== undefined) {
+    return `${item.successCount}/${item.totalCount} 张`;
   }
-  if (detail.providerChapterId) {
-    return row.providerChapterId === detail.providerChapterId;
-  }
-  if (detail.localChapterId !== undefined) {
-    return row.localChapterId === detail.localChapterId;
-  }
-  return false;
+
+  return `${item.successCount}/${item.totalCount}`;
+}
+
+function formatCouponGrantProgress(context?: null | Record<string, any>) {
+  const completedItemCount =
+    readMetadataNumber(context, 'completedItemCount') ?? 0;
+  const selectedItemCount =
+    readMetadataNumber(context, 'selectedItemCount') ?? 0;
+  return `批量发券进度：用户 ${completedItemCount}/${selectedItemCount}`;
 }
 
 export function formatWorkflowStatus(status?: null | number) {

@@ -1,21 +1,15 @@
 import type {
-  AdminAppUserPageItemDto,
   BaseForumSectionDto,
   BaseForumSectionGroupDto,
   ForumModeratorDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import {
-  appUsersPageApi,
-  forumSectionGroupsPageApi,
-  forumSectionsPageApi,
-} from '#/api/core';
+import { forumSectionGroupsPageApi, forumSectionsPageApi } from '#/api/core';
 import { formSchemaTransform } from '#/utils';
+import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
 import { moderatorPermissionOptions } from './payload';
-
-const ACTIVE_DELETED_SCOPE = 0;
 
 export const moderatorRoleOptions = [
   { label: '超级版主', value: 1, color: 'danger' as const },
@@ -34,100 +28,6 @@ export const moderatorRoleMap = Object.fromEntries(
 
 export const sectionOptions: Array<{ label: string; value: number }> = [];
 export const groupOptions: Array<{ label: string; value: number }> = [];
-
-const moderatorUserListSchema: EsFormSchema = [
-  {
-    component: 'Input',
-    fieldName: 'nickname',
-    label: '昵称',
-    componentProps: {
-      clearable: true,
-      placeholder: '昵称',
-    },
-  },
-  {
-    component: 'Input',
-    fieldName: 'phoneNumber',
-    label: '手机号',
-    componentProps: {
-      clearable: true,
-      placeholder: '手机号',
-    },
-  },
-  {
-    component: 'Select',
-    fieldName: 'isEnabled',
-    label: '启用状态',
-    componentProps: {
-      clearable: true,
-      options: enabledOptions,
-      placeholder: '启用状态',
-    },
-  },
-  { component: 'InputNumber', fieldName: 'id', label: '用户编号' },
-  { component: 'Input', fieldName: 'levelName', label: '等级' },
-  { component: 'Select', fieldName: 'status', label: '社区状态' },
-];
-
-export const moderatorUserSearchSchema = formSchemaTransform.toSearchSchema(
-  moderatorUserListSchema,
-  {
-    nickname: { show: true },
-    phoneNumber: { show: true },
-    isEnabled: { show: true },
-  },
-);
-
-export const moderatorUserColumns =
-  formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(
-    moderatorUserListSchema,
-    {
-      id: {
-        formatter: ({ cellValue }) => cellValue ?? '-',
-        sort: -0.5,
-      },
-      isEnabled: { hide: true },
-      nickname: {
-        minWidth: 140,
-      },
-      phoneNumber: {
-        formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 140,
-      },
-      levelName: {
-        formatter: ({ cellValue }) => cellValue ?? '-',
-        minWidth: 120,
-      },
-      status: {
-        formatter: ({ cellValue }) => {
-          if (cellValue === 1) return '正常';
-          if (cellValue === 2) return '禁言';
-          if (cellValue === 3) return '永久禁言';
-          if (cellValue === 4) return '封禁';
-          if (cellValue === 5) return '永久封禁';
-          return '-';
-        },
-        minWidth: 120,
-      },
-    },
-  );
-
-const userSelectComponentProps = () => ({
-  api: async (params: Record<string, unknown>) =>
-    appUsersPageApi({
-      ...params,
-      deletedScope: ACTIVE_DELETED_SCOPE,
-    }),
-  columns: moderatorUserColumns,
-  displayField: 'nickname',
-  keyField: 'id',
-  multiple: false,
-  onlyKey: true,
-  placeholder: '请选择用户',
-  searchSchema: moderatorUserSearchSchema,
-  title: '选择用户',
-  width: 1000,
-});
 
 const roleField: EsFormSchema[number] = {
   component: 'RadioGroup',
@@ -217,7 +117,12 @@ const remarkField: EsFormSchema[number] = {
 export const createFormSchema: EsFormSchema = [
   {
     component: 'TableSelect',
-    componentProps: userSelectComponentProps,
+    componentProps: () =>
+      createAppUserTableSelectProps({
+        multiple: false,
+        placeholder: '请选择用户',
+        title: '选择用户',
+      }),
     fieldName: 'selectedUserIds',
     label: '用户',
     rules: 'arrayRequired',

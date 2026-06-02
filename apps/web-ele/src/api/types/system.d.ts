@@ -1,3 +1,7 @@
+export type SystemIp2regionStatusResponse = Ip2regionRuntimeStatusDto;
+
+export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto;
+
 export type SystemConfigResponse = BaseSystemConfigDto;
 
 /**
@@ -9,9 +13,32 @@ export type SystemUpdateRequest = UpdateSystemConfigDto;
 
 export type SystemUpdateResponse = boolean;
 
-export type SystemIp2regionStatusResponse = Ip2regionRuntimeStatusDto;
+/**
+ *  类型定义 [Ip2regionRuntimeStatusDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type Ip2regionRuntimeStatusDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 当前生效时间 */
+  activatedAt?: null | string;
+  /* 当前生效文件名 */
+  fileName?: null | string;
+  /* 当前生效文件绝对路径 */
+  filePath?: null | string;
+  /* 当前生效文件大小（字节） */
+  fileSize?: null | number;
+  /* 当前进程是否已加载可用属地库 */
+  ready: boolean;
+  /* 当前是否正在执行热切换 */
+  reloading: boolean;
+  /* 生效库来源（托管 active 目录；环境变量显式路径；仓库默认路径；无可用属地库） */
+  source: 'configured-path' | 'default-path' | 'managed-active' | 'unavailable';
 
-export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto;
+  /* ip2region 专用存储根目录 */
+  storageDir?: null | string;
+};
 
 /**
  *  类型定义 [BaseSystemConfigDto]
@@ -325,31 +352,4 @@ export type UpdateSystemConfigDto = {
 
   /* 上传配置 */
   uploadConfig?: UploadConfigDto;
-};
-
-/**
- *  类型定义 [Ip2regionRuntimeStatusDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type Ip2regionRuntimeStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 当前生效时间 */
-  activatedAt?: null | string;
-  /* 当前生效文件名 */
-  fileName?: null | string;
-  /* 当前生效文件绝对路径 */
-  filePath?: null | string;
-  /* 当前生效文件大小（字节） */
-  fileSize?: null | number;
-  /* 当前进程是否已加载可用属地库 */
-  ready: boolean;
-  /* 当前是否正在执行热切换 */
-  reloading: boolean;
-  /* 生效库来源（托管 active 目录；环境变量显式路径；仓库默认路径；无可用属地库） */
-  source: 'configured-path' | 'default-path' | 'managed-active' | 'unavailable';
-
-  /* ip2region 专用存储根目录 */
-  storageDir?: null | string;
 };

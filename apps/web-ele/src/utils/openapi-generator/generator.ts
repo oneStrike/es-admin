@@ -37,13 +37,21 @@ export class OpenAPIGenerator {
     const apiUrl = url || this.config.openApiUrl;
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (this.config.openApiMethod === 'POST') {
+        Object.assign(headers, this.config.proxyConfig.headers);
+      }
+
       const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...this.config.proxyConfig.headers,
-        },
-        body: JSON.stringify(this.config.proxyConfig.data),
+        method: this.config.openApiMethod,
+        headers,
+        body:
+          this.config.openApiMethod === 'POST'
+            ? JSON.stringify(this.config.proxyConfig.data)
+            : undefined,
       });
 
       if (!response.ok) {
@@ -685,9 +693,9 @@ export type ${typeName} = ${baseType}`;
         );
         return `${comment}
 export type ${typeName} = ${this.applySchemaNullable(
-  schema,
-  `Record<string, ${valueType}>`,
-)}`;
+          schema,
+          `Record<string, ${valueType}>`,
+        )}`;
       }
       return null;
     }
@@ -861,7 +869,7 @@ export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;
   private isNullableSchema(schema: any): boolean {
     return Boolean(
       schema?.nullable ||
-        (Array.isArray(schema?.type) && schema.type.includes('null')),
+      (Array.isArray(schema?.type) && schema.type.includes('null')),
     );
   }
 

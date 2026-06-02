@@ -11,22 +11,22 @@ export type CouponDefinitionPageRequest = {
   couponType?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type CouponDefinitionPageResponse = {
@@ -74,13 +74,13 @@ export type CouponDefinitionUpdateStatusRequest = UpdateEnabledStatusDto;
 export type CouponDefinitionUpdateStatusResponse = boolean;
 
 /**
- *  类型定义 [CouponGrantCreateRequest]
+ *  类型定义 [CouponGrantWorkflowCreateRequest]
  *  @来源 券管理
  *  @更新时间 2026-05-09 22:20:06
  */
-export type CouponGrantCreateRequest = GrantCouponDto;
+export type CouponGrantWorkflowCreateRequest = CreateCouponGrantWorkflowDto;
 
-export type CouponGrantCreateResponse = boolean;
+export type CouponGrantWorkflowCreateResponse = WorkflowJobDto;
 
 /**
  *  类型定义 [BaseCouponDefinitionDto]
@@ -193,24 +193,79 @@ export type UpdateEnabledStatusDto = {
 };
 
 /**
- *  类型定义 [GrantCouponDto]
+ *  类型定义 [CreateCouponGrantWorkflowDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type GrantCouponDto = {
+export type CreateCouponGrantWorkflowDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 券定义 ID */
   couponDefinitionId: number;
-  /* 后台发券操作幂等 ID，同一用户内相同操作 ID 重试不会重复发券 */
+  /* 后台批量发券操作幂等 ID */
   operationId: string;
-  /* 发放数量 */
+  /* 每个用户发放数量 */
   quantity?: null | number;
-  /* 来源 ID */
-  sourceId?: null | number;
-  /* 兼容旧客户端字段；后台发券服务端固定按后台发放记录 */
-  sourceType?: 1 | 2 | 3 | 4 | 5 | null;
+  /* 后台备注 */
+  remark?: null | string;
 
-  /* 用户 ID */
-  userId: number;
+  /* APP 用户 ID 列表 */
+  userIds: number[];
+};
+
+/**
+ *  类型定义 [WorkflowJobDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowJobDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 归档时间；为空表示未归档 */
+  archivedAt?: null | string;
+  /* 取消请求时间 */
+  cancelRequestedAt?: null | string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 展示名称 */
+  displayName: string;
+  /* 草稿过期时间 */
+  expiresAt?: null | string;
+  /* 失败条目数 */
+  failedItemCount: number;
+  /* 完成时间 */
+  finishedAt?: null | string;
+  /* 主键ID */
+  id: number;
+  /* 工作流任务ID */
+  jobId: string;
+  /* 操作者类型（1=后台管理员；2=系统） */
+  operatorType: 1 | 2;
+  /* 后台管理员操作者ID；系统任务为空 */
+  operatorUserId?: null | number;
+  /* 当前进度展示代码；后台根据代码和上下文生成文案 */
+  progressCode?: null | string;
+  /* 当前进度展示上下文 */
+  progressContext?: null | Record<string, any>;
+  /* 结构化进度详情快照；用于展示当前运行中的子进度 */
+  progressDetail?: null | Record<string, any>;
+  /* 进度百分比 */
+  progressPercent: number;
+  /* 选中条目数 */
+  selectedItemCount: number;
+  /* 跳过条目数 */
+  skippedItemCount: number;
+  /* 开始处理时间 */
+  startedAt?: null | string;
+  /* 任务状态（1=草稿；2=待处理；3=处理中；4=成功；5=部分失败；6=失败；7=已取消；8=已过期） */
+  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  /* 成功条目数 */
+  successItemCount: number;
+  /* 运行时非查询诊断摘要 */
+  summary?: null | Record<string, any>;
+  /* 更新时间 */
+  updatedAt: string;
+
+  /* 工作流类型 */
+  workflowType: string;
 };

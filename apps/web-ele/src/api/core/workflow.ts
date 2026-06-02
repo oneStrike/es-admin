@@ -69,7 +69,7 @@ export async function workflowNotificationListApi(
 }
 
 /**
- * 兼容分页查询工作流内容导入条目
+ * 分页查询工作流条目
  */
 export async function workflowItemPageApi(
   params?: WorkflowItemPageRequest,

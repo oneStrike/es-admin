@@ -3,14 +3,14 @@ import type { ApiHealthResponse, ApiReadyResponse } from '../types/api.d';
 import { requestClient } from '#/api/request';
 
 /**
- * HealthController_healthCheck
+ * GET /api/health
  */
 export async function apiHealthApi(): Promise<ApiHealthResponse> {
   return requestClient.get<ApiHealthResponse>('/api/health');
 }
 
 /**
- * HealthController_readinessCheck
+ * GET /api/ready
  */
 export async function apiReadyApi(): Promise<ApiReadyResponse> {
   return requestClient.get<ApiReadyResponse>('/api/ready');

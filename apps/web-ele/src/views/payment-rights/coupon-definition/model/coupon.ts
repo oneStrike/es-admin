@@ -2,13 +2,14 @@ import type {
   CouponDefinitionCreateRequest,
   CouponDefinitionPageResponse,
   CouponDefinitionUpdateRequest,
-  CouponGrantCreateRequest,
+  CouponGrantWorkflowCreateRequest,
 } from '#/api/types';
 import type { DetailCard, DetailField } from '#/components/es-record-detail';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
 import { getOptionLabel } from '#/utils/options';
+import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
 import { couponTypeOptions, enabledStatusOptions } from './options';
 
@@ -27,9 +28,7 @@ type CouponDefinitionFormFields = Pick<
 
 type CouponTypeValue = CouponDefinitionCreateRequest['couponType'];
 type CouponDiscountMode = 'amount' | 'percent';
-export type CouponGrantPayload = CouponGrantCreateRequest & {
-  operationId: string;
-};
+export type CouponGrantPayload = CouponGrantWorkflowCreateRequest;
 
 export type CouponRow = NonNullable<
   CouponDefinitionPageResponse['list']
@@ -44,11 +43,12 @@ export type CouponFormValues = Partial<CouponDefinitionFormFields> &
   };
 
 export type CouponGrantFormValues = Pick<
-  Partial<CouponGrantCreateRequest>,
-  'quantity' | 'userId'
+  Partial<CouponGrantWorkflowCreateRequest>,
+  'quantity' | 'remark' | 'userIds'
 > & {
   couponAbility?: unknown;
   couponName?: unknown;
+  grantSummary?: unknown;
 };
 
 const couponTypeValues = [1, 2, 3, 4] satisfies CouponTypeValue[];
@@ -112,6 +112,22 @@ function requirePositiveInteger(value: unknown, label: string) {
   }
 
   return numberValue;
+}
+
+function requirePositiveIntegerArray(value: unknown, label: string) {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new TypeError(`${label}不能为空`);
+  }
+
+  const dedupedValues = [
+    ...new Set(value.map((item) => requireInteger(item, label))),
+  ];
+
+  if (dedupedValues.some((item) => item < 1)) {
+    throw new RangeError(`${label}必须是正整数`);
+  }
+
+  return dedupedValues;
 }
 
 function requireCouponType(value: unknown) {
@@ -329,7 +345,8 @@ export function buildCouponGrantPayload(
     couponDefinitionId: requireInteger(couponDefinitionId, '券定义 ID'),
     operationId: requireText(operationId, '发券操作 ID'),
     quantity: requirePositiveInteger(values.quantity ?? 1, '发放数量'),
-    userId: requireInteger(values.userId, '用户 ID'),
+    remark: normalizeText(values.remark),
+    userIds: requirePositiveIntegerArray(values.userIds, 'APP 用户'),
   } satisfies CouponGrantPayload;
 }
 
@@ -555,15 +572,18 @@ export const couponGrantFormSchema: EsFormSchema = [
     label: '券能力',
   },
   {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '请输入用户 ID',
-    },
-    fieldName: 'userId',
-    label: '用户 ID',
-    rules: 'required',
+    component: 'TableSelect',
+    componentProps: () =>
+      createAppUserTableSelectProps({
+        enabledOnly: true,
+        multiple: true,
+        placeholder: '请选择发券用户',
+        title: '选择发券用户',
+      }),
+    fieldName: 'userIds',
+    formItemClass: 'col-span-2',
+    label: '发券用户',
+    rules: 'arrayRequired',
   },
   {
     component: 'InputNumber',
@@ -576,6 +596,42 @@ export const couponGrantFormSchema: EsFormSchema = [
     fieldName: 'quantity',
     label: '发放数量',
     rules: 'required',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      disabled: true,
+    },
+    dependencies: {
+      triggerFields: ['quantity', 'userIds'],
+      trigger(values, _actions, controller) {
+        const userCount = Array.isArray(values.userIds)
+          ? new Set(values.userIds).size
+          : 0;
+        const quantity = normalizeOptionalNumber(values.quantity) ?? 1;
+        void controller.setFieldValue(
+          'grantSummary',
+          userCount > 0
+            ? `${userCount} 个用户，每人 ${quantity} 张，合计 ${userCount * quantity} 张`
+            : '请选择发券用户',
+        );
+      },
+    },
+    fieldName: 'grantSummary',
+    label: '发放摘要',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      maxlength: 500,
+      placeholder: '请输入后台备注，便于后续审计和排障',
+      rows: 3,
+      showWordLimit: true,
+      type: 'textarea',
+    },
+    fieldName: 'remark',
+    formItemClass: 'col-span-2',
+    label: '备注',
   },
 ];
 

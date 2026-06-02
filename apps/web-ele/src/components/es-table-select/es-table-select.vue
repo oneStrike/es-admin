@@ -53,7 +53,7 @@ watch(
 const displayValue = computed<string[]>(() => {
   if (!selectedRows.value?.length) return [];
   return selectedRows.value.map((item) =>
-    String(item[props.displayField] ?? ''),
+    String(item[props.displayField] ?? item[props.keyField] ?? ''),
   );
 });
 
@@ -80,6 +80,8 @@ function openTableModal() {
         selectionMode: props.multiple ? 'multiple' : 'single',
         selectedRows: selectedRows.value,
         multipleLimit: props.multipleLimit,
+        displayField: props.displayField,
+        keyField: props.keyField,
       })
       .open();
   }
@@ -90,8 +92,14 @@ function confirmSelection(selectedRowsData: TableSelectRow[] = []) {
   const values = selectedRows.value.map(
     (item) => item[props.keyField] as TableSelectValue,
   );
+  const options = selectedRows.value.map((item) => ({
+    label: String(item[props.displayField] ?? item[props.keyField] ?? ''),
+    raw: item,
+    value: item[props.keyField] as TableSelectValue,
+  }));
 
   emit('update:modelValue', props.onlyKey ? values : selectedRows.value);
+  emit('selectChange', props.multiple ? options : (options[0] ?? undefined));
 }
 
 function handleRemoveTag(_value: string, idx: number) {

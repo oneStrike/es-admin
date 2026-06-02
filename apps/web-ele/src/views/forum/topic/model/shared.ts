@@ -1,5 +1,4 @@
 import type {
-  AdminAppUserPageItemDto,
   AdminForumTopicPageItemDto,
   AdminForumTopicSectionSummaryDto,
   AdminForumTopicUserSummaryDto,
@@ -9,10 +8,9 @@ import type {
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { appUsersPageApi, forumSectionsPageApi } from '#/api/core';
+import { forumSectionsPageApi } from '#/api/core';
 import { formSchemaTransform } from '#/utils';
-
-const ACTIVE_DELETED_SCOPE = 0;
+import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
 export const auditStatusOptions = [
   { label: '待审核', value: 0, color: 'warning' as const },
@@ -204,70 +202,16 @@ function createTopicField(
   };
 }
 
-const userListSchema: EsFormSchema = [
-  { component: 'InputNumber', fieldName: 'id', label: '用户ID' },
-  { component: 'Input', fieldName: 'nickname', label: '昵称' },
-  { component: 'Input', fieldName: 'phoneNumber', label: '手机号' },
-  { component: 'Input', fieldName: 'levelName', label: '等级' },
-];
-
-const userSearchSchema = formSchemaTransform.toSearchSchema(userListSchema, {
-  nickname: {
-    componentProps: {
-      clearable: true,
-      placeholder: '昵称',
-    },
-  },
-  phoneNumber: {
-    componentProps: {
-      clearable: true,
-      placeholder: '手机号',
-    },
-  },
-});
-
-const userColumns = formSchemaTransform.toTableColumns<AdminAppUserPageItemDto>(
-  userListSchema,
-  {
-    id: {
-      formatter: ({ cellValue }) => cellValue ?? '-',
-    },
-    nickname: {
-      minWidth: 140,
-    },
-    phoneNumber: {
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 140,
-    },
-    levelName: {
-      formatter: ({ cellValue }) => cellValue ?? '-',
-      minWidth: 120,
-    },
-  },
-);
-
-const userSelectComponentProps = () => ({
-  api: async (params: Record<string, unknown>) =>
-    appUsersPageApi({
-      ...params,
-      deletedScope: ACTIVE_DELETED_SCOPE,
-      isEnabled: true,
-    }),
-  columns: userColumns,
-  displayField: 'nickname',
-  keyField: 'id',
-  multiple: false,
-  onlyKey: true,
-  placeholder: '请选择发帖用户',
-  searchSchema: userSearchSchema,
-  title: '选择用户',
-  width: 1000,
-});
-
 export const createFormSchema: EsFormSchema = [
   {
     component: 'TableSelect',
-    componentProps: userSelectComponentProps,
+    componentProps: () =>
+      createAppUserTableSelectProps({
+        enabledOnly: true,
+        multiple: false,
+        placeholder: '请选择发帖用户',
+        title: '选择发帖用户',
+      }),
     fieldName: 'selectedUserIds',
     label: '发帖用户',
     rules: 'arrayRequired',

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  ContentImportItemDto,
+  WorkflowItemDto,
   WorkflowJobDetailDto,
   WorkflowJobDto,
 } from '#/api/types/workflow';
@@ -32,9 +32,7 @@ import {
   canCancelWorkflow,
   canExpireWorkflow,
   canRetryWorkflowItems,
-  createWorkflowImageProgressActiveState,
   formatWorkflowAttemptStatus,
-  formatWorkflowItemImageProgress,
   formatWorkflowItemRetrySummary,
   formatWorkflowJobProgress,
   formatWorkflowJobStatus,
@@ -57,7 +55,7 @@ const detailLoading = ref(false);
 const recordJob = ref<null | WorkflowJobDetailDto>(null);
 const recordLoading = ref(false);
 const retrying = ref(false);
-const selectedItems = ref<ContentImportItemDto[]>([]);
+const selectedItems = ref<WorkflowItemDto[]>([]);
 let activeDetailJobId = '';
 let detailSessionId = 0;
 
@@ -85,7 +83,7 @@ const gridOptions: VxeGridProps<WorkflowJobDto> = {
   },
 };
 
-const itemGridOptions: VxeGridProps<ContentImportItemDto> = {
+const itemGridOptions: VxeGridProps<WorkflowItemDto> = {
   checkboxConfig: {
     checkMethod: ({ row }) => !getWorkflowItemCheckboxDisabledReason(row),
     highlight: true,
@@ -308,9 +306,7 @@ async function retrySelectedItems() {
   }
 }
 
-function handleItemSelectionChange(params: {
-  records: ContentImportItemDto[];
-}) {
+function handleItemSelectionChange(params: { records: WorkflowItemDto[] }) {
   selectedItems.value =
     itemGridApi.grid?.getCheckboxRecords?.() ?? params.records;
 }
@@ -479,22 +475,12 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
                     type="primary"
                     @click="retrySelectedItems"
                   >
-                    重试所选失败章节
+                    重试所选失败条目
                   </el-button>
                   <el-text size="small" type="info">
-                    已选 {{ selectedItems.length }} 个失败章节
+                    已选 {{ selectedItems.length }} 个失败条目
                   </el-text>
                 </div>
-              </template>
-
-              <template #imageProgress="{ row }">
-                {{
-                  formatWorkflowItemImageProgress(row, {
-                    isActive:
-                      createWorkflowImageProgressActiveState(currentJob),
-                    progressDetail: currentJob?.progressDetail,
-                  })
-                }}
               </template>
 
               <template #nextRetryAt="{ row }">

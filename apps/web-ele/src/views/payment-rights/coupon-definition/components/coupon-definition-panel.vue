@@ -20,7 +20,7 @@ import {
   couponDefinitionPageApi,
   couponDefinitionUpdateApi,
   couponDefinitionUpdateStatusApi,
-  couponGrantCreateApi,
+  couponGrantWorkflowCreateApi,
 } from '#/api/core';
 import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
@@ -32,6 +32,7 @@ import {
   normalizeSearchNumber,
   splitSearchDateRange,
 } from '#/utils/search-normalize';
+import { buildWorkflowManagerRoute } from '#/views/system-manager/workflow/model/shared';
 
 import {
   buildCouponCreatePayload,
@@ -40,8 +41,8 @@ import {
   couponColumns,
   couponFormSchema,
   couponGrantFormSchema,
-  createCouponGrantOperationId,
   couponSearchSchema,
+  createCouponGrantOperationId,
   formatCouponAbility,
   getCouponDetailCards,
   mapCouponToFormRecord,
@@ -56,6 +57,7 @@ type CouponSearchValues = {
 const currentCoupon = ref({} as CouponRow);
 const currentGrantCoupon = ref<CouponRow>();
 const currentGrantOperationId = ref('');
+const router = useRouter();
 
 const couponGridOptions: VxeGridProps<CouponRow> = {
   columns: couponColumns,
@@ -139,6 +141,7 @@ function openGrantModal(row: CouponRow) {
       cols: 2,
       record: {
         couponAbility: formatCouponAbility(row),
+        grantSummary: '请选择发券用户',
         couponName: row.name,
         quantity: 1,
       },
@@ -195,10 +198,11 @@ async function handleGrant(values: CouponGrantFormValues) {
     throw markHandledFormError(error);
   }
 
-  await couponGrantCreateApi(payload);
-  useMessage.success('发券成功');
+  const task = await couponGrantWorkflowCreateApi(payload);
+  useMessage.success('批量发券任务已创建');
   grantFormApi.close();
   await couponGridApi.reload();
+  void router.push(buildWorkflowManagerRoute(task.jobId));
 }
 
 async function toggleEnableStatus(row: CouponRow) {

@@ -23,6 +23,8 @@ export interface EsModalTableProps {
   selectionMode?: 'multiple' | 'single';
   multipleLimit?: number;
   selectedRows?: EsModalTableRow[];
+  displayField?: string;
+  keyField?: string;
 }
 
 export interface EsModalTableEmits {

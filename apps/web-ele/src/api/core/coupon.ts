@@ -7,8 +7,8 @@ import type {
   CouponDefinitionUpdateResponse,
   CouponDefinitionUpdateStatusRequest,
   CouponDefinitionUpdateStatusResponse,
-  CouponGrantCreateRequest,
-  CouponGrantCreateResponse,
+  CouponGrantWorkflowCreateRequest,
+  CouponGrantWorkflowCreateResponse,
 } from '../types/coupon.d';
 
 import { requestClient } from '#/api/request';
@@ -62,13 +62,13 @@ export async function couponDefinitionUpdateStatusApi(
 }
 
 /**
- * 发放券
+ * 创建批量发券任务
  */
-export async function couponGrantCreateApi(
-  params: CouponGrantCreateRequest,
-): Promise<CouponGrantCreateResponse> {
-  return requestClient.post<CouponGrantCreateResponse>(
-    '/api/admin/coupon/grant/create',
+export async function couponGrantWorkflowCreateApi(
+  params: CouponGrantWorkflowCreateRequest,
+): Promise<CouponGrantWorkflowCreateResponse> {
+  return requestClient.post<CouponGrantWorkflowCreateResponse>(
+    '/api/admin/coupon/grant-workflow/create',
     params,
   );
 }

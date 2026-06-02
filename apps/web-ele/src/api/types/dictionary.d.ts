@@ -11,7 +11,7 @@ export type DictionaryPageRequest = {
   code?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 字典状态（true=启用；false=禁用） */
   isEnabled?: boolean;
@@ -20,16 +20,16 @@ export type DictionaryPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type DictionaryPageResponse = {
@@ -122,13 +122,13 @@ export type DictionaryItemPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 };
 
 export type DictionaryItemPageResponse = {

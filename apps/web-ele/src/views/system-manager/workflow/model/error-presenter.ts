@@ -32,6 +32,9 @@ export const knownWorkflowErrorCodes = [
   'CONTENT_IMPORT_PROGRESS_UPDATED',
   'CONTENT_IMPORT_RATE_LIMITED',
   'CONTENT_IMPORT_RETRY_EXHAUSTED',
+  'COUPON_ADMIN_GRANT_ITEM_FAILED',
+  'COUPON_ADMIN_GRANT_ITEM_SUCCEEDED',
+  'COUPON_ADMIN_GRANT_PROGRESS_UPDATED',
   'DATABASE_WRITE_FAILED',
   'THIRD_PARTY_CHAPTER_IMPORT_FAILED',
   'THIRD_PARTY_IMAGE_IMPORT_FAILED',
@@ -98,6 +101,12 @@ function contentImportProgressTitle(context: Record<string, unknown>) {
     )}/${imageTotal}，章节 ${completedItemCount}/${selectedItemCount}`;
   }
   return `${action}${stateText}：章节 ${completedItemCount}/${selectedItemCount}`;
+}
+
+function couponGrantProgressTitle(context: Record<string, unknown>) {
+  const completedItemCount = numberText(context.completedItemCount, '?');
+  const selectedItemCount = numberText(context.selectedItemCount, '?');
+  return `批量发券进度：用户 ${completedItemCount}/${selectedItemCount}`;
 }
 
 export const workflowErrorPresenters: Record<
@@ -173,6 +182,18 @@ export const workflowErrorPresenters: Record<
   CONTENT_IMPORT_RETRY_EXHAUSTED: ({ context }) => ({
     title: `${text(context.chapterTitle, '章节')} 自动重试已用完`,
     tone: 'danger',
+  }),
+  COUPON_ADMIN_GRANT_ITEM_FAILED: ({ context }) => ({
+    title: `${text(context.userLabel, text(context.userId, '用户'))} 发券失败`,
+    tone: 'danger',
+  }),
+  COUPON_ADMIN_GRANT_ITEM_SUCCEEDED: ({ context }) => ({
+    title: `${text(context.userLabel, text(context.userId, '用户'))} 发券完成`,
+    tone: 'info',
+  }),
+  COUPON_ADMIN_GRANT_PROGRESS_UPDATED: ({ context }) => ({
+    title: couponGrantProgressTitle(context),
+    tone: 'info',
   }),
   DATABASE_WRITE_FAILED: () => ({
     title: '数据写入失败',
