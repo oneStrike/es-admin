@@ -11,25 +11,25 @@ export type PaymentProviderPageRequest = {
   channel?: number;
 
   /* 客户端应用键，同一部署内区分多应用 */
-  clientAppKey?: string;
+  clientAppKey?: null | string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 运行环境（1=沙箱；2=正式） */
   environment?: number;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 支付场景（1=App；2=H5；3=小程序） */
   paymentScene?: number;
@@ -38,7 +38,7 @@ export type PaymentProviderPageRequest = {
   platform?: number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type PaymentProviderPageResponse = {
@@ -95,22 +95,22 @@ export type PaymentOrderPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 订单业务类型（1=虚拟币充值；2=VIP 订阅） */
   orderType?: number;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 订单状态（1=待支付；2=已支付；3=已关闭；4=退款中；5=已退款） */
   status?: number;

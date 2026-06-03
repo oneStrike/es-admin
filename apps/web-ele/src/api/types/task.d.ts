@@ -46,22 +46,22 @@ export type TaskPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
   sceneType?: number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 任务状态（0=草稿；1=生效中；2=已暂停；3=已归档） */
   status?: number;
@@ -111,22 +111,22 @@ export type TaskInstancePageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
   sceneType?: number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
   status?: number;
@@ -165,28 +165,28 @@ export type TaskInstanceReconciliationPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 任务实例 ID */
-  instanceId?: number;
+  instanceId?: null | number;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 奖励结算事实 ID */
-  rewardSettlementId?: number;
+  rewardSettlementId?: null | number;
 
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus?: number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 任务头 ID */
   taskId?: number;

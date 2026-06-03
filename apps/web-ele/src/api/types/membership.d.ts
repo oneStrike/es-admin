@@ -8,28 +8,28 @@ export type MembershipPlanPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 套餐名称 */
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 套餐层级（1=VIP；2=超级 VIP） */
-  tier?: number;
+  tier?: null | number;
 };
 
 export type MembershipPlanPageResponse = {
@@ -85,29 +85,29 @@ export type MembershipBenefitPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  /* 权益类型（1=纯展示；2=券发放；3=道具/装扮发放；4=订阅权益；5=无广告策略；6=内容优先看策略） */
+  /* 权益类型（1=纯展示；2=券发放） */
   benefitType?: number;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 权益名称 */
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type MembershipBenefitPageResponse = {
@@ -166,25 +166,25 @@ export type MembershipPageConfigPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 页面业务键，由服务端生成 */
   pageKey?: string;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 页面标题 */
   title?: string;
@@ -285,12 +285,12 @@ export type MembershipPlanBenefitItemDto = {
   benefit: BaseMembershipBenefitDefinitionDto;
   /* 会员权益定义 ID */
   benefitId: number;
-  /* 权益配置值，按权益类型使用闭集结构：券发放 couponDefinitionId/grantCount，可选 validDays 覆盖赠券有效期；道具 assetType/assetKey/grantCount/validDays，无广告 adScope/durationPolicy，优先看 contentScope/advanceHours */
+  /* 权益配置值：纯展示权益为空或展示元数据；券发放权益必须配置 couponDefinitionId/grantCount，可选 validDays 覆盖赠券有效期 */
   benefitValue?: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
-  /* 发放策略（1=仅展示；2=开通时自动发放；3=每日可领取；4=订阅期内持续生效；5=手动领取一次） */
-  grantPolicy: 1 | 2 | 3 | 4 | 5;
+  /* 发放策略（1=仅展示；2=开通时自动发放） */
+  grantPolicy: 1 | 2;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -312,8 +312,8 @@ export type MembershipPlanBenefitItemDto = {
 export type BaseMembershipBenefitDefinitionDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 权益类型（1=纯展示；2=券发放；3=道具/装扮发放；4=订阅权益；5=无广告策略；6=内容优先看策略） */
-  benefitType: 1 | 2 | 3 | 4 | 5 | 6;
+  /* 权益类型（1=纯展示；2=券发放） */
+  benefitType: 1 | 2;
   /* 权益业务键，由服务端生成 */
   code: string;
   /* 创建时间 */
@@ -376,10 +376,10 @@ export type MembershipPlanBenefitInputDto = {
   [property: string]: any;
   /* 会员权益定义 ID */
   benefitId: number;
-  /* 权益配置值，按权益类型使用闭集结构：券发放 couponDefinitionId/grantCount，可选 validDays 覆盖赠券有效期；道具 assetType/assetKey/grantCount/validDays，无广告 adScope/durationPolicy，优先看 contentScope/advanceHours */
+  /* 权益配置值：纯展示权益为空或展示元数据；券发放权益必须配置 couponDefinitionId/grantCount，可选 validDays 覆盖赠券有效期 */
   benefitValue?: null | Record<string, any>;
-  /* 发放策略（1=仅展示；2=开通时自动发放；3=每日可领取；4=订阅期内持续生效；5=手动领取一次） */
-  grantPolicy: 1 | 2 | 3 | 4 | 5;
+  /* 发放策略（1=仅展示；2=开通时自动发放） */
+  grantPolicy: 1 | 2;
   /* 是否启用 */
   isEnabled?: boolean | null;
 
@@ -443,8 +443,8 @@ export type UpdateEnabledStatusDto = {
 export type CreateMembershipBenefitDefinitionDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 权益类型（1=纯展示；2=券发放；3=道具/装扮发放；4=订阅权益；5=无广告策略；6=内容优先看策略） */
-  benefitType: 1 | 2 | 3 | 4 | 5 | 6;
+  /* 权益类型（1=纯展示；2=券发放） */
+  benefitType: 1 | 2;
   /* 权益说明 */
   description?: null | string;
   /* 权益图标资源键或 URL */
@@ -466,8 +466,8 @@ export type CreateMembershipBenefitDefinitionDto = {
 export type UpdateMembershipBenefitDefinitionDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 权益类型（1=纯展示；2=券发放；3=道具/装扮发放；4=订阅权益；5=无广告策略；6=内容优先看策略） */
-  benefitType?: 1 | 2 | 3 | 4 | 5 | 6;
+  /* 权益类型（1=纯展示；2=券发放） */
+  benefitType?: 1 | 2;
   /* 权益说明 */
   description?: null | string;
   /* 权益图标资源键或 URL */

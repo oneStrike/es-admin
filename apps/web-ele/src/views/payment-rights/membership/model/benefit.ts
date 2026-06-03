@@ -94,13 +94,7 @@ function formatOptionText(
 
 function buildVipBenefitBase(values: VipBenefitFormValues) {
   return {
-    benefitType: requireInteger(values.benefitType, '权益类型') as
-      | 1
-      | 2
-      | 3
-      | 4
-      | 5
-      | 6,
+    benefitType: requireInteger(values.benefitType, '权益类型') as 1 | 2,
     description: normalizeNullableText(values.description),
     icon: normalizeNullableText(values.icon),
     isEnabled: normalizeBoolean(values.isEnabled),

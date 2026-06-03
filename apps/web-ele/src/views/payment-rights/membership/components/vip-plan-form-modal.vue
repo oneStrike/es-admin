@@ -37,10 +37,8 @@ const message = useMessage;
 
 const displayBenefitType = 1;
 const couponGrantBenefitType = 2;
-const itemGrantBenefitType = 3;
-const subscriptionEntitlementBenefitType = 4;
-const noAdPolicyBenefitType = 5;
-const earlyAccessPolicyBenefitType = 6;
+const displayOnlyGrantPolicy = 1;
+const autoGrantOnSubscribePolicy = 2;
 
 const sharedData = ref<{ record?: VipPlanFormValues }>({});
 const showForm = ref(false);
@@ -201,7 +199,11 @@ function syncBenefitRows() {
 
     if (benefitType === displayBenefitType) {
       row.benefitValue = null;
-      row.grantPolicy = 1;
+      row.grantPolicy = displayOnlyGrantPolicy;
+    }
+
+    if (benefitType === couponGrantBenefitType) {
+      row.grantPolicy = autoGrantOnSubscribePolicy;
     }
 
     return row;
@@ -214,15 +216,12 @@ function getBenefitById(id: number) {
 
 function createDefaultGrantPolicy(benefitType: number) {
   if (benefitType === displayBenefitType) {
-    return 1;
+    return displayOnlyGrantPolicy;
   }
-  if (
-    benefitType === couponGrantBenefitType ||
-    benefitType === itemGrantBenefitType
-  ) {
-    return 2;
+  if (benefitType === couponGrantBenefitType) {
+    return autoGrantOnSubscribePolicy;
   }
-  return 4;
+  return displayOnlyGrantPolicy;
 }
 
 function createDefaultBenefitValue(benefitType: number): BenefitValue | null {
@@ -231,18 +230,6 @@ function createDefaultBenefitValue(benefitType: number): BenefitValue | null {
   }
   if (benefitType === couponGrantBenefitType) {
     return { couponDefinitionId: undefined, grantCount: 1 };
-  }
-  if (benefitType === itemGrantBenefitType) {
-    return { assetKey: '', assetType: 1, grantCount: 1, validDays: 0 };
-  }
-  if (benefitType === subscriptionEntitlementBenefitType) {
-    return { entitlementKey: '' };
-  }
-  if (benefitType === noAdPolicyBenefitType) {
-    return { adScope: 'reading', durationPolicy: 'subscription_period' };
-  }
-  if (benefitType === earlyAccessPolicyBenefitType) {
-    return { advanceHours: 24, contentScope: 'chapter' };
   }
   return {};
 }
@@ -280,37 +267,9 @@ function isCouponBenefit(row: VipPlanBenefitConfigRow) {
   return getBenefitType(row) === couponGrantBenefitType;
 }
 
-function isItemBenefit(row: VipPlanBenefitConfigRow) {
-  return getBenefitType(row) === itemGrantBenefitType;
-}
-
-function isSubscriptionBenefit(row: VipPlanBenefitConfigRow) {
-  return getBenefitType(row) === subscriptionEntitlementBenefitType;
-}
-
-function isNoAdBenefit(row: VipPlanBenefitConfigRow) {
-  return getBenefitType(row) === noAdPolicyBenefitType;
-}
-
-function isEarlyAccessBenefit(row: VipPlanBenefitConfigRow) {
-  return getBenefitType(row) === earlyAccessPolicyBenefitType;
-}
-
 function assertPositiveInteger(value: unknown, label: string) {
   if (!Number.isInteger(value) || Number(value) <= 0) {
     throw new Error(`${label}必须是正整数`);
-  }
-}
-
-function assertNonNegativeInteger(value: unknown, label: string) {
-  if (!Number.isInteger(value) || Number(value) < 0) {
-    throw new Error(`${label}必须是非负整数`);
-  }
-}
-
-function assertText(value: unknown, label: string) {
-  if (typeof value !== 'string' || value.trim().length === 0) {
-    throw new Error(`${label}不能为空`);
   }
 }
 
@@ -320,7 +279,7 @@ function validateBenefitRows() {
     const value = row.benefitValue as BenefitValue | null;
 
     if (isDisplayBenefit(row)) {
-      row.grantPolicy = 1;
+      row.grantPolicy = displayOnlyGrantPolicy;
       row.benefitValue = null;
       continue;
     }
@@ -329,22 +288,13 @@ function validateBenefitRows() {
       throw new Error(`${benefitName}必须完善权益配置`);
     }
     if (isCouponBenefit(row)) {
+      row.grantPolicy = autoGrantOnSubscribePolicy;
       assertPositiveInteger(value.couponDefinitionId, `${benefitName}的优惠券`);
       assertPositiveInteger(value.grantCount, `${benefitName}的发放数量`);
-    } else if (isItemBenefit(row)) {
-      assertPositiveInteger(value.assetType, `${benefitName}的资产类型`);
-      assertText(value.assetKey, `${benefitName}的资产键`);
-      assertPositiveInteger(value.grantCount, `${benefitName}的发放数量`);
-      assertNonNegativeInteger(value.validDays, `${benefitName}的有效天数`);
-    } else if (isSubscriptionBenefit(row)) {
-      assertText(value.entitlementKey, `${benefitName}的订阅权益键`);
-    } else if (isNoAdBenefit(row)) {
-      assertText(value.adScope, `${benefitName}的广告范围`);
-      assertText(value.durationPolicy, `${benefitName}的生效周期策略`);
-    } else if (isEarlyAccessBenefit(row)) {
-      assertText(value.contentScope, `${benefitName}的内容范围`);
-      assertPositiveInteger(value.advanceHours, `${benefitName}的提前小时数`);
+      continue;
     }
+
+    throw new Error(`${benefitName}不支持配置`);
   }
 }
 
@@ -448,7 +398,7 @@ async function handleConfirm() {
             <el-select-v2
               v-model="row.grantPolicy"
               class="w-full"
-              :disabled="isDisplayBenefit(row)"
+              disabled
               :options="grantPolicyOptions"
               placeholder="发放策略"
             />
@@ -473,62 +423,6 @@ async function handleConfirm() {
                 class="!w-full"
                 :min="1"
                 placeholder="数量"
-              />
-            </template>
-            <template v-else-if="isItemBenefit(row)">
-              <el-input-number
-                v-model="ensureBenefitValue(row).assetType"
-                class="!w-full"
-                :min="1"
-                placeholder="资产类型"
-              />
-              <el-input
-                v-model="ensureBenefitValue(row).assetKey"
-                clearable
-                placeholder="资产键"
-              />
-              <el-input-number
-                v-model="ensureBenefitValue(row).grantCount"
-                class="!w-full"
-                :min="1"
-                placeholder="数量"
-              />
-              <el-input-number
-                v-model="ensureBenefitValue(row).validDays"
-                class="!w-full"
-                :min="0"
-                placeholder="有效天数"
-              />
-            </template>
-            <el-input
-              v-else-if="isSubscriptionBenefit(row)"
-              v-model="ensureBenefitValue(row).entitlementKey"
-              clearable
-              placeholder="订阅权益键"
-            />
-            <template v-else-if="isNoAdBenefit(row)">
-              <el-input
-                v-model="ensureBenefitValue(row).adScope"
-                clearable
-                placeholder="广告范围"
-              />
-              <el-input
-                v-model="ensureBenefitValue(row).durationPolicy"
-                clearable
-                placeholder="生效周期策略"
-              />
-            </template>
-            <template v-else-if="isEarlyAccessBenefit(row)">
-              <el-input
-                v-model="ensureBenefitValue(row).contentScope"
-                clearable
-                placeholder="内容范围"
-              />
-              <el-input-number
-                v-model="ensureBenefitValue(row).advanceHours"
-                class="!w-full"
-                :min="1"
-                placeholder="提前小时数"
               />
             </template>
           </div>

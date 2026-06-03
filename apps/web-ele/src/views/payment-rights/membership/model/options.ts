@@ -11,18 +11,11 @@ export const enabledStatusOptions = [
 export const benefitTypeOptions = [
   { label: '纯展示', value: 1, color: 'info' },
   { label: '券发放', value: 2, color: 'primary' },
-  { label: '道具/装扮发放', value: 3, color: 'success' },
-  { label: '订阅权益', value: 4, color: 'warning' },
-  { label: '无广告策略', value: 5, color: 'danger' },
-  { label: '内容优先看策略', value: 6, color: 'primary' },
 ];
 
 export const grantPolicyOptions = [
   { label: '仅展示', value: 1, color: 'info' },
   { label: '开通时自动发放', value: 2, color: 'success' },
-  { label: '每日可领取', value: 3, color: 'warning' },
-  { label: '订阅期内持续生效', value: 4, color: 'primary' },
-  { label: '手动领取一次', value: 5, color: 'danger' },
 ];
 
 export const paymentChannelOptions = [

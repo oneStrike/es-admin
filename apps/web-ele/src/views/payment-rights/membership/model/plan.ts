@@ -47,7 +47,9 @@ export type VipPlanFormValues = {
 };
 
 const displayBenefitType = 1;
+const couponGrantBenefitType = 2;
 const displayOnlyGrantPolicy = 1;
+const autoGrantOnSubscribePolicy = 2;
 
 function normalizeText(value: unknown) {
   if (typeof value !== 'string') {
@@ -261,31 +263,32 @@ function buildPlanBenefitInputs(values: VipPlanFormValues) {
 
     const benefit = config.benefit;
     const benefitValue = normalizeBenefitValue(config.benefitValue);
+    const benefitType = benefit?.benefitType ?? displayBenefitType;
+    const benefitLabel = benefit?.name || `权益 ${benefitId}`;
 
+    if (benefitType === couponGrantBenefitType && !benefitValue) {
+      throw new Error(`${benefitLabel} 必须完善权益配置`);
+    }
     if (
-      benefit?.benefitType &&
-      benefit.benefitType !== displayBenefitType &&
-      !benefitValue
+      benefitType !== displayBenefitType &&
+      benefitType !== couponGrantBenefitType
     ) {
-      throw new Error(
-        `${benefit.name || `权益 ${benefitId}`} 必须完善权益配置`,
-      );
+      throw new Error(`${benefitLabel} 不支持配置`);
     }
 
     const normalizedBenefitValue =
-      benefit?.benefitType === 2 && benefitValue
+      benefitType === couponGrantBenefitType && benefitValue
         ? normalizeCouponBenefitValue(benefitValue)
-        : benefitValue;
+        : null;
+    const grantPolicy =
+      benefitType === couponGrantBenefitType
+        ? autoGrantOnSubscribePolicy
+        : displayOnlyGrantPolicy;
 
     return {
       benefitId,
       benefitValue: normalizedBenefitValue,
-      grantPolicy: requireInteger(config.grantPolicy, '发放策略') as
-        | 1
-        | 2
-        | 3
-        | 4
-        | 5,
+      grantPolicy,
       isEnabled: normalizeBoolean(config.isEnabled) ?? true,
       sortOrder: normalizeNullableNumber(config.sortOrder) ?? index,
     } satisfies MembershipPlanBenefitInputDto;

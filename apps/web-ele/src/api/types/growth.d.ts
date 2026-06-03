@@ -1,132 +1,4 @@
 /**
- *  类型定义 [GrowthRuleEventsPageRequest]
- *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRuleEventsPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 结束时间 */
-  endDate?: string;
-
-  /* 是否只看已配置任一基础奖励资产的事件 */
-  hasBaseReward?: boolean;
-
-  /* 是否只看存在关联任务的事件 */
-  hasTask?: boolean;
-
-  /* 是否只看已正式接入 producer 的事件 */
-  isImplemented?: boolean;
-
-  /* 排序字段，json格式 */
-  orderBy?: string;
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 单页大小，最大500，默认15 */
-  pageSize?: number;
-
-  /* 开始时间 */
-  startDate?: string;
-
-  /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  type?: number;
-};
-
-export type GrowthRuleEventsPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 列表数据 */
-  list?: GrowthRuleEventPageItemDto[];
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 每页条数 */
-  pageSize?: number;
-
-  /* 总条数 */
-  total?: number;
-};
-
-/**
- *  类型定义 [GrowthRewardSettlementPageRequest]
- *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRewardSettlementPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 结束时间 */
-  endDate?: string;
-
-  /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  eventCode?: number;
-
-  /* 排序字段，json格式 */
-  orderBy?: string;
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 单页大小，最大500，默认15 */
-  pageSize?: number;
-
-  /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
-  settlementStatus?: number;
-
-  /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */
-  settlementType?: number;
-
-  /* 开始时间 */
-  startDate?: string;
-
-  /* 用户id */
-  userId?: number;
-};
-
-export type GrowthRewardSettlementPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 列表数据 */
-  list?: GrowthRewardSettlementPageItemDto[];
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 每页条数 */
-  pageSize?: number;
-
-  /* 总条数 */
-  total?: number;
-};
-
-/**
- *  类型定义 [GrowthRewardSettlementRetryRequest]
- *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRewardSettlementRetryRequest = IdDto;
-
-export type GrowthRewardSettlementRetryResponse = boolean;
-
-/**
- *  类型定义 [GrowthRewardSettlementRetryPendingBatchRequest]
- *  @来源 用户成长/规则聚合视图
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRewardSettlementRetryPendingBatchRequest =
-  RetryGrowthRewardSettlementBatchDto;
-
-export type GrowthRewardSettlementRetryPendingBatchResponse =
-  GrowthRewardSettlementRetryBatchResultDto;
-
-/**
  *  类型定义 [GrowthExperienceRecordPageRequest]
  *  @来源 用户成长/经验管理
  *  @更新时间 2026-05-09 22:20:06
@@ -136,22 +8,22 @@ export type GrowthExperienceRecordPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 关联的规则ID */
-  ruleId?: number;
+  ruleId?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 用户 ID */
   userId: number;
@@ -214,10 +86,10 @@ export type GrowthLevelRulesPageRequest = {
   [property: string]: any;
 
   /* 业务域标识 */
-  business?: string;
+  business?: null | string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
   isEnabled?: boolean;
@@ -226,16 +98,16 @@ export type GrowthLevelRulesPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type GrowthLevelRulesPageResponse = {
@@ -335,10 +207,10 @@ export type GrowthBadgesPageRequest = {
   [property: string]: any;
 
   /* 业务域标识 */
-  business?: string;
+  business?: null | string;
 
   /* 事件键 */
-  eventKey?: string;
+  eventKey?: null | string;
 
   /* 是否启用 */
   isEnabled?: boolean;
@@ -347,13 +219,13 @@ export type GrowthBadgesPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
   type?: number;
@@ -458,13 +330,13 @@ export type GrowthBadgesUserPageRequest = {
   badgeId: number;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 };
 
 export type GrowthBadgesUserPageResponse = {
@@ -487,6 +359,134 @@ export type GrowthBadgesUserPageResponse = {
 export type GrowthBadgesStatsResponse = UserBadgeStatisticsDto;
 
 /**
+ *  类型定义 [GrowthRuleEventsPageRequest]
+ *  @来源 用户成长/规则聚合视图
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRuleEventsPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 是否只看已配置任一基础奖励资产的事件 */
+  hasBaseReward?: boolean | null;
+
+  /* 是否只看存在关联任务的事件 */
+  hasTask?: boolean | null;
+
+  /* 是否只看已正式接入 producer 的事件 */
+  isImplemented?: boolean | null;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+
+  /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
+  type?: null | number;
+};
+
+export type GrowthRuleEventsPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: GrowthRuleEventPageItemDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
+ *  类型定义 [GrowthRewardSettlementPageRequest]
+ *  @来源 用户成长/规则聚合视图
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRewardSettlementPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
+  eventCode?: null | number;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
+  settlementStatus?: number;
+
+  /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */
+  settlementType?: number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+
+  /* 用户id */
+  userId?: number;
+};
+
+export type GrowthRewardSettlementPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: GrowthRewardSettlementPageItemDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
+ *  类型定义 [GrowthRewardSettlementRetryRequest]
+ *  @来源 用户成长/规则聚合视图
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRewardSettlementRetryRequest = IdDto;
+
+export type GrowthRewardSettlementRetryResponse = boolean;
+
+/**
+ *  类型定义 [GrowthRewardSettlementRetryPendingBatchRequest]
+ *  @来源 用户成长/规则聚合视图
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRewardSettlementRetryPendingBatchRequest =
+  RetryGrowthRewardSettlementBatchDto;
+
+export type GrowthRewardSettlementRetryPendingBatchResponse =
+  GrowthRewardSettlementRetryBatchResultDto;
+
+/**
  *  类型定义 [GrowthRewardRulesPageRequest]
  *  @来源 用户成长/奖励规则管理
  *  @更新时间 2026-05-09 22:20:06
@@ -499,22 +499,22 @@ export type GrowthRewardRulesPageRequest = {
   assetType?: number;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
   isEnabled?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 成长规则类型，直接复用统一事件定义编码。 */
   type?: number;
@@ -578,300 +578,6 @@ export type GrowthRewardRulesUpdateResponse = boolean;
 export type GrowthRewardRulesDeleteRequest = IdDto;
 
 export type GrowthRewardRulesDeleteResponse = boolean;
-
-/**
- *  类型定义 [GrowthRuleEventPageItemDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRuleEventPageItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 基础奖励资产规则摘要列表 */
-  assetRules: GrowthRuleAssetSummaryDto[];
-  /* 事件所属领域（forum=论坛；comment=评论；comic_work=漫画作品；novel_work=小说作品；comic_chapter=漫画章节；novel_chapter=小说章节；engagement=互动；badge=徽章；profile=资料；social=社交；report=举报；system=系统） */
-  domain:
-    | 'badge'
-    | 'comic_chapter'
-    | 'comic_work'
-    | 'comment'
-    | 'engagement'
-    | 'forum'
-    | 'novel_chapter'
-    | 'novel_work'
-    | 'profile'
-    | 'report'
-    | 'social'
-    | 'system';
-  /* 成长事件名称 */
-  eventName: string;
-  /* 治理闸门类型（none=无闸门；topic_approval=主题审核；comment_approval=评论审核；report_judgement=举报裁决） */
-  governanceGate:
-    | 'comment_approval'
-    | 'none'
-    | 'report_judgement'
-    | 'topic_approval';
-  /* 是否已配置任一基础奖励 */
-  hasBaseReward: boolean;
-  /* 是否存在关联任务 */
-  hasTask: boolean;
-  /* 实现状态（declared=已声明；implemented=已实现；legacy_compat=历史兼容） */
-  implStatus: 'declared' | 'implemented' | 'legacy_compat';
-  /* 是否已正式接入 producer */
-  isImplemented: boolean;
-  /* 基础奖励与任务 bonus 的默认叠加策略说明 */
-  rewardPolicy: string;
-  /* 成长事件英文 key */
-  ruleKey: string;
-  /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  ruleType:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801;
-  /* 是否支持任务消费 */
-  supportsTaskObjective: boolean;
-
-  /* 关联任务摘要 */
-  taskBinding: GrowthRuleTaskBindingSummaryDto;
-};
-
-/**
- *  类型定义 [GrowthRuleAssetSummaryDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRuleAssetSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 奖励值 */
-  amount?: null | number;
-  /* 资产键；积分/经验为空字符串，扩展资产使用稳定业务键 */
-  assetKey?: null | string;
-  /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType: 1 | 2 | 3 | 4 | 5;
-  /* 每日上限（0=无限制） */
-  dailyLimit?: null | number;
-  /* 该资产规则是否存在 */
-  exists: boolean;
-  /* 规则 ID */
-  id?: null | number;
-  /* 规则是否启用 */
-  isEnabled?: boolean | null;
-  /* 规则备注 */
-  remark?: null | string;
-
-  /* 总上限（0=无限制） */
-  totalLimit?: null | number;
-};
-
-/**
- *  类型定义 [GrowthRuleTaskBindingSummaryDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRuleTaskBindingSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 启用中的任务数 */
-  enabledTaskCount: number;
-  /* 是否存在关联任务 */
-  exists: boolean;
-  /* 已发布任务数 */
-  publishedTaskCount: number;
-  /* 关联任务总数 */
-  relatedTaskCount: number;
-  /* 关联任务场景类型列表（1=新手引导任务；2=日常任务；4=活动任务） */
-  sceneTypes: (1 | 2 | 4)[];
-
-  /* 关联任务 ID 列表 */
-  taskIds: number[];
-};
-
-/**
- *  类型定义 [GrowthRewardSettlementPageItemDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRewardSettlementPageItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 奖励幂等业务键 */
-  bizKey: string;
-  /* 创建时间 */
-  createdAt: string;
-  /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  eventCode?:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801
-    | null;
-  /* 成长事件 key */
-  eventKey?: null | string;
-  /* 原始事件发生时间 */
-  eventOccurredAt: string;
-  /* 主键id */
-  id: number;
-  /* 最近一次失败原因 */
-  lastError?: null | string;
-  /* 最近一次重试时间 */
-  lastRetryAt?: null | string;
-  /* 本次补偿关联到账本记录 ID 列表 */
-  ledgerRecordIds: number[];
-  /* 补偿重放用的原始载荷快照；通用成长事件、任务奖励、签到基础奖励、签到连续奖励会分别写入各自结构 */
-  requestPayload: string;
-  /* 已执行的补偿重试次数 */
-  retryCount: number;
-  /* 最近一次补偿状态落定时间 */
-  settledAt?: null | string;
-  /* 补偿结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
-  settlementResultType?: 1 | 2 | 3 | null;
-  /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
-  settlementStatus: 0 | 1 | 2;
-  /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */
-  settlementType: 1 | 2 | 3 | 4;
-  /* 奖励来源 */
-  source: string;
-  /* 来源事实主键（任务奖励通常为 instanceId） */
-  sourceRecordId?: null | number;
-  /* 目标 ID */
-  targetId?: null | number;
-  /* 目标类型 */
-  targetType?: null | number;
-  /* 更新时间 */
-  updatedAt: string;
-
-  /* 归属用户 ID */
-  userId: number;
-};
-
-/**
- *  类型定义 [IdDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 主键id */
-  id: number;
-};
-
-/**
- *  类型定义 [RetryGrowthRewardSettlementBatchDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type RetryGrowthRewardSettlementBatchDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
-  /* 本次最多扫描的待补偿记录数 */
-  limit?: null | number;
-};
-
-/**
- *  类型定义 [GrowthRewardSettlementRetryBatchResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRewardSettlementRetryBatchResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 本次补偿后仍未成功的记录数 */
-  failedCount: number;
-  /* 本次扫描到的补偿记录数 */
-  scannedCount: number;
-
-  /* 本次补偿成功数 */
-  succeededCount: number;
-};
 
 /**
  *  类型定义 [UserExperienceRecordDto]
@@ -1272,6 +978,19 @@ export type UpdateUserLevelRuleDto = {
 };
 
 /**
+ *  类型定义 [IdDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type IdDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 主键id */
+  id: number;
+};
+
+/**
  *  类型定义 [UserLevelInfoDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -1606,6 +1325,287 @@ export type UserBadgeTopBadgeItemDto = {
 
   /* 分配次数 */
   count: number;
+};
+
+/**
+ *  类型定义 [GrowthRuleEventPageItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRuleEventPageItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 基础奖励资产规则摘要列表 */
+  assetRules: GrowthRuleAssetSummaryDto[];
+  /* 事件所属领域（forum=论坛；comment=评论；comic_work=漫画作品；novel_work=小说作品；comic_chapter=漫画章节；novel_chapter=小说章节；engagement=互动；badge=徽章；profile=资料；social=社交；report=举报；system=系统） */
+  domain:
+    | 'badge'
+    | 'comic_chapter'
+    | 'comic_work'
+    | 'comment'
+    | 'engagement'
+    | 'forum'
+    | 'novel_chapter'
+    | 'novel_work'
+    | 'profile'
+    | 'report'
+    | 'social'
+    | 'system';
+  /* 成长事件名称 */
+  eventName: string;
+  /* 治理闸门类型（none=无闸门；topic_approval=主题审核；comment_approval=评论审核；report_judgement=举报裁决） */
+  governanceGate:
+    | 'comment_approval'
+    | 'none'
+    | 'report_judgement'
+    | 'topic_approval';
+  /* 是否已配置任一基础奖励 */
+  hasBaseReward: boolean;
+  /* 是否存在关联任务 */
+  hasTask: boolean;
+  /* 实现状态（declared=已声明；implemented=已实现；legacy_compat=历史兼容） */
+  implStatus: 'declared' | 'implemented' | 'legacy_compat';
+  /* 是否已正式接入 producer */
+  isImplemented: boolean;
+  /* 基础奖励与任务 bonus 的默认叠加策略说明 */
+  rewardPolicy: string;
+  /* 成长事件英文 key */
+  ruleKey: string;
+  /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
+  ruleType:
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 16
+    | 100
+    | 101
+    | 102
+    | 103
+    | 104
+    | 200
+    | 201
+    | 202
+    | 203
+    | 204
+    | 300
+    | 301
+    | 302
+    | 303
+    | 304
+    | 305
+    | 306
+    | 400
+    | 401
+    | 402
+    | 403
+    | 404
+    | 405
+    | 406
+    | 600
+    | 601
+    | 602
+    | 700
+    | 701
+    | 702
+    | 703
+    | 800
+    | 801;
+  /* 是否支持任务消费 */
+  supportsTaskObjective: boolean;
+
+  /* 关联任务摘要 */
+  taskBinding: GrowthRuleTaskBindingSummaryDto;
+};
+
+/**
+ *  类型定义 [GrowthRuleAssetSummaryDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRuleAssetSummaryDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 奖励值 */
+  amount?: null | number;
+  /* 资产键；积分/经验为空字符串，扩展资产使用稳定业务键 */
+  assetKey?: null | string;
+  /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
+  assetType: 1 | 2 | 3 | 4 | 5;
+  /* 每日上限（0=无限制） */
+  dailyLimit?: null | number;
+  /* 该资产规则是否存在 */
+  exists: boolean;
+  /* 规则 ID */
+  id?: null | number;
+  /* 规则是否启用 */
+  isEnabled?: boolean | null;
+  /* 规则备注 */
+  remark?: null | string;
+
+  /* 总上限（0=无限制） */
+  totalLimit?: null | number;
+};
+
+/**
+ *  类型定义 [GrowthRuleTaskBindingSummaryDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRuleTaskBindingSummaryDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 启用中的任务数 */
+  enabledTaskCount: number;
+  /* 是否存在关联任务 */
+  exists: boolean;
+  /* 已发布任务数 */
+  publishedTaskCount: number;
+  /* 关联任务总数 */
+  relatedTaskCount: number;
+  /* 关联任务场景类型列表（1=新手引导任务；2=日常任务；4=活动任务） */
+  sceneTypes: (1 | 2 | 4)[];
+
+  /* 关联任务 ID 列表 */
+  taskIds: number[];
+};
+
+/**
+ *  类型定义 [GrowthRewardSettlementPageItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRewardSettlementPageItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 奖励幂等业务键 */
+  bizKey: string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
+  eventCode?:
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 16
+    | 100
+    | 101
+    | 102
+    | 103
+    | 104
+    | 200
+    | 201
+    | 202
+    | 203
+    | 204
+    | 300
+    | 301
+    | 302
+    | 303
+    | 304
+    | 305
+    | 306
+    | 400
+    | 401
+    | 402
+    | 403
+    | 404
+    | 405
+    | 406
+    | 600
+    | 601
+    | 602
+    | 700
+    | 701
+    | 702
+    | 703
+    | 800
+    | 801
+    | null;
+  /* 成长事件 key */
+  eventKey?: null | string;
+  /* 原始事件发生时间 */
+  eventOccurredAt: string;
+  /* 主键id */
+  id: number;
+  /* 最近一次失败原因 */
+  lastError?: null | string;
+  /* 最近一次重试时间 */
+  lastRetryAt?: null | string;
+  /* 本次补偿关联到账本记录 ID 列表 */
+  ledgerRecordIds: number[];
+  /* 补偿重放用的原始载荷快照；通用成长事件、任务奖励、签到基础奖励、签到连续奖励会分别写入各自结构 */
+  requestPayload: string;
+  /* 已执行的补偿重试次数 */
+  retryCount: number;
+  /* 最近一次补偿状态落定时间 */
+  settledAt?: null | string;
+  /* 补偿结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
+  settlementResultType?: 1 | 2 | 3 | null;
+  /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
+  settlementStatus: 0 | 1 | 2;
+  /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */
+  settlementType: 1 | 2 | 3 | 4;
+  /* 奖励来源 */
+  source: string;
+  /* 来源事实主键（任务奖励通常为 instanceId） */
+  sourceRecordId?: null | number;
+  /* 目标 ID */
+  targetId?: null | number;
+  /* 目标类型 */
+  targetType?: null | number;
+  /* 更新时间 */
+  updatedAt: string;
+
+  /* 归属用户 ID */
+  userId: number;
+};
+
+/**
+ *  类型定义 [RetryGrowthRewardSettlementBatchDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type RetryGrowthRewardSettlementBatchDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 本次最多扫描的待补偿记录数 */
+  limit?: null | number;
+};
+
+/**
+ *  类型定义 [GrowthRewardSettlementRetryBatchResultDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRewardSettlementRetryBatchResultDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 本次补偿后仍未成功的记录数 */
+  failedCount: number;
+  /* 本次扫描到的补偿记录数 */
+  scannedCount: number;
+
+  /* 本次补偿成功数 */
+  succeededCount: number;
 };
 
 /**

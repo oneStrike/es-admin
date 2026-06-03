@@ -23,10 +23,10 @@ export type AppPagePageRequest = {
   code?: string;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
-  enablePlatform?: string;
+  enablePlatform?: null | string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 页面启用状态 */
   isEnabled?: boolean;
@@ -35,16 +35,16 @@ export type AppPagePageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type AppPagePageResponse = {

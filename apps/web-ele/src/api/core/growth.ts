@@ -62,54 +62,6 @@ import type {
 import { requestClient } from '#/api/request';
 
 /**
- * 按事件聚合查看积分规则、经验规则与任务 bonus 关联关系
- */
-export async function growthRuleEventsPageApi(
-  params?: GrowthRuleEventsPageRequest,
-): Promise<GrowthRuleEventsPageResponse> {
-  return requestClient.get<GrowthRuleEventsPageResponse>(
-    '/api/admin/growth/rule-events/page',
-    { params },
-  );
-}
-
-/**
- * 分页查询通用成长奖励补偿记录
- */
-export async function growthRewardSettlementPageApi(
-  params?: GrowthRewardSettlementPageRequest,
-): Promise<GrowthRewardSettlementPageResponse> {
-  return requestClient.get<GrowthRewardSettlementPageResponse>(
-    '/api/admin/growth/reward-settlement/page',
-    { params },
-  );
-}
-
-/**
- * 重试单条通用成长奖励补偿
- */
-export async function growthRewardSettlementRetryApi(
-  params: GrowthRewardSettlementRetryRequest,
-): Promise<GrowthRewardSettlementRetryResponse> {
-  return requestClient.post<GrowthRewardSettlementRetryResponse>(
-    '/api/admin/growth/reward-settlement/retry',
-    params,
-  );
-}
-
-/**
- * 批量重试待补偿的通用成长奖励记录
- */
-export async function growthRewardSettlementRetryPendingBatchApi(
-  params?: GrowthRewardSettlementRetryPendingBatchRequest,
-): Promise<GrowthRewardSettlementRetryPendingBatchResponse> {
-  return requestClient.post<GrowthRewardSettlementRetryPendingBatchResponse>(
-    '/api/admin/growth/reward-settlement/retry-pending/batch',
-    params,
-  );
-}
-
-/**
  * 获取用户经验记录分页
  */
 export async function growthExperienceRecordPageApi(
@@ -352,6 +304,54 @@ export async function growthBadgesUserPageApi(
 export async function growthBadgesStatsApi(): Promise<GrowthBadgesStatsResponse> {
   return requestClient.get<GrowthBadgesStatsResponse>(
     '/api/admin/growth/badges/stats',
+  );
+}
+
+/**
+ * 按事件聚合查看积分规则、经验规则与任务 bonus 关联关系
+ */
+export async function growthRuleEventsPageApi(
+  params?: GrowthRuleEventsPageRequest,
+): Promise<GrowthRuleEventsPageResponse> {
+  return requestClient.get<GrowthRuleEventsPageResponse>(
+    '/api/admin/growth/rule-events/page',
+    { params },
+  );
+}
+
+/**
+ * 分页查询通用成长奖励补偿记录
+ */
+export async function growthRewardSettlementPageApi(
+  params?: GrowthRewardSettlementPageRequest,
+): Promise<GrowthRewardSettlementPageResponse> {
+  return requestClient.get<GrowthRewardSettlementPageResponse>(
+    '/api/admin/growth/reward-settlement/page',
+    { params },
+  );
+}
+
+/**
+ * 重试单条通用成长奖励补偿
+ */
+export async function growthRewardSettlementRetryApi(
+  params: GrowthRewardSettlementRetryRequest,
+): Promise<GrowthRewardSettlementRetryResponse> {
+  return requestClient.post<GrowthRewardSettlementRetryResponse>(
+    '/api/admin/growth/reward-settlement/retry',
+    params,
+  );
+}
+
+/**
+ * 批量重试待补偿的通用成长奖励记录
+ */
+export async function growthRewardSettlementRetryPendingBatchApi(
+  params?: GrowthRewardSettlementRetryPendingBatchRequest,
+): Promise<GrowthRewardSettlementRetryPendingBatchResponse> {
+  return requestClient.post<GrowthRewardSettlementRetryPendingBatchResponse>(
+    '/api/admin/growth/reward-settlement/retry-pending/batch',
+    params,
   );
 }
 
