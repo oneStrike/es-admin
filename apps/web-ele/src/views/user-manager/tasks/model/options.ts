@@ -150,18 +150,23 @@ export function buildTaskRewardItems(
   experience?: null | number,
 ) {
   const rewardItems: GrowthRewardItemDto[] = [];
+  const normalizedPoints = normalizeTaskRewardAmount(points, '奖励积分');
+  const normalizedExperience = normalizeTaskRewardAmount(
+    experience,
+    '奖励经验',
+  );
 
-  if (typeof points === 'number' && points > 0) {
+  if (normalizedPoints > 0) {
     rewardItems.push({
-      amount: Number(points),
+      amount: normalizedPoints,
       assetKey: '',
       assetType: 1,
     });
   }
 
-  if (typeof experience === 'number' && experience > 0) {
+  if (normalizedExperience > 0) {
     rewardItems.push({
-      amount: Number(experience),
+      amount: normalizedExperience,
       assetKey: '',
       assetType: 2,
     });
@@ -177,8 +182,19 @@ export function parseTaskRewardItems(
     experience: undefined as number | undefined,
     points: undefined as number | undefined,
   };
+  const parsedAssetTypes = new Set<number>();
 
   for (const item of rewardItems || []) {
+    assertSupportedTaskRewardItem(item);
+
+    if (parsedAssetTypes.has(item.assetType)) {
+      throw new Error(
+        '当前任务奖励配置存在重复的积分或经验项，请先处理后再编辑',
+      );
+    }
+
+    parsedAssetTypes.add(item.assetType);
+
     if (item.assetType === 1) {
       rewardValue.points = Number(item.amount);
     }
@@ -188,6 +204,36 @@ export function parseTaskRewardItems(
   }
 
   return rewardValue;
+}
+
+function assertSupportedTaskRewardItem(item: GrowthRewardItemDto) {
+  if (item.assetType !== 1 && item.assetType !== 2) {
+    throw new Error(
+      `当前任务仅支持积分和经验奖励，存在未支持的资产类型 ${item.assetType}`,
+    );
+  }
+
+  if (item.assetKey?.trim()) {
+    throw new Error('当前任务积分/经验奖励不支持资产键，请先迁移该奖励配置');
+  }
+
+  normalizeTaskRewardAmount(
+    item.amount,
+    item.assetType === 1 ? '奖励积分' : '奖励经验',
+  );
+}
+
+function normalizeTaskRewardAmount(
+  value: null | number | undefined,
+  label: string,
+) {
+  const amount = Number(value ?? 0);
+
+  if (!Number.isFinite(amount) || amount < 0 || !Number.isInteger(amount)) {
+    throw new Error(`${label}必须是非负整数`);
+  }
+
+  return amount;
 }
 
 export function formatInstanceStepSummary(

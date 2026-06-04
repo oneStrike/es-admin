@@ -9,6 +9,10 @@ import type {
   TaskInstancePageResponse,
   TaskInstanceReconciliationPageRequest,
   TaskInstanceReconciliationPageResponse,
+  TaskInstanceRewardRetryPendingBatchRequest,
+  TaskInstanceRewardRetryPendingBatchResponse,
+  TaskInstanceRewardRetryRequest,
+  TaskInstanceRewardRetryResponse,
   TaskPageRequest,
   TaskPageResponse,
   TaskTemplateOptionsResponse,
@@ -120,5 +124,29 @@ export async function taskInstanceReconciliationPageApi(
   return requestClient.get<TaskInstanceReconciliationPageResponse>(
     '/api/admin/task/instance/reconciliation/page',
     { params },
+  );
+}
+
+/**
+ * 重试单条任务实例奖励补偿
+ */
+export async function taskInstanceRewardRetryApi(
+  params: TaskInstanceRewardRetryRequest,
+): Promise<TaskInstanceRewardRetryResponse> {
+  return requestClient.post<TaskInstanceRewardRetryResponse>(
+    '/api/admin/task/instance/reward/retry',
+    params,
+  );
+}
+
+/**
+ * 批量重试待补偿的任务实例奖励
+ */
+export async function taskInstanceRewardRetryPendingBatchApi(
+  params?: TaskInstanceRewardRetryPendingBatchRequest,
+): Promise<TaskInstanceRewardRetryPendingBatchResponse> {
+  return requestClient.post<TaskInstanceRewardRetryPendingBatchResponse>(
+    '/api/admin/task/instance/reward/retry-pending/batch',
+    params,
   );
 }

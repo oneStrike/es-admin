@@ -65,6 +65,8 @@ type TaskFormValues = Partial<
     rewardPoints?: number | string;
     stepDedupeScope?: null | number | string;
     stepDescription?: null | string;
+    stepFilterKey?: null | string;
+    stepFilterValue?: null | string;
     stepFiltersText?: string;
     stepTargetValue?: number | string;
     stepTemplateKey?: null | string;
@@ -115,8 +117,11 @@ async function loadTemplateOptions() {
   try {
     const response = await taskTemplateOptionsApi();
     templateOptions.value = response.list || [];
-  } catch {
+  } catch (error) {
     templateOptions.value = [];
+    useMessage.warning(
+      error instanceof Error ? error.message : '任务事件模板加载失败',
+    );
   }
 }
 
@@ -133,6 +138,44 @@ function parseTextValue(value: unknown) {
 
 function parseTaskFilters(value: unknown) {
   return parseJsonArrayText<TaskTemplateFilterValueDto>(value, '过滤条件');
+}
+
+function buildTaskFilterDrafts(
+  values: TaskFormValues,
+  selectedTemplate: TaskEventTemplateOptionDto,
+) {
+  const rawFilters = parseTaskFilters(values.stepFiltersText) || [];
+  const filterKey = parseTextValue(values.stepFilterKey);
+
+  if (!filterKey) {
+    return rawFilters.length > 0 ? rawFilters : undefined;
+  }
+
+  const selectedField = selectedTemplate.availableFilterFields.find(
+    (item) => item.key === filterKey,
+  );
+
+  if (!selectedField) {
+    throw new Error('常用过滤字段不在当前模板可选字段中');
+  }
+
+  if (rawFilters.some((item) => item.key === filterKey)) {
+    throw new Error('常用过滤字段已在高级 JSON 中配置，请保留一种输入方式');
+  }
+
+  const filterValue = parseTextValue(values.stepFilterValue);
+  if (!filterValue) {
+    throw new Error('常用过滤值不能为空');
+  }
+
+  return [
+    ...rawFilters,
+    {
+      key: filterKey,
+      label: selectedField.label,
+      value: filterValue,
+    },
+  ];
 }
 
 function resolveSelectedTemplate(
@@ -195,7 +238,7 @@ function buildTaskPayloadBase(values: TaskFormValues) {
   const stepFilters =
     stepTriggerMode === 2 && selectedTemplate
       ? normalizeTaskTemplateFilters(
-          parseTaskFilters(values.stepFiltersText),
+          buildTaskFilterDrafts(values, selectedTemplate),
           selectedTemplate,
         )
       : undefined;
@@ -251,7 +294,14 @@ async function openFormModal(row?: TaskDefinitionRow) {
   if (row) {
     const detail = await taskDetailApi({ id: row.id });
     editingTemplateKey.value = detail.steps?.[0]?.templateKey ?? undefined;
-    record = mapTaskDefinitionDetailToFormRecord(detail);
+    try {
+      record = mapTaskDefinitionDetailToFormRecord(detail);
+    } catch (error) {
+      useMessage.warning(
+        error instanceof Error ? error.message : '当前任务配置暂不支持编辑',
+      );
+      return;
+    }
   } else {
     editingTemplateKey.value = undefined;
   }
@@ -267,14 +317,35 @@ async function openFormModal(row?: TaskDefinitionRow) {
     .open();
 }
 
+function handleLocalFormError(error: unknown): never {
+  const normalizedError =
+    error instanceof Error ? error : new Error('提交参数无效');
+
+  useMessage.warning(normalizedError.message);
+  throw markHandledFormError(normalizedError);
+}
+
 async function handleSubmit(values: TaskFormValues) {
-  try {
-    await (values.id
-      ? taskUpdateApi(buildUpdateTaskPayload(values))
-      : taskCreateApi(buildTaskPayloadBase(values)));
-  } catch (error) {
-    useMessage.warning(error instanceof Error ? error.message : '提交失败');
-    throw markHandledFormError(error);
+  if (values.id) {
+    let payload: TaskUpdateRequest;
+
+    try {
+      payload = buildUpdateTaskPayload(values);
+    } catch (error) {
+      handleLocalFormError(error);
+    }
+
+    await taskUpdateApi(payload);
+  } else {
+    let payload: TaskCreateRequest;
+
+    try {
+      payload = buildTaskPayloadBase(values);
+    } catch (error) {
+      handleLocalFormError(error);
+    }
+
+    await taskCreateApi(payload);
   }
 
   useMessage.success('操作成功');

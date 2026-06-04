@@ -2,6 +2,7 @@ import type {
   AdminTaskDefinitionDetailDto,
   AdminTaskDefinitionListItemDto,
   TaskEventTemplateOptionDto,
+  TaskTemplateFilterValueDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -64,6 +65,84 @@ function createTaskDefinitionField(
       !Array.isArray(componentProps)
         ? { ...componentProps }
         : componentProps,
+  };
+}
+
+function getSelectedTemplate(
+  templateOptions: TaskEventTemplateOptionDto[],
+  templateKey: unknown,
+) {
+  return typeof templateKey === 'string'
+    ? templateOptions.find((item) => item.templateKey === templateKey)
+    : undefined;
+}
+
+function buildTemplateFilterFieldOptions(
+  templateOptions: TaskEventTemplateOptionDto[],
+  templateKey: unknown,
+) {
+  const selectedTemplate = getSelectedTemplate(templateOptions, templateKey);
+
+  return (
+    selectedTemplate?.availableFilterFields.map((item) => ({
+      label: `${item.label} (${item.key} / ${item.valueType})`,
+      value: item.key,
+    })) || []
+  );
+}
+
+function resolveSelectedTemplateFilterField(
+  templateOptions: TaskEventTemplateOptionDto[],
+  values: Partial<Record<string, unknown>>,
+) {
+  const selectedTemplate = getSelectedTemplate(
+    templateOptions,
+    values.stepTemplateKey,
+  );
+  const filterKey =
+    typeof values.stepFilterKey === 'string' ? values.stepFilterKey : '';
+
+  return selectedTemplate?.availableFilterFields.find(
+    (item) => item.key === filterKey,
+  );
+}
+
+function shouldShowTemplateFilterFields(
+  templateOptions: TaskEventTemplateOptionDto[],
+  values: Partial<Record<string, unknown>>,
+) {
+  return (
+    Number(values.stepTriggerMode ?? 1) === 2 &&
+    buildTemplateFilterFieldOptions(templateOptions, values.stepTemplateKey)
+      .length > 0
+  );
+}
+
+function mapSingleTemplateFilterToFormRecord(
+  filters?: null | TaskTemplateFilterValueDto[],
+) {
+  if (filters?.length === 1) {
+    const filter = filters[0];
+
+    if (!filter) {
+      return {
+        stepFilterKey: undefined,
+        stepFilterValue: undefined,
+        stepFiltersText: '',
+      };
+    }
+
+    return {
+      stepFilterKey: filter.key,
+      stepFilterValue: String(filter.value ?? ''),
+      stepFiltersText: '',
+    };
+  }
+
+  return {
+    stepFilterKey: undefined,
+    stepFilterValue: undefined,
+    stepFiltersText: formatJsonTextarea(filters),
   };
 }
 
@@ -243,6 +322,51 @@ export function createTaskDefinitionFormSchema(
     },
     {
       component: 'Select',
+      componentProps: (values) => ({
+        class: 'w-full',
+        clearable: true,
+        filterable: true,
+        options: buildTemplateFilterFieldOptions(
+          templateOptions,
+          values.stepTemplateKey,
+        ),
+        placeholder: '选择模板声明的过滤字段',
+      }),
+      dependencies: {
+        show: (values) =>
+          shouldShowTemplateFilterFields(templateOptions, values),
+        triggerFields: ['stepTriggerMode', 'stepTemplateKey'],
+      },
+      fieldName: 'stepFilterKey',
+      help: '适合配置单个常用过滤条件；多个条件请使用下方高级 JSON',
+      label: '常用过滤字段',
+    },
+    {
+      component: 'Input',
+      componentProps: (values) => {
+        const selectedField = resolveSelectedTemplateFilterField(
+          templateOptions,
+          values,
+        );
+
+        return {
+          placeholder: selectedField
+            ? `请输入 ${selectedField.label}，类型 ${selectedField.valueType}`
+            : '请先选择过滤字段',
+        };
+      },
+      dependencies: {
+        show: (values) =>
+          shouldShowTemplateFilterFields(templateOptions, values) &&
+          Boolean(values.stepFilterKey),
+        triggerFields: ['stepTriggerMode', 'stepTemplateKey', 'stepFilterKey'],
+      },
+      fieldName: 'stepFilterValue',
+      help: '布尔字段请输入 true 或 false；数值字段请输入数字',
+      label: '常用过滤值',
+    },
+    {
+      component: 'Select',
       componentProps: {
         class: 'w-full',
         clearable: true,
@@ -274,8 +398,8 @@ export function createTaskDefinitionFormSchema(
       },
       fieldName: 'stepFiltersText',
       formItemClass: 'col-span-2',
-      help: '仅事件驱动步骤使用；会按模板声明的字段键和值类型校验并规范化',
-      label: '过滤条件',
+      help: '高级入口；仅事件驱动步骤使用，会按模板声明的字段键和值类型校验并规范化',
+      label: '高级过滤 JSON',
     },
   ];
 }
@@ -345,10 +469,10 @@ export const definitionSearchFormSchema = formSchemaTransform.toSearchSchema(
       component: 'DatePicker',
       componentProps: {
         clearable: true,
-        endPlaceholder: '结束时间',
-        startPlaceholder: '开始时间',
-        type: 'datetimerange',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        endPlaceholder: '结束日期',
+        startPlaceholder: '开始日期',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
       },
       fieldName: 'dateRange',
     },
@@ -420,13 +544,14 @@ export function mapTaskDefinitionDetailToFormRecord(
   detail: AdminTaskDefinitionDetailDto,
 ) {
   const step = detail.steps?.[0];
+  const filterRecord = mapSingleTemplateFilterToFormRecord(step?.filters);
 
   return {
     ...detail,
     ...parseTaskRewardItems(detail.rewardItems),
+    ...filterRecord,
     stepDedupeScope: step?.dedupeScope ?? undefined,
     stepDescription: step?.description ?? '',
-    stepFiltersText: formatJsonTextarea(step?.filters),
     stepTargetValue: step?.targetValue ?? 1,
     stepTemplateKey: step?.templateKey ?? undefined,
     stepTriggerMode: step?.triggerMode ?? 1,

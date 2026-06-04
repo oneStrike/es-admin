@@ -11,7 +11,7 @@ export type AppUpdatePageRequest = {
   buildCode?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否强制更新 */
   forceUpdate?: boolean;
@@ -20,19 +20,19 @@ export type AppUpdatePageRequest = {
   isPublished?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 发布平台（1=苹果端；2=安卓端） */
   platform?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 展示版本号 */
   versionName?: string;

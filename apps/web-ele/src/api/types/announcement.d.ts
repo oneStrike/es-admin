@@ -20,46 +20,46 @@ export type AnnouncementPageRequest = {
   announcementType?: number;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
-  enablePlatform?: null | string;
+  enablePlatform?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否置顶 */
   isPinned?: boolean;
 
   /* 是否仅筛选已发布公告 */
-  isPublished?: boolean | null;
+  isPublished?: boolean;
 
   /* 是否实时公告 */
   isRealtime?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 关联页面 id */
-  pageId?: null | number;
+  pageId?: number;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel?: number;
 
   /* 发布结束时间 */
-  publishEndTime?: null | string;
+  publishEndTime?: string;
 
   /* 发布开始时间 */
-  publishStartTime?: null | string;
+  publishStartTime?: string;
 
   /* 是否弹窗显示 */
   showAsPopup?: boolean;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 公告标题 */
   title?: string;

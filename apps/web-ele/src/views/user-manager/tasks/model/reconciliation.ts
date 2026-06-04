@@ -157,10 +157,10 @@ export const taskReconciliationSearchFormSchema =
       component: 'DatePicker',
       componentProps: {
         clearable: true,
-        endPlaceholder: '结束时间',
-        startPlaceholder: '开始时间',
-        type: 'datetimerange',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        endPlaceholder: '结束日期',
+        startPlaceholder: '开始日期',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
       },
       fieldName: 'dateRange',
     },
@@ -222,6 +222,10 @@ export const taskReconciliationColumns =
       completedAt: {
         cellRender: { name: 'CellDate' },
         minWidth: 170,
+      },
+      actions: {
+        show: true,
+        minWidth: 130,
       },
     },
   );
