@@ -34,6 +34,7 @@ async function bootstrap(namespace: string) {
   // // 设置弹窗的默认配置
   setDefaultModalProps({
     draggable: true,
+    closeOnPressEscape: true,
     animationType: 'scale',
   });
   // // 设置抽屉的默认配置

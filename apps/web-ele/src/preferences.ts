@@ -12,4 +12,17 @@ export const overridesPreferences = defineOverridesPreferences({
     enableRefreshToken: true,
     defaultHomePath: '/dashboard/analytics',
   },
+  breadcrumb: {
+    styleType: 'background',
+  },
+  copyright: {
+    companyName: 'oacex',
+    date: '2026',
+  },
+  footer: {
+    enable: true,
+  },
+  shortcutKeys: {
+    globalEscape: true,
+  },
 });
