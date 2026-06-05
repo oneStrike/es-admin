@@ -76,8 +76,6 @@ const [BaseForm, formApi] = useVbenForm({
         id: sharedData.value?.record?.id,
       });
       modalApi.close();
-    } catch (error) {
-      throw error;
     } finally {
       modalApi.unlock();
     }

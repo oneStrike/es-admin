@@ -127,7 +127,9 @@ const tests: TestCase[] = [
       const generator = createGenerator(spec);
 
       const nullableListType = (
-        generator as unknown as { generateSchemaType: (typeName: string) => string }
+        generator as unknown as {
+          generateSchemaType: (typeName: string) => string;
+        }
       ).generateSchemaType('NullableRewardList');
       assert.match(
         nullableListType,
@@ -135,7 +137,9 @@ const tests: TestCase[] = [
       );
 
       const openApi31NullableListType = (
-        generator as unknown as { generateSchemaType: (typeName: string) => string }
+        generator as unknown as {
+          generateSchemaType: (typeName: string) => string;
+        }
       ).generateSchemaType('OpenApi31NullableRewardList');
       assert.match(
         openApi31NullableListType,
@@ -145,7 +149,10 @@ const tests: TestCase[] = [
       const { typesContent } = generateModule(spec, 'checkIn');
 
       assert.match(typesContent, /latestRecord: CheckInRewardItem \| null/);
-      assert.match(typesContent, /rewardItems\?: CheckInRewardItem\[\] \| null/);
+      assert.match(
+        typesContent,
+        /rewardItems\?: CheckInRewardItem\[\] \| null/,
+      );
       assert.match(
         typesContent,
         /unionItems\?: \(CheckInRewardItem \| string\)\[\] \| null/,
@@ -162,7 +169,6 @@ function runValidation(): void {
   for (const test of tests) {
     try {
       test.run();
-      console.log(`PASS ${test.name}`);
     } catch (error) {
       console.error(`FAIL ${test.name}`);
       throw error;

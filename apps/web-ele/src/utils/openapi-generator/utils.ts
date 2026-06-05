@@ -56,7 +56,8 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
   if (!schema) return 'any';
 
   const allowsNull =
-    schema.nullable || (Array.isArray(schema.type) && schema.type.includes('null'));
+    schema.nullable ||
+    (Array.isArray(schema.type) && schema.type.includes('null'));
   const applyNullable = (type: string) =>
     allowsNull && !type.split(/\s*\|\s*/).includes('null')
       ? `${type} | null`
