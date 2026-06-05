@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { AppUpdateFormValues } from './model/shared';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AppUpdateReleaseListItemDto,
@@ -26,7 +28,6 @@ import { getDetailCards } from './model/detail';
 import {
   appUpdateColumns,
   appUpdateFilter,
-  type AppUpdateFormValues,
   buildAppUpdateSubmitPayload,
   formSchema,
   mapAppUpdateDetailToFormValues,
