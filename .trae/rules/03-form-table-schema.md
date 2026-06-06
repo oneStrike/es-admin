@@ -29,12 +29,23 @@
 - 业务侧 `extra.componentProps` 只写差异项，禁止重复声明默认 `clearable`、默认宽度 `class`、默认 `options: []`，除非本字段确实要覆盖默认行为。
 - 修改 `formSchemaTransform.toSearchSchema(...)`、`toTableColumns(...)` 或 `apps/web-ele/src/adapter/vxe-table.ts` 后，必须全量排查 `apps/web-ele/src/views` 的调用点，清理因旧浅合并或旧默认缺失而遗留的重复配置，并在最终说明中列出保留例外。
 
+## 数组字段与远程选项
+
+- 业务数组字段优先评估 `VbenFormFieldArray`；只有自由格式 JSON、高级配置、历史兼容过渡或字段结构无法稳定表达时，才使用 textarea / JSON textarea。
+- `VbenFormFieldArray` 的子字段 schema 应复用项目已有组件名和校验规则，例如 `Input`、`Select`、`ApiSelect`、`rules: 'required'`。
+- 数组编辑器提交前必须通过同域 payload helper 白名单归一化，禁止把数组行内的 UI-only 字段、vee-validate 内部字段或临时展示字段透传给后端。
+- 将字符串数组改为数组编辑器时，表单值可以是 `{ content: string }[]` 等 UI 结构，但最终请求仍应归一化为后端契约要求的 `string[]`。
+- `ApiSelect` / `ApiTreeSelect` 有上下文参数、分页参数或依赖条件时，应使用 `shouldFetch` 阻止参数未准备好的无效请求。
+- `shouldFetch` 只判断是否允许请求，不负责改写请求参数；参数整理应放在 `params`、`beforeFetch` 或同域 helper 中。
+
 ## 表格列生成
 
 - 表格列的序号列应由 `formSchemaTransform.toTableColumns(...)` 统一生成；不要在业务列表中手写重复的序号列，除非该表格确实无法用 schema 表达。
 - 操作列通过 `actions: { show: true }` 显式开启即可。
 - `toTableColumns(...)` 已默认提供 `title: '操作'`、`fixed: 'right'`、`slots: { default: 'actions' }` 和默认宽度。
 - 业务侧只在按钮数量较多、较少或使用非默认 slot 时补充 `width`、`minWidth`、`slots` 等真实差异。
+- 表格操作展示优先通过业务 wrapper 接入 `VbenTableAction`，例如 `#/components/es-table-action`；不要在每个页面重复手写 `el-button + el-divider` 操作组。
+- `VbenTableAction` 只负责操作展示和点击分发；删除、禁用、重试、归档等危险操作的确认仍应由脚本侧 `useConfirm` 包裹。
 - 表格操作列中需要二次确认的操作，禁止在 slot 内使用 `el-popconfirm`；应在脚本中调用 `#/hooks/useFeedback` 的 `useConfirm` 完成确认后再执行业务动作。
 - 表格列不要重复声明 `vxe-table` 适配层和 `toTableColumns(...)` 已经提供的默认行为，例如 `align: 'center'`、普通列默认 `minWidth: 100`、全局 `showOverflow`、默认 toolbar、默认分页大小、默认远程多排序、默认行 hover 和 `keyField: 'id'`。
 - 只有需要改变默认值时才写覆盖项。
@@ -82,3 +93,10 @@
 - 弹窗内、详情内或特殊列表若不适合直接使用 `formatQuery(...)`，应在同域 model/helper 中提供请求构造函数，例如把 `{ currentPage, pageSize }` 转成 `{ pageIndex, pageSize, ...业务上下文 }`。
 - 分页请求构造函数必须只传后端契约允许的字段，不要把 VxeGrid 的内部状态、UI-only 字段或临时筛选对象透传给接口。
 - 新增或调整分页映射时，应补充聚焦单测或至少执行现有 model 测试，验证 `pageIndex`、`pageSize` 和业务上下文参数没有丢失、改名或多传。
+
+## 已查看行
+
+- `viewedRowOptions` 只能在有明确“已查看、已处理、已重试、已阅读”业务语义的页面级 `useVbenVxeGrid` 配置中开启，禁止作为全局默认。
+- 行唯一键不是默认 `id` 时，必须显式配置 `keyField`。
+- 使用 slot 操作按钮时，应在业务动作确认并成功后调用 `gridApi.markRowAsViewed(row)`；不要只依赖 `actionCodes`。
+- 已查看行样式不得遮挡状态标签、错误信息和操作按钮，必要时只弱化文本色或透明度。

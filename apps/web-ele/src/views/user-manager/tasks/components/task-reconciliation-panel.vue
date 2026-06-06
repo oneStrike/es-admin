@@ -54,6 +54,10 @@ const gridOptions: VxeGridProps<AdminTaskReconciliationItemDto> = {
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(taskReconciliationSearchFormSchema),
   gridOptions,
+  viewedRowOptions: {
+    keyField: 'id',
+    persist: 'task-reconciliation-viewed-rows',
+  },
 });
 
 function hasRetryableTaskReward(row: AdminTaskReconciliationItemDto) {
@@ -98,6 +102,9 @@ async function retryTaskReward(row: AdminTaskReconciliationItemDto) {
   retryingMap[row.id] = true;
   try {
     const result = await taskInstanceRewardRetryApi({ id: row.id });
+    if (result.succeeded) {
+      gridApi.markRowAsViewed(row);
+    }
     showTaskRewardRetryResult(result);
     await gridApi.reload();
   } finally {

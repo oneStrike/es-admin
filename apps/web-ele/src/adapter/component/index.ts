@@ -25,6 +25,7 @@ import type {
   ApiComponentSharedProps,
   BaseFormComponentType,
   IconPickerProps,
+  VbenFormFieldArrayProps,
 } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 
@@ -259,6 +260,7 @@ export interface ComponentPropsMap {
   TimePicker: ElTimePickerSchemaProps;
   TreeSelect: ElTreeSelectSchemaProps;
   Upload: UploadProps;
+  VbenFormFieldArray: VbenFormFieldArrayProps<ComponentType, ComponentPropsMap>;
 }
 
 async function initComponentAdapter() {

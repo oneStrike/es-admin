@@ -9,6 +9,7 @@ import type {
   PaymentProviderPageRequest,
   PaymentProviderUpdateStatusRequest,
 } from '#/api/types';
+import type { EsTableActionItem } from '#/components/es-table-action';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -21,6 +22,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsRecordDetail from '#/components/es-record-detail';
+import EsTableAction from '#/components/es-table-action';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -170,6 +172,23 @@ async function toggleEnableStatus(row: PaymentProviderConfigRow) {
   }
 }
 
+function getPaymentProviderActions(
+  row: PaymentProviderConfigRow,
+): EsTableActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => openDetailModal(row),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openEditModal(row),
+      text: '编辑',
+    },
+  ];
+}
+
 async function getCurrentPaymentProvider() {
   return currentPaymentProvider.value;
 }
@@ -206,15 +225,7 @@ async function getCurrentPaymentProvider() {
         </template>
 
         <template #actions="{ row }">
-          <div class="my-1 flex items-center">
-            <el-button link type="primary" @click="openDetailModal(row)">
-              详情
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button link type="primary" @click="openEditModal(row)">
-              编辑
-            </el-button>
-          </div>
+          <EsTableAction :actions="getPaymentProviderActions(row)" />
         </template>
       </PaymentProviderGrid>
 

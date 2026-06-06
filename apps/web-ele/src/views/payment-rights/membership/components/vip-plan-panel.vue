@@ -6,6 +6,7 @@ import type {
   MembershipPlanPageRequest,
   MembershipPlanUpdateStatusRequest,
 } from '#/api/types';
+import type { EsTableActionItem } from '#/components/es-table-action';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -17,6 +18,7 @@ import {
   membershipPlanUpdateStatusApi,
 } from '#/api/core';
 import EsRecordDetail from '#/components/es-record-detail';
+import EsTableAction from '#/components/es-table-action';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -130,6 +132,21 @@ async function toggleEnableStatus(row: VipPlanRow) {
     row.statusLoading = false;
   }
 }
+
+function getVipPlanActions(row: VipPlanRow): EsTableActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => openDetail(row),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -162,15 +179,7 @@ async function toggleEnableStatus(row: VipPlanRow) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1 flex items-center">
-          <el-button link type="primary" @click="openDetail(row)">
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-        </div>
+        <EsTableAction :actions="getVipPlanActions(row)" />
       </template>
     </Grid>
 

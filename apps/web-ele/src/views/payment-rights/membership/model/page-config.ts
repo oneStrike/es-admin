@@ -23,7 +23,7 @@ export type VipPageConfigFormValues = {
   checkoutAgreementText?: unknown;
   id?: unknown;
   isEnabled?: unknown;
-  memberNoticeItemsText?: unknown;
+  memberNoticeItems?: unknown;
   planIds?: unknown;
   sortOrder?: unknown;
   submitButtonTemplate?: unknown;
@@ -87,7 +87,12 @@ function normalizeBoolean(value: unknown) {
 function normalizeStringArray(value: unknown) {
   if (Array.isArray(value)) {
     return value
-      .map((item) => normalizeText(item))
+      .map((item) => {
+        if (item && typeof item === 'object' && !Array.isArray(item)) {
+          return normalizeText((item as Record<string, unknown>).content);
+        }
+        return normalizeText(item);
+      })
       .filter((item): item is string => !!item);
   }
 
@@ -101,8 +106,14 @@ function normalizeStringArray(value: unknown) {
     .filter((item): item is string => !!item);
 }
 
-function formatStringArrayTextarea(value: unknown) {
-  return Array.isArray(value) ? value.filter(Boolean).join('\n') : '';
+function formatStringArrayRows(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => ({ content: normalizeText(item) ?? '' }))
+    .filter((item) => !!item.content);
 }
 
 function escapeHtml(value: unknown) {
@@ -124,14 +135,24 @@ function formatOptionText(
   );
 }
 
+function hasPositiveIntegerParam(
+  params: Record<string, unknown>,
+  field: string,
+) {
+  const value = normalizeOptionalNumber(params[field]);
+  return value !== undefined && Number.isInteger(value) && value > 0;
+}
+
+function shouldFetchPagedOptions(params: Record<string, unknown>) {
+  return (
+    hasPositiveIntegerParam(params, 'pageIndex') &&
+    hasPositiveIntegerParam(params, 'pageSize')
+  );
+}
+
 function agreementSelectComponentProps() {
   return {
-    api: async () =>
-      agreementPageApi({
-        isPublished: true,
-        pageIndex: 1,
-        pageSize: 200,
-      }),
+    api: agreementPageApi,
     class: 'w-full',
     clearable: true,
     collapseTags: true,
@@ -139,20 +160,21 @@ function agreementSelectComponentProps() {
     labelFn: (item: Record<string, unknown>) =>
       item.version ? `${item.title} (${item.version})` : item.title,
     multiple: true,
+    params: {
+      isPublished: true,
+      pageIndex: 1,
+      pageSize: 200,
+    },
     placeholder: '请选择协议',
     resultField: 'list',
+    shouldFetch: shouldFetchPagedOptions,
     valueField: 'id',
   };
 }
 
 function planSelectComponentProps() {
   return {
-    api: async () =>
-      membershipPlanPageApi({
-        isEnabled: true,
-        pageIndex: 1,
-        pageSize: 200,
-      }),
+    api: membershipPlanPageApi,
     class: 'w-full',
     clearable: true,
     collapseTags: true,
@@ -169,8 +191,14 @@ function planSelectComponentProps() {
       ].join('');
     },
     multiple: true,
+    params: {
+      isEnabled: true,
+      pageIndex: 1,
+      pageSize: 200,
+    },
     placeholder: '请选择套餐',
     resultField: 'list',
+    shouldFetch: shouldFetchPagedOptions,
     valueField: 'id',
   };
 }
@@ -267,7 +295,7 @@ export function mapVipPageConfigToFormRecord(values: VipPageConfigRow) {
   return {
     ...values,
     agreementIds: normalizeAgreementIds(values.agreements),
-    memberNoticeItemsText: formatStringArrayTextarea(values.memberNoticeItems),
+    memberNoticeItems: formatStringArrayRows(values.memberNoticeItems),
     planIds: normalizePlanIds(values.plans),
   };
 }
@@ -277,7 +305,7 @@ function buildVipPageConfigBase(values: VipPageConfigFormValues) {
     agreementIds: normalizeAgreementIds(values.agreementIds),
     checkoutAgreementText: normalizeNullableText(values.checkoutAgreementText),
     isEnabled: normalizeBoolean(values.isEnabled),
-    memberNoticeItems: normalizeStringArray(values.memberNoticeItemsText),
+    memberNoticeItems: normalizeStringArray(values.memberNoticeItems),
     planIds: normalizePlanIds(values.planIds),
     sortOrder: normalizeNullableNumber(values.sortOrder),
     submitButtonTemplate: normalizeNullableText(values.submitButtonTemplate),
@@ -346,13 +374,24 @@ export const vipPageConfigFormSchema: EsFormSchema = [
     label: '启用状态',
   },
   {
-    component: 'Input',
+    component: 'VbenFormFieldArray',
     componentProps: {
-      placeholder: '每行一条会员说明',
-      rows: 4,
-      type: 'textarea',
+      addButtonText: '添加会员说明',
+      emptyText: '暂无会员说明',
+      schema: [
+        {
+          component: 'Input',
+          componentProps: {
+            clearable: true,
+            placeholder: '请输入会员说明',
+          },
+          fieldName: 'content',
+          label: '说明内容',
+          rules: 'required',
+        },
+      ],
     },
-    fieldName: 'memberNoticeItemsText',
+    fieldName: 'memberNoticeItems',
     formItemClass: 'col-span-2',
     label: '会员说明条目',
   },
@@ -427,7 +466,7 @@ export const vipPageConfigColumns =
         minWidth: 110,
         slots: { default: 'isEnabled' },
       },
-      memberNoticeItemsText: { hide: true },
+      memberNoticeItems: { hide: true },
       pageKey: { minWidth: 160, sort: 0.5, title: '页面业务键' },
       planIds: { hide: true },
       planSummary: {

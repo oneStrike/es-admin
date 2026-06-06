@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import type { DetailCard, DetailTagType } from './types';
+import type { DetailCard, DetailField, DetailTagType } from './types';
 
 import { computed, defineComponent, h, ref, watch } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import {
+  useVbenModal,
+  VbenDescriptions,
+  VbenDescriptionsItem,
+} from '@vben/common-ui';
 
 import { useMessage } from '#/hooks/useFeedback';
 import { formatUTC } from '#/utils';
@@ -120,6 +124,20 @@ function formatDetailDate(value: unknown, dateType?: string) {
   );
 }
 
+function isEmptyDetailValue(value: unknown) {
+  return value === undefined || value === null || value === '';
+}
+
+function formatDescriptionFieldValue(field: DetailField) {
+  if (isEmptyDetailValue(field.value)) {
+    return '-';
+  }
+  if (field.type === 'date') {
+    return formatDetailDate(field.value, field.dateType);
+  }
+  return String(field.value);
+}
+
 function resolveTagType(type?: string): DetailTagType {
   const tagTypes: DetailTagType[] = [
     'danger',
@@ -131,6 +149,14 @@ function resolveTagType(type?: string): DetailTagType {
   return tagTypes.includes(type as DetailTagType)
     ? (type as DetailTagType)
     : 'info';
+}
+
+function getTitleFields(fields?: DetailField[]) {
+  return fields?.filter((field) => field.type === 'title') ?? [];
+}
+
+function getDescriptionFields(fields?: DetailField[]) {
+  return fields?.filter((field) => field.type !== 'title') ?? [];
 }
 
 const detailCards = computed(() => {
@@ -198,9 +224,12 @@ defineExpose({
           </template>
 
           <div v-if="card.fields">
-            <div v-for="field in card.fields" :key="field.label" class="mb-4">
+            <div
+              v-for="field in getTitleFields(card.fields)"
+              :key="field.label"
+              class="mb-4"
+            >
               <el-text
-                v-if="field.type === 'title'"
                 tag="h2"
                 size="large"
                 class="mb-2 block text-center font-bold"
@@ -209,13 +238,14 @@ defineExpose({
               </el-text>
             </div>
 
-            <el-descriptions
+            <VbenDescriptions
               :column="card.title ? 2 : 4"
-              :border="false"
-              class="!gap-x-8 !gap-y-4 !text-sm"
+              :bordered="false"
+              :colon="false"
+              class="es-record-detail__descriptions"
             >
-              <el-descriptions-item
-                v-for="field in card.fields.filter((f) => f.type !== 'title')"
+              <VbenDescriptionsItem
+                v-for="field in getDescriptionFields(card.fields)"
                 :key="field.label"
                 :label="`${field.label}：`"
               >
@@ -223,17 +253,11 @@ defineExpose({
                   v-if="field.type === 'text' || field.type === 'date'"
                   class="text-sm"
                 >
-                  {{
-                    field.value === null || field.value === undefined
-                      ? '-'
-                      : field.type === 'date'
-                        ? formatDetailDate(field.value, field.dateType)
-                        : field.value
-                  }}
+                  {{ formatDescriptionFieldValue(field) }}
                 </el-text>
 
                 <el-tag
-                  v-else-if="field.type === 'tag' && 'tagText' in field"
+                  v-else-if="field.type === 'tag'"
                   :type="resolveTagType(field.tagType)"
                   size="small"
                 >
@@ -241,15 +265,19 @@ defineExpose({
                 </el-tag>
 
                 <el-image
-                  v-else-if="field.type === 'image' && field.value"
+                  v-else-if="
+                    field.type === 'image' && !isEmptyDetailValue(field.value)
+                  "
                   :src="String(field.value)"
                   :alt="field.label"
                   class="max-h-[100px] max-w-[100px] rounded"
                   fit="cover"
                   preview-teleported
                 />
-              </el-descriptions-item>
-            </el-descriptions>
+
+                <el-text v-else class="text-sm">-</el-text>
+              </VbenDescriptionsItem>
+            </VbenDescriptions>
           </div>
 
           <div

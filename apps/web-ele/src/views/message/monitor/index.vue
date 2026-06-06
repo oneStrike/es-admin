@@ -118,6 +118,10 @@ const [DispatchGrid] = useVbenVxeGrid({
 const [DeliveryGrid, deliveryGridApi] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(deliverySearchFormSchema),
   gridOptions: deliveryGridOptions,
+  viewedRowOptions: {
+    keyField: 'id',
+    persist: 'message-monitor-delivery-viewed-rows',
+  },
 });
 
 async function fetchWsSummary() {
@@ -175,6 +179,7 @@ function metricTextClass(tone: string) {
 
 async function retryDelivery(row: MessageNotificationDeliveryItemDto) {
   await messageMonitorDeliveryRetryApi({ dispatchId: row.dispatchId });
+  deliveryGridApi.markRowAsViewed(row);
   useMessage.success('重新发送已提交');
   await deliveryGridApi.reload();
   await refreshOverview();
