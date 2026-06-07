@@ -10,6 +10,7 @@ import {
   emojiAnimatedOptions,
   emojiEnableOptions,
   emojiKindOptions,
+  formatEmojiKeywords,
   getEmojiPackLabel,
 } from './shared';
 
@@ -40,7 +41,7 @@ export const emojiAssetFormSchema: EsFormSchema = [
   {
     component: 'Input',
     componentProps: {
-      maxlength: 64,
+      maxlength: 32,
       placeholder: '请输入短码，例如 smile',
       showWordLimit: true,
     },
@@ -114,11 +115,14 @@ export const emojiAssetFormSchema: EsFormSchema = [
     label: '是否动图',
   },
   {
-    component: 'Input',
+    component: 'Select',
     componentProps: {
-      maxlength: 64,
+      allowCreate: true,
+      class: 'w-full',
+      clearable: true,
+      filterable: true,
+      options: [],
       placeholder: '请输入资源分类',
-      showWordLimit: true,
     },
     fieldName: 'category',
     label: '分类',
@@ -132,10 +136,8 @@ export const emojiAssetFormSchema: EsFormSchema = [
       min: 0,
       placeholder: '请输入排序值（数字越小越靠前）',
     },
-    defaultValue: 0,
     fieldName: 'sortOrder',
     label: '排序',
-    rules: 'required',
   },
   {
     component: 'RadioGroup',
@@ -149,11 +151,39 @@ export const emojiAssetFormSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    component: 'Input',
+    component: 'VbenFormFieldArray',
     componentProps: {
-      placeholder: '请输入关键词，支持多语言内容',
-      rows: 4,
-      type: 'textarea',
+      addButtonText: '添加关键词',
+      emptyText: '暂无关键词',
+      schema: [
+        {
+          component: 'Select',
+          componentProps: {
+            allowCreate: true,
+            class: 'w-full',
+            clearable: true,
+            filterable: true,
+            options: [
+              { label: '中文 zh-CN', value: 'zh-CN' },
+              { label: '英文 en-US', value: 'en-US' },
+            ],
+            placeholder: '请选择语言',
+          },
+          fieldName: 'locale',
+          label: '语言',
+          rules: 'required',
+        },
+        {
+          component: 'Input',
+          componentProps: {
+            clearable: true,
+            placeholder: '多个关键词用逗号或换行分隔',
+          },
+          fieldName: 'keywords',
+          label: '关键词',
+          rules: 'required',
+        },
+      ],
     },
     fieldName: 'keywords',
     formItemClass: 'col-span-2',
@@ -166,9 +196,22 @@ export const emojiAssetSearchSchema = formSchemaTransform.toSearchSchema(
   {
     kind: {
       show: true,
+      component: 'Select',
+      componentProps: {
+        options: emojiKindOptions,
+        placeholder: '资源类型',
+      },
     },
     category: {
       show: true,
+      component: 'Select',
+      componentProps: {
+        allowCreate: true,
+        clearable: true,
+        filterable: true,
+        options: [],
+        placeholder: '分类',
+      },
     },
     shortcode: {
       show: true,
@@ -229,6 +272,7 @@ export function createEmojiAssetColumns(
         minWidth: 180,
       },
       keywords: {
+        formatter: ({ cellValue }) => formatEmojiKeywords(cellValue),
         minWidth: 240,
       },
       sortOrder: {

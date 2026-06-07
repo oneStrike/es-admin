@@ -4,6 +4,13 @@ import type { BaseEmojiPackDto } from '#/api/types';
 
 export type EmojiAssetKind = 1 | 2;
 export type EmojiSceneType = 1 | 2 | 3;
+export type EmojiKeywordRows = Array<{
+  keywords?: unknown;
+  locale?: unknown;
+}>;
+export type EmojiKeywords = Record<string, string[]>;
+
+const RGI_EMOJI_REGEX = /\p{RGI_Emoji}/gv;
 
 export const emojiEnableOptions = [
   { label: '启用', value: true },
@@ -111,6 +118,7 @@ export function unicodeSequenceToEmoji(
 ): string {
   const raw = unicodeSequence?.trim();
   if (!raw) return '';
+  if (isRenderedEmojiSequence(raw)) return raw;
 
   let codePoints: number[] = [];
 
@@ -139,4 +147,73 @@ export function unicodeSequenceToEmoji(
   } catch {
     return '';
   }
+}
+
+export function normalizeUnicodeSequenceInput(value?: null | string): string {
+  const raw = value?.trim();
+  if (!raw) return '';
+  return unicodeSequenceToEmoji(raw) || raw;
+}
+
+export function formatEmojiKeywordsRows(value: unknown): EmojiKeywordRows {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return [];
+  }
+
+  return Object.entries(value as EmojiKeywords).flatMap(
+    ([locale, keywords]) => {
+      if (!Array.isArray(keywords)) return [];
+      const keywordText = keywords
+        .map((item) => String(item).trim())
+        .filter(Boolean)
+        .join('，');
+
+      return keywordText ? [{ keywords: keywordText, locale }] : [];
+    },
+  );
+}
+
+export function buildEmojiKeywords(value: unknown): null | EmojiKeywords {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+
+  const keywords: EmojiKeywords = {};
+  for (const item of value) {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+      continue;
+    }
+
+    const row = item as { keywords?: unknown; locale?: unknown };
+    const locale = String(row.locale ?? '').trim();
+    if (!locale) {
+      continue;
+    }
+
+    const values = String(row.keywords ?? '')
+      .split(/[，,\n]/)
+      .map((keyword) => keyword.trim())
+      .filter(Boolean);
+    const uniqueValues = [...new Set(values)];
+    if (uniqueValues.length > 0) {
+      keywords[locale] = uniqueValues;
+    }
+  }
+
+  return Object.keys(keywords).length > 0 ? keywords : null;
+}
+
+export function formatEmojiKeywords(value: unknown): string {
+  const rows = formatEmojiKeywordsRows(value);
+  if (rows.length === 0) return '-';
+
+  return rows.map((row) => `${row.locale}: ${row.keywords}`).join('\n');
+}
+
+function isRenderedEmojiSequence(value: string) {
+  const matches = Array.from(
+    value.matchAll(new RegExp(RGI_EMOJI_REGEX.source, RGI_EMOJI_REGEX.flags)),
+    (match) => match[0],
+  );
+  return matches.length > 0 && matches.join('') === value;
 }

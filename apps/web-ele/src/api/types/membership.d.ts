@@ -8,28 +8,28 @@ export type MembershipPlanPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 套餐名称 */
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 套餐层级（1=VIP；2=超级 VIP） */
-  tier?: number;
+  tier?: null | number;
 };
 
 export type MembershipPlanPageResponse = {
@@ -89,25 +89,25 @@ export type MembershipBenefitPageRequest = {
   benefitType?: number;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 权益名称 */
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type MembershipBenefitPageResponse = {
@@ -166,25 +166,25 @@ export type MembershipPageConfigPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 页面业务键，由服务端生成 */
   pageKey?: string;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 页面标题 */
   title?: string;

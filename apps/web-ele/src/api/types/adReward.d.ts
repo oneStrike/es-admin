@@ -8,28 +8,28 @@ export type AdRewardProviderPageRequest = {
   [property: string]: any;
 
   /* provider 应用 ID */
-  appId?: string;
+  appId?: null | string;
 
   /* 客户端应用键 */
-  clientAppKey?: string;
+  clientAppKey?: null | string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 运行环境（1=沙箱；2=正式） */
   environment?: number;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 广告位 key */
   placementKey?: string;
@@ -41,7 +41,7 @@ export type AdRewardProviderPageRequest = {
   provider?: number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 目标范围（1=低价章节；2=新用户冷启动；3=运营白名单） */
   targetScope?: number;
@@ -80,34 +80,34 @@ export type AdRewardRecordPageRequest = {
   adProviderConfigId?: number;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 运行环境（1=沙箱；2=正式） */
-  environment?: number;
+  environment?: null | number;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 广告位 key */
   placementKey?: string;
 
   /* 客户端平台（1=Android；2=iOS；3=HarmonyOS；4=Web；5=小程序） */
-  platform?: number;
+  platform?: null | number;
 
   /* 广告 provider（1=穿山甲；2=腾讯优量汇） */
-  provider?: number;
+  provider?: null | number;
 
   /* provider 奖励唯一 ID */
   providerRewardId?: string;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 广告状态（1=奖励成功；2=奖励失败；3=已撤销） */
   status?: number;
@@ -169,34 +169,34 @@ export type AdRewardRecordReconcilePageRequest = {
   adProviderConfigId?: number;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 运行环境（1=沙箱；2=正式） */
-  environment?: number;
+  environment?: null | number;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 广告位 key */
   placementKey?: string;
 
   /* 客户端平台（1=Android；2=iOS；3=HarmonyOS；4=Web；5=小程序） */
-  platform?: number;
+  platform?: null | number;
 
   /* 广告 provider（1=穿山甲；2=腾讯优量汇） */
-  provider?: number;
+  provider?: null | number;
 
   /* provider 奖励唯一 ID */
   providerRewardId?: string;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 广告状态（1=奖励成功；2=奖励失败；3=已撤销） */
   status?: number;

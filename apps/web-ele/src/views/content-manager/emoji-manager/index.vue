@@ -43,8 +43,11 @@ import {
 } from './model/asset';
 import { emojiPackFormSchema } from './model/pack';
 import {
+  buildEmojiKeywords,
   buildEmojiPackOptions,
+  formatEmojiKeywordsRows,
   getEmojiPackLabel,
+  normalizeUnicodeSequenceInput,
   normalizeSceneTypeValue,
   sortEmojiPacks,
   unicodeSequenceToEmoji,
@@ -86,16 +89,17 @@ type EmojiAssetFormValues = Partial<
     | 'imageUrl'
     | 'isAnimated'
     | 'isEnabled'
-    | 'keywords'
     | 'packId'
-    | 'shortcode'
-    | 'sortOrder'
     | 'staticUrl'
-    | 'unicodeSequence'
   >
 > &
   Pick<Partial<ContentEmojiAssetUpdateRequest>, 'id'> & {
+    category?: unknown;
     kind?: ContentEmojiAssetCreateRequest['kind'] | number | string;
+    keywords?: unknown;
+    shortcode?: unknown;
+    sortOrder?: unknown;
+    unicodeSequence?: unknown;
   };
 
 const packs = ref<EmojiPackRow[]>([]);
@@ -343,6 +347,7 @@ function normalizePackPayload(values: EmojiPackFormValues) {
 function normalizeAssetPayload(values: EmojiAssetFormValues) {
   const kind = Number(values.kind ?? 2) as 1 | 2;
   const packId = Number(values.packId ?? currentPack.value?.id);
+  const sortOrder = Number(values.sortOrder);
 
   if (!packId) {
     useMessage.warning('请先选择表情包');
@@ -350,13 +355,17 @@ function normalizeAssetPayload(values: EmojiAssetFormValues) {
   }
 
   const payload = {
-    category: values.category?.trim?.() || undefined,
+    category: String(values.category ?? '').trim() || undefined,
     isAnimated: false,
     isEnabled: values.isEnabled ?? true,
-    keywords: values.keywords?.trim?.() || undefined,
+    keywords: buildEmojiKeywords(values.keywords) ?? undefined,
     kind,
     packId,
-    sortOrder: Number(values.sortOrder ?? 0),
+    ...(values.sortOrder === undefined ||
+    values.sortOrder === null ||
+    values.sortOrder === ''
+      ? {}
+      : { sortOrder }),
   } satisfies Pick<
     ContentEmojiAssetCreateRequest,
     | 'category'
@@ -369,7 +378,9 @@ function normalizeAssetPayload(values: EmojiAssetFormValues) {
   >;
 
   if (kind === 1) {
-    const unicodeSequence = values.unicodeSequence?.trim?.();
+    const unicodeSequence = normalizeUnicodeSequenceInput(
+      String(values.unicodeSequence ?? ''),
+    );
     if (!unicodeSequence) {
       useMessage.warning('请填写 Unicode 序列');
       throw new Error('missing unicode sequence');
@@ -392,7 +403,9 @@ function normalizeAssetPayload(values: EmojiAssetFormValues) {
       : (unicodePayload satisfies ContentEmojiAssetCreateRequest);
   }
 
-  const shortcode = values.shortcode?.trim?.();
+  const shortcode = String(values.shortcode ?? '')
+    .trim()
+    .toLowerCase();
   const imageUrl = values.imageUrl || undefined;
 
   if (!shortcode || !imageUrl) {
@@ -445,13 +458,21 @@ async function openAssetFormModal(row?: EmojiAssetRow, packId?: number) {
     return;
   }
 
-  const record: EmojiAssetFormValues | undefined = row
-    ? await contentEmojiAssetDetailApi({ id: row.id })
-    : {
-        isEnabled: true,
-        kind: 2,
-        packId: targetPackId,
-      };
+  let record: EmojiAssetFormValues | undefined;
+  if (row) {
+    const detail = await contentEmojiAssetDetailApi({ id: row.id });
+    record = {
+      ...detail,
+      keywords: formatEmojiKeywordsRows(detail.keywords),
+      unicodeSequence: normalizeUnicodeSequenceInput(detail.unicodeSequence),
+    };
+  } else {
+    record = {
+      isEnabled: true,
+      kind: 2,
+      packId: targetPackId,
+    };
+  }
 
   if (packId) {
     const selectedPack = packs.value.find((item) => item.id === packId);

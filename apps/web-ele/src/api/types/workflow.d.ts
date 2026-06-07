@@ -8,25 +8,25 @@ export type WorkflowPageRequest = {
   [property: string]: any;
 
   /* 归档筛选范围（active=未归档；archived=已归档；all=全部） */
-  archiveScope?: string;
+  archiveScope?: null | string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 工作流任务ID */
   jobId?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 任务状态（1=草稿；2=待处理；3=处理中；4=成功；5=部分失败；6=失败；7=已取消；8=已过期） */
   status?: number;
@@ -77,10 +77,10 @@ export type WorkflowRecordPageRequest = {
   [property: string]: any;
 
   /* 工作流 attempt ID */
-  attemptId?: string;
+  attemptId?: null | string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 事件类型过滤；不传时默认返回关键生命周期/诊断记录 */
   eventTypes?: any[];
@@ -89,16 +89,16 @@ export type WorkflowRecordPageRequest = {
   jobId: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type WorkflowRecordPageResponse = {
@@ -128,16 +128,16 @@ export type WorkflowNotificationListRequest = {
   [property: string]: any;
 
   /* 同一游标时间下已读取的最后通知事件ID */
-  afterId?: number;
+  afterId?: null | number;
 
   /* 游标时间；只返回该时间之后的通知事件 */
-  createdAfter?: string;
+  createdAfter?: null | string;
 
   /* 通知事实类型过滤；不传时返回执行完成、异常重试、最终失败 */
   kinds?: any[];
 
   /* 返回条数；默认20，最大50 */
-  limit?: number;
+  limit?: null | number;
 };
 
 export type WorkflowNotificationListResponse =
@@ -153,22 +153,22 @@ export type WorkflowItemPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 工作流任务ID */
   jobId?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 条目状态（1=待处理；2=处理中；3=成功；4=失败；5=重试中；6=已跳过） */
   status?: number;
@@ -362,7 +362,7 @@ export type WorkflowAttemptDto = {
   /* 创建时间 */
   createdAt: string;
   /* 错误事实；admin 负责根据 code/context 表达 */
-  error?: null | WorkflowErrorFactsDto;
+  error?: WorkflowErrorFactsDto;
   /* 失败条目数 */
   failedItemCount: number;
   /* 完成时间 */
@@ -533,7 +533,7 @@ export type WorkflowItemDto = {
   /* 工作流条目ID */
   itemId: string;
   /* 最近错误事实；admin 负责根据 code/context 表达 */
-  lastError?: null | WorkflowErrorFactsDto;
+  lastError?: WorkflowErrorFactsDto;
   /* 条目元数据 */
   metadata?: null | Record<string, any>;
   /* 下次可重试时间 */
