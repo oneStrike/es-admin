@@ -31,6 +31,31 @@ export function extractRelationIds(
     .filter((id): id is number => typeof id === 'number');
 }
 
+export function extractRelationOptions(
+  list: null | RelationItem[] | undefined,
+  relationKey: RelationKey,
+): RelationEntity[] {
+  return (list ?? [])
+    .map((item) => unwrapRelationItem(item, relationKey))
+    .filter(
+      (item): item is RelationEntity =>
+        typeof item?.id === 'number' && typeof item?.name === 'string',
+    );
+}
+
+export function normalizeRelationIds(value: unknown): number[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value
+    .map((item) => {
+      if (typeof item === 'number') return item;
+      if (item && typeof item === 'object' && 'id' in item) {
+        return (item as { id?: unknown }).id;
+      }
+      return undefined;
+    })
+    .filter((id): id is number => typeof id === 'number');
+}
+
 export function extractRelationNames(
   list: null | RelationItem[] | undefined,
   relationKey: RelationKey,

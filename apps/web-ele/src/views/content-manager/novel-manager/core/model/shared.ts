@@ -2,7 +2,7 @@ import type { EsFormSchema } from '#/types';
 
 import { cloneDeep } from 'es-toolkit';
 
-import { contentAuthorPageApi } from '#/api/core';
+import { contentAuthorPageApi, contentTagPageApi } from '#/api/core';
 import { AuthorTypeEnum, ContentPermissionEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
@@ -10,6 +10,10 @@ import {
   authorColumns,
   authorSearchSchema,
 } from '#/views/content-manager/author-manager/model/shared';
+import {
+  tagSearchSchema,
+  tagSelectorColumns,
+} from '#/views/content-manager/tag-manager/model/shared';
 
 export const serialStatus = [
   { label: '未开始', value: 0, color: 'info' },
@@ -140,12 +144,25 @@ export const formSchema: EsFormSchema = [
     rules: 'arrayRequired',
   },
   {
-    component: 'Select',
-    componentProps: {
-      filterable: true,
-      multiple: true,
-      options: [],
-      placeholder: '输入标签名称进行搜索',
+    component: 'TableSelect',
+    componentProps: () => {
+      return {
+        api: async (value: Record<string, unknown>) => {
+          return contentTagPageApi({
+            ...value,
+            isEnabled: true,
+          });
+        },
+        columns: cloneDeep(tagSelectorColumns),
+        multiple: true,
+        placeholder: '请选择小说标签',
+        searchSchema: cloneDeep(tagSearchSchema).filter((item) =>
+          ['name'].includes(
+            typeof item?.fieldName === 'string' ? item?.fieldName : '',
+          ),
+        ),
+        selectionMode: 'multiple',
+      };
     },
     fieldName: 'tagIds',
     label: '标签',
@@ -356,6 +373,26 @@ export const pageFilter = formSchemaTransform.toSearchSchema(formSchema, {
     show: true,
   },
   serialStatus: {
+    show: true,
+  },
+  tagIds: {
+    component: 'TableSelect',
+    componentProps: () => {
+      return {
+        api: async (value: Record<string, unknown>) => {
+          return contentTagPageApi(value);
+        },
+        columns: cloneDeep(tagSelectorColumns),
+        multiple: true,
+        placeholder: '请选择标签',
+        searchSchema: cloneDeep(tagSearchSchema).filter((item) =>
+          ['name'].includes(
+            typeof item?.fieldName === 'string' ? item?.fieldName : '',
+          ),
+        ),
+        selectionMode: 'multiple',
+      };
+    },
     show: true,
   },
 });

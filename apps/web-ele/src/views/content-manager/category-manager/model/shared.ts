@@ -1,4 +1,4 @@
-import type { BaseCategoryDto, BaseTagDto } from '#/api/types';
+import type { BaseCategoryDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { ContentTypeEnum } from '#/enum';
@@ -129,7 +129,7 @@ export const categoryColumns =
     description: {
       minWidth: 200,
       sort: 20,
-      formatter: ({ row }: { row: BaseTagDto }) => {
+      formatter: ({ row }: { row: BaseCategoryDto }) => {
         return row.description || '-';
       },
     },

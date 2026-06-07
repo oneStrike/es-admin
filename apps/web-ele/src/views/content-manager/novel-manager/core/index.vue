@@ -24,7 +24,6 @@ import {
   contentNovelUpdateNewApi,
   contentNovelUpdateRecommendedApi,
   contentNovelUpdateStatusApi,
-  contentTagPageApi,
   growthLevelRulesPageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
@@ -34,7 +33,11 @@ import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { extractRelationIds } from '../../work-relations';
+import {
+  extractRelationIds,
+  extractRelationOptions,
+  normalizeRelationIds,
+} from '../../work-relations';
 import Chapter from '../chapter/index.vue';
 import { novelColumns } from './model/columns';
 import { getDetailSections } from './model/detail';
@@ -75,7 +78,6 @@ const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: RecordDetailModal,
 });
 
-const tagOptions: BasicOption[] = [];
 const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
 const emptyDict: Recordable<undefined | UseDictItem> = {};
@@ -99,24 +101,9 @@ async function openFormModal(row?: BaseWorkDto) {
     record = await contentNovelDetailApi({ id: row.id });
     record.authorIds = extractRelationIds(record?.authors, 'author');
     record.categoryIds = extractRelationIds(record?.categories, 'category');
-    record.tagIds = extractRelationIds(record?.tags, 'tag');
+    record.tagIds = extractRelationOptions(record?.tags, 'tag');
   }
   currentNovelRecord.value = record ?? null;
-
-  if (tagOptions.length === 0) {
-    const data = await contentTagPageApi({
-      pageSize: 500,
-    });
-    tagOptions.push(
-      ...(data.list?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      })) || []),
-    );
-    useForm.setOptions(formSchema, {
-      tagIds: tagOptions,
-    });
-  }
 
   if (categoryOptions.length === 0) {
     const data = await contentCategoryPageApi({
@@ -215,7 +202,10 @@ function buildNovelPayload(
       values.isRecommended ?? currentNovelRecord.value?.isRecommended ?? false,
     recommendWeight:
       values.recommendWeight ?? currentNovelRecord.value?.recommendWeight ?? 0,
-    tagIds: values.tagIds ?? currentNovelRecord.value?.tagIds ?? [],
+    tagIds:
+      normalizeRelationIds(values.tagIds) ??
+      normalizeRelationIds(currentNovelRecord.value?.tagIds) ??
+      [],
     type: 2,
     viewRule: values.viewRule ?? currentNovelRecord.value?.viewRule ?? 0,
   };

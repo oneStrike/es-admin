@@ -2,7 +2,7 @@
 import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
-import type { BaseTagDto, CreateTagDto, UpdateTagDto } from '#/api/types';
+import type { AdminTagDto, CreateTagDto, UpdateTagDto } from '#/api/types';
 
 import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
@@ -22,7 +22,7 @@ import { createSearchFormOptions } from '#/utils';
 
 import { formSchema, tagColumns, tagSearchSchema } from './model/shared';
 
-type TagRow = BaseTagDto & {
+type TagRow = AdminTagDto & {
   loading?: boolean;
 };
 
@@ -80,7 +80,7 @@ const [Form, formApi] = useVbenModal({
  * 打开表单弹窗
  */
 async function openFormModal(row?: TagRow) {
-  let record: BaseTagDto | undefined;
+  let record: AdminTagDto | undefined;
   if (row) {
     record = await contentTagDetailApi({ id: row.id });
   }
@@ -147,7 +147,7 @@ async function deleteTag(row: TagRow) {
 
 async function confirmDeleteTag(row: TagRow) {
   const confirmed = await useConfirm({
-    content: '确认删除当前项?',
+    content: `确认删除标签「${row.name}」? 启用中的标签需先禁用。`,
     successMessage: false,
   });
   if (!confirmed) return;

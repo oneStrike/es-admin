@@ -1,4 +1,4 @@
-import type { BaseTagDto } from '#/api/types';
+import type { AdminTagDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -30,7 +30,7 @@ export const formSchema: EsFormSchema = [
     component: 'InputNumber',
     componentProps: {
       min: 0,
-      max: 999_999_999,
+      max: 32_767,
       align: 'left',
       class: '!w-full',
       controlsPosition: 'right',
@@ -55,7 +55,7 @@ export const formSchema: EsFormSchema = [
 /**
  * 列定义：依据 formSchema 自动转换为表格列，并按需覆盖展示细节。
  */
-export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
+export const tagColumns = formSchemaTransform.toTableColumns<AdminTagDto>(
   formSchema,
   {
     icon: {
@@ -67,12 +67,6 @@ export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
     sortOrder: {
       sortable: true,
     },
-    popularity: {
-      title: '热度',
-      field: 'popularity',
-      sortable: true,
-    },
-
     isEnabled: {
       show: true,
       title: '状态',
@@ -93,6 +87,12 @@ export const tagColumns = formSchemaTransform.toTableColumns<BaseTagDto>(
       minWidth: 200,
     },
   },
+);
+
+export const tagSelectorColumns = tagColumns.filter((item) =>
+  ['icon', 'isEnabled', 'name'].includes(
+    typeof item?.field === 'string' ? item.field : '',
+  ),
 );
 
 /**

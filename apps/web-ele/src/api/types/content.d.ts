@@ -1504,7 +1504,7 @@ export type ContentTagPageResponse = {
   [property: string]: any;
 
   /* 列表数据 */
-  list?: BaseTagDto[];
+  list?: AdminTagDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -1529,7 +1529,7 @@ export type ContentTagDetailRequest = {
   id: number;
 };
 
-export type ContentTagDetailResponse = BaseTagDto;
+export type ContentTagDetailResponse = AdminTagDto;
 
 /**
  *  类型定义 [ContentTagUpdateRequest]
@@ -3622,11 +3622,11 @@ export type CreateTagDto = {
 };
 
 /**
- *  类型定义 [BaseTagDto]
+ *  类型定义 [AdminTagDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type BaseTagDto = {
+export type AdminTagDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 创建时间 */
@@ -3641,8 +3641,6 @@ export type BaseTagDto = {
   isEnabled: boolean;
   /* 标签名称 */
   name: string;
-  /* 人气值 */
-  popularity: number;
   /* 排序值（0=默认排序，数值越小越靠前） */
   sortOrder: number;
 

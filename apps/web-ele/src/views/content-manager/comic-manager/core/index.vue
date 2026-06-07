@@ -27,7 +27,6 @@ import {
   contentComicUpdateNewApi,
   contentComicUpdateRecommendedApi,
   contentComicUpdateStatusApi,
-  contentTagPageApi,
   growthLevelRulesPageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
@@ -38,7 +37,11 @@ import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import { buildWorkflowManagerRoute } from '#/views/system-manager/workflow/model/shared';
 
-import { extractRelationIds } from '../../work-relations';
+import {
+  extractRelationIds,
+  extractRelationOptions,
+  normalizeRelationIds,
+} from '../../work-relations';
 import Chapter from '../chapter/index.vue';
 import ThirdPartyPlatform from '../third-party/index.vue';
 import { comicColumns } from './model/columns';
@@ -82,7 +85,6 @@ const [ThirdPartyModal, ThirdPartyApi] = useVbenModal({
   connectedComponent: ThirdPartyPlatform,
 });
 
-const tagOptions: BasicOption[] = [];
 const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
 const currentComicRecord = ref<null | Partial<BaseWorkDto>>(null);
@@ -107,24 +109,10 @@ async function openFormModal(row?: BaseWorkDto) {
     record = await contentComicDetailApi({ id: row.id });
     record.authorIds = extractRelationIds(record?.authors, 'author');
     record.categoryIds = extractRelationIds(record?.categories, 'category');
-    record.tagIds = extractRelationIds(record?.tags, 'tag');
+    record.tagIds = extractRelationOptions(record?.tags, 'tag');
   }
   currentComicRecord.value = record ?? null;
 
-  if (tagOptions.length === 0) {
-    const data = await contentTagPageApi({
-      pageSize: 500,
-    });
-    tagOptions.push(
-      ...(data.list?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      })) || []),
-    );
-    useForm.setOptions(formSchema, {
-      tagIds: tagOptions,
-    });
-  }
   if (categoryOptions.length === 0) {
     const data = await contentCategoryPageApi({
       pageSize: 500,
@@ -223,7 +211,10 @@ function buildComicPayload(
       values.isRecommended ?? currentComicRecord.value?.isRecommended ?? false,
     recommendWeight:
       values.recommendWeight ?? currentComicRecord.value?.recommendWeight ?? 0,
-    tagIds: values.tagIds ?? currentComicRecord.value?.tagIds ?? [],
+    tagIds:
+      normalizeRelationIds(values.tagIds) ??
+      normalizeRelationIds(currentComicRecord.value?.tagIds) ??
+      [],
     type: 1,
     viewRule: values.viewRule ?? currentComicRecord.value?.viewRule ?? 0,
   };
