@@ -82,6 +82,7 @@ export { commentPageApi } from './comment';
 export { commentDetailApi } from './comment';
 export { commentUpdateAuditStatusApi } from './comment';
 export { commentUpdateHiddenApi } from './comment';
+export { commentDeleteApi } from './comment';
 export { contentComicCreateApi } from './content';
 export { contentComicPageApi } from './content';
 export { contentComicDetailApi } from './content';

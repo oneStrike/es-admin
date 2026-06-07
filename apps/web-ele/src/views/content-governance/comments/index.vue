@@ -4,6 +4,7 @@ import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminCommentPageItemDto,
+  CommentDeleteRequest,
   CommentUpdateAuditStatusRequest,
   CommentUpdateHiddenRequest,
 } from '#/api/types';
@@ -12,6 +13,7 @@ import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  commentDeleteApi,
   commentDetailApi,
   commentPageApi,
   commentUpdateAuditStatusApi,
@@ -19,7 +21,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import RecordDetailModal from '#/components/record-detail-modal';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailSections } from './model/detail';
@@ -54,8 +56,12 @@ const gridOptions: VxeGridProps<CommentRow> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        const { dateRange, ...restFormValues } = formValues || {};
+        const { dateRange, selectedUserIds, ...restFormValues } =
+          formValues || {};
         const [startDate, endDate] = Array.isArray(dateRange) ? dateRange : [];
+        const userId = Array.isArray(selectedUserIds)
+          ? selectedUserIds[0]
+          : undefined;
 
         return await commentPageApi(
           formatQuery({
@@ -64,6 +70,7 @@ const gridOptions: VxeGridProps<CommentRow> = {
               ...restFormValues,
               endDate,
               startDate,
+              userId,
             },
             sorts,
           }),
@@ -137,6 +144,22 @@ async function toggleHiddenStatus(row: CommentRow) {
   }
 }
 
+async function deleteComment(row: CommentRow) {
+  await commentDeleteApi({ id: row.id } satisfies CommentDeleteRequest);
+  useMessage.success('删除成功');
+  await gridApi.reload();
+}
+
+async function confirmDeleteComment(row: CommentRow) {
+  const confirmed = await useConfirm({
+    content: '确认删除当前评论?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await deleteComment(row);
+}
+
 function getCommentActions(row: CommentRow): ActionItem[] {
   return [
     {
@@ -148,6 +171,12 @@ function getCommentActions(row: CommentRow): ActionItem[] {
       key: 'audit',
       text: '审核',
       onClick: () => openAuditModal(row),
+    },
+    {
+      danger: true,
+      key: 'delete',
+      text: '删除',
+      onClick: () => confirmDeleteComment(row),
     },
   ];
 }

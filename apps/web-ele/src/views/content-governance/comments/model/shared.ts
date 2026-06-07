@@ -9,6 +9,7 @@ import type {
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
+import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
 export const auditStatusOptions = [
   { label: '待审核', value: 0, color: 'warning' as const },
@@ -329,14 +330,16 @@ const pageListSchema: EsFormSchema = [
     fieldName: 'id',
   },
   {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      controlsPosition: 'right',
-      min: 1,
-      placeholder: '评论用户 ID',
-    },
-    fieldName: 'userId',
+    component: 'TableSelect',
+    componentProps: () =>
+      createAppUserTableSelectProps({
+        enabledOnly: false,
+        multiple: false,
+        placeholder: '请选择评论用户',
+        title: '选择评论用户',
+      }),
+    fieldName: 'selectedUserIds',
+    label: '评论用户',
   },
   {
     component: 'InputNumber',
@@ -398,13 +401,15 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
         placeholder: '评论 ID',
       },
     },
-    userId: {
-      componentProps: {
-        class: '!w-full',
-        controlsPosition: 'right',
-        min: 1,
-        placeholder: '评论用户 ID',
-      },
+    selectedUserIds: {
+      componentProps: () => ({
+        ...createAppUserTableSelectProps({
+          enabledOnly: false,
+          multiple: false,
+          placeholder: '请选择评论用户',
+          title: '选择评论用户',
+        }),
+      }),
     },
     targetId: {
       componentProps: {
@@ -462,7 +467,7 @@ export const pageColumns =
     keyword: { hide: true },
     dateRange: { hide: true },
     id: { hide: true },
-    userId: { hide: true },
+    selectedUserIds: { hide: true },
     targetId: { hide: true },
     createdAt: {
       cellRender: {

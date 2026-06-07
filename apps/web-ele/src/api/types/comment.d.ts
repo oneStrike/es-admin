@@ -13,7 +13,7 @@ export type CommentPageRequest = {
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: number;
 
-  /* 结束时间 */
+  /* 创建日期结束（应用时区自然日，YYYY-MM-DD） */
   endDate?: string;
 
   /* 主键id */
@@ -37,7 +37,7 @@ export type CommentPageRequest = {
   /* 回复的评论 ID */
   replyToId?: number;
 
-  /* 开始时间 */
+  /* 创建日期开始（应用时区自然日，YYYY-MM-DD） */
   startDate?: string;
 
   /* 目标 ID */
@@ -99,6 +99,15 @@ export type CommentUpdateAuditStatusResponse = boolean;
 export type CommentUpdateHiddenRequest = UpdateCommentHiddenDto;
 
 export type CommentUpdateHiddenResponse = boolean;
+
+/**
+ *  类型定义 [CommentDeleteRequest]
+ *  @来源 内容治理/评论处理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type CommentDeleteRequest = IdDto;
+
+export type CommentDeleteResponse = boolean;
 
 /**
  *  类型定义 [AdminCommentPageItemDto]
@@ -392,4 +401,17 @@ export type UpdateCommentHiddenDto = {
 
   /* 是否隐藏 */
   isHidden: boolean;
+};
+
+/**
+ *  类型定义 [IdDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type IdDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 主键id */
+  id: number;
 };

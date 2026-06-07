@@ -1,4 +1,6 @@
 import type {
+  CommentDeleteRequest,
+  CommentDeleteResponse,
   CommentDetailRequest,
   CommentDetailResponse,
   CommentPageRequest,
@@ -53,6 +55,18 @@ export async function commentUpdateHiddenApi(
 ): Promise<CommentUpdateHiddenResponse> {
   return requestClient.post<CommentUpdateHiddenResponse>(
     '/api/admin/comment/update-hidden',
+    params,
+  );
+}
+
+/**
+ * 删除评论
+ */
+export async function commentDeleteApi(
+  params: CommentDeleteRequest,
+): Promise<CommentDeleteResponse> {
+  return requestClient.post<CommentDeleteResponse>(
+    '/api/admin/comment/delete',
     params,
   );
 }
