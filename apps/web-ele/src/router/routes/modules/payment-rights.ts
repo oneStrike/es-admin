@@ -41,6 +41,16 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'PaymentReconcile',
+        path: '/payment-rights/payment-reconcile',
+        component: () =>
+          import('#/views/payment-rights/payment-reconcile/index.vue'),
+        meta: {
+          title: '支付对账',
+          icon: 'codex:dot-circle',
+        },
+      },
+      {
         name: 'MembershipManager',
         path: '/payment-rights/membership',
         component: () => import('#/views/payment-rights/membership/index.vue'),

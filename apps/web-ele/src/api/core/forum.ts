@@ -77,6 +77,8 @@ import type {
   ForumSensitiveWordDetectRequest,
   ForumSensitiveWordDetectResponse,
   ForumSensitiveWordDetectStatusResponse,
+  ForumSensitiveWordHitLogPageRequest,
+  ForumSensitiveWordHitLogPageResponse,
   ForumSensitiveWordPageRequest,
   ForumSensitiveWordPageResponse,
   ForumSensitiveWordReplaceRequest,
@@ -348,6 +350,18 @@ export async function forumSensitiveWordStatsApi(
 export async function forumSensitiveWordStatsFullApi(): Promise<ForumSensitiveWordStatsFullResponse> {
   return requestClient.get<ForumSensitiveWordStatsFullResponse>(
     '/api/admin/forum/sensitive-word/stats/full',
+  );
+}
+
+/**
+ * 获取敏感词命中日志分页列表
+ */
+export async function forumSensitiveWordHitLogPageApi(
+  params?: ForumSensitiveWordHitLogPageRequest,
+): Promise<ForumSensitiveWordHitLogPageResponse> {
+  return requestClient.get<ForumSensitiveWordHitLogPageResponse>(
+    '/api/admin/forum/sensitive-word/hit-log/page',
+    { params },
   );
 }
 

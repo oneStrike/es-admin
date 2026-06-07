@@ -69,13 +69,14 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    label: '审核策略',
+    label: '额外待审规则',
     fieldName: 'topicReviewPolicy',
     component: 'Select',
     rules: 'required',
     defaultValue: 0,
+    help: '全局敏感词审核策略优先；板块规则只会额外进入待审，不会把全局拒绝或隐藏降级为通过。',
     componentProps: {
-      placeholder: '请选择审核策略',
+      placeholder: '请选择额外待审规则',
       options: topicReviewPolicy,
       class: 'w-full',
     },

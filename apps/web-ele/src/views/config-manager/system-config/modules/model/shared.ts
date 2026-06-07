@@ -239,6 +239,7 @@ export const contentReviewFormSchema: EsFormSchema = [
     component: 'RadioGroup',
     fieldName: 'recordHits',
     label: '记录敏感词命中明细',
+    help: '全局内容审核策略适用于帖子、评论、话题；板块规则只会额外收紧待审，不会把全局拒绝或隐藏降级为通过。',
     defaultValue: false,
     componentProps: {
       options: [
@@ -275,6 +276,7 @@ export const contentReviewFormSchema: EsFormSchema = [
     component: 'Select',
     fieldName: 'lightActionAuditStatus',
     label: '审核状态',
+    help: '轻微敏感词命中后的全局处置动作，帖子、评论、话题共用。',
     componentProps: {
       placeholder: '请选择审核状态',
       options: [
@@ -312,6 +314,7 @@ export const contentReviewFormSchema: EsFormSchema = [
     component: 'Select',
     fieldName: 'generalActionAuditStatus',
     label: '审核状态',
+    help: '一般敏感词命中后的全局处置动作，帖子、评论、话题共用。',
     componentProps: {
       placeholder: '请选择审核状态',
       options: [
@@ -349,6 +352,7 @@ export const contentReviewFormSchema: EsFormSchema = [
     component: 'Select',
     fieldName: 'severeActionAuditStatus',
     label: '审核状态',
+    help: '严重敏感词命中后的全局处置动作，帖子、评论、话题共用。',
     componentProps: {
       placeholder: '请选择审核状态',
       options: [

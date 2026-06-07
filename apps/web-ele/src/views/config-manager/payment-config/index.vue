@@ -23,7 +23,7 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import RecordDetailModal from '#/components/record-detail-modal';
-import { useMessage } from '#/hooks/useFeedback';
+import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
   normalizeSearchBoolean,
@@ -35,6 +35,7 @@ import {
 import {
   buildPaymentProviderCreatePayload,
   buildPaymentProviderUpdatePayload,
+  getPaymentProviderCredentialOptionText,
   getPaymentProviderDetailSections,
   mapProviderToFormRecord,
   paymentProviderColumns,
@@ -159,11 +160,25 @@ async function toggleEnableStatus(row: PaymentProviderConfigRow) {
     return;
   }
 
+  const nextEnabled = row.isEnabled !== true;
+  const confirmed = await useConfirm({
+    confirmText: nextEnabled ? '确认启用' : '确认停用',
+    content: nextEnabled
+      ? '启用后仅影响新支付订单选择，历史订单仍按下单时配置快照验签。'
+      : '停用后新支付订单不会再选择该配置，历史订单仍按下单时配置快照验签。',
+    successMessage: false,
+    title: nextEnabled ? '启用支付 provider' : '停用支付 provider',
+  });
+
+  if (!confirmed) {
+    return;
+  }
+
   row.statusLoading = true;
   try {
     await paymentProviderUpdateStatusApi({
       id: row.id,
-      isEnabled: row.isEnabled !== true,
+      isEnabled: nextEnabled,
     } satisfies PaymentProviderUpdateStatusRequest);
     useMessage.success('状态更新成功');
     await paymentProviderGridApi.reload();
@@ -222,6 +237,10 @@ async function getCurrentPaymentProvider() {
             :model-value="row.isEnabled === true"
             @change="toggleEnableStatus(row)"
           />
+        </template>
+
+        <template #credentialOption="{ row }">
+          <span>{{ getPaymentProviderCredentialOptionText(row) }}</span>
         </template>
 
         <template #actions="{ row }">

@@ -140,6 +140,9 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(formSchema, {
   level: {
     show: true,
   },
+  matchMode: {
+    show: true,
+  },
   isEnabled: {
     show: true,
   },

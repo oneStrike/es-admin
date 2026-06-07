@@ -1,11 +1,17 @@
 import type {
+  PaymentProviderCertificateOptionDto,
   PaymentProviderCreateRequest,
+  PaymentProviderCredentialOptionDto,
   PaymentProviderPageResponse,
   PaymentProviderUpdateRequest,
 } from '#/api/types';
 import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
+import {
+  paymentCertificateOptionListApi,
+  paymentCredentialOptionListApi,
+} from '#/api/core';
 import { formSchemaTransform } from '#/utils';
 import { getOptionLabel } from '#/utils/options';
 
@@ -26,16 +32,14 @@ export type PaymentProviderConfigRow = NonNullable<
 
 export type PaymentProviderFormValues = {
   allowedReturnDomains?: unknown;
-  apiV3KeyRef?: unknown;
-  appCertRef?: unknown;
+  apiV3KeyCredentialId?: unknown;
+  appCertificateId?: unknown;
   appId?: unknown;
   certMode?: unknown;
   channel?: unknown;
   clientAppKey?: unknown;
-  configMetadataText?: unknown;
   configName?: unknown;
-  configVersion?: unknown;
-  credentialVersionRef?: unknown;
+  credentialOptionId?: unknown;
   environment?: unknown;
   id?: unknown;
   isEnabled?: unknown;
@@ -43,17 +47,46 @@ export type PaymentProviderFormValues = {
   notifyUrl?: unknown;
   paymentScene?: unknown;
   platform?: unknown;
-  platformCertRef?: unknown;
-  privateKeyRef?: unknown;
-  publicKeyRef?: unknown;
+  platformCertificateId?: unknown;
+  privateKeyCredentialId?: unknown;
+  publicKeyCredentialId?: unknown;
   returnUrl?: unknown;
-  rootCertRef?: unknown;
+  rootCertificateId?: unknown;
   sortOrder?: unknown;
 };
 
 type AllowedReturnDomainRow = {
   domain?: unknown;
 };
+
+type OptionValue = boolean | number | string;
+
+type PaymentConfigMetadata = {
+  certificateOptions?: Record<string, unknown>;
+  credentialOptions?: Record<string, unknown>;
+};
+
+type StoredSelection = {
+  fingerprint?: unknown;
+  id?: unknown;
+  label?: unknown;
+  maskedIdentifier?: unknown;
+  maskedSerialNo?: unknown;
+  status?: unknown;
+  versionLabel?: unknown;
+};
+
+const PAYMENT_CREDENTIAL_TYPE = {
+  ALIPAY_PUBLIC_KEY: 2,
+  APP_PRIVATE_KEY: 1,
+  WECHAT_API_V3_KEY: 3,
+} as const;
+
+const PAYMENT_CERTIFICATE_TYPE = {
+  APP_CERTIFICATE: 1,
+  PLATFORM_CERTIFICATE: 2,
+  ROOT_CERTIFICATE: 3,
+} as const;
 
 function normalizeText(value: unknown) {
   if (typeof value !== 'string') {
@@ -81,6 +114,20 @@ function normalizeNullableNumber(value: unknown) {
   return normalizeOptionalNumber(value) ?? null;
 }
 
+function normalizeOptionalInteger(value: unknown, label: string) {
+  const numberValue = normalizeOptionalNumber(value);
+
+  if (numberValue === undefined) {
+    return undefined;
+  }
+
+  if (!Number.isInteger(numberValue)) {
+    throw new TypeError(`${label}必须是整数`);
+  }
+
+  return numberValue;
+}
+
 function requireInteger(value: unknown, label: string) {
   const numberValue = normalizeOptionalNumber(value);
 
@@ -95,66 +142,15 @@ function requireInteger(value: unknown, label: string) {
   return numberValue;
 }
 
-function requireText(value: unknown, label: string) {
-  const text = normalizeText(value);
-
-  if (!text) {
-    throw new Error(`${label}不能为空`);
-  }
-
-  return text;
-}
-
 function normalizeBoolean(value: unknown) {
   return typeof value === 'boolean' ? value : null;
 }
 
-function formatJsonTextarea(value: unknown) {
-  if (value === null || value === undefined || value === '') {
-    return '';
-  }
-
-  return JSON.stringify(value, null, 2);
-}
-
-function parseJsonObjectText(value: unknown, label: string) {
-  const text = normalizeText(value);
-
-  if (!text) {
-    return null;
-  }
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    throw new Error(`${label}必须是合法 JSON 对象`);
-  }
-
-  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new TypeError(`${label}必须是合法 JSON 对象`);
-  }
-
-  return parsed as Record<string, unknown>;
-}
-
-function escapeHtml(value: unknown) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-
 function formatOptionText(
-  options: Array<{ label: string; value: boolean | number | string }>,
+  options: Array<{ label: string; value: OptionValue }>,
   value: unknown,
 ) {
-  return (
-    getOptionLabel(options, value as boolean | number | string) ||
-    String(value ?? '-')
-  );
+  return getOptionLabel(options, value as OptionValue) || String(value ?? '-');
 }
 
 function formatAllowedReturnDomainRows(value: unknown) {
@@ -183,13 +179,199 @@ function buildAllowedReturnDomains(value: unknown) {
     .filter((item): item is string => !!item);
 }
 
+function readObject(value: unknown) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function readPaymentConfigMetadata(
+  record: Pick<PaymentProviderConfigRow, 'configMetadata'>,
+) {
+  return readObject(record.configMetadata) as PaymentConfigMetadata;
+}
+
+function readStoredSelection(
+  record: Pick<PaymentProviderConfigRow, 'configMetadata'>,
+  group: 'certificateOptions' | 'credentialOptions',
+  field: string,
+) {
+  const metadata = readPaymentConfigMetadata(record);
+  const selections = readObject(metadata[group]);
+  const value = selections[field];
+
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as StoredSelection)
+    : undefined;
+}
+
+function readStoredSelectionId(
+  record: Pick<PaymentProviderConfigRow, 'configMetadata'>,
+  group: 'certificateOptions' | 'credentialOptions',
+  field: string,
+) {
+  const id = readStoredSelection(record, group, field)?.id;
+  return typeof id === 'number' && Number.isInteger(id) ? id : undefined;
+}
+
+function formatPaymentCredentialOptionLabel(
+  item: PaymentProviderCredentialOptionDto,
+) {
+  return [
+    item.label,
+    item.versionLabel,
+    item.maskedIdentifier,
+    item.fingerprint,
+  ]
+    .filter(Boolean)
+    .join(' / ');
+}
+
+function formatPaymentCertificateOptionLabel(
+  item: PaymentProviderCertificateOptionDto,
+) {
+  return [item.label, item.versionLabel, item.maskedSerialNo, item.fingerprint]
+    .filter(Boolean)
+    .join(' / ');
+}
+
+function normalizePaymentCredentialOptions(options: unknown) {
+  if (!Array.isArray(options)) {
+    return [];
+  }
+
+  return options.map((item) => {
+    const option = item as PaymentProviderCredentialOptionDto;
+    return {
+      ...option,
+      disabled: option.status !== 1,
+      label: formatPaymentCredentialOptionLabel(option),
+    };
+  });
+}
+
+function normalizePaymentCertificateOptions(options: unknown) {
+  if (!Array.isArray(options)) {
+    return [];
+  }
+
+  return options.map((item) => {
+    const option = item as PaymentProviderCertificateOptionDto;
+    return {
+      ...option,
+      disabled: option.status !== 1,
+      label: formatPaymentCertificateOptionLabel(option),
+    };
+  });
+}
+
+function credentialOptionSelectComponentProps(credentialType?: number) {
+  return {
+    afterFetch: normalizePaymentCredentialOptions,
+    api: paymentCredentialOptionListApi,
+    class: 'w-full',
+    clearable: true,
+    disabledField: 'disabled',
+    filterable: true,
+    params: {
+      ...(credentialType === undefined ? {} : { credentialType }),
+      status: 1,
+    },
+    placeholder: '请选择支付凭据',
+    valueField: 'value',
+  };
+}
+
+function certificateOptionSelectComponentProps(certificateType: number) {
+  return {
+    afterFetch: normalizePaymentCertificateOptions,
+    api: paymentCertificateOptionListApi,
+    class: 'w-full',
+    clearable: true,
+    disabledField: 'disabled',
+    filterable: true,
+    params: {
+      certificateType,
+      status: 1,
+    },
+    placeholder: '请选择支付证书',
+    valueField: 'value',
+  };
+}
+
+function buildStoredSelectionText(selection?: StoredSelection) {
+  if (!selection) {
+    return '-';
+  }
+
+  return [
+    normalizeText(selection.label),
+    normalizeText(selection.versionLabel),
+    normalizeText(selection.maskedIdentifier) ??
+      normalizeText(selection.maskedSerialNo),
+    normalizeText(selection.fingerprint),
+  ]
+    .filter(Boolean)
+    .join(' / ');
+}
+
+function buildSelectionDetailItem(label: string, selection?: StoredSelection) {
+  return {
+    label,
+    type: 'text' as const,
+    value: buildStoredSelectionText(selection),
+  };
+}
+
+export function getPaymentProviderCredentialOptionText(
+  record: PaymentProviderConfigRow,
+) {
+  return buildStoredSelectionText(
+    readStoredSelection(record, 'credentialOptions', 'credentialOptionId'),
+  );
+}
+
 export function mapProviderToFormRecord(values: PaymentProviderConfigRow) {
   return {
     ...values,
     allowedReturnDomains: formatAllowedReturnDomainRows(
       values.allowedReturnDomains,
     ),
-    configMetadataText: formatJsonTextarea(values.configMetadata),
+    apiV3KeyCredentialId: readStoredSelectionId(
+      values,
+      'credentialOptions',
+      'apiV3KeyCredentialId',
+    ),
+    appCertificateId: readStoredSelectionId(
+      values,
+      'certificateOptions',
+      'appCertificateId',
+    ),
+    credentialOptionId: readStoredSelectionId(
+      values,
+      'credentialOptions',
+      'credentialOptionId',
+    ),
+    platformCertificateId: readStoredSelectionId(
+      values,
+      'certificateOptions',
+      'platformCertificateId',
+    ),
+    privateKeyCredentialId: readStoredSelectionId(
+      values,
+      'credentialOptions',
+      'privateKeyCredentialId',
+    ),
+    publicKeyCredentialId: readStoredSelectionId(
+      values,
+      'credentialOptions',
+      'publicKeyCredentialId',
+    ),
+    rootCertificateId: readStoredSelectionId(
+      values,
+      'certificateOptions',
+      'rootCertificateId',
+    ),
   };
 }
 
@@ -198,19 +380,20 @@ function buildPaymentProviderBase(values: PaymentProviderFormValues) {
     allowedReturnDomains: buildAllowedReturnDomains(
       values.allowedReturnDomains,
     ),
-    apiV3KeyRef: normalizeNullableText(values.apiV3KeyRef),
-    appCertRef: normalizeNullableText(values.appCertRef),
+    apiV3KeyCredentialId: normalizeOptionalInteger(
+      values.apiV3KeyCredentialId,
+      '微信 APIv3 key 凭据',
+    ),
+    appCertificateId: normalizeOptionalInteger(
+      values.appCertificateId,
+      '应用证书',
+    ),
     appId: normalizeNullableText(values.appId),
     certMode: normalizeNullableNumber(values.certMode),
     channel: requireInteger(values.channel, '支付渠道') as 1 | 2,
     clientAppKey: normalizeNullableText(values.clientAppKey),
-    configMetadata: parseJsonObjectText(values.configMetadataText, '配置摘要'),
     configName: normalizeNullableText(values.configName),
-    configVersion: normalizeNullableNumber(values.configVersion),
-    credentialVersionRef: requireText(
-      values.credentialVersionRef,
-      '密钥版本引用',
-    ),
+    credentialOptionId: requireInteger(values.credentialOptionId, '主支付凭据'),
     environment: requireInteger(values.environment, '运行环境') as 1 | 2,
     isEnabled: normalizeBoolean(values.isEnabled),
     mchId: normalizeNullableText(values.mchId),
@@ -222,11 +405,23 @@ function buildPaymentProviderBase(values: PaymentProviderFormValues) {
       | 3
       | 4
       | 5,
-    platformCertRef: normalizeNullableText(values.platformCertRef),
-    privateKeyRef: normalizeNullableText(values.privateKeyRef),
-    publicKeyRef: normalizeNullableText(values.publicKeyRef),
+    platformCertificateId: normalizeOptionalInteger(
+      values.platformCertificateId,
+      '平台证书',
+    ),
+    privateKeyCredentialId: normalizeOptionalInteger(
+      values.privateKeyCredentialId,
+      '应用私钥凭据',
+    ),
+    publicKeyCredentialId: normalizeOptionalInteger(
+      values.publicKeyCredentialId,
+      '支付宝公钥凭据',
+    ),
     returnUrl: normalizeNullableText(values.returnUrl),
-    rootCertRef: normalizeNullableText(values.rootCertRef),
+    rootCertificateId: normalizeOptionalInteger(
+      values.rootCertificateId,
+      '根证书',
+    ),
     sortOrder: normalizeNullableNumber(values.sortOrder),
   } satisfies PaymentProviderCreateRequest;
 }
@@ -320,50 +515,67 @@ export const paymentProviderFormSchema: EsFormSchema = [
     label: 'provider 商户 ID',
   },
   {
-    component: 'Input',
-    componentProps: { clearable: true, placeholder: '请输入密钥版本引用' },
-    fieldName: 'credentialVersionRef',
-    label: '密钥版本引用',
+    component: 'ApiSelect',
+    componentProps: credentialOptionSelectComponentProps(),
+    fieldName: 'credentialOptionId',
+    label: '主支付凭据',
     rules: 'required',
   },
   {
-    component: 'Input',
-    componentProps: {
-      clearable: true,
-      placeholder: '请输入微信 APIv3 key 引用',
+    component: 'ApiSelect',
+    componentProps: credentialOptionSelectComponentProps(
+      PAYMENT_CREDENTIAL_TYPE.APP_PRIVATE_KEY,
+    ),
+    fieldName: 'privateKeyCredentialId',
+    label: '应用私钥凭据',
+  },
+  {
+    component: 'ApiSelect',
+    componentProps: credentialOptionSelectComponentProps(
+      PAYMENT_CREDENTIAL_TYPE.ALIPAY_PUBLIC_KEY,
+    ),
+    dependencies: {
+      show: (values) => values.channel === 1,
+      triggerFields: ['channel'],
     },
-    fieldName: 'apiV3KeyRef',
-    label: '微信 APIv3 key 引用',
+    fieldName: 'publicKeyCredentialId',
+    label: '支付宝公钥凭据',
   },
   {
-    component: 'Input',
-    componentProps: { clearable: true, placeholder: '请输入支付宝公钥引用' },
-    fieldName: 'publicKeyRef',
-    label: '支付宝公钥引用',
+    component: 'ApiSelect',
+    componentProps: credentialOptionSelectComponentProps(
+      PAYMENT_CREDENTIAL_TYPE.WECHAT_API_V3_KEY,
+    ),
+    dependencies: {
+      show: (values) => values.channel === 2,
+      triggerFields: ['channel'],
+    },
+    fieldName: 'apiV3KeyCredentialId',
+    label: '微信 APIv3 key 凭据',
   },
   {
-    component: 'Input',
-    componentProps: { clearable: true, placeholder: '请输入应用私钥引用' },
-    fieldName: 'privateKeyRef',
-    label: '应用私钥引用',
+    component: 'ApiSelect',
+    componentProps: certificateOptionSelectComponentProps(
+      PAYMENT_CERTIFICATE_TYPE.APP_CERTIFICATE,
+    ),
+    fieldName: 'appCertificateId',
+    label: '应用证书',
   },
   {
-    component: 'Input',
-    componentProps: { clearable: true, placeholder: '请输入应用证书引用' },
-    fieldName: 'appCertRef',
-    label: '应用证书引用',
+    component: 'ApiSelect',
+    componentProps: certificateOptionSelectComponentProps(
+      PAYMENT_CERTIFICATE_TYPE.PLATFORM_CERTIFICATE,
+    ),
+    fieldName: 'platformCertificateId',
+    label: '平台证书',
   },
   {
-    component: 'Input',
-    componentProps: { clearable: true, placeholder: '请输入平台证书引用' },
-    fieldName: 'platformCertRef',
-    label: '平台证书引用',
-  },
-  {
-    component: 'Input',
-    componentProps: { clearable: true, placeholder: '请输入根证书引用' },
-    fieldName: 'rootCertRef',
-    label: '根证书引用',
+    component: 'ApiSelect',
+    componentProps: certificateOptionSelectComponentProps(
+      PAYMENT_CERTIFICATE_TYPE.ROOT_CERTIFICATE,
+    ),
+    fieldName: 'rootCertificateId',
+    label: '根证书',
   },
   {
     component: 'Select',
@@ -375,16 +587,6 @@ export const paymentProviderFormSchema: EsFormSchema = [
     },
     fieldName: 'certMode',
     label: '证书模式',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入配置版本',
-    },
-    fieldName: 'configVersion',
-    label: '配置版本',
   },
   {
     component: 'Input',
@@ -437,17 +639,6 @@ export const paymentProviderFormSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     label: 'H5 允许返回域名',
   },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入 JSON 对象，禁止填写明文密钥',
-      rows: 4,
-      type: 'textarea',
-    },
-    fieldName: 'configMetadataText',
-    formItemClass: 'col-span-2',
-    label: '配置摘要',
-  },
 ];
 
 export const paymentProviderSearchSchema = formSchemaTransform.toSearchSchema(
@@ -494,24 +685,26 @@ export const paymentProviderColumns =
         slots: { default: 'detail' },
       },
       allowedReturnDomains: { hide: true },
-      apiV3KeyRef: { hide: true },
-      appCertRef: { hide: true },
+      apiV3KeyCredentialId: { hide: true },
+      appCertificateId: { hide: true },
       appId: { hide: true },
       certMode: { hide: true },
-      configMetadataText: { hide: true },
-      configVersion: { hide: true },
-      credentialVersionRef: { minWidth: 180 },
+      credentialOptionId: {
+        minWidth: 260,
+        slots: { default: 'credentialOption' },
+        title: '主支付凭据',
+      },
       isEnabled: {
         minWidth: 110,
         slots: { default: 'isEnabled' },
       },
       mchId: { hide: true },
       notifyUrl: { hide: true },
-      platformCertRef: { hide: true },
-      privateKeyRef: { hide: true },
-      publicKeyRef: { hide: true },
+      platformCertificateId: { hide: true },
+      privateKeyCredentialId: { hide: true },
+      publicKeyCredentialId: { hide: true },
       returnUrl: { hide: true },
-      rootCertRef: { hide: true },
+      rootCertificateId: { hide: true },
       sortOrder: { hide: true },
     },
   );
@@ -519,6 +712,46 @@ export const paymentProviderColumns =
 export function getPaymentProviderDetailSections(
   record: PaymentProviderConfigRow,
 ) {
+  const credentialSelections = {
+    apiV3KeyCredentialId: readStoredSelection(
+      record,
+      'credentialOptions',
+      'apiV3KeyCredentialId',
+    ),
+    credentialOptionId: readStoredSelection(
+      record,
+      'credentialOptions',
+      'credentialOptionId',
+    ),
+    privateKeyCredentialId: readStoredSelection(
+      record,
+      'credentialOptions',
+      'privateKeyCredentialId',
+    ),
+    publicKeyCredentialId: readStoredSelection(
+      record,
+      'credentialOptions',
+      'publicKeyCredentialId',
+    ),
+  };
+  const certificateSelections = {
+    appCertificateId: readStoredSelection(
+      record,
+      'certificateOptions',
+      'appCertificateId',
+    ),
+    platformCertificateId: readStoredSelection(
+      record,
+      'certificateOptions',
+      'platformCertificateId',
+    ),
+    rootCertificateId: readStoredSelection(
+      record,
+      'certificateOptions',
+      'rootCertificateId',
+    ),
+  };
+
   return [
     {
       items: [
@@ -562,32 +795,6 @@ export function getPaymentProviderDetailSections(
         { label: 'provider 应用 ID', type: 'text', value: record.appId ?? '-' },
         { label: 'provider 商户 ID', type: 'text', value: record.mchId ?? '-' },
         {
-          label: '密钥版本引用',
-          type: 'text',
-          value: record.credentialVersionRef,
-        },
-        {
-          label: '微信 APIv3 key 引用',
-          type: 'text',
-          value: record.apiV3KeyRef ?? '-',
-        },
-        {
-          label: '支付宝公钥引用',
-          type: 'text',
-          value: record.publicKeyRef ?? '-',
-        },
-        {
-          label: '应用私钥引用',
-          type: 'text',
-          value: record.privateKeyRef ?? '-',
-        },
-        {
-          label: '平台证书引用',
-          type: 'text',
-          value: record.platformCertRef ?? '-',
-        },
-        { label: '根证书引用', type: 'text', value: record.rootCertRef ?? '-' },
-        {
           label: '启用状态',
           tagText: formatOptionText(enabledStatusOptions, record.isEnabled),
           type: 'tag',
@@ -599,17 +806,45 @@ export function getPaymentProviderDetailSections(
       show: true,
       title: '支付 provider 配置',
     },
-    ...(record.configMetadata
-      ? [
-          {
-            content: `<pre class="whitespace-pre-wrap break-all text-xs">${escapeHtml(
-              formatJsonTextarea(record.configMetadata),
-            )}</pre>`,
-            show: true,
-            title: '配置摘要',
-            type: 'text',
-          } satisfies RecordDetailSection,
-        ]
-      : []),
+    {
+      items: [
+        buildSelectionDetailItem(
+          '主支付凭据',
+          credentialSelections.credentialOptionId,
+        ),
+        buildSelectionDetailItem(
+          '应用私钥凭据',
+          credentialSelections.privateKeyCredentialId,
+        ),
+        buildSelectionDetailItem(
+          '支付宝公钥凭据',
+          credentialSelections.publicKeyCredentialId,
+        ),
+        buildSelectionDetailItem(
+          '微信 APIv3 key 凭据',
+          credentialSelections.apiV3KeyCredentialId,
+        ),
+      ],
+      show: true,
+      title: '凭据摘要',
+    },
+    {
+      items: [
+        buildSelectionDetailItem(
+          '应用证书',
+          certificateSelections.appCertificateId,
+        ),
+        buildSelectionDetailItem(
+          '平台证书',
+          certificateSelections.platformCertificateId,
+        ),
+        buildSelectionDetailItem(
+          '根证书',
+          certificateSelections.rootCertificateId,
+        ),
+      ],
+      show: true,
+      title: '证书摘要',
+    },
   ] satisfies RecordDetailSection[];
 }

@@ -86,6 +86,7 @@ const statusTagType = computed<TagType>(() => {
 
   return status.value.isReady ? 'success' : 'warning';
 });
+const detectorUnavailable = computed(() => status.value?.isReady === false);
 
 watch(
   () => props.visible,
@@ -140,6 +141,11 @@ function formatHitType(hit: SensitiveWordHitDto) {
 }
 
 function resolveContent() {
+  if (detectorUnavailable.value) {
+    useMessage.warning('检测词库加载中/异常，请刷新状态后重试');
+    return '';
+  }
+
   if (!content.value.trim()) {
     useMessage.warning('请输入待检测文本');
     return '';
@@ -232,25 +238,34 @@ function clearContent() {
             </div>
           </div>
         </div>
+        <el-alert
+          v-if="detectorUnavailable"
+          class="mt-3"
+          :closable="false"
+          show-icon
+          title="检测词库加载中/异常，当前检测结果不可用于判断是否命中敏感词。"
+          type="warning"
+        />
       </el-card>
 
       <el-card shadow="never">
         <div class="mb-3 text-sm font-medium text-slate-700">待检测文本</div>
         <el-input
           v-model="content"
-          maxlength="5000"
+          maxlength="10000"
           placeholder="请输入待检测文本"
           :rows="8"
           show-word-limit
           type="textarea"
         />
         <div class="mt-3 grid gap-3 md:grid-cols-[1fr_auto]">
-          <el-input v-model="replaceChar" maxlength="8" placeholder="替换字符">
+          <el-input v-model="replaceChar" maxlength="10" placeholder="替换字符">
             <template #prepend>替换字符</template>
           </el-input>
           <div class="flex flex-wrap justify-end gap-2">
             <el-button @click="clearContent">清空</el-button>
             <el-button
+              :disabled="detectorUnavailable"
               :loading="replacing"
               type="primary"
               plain
@@ -259,6 +274,7 @@ function clearContent() {
               替换预览
             </el-button>
             <el-button
+              :disabled="detectorUnavailable"
               :loading="detecting"
               type="primary"
               @click="detectContent"
@@ -284,7 +300,11 @@ function clearContent() {
           </div>
         </template>
 
-        <el-empty v-if="!detectResult" description="暂无检测结果" />
+        <el-empty
+          v-if="detectorUnavailable"
+          description="检测词库加载中/异常"
+        />
+        <el-empty v-else-if="!detectResult" description="暂无检测结果" />
         <el-empty v-else-if="hits.length === 0" description="未命中敏感词" />
         <div v-else class="max-h-[280px] overflow-y-auto">
           <div

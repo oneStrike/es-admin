@@ -429,6 +429,69 @@ export type ForumSensitiveWordStatsFullResponse =
   SensitiveWordStatisticsDataDto;
 
 /**
+ *  类型定义 [ForumSensitiveWordHitLogPageRequest]
+ *  @来源 论坛管理/敏感词管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumSensitiveWordHitLogPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 结束时间 */
+  endDate?: string;
+
+  /* 命中实体ID（高级精确筛选） */
+  entityId?: number;
+
+  /* 命中实体类型（1=主题；2=评论） */
+  entityType?: number;
+
+  /* 敏感词级别（1=严重；2=一般；3=轻微） */
+  level?: number;
+
+  /* 命中操作类型（1=创建；2=更新） */
+  operationType?: number;
+
+  /* 排序字段，json格式 */
+  orderBy?: string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: number;
+
+  /* 敏感词ID（高级精确筛选） */
+  sensitiveWordId?: number;
+
+  /* 开始时间 */
+  startDate?: string;
+
+  /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
+  type?: number;
+
+  /* 敏感词文本搜索 */
+  word?: string;
+};
+
+export type ForumSensitiveWordHitLogPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: SensitiveWordHitLogPageItemDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
  *  类型定义 [ForumSensitiveWordReplaceRequest]
  *  @来源 论坛管理/敏感词管理
  *  @更新时间 2026-05-09 22:20:06
@@ -1550,6 +1613,89 @@ export type SensitiveWordTopHitStatisticsDto = {
 
   /* 敏感词 */
   word: string;
+};
+
+/**
+ *  类型定义 [SensitiveWordHitLogPageItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type SensitiveWordHitLogPageItemDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 作者摘要 */
+  authorSummary?: SensitiveWordHitLogAuthorSummaryDto;
+  /* 命中时间 */
+  createdAt: string;
+  /* 命中实体ID */
+  entityId: number;
+  /* 实体摘要 */
+  entitySummary: SensitiveWordHitLogEntitySummaryDto;
+  /* 命中实体类型（1=主题；2=评论） */
+  entityType: 1 | 2;
+  /* 命中日志ID */
+  id: number;
+  /* 敏感词级别（1=严重；2=一般；3=轻微） */
+  level: 1 | 2 | 3;
+  /* 实际命中的文本 */
+  matchedWord: string;
+  /* 命中操作类型（1=创建；2=更新） */
+  operationType: 1 | 2;
+  /* 敏感词ID */
+  sensitiveWordId: number;
+  /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
+  type: 1 | 2 | 3 | 4 | 5;
+
+  /* 敏感词库中的词 */
+  word?: null | string;
+};
+
+/**
+ *  类型定义 [SensitiveWordHitLogEntitySummaryDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type SensitiveWordHitLogEntitySummaryDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
+  auditStatus?: 0 | 1 | 2 | null;
+  /* 是否可跳转到内容处置入口 */
+  canNavigate: boolean;
+  /* 是否隐藏 */
+  isHidden?: boolean | null;
+  /* 内容摘要 */
+  snippet?: null | string;
+  /* 实体状态（available=可查看；deleted=已删除；hidden=已隐藏；forbidden=不可处置；missing=缺失） */
+  status: 'available' | 'deleted' | 'forbidden' | 'hidden' | 'missing';
+  /* 评论目标ID */
+  targetId?: null | number;
+  /* 评论目标类型 */
+  targetType?: null | number;
+
+  /* 主题标题 */
+  title?: null | string;
+};
+
+/**
+ *  类型定义 [SensitiveWordHitLogAuthorSummaryDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type SensitiveWordHitLogAuthorSummaryDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 作者头像URL */
+  avatarUrl?: null | string;
+  /* 作者ID */
+  id?: null | number;
+  /* 作者是否启用 */
+  isEnabled?: boolean | null;
+  /* 作者昵称 */
+  nickname?: null | string;
+
+  /* 作者状态 */
+  status?: null | number;
 };
 
 /**

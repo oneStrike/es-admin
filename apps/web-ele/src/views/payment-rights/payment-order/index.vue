@@ -1,38 +1,26 @@
 <script lang="ts" setup>
 import type { ActionItem } from '@vben/common-ui';
 
-import type {
-  PaymentOrderConfirmFormValues,
-  PaymentOrderRow,
-} from './model/order';
+import type { PaymentOrderRow } from './model/order';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type {
-  PaymentOrderPageRequest,
-  PaymentOrderUpdateStatusRequest,
-} from '#/api/types';
+import type { PaymentOrderPageRequest } from '#/api/types';
 
 import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { paymentOrderPageApi, paymentOrderUpdateStatusApi } from '#/api/core';
-import { markHandledFormError } from '#/components/es-modal-form/error';
-import EsModalForm from '#/components/es-modal-form/index.vue';
+import { paymentOrderPageApi } from '#/api/core';
 import RecordDetailModal from '#/components/record-detail-modal';
-import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
   normalizeSearchNumber,
+  normalizeSearchText,
   splitSearchDateRange,
 } from '#/utils/search-normalize';
 
 import {
-  buildPaymentOrderConfirmPayload,
-  canConfirmPaymentOrder,
   getPaymentOrderDetailSections,
-  mapPaymentOrderToConfirmRecord,
   paymentOrderColumns,
-  paymentOrderConfirmFormSchema,
   paymentOrderSearchSchema,
 } from './model/order';
 
@@ -41,9 +29,18 @@ defineOptions({
 });
 
 type PaymentOrderSearchValues = {
+  channel?: unknown;
+  clientAppKey?: unknown;
   dateRange?: unknown;
+  environment?: unknown;
+  orderNo?: unknown;
   orderType?: unknown;
+  paymentScene?: unknown;
+  platform?: unknown;
+  providerConfigId?: unknown;
+  providerTradeNo?: unknown;
   status?: unknown;
+  userId?: unknown;
 };
 
 const currentDetailRecord = shallowRef<PaymentOrderRow>();
@@ -67,13 +64,9 @@ const gridOptions: VxeGridProps<PaymentOrderRow> = {
   },
 };
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid] = useVbenVxeGrid({
   formOptions: createSearchFormOptions(paymentOrderSearchSchema),
   gridOptions,
-});
-
-const [ConfirmForm, confirmFormApi] = useVbenModal({
-  connectedComponent: EsModalForm,
 });
 
 const [DetailModal, detailApi] = useVbenModal({
@@ -87,10 +80,19 @@ function buildPaymentOrderSearchValues(
   const { endDate, startDate } = splitSearchDateRange(formValues.dateRange);
 
   return {
+    channel: normalizeSearchNumber(formValues.channel),
+    clientAppKey: normalizeSearchText(formValues.clientAppKey),
     endDate,
+    environment: normalizeSearchNumber(formValues.environment),
+    orderNo: normalizeSearchText(formValues.orderNo),
     orderType: normalizeSearchNumber(formValues.orderType),
+    paymentScene: normalizeSearchNumber(formValues.paymentScene),
+    platform: normalizeSearchNumber(formValues.platform),
+    providerConfigId: normalizeSearchNumber(formValues.providerConfigId),
+    providerTradeNo: normalizeSearchText(formValues.providerTradeNo),
     startDate,
     status: normalizeSearchNumber(formValues.status),
+    userId: normalizeSearchNumber(formValues.userId),
   } satisfies Partial<PaymentOrderPageRequest>;
 }
 
@@ -103,45 +105,12 @@ function openDetail(row: PaymentOrderRow) {
   detailApi.setData({ id: row.id }).open();
 }
 
-function openConfirmForm(row: PaymentOrderRow) {
-  confirmFormApi
-    .setData({
-      cols: 2,
-      record: mapPaymentOrderToConfirmRecord(row),
-      schema: paymentOrderConfirmFormSchema,
-      title: '支付订单确认',
-      width: 900,
-    })
-    .open();
-}
-
-async function handleConfirm(values: PaymentOrderConfirmFormValues) {
-  let payload: PaymentOrderUpdateStatusRequest;
-  try {
-    payload = buildPaymentOrderConfirmPayload(values);
-  } catch (error) {
-    useMessage.warning(error instanceof Error ? error.message : '确认失败');
-    throw markHandledFormError(error);
-  }
-
-  await paymentOrderUpdateStatusApi(payload);
-  useMessage.success('确认成功');
-  confirmFormApi.close();
-  await gridApi.reload();
-}
-
 function getPaymentOrderActions(row: PaymentOrderRow): ActionItem[] {
   return [
     {
       key: 'detail',
       text: '详情',
       onClick: () => openDetail(row),
-    },
-    {
-      disabled: !canConfirmPaymentOrder(row),
-      key: 'confirm',
-      text: '确认支付',
-      onClick: () => openConfirmForm(row),
     },
   ];
 }
@@ -169,10 +138,6 @@ function getPaymentOrderActions(row: PaymentOrderRow): ActionItem[] {
         </template>
       </Grid>
 
-      <ConfirmForm
-        :schema="paymentOrderConfirmFormSchema"
-        :on-submit="handleConfirm"
-      />
       <DetailModal
         :api="resolveDetailRecord"
         :sections="getPaymentOrderDetailSections"
