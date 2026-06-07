@@ -5,6 +5,12 @@ import type {
   TaskDeleteResponse,
   TaskDetailRequest,
   TaskDetailResponse,
+  TaskEventFailurePageRequest,
+  TaskEventFailurePageResponse,
+  TaskEventFailureRetryPendingBatchRequest,
+  TaskEventFailureRetryPendingBatchResponse,
+  TaskEventFailureRetryRequest,
+  TaskEventFailureRetryResponse,
   TaskInstancePageRequest,
   TaskInstancePageResponse,
   TaskInstanceReconciliationPageRequest,
@@ -147,6 +153,42 @@ export async function taskInstanceRewardRetryPendingBatchApi(
 ): Promise<TaskInstanceRewardRetryPendingBatchResponse> {
   return requestClient.post<TaskInstanceRewardRetryPendingBatchResponse>(
     '/api/admin/task/instance/reward/retry-pending/batch',
+    params,
+  );
+}
+
+/**
+ * 分页查询任务事件消费失败事实
+ */
+export async function taskEventFailurePageApi(
+  params?: TaskEventFailurePageRequest,
+): Promise<TaskEventFailurePageResponse> {
+  return requestClient.get<TaskEventFailurePageResponse>(
+    '/api/admin/task/event-failure/page',
+    { params },
+  );
+}
+
+/**
+ * 重试单条任务事件消费失败事实
+ */
+export async function taskEventFailureRetryApi(
+  params: TaskEventFailureRetryRequest,
+): Promise<TaskEventFailureRetryResponse> {
+  return requestClient.post<TaskEventFailureRetryResponse>(
+    '/api/admin/task/event-failure/retry',
+    params,
+  );
+}
+
+/**
+ * 批量重试待处理的任务事件消费失败事实
+ */
+export async function taskEventFailureRetryPendingBatchApi(
+  params?: TaskEventFailureRetryPendingBatchRequest,
+): Promise<TaskEventFailureRetryPendingBatchResponse> {
+  return requestClient.post<TaskEventFailureRetryPendingBatchResponse>(
+    '/api/admin/task/event-failure/retry-pending/batch',
     params,
   );
 }

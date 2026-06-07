@@ -4,14 +4,13 @@ import type {
   TaskEventTemplateOptionDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
+import type { TaskTemplateFilterValueDto } from './options';
 
 import { formSchemaTransform } from '#/utils';
 
 import {
   buildTemplateKeyOptions,
-  formatJsonTextarea,
   parseTaskRewardItems,
-  type TaskTemplateFilterValueDto,
   taskClaimModeOptions,
   taskDefinitionStatusOptions,
   taskRepeatTypeOptions,
@@ -85,25 +84,9 @@ function buildTemplateFilterFieldOptions(
 
   return (
     selectedTemplate?.availableFilterFields.map((item) => ({
-      label: `${item.label} (${item.key} / ${item.valueType})`,
+      label: `${item.label} · ${formatFilterValueType(item.valueType)}`,
       value: item.key,
     })) || []
-  );
-}
-
-function resolveSelectedTemplateFilterField(
-  templateOptions: TaskEventTemplateOptionDto[],
-  values: Partial<Record<string, unknown>>,
-) {
-  const selectedTemplate = getSelectedTemplate(
-    templateOptions,
-    values.stepTemplateKey,
-  );
-  const filterKey =
-    typeof values.stepFilterKey === 'string' ? values.stepFilterKey : '';
-
-  return selectedTemplate?.availableFilterFields.find(
-    (item) => item.key === filterKey,
   );
 }
 
@@ -118,31 +101,22 @@ function shouldShowTemplateFilterFields(
   );
 }
 
-function mapSingleTemplateFilterToFormRecord(
+function formatFilterValueType(valueType: string) {
+  if (valueType === 'boolean') return '是/否';
+  if (valueType === 'number') return '数字';
+  return '文本';
+}
+
+function mapTemplateFiltersToFormRecord(
   filters?: null | TaskTemplateFilterValueDto[],
 ) {
-  if (filters?.length === 1) {
-    const filter = filters[0];
-
-    if (!filter) {
-      return {
-        stepFilterKey: undefined,
-        stepFilterValue: undefined,
-        stepFiltersText: '',
-      };
-    }
-
-    return {
-      stepFilterKey: filter.key,
-      stepFilterValue: String(filter.value ?? ''),
-      stepFiltersText: '',
-    };
-  }
-
   return {
-    stepFilterKey: undefined,
-    stepFilterValue: undefined,
-    stepFiltersText: formatJsonTextarea(filters),
+    stepFilters: filters?.length
+      ? filters.map((item) => ({
+          key: item.key,
+          value: String(item.value ?? ''),
+        }))
+      : [],
   };
 }
 
@@ -286,11 +260,23 @@ export function createTaskDefinitionFormSchema(
     },
     {
       component: 'RadioGroup',
-      componentProps: {
+      componentProps: (values) => ({
         class: 'w-full',
-        options: taskStepTriggerModeOptions,
+        options:
+          Number(values.claimMode ?? 1) === 1
+            ? taskStepTriggerModeOptions.filter((item) => item.value === 2)
+            : taskStepTriggerModeOptions.filter((item) => item.value === 1),
+      }),
+      defaultValue: 2,
+      dependencies: {
+        triggerFields: ['claimMode'],
+        trigger(values, _actions, controller) {
+          void controller.setFieldValue(
+            'stepTriggerMode',
+            Number(values.claimMode ?? 1) === 1 ? 2 : 1,
+          );
+        },
       },
-      defaultValue: 1,
       fieldName: 'stepTriggerMode',
       label: '触发方式',
       rules: 'required',
@@ -321,49 +307,47 @@ export function createTaskDefinitionFormSchema(
       label: '事件模板',
     },
     {
-      component: 'Select',
-      componentProps: (values) => ({
-        class: 'w-full',
-        clearable: true,
-        filterable: true,
-        options: buildTemplateFilterFieldOptions(
-          templateOptions,
-          values.stepTemplateKey,
-        ),
-        placeholder: '选择模板声明的过滤字段',
-      }),
+      component: 'VbenFormFieldArray',
+      componentProps: {
+        addButtonText: '添加过滤条件',
+        emptyText: '当前模板不需要过滤条件',
+        schema: [
+          {
+            component: 'Select',
+            componentProps: (values: { stepTemplateKey?: string }) => ({
+              class: 'w-full',
+              clearable: true,
+              filterable: true,
+              options: buildTemplateFilterFieldOptions(
+                templateOptions,
+                values.stepTemplateKey,
+              ),
+              placeholder: '请选择过滤字段',
+            }),
+            fieldName: 'key',
+            label: '过滤字段',
+            rules: 'required',
+          },
+          {
+            component: 'Input',
+            componentProps: {
+              clearable: true,
+              placeholder: '按字段类型填写值',
+            },
+            fieldName: 'value',
+            label: '过滤值',
+            rules: 'required',
+          },
+        ],
+      },
       dependencies: {
         show: (values) =>
           shouldShowTemplateFilterFields(templateOptions, values),
         triggerFields: ['stepTriggerMode', 'stepTemplateKey'],
       },
-      fieldName: 'stepFilterKey',
-      help: '适合配置单个常用过滤条件；多个条件请使用下方高级 JSON',
-      label: '常用过滤字段',
-    },
-    {
-      component: 'Input',
-      componentProps: (values) => {
-        const selectedField = resolveSelectedTemplateFilterField(
-          templateOptions,
-          values,
-        );
-
-        return {
-          placeholder: selectedField
-            ? `请输入 ${selectedField.label}，类型 ${selectedField.valueType}`
-            : '请先选择过滤字段',
-        };
-      },
-      dependencies: {
-        show: (values) =>
-          shouldShowTemplateFilterFields(templateOptions, values) &&
-          Boolean(values.stepFilterKey),
-        triggerFields: ['stepTriggerMode', 'stepTemplateKey', 'stepFilterKey'],
-      },
-      fieldName: 'stepFilterValue',
-      help: '布尔字段请输入 true 或 false；数值字段请输入数字',
-      label: '常用过滤值',
+      fieldName: 'stepFilters',
+      formItemClass: 'col-span-2',
+      label: '过滤条件',
     },
     {
       component: 'Select',
@@ -387,19 +371,6 @@ export function createTaskDefinitionFormSchema(
       fieldName: 'stepDescription',
       formItemClass: 'col-span-2',
       label: '完成条件说明',
-    },
-    {
-      component: 'Input',
-      componentProps: {
-        placeholder:
-          '请输入过滤条件 JSON 数组，例如 [{"key":"targetType","label":"目标类型","value":"comic_work"}]',
-        rows: 4,
-        type: 'textarea',
-      },
-      fieldName: 'stepFiltersText',
-      formItemClass: 'col-span-2',
-      help: '高级入口；仅事件驱动步骤使用，会按模板声明的字段键和值类型校验并规范化',
-      label: '高级过滤 JSON',
     },
   ];
 }
@@ -544,7 +515,7 @@ export function mapTaskDefinitionDetailToFormRecord(
   detail: AdminTaskDefinitionDetailDto,
 ) {
   const step = detail.steps?.[0];
-  const filterRecord = mapSingleTemplateFilterToFormRecord(step?.filters);
+  const filterRecord = mapTemplateFiltersToFormRecord(step?.filters);
 
   return {
     ...detail,

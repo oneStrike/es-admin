@@ -11,6 +11,7 @@ import {
   taskRewardSettlementStatusOptions,
   taskVisibleStatusOptions,
 } from './options';
+import { createTaskDefinitionTableSelectProps } from './task-select';
 
 type TaskReconciliationSchemaField = EsFormSchema[number];
 
@@ -71,14 +72,15 @@ const taskReconciliationListSchema: EsFormSchema = [
     },
   },
   {
-    component: 'InputNumber',
+    component: 'TableSelect',
     fieldName: 'taskId',
-    label: '任务头 ID',
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '任务头 ID',
-    },
+    label: '任务',
+    componentProps: createTaskDefinitionTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择任务',
+      title: '选择对账任务',
+    }),
   },
   createTaskReconciliationField('userId', {
     componentProps: createAppUserTableSelectProps({
@@ -156,12 +158,14 @@ export const taskReconciliationSearchFormSchema =
       },
     },
     taskId: {
-      show: false,
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '高级诊断：任务头 ID',
-      },
+      show: true,
+      component: 'TableSelect',
+      componentProps: createTaskDefinitionTableSelectProps({
+        emitScalar: true,
+        multiple: false,
+        placeholder: '搜索并选择任务',
+        title: '选择对账任务',
+      }),
     },
     dateRange: {
       component: 'DatePicker',

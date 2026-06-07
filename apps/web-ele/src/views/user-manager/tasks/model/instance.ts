@@ -12,6 +12,7 @@ import {
   taskSceneTypeOptions,
   taskVisibleStatusOptions,
 } from './options';
+import { createTaskDefinitionTableSelectProps } from './task-select';
 
 type TaskInstanceSchemaField = EsFormSchema[number];
 
@@ -22,9 +23,15 @@ const taskInstanceFieldCatalog = {
     label: '实例状态',
   },
   taskId: {
-    component: 'InputNumber',
+    component: 'TableSelect',
+    componentProps: createTaskDefinitionTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择任务',
+      title: '选择任务实例所属任务',
+    }),
     fieldName: 'taskId',
-    label: '任务头 ID',
+    label: '任务',
   },
   userId: {
     component: 'TableSelect',
@@ -61,11 +68,12 @@ function createTaskInstanceField(
 const taskInstanceListSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'id', label: '实例 ID' },
   createTaskInstanceField('taskId', {
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '任务头 ID',
-    },
+    componentProps: createTaskDefinitionTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择任务',
+      title: '选择任务实例所属任务',
+    }),
   }),
   createTaskInstanceField('userId', {
     componentProps: createAppUserTableSelectProps({
@@ -119,12 +127,14 @@ export const taskInstanceSearchFormSchema = formSchemaTransform.toSearchSchema(
   taskInstanceListSchema,
   {
     taskId: {
-      show: false,
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '高级诊断：任务头 ID',
-      },
+      show: true,
+      component: 'TableSelect',
+      componentProps: createTaskDefinitionTableSelectProps({
+        emitScalar: true,
+        multiple: false,
+        placeholder: '搜索并选择任务',
+        title: '选择任务实例所属任务',
+      }),
     },
     userId: {
       show: true,

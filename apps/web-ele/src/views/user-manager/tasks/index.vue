@@ -4,6 +4,7 @@ import { Page } from '@vben/common-ui';
 import EsFullHeightTabs from '#/components/es-full-height-tabs';
 
 import TaskDefinitionPanel from './components/task-definition-panel.vue';
+import TaskEventFailurePanel from './components/task-event-failure-panel.vue';
 import TaskInstancePanel from './components/task-instance-panel.vue';
 import TaskReconciliationPanel from './components/task-reconciliation-panel.vue';
 
@@ -11,7 +12,7 @@ defineOptions({
   name: 'TaskManager',
 });
 
-type TabKey = 'definition' | 'instance' | 'reconciliation';
+type TabKey = 'definition' | 'eventFailure' | 'instance' | 'reconciliation';
 
 const activeTab = ref<TabKey>('definition');
 </script>
@@ -29,6 +30,10 @@ const activeTab = ref<TabKey>('definition');
 
       <el-tab-pane label="奖励对账" name="reconciliation">
         <TaskReconciliationPanel />
+      </el-tab-pane>
+
+      <el-tab-pane label="事件失败" name="eventFailure">
+        <TaskEventFailurePanel />
       </el-tab-pane>
     </EsFullHeightTabs>
   </Page>

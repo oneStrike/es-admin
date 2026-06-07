@@ -2,6 +2,7 @@
 import type { ActionItem } from '@vben/common-ui';
 
 import type { TaskDefinitionRow } from '../model/definition';
+import type { TaskTemplateFilterValueDto } from '../model/options';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
@@ -39,8 +40,6 @@ import {
   buildTaskRewardItems,
   formatTemplateWarningHints,
   normalizeTaskTemplateFilters,
-  parseJsonArrayText,
-  type TaskTemplateFilterValueDto,
   taskDefinitionStatusOptions,
 } from '../model/options';
 
@@ -67,9 +66,7 @@ type TaskFormValues = Partial<
     rewardPoints?: number | string;
     stepDedupeScope?: null | number | string;
     stepDescription?: null | string;
-    stepFilterKey?: null | string;
-    stepFilterValue?: null | string;
-    stepFiltersText?: string;
+    stepFilters?: TaskTemplateFilterValueDto[];
     stepTargetValue?: number | string;
     stepTemplateKey?: null | string;
     stepTriggerMode?: 1 | 2 | number | string;
@@ -138,46 +135,39 @@ function parseTextValue(value: unknown) {
   return text || undefined;
 }
 
-function parseTaskFilters(value: unknown) {
-  return parseJsonArrayText<TaskTemplateFilterValueDto>(value, '过滤条件');
-}
-
 function buildTaskFilterDrafts(
   values: TaskFormValues,
   selectedTemplate: TaskEventTemplateOptionDto,
 ) {
-  const rawFilters = parseTaskFilters(values.stepFiltersText) || [];
-  const filterKey = parseTextValue(values.stepFilterKey);
+  const rawFilters = values.stepFilters || [];
 
-  if (!filterKey) {
-    return rawFilters.length > 0 ? rawFilters : undefined;
+  if (rawFilters.length === 0) {
+    return undefined;
   }
 
-  const selectedField = selectedTemplate.availableFilterFields.find(
-    (item) => item.key === filterKey,
+  const fieldMap = new Map(
+    selectedTemplate.availableFilterFields.map((item) => [item.key, item]),
   );
 
-  if (!selectedField) {
-    throw new Error('常用过滤字段不在当前模板可选字段中');
-  }
+  return rawFilters.map((item, index) => {
+    const key = parseTextValue(item.key);
+    const value = parseTextValue(item.value);
 
-  if (rawFilters.some((item) => item.key === filterKey)) {
-    throw new Error('常用过滤字段已在高级 JSON 中配置，请保留一种输入方式');
-  }
+    if (!key || !value) {
+      throw new Error(`第 ${index + 1} 条过滤条件未填写完整`);
+    }
 
-  const filterValue = parseTextValue(values.stepFilterValue);
-  if (!filterValue) {
-    throw new Error('常用过滤值不能为空');
-  }
+    const selectedField = fieldMap.get(key);
+    if (!selectedField) {
+      throw new Error(`第 ${index + 1} 条过滤字段不在当前模板可选字段中`);
+    }
 
-  return [
-    ...rawFilters,
-    {
-      key: filterKey,
+    return {
+      key,
       label: selectedField.label,
-      value: filterValue,
-    },
-  ];
+      value,
+    };
+  });
 }
 
 function resolveSelectedTemplate(
@@ -209,12 +199,21 @@ function buildTaskPayloadBase(values: TaskFormValues) {
     throw new Error('任务标题不能为空');
   }
 
+  const claimMode = Number(values.claimMode ?? 1) as 1 | 2;
   const stepTriggerMode = Number(values.stepTriggerMode ?? 1) as 1 | 2;
   const stepTemplateKey = parseTextValue(values.stepTemplateKey);
   const stepDedupeScope = values.stepDedupeScope
     ? (Number(values.stepDedupeScope) as 1 | 2)
     : undefined;
   const selectedTemplate = resolveSelectedTemplate(stepTemplateKey);
+
+  if (claimMode === 1 && stepTriggerMode !== 2) {
+    throw new Error('自动领取任务只能选择事件驱动完成条件');
+  }
+
+  if (claimMode === 2 && stepTriggerMode !== 1) {
+    throw new Error('手动领取任务只能选择手动触发完成条件');
+  }
 
   if (stepTriggerMode === 2 && !stepTemplateKey) {
     throw new Error('事件驱动步骤必须选择事件模板');
@@ -251,7 +250,7 @@ function buildTaskPayloadBase(values: TaskFormValues) {
   }
 
   return {
-    claimMode: Number(values.claimMode ?? 1) as 1 | 2,
+    claimMode,
     completionPolicy: 1 as const,
     cover: parseTextValue(values.cover),
     description: parseTextValue(values.description),
