@@ -6,6 +6,7 @@ import type {
   AdminForumTopicPageItemDto,
   ForumTopicCreateRequest,
   ForumTopicMoveRequest,
+  ForumTopicRestoreRequest,
   ForumTopicUpdateAuditStatusRequest,
   ForumTopicUpdateFeaturedRequest,
   ForumTopicUpdateHiddenRequest,
@@ -23,6 +24,7 @@ import {
   forumTopicDetailApi,
   forumTopicMoveApi,
   forumTopicPageApi,
+  forumTopicRestoreApi,
   forumTopicUpdateApi,
   forumTopicUpdateAuditStatusApi,
   forumTopicUpdateFeaturedApi,
@@ -67,14 +69,19 @@ type ForumTopicRow = AdminForumTopicPageItemDto & {
 
 type TopicCreateFormValues = Pick<
   ForumTopicCreateRequest,
-  'sectionId' | 'title'
+  'images' | 'sectionId' | 'title'
 > & {
   content?: string;
   selectedUserIds?: number[];
+  videosText?: string;
 };
 
-type TopicEditFormValues = Pick<ForumTopicUpdateRequest, 'id' | 'title'> & {
+type TopicEditFormValues = Pick<
+  ForumTopicUpdateRequest,
+  'id' | 'images' | 'title'
+> & {
   content?: string;
+  videosText?: string;
 };
 
 type TopicAuditFormValues = Pick<
@@ -83,6 +90,10 @@ type TopicAuditFormValues = Pick<
 >;
 
 type TopicMoveFormValues = Pick<ForumTopicMoveRequest, 'id' | 'sectionId'>;
+type TopicRestoreFormValues = Pick<
+  ForumTopicRestoreRequest,
+  'id' | 'sectionId'
+>;
 
 type TopicBooleanFieldMap = {
   isFeatured: ForumTopicUpdateFeaturedRequest;
@@ -98,8 +109,12 @@ const gridOptions: VxeGridProps<ForumTopicRow> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        const { dateRange, ...restFormValues } = formValues || {};
+        const { dateRange, selectedUserIds, ...restFormValues } =
+          formValues || {};
         const [startDate, endDate] = Array.isArray(dateRange) ? dateRange : [];
+        const userId = Array.isArray(selectedUserIds)
+          ? selectedUserIds[0]
+          : undefined;
 
         return await forumTopicPageApi(
           formatQuery({
@@ -108,6 +123,7 @@ const gridOptions: VxeGridProps<ForumTopicRow> = {
               ...restFormValues,
               endDate,
               startDate,
+              userId,
             },
             sorts,
           }),
@@ -139,6 +155,10 @@ const [MoveForm, moveFormApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
+const [RestoreForm, restoreFormApi] = useVbenModal({
+  connectedComponent: EsModalForm,
+});
+
 const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: RecordDetailModal,
   title: '帖子详情',
@@ -165,13 +185,58 @@ async function openEditModal(row: ForumTopicRow) {
       record: {
         content: detail.html,
         id: detail.id,
+        images: detail.images ?? [],
         title: detail.title,
+        videosText: JSON.stringify(detail.videos ?? [], null, 2),
       },
       schema: editFormSchema,
       title: '帖子',
       width: 980,
     })
     .open();
+}
+
+async function openRestoreModal(row: ForumTopicRow) {
+  if (sectionOptions.length === 0) {
+    await fetchTopicSectionOptions();
+  }
+
+  restoreFormApi
+    .setData({
+      cols: 1,
+      record: {
+        id: row.id,
+        sectionId: row.sectionId,
+      },
+      schema: moveFormSchema,
+      title: '恢复主题',
+      width: 640,
+    })
+    .open();
+}
+
+function normalizeImages(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => String(item || '').trim())
+    .filter((item) => item.length > 0);
+}
+
+function parseVideosText(value?: string) {
+  const text = value?.trim();
+  if (!text) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    useMessage.warning('主题视频必须是合法 JSON');
+    throw new Error('invalid videos json');
+  }
 }
 
 async function openAuditModal(row: ForumTopicRow) {
@@ -233,9 +298,11 @@ function normalizeCreatePayload(values: TopicCreateFormValues) {
 
   return {
     html: values.content.trim(),
+    images: normalizeImages(values.images),
     sectionId: Number(values.sectionId),
     title: values.title.trim(),
     userId: Number(selectedUserIds[0]),
+    videos: parseVideosText(values.videosText),
   } satisfies ForumTopicCreateRequest;
 }
 
@@ -248,7 +315,9 @@ function normalizeEditPayload(values: TopicEditFormValues) {
   return {
     html: values.content.trim(),
     id: Number(values.id),
+    images: normalizeImages(values.images),
     title: values.title.trim(),
+    videos: parseVideosText(values.videosText),
   } satisfies ForumTopicUpdateRequest;
 }
 
@@ -301,6 +370,21 @@ async function handleMoveSubmit(values: TopicMoveFormValues) {
   await gridApi.reload();
 }
 
+async function handleRestoreSubmit(values: TopicRestoreFormValues) {
+  const sectionId = Number(values.sectionId);
+  if (!sectionId) {
+    useMessage.warning('请选择恢复后的板块');
+    throw new Error('missing restore section');
+  }
+
+  await forumTopicRestoreApi({
+    id: Number(values.id),
+    sectionId,
+  } satisfies ForumTopicRestoreRequest);
+  useMessage.success('恢复成功');
+  await gridApi.reload();
+}
+
 async function deleteTopic(row: ForumTopicRow) {
   await forumTopicDeleteApi({ id: row.id });
   useMessage.success('删除成功');
@@ -342,6 +426,21 @@ async function toggleTopicBoolean<Field extends keyof TopicBooleanFieldMap>(
 }
 
 function getTopicActions(row: ForumTopicRow): ActionItem[] {
+  if (row.deletedAt) {
+    return [
+      {
+        key: 'detail',
+        text: '详情',
+        onClick: () => detailApi.setData({ id: row.id }).open(),
+      },
+      {
+        key: 'restore',
+        text: '恢复',
+        onClick: () => openRestoreModal(row),
+      },
+    ];
+  }
+
   return [
     {
       key: 'detail',
@@ -526,6 +625,7 @@ function getTopicActions(row: ForumTopicRow): ActionItem[] {
     <EditForm :schema="editFormSchema" :on-submit="handleEditSubmit" />
     <AuditForm :schema="auditFormSchema" :on-submit="handleAuditSubmit" />
     <MoveForm :schema="moveFormSchema" :on-submit="handleMoveSubmit" />
+    <RestoreForm :schema="moveFormSchema" :on-submit="handleRestoreSubmit" />
 
     <DetailModal
       :api="forumTopicDetailApi"

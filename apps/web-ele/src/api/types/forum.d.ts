@@ -474,6 +474,9 @@ export type ForumTopicPageRequest = {
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: number;
 
+  /* 删除状态：active=正常；deleted=已删除；all=全部 */
+  deletedState?: 'active' | 'all' | 'deleted';
+
   /* 结束时间 */
   endDate?: null | string;
 
@@ -569,6 +572,15 @@ export type ForumTopicUpdateResponse = boolean;
 export type ForumTopicDeleteRequest = IdDto;
 
 export type ForumTopicDeleteResponse = boolean;
+
+/**
+ *  类型定义 [ForumTopicRestoreRequest]
+ *  @来源 论坛管理/主题管理
+ *  @更新时间 2026-06-08 22:05:00
+ */
+export type ForumTopicRestoreRequest = RestoreForumTopicDto;
+
+export type ForumTopicRestoreResponse = boolean;
 
 /**
  *  类型定义 [ForumTopicMoveRequest]
@@ -977,14 +989,20 @@ export type ForumModeratorActionLogPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
-  /* 操作类型（1=置顶主题；2=取消置顶主题；3=加精主题；4=取消加精主题；5=锁定主题；6=取消锁定主题；7=删除主题；8=移动主题；9=审核主题；10=删除评论；11=隐藏主题；12=取消隐藏主题；13=审核评论；14=隐藏评论；15=取消隐藏评论） */
+  /* 操作类型（1=置顶主题；2=取消置顶主题；3=加精主题；4=取消加精主题；5=锁定主题；6=取消锁定主题；7=删除主题；8=移动主题；9=审核主题；10=删除评论；11=隐藏主题；12=取消隐藏主题；13=审核评论；14=隐藏评论；15=取消隐藏评论；16=恢复主题） */
   actionType?: number;
+
+  /* 治理发起方类型（1=版主；2=后台管理员） */
+  actorType?: number;
+
+  /* 治理发起用户ID；版主为 app 用户ID，后台管理员为后台用户ID */
+  actorUserId?: number;
 
   /* 结束时间 */
   endDate?: null | string;
 
-  /* 版主ID */
-  moderatorId?: number;
+  /* 版主ID；后台管理员发起的治理日志为空 */
+  moderatorId?: null | number;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -2186,7 +2204,7 @@ export type CreateForumTopicDto = {
   userId: number;
 
   /* 主题视频 JSON 值 */
-  videos?: string;
+  videos?: any;
 };
 
 /**
@@ -2207,7 +2225,7 @@ export type UpdateForumTopicDto = {
   title?: string;
 
   /* 主题视频 JSON 值 */
-  videos?: string;
+  videos?: any;
 };
 
 /**
@@ -2216,6 +2234,21 @@ export type UpdateForumTopicDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type MoveForumTopicDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 主键id */
+  id: number;
+
+  /* 关联的板块ID */
+  sectionId: number;
+};
+
+/**
+ *  类型定义 [RestoreForumTopicDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-06-08 22:05:00
+ */
+export type RestoreForumTopicDto = {
   /** 任意合法数值 */
   [property: string]: any;
   /* 主键id */
@@ -2777,8 +2810,28 @@ export type ForumModeratorActionLogDto = {
   [property: string]: any;
   /* 操作描述 */
   actionDescription: string;
-  /* 操作类型（1=置顶主题；2=取消置顶主题；3=加精主题；4=取消加精主题；5=锁定主题；6=取消锁定主题；7=删除主题；8=移动主题；9=审核主题；10=删除评论；11=隐藏主题；12=取消隐藏主题；13=审核评论；14=隐藏评论；15=取消隐藏评论） */
-  actionType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+  /* 操作类型（1=置顶主题；2=取消置顶主题；3=加精主题；4=取消加精主题；5=锁定主题；6=取消锁定主题；7=删除主题；8=移动主题；9=审核主题；10=删除评论；11=隐藏主题；12=取消隐藏主题；13=审核评论；14=隐藏评论；15=取消隐藏评论；16=恢复主题） */
+  actionType:
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 13
+    | 14
+    | 15
+    | 16;
+  /* 治理发起方类型（1=版主；2=后台管理员） */
+  actorType: 1 | 2;
+  /* 治理发起用户ID；版主为 app 用户ID，后台管理员为后台用户ID */
+  actorUserId: number;
   /* 操作后数据快照 */
   afterData?: null | string;
   /* 操作前数据快照 */
@@ -2787,8 +2840,8 @@ export type ForumModeratorActionLogDto = {
   createdAt: string;
   /* 主键id */
   id: number;
-  /* 版主ID */
-  moderatorId: number;
+  /* 版主ID；后台管理员发起的治理日志为空 */
+  moderatorId?: null | number;
   /* 操作目标ID */
   targetId: number;
 

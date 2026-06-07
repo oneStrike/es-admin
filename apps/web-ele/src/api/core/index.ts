@@ -225,6 +225,7 @@ export { forumTopicDetailApi } from './forum';
 export { forumTopicCreateApi } from './forum';
 export { forumTopicUpdateApi } from './forum';
 export { forumTopicDeleteApi } from './forum';
+export { forumTopicRestoreApi } from './forum';
 export { forumTopicMoveApi } from './forum';
 export { forumTopicUpdatePinnedApi } from './forum';
 export { forumTopicUpdateFeaturedApi } from './forum';

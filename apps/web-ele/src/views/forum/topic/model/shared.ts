@@ -9,6 +9,7 @@ import type {
 import type { EsFormSchema } from '#/types';
 
 import { forumSectionsPageApi } from '#/api/core';
+import { UploadSceneEnum } from '#/enum/api';
 import { formSchemaTransform } from '#/utils';
 import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
@@ -21,6 +22,12 @@ export const auditStatusOptions = [
 export const booleanFilterOptions = [
   { label: '是', value: true },
   { label: '否', value: false },
+];
+
+export const deletedStateOptions = [
+  { label: '正常主题', value: 'active', color: 'success' as const },
+  { label: '已删除', value: 'deleted', color: 'danger' as const },
+  { label: '全部', value: 'all', color: 'info' as const },
 ];
 
 export const userStatusOptions = [
@@ -172,10 +179,38 @@ const topicFieldCatalog = {
     fieldName: 'sectionId',
     label: '所属板块',
   },
+  deletedState: {
+    component: 'Select',
+    componentProps: { options: deletedStateOptions },
+    fieldName: 'deletedState',
+    label: '删除状态',
+  },
+  images: {
+    component: 'Upload',
+    componentProps: {
+      accept: 'image/*',
+      maxCount: 9,
+      multiple: true,
+      returnDataType: 'url',
+      scene: UploadSceneEnum.SHARED,
+    },
+    fieldName: 'images',
+    label: '主题图片',
+  },
   title: {
     component: 'Input',
     fieldName: 'title',
     label: '帖子标题',
+  },
+  videosText: {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入视频 JSON；留空表示 []',
+      rows: 4,
+      type: 'textarea',
+    },
+    fieldName: 'videosText',
+    label: '主题视频',
   },
 } satisfies Record<string, TopicSchemaField>;
 
@@ -242,6 +277,12 @@ export const createFormSchema: EsFormSchema = [
     formItemClass: 'col-span-2',
     rules: 'required',
   }),
+  createTopicField('images', {
+    formItemClass: 'col-span-2',
+  }),
+  createTopicField('videosText', {
+    formItemClass: 'col-span-2',
+  }),
 ];
 
 export const editFormSchema: EsFormSchema = [
@@ -261,6 +302,12 @@ export const editFormSchema: EsFormSchema = [
     },
     formItemClass: 'col-span-2',
     rules: 'required',
+  }),
+  createTopicField('images', {
+    formItemClass: 'col-span-2',
+  }),
+  createTopicField('videosText', {
+    formItemClass: 'col-span-2',
   }),
 ];
 
@@ -307,6 +354,7 @@ const topicListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'contentPreview', label: '正文摘要' },
   { component: 'Input', fieldName: 'userSummary', label: '发帖用户' },
   { component: 'Input', fieldName: 'sectionSummary', label: '所属板块' },
+  createTopicField('deletedState'),
   createTopicField('auditStatus'),
   createTopicField('isPinned'),
   createTopicField('isFeatured'),
@@ -345,13 +393,16 @@ const topicListSchema: EsFormSchema = [
     },
   },
   {
-    component: 'InputNumber',
-    fieldName: 'userId',
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '用户ID',
-    },
+    component: 'TableSelect',
+    componentProps: () =>
+      createAppUserTableSelectProps({
+        enabledOnly: false,
+        multiple: false,
+        placeholder: '请选择发帖用户',
+        title: '选择发帖用户',
+      }),
+    fieldName: 'selectedUserIds',
+    label: '发帖用户',
   },
 ];
 
@@ -359,11 +410,18 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
   topicListSchema,
   {
     auditStatus: {
-      defaultValue: 0,
       componentProps: {
         clearable: true,
         options: auditStatusOptions,
         placeholder: '审核状态',
+      },
+    },
+    deletedState: {
+      defaultValue: 'active',
+      componentProps: {
+        clearable: false,
+        options: deletedStateOptions,
+        placeholder: '删除状态',
       },
     },
     keyword: {
@@ -418,12 +476,15 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
         valueFormat: 'YYYY-MM-DD',
       },
     },
-    userId: {
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '用户ID',
-      },
+    selectedUserIds: {
+      componentProps: () => ({
+        ...createAppUserTableSelectProps({
+          enabledOnly: false,
+          multiple: false,
+          placeholder: '请选择发帖用户',
+          title: '选择发帖用户',
+        }),
+      }),
     },
   },
 );
@@ -482,8 +543,9 @@ export const topicColumns =
       },
       keyword: { hide: true },
       sectionId: { hide: true },
+      deletedState: { hide: true },
       dateRange: { hide: true },
-      userId: { hide: true },
+      selectedUserIds: { hide: true },
       createdAt: {
         cellRender: {
           name: 'CellDate',
@@ -517,6 +579,9 @@ export function syncTopicSectionOptions(sections: BaseForumSectionDto[] = []) {
 }
 
 export async function fetchTopicSectionOptions() {
-  const sectionResp = await forumSectionsPageApi({ pageSize: 500 });
+  const sectionResp = await forumSectionsPageApi({
+    isEnabled: true,
+    pageSize: 500,
+  });
   syncTopicSectionOptions(sectionResp.list ?? []);
 }

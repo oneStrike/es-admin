@@ -67,6 +67,13 @@ export function getDetailSections(detail: ForumTopicDetailResponse) {
           tagText: auditStatus?.label || '-',
           tagType: auditStatus?.color || 'info',
         },
+        {
+          label: '删除时间',
+          value: detail.deletedAt
+            ? formatUTC(detail.deletedAt, 'YYYY-MM-DD HH:mm:ss')
+            : '-',
+          type: 'text' as const,
+        },
       ],
     },
     {
@@ -187,6 +194,24 @@ export function getDetailSections(detail: ForumTopicDetailResponse) {
           label: '最后评论时间',
           value: detail.lastCommentAt
             ? formatUTC(detail.lastCommentAt, 'YYYY-MM-DD HH:mm:ss')
+            : '-',
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '媒体',
+      show: true,
+      items: [
+        {
+          label: '图片',
+          value: detail.images?.length ? detail.images.join('、') : '-',
+          type: 'text' as const,
+        },
+        {
+          label: '视频',
+          value: detail.videos
+            ? JSON.stringify(detail.videos, null, 2)
             : '-',
           type: 'text' as const,
         },

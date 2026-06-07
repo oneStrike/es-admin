@@ -102,6 +102,8 @@ import type {
   ForumTopicMoveResponse,
   ForumTopicPageRequest,
   ForumTopicPageResponse,
+  ForumTopicRestoreRequest,
+  ForumTopicRestoreResponse,
   ForumTopicUpdateAuditStatusRequest,
   ForumTopicUpdateAuditStatusResponse,
   ForumTopicUpdateFeaturedRequest,
@@ -453,6 +455,18 @@ export async function forumTopicDeleteApi(
 ): Promise<ForumTopicDeleteResponse> {
   return requestClient.post<ForumTopicDeleteResponse>(
     '/api/admin/forum/topic/delete',
+    params,
+  );
+}
+
+/**
+ * 恢复已删除论坛主题
+ */
+export async function forumTopicRestoreApi(
+  params: ForumTopicRestoreRequest,
+): Promise<ForumTopicRestoreResponse> {
+  return requestClient.post<ForumTopicRestoreResponse>(
+    '/api/admin/forum/topic/restore',
     params,
   );
 }
