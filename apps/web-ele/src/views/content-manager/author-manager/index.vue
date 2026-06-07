@@ -16,6 +16,10 @@ import {
   contentAuthorDeleteApi,
   contentAuthorDetailApi,
   contentAuthorPageApi,
+  contentAuthorRebuildFollowCountAllApi,
+  contentAuthorRebuildFollowCountApi,
+  contentAuthorRebuildWorkCountAllApi,
+  contentAuthorRebuildWorkCountApi,
   contentAuthorUpdateApi,
   contentAuthorUpdateRecommendedApi,
   contentAuthorUpdateStatusApi,
@@ -32,6 +36,8 @@ import { authorColumns, authorSearchSchema, formSchema } from './model/shared';
 
 type AuthorRow = AuthorPageResponseDto & {
   loading?: boolean;
+  rebuildFollowLoading?: boolean;
+  rebuildWorkLoading?: boolean;
 };
 
 /**
@@ -192,6 +198,80 @@ async function confirmDeleteAuthor(row: AuthorRow) {
   await deleteAuthor(row);
 }
 
+async function rebuildAuthorFollowCount(row: AuthorRow) {
+  row.rebuildFollowLoading = true;
+  try {
+    const result = await contentAuthorRebuildFollowCountApi({ id: row.id });
+    useMessage.success(`粉丝数已重建：${result.followersCount}`);
+    await gridApi.reload();
+  } finally {
+    row.rebuildFollowLoading = false;
+  }
+}
+
+async function confirmRebuildAuthorFollowCount(row: AuthorRow) {
+  const confirmed = await useConfirm({
+    content: '确认重建当前作者粉丝数?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await rebuildAuthorFollowCount(row);
+}
+
+async function rebuildAuthorWorkCount(row: AuthorRow) {
+  row.rebuildWorkLoading = true;
+  try {
+    const result = await contentAuthorRebuildWorkCountApi({ id: row.id });
+    useMessage.success(`作品数已重建：${result.workCount}`);
+    await gridApi.reload();
+  } finally {
+    row.rebuildWorkLoading = false;
+  }
+}
+
+async function confirmRebuildAuthorWorkCount(row: AuthorRow) {
+  const confirmed = await useConfirm({
+    content: '确认重建当前作者作品数?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await rebuildAuthorWorkCount(row);
+}
+
+async function rebuildAllAuthorFollowCount() {
+  await contentAuthorRebuildFollowCountAllApi();
+  useMessage.success('已完成全量重建粉丝数');
+  await gridApi.reload();
+}
+
+async function confirmRebuildAllAuthorFollowCount() {
+  const confirmed = await useConfirm({
+    content: '确认全量重建所有作者粉丝数?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await rebuildAllAuthorFollowCount();
+}
+
+async function rebuildAllAuthorWorkCount() {
+  await contentAuthorRebuildWorkCountAllApi();
+  useMessage.success('已完成全量重建作品数');
+  await gridApi.reload();
+}
+
+async function confirmRebuildAllAuthorWorkCount() {
+  const confirmed = await useConfirm({
+    content: '确认全量重建所有作者作品数?',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await rebuildAllAuthorWorkCount();
+}
+
 function openDetailModal(row: AuthorRow) {
   detailApi
     .setData({
@@ -214,6 +294,18 @@ function getAuthorActions(row: AuthorRow): ActionItem[] {
       text: '编辑',
     },
     {
+      key: 'rebuildWorkCount',
+      loading: row.rebuildWorkLoading,
+      onClick: () => confirmRebuildAuthorWorkCount(row),
+      text: '重建作品数',
+    },
+    {
+      key: 'rebuildFollowCount',
+      loading: row.rebuildFollowLoading,
+      onClick: () => confirmRebuildAuthorFollowCount(row),
+      text: '重建粉丝数',
+    },
+    {
       danger: true,
       disabled: !!row.isEnabled,
       key: 'delete',
@@ -230,6 +322,12 @@ function getAuthorActions(row: AuthorRow): ActionItem[] {
       <template #toolbar-actions>
         <el-button class="ml-2" type="primary" @click="openFormModal()">
           添加
+        </el-button>
+        <el-button class="ml-2" @click="confirmRebuildAllAuthorWorkCount">
+          全量重建作品数
+        </el-button>
+        <el-button class="ml-2" @click="confirmRebuildAllAuthorFollowCount">
+          全量重建粉丝数
         </el-button>
       </template>
 

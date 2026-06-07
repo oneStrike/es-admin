@@ -150,7 +150,7 @@ export const authorColumns =
     },
     actions: {
       show: true,
-      width: 180,
+      width: 320,
     },
   });
 

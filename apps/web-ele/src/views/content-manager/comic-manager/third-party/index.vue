@@ -79,7 +79,6 @@ import {
   canUseProviderWorkCover,
   findCreatedOptionByName,
   hasProviderGroupPathWord,
-  resolveExactRelationMatches,
   resolveInitialGroup,
   resolveInitialWorkCoverMode,
   resolveSelectDefault,
@@ -89,6 +88,7 @@ import {
   toChapterImportItem,
   wizardSubmissionFingerprint,
 } from './model/helpers';
+import { resolvePreviewRelationMatches } from './model/relation-candidates';
 
 const wizardSteps = ['检索', '预览', '作品', '章节', '正文'];
 
@@ -132,7 +132,6 @@ const chapterCoverOptions: Array<{
 
 const workCoverScene = 'comic' as UploadSceneEnum;
 const chapterCoverScene = 'chapter' as UploadSceneEnum;
-const relationSearchPageSize = 500;
 const mangaAuthorTypeOptions = [
   { label: '漫画家', value: SERVER_MANGA_AUTHOR_TYPE },
 ];
@@ -817,36 +816,6 @@ function toLocalOptions(list: LocalEntityRow[] | undefined): LocalOption[] {
   }));
 }
 
-type RelationCandidateList =
-  ContentComicThirdPartyImportPreviewResponse['relationCandidates']['authors'];
-
-function getRelationProviderNames(candidates: RelationCandidateList) {
-  const names: string[] = [];
-  const seenNames = new Set<string>();
-  for (const item of candidates) {
-    const name = item.providerName.trim();
-    if (!name || seenNames.has(name)) {
-      continue;
-    }
-    seenNames.add(name);
-    names.push(name);
-  }
-  return names;
-}
-
-async function searchExactRelationMatches(
-  candidates: RelationCandidateList,
-  searchOptions: (name: string) => Promise<LocalOption[]>,
-) {
-  const sources = await Promise.all(
-    getRelationProviderNames(candidates).map(async (providerName) => ({
-      options: await searchOptions(providerName),
-      providerName,
-    })),
-  );
-  return resolveExactRelationMatches(sources);
-}
-
 function ensureRelationOptions(
   options: { value: LocalOption[] },
   matchedOptions: LocalOption[],
@@ -902,30 +871,6 @@ function tagPageParams(name?: string) {
   } satisfies ContentTagPageRequest;
 }
 
-async function searchAuthorOptionsByName(name: string) {
-  const authors = await contentAuthorPageApi({
-    ...authorPageParams(name),
-    pageSize: relationSearchPageSize,
-  });
-  return toLocalOptions(authors.list);
-}
-
-async function searchCategoryOptionsByName(name: string) {
-  const categories = await contentCategoryPageApi({
-    ...categoryPageParams(name),
-    pageSize: relationSearchPageSize,
-  });
-  return toLocalOptions(categories.list);
-}
-
-async function searchTagOptionsByName(name: string) {
-  const tags = await contentTagPageApi({
-    ...tagPageParams(name),
-    pageSize: relationSearchPageSize,
-  });
-  return toLocalOptions(tags.list);
-}
-
 async function loadAuthorOptions() {
   const authors = await contentAuthorPageApi(authorPageParams());
   authorOptions.value = toLocalOptions(authors.list);
@@ -954,17 +899,21 @@ async function loadRelationOptions(force = false) {
   relationLoading.value = true;
   try {
     if (shouldLoadBaseOptions) {
-      try {
-        await Promise.all([
-          loadAuthorOptions(),
-          loadCategoryOptions(),
-          loadTagOptions(),
-        ]);
-      } catch {
-        authorOptions.value = [];
-        categoryOptions.value = [];
-        tagOptions.value = [];
-        return;
+      const results = await Promise.allSettled([
+        loadAuthorOptions(),
+        loadCategoryOptions(),
+        loadTagOptions(),
+      ]);
+      const failedLabels = results
+        .map((result, index) => ({
+          index,
+          result,
+        }))
+        .filter(({ result }) => result.status === 'rejected')
+        .map(({ index }) => ['作者', '分类', '标签'][index]);
+
+      if (failedLabels.length > 0) {
+        useMessage.error(`关系选项加载失败：${failedLabels.join('、')}`);
       }
     }
 
@@ -972,7 +921,7 @@ async function loadRelationOptions(force = false) {
       try {
         await applyRelationSearchMatches();
       } catch {
-        // 自动匹配失败时仍保留手动选择入口。
+        useMessage.error('关系自动匹配失败，请手动选择后继续');
       }
     }
   } finally {
@@ -986,14 +935,11 @@ async function applyRelationSearchMatches() {
     return;
   }
 
-  const [matchedAuthors, matchedCategories, matchedTags] = await Promise.all([
-    searchExactRelationMatches(candidates.authors, searchAuthorOptionsByName),
-    searchExactRelationMatches(
-      candidates.categories,
-      searchCategoryOptionsByName,
-    ),
-    searchExactRelationMatches(candidates.tags, searchTagOptionsByName),
-  ]);
+  const matchedAuthors = resolvePreviewRelationMatches(candidates.authors);
+  const matchedCategories = resolvePreviewRelationMatches(
+    candidates.categories,
+  );
+  const matchedTags = resolvePreviewRelationMatches(candidates.tags);
 
   ensureRelationOptions(authorOptions, matchedAuthors);
   ensureRelationOptions(categoryOptions, matchedCategories);
