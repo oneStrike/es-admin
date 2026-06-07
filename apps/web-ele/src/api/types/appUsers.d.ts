@@ -274,8 +274,23 @@ export type AppUsersExperienceRecordPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
+  /* 幂等业务键 */
+  bizKey?: string;
+
+  /* 经验变更方向（1=增加；2=减少） */
+  deltaDirection?: number;
+
   /* 结束时间 */
   endDate?: string;
+
+  /* 是否只看有关联规则的记录 */
+  hasRule?: boolean;
+
+  /* 最大经验变更值 */
+  maxDelta?: number;
+
+  /* 最小经验变更值 */
+  minDelta?: number;
 
   /* 排序字段，json格式 */
   orderBy?: string;
@@ -283,14 +298,26 @@ export type AppUsersExperienceRecordPageRequest = {
   /* 当前页码（从1开始） */
   pageIndex?: number;
 
-  /* 单页大小，最大500，默认15 */
+  /* 单页大小，最大100，默认15 */
   pageSize?: number;
 
   /* 关联的规则ID */
   ruleId?: number;
 
+  /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
+  ruleType?: number;
+
+  /* 账本来源（如 growth_rule、task_bonus、purchase） */
+  source?: string;
+
   /* 开始时间 */
   startDate?: string;
+
+  /* 关联目标ID */
+  targetId?: number;
+
+  /* 关联目标类型 */
+  targetType?: number;
 
   /* 用户 ID */
   userId: number;

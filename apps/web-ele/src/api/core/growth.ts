@@ -39,6 +39,9 @@ import type {
   GrowthLevelRulesUpdateResponse,
   GrowthLevelRulesUserDetailRequest,
   GrowthLevelRulesUserDetailResponse,
+  GrowthRewardEventOptionListResponse,
+  GrowthRewardRulesArchiveRequest,
+  GrowthRewardRulesArchiveResponse,
   GrowthRewardRulesCreateRequest,
   GrowthRewardRulesCreateResponse,
   GrowthRewardRulesDeleteRequest,
@@ -70,6 +73,15 @@ export async function growthRuleEventsPageApi(
   return requestClient.get<GrowthRuleEventsPageResponse>(
     '/api/admin/growth/rule-events/page',
     { params },
+  );
+}
+
+/**
+ * 查询允许配置基础奖励规则的成长事件选项
+ */
+export async function growthRewardEventOptionListApi(): Promise<GrowthRewardEventOptionListResponse> {
+  return requestClient.get<GrowthRewardEventOptionListResponse>(
+    '/api/admin/growth/reward-event-option/list',
   );
 }
 
@@ -113,7 +125,7 @@ export async function growthRewardSettlementRetryPendingBatchApi(
  * 获取用户经验记录分页
  */
 export async function growthExperienceRecordPageApi(
-  params: GrowthExperienceRecordPageRequest,
+  params?: GrowthExperienceRecordPageRequest,
 ): Promise<GrowthExperienceRecordPageResponse> {
   return requestClient.get<GrowthExperienceRecordPageResponse>(
     '/api/admin/growth/experience/record/page',
@@ -404,13 +416,25 @@ export async function growthRewardRulesUpdateApi(
 }
 
 /**
- * 删除成长奖励规则
+ * 归档成长奖励规则（兼容旧删除路由）
  */
 export async function growthRewardRulesDeleteApi(
   params: GrowthRewardRulesDeleteRequest,
 ): Promise<GrowthRewardRulesDeleteResponse> {
   return requestClient.post<GrowthRewardRulesDeleteResponse>(
     '/api/admin/growth/reward-rules/delete',
+    params,
+  );
+}
+
+/**
+ * 归档成长奖励规则
+ */
+export async function growthRewardRulesArchiveApi(
+  params: GrowthRewardRulesArchiveRequest,
+): Promise<GrowthRewardRulesArchiveResponse> {
+  return requestClient.post<GrowthRewardRulesArchiveResponse>(
+    '/api/admin/growth/reward-rules/archive',
     params,
   );
 }

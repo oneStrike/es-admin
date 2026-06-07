@@ -1,3 +1,5 @@
+import type { GrowthRuleEventPageItemDto } from '#/api/types';
+
 import { growthTypeMap } from '../../model/constants';
 
 export type TagType = 'danger' | 'info' | 'primary' | 'success' | 'warning';
@@ -62,6 +64,11 @@ export const assetTypeMap: Record<number, string> = {
   5: '等级',
 };
 
+export type GrowthEventOption = {
+  label: string;
+  value: number;
+};
+
 type OptionValue = boolean | number | string;
 
 export function getOptionLabel(
@@ -87,6 +94,24 @@ export function getGrowthTypeLabel(value?: null | number) {
   if (value === null || value === undefined) return '-';
 
   return growthTypeMap[value] || String(value);
+}
+
+export function createGrowthEventOptions(
+  events: GrowthRuleEventPageItemDto[] = [],
+): GrowthEventOption[] {
+  return events.map((event) => ({
+    label: event.eventName,
+    value: Number(event.ruleType),
+  }));
+}
+
+export function formatGrowthEventLabel(
+  value?: null | number,
+  options: GrowthEventOption[] = [],
+) {
+  if (value === null || value === undefined) return '-';
+
+  return options.find((item) => item.value === value)?.label || getGrowthTypeLabel(value);
 }
 
 export function formatBoolean(value?: boolean | null) {

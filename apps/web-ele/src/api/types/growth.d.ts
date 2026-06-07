@@ -19,6 +19,9 @@ export type GrowthRuleEventsPageRequest = {
   /* 是否只看已正式接入 producer 的事件 */
   isImplemented?: boolean;
 
+  /* 是否只看允许配置基础奖励规则的事件 */
+  isRuleConfigurable?: boolean;
+
   /* 排序字段，json格式 */
   orderBy?: string;
 
@@ -51,6 +54,9 @@ export type GrowthRuleEventsPageResponse = {
   /* 总条数 */
   total?: number;
 };
+
+export type GrowthRewardEventOptionListResponse =
+  GrowthConfigurableRewardEventOptionDto[];
 
 /**
  *  类型定义 [GrowthRewardSettlementPageRequest]
@@ -135,8 +141,23 @@ export type GrowthExperienceRecordPageRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
+  /* 幂等业务键 */
+  bizKey?: string;
+
+  /* 经验变更方向（1=增加；2=减少） */
+  deltaDirection?: number;
+
   /* 结束时间 */
   endDate?: string;
+
+  /* 是否只看有关联规则的记录 */
+  hasRule?: boolean;
+
+  /* 最大经验变更值 */
+  maxDelta?: number;
+
+  /* 最小经验变更值 */
+  minDelta?: number;
 
   /* 排序字段，json格式 */
   orderBy?: string;
@@ -144,17 +165,29 @@ export type GrowthExperienceRecordPageRequest = {
   /* 当前页码（从1开始） */
   pageIndex?: number;
 
-  /* 单页大小，最大500，默认15 */
+  /* 单页大小，最大100，默认15 */
   pageSize?: number;
 
   /* 关联的规则ID */
   ruleId?: number;
 
+  /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
+  ruleType?: number;
+
+  /* 账本来源（如 growth_rule、task_bonus、purchase） */
+  source?: string;
+
   /* 开始时间 */
   startDate?: string;
 
-  /* 用户 ID */
-  userId: number;
+  /* 关联目标ID */
+  targetId?: number;
+
+  /* 关联目标类型 */
+  targetType?: number;
+
+  /* 用户 ID；不传则按全局经验审计查询 */
+  userId?: number;
 };
 
 export type GrowthExperienceRecordPageResponse = {
@@ -199,6 +232,7 @@ export type GrowthExperienceStatsRequest = {
   /** 任意合法数值 */
   [property: string]: any;
 
+  /* 关联的用户ID */
   userId: number;
 };
 
@@ -501,6 +535,9 @@ export type GrowthRewardRulesPageRequest = {
   /* 结束时间 */
   endDate?: string;
 
+  /* 是否包含已归档规则；兼容旧查询，推荐使用 status */
+  includeArchived?: boolean;
+
   /* 是否启用 */
   isEnabled?: boolean;
 
@@ -515,6 +552,9 @@ export type GrowthRewardRulesPageRequest = {
 
   /* 开始时间 */
   startDate?: string;
+
+  /* 规则归档状态筛选：1=当前规则；2=已归档；3=全部 */
+  status?: number;
 
   /* 成长规则类型，直接复用统一事件定义编码。 */
   type?: number;
@@ -580,6 +620,15 @@ export type GrowthRewardRulesDeleteRequest = IdDto;
 export type GrowthRewardRulesDeleteResponse = boolean;
 
 /**
+ *  类型定义 [GrowthRewardRulesArchiveRequest]
+ *  @来源 用户成长/奖励规则管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRewardRulesArchiveRequest = ArchiveGrowthRewardRuleDto;
+
+export type GrowthRewardRulesArchiveResponse = boolean;
+
+/**
  *  类型定义 [GrowthRuleEventPageItemDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -589,6 +638,8 @@ export type GrowthRuleEventPageItemDto = {
   [property: string]: any;
   /* 基础奖励资产规则摘要列表 */
   assetRules: GrowthRuleAssetSummaryDto[];
+  /* 不可配置原因；可配置时为 null */
+  disabledReason: null | string;
   /* 事件所属领域（forum=论坛；comment=评论；comic_work=漫画作品；novel_work=小说作品；comic_chapter=漫画章节；novel_chapter=小说章节；engagement=互动；badge=徽章；profile=资料；social=社交；report=举报；system=系统） */
   domain:
     | 'badge'
@@ -619,6 +670,8 @@ export type GrowthRuleEventPageItemDto = {
   implStatus: 'declared' | 'implemented' | 'legacy_compat';
   /* 是否已正式接入 producer */
   isImplemented: boolean;
+  /* 是否允许配置基础奖励规则 */
+  isRuleConfigurable: boolean;
   /* 基础奖励与任务 bonus 的默认叠加策略说明 */
   rewardPolicy: string;
   /* 成长事件英文 key */
@@ -671,6 +724,8 @@ export type GrowthRuleEventPageItemDto = {
     | 703
     | 800
     | 801;
+  /* 是否支持配置经验奖励规则 */
+  supportsExperienceRule: boolean;
   /* 是否支持任务消费 */
   supportsTaskObjective: boolean;
 
@@ -728,6 +783,97 @@ export type GrowthRuleTaskBindingSummaryDto = {
 
   /* 关联任务 ID 列表 */
   taskIds: number[];
+};
+
+/**
+ *  类型定义 [GrowthConfigurableRewardEventOptionDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthConfigurableRewardEventOptionDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 事件所属领域（forum=论坛；comment=评论；comic_work=漫画作品；novel_work=小说作品；comic_chapter=漫画章节；novel_chapter=小说章节；engagement=互动；badge=徽章；profile=资料；social=社交；report=举报；system=系统） */
+  domain:
+    | 'badge'
+    | 'comic_chapter'
+    | 'comic_work'
+    | 'comment'
+    | 'engagement'
+    | 'forum'
+    | 'novel_chapter'
+    | 'novel_work'
+    | 'profile'
+    | 'report'
+    | 'social'
+    | 'system';
+  /* 成长事件名称 */
+  eventName: string;
+  /* 治理闸门类型（none=无闸门；topic_approval=主题审核；comment_approval=评论审核；report_judgement=举报裁决） */
+  governanceGate:
+    | 'comment_approval'
+    | 'none'
+    | 'report_judgement'
+    | 'topic_approval';
+  /* 实现状态（declared=已声明；implemented=已实现；legacy_compat=历史兼容） */
+  implStatus: 'declared' | 'implemented' | 'legacy_compat';
+  /* 是否已正式接入 producer */
+  isImplemented: boolean;
+  /* 是否允许配置基础奖励规则 */
+  isRuleConfigurable: boolean;
+  /* 成长事件英文 key */
+  ruleKey: string;
+  /* 成长事件编码（1=发表主题；2=发表回复；3=主题被点赞；4=回复被点赞；5=主题被收藏；6=每日签到；7=管理员操作；8=主题被浏览；9=主题举报；16=帖子被评论；10=发表评论；11=评论被点赞；12=评论举报；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报；406=小说章节评论；600=获得徽章；601=资料完善；602=头像上传；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
+  ruleType:
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 16
+    | 100
+    | 101
+    | 102
+    | 103
+    | 104
+    | 200
+    | 201
+    | 202
+    | 203
+    | 204
+    | 300
+    | 301
+    | 302
+    | 303
+    | 304
+    | 305
+    | 306
+    | 400
+    | 401
+    | 402
+    | 403
+    | 404
+    | 405
+    | 406
+    | 600
+    | 601
+    | 602
+    | 700
+    | 701
+    | 702
+    | 703
+    | 800
+    | 801;
+
+  /* 是否支持配置经验奖励规则 */
+  supportsExperienceRule: boolean;
 };
 
 /**
@@ -887,20 +1033,20 @@ export type UserExperienceRecordDto = {
   beforeExperience: number;
   /* 幂等业务键 */
   bizKey: string;
-  /* 扩展上下文（仅返回白名单解释字段） */
-  context?: null | string;
+  /* 扩展上下文（仅返回白名单解释字段）；无上下文时为 null */
+  context: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
   /* 经验值变化 */
   experience: number;
   /* 主键id */
   id: number;
-  /* 账本说明文案 */
-  remark?: null | string;
-  /* 关联的规则ID */
-  ruleId?: null | number;
-  /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?:
+  /* 账本说明文案；无说明时为 null */
+  remark: null | string;
+  /* 关联的规则 ID；无规则时为 null */
+  ruleId: null | number;
+  /* 成长记录关联的事件编码，直接复用统一事件定义编码；无事件时为 null */
+  ruleType:
     | 1
     | 2
     | 3
@@ -948,17 +1094,38 @@ export type UserExperienceRecordDto = {
     | 800
     | 801
     | null;
-  /* 账本来源（如 growth_rule、task_bonus、purchase） */
-  source?: null | string;
-  /* 关联目标ID */
-  targetId?: null | number;
-  /* 关联目标类型 */
-  targetType?: null | number;
-  /* 更新时间 */
-  updatedAt?: null | string;
+  /* 账本来源；无来源时为 null */
+  source: null | string;
+  /* 关联目标 ID；无目标时为 null */
+  targetId: null | number;
+  /* 关联目标类型；无目标时为 null */
+  targetType: null | number;
+  /* 更新时间；账本记录无更新时间时为 null */
+  updatedAt: null | string;
+  /* 经验所属用户摘要；用户已不存在时为 null */
+  user: null | UserExperienceRecordUserDto;
 
   /* 关联的用户ID */
   userId: number;
+};
+
+/**
+ *  类型定义 [UserExperienceRecordUserDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type UserExperienceRecordUserDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 账号 */
+  account: string;
+  /* 头像URL */
+  avatarUrl?: null | string;
+  /* 主键id */
+  id: number;
+
+  /* 昵称 */
+  nickname: string;
 };
 
 /**
@@ -975,20 +1142,22 @@ export type UserExperienceRecordDetailDto = {
   beforeExperience: number;
   /* 幂等业务键 */
   bizKey: string;
-  /* 扩展上下文（仅返回白名单解释字段） */
-  context?: null | string;
+  /* 扩展上下文（仅返回白名单解释字段）；无上下文时为 null */
+  context: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
+  /* 完整诊断上下文；无上下文时为 null */
+  diagnosticContext: null | Record<string, any>;
   /* 经验值变化 */
   experience: number;
   /* 主键id */
   id: number;
-  /* 账本说明文案 */
-  remark?: null | string;
-  /* 关联的规则ID */
-  ruleId?: null | number;
-  /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?:
+  /* 账本说明文案；无说明时为 null */
+  remark: null | string;
+  /* 关联的规则 ID；无规则时为 null */
+  ruleId: null | number;
+  /* 成长记录关联的事件编码，直接复用统一事件定义编码；无事件时为 null */
+  ruleType:
     | 1
     | 2
     | 3
@@ -1036,62 +1205,19 @@ export type UserExperienceRecordDetailDto = {
     | 800
     | 801
     | null;
-  /* 账本来源（如 growth_rule、task_bonus、purchase） */
-  source?: null | string;
-  /* 关联目标ID */
-  targetId?: null | number;
-  /* 关联目标类型 */
-  targetType?: null | number;
-  /* 更新时间 */
-  updatedAt?: null | string;
-  /* 经验所属用户 */
-  user: ForumAppUserInfoDto;
+  /* 账本来源；无来源时为 null */
+  source: null | string;
+  /* 关联目标 ID；无目标时为 null */
+  targetId: null | number;
+  /* 关联目标类型；无目标时为 null */
+  targetType: null | number;
+  /* 更新时间；账本记录无更新时间时为 null */
+  updatedAt: null | string;
+  /* 经验所属用户摘要；用户已不存在时为 null */
+  user: null | UserExperienceRecordUserDto;
 
   /* 关联的用户ID */
   userId: number;
-};
-
-/**
- *  类型定义 [ForumAppUserInfoDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ForumAppUserInfoDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 账号 */
-  account: string;
-  /* 头像URL */
-  avatarUrl?: null | string;
-  /* 个人简介 */
-  bio?: null | string;
-  /* 出生日期 */
-  birthDate?: null | string;
-  /* 创建时间 */
-  createdAt: string;
-  /* 邮箱 */
-  emailAddress?: null | string;
-  /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType: 0 | 1 | 2 | 3 | 4;
-  /* 主键id */
-  id: number;
-  /* 是否启用 */
-  isEnabled: boolean;
-  /* 最后登录时间 */
-  lastLoginAt?: null | string;
-  /* 最后登录IP */
-  lastLoginIp?: null | string;
-  /* 昵称 */
-  nickname: string;
-  /* 手机号 */
-  phoneNumber?: null | string;
-  /* 个人主页背景图片URL */
-  profileBackgroundImageUrl?: null | string;
-  /* 个性签名 */
-  signature?: null | string;
-
-  /* 更新时间 */
-  updatedAt: string;
 };
 
 /**
@@ -1105,7 +1231,7 @@ export type UserExperienceStatsDto = {
   /* 当前经验值 */
   currentExperience: number;
   /* 当前等级信息 */
-  level?: UserExperienceLevelDto;
+  level: null | UserExperienceLevelDto;
 
   /* 今日获得经验值 */
   todayEarned: number;
@@ -1616,6 +1742,14 @@ export type UserBadgeTopBadgeItemDto = {
 export type BaseGrowthRewardRuleDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 归档时间；为空表示当前生效规则 */
+  archivedAt?: null | string;
+  /* 归档操作者管理员 ID；系统迁移自动归档为空 */
+  archivedBy?: null | number;
+  /* 归档原因说明 */
+  archiveReason?: null | string;
+  /* 归档原因码 */
+  archiveReasonCode?: null | string;
   /* 资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
   assetKey?: null | string;
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
@@ -1833,4 +1967,19 @@ export type UpdateGrowthRewardRuleDto = {
     | 703
     | 800
     | 801;
+};
+
+/**
+ *  类型定义 [ArchiveGrowthRewardRuleDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ArchiveGrowthRewardRuleDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 归档原因说明 */
+  archiveReason?: null | string;
+
+  /* 主键id */
+  id: number;
 };

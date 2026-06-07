@@ -1,3 +1,5 @@
+import type { GrowthEventOption } from './shared';
+
 import type {
   GrowthRuleAssetSummaryDto,
   GrowthRuleEventPageItemDto,
@@ -8,12 +10,11 @@ import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
 
-import { growthTypeOptions } from '../../model/constants';
 import {
   assetTypeMap,
   booleanOptions,
   formatBoolean,
-  getGrowthTypeLabel,
+  formatGrowthEventLabel,
   getOptionLabel,
   governanceGateOptions,
   implStatusOptions,
@@ -54,75 +55,82 @@ function createRuleEventsField(
   };
 }
 
-const ruleEventsListSchema: EsFormSchema = [
-  {
-    component: 'Select',
-    componentProps: {
-      clearable: true,
-      filterable: true,
-      options: growthTypeOptions,
-      placeholder: '成长类型',
+function createRuleEventsListSchema(
+  eventOptions: GrowthEventOption[] = [],
+): EsFormSchema {
+  return [
+    {
+      component: 'Select',
+      componentProps: {
+        clearable: true,
+        filterable: true,
+        options: eventOptions,
+        placeholder: '成长事件',
+      },
+      fieldName: 'type',
+      label: '成长事件',
     },
-    fieldName: 'type',
-    label: '成长类型',
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      clearable: true,
-      options: booleanOptions,
-      placeholder: '是否有基础奖励',
+    {
+      component: 'Select',
+      componentProps: {
+        clearable: true,
+        options: booleanOptions,
+        placeholder: '是否有基础奖励',
+      },
+      fieldName: 'hasBaseReward',
+      label: '是否有基础奖励',
     },
-    fieldName: 'hasBaseReward',
-    label: '是否有基础奖励',
-  },
-  {
-    component: 'Select',
-    componentProps: {
-      clearable: true,
-      options: booleanOptions,
-      placeholder: '是否有关联任务',
+    {
+      component: 'Select',
+      componentProps: {
+        clearable: true,
+        options: booleanOptions,
+        placeholder: '是否有关联任务',
+      },
+      fieldName: 'hasTask',
+      label: '是否有关联任务',
     },
-    fieldName: 'hasTask',
-    label: '是否有关联任务',
-  },
-  createRuleEventsField('isImplemented', {
-    componentProps: {
-      clearable: true,
-      options: booleanOptions,
-      placeholder: '是否已实现',
+    createRuleEventsField('isImplemented', {
+      componentProps: {
+        clearable: true,
+        options: booleanOptions,
+        placeholder: '是否已实现',
+      },
+    }),
+    {
+      component: 'DatePicker',
+      componentProps: {
+        clearable: true,
+        endPlaceholder: '结束时间',
+        startPlaceholder: '开始时间',
+        type: 'datetimerange',
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+      },
+      fieldName: 'dateRange',
+      label: '时间范围',
     },
-  }),
-  {
-    component: 'DatePicker',
-    componentProps: {
-      clearable: true,
-      endPlaceholder: '结束时间',
-      startPlaceholder: '开始时间',
-      type: 'datetimerange',
-      valueFormat: 'YYYY-MM-DD HH:mm:ss',
+    { component: 'Select', fieldName: 'ruleType', label: '规则类型' },
+    { component: 'Input', fieldName: 'eventName', label: '事件名称' },
+    { component: 'Select', fieldName: 'domain', label: '事件域' },
+    { component: 'Select', fieldName: 'implStatus', label: '实现状态' },
+    { component: 'Select', fieldName: 'governanceGate', label: '治理门禁' },
+    { component: 'Input', fieldName: 'rewardPolicy', label: '奖励策略' },
+    { component: 'Input', fieldName: 'assetRules', label: '资产规则' },
+    { component: 'Input', fieldName: 'taskBinding', label: '任务绑定' },
+    {
+      component: 'Select',
+      fieldName: 'supportsTaskObjective',
+      label: '支持任务目标',
     },
-    fieldName: 'dateRange',
-    label: '时间范围',
-  },
-  { component: 'Select', fieldName: 'ruleType', label: '规则类型' },
-  { component: 'Input', fieldName: 'eventName', label: '事件名称' },
-  { component: 'Select', fieldName: 'domain', label: '事件域' },
-  { component: 'Select', fieldName: 'implStatus', label: '实现状态' },
-  { component: 'Select', fieldName: 'governanceGate', label: '治理门禁' },
-  { component: 'Input', fieldName: 'rewardPolicy', label: '奖励策略' },
-  { component: 'Input', fieldName: 'assetRules', label: '资产规则' },
-  { component: 'Input', fieldName: 'taskBinding', label: '任务绑定' },
-  {
-    component: 'Select',
-    fieldName: 'supportsTaskObjective',
-    label: '支持任务目标',
-  },
-];
+  ];
+}
 
-export const ruleEventsColumns =
+export function createRuleEventsColumns(
+  eventOptions: GrowthEventOption[] = [],
+) {
+  return (
   formSchemaTransform.toTableColumns<GrowthRuleEventPageItemDto>(
-    ruleEventsListSchema,
+    createRuleEventsListSchema(eventOptions),
     {
       type: { hide: true },
       hasBaseReward: { hide: true },
@@ -130,7 +138,8 @@ export const ruleEventsColumns =
       dateRange: { hide: true },
       ruleType: {
         fixed: 'left',
-        formatter: ({ cellValue }) => getGrowthTypeLabel(cellValue),
+        formatter: ({ cellValue }) =>
+          formatGrowthEventLabel(cellValue, eventOptions),
         minWidth: 150,
         showOverflow: 'tooltip',
       },
@@ -181,18 +190,27 @@ export const ruleEventsColumns =
         width: 100,
       },
     },
+  )
   );
+}
 
-export const ruleEventsSearchSchema = formSchemaTransform.toSearchSchema(
-  ruleEventsListSchema,
-  {
+export function createRuleEventsSearchSchema(
+  eventOptions: GrowthEventOption[] = [],
+) {
+  return formSchemaTransform.toSearchSchema(
+    createRuleEventsListSchema(eventOptions),
+    {
     type: { show: true },
     hasBaseReward: { show: true },
     hasTask: { show: true },
     isImplemented: { show: true },
     dateRange: { show: true },
-  },
-);
+    },
+  );
+}
+
+export const ruleEventsColumns = createRuleEventsColumns();
+export const ruleEventsSearchSchema = createRuleEventsSearchSchema();
 
 export function buildRuleEventsQuery(formValues?: RuleEventsSearchValues) {
   const { dateRange, ...restFormValues } = formValues || {};
@@ -229,6 +247,7 @@ export function formatAssetRules(
 
 export function formatTaskBinding(
   taskBinding?: GrowthRuleTaskBindingSummaryDto | null,
+  options: { includeTaskIds?: boolean } = {},
 ) {
   if (!taskBinding?.exists) return '未关联任务';
 
@@ -238,7 +257,7 @@ export function formatTaskBinding(
     `启用 ${taskBinding.enabledTaskCount}`,
   ];
 
-  if (taskBinding.taskIds?.length) {
+  if (options.includeTaskIds && taskBinding.taskIds?.length) {
     parts.push(`任务 ID：${taskBinding.taskIds.join(', ')}`);
   }
 

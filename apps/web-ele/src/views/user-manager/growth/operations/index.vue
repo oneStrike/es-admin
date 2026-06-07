@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { ActionItem } from '@vben/common-ui';
 
+import type { GrowthEventOption } from './model/shared';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   GrowthRewardSettlementPageItemDto,
   GrowthRuleEventPageItemDto,
 } from '#/api/types';
 
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 
 import {
   Page,
@@ -32,27 +34,28 @@ import { createSearchFormOptions } from '#/utils';
 
 import {
   buildRewardSettlementQuery,
+  createRewardSettlementColumns,
+  createRewardSettlementSearchSchema,
   formatSettlementLedgerIds,
-  rewardSettlementColumns,
-  rewardSettlementSearchSchema,
   settlementResultOptions,
   settlementStatusOptions,
 } from './model/reward-settlement';
 import {
   buildRuleEventsQuery,
+  createRuleEventsColumns,
+  createRuleEventsSearchSchema,
   formatAssetRules,
   formatTaskBinding,
   governanceGateOptions,
   implStatusOptions,
   ruleDomainOptions,
-  ruleEventsColumns,
-  ruleEventsSearchSchema,
 } from './model/rule-events';
 import {
+  createGrowthEventOptions,
   formatBoolean,
   formatDateTime,
+  formatGrowthEventLabel,
   formatJsonBlock,
-  getGrowthTypeLabel,
   getOptionColor,
   getOptionLabel,
   settlementTypeOptions,
@@ -66,6 +69,7 @@ type TabKey = 'reward-settlement' | 'rule-events';
 
 const activeTab = ref<TabKey>('reward-settlement');
 const retryingMap = reactive<Record<number, boolean>>({});
+const growthEventOptions = reactive<GrowthEventOption[]>([]);
 const batchRetrying = ref(false);
 const currentSettlement = ref<GrowthRewardSettlementPageItemDto>();
 const currentRuleEvent = ref<GrowthRuleEventPageItemDto>();
@@ -85,7 +89,7 @@ const ruleEventDetailTitle = computed(() =>
 
 const rewardSettlementGridOptions: VxeGridProps<GrowthRewardSettlementPageItemDto> =
   {
-    columns: rewardSettlementColumns,
+    columns: createRewardSettlementColumns(growthEventOptions),
     height: '100%',
     proxyConfig: {
       ajax: {
@@ -104,7 +108,7 @@ const rewardSettlementGridOptions: VxeGridProps<GrowthRewardSettlementPageItemDt
   };
 
 const ruleEventsGridOptions: VxeGridProps<GrowthRuleEventPageItemDto> = {
-  columns: ruleEventsColumns,
+  columns: createRuleEventsColumns(growthEventOptions),
   height: '100%',
   proxyConfig: {
     ajax: {
@@ -123,12 +127,16 @@ const ruleEventsGridOptions: VxeGridProps<GrowthRuleEventPageItemDto> = {
 };
 
 const [RewardSettlementGrid, rewardSettlementGridApi] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(rewardSettlementSearchSchema),
+  formOptions: createSearchFormOptions(
+    createRewardSettlementSearchSchema(growthEventOptions),
+  ),
   gridOptions: rewardSettlementGridOptions,
 });
 
 const [RuleEventsGrid] = useVbenVxeGrid({
-  formOptions: createSearchFormOptions(ruleEventsSearchSchema),
+  formOptions: createSearchFormOptions(
+    createRuleEventsSearchSchema(growthEventOptions),
+  ),
   gridOptions: ruleEventsGridOptions,
 });
 
@@ -256,6 +264,19 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
     },
   ];
 }
+
+async function loadGrowthEventOptions() {
+  const result = await growthRuleEventsPageApi({ pageIndex: 1, pageSize: 500 });
+  growthEventOptions.splice(
+    0,
+    growthEventOptions.length,
+    ...createGrowthEventOptions(result.list ?? []),
+  );
+}
+
+onMounted(() => {
+  void loadGrowthEventOptions();
+});
 </script>
 
 <template>
@@ -354,14 +375,13 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
           <VbenDescriptionsItem label="用户 ID">
             {{ currentSettlement.userId }}
           </VbenDescriptionsItem>
-          <VbenDescriptionsItem label="事件 key">
-            {{ currentSettlement.eventKey || '-' }}
-          </VbenDescriptionsItem>
           <VbenDescriptionsItem label="事件编码">
-            {{ getGrowthTypeLabel(currentSettlement.eventCode) }}
-          </VbenDescriptionsItem>
-          <VbenDescriptionsItem label="来源">
-            {{ currentSettlement.source || '-' }}
+            {{
+              formatGrowthEventLabel(
+                currentSettlement.eventCode,
+                growthEventOptions,
+              )
+            }}
           </VbenDescriptionsItem>
           <VbenDescriptionsItem label="结算类型">
             {{
@@ -405,9 +425,6 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
           <VbenDescriptionsItem label="更新时间">
             {{ formatDateTime(currentSettlement.updatedAt) }}
           </VbenDescriptionsItem>
-          <VbenDescriptionsItem :span="2" label="账本记录">
-            {{ formatSettlementLedgerIds(currentSettlement) }}
-          </VbenDescriptionsItem>
           <VbenDescriptionsItem :span="2" label="最后错误">
             {{ currentSettlement.lastError || '-' }}
           </VbenDescriptionsItem>
@@ -420,12 +437,21 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
                 <VbenDescriptionsItem :span="2" label="业务键">
                   {{ currentSettlement.bizKey || '-' }}
                 </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="事件 key">
+                  {{ currentSettlement.eventKey || '-' }}
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="来源">
+                  {{ currentSettlement.source || '-' }}
+                </VbenDescriptionsItem>
                 <VbenDescriptionsItem label="来源事实 ID">
                   {{ currentSettlement.sourceRecordId ?? '-' }}
                 </VbenDescriptionsItem>
                 <VbenDescriptionsItem label="目标 raw pair">
                   {{ currentSettlement.targetType ?? '-' }} /
                   {{ currentSettlement.targetId ?? '-' }}
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem :span="2" label="账本记录">
+                  {{ formatSettlementLedgerIds(currentSettlement) }}
                 </VbenDescriptionsItem>
               </VbenDescriptions>
 
@@ -445,7 +471,12 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
       <div v-if="currentRuleEvent" class="growth-operations-detail">
         <VbenDescriptions :column="2" bordered>
           <VbenDescriptionsItem label="规则类型">
-            {{ getGrowthTypeLabel(currentRuleEvent.ruleType) }}
+            {{
+              formatGrowthEventLabel(
+                currentRuleEvent.ruleType,
+                growthEventOptions,
+              )
+            }}
           </VbenDescriptionsItem>
           <VbenDescriptionsItem label="事件名称">
             {{ currentRuleEvent.eventName }}
@@ -486,7 +517,11 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
             <pre>{{ formatAssetRules(currentRuleEvent.assetRules) }}</pre>
           </VbenDescriptionsItem>
           <VbenDescriptionsItem :span="2" label="任务绑定">
-            <pre>{{ formatTaskBinding(currentRuleEvent.taskBinding) }}</pre>
+            <pre>{{
+              formatTaskBinding(currentRuleEvent.taskBinding, {
+                includeTaskIds: true,
+              })
+            }}</pre>
           </VbenDescriptionsItem>
         </VbenDescriptions>
       </div>
