@@ -113,6 +113,17 @@ function buildSystemUserPayload(
 }
 
 async function handleSubmit(values: SystemUserCreateRequest | UpdateUserDto) {
+  if ('id' in values && values.id === userStore.userInfo?.id) {
+    const selfDowngrade =
+      values.role !== undefined && values.role !== userStore.userInfo?.role;
+    const selfDisable = values.isEnabled === false;
+
+    if (selfDowngrade || selfDisable) {
+      useMessage.warning('不能通过账号管理禁用或降级当前登录账号');
+      return;
+    }
+  }
+
   const payload = buildSystemUserPayload(values);
 
   await ('id' in payload && typeof payload.id === 'number'
@@ -187,16 +198,21 @@ async function resetUserPassword(record: SystemUserRow) {
     return;
   }
 
-  await systemUserPasswordResetApi({
+  const result = await systemUserPasswordResetApi({
     id: record.id,
   });
-  useMessage.success('密码重置成功');
+
+  useMessage.success(
+    result.temporaryPassword
+      ? `密码重置成功，临时密码：${result.temporaryPassword}`
+      : '密码重置成功',
+  );
   gridApi.reload();
 }
 
 async function confirmResetUserPassword(record: SystemUserRow) {
   const confirmed = await useConfirm({
-    content: '是否重置当前账户为默认密码？',
+    content: '是否重置当前账户密码？临时密码只会在本次响应中返回。',
     successMessage: false,
   });
   if (!confirmed) return;
@@ -217,6 +233,7 @@ function getUserActions(row: SystemUserRow): ActionItem[] {
 
   return [
     {
+      disabled: userStore.userInfo?.id === row.id,
       key: 'edit',
       onClick: () => openFormModal(row),
       text: '编辑',

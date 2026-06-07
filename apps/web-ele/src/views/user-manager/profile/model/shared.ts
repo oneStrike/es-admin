@@ -469,21 +469,17 @@ export const userColumns =
       minWidth: 120,
     },
     points: {
-      sortable: true,
       width: 100,
     },
     experience: {
-      sortable: true,
       width: 100,
     },
     topicCount: {
       formatter: ({ row }) => row.counts?.forumTopicCount ?? 0,
-      sortable: true,
       width: 100,
     },
     replyCount: {
       formatter: ({ row }) => row.counts?.commentCount ?? 0,
-      sortable: true,
       width: 100,
     },
     isEnabled: {

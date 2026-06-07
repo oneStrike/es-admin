@@ -122,10 +122,20 @@ const operationFieldCatalog = {
   targetId: {
     component: 'InputNumber',
     fieldName: 'targetId',
-    label: '目标 ID',
+    label: '目标 ID（高级）',
   },
   targetType: {
-    component: 'InputNumber',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: '不关联目标', value: 0 },
+        { label: '漫画', value: 1 },
+        { label: '小说', value: 2 },
+        { label: '漫画章节', value: 3 },
+        { label: '小说章节', value: 4 },
+        { label: '论坛主题', value: 5 },
+      ],
+    },
     fieldName: 'targetType',
     label: '目标类型',
   },
@@ -233,36 +243,6 @@ const pointsConsumeFormSchema: EsFormSchema = [
       placeholder: '请输入要扣减的积分',
     },
   }),
-  createOperationField('targetType', {
-    componentProps: {
-      align: 'left',
-      class: '!w-full',
-      controlsPosition: 'right',
-      min: 0,
-      placeholder: '可选，填写目标类型',
-    },
-  }),
-  createOperationField('targetId', {
-    componentProps: {
-      align: 'left',
-      class: '!w-full',
-      controlsPosition: 'right',
-      min: 0,
-      placeholder: '可选，填写目标 ID',
-    },
-  }),
-  {
-    component: 'InputNumber',
-    fieldName: 'exchangeId',
-    label: '兑换 ID',
-    componentProps: {
-      align: 'left',
-      class: '!w-full',
-      controlsPosition: 'right',
-      min: 0,
-      placeholder: '可选，填写兑换 ID',
-    },
-  },
   createOperationField('remark', {
     componentProps: {
       maxlength: 200,
@@ -292,9 +272,9 @@ const pointRecordSearchSchema = formSchemaTransform.toSearchSchema(
     startDate: { show: true },
     endDate: { show: true },
     targetType: {
-      component: 'Input',
       componentProps: {
         clearable: true,
+        options: operationFieldCatalog.targetType.componentProps.options,
         placeholder: '目标类型',
       },
     },

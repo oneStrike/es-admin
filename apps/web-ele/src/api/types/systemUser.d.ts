@@ -103,7 +103,7 @@ export type SystemUserPasswordChangeResponse = boolean;
  */
 export type SystemUserPasswordResetRequest = IdDto;
 
-export type SystemUserPasswordResetResponse = boolean;
+export type SystemUserPasswordResetResponse = ResetAdminUserPasswordResultDto;
 
 /**
  *  类型定义 [SystemUserUnlockRequest]
@@ -219,4 +219,17 @@ export type IdDto = {
 
   /* 主键id */
   id: number;
+};
+
+/**
+ *  类型定义 [ResetAdminUserPasswordResultDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ResetAdminUserPasswordResultDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 一次性临时密码，仅本次响应返回 */
+  temporaryPassword: string;
 };

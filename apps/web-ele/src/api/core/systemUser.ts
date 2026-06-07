@@ -88,7 +88,7 @@ export async function systemUserPasswordChangeApi(
 }
 
 /**
- * 重置用户密码为默认密码
+ * 重置用户密码
  */
 export async function systemUserPasswordResetApi(
   params: SystemUserPasswordResetRequest,

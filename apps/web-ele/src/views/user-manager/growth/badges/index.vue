@@ -31,6 +31,7 @@ import EsModalTable from '#/components/es-modal-table';
 import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions, formSchemaTransform } from '#/utils';
+import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
 import { getDetailSections } from './modules/model/detail';
 import {
@@ -107,8 +108,8 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '徽章详情',
 });
 
-const [AssignForm, assignFormApi] = useVbenModal({
-  connectedComponent: EsModalForm,
+const [AssignModal, assignModalApi] = useVbenModal({
+  connectedComponent: EsModalTable,
 });
 
 const [RevokeModal, revokeApi] = useVbenModal({
@@ -184,27 +185,25 @@ async function toggleEnableStatus(record: BaseUserBadgeDto) {
   }
 }
 
-const assignFormSchema: EsFormSchema = [
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入APP用户ID，多个用逗号分隔',
-      type: 'textarea',
-      rows: 4,
-    },
-    fieldName: 'userIds',
-    label: '用户ID',
-    rules: 'required',
-    formItemClass: 'col-span-2',
-  },
-];
-
 function openAssignModal(record: BaseUserBadgeDto) {
   currentBadge.value = record;
-  assignFormApi
+  const userSelectProps = createAppUserTableSelectProps({
+    enabledOnly: true,
+    multiple: true,
+    title: `分配徽章用户 - ${record.name}`,
+  });
+
+  assignModalApi
     .setData({
-      title: `分配徽章用户 - ${record.name}`,
-      schema: assignFormSchema,
+      api: userSelectProps.api,
+      columns: userSelectProps.columns,
+      displayField: userSelectProps.displayField,
+      keyField: userSelectProps.keyField,
+      multipleLimit: 50,
+      searchSchema: createSearchFormOptions(userSelectProps.searchSchema),
+      selectionMode: 'multiple',
+      title: userSelectProps.title,
+      width: userSelectProps.width,
     })
     .open();
 }
@@ -224,19 +223,18 @@ function openRevokeModal(record: BaseUserBadgeDto) {
     .open();
 }
 
-async function handleAssignSubmit(values: { userIds: string }) {
+async function handleAssignConfirm(rows: Array<{ id?: number | string }>) {
   const badgeId = currentBadge.value?.id;
-  if (!badgeId) return;
-  const ids = values.userIds
-    .split(/[,，\s]+/)
-    .map(Number)
+  if (!badgeId || rows.length === 0) return;
+  const ids = rows
+    .map((row) => Number(row.id))
     .filter((value) => Number.isFinite(value) && value > 0);
   if (ids.length === 0) return;
   await Promise.all(
     ids.map((userId) => growthBadgesAssignApi({ badgeId, userId })),
   );
   useMessage.success('操作成功');
-  assignFormApi.close();
+  assignModalApi.close();
   gridApi.reload();
 }
 
@@ -317,7 +315,7 @@ function getBadgeActions(row: BaseUserBadgeDto): ActionItem[] {
       :sections="getDetailSections"
       class="min-w-[800px]"
     />
-    <AssignForm :on-submit="handleAssignSubmit" />
+    <AssignModal @confirm="handleAssignConfirm" />
     <RevokeModal @confirm="handleRevokeConfirm" />
   </Page>
 </template>

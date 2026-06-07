@@ -16,7 +16,7 @@ export type AppUsersPageRequest = {
   /* 邮箱 */
   emailAddress?: string;
 
-  /* 结束时间 */
+  /* 注册结束时间 */
   endDate?: string;
 
   /* 主键id */
@@ -49,7 +49,7 @@ export type AppUsersPageRequest = {
   /* 手机号 */
   phoneNumber?: string;
 
-  /* 开始时间 */
+  /* 注册开始时间 */
   startDate?: string;
 
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
