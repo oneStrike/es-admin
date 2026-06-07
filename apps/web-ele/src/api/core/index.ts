@@ -255,6 +255,7 @@ export { forumHashtagsUpdateApi } from './forum';
 export { forumHashtagsUpdateHiddenApi } from './forum';
 export { forumHashtagsUpdateAuditStatusApi } from './forum';
 export { forumModeratorActionLogPageApi } from './forum';
+export { forumModeratorLifecycleLogPageApi } from './forum';
 export { growthExperienceRecordPageApi } from './growth';
 export { growthExperienceRecordDetailApi } from './growth';
 export { growthExperienceStatsApi } from './growth';

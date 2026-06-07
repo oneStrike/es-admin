@@ -147,16 +147,11 @@ async function confirmDeleteApplication(row: ForumModeratorApplicationDto) {
 function getApplicationActions(
   row: ForumModeratorApplicationDto,
 ): ActionItem[] {
-  return [
+  const actions: ActionItem[] = [
     {
       key: 'detail',
       onClick: () => detailApi.setData({ id: row.id }).open(),
       text: '详情',
-    },
-    {
-      key: 'audit',
-      onClick: () => openAuditModal(row),
-      text: '审核',
     },
     {
       danger: true,
@@ -165,6 +160,16 @@ function getApplicationActions(
       text: '删除',
     },
   ];
+
+  if (row.status === 0) {
+    actions.splice(1, 0, {
+      key: 'audit',
+      onClick: () => openAuditModal(row),
+      text: '审核',
+    });
+  }
+
+  return actions;
 }
 
 async function reload() {

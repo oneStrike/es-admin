@@ -21,6 +21,8 @@ import type {
   ForumModeratorApplicationDetailResponse,
   ForumModeratorApplicationPageRequest,
   ForumModeratorApplicationPageResponse,
+  ForumModeratorLifecycleLogPageRequest,
+  ForumModeratorLifecycleLogPageResponse,
   ForumModeratorsAssignSectionRequest,
   ForumModeratorsAssignSectionResponse,
   ForumModeratorsCreateRequest,
@@ -805,6 +807,18 @@ export async function forumModeratorActionLogPageApi(
 ): Promise<ForumModeratorActionLogPageResponse> {
   return requestClient.get<ForumModeratorActionLogPageResponse>(
     '/api/admin/forum/moderator-action-log/page',
+    { params },
+  );
+}
+
+/**
+ * 分页查询版主生命周期日志
+ */
+export async function forumModeratorLifecycleLogPageApi(
+  params?: ForumModeratorLifecycleLogPageRequest,
+): Promise<ForumModeratorLifecycleLogPageResponse> {
+  return requestClient.get<ForumModeratorLifecycleLogPageResponse>(
+    '/api/admin/forum/moderator-lifecycle-log/page',
     { params },
   );
 }

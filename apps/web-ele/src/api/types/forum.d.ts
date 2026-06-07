@@ -1023,6 +1023,60 @@ export type ForumModeratorActionLogPageResponse = {
 };
 
 /**
+ *  类型定义 [ForumModeratorLifecycleLogPageRequest]
+ *  @来源 论坛管理/版主生命周期日志
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumModeratorLifecycleLogPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 后台操作者用户ID */
+  actorAdminUserId?: number;
+
+  /* 关联申请ID */
+  applicationId?: null | number;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 生命周期事件类型 */
+  eventType?: number;
+
+  /* 关联版主ID */
+  moderatorId?: null | number;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+};
+
+export type ForumModeratorLifecycleLogPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: ForumModeratorLifecycleLogDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
  *  类型定义 [ForumModeratorDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -1052,6 +1106,8 @@ export type ForumModeratorDto = {
   remark?: null | string;
   /* 版主角色类型（1=超级版主；2=分组版主；3=板块版主） */
   roleType: 1 | 2 | 3;
+  /* 可治理板块总数 */
+  sectionCount: number;
   /* 管理的板块列表 */
   sections: ForumModeratorSectionItemDto[];
   /* 更新时间 */
@@ -2738,4 +2794,33 @@ export type ForumModeratorActionLogDto = {
 
   /* 操作目标类型（1=论坛主题；2=论坛评论） */
   targetType: 1 | 2;
+};
+
+/**
+ *  类型定义 [ForumModeratorLifecycleLogDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumModeratorLifecycleLogDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 后台操作者用户ID */
+  actorAdminUserId: number;
+  /* 操作后快照 */
+  afterData?: null | string;
+  /* 关联申请ID */
+  applicationId?: null | number;
+  /* 操作前快照 */
+  beforeData?: null | string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 生命周期事件类型 */
+  eventType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+  /* 主键id */
+  id: number;
+  /* 关联版主ID */
+  moderatorId?: null | number;
+
+  /* 操作原因或审核意见 */
+  reason?: null | string;
 };

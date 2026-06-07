@@ -7,19 +7,23 @@ import { Page } from '@vben/common-ui';
 import EsFullHeightTabs from '#/components/es-full-height-tabs';
 
 import ModeratorApplicationPanel from './components/moderator-application-panel.vue';
+import ModeratorLifecycleLogPanel from './components/moderator-lifecycle-log-panel.vue';
 import ModeratorListPanel from './components/moderator-list-panel.vue';
 
 defineOptions({
   name: 'ForumModerators',
 });
 
-type ModeratorTab = 'applications' | 'moderators';
+type ModeratorTab = 'applications' | 'lifecycleLogs' | 'moderators';
 
 const route = useRoute();
 const router = useRouter();
 
 function resolveModeratorTab(tab: unknown): ModeratorTab {
-  return tab === 'applications' ? 'applications' : 'moderators';
+  if (tab === 'applications' || tab === 'lifecycleLogs') {
+    return tab;
+  }
+  return 'moderators';
 }
 
 const activeTab = ref<ModeratorTab>(resolveModeratorTab(route.query.tab));
@@ -38,7 +42,7 @@ async function handleTabChange(tab: number | string) {
   await router.replace({
     query: {
       ...route.query,
-      tab: nextTab === 'applications' ? nextTab : undefined,
+      tab: nextTab === 'moderators' ? undefined : nextTab,
     },
   });
 }
@@ -61,6 +65,10 @@ async function handleApplicationApproved() {
 
       <el-tab-pane label="申请审核" name="applications">
         <ModeratorApplicationPanel @approved="handleApplicationApproved" />
+      </el-tab-pane>
+
+      <el-tab-pane label="生命周期日志" name="lifecycleLogs">
+        <ModeratorLifecycleLogPanel />
       </el-tab-pane>
     </EsFullHeightTabs>
   </Page>

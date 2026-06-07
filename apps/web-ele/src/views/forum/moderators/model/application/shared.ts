@@ -128,7 +128,6 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
     nickname: { show: true },
     sectionId: { show: true },
     dateRange: { show: true },
-    applicantId: { show: true },
   },
 );
 

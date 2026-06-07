@@ -225,7 +225,6 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
     sectionId: { show: true },
     isEnabled: { show: true },
     dateRange: { show: true },
-    userId: { show: true },
   },
 );
 
@@ -247,10 +246,15 @@ export const moderatorColumns =
       minWidth: 140,
     },
     sections: {
-      formatter: ({ row }) =>
-        row.sections?.length
-          ? row.sections.map((item) => item.name).join(' / ')
-          : '-',
+      formatter: ({ row }) => {
+        if (!row.sections?.length) {
+          return row.sectionCount > 0 ? `共 ${row.sectionCount} 个板块` : '-';
+        }
+        const visibleText = row.sections.map((item) => item.name).join(' / ');
+        return row.sectionCount > row.sections.length
+          ? `${visibleText} 等 ${row.sectionCount} 个`
+          : visibleText;
+      },
       minWidth: 220,
       showOverflow: 'tooltip',
     },
