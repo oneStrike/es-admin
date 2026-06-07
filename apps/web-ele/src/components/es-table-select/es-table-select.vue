@@ -25,6 +25,7 @@ const props = withDefaults(defineProps<EsTableSelectProps>(), {
   width: 1000,
   onlyKey: true,
   multiple: true,
+  emitScalar: false,
   keyField: 'id',
   displayField: 'name',
 });
@@ -45,6 +46,15 @@ watch(
       }
     } else if (!newValue) {
       selectedRows.value = [];
+    } else if (isTableSelectRow(newValue) && newValue[props.keyField]) {
+      confirmSelection([newValue]);
+    } else {
+      selectedRows.value = [
+        {
+          [props.keyField]: newValue,
+          [props.displayField]: newValue,
+        },
+      ];
     }
   },
   { immediate: true },
@@ -98,7 +108,14 @@ function confirmSelection(selectedRowsData: TableSelectRow[] = []) {
     value: item[props.keyField] as TableSelectValue,
   }));
 
-  emit('update:modelValue', props.onlyKey ? values : selectedRows.value);
+  const nextValue = props.onlyKey ? values : selectedRows.value;
+
+  emit(
+    'update:modelValue',
+    props.multiple || !props.emitScalar
+      ? nextValue
+      : (nextValue[0] ?? undefined),
+  );
   emit('selectChange', props.multiple ? options : (options[0] ?? undefined));
 }
 

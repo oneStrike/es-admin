@@ -14,7 +14,11 @@ export interface TableSelectOption {
 }
 
 export interface EsTableSelectProps {
-  modelValue?: TableSelectRow[] | TableSelectValue[];
+  modelValue?:
+    | TableSelectRow
+    | TableSelectRow[]
+    | TableSelectValue
+    | TableSelectValue[];
   multiple?: boolean;
   multipleLimit?: number;
   placeholder?: string;
@@ -31,10 +35,19 @@ export interface EsTableSelectProps {
   displayField?: string;
   keyField?: string;
   onlyKey?: boolean;
+  emitScalar?: boolean;
 }
 
 export interface EsTableSelectEmits {
-  (e: 'update:modelValue', value: TableSelectRow[] | TableSelectValue[]): void;
+  (
+    e: 'update:modelValue',
+    value:
+      | TableSelectRow
+      | TableSelectRow[]
+      | TableSelectValue
+      | TableSelectValue[]
+      | undefined,
+  ): void;
   (
     e: 'selectChange',
     options: TableSelectOption | TableSelectOption[] | undefined,

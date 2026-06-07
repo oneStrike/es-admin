@@ -2,6 +2,7 @@ import type { AdminTaskReconciliationItemDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
+import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
 import {
   formatInstanceStepSummary,
@@ -25,9 +26,15 @@ const taskReconciliationFieldCatalog = {
     label: '补偿状态',
   },
   userId: {
-    component: 'InputNumber',
+    component: 'TableSelect',
+    componentProps: createAppUserTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择 APP 用户',
+      title: '选择对账用户',
+    }),
     fieldName: 'userId',
-    label: '用户 ID',
+    label: '用户',
   },
 } satisfies Record<string, TaskReconciliationSchemaField>;
 
@@ -74,11 +81,12 @@ const taskReconciliationListSchema: EsFormSchema = [
     },
   },
   createTaskReconciliationField('userId', {
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '用户 ID',
-    },
+    componentProps: createAppUserTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择 APP 用户',
+      title: '选择对账用户',
+    }),
   }),
   createTaskReconciliationField('rewardSettlementId', {
     componentProps: {
@@ -113,36 +121,22 @@ const taskReconciliationListSchema: EsFormSchema = [
 
 export const taskReconciliationSearchFormSchema =
   formSchemaTransform.toSearchSchema(taskReconciliationListSchema, {
-    instanceId: {
-      show: true,
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '任务实例 ID',
-      },
-    },
-    taskId: {
-      show: true,
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '任务头 ID',
-      },
-    },
     userId: {
       show: true,
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '用户 ID',
-      },
+      component: 'TableSelect',
+      componentProps: createAppUserTableSelectProps({
+        emitScalar: true,
+        multiple: false,
+        placeholder: '搜索并选择 APP 用户',
+        title: '选择对账用户',
+      }),
     },
     rewardSettlementId: {
-      show: true,
+      show: false,
       componentProps: {
         class: '!w-full',
         min: 1,
-        placeholder: '结算事实 ID',
+        placeholder: '高级诊断：结算事实 ID',
       },
     },
     settlementStatus: {
@@ -151,6 +145,22 @@ export const taskReconciliationSearchFormSchema =
         clearable: true,
         options: taskRewardSettlementStatusOptions,
         placeholder: '补偿状态',
+      },
+    },
+    instanceId: {
+      show: false,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '高级诊断：任务实例 ID',
+      },
+    },
+    taskId: {
+      show: false,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '高级诊断：任务头 ID',
       },
     },
     dateRange: {

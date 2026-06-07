@@ -114,15 +114,25 @@ const operationFieldCatalog = {
     fieldName: 'points',
     label: '积分变化',
   },
+  operationNote: {
+    component: 'Input',
+    fieldName: 'operationNote',
+    label: '操作备注',
+  },
   remark: {
     component: 'Input',
     fieldName: 'remark',
     label: '备注',
   },
+  exchangeId: {
+    component: 'InputNumber',
+    fieldName: 'exchangeId',
+    label: '兑换 ID（高级排障）',
+  },
   targetId: {
     component: 'InputNumber',
     fieldName: 'targetId',
-    label: '目标 ID（高级）',
+    label: '目标 ID（高级排障）',
   },
   targetType: {
     component: 'Select',
@@ -174,6 +184,10 @@ function formatSignedNumber(row: GridSearchValues, field: string) {
   return value > 0 ? `+${value}` : value;
 }
 
+function toOptionalNumber(value?: null | number) {
+  return value || undefined;
+}
+
 function getBadgeInfo(row: GridSearchValues): Partial<BaseUserBadgeDto> {
   return row.badge && typeof row.badge === 'object'
     ? (row.badge as Partial<BaseUserBadgeDto>)
@@ -217,10 +231,10 @@ function createGrowthGrantFormSchema(): EsFormSchema {
         placeholder: '请选择规则类型',
       },
     },
-    createOperationField('remark', {
+    createOperationField('operationNote', {
       componentProps: {
-        maxlength: 200,
-        placeholder: '请输入备注',
+        maxlength: 500,
+        placeholder: '请输入操作备注（仅用于内部审计）',
         rows: 4,
         showWordLimit: true,
         type: 'textarea',
@@ -243,13 +257,43 @@ const pointsConsumeFormSchema: EsFormSchema = [
       placeholder: '请输入要扣减的积分',
     },
   }),
-  createOperationField('remark', {
+  createOperationField('operationNote', {
     componentProps: {
-      maxlength: 200,
-      placeholder: '请输入备注',
+      maxlength: 500,
+      placeholder: '请输入操作备注（仅用于内部审计）',
       rows: 4,
       showWordLimit: true,
       type: 'textarea',
+    },
+  }),
+  createOperationField('targetType', {
+    componentProps: {
+      clearable: true,
+      options: operationFieldCatalog.targetType.componentProps.options,
+      placeholder: '请选择关联目标类型（可选）',
+    },
+    label: '关联目标类型（可选）',
+  }),
+  createOperationField('targetId', {
+    componentProps: {
+      align: 'left',
+      class: '!w-full',
+      controlsPosition: 'right',
+      min: 1,
+      placeholder: '仅排障或确有业务关联时填写',
+    },
+    dependencies: {
+      show: ({ targetType }) => !!targetType,
+      triggerFields: ['targetType'],
+    },
+  }),
+  createOperationField('exchangeId', {
+    componentProps: {
+      align: 'left',
+      class: '!w-full',
+      controlsPosition: 'right',
+      min: 1,
+      placeholder: '仅排障或兑换补扣场景填写',
     },
   }),
 ];
@@ -756,13 +800,15 @@ async function handlePointsGrantSubmit(values: AppUsersPointsGrantRequest) {
     return;
   }
 
-  await appUsersPointsGrantApi({
+  const payload = {
     operationKey:
       pointsGrantOperationKey.value || buildOperationKey('points-grant'),
-    remark: values.remark?.trim() || undefined,
+    operationNote: values.operationNote?.trim() || undefined,
     ruleType: values.ruleType,
     userId: currentUser.value.id,
-  });
+  } satisfies AppUsersPointsGrantRequest;
+
+  await appUsersPointsGrantApi(payload);
 
   useMessage.success('积分增加成功');
   pointsGrantFormApi.close();
@@ -775,16 +821,18 @@ async function handlePointsConsumeSubmit(values: AppUsersPointsConsumeRequest) {
     return;
   }
 
-  await appUsersPointsConsumeApi({
-    exchangeId: values.exchangeId || undefined,
+  const payload = {
+    exchangeId: toOptionalNumber(values.exchangeId),
     operationKey:
       pointsConsumeOperationKey.value || buildOperationKey('points-consume'),
     points: values.points,
-    remark: values.remark?.trim() || undefined,
-    targetId: values.targetId || undefined,
-    targetType: values.targetType || undefined,
+    operationNote: values.operationNote?.trim() || undefined,
+    targetId: toOptionalNumber(values.targetId),
+    targetType: toOptionalNumber(values.targetType),
     userId: currentUser.value.id,
-  });
+  } satisfies AppUsersPointsConsumeRequest;
+
+  await appUsersPointsConsumeApi(payload);
 
   useMessage.success('积分扣减成功');
   pointsConsumeFormApi.close();
@@ -799,14 +847,16 @@ async function handleExperienceGrantSubmit(
     return;
   }
 
-  await appUsersExperienceGrantApi({
+  const payload = {
     operationKey:
       experienceGrantOperationKey.value ||
       buildOperationKey('experience-grant'),
-    remark: values.remark?.trim() || undefined,
+    operationNote: values.operationNote?.trim() || undefined,
     ruleType: values.ruleType,
     userId: currentUser.value.id,
-  });
+  } satisfies AppUsersExperienceGrantRequest;
+
+  await appUsersExperienceGrantApi(payload);
 
   useMessage.success('经验增加成功');
   experienceGrantFormApi.close();

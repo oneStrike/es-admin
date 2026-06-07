@@ -69,6 +69,7 @@ const retryingMap = reactive<Record<number, boolean>>({});
 const batchRetrying = ref(false);
 const currentSettlement = ref<GrowthRewardSettlementPageItemDto>();
 const currentRuleEvent = ref<GrowthRuleEventPageItemDto>();
+const settlementDiagnosticPanels = ref<string[]>([]);
 
 const settlementDetailTitle = computed(() =>
   currentSettlement.value
@@ -145,6 +146,7 @@ const [RuleEventDetailDrawer, ruleEventDetailDrawerApi] = useVbenDrawer({
 
 function openSettlementDetail(row: GrowthRewardSettlementPageItemDto) {
   currentSettlement.value = row;
+  settlementDiagnosticPanels.value = [];
   settlementDetailDrawerApi.open();
 }
 
@@ -361,9 +363,6 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
           <VbenDescriptionsItem label="来源">
             {{ currentSettlement.source || '-' }}
           </VbenDescriptionsItem>
-          <VbenDescriptionsItem label="业务键">
-            {{ currentSettlement.bizKey || '-' }}
-          </VbenDescriptionsItem>
           <VbenDescriptionsItem label="结算类型">
             {{
               getOptionLabel(
@@ -391,13 +390,6 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
           <VbenDescriptionsItem label="重试次数">
             {{ currentSettlement.retryCount }}
           </VbenDescriptionsItem>
-          <VbenDescriptionsItem label="来源事实 ID">
-            {{ currentSettlement.sourceRecordId ?? '-' }}
-          </VbenDescriptionsItem>
-          <VbenDescriptionsItem label="目标">
-            {{ currentSettlement.targetType ?? '-' }} /
-            {{ currentSettlement.targetId ?? '-' }}
-          </VbenDescriptionsItem>
           <VbenDescriptionsItem label="发生时间">
             {{ formatDateTime(currentSettlement.eventOccurredAt) }}
           </VbenDescriptionsItem>
@@ -421,10 +413,31 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
           </VbenDescriptionsItem>
         </VbenDescriptions>
 
-        <div class="growth-operations-detail__block">
-          <div class="growth-operations-detail__title">原始载荷</div>
-          <pre>{{ formatJsonBlock(currentSettlement.requestPayload) }}</pre>
-        </div>
+        <el-collapse v-model="settlementDiagnosticPanels">
+          <el-collapse-item name="diagnostics" title="高级诊断信息">
+            <div class="growth-operations-detail__diagnostics">
+              <VbenDescriptions :column="2" bordered>
+                <VbenDescriptionsItem :span="2" label="业务键">
+                  {{ currentSettlement.bizKey || '-' }}
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="来源事实 ID">
+                  {{ currentSettlement.sourceRecordId ?? '-' }}
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="目标 raw pair">
+                  {{ currentSettlement.targetType ?? '-' }} /
+                  {{ currentSettlement.targetId ?? '-' }}
+                </VbenDescriptionsItem>
+              </VbenDescriptions>
+
+              <div class="growth-operations-detail__block">
+                <div class="growth-operations-detail__title">原始载荷</div>
+                <pre>{{
+                  formatJsonBlock(currentSettlement.requestPayload)
+                }}</pre>
+              </div>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
       </div>
     </SettlementDetailDrawer>
 
@@ -492,6 +505,12 @@ function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.growth-operations-detail__diagnostics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .growth-operations-detail__title {

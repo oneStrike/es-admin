@@ -89,6 +89,7 @@ export const appUserSelectColumns =
 export function createAppUserTableSelectProps(
   options: {
     enabledOnly?: boolean;
+    emitScalar?: boolean;
     multiple?: boolean;
     placeholder?: string;
     title?: string;
@@ -108,6 +109,7 @@ export function createAppUserTableSelectProps(
     keyField: 'id',
     multiple,
     onlyKey: true,
+    emitScalar: options.emitScalar ?? false,
     placeholder:
       options.placeholder ?? (multiple ? '请选择 APP 用户' : '请选择 APP 用户'),
     searchSchema: appUserSelectSearchSchema,

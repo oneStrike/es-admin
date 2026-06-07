@@ -2,6 +2,7 @@ import type { TaskInstanceViewDto } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
+import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
 import {
   formatInstanceStepSummary,
@@ -26,9 +27,15 @@ const taskInstanceFieldCatalog = {
     label: '任务头 ID',
   },
   userId: {
-    component: 'InputNumber',
+    component: 'TableSelect',
+    componentProps: createAppUserTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择 APP 用户',
+      title: '选择任务实例用户',
+    }),
     fieldName: 'userId',
-    label: '用户 ID',
+    label: '用户',
   },
 } satisfies Record<string, TaskInstanceSchemaField>;
 
@@ -61,11 +68,12 @@ const taskInstanceListSchema: EsFormSchema = [
     },
   }),
   createTaskInstanceField('userId', {
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '用户 ID',
-    },
+    componentProps: createAppUserTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择 APP 用户',
+      title: '选择任务实例用户',
+    }),
   }),
   {
     component: 'Select',
@@ -111,20 +119,22 @@ export const taskInstanceSearchFormSchema = formSchemaTransform.toSearchSchema(
   taskInstanceListSchema,
   {
     taskId: {
-      show: true,
+      show: false,
       componentProps: {
         class: '!w-full',
         min: 1,
-        placeholder: '任务头 ID',
+        placeholder: '高级诊断：任务头 ID',
       },
     },
     userId: {
       show: true,
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '用户 ID',
-      },
+      component: 'TableSelect',
+      componentProps: createAppUserTableSelectProps({
+        emitScalar: true,
+        multiple: false,
+        placeholder: '搜索并选择 APP 用户',
+        title: '选择任务实例用户',
+      }),
     },
     sceneType: { show: true },
     status: {

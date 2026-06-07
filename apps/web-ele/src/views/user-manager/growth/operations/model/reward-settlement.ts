@@ -5,6 +5,7 @@ import type {
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
+import { createAppUserTableSelectProps } from '#/views/user-manager/shared/app-user-select';
 
 import { growthTypeOptions } from '../../model/constants';
 import {
@@ -40,9 +41,15 @@ const rewardSettlementFieldCatalog = {
     label: '结算类型',
   },
   userId: {
-    component: 'InputNumber',
+    component: 'TableSelect',
+    componentProps: createAppUserTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择 APP 用户',
+      title: '选择结算用户',
+    }),
     fieldName: 'userId',
-    label: '用户 ID',
+    label: '用户',
   },
 } satisfies Record<string, RewardSettlementSchemaField>;
 
@@ -69,11 +76,12 @@ function createRewardSettlementField(
 
 const rewardSettlementListSchema: EsFormSchema = [
   createRewardSettlementField('userId', {
-    componentProps: {
-      class: '!w-full',
-      min: 1,
-      placeholder: '用户 ID',
-    },
+    componentProps: createAppUserTableSelectProps({
+      emitScalar: true,
+      multiple: false,
+      placeholder: '搜索并选择 APP 用户',
+      title: '选择结算用户',
+    }),
   }),
   createRewardSettlementField('eventCode', {
     componentProps: {
@@ -199,11 +207,35 @@ export function formatSettlementLedgerIds(
 export const rewardSettlementSearchSchema = formSchemaTransform.toSearchSchema(
   rewardSettlementListSchema,
   {
-    userId: { show: true },
+    userId: {
+      show: true,
+      component: 'TableSelect',
+      componentProps: createAppUserTableSelectProps({
+        emitScalar: true,
+        multiple: false,
+        placeholder: '搜索并选择 APP 用户',
+        title: '选择结算用户',
+      }),
+    },
     eventCode: { show: true },
     settlementType: { show: true },
     settlementStatus: { show: true },
     dateRange: { show: true },
+    id: {
+      show: false,
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '高级诊断：结算 ID',
+      },
+    },
+    eventKey: {
+      show: false,
+      componentProps: {
+        clearable: true,
+        placeholder: '高级诊断：事件 key',
+      },
+    },
   },
 );
 
