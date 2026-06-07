@@ -10,6 +10,8 @@ const HTML_TAG_REGEX = /<[^>]+>/g;
 const HTML_SPACE_ENTITY_REGEX = /&nbsp;/gi;
 const EXTRA_WHITESPACE_REGEX = /\s+/g;
 
+export const UNGROUPED_SECTION_GROUP_VALUE = 'ungrouped';
+
 function toPlainTextFromHtml(content?: null | string) {
   if (!content) {
     return '-';
@@ -53,6 +55,18 @@ export const formSchema: EsFormSchema = [
           value: false,
         },
       ],
+      class: 'w-full',
+    },
+  },
+  {
+    label: '所属分组',
+    fieldName: 'groupId',
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择所属分组',
+      options: [],
+      clearable: true,
+      filterable: true,
       class: 'w-full',
     },
   },
@@ -185,6 +199,9 @@ export const sectionColumns =
     userLevelRuleId: {
       hide: true,
     },
+    groupId: {
+      hide: true,
+    },
     remark: {
       hide: true,
     },
@@ -209,6 +226,9 @@ export const sectionFilter = formSchemaTransform
       show: true,
     },
     topicReviewPolicy: {
+      show: true,
+    },
+    groupId: {
       show: true,
     },
   })

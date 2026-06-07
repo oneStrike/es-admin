@@ -8,13 +8,13 @@ export type CommentPageRequest = {
   [property: string]: any;
 
   /* 实际回复的根评论 ID */
-  actualReplyToId?: null | number;
+  actualReplyToId?: number;
 
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 主键id */
   id?: number;
@@ -23,22 +23,22 @@ export type CommentPageRequest = {
   isHidden?: boolean;
 
   /* 关键词搜索（评论内容） */
-  keyword?: null | string;
+  keyword?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 回复的评论 ID */
-  replyToId?: null | number;
+  replyToId?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 目标 ID */
   targetId?: number;
@@ -135,13 +135,13 @@ export type AdminCommentPageItemDto = {
   /* 回复的评论 ID */
   replyToId?: null | number;
   /* 被回复评论展示摘要 */
-  replyToSummary?: InteractionReplyCommentSummaryDto;
+  replyToSummary?: InteractionReplyCommentSummaryDto | null;
   /* 敏感词命中记录 */
   sensitiveWordHits?: SensitiveWordHitDto[];
   /* 目标 ID */
   targetId: number;
   /* 评论目标展示摘要 */
-  targetSummary?: InteractionCommentTargetSummaryDto;
+  targetSummary?: InteractionCommentTargetSummaryDto | null;
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType: 1 | 2 | 3 | 4 | 5;
   /* 更新时间 */
@@ -272,7 +272,7 @@ export type AdminCommentDetailDto = {
   /* 审核人 ID */
   auditById?: null | number;
   /* 审核人展示摘要 */
-  auditorSummary?: InteractionActorSummaryDto;
+  auditorSummary?: InteractionActorSummaryDto | null;
   /* 审核原因 */
   auditReason?: null | string;
   /* 审核角色（0=版主；1=管理员） */
@@ -300,7 +300,7 @@ export type AdminCommentDetailDto = {
   /* 目标 ID */
   targetId: number;
   /* 评论目标展示摘要 */
-  targetSummary?: InteractionCommentTargetSummaryDto;
+  targetSummary?: InteractionCommentTargetSummaryDto | null;
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType: 1 | 2 | 3 | 4 | 5;
   /* 更新时间 */

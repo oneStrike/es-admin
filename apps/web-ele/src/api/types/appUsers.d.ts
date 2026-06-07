@@ -11,13 +11,13 @@ export type AppUsersPageRequest = {
   account?: string;
 
   /* 删除态筛选（0=未删除；1=已删除；2=全部） */
-  deletedScope?: null | number;
+  deletedScope?: number;
 
   /* 邮箱 */
-  emailAddress?: null | string;
+  emailAddress?: string;
 
   /* 注册结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 主键id */
   id?: number;
@@ -26,31 +26,31 @@ export type AppUsersPageRequest = {
   isEnabled?: boolean;
 
   /* 最后登录结束时间 */
-  lastLoginEndDate?: null | string;
+  lastLoginEndDate?: string;
 
   /* 最后登录开始时间 */
-  lastLoginStartDate?: null | string;
+  lastLoginStartDate?: string;
 
   /* 等级ID */
-  levelId?: null | number;
+  levelId?: number;
 
   /* 昵称 */
   nickname?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 手机号 */
-  phoneNumber?: null | string;
+  phoneNumber?: string;
 
   /* 注册开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
   status?: number;
@@ -188,28 +188,28 @@ export type AppUsersPointsRecordPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: number;
 
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: number;
 
   /* 用户 ID */
   userId: number;
@@ -278,46 +278,46 @@ export type AppUsersExperienceRecordPageRequest = {
   bizKey?: string;
 
   /* 经验变更方向（1=增加；2=减少） */
-  deltaDirection?: null | number;
+  deltaDirection?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否只看有关联规则的记录 */
-  hasRule?: boolean | null;
+  hasRule?: boolean;
 
   /* 最大经验变更值 */
-  maxDelta?: null | number;
+  maxDelta?: number;
 
   /* 最小经验变更值 */
-  minDelta?: null | number;
+  minDelta?: number;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大100，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: number;
 
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?: number;
 
   /* 账本来源（如 growth_rule、task_bonus、purchase） */
-  source?: null | string;
+  source?: string;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: number;
 
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: number;
 
   /* 用户 ID */
   userId: number;
@@ -353,31 +353,31 @@ export type AppUsersGrowthRecordPageRequest = {
   assetType?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 关联的规则ID */
-  ruleId?: null | number;
+  ruleId?: number;
 
   /* 成长记录关联的事件编码，直接复用统一事件定义编码。 */
-  ruleType?: null | number;
+  ruleType?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 关联目标ID */
-  targetId?: null | number;
+  targetId?: number;
 
   /* 关联目标类型 */
-  targetType?: null | number;
+  targetType?: number;
 
   /* 用户id */
   userId: number;
@@ -419,10 +419,10 @@ export type AppUsersBadgesPageRequest = {
   [property: string]: any;
 
   /* 业务域标识 */
-  business?: null | string;
+  business?: string;
 
   /* 事件键 */
-  eventKey?: null | string;
+  eventKey?: string;
 
   /* 是否启用 */
   isEnabled?: boolean;
@@ -431,13 +431,13 @@ export type AppUsersBadgesPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
   type?: number;

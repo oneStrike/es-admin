@@ -8,22 +8,22 @@ export type ReportPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 处理人 ID */
-  handlerId?: null | number;
+  handlerId?: number;
 
   /* 主键id */
   id?: number;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 举报原因类型（1=垃圾信息；2=不当内容；3=骚扰；4=版权侵权；99=其他） */
   reasonType?: number;
@@ -38,7 +38,7 @@ export type ReportPageRequest = {
   sceneType?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
   status?: number;
@@ -112,7 +112,7 @@ export type AdminReportPageItemDto = {
   /* 处理人 ID */
   handlerId?: null | number;
   /* 处理人展示摘要 */
-  handlerSummary?: InteractionActorSummaryDto;
+  handlerSummary?: InteractionActorSummaryDto | null;
   /* 处理备注 */
   handlingNote?: null | string;
   /* 主键id */
@@ -122,11 +122,11 @@ export type AdminReportPageItemDto = {
   /* 举报人 ID */
   reporterId: number;
   /* 举报人展示摘要 */
-  reporterSummary?: InteractionAppUserSummaryDto;
+  reporterSummary?: InteractionAppUserSummaryDto | null;
   /* 业务场景根对象 ID */
   sceneId: number;
   /* 举报业务场景展示摘要 */
-  sceneSummary?: InteractionSceneSummaryDto;
+  sceneSummary?: InteractionSceneSummaryDto | null;
   /* 业务场景类型（1=漫画作品；2=小说作品；3=论坛主题；10=漫画章节；11=小说章节；12=用户主页） */
   sceneType: 1 | 2 | 3 | 10 | 11 | 12;
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
@@ -134,7 +134,7 @@ export type AdminReportPageItemDto = {
   /* 举报目标 ID */
   targetId: number;
   /* 举报目标展示摘要 */
-  targetSummary?: InteractionReportTargetSummaryDto;
+  targetSummary?: InteractionReportTargetSummaryDto | null;
   /* 举报目标类型（1=漫画；2=小说；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
   targetType: 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -257,7 +257,7 @@ export type AdminReportDetailDto = {
   /* 评论层级（1=根评论；2=回复评论） */
   commentLevel?: 1 | 2 | null;
   /* 被举报评论展示摘要；仅举报目标为评论时返回 */
-  commentSummary?: InteractionReportCommentSummaryDto;
+  commentSummary?: InteractionReportCommentSummaryDto | null;
   /* 创建时间 */
   createdAt: string;
   /* 详细说明 */
@@ -269,7 +269,7 @@ export type AdminReportDetailDto = {
   /* 处理人 ID */
   handlerId?: null | number;
   /* 处理人展示摘要 */
-  handlerSummary?: InteractionActorSummaryDto;
+  handlerSummary?: InteractionActorSummaryDto | null;
   /* 处理备注 */
   handlingNote?: null | string;
   /* 主键id */
@@ -279,11 +279,11 @@ export type AdminReportDetailDto = {
   /* 举报人 ID */
   reporterId: number;
   /* 举报人展示摘要 */
-  reporterSummary?: InteractionAppUserSummaryDto;
+  reporterSummary?: InteractionAppUserSummaryDto | null;
   /* 业务场景根对象 ID */
   sceneId: number;
   /* 举报业务场景展示摘要 */
-  sceneSummary?: InteractionSceneSummaryDto;
+  sceneSummary?: InteractionSceneSummaryDto | null;
   /* 业务场景类型（1=漫画作品；2=小说作品；3=论坛主题；10=漫画章节；11=小说章节；12=用户主页） */
   sceneType: 1 | 2 | 3 | 10 | 11 | 12;
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
@@ -291,7 +291,7 @@ export type AdminReportDetailDto = {
   /* 举报目标 ID */
   targetId: number;
   /* 举报目标展示摘要 */
-  targetSummary?: InteractionReportTargetSummaryDto;
+  targetSummary?: InteractionReportTargetSummaryDto | null;
   /* 举报目标类型（1=漫画；2=小说；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
   targetType: 1 | 2 | 3 | 4 | 5 | 6 | 7;
 

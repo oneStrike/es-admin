@@ -35,25 +35,25 @@ export type AgreementPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否已发布 */
   isPublished?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 是否展示在登录注册页 */
   showInAuth?: boolean;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 协议标题 */
   title?: string;
@@ -104,7 +104,7 @@ export type AgreementAccessRequest = {
   id: number;
 };
 
-export type AgreementAccessResponse = undefined;
+export type AgreementAccessResponse = string;
 
 /**
  *  类型定义 [CreateAgreementDto]

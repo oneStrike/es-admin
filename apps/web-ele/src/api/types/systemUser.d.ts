@@ -43,28 +43,28 @@ export type SystemUserPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否启用 */
   isEnabled?: boolean;
 
   /* 手机号 */
-  mobile?: null | string;
+  mobile?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 角色（0=普通管理员；1=超级管理员） */
   role?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 用户名 */
   username?: string;

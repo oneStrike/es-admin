@@ -26,8 +26,8 @@ import {
   forumSectionsDeleteApi,
   forumSectionsDetailApi,
   forumSectionsPageApi,
-  forumSectionsRebuildFollowCountAllApi,
-  forumSectionsRebuildFollowCountApi,
+  forumSectionsRebuildCountsAllApi,
+  forumSectionsRebuildCountsApi,
   forumSectionsSwapSortOrderApi,
   forumSectionsTreeApi,
   forumSectionsUpdateApi,
@@ -54,7 +54,26 @@ import {
   formSchema,
   sectionColumns,
   sectionFilter,
+  UNGROUPED_SECTION_GROUP_VALUE,
 } from './modules/model/shared';
+
+type SectionGroupSelectValue =
+  | number
+  | typeof UNGROUPED_SECTION_GROUP_VALUE
+  | undefined;
+
+type SectionFormValues = Omit<ForumSectionsCreateRequest, 'groupId'> & {
+  groupId?: null | SectionGroupSelectValue;
+};
+
+type SectionUpdateFormValues = Omit<ForumSectionsUpdateRequest, 'groupId'> & {
+  groupId?: null | SectionGroupSelectValue;
+};
+
+type SectionSearchValues = Record<string, unknown> & {
+  groupId?: SectionGroupSelectValue;
+  isUngrouped?: boolean;
+};
 
 type SectionGroupNode = Partial<BaseForumSectionGroupDto> & {
   id?: number;
@@ -80,6 +99,7 @@ const sections = ref<SectionGroupNode[]>([]);
 // 搜索关键词
 const searchKeyword = ref('');
 const levelOptions = ref<BasicOption[]>([]);
+const groupOptions = ref<BasicOption[]>([]);
 
 // 过滤后的板块组列表
 const filteredSections = computed(() => {
@@ -98,18 +118,12 @@ const gridOptions: VxeGridProps<ForumSectionRow> = {
     autoLoad: false,
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        if (currentSectionGroup.value?.isUngrouped) {
-          formValues.isUngrouped = true;
-          formValues.groupId = undefined;
-        } else {
-          formValues.groupId = currentSectionGroup.value?.id;
-          formValues.isUngrouped = undefined;
-        }
+        const normalizedFormValues = normalizeSectionSearchValues(formValues);
         return await forumSectionsPageApi(
           formatQuery({
             page,
             sorts,
-            formValues,
+            formValues: normalizedFormValues,
           }),
         );
       },
@@ -170,14 +184,71 @@ async function loadSectionGroups() {
 
   currentSectionGroup.value = nextCurrent || nodes[0] || null;
   sections.value = nodes;
+  groupOptions.value = buildSectionGroupOptions(nodes);
+  useForm.setOptions(formSchema, {
+    groupId: groupOptions.value,
+  });
+  useForm.setOptions(sectionFilter, {
+    groupId: groupOptions.value,
+  });
+  gridApi.setState((prev) => ({
+    formOptions: {
+      ...prev.formOptions,
+      schema: [...sectionFilter],
+    },
+  }));
+  await syncCurrentGroupToSearch();
   await gridApi.reload();
 }
 
-function getCurrentGroupId() {
-  if (currentSectionGroup.value?.isUngrouped) {
+function buildSectionGroupOptions(nodes: SectionGroupNode[]): BasicOption[] {
+  return nodes
+    .map((item) => ({
+      label: item.name,
+      value: item.isUngrouped ? UNGROUPED_SECTION_GROUP_VALUE : item.id,
+    }))
+    .filter((item): item is BasicOption => item.value !== undefined);
+}
+
+function getCurrentGroupSelectValue(): SectionGroupSelectValue {
+  if (!currentSectionGroup.value) {
     return undefined;
   }
-  return currentSectionGroup.value?.id;
+  return currentSectionGroup.value.isUngrouped
+    ? UNGROUPED_SECTION_GROUP_VALUE
+    : currentSectionGroup.value.id;
+}
+
+function normalizeSectionGroupId(
+  value: null | SectionGroupSelectValue,
+): null | number | undefined {
+  if (value === UNGROUPED_SECTION_GROUP_VALUE) {
+    return null;
+  }
+  return value ?? undefined;
+}
+
+function normalizeSectionSearchValues(formValues: SectionSearchValues) {
+  const { groupId, isUngrouped: _isUngrouped, ...rest } = formValues;
+  if (groupId === UNGROUPED_SECTION_GROUP_VALUE) {
+    return {
+      ...rest,
+      groupId: undefined,
+      isUngrouped: true,
+    };
+  }
+
+  return {
+    ...rest,
+    groupId,
+    isUngrouped: undefined,
+  };
+}
+
+async function syncCurrentGroupToSearch() {
+  await gridApi.formApi.setValues({
+    groupId: getCurrentGroupSelectValue(),
+  });
 }
 loadSectionGroups();
 
@@ -194,6 +265,7 @@ async function loadLevelOptions() {
         value: item.id,
       })) || [];
     useForm.setOptions(formSchema, {
+      groupId: groupOptions.value,
       userLevelRuleId: levelOptions.value,
     });
   } catch {
@@ -216,6 +288,8 @@ async function openFormModal(row?: BaseForumSectionDto, groupId?: number) {
     record = await forumSectionsDetailApi({ id: row.id });
   } else if (groupId) {
     record = { groupId };
+  } else {
+    record = { groupId: normalizeSectionGroupId(getCurrentGroupSelectValue()) };
   }
   formApi.setData({ title: '板块', record }).open();
 }
@@ -229,7 +303,7 @@ async function openSectionGroupFormModal(row?: BaseForumSectionGroupDto) {
 }
 
 async function handleSubmit(
-  values: ForumSectionsCreateRequest | ForumSectionsUpdateRequest,
+  values: SectionFormValues | SectionUpdateFormValues,
 ) {
   await (isSectionUpdate(values)
     ? forumSectionsUpdateApi(buildSectionUpdatePayload(values))
@@ -240,24 +314,18 @@ async function handleSubmit(
 }
 
 function isSectionUpdate(
-  values: ForumSectionsCreateRequest | ForumSectionsUpdateRequest,
-): values is ForumSectionsUpdateRequest {
+  values: SectionFormValues | SectionUpdateFormValues,
+): values is SectionUpdateFormValues {
   return 'id' in values && Boolean(values.id);
 }
 
-function resolveSectionGroupId(
-  values: Pick<ForumSectionsCreateRequest, 'groupId'>,
-) {
-  return values.groupId ?? getCurrentGroupId();
-}
-
 function buildSectionCreatePayload(
-  values: ForumSectionsCreateRequest,
+  values: SectionFormValues,
 ): ForumSectionsCreateRequest {
   return {
     cover: values.cover,
     description: values.description,
-    groupId: resolveSectionGroupId(values),
+    groupId: normalizeSectionGroupId(values.groupId),
     icon: values.icon,
     isEnabled: values.isEnabled,
     name: values.name,
@@ -269,12 +337,12 @@ function buildSectionCreatePayload(
 }
 
 function buildSectionUpdatePayload(
-  values: ForumSectionsUpdateRequest,
+  values: SectionUpdateFormValues,
 ): ForumSectionsUpdateRequest {
   return {
     cover: values.cover,
     description: values.description,
-    groupId: resolveSectionGroupId(values),
+    groupId: normalizeSectionGroupId(values.groupId),
     icon: values.icon,
     id: values.id,
     isEnabled: values.isEnabled,
@@ -355,9 +423,10 @@ async function toggleEnableStatus(record: BaseForumSectionDto) {
   }
 }
 
-function handleNodeClick(node: SectionGroupNode) {
+async function handleNodeClick(node: SectionGroupNode) {
   currentSectionGroup.value = node;
-  gridApi.reload();
+  await syncCurrentGroupToSearch();
+  await gridApi.reload();
 }
 
 async function deleteSectionGroup(record: SectionGroupNode) {
@@ -416,31 +485,33 @@ async function handleSectionGroupDrop(
   await loadSectionGroups();
 }
 
-async function rebuildSectionFollowCount(record: ForumSectionRow) {
+async function rebuildSectionCounts(record: ForumSectionRow) {
   record.rebuildLoading = true;
   try {
-    const result = await forumSectionsRebuildFollowCountApi({ id: record.id });
-    useMessage.success(`关注数已重建：${result.followersCount}`);
+    const result = await forumSectionsRebuildCountsApi({ id: record.id });
+    useMessage.success(
+      `计数已重建：主题 ${result.topicCount}，评论 ${result.commentCount}，关注 ${result.followersCount}`,
+    );
     await gridApi.reload();
   } finally {
     record.rebuildLoading = false;
   }
 }
 
-async function rebuildAllSectionFollowCount() {
-  await forumSectionsRebuildFollowCountAllApi();
-  useMessage.success('已提交全量重建关注数');
+async function rebuildAllSectionCounts() {
+  await forumSectionsRebuildCountsAllApi();
+  useMessage.success('全量板块计数已重建');
   await gridApi.reload();
 }
 
-async function confirmRebuildAllSectionFollowCount() {
+async function confirmRebuildAllSectionCounts() {
   const confirmed = await useConfirm({
-    content: '确认全量重建所有板块关注数?',
+    content: '确认全量重建所有板块计数?',
     successMessage: false,
   });
   if (!confirmed) return;
 
-  await rebuildAllSectionFollowCount();
+  await rebuildAllSectionCounts();
 }
 
 function getSectionDetailSections(detail: ForumSectionsDetailResponse) {
@@ -460,10 +531,10 @@ function getSectionActions(row: ForumSectionRow): ActionItem[] {
       text: '编辑',
     },
     {
-      key: 'rebuildFollowCount',
+      key: 'rebuildCounts',
       loading: row.rebuildLoading,
-      onClick: () => rebuildSectionFollowCount(row),
-      text: '重建关注数',
+      onClick: () => rebuildSectionCounts(row),
+      text: '重建计数',
     },
     {
       danger: true,
@@ -497,7 +568,7 @@ function getSectionActions(row: ForumSectionRow): ActionItem[] {
           <el-tree
             :data="filteredSections"
             class="forum-section-group-tree"
-            node-key="id"
+            node-key="treeKey"
             highlight-current
             check-on-click-node
             draggable
@@ -587,8 +658,8 @@ function getSectionActions(row: ForumSectionRow): ActionItem[] {
           <el-button class="ml-2" type="primary" @click="openFormModal()">
             添加
           </el-button>
-          <el-button class="ml-2" @click="confirmRebuildAllSectionFollowCount">
-            全量重建关注数
+          <el-button class="ml-2" @click="confirmRebuildAllSectionCounts">
+            全量重建计数
           </el-button>
         </template>
 

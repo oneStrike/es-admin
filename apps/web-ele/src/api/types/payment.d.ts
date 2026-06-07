@@ -11,25 +11,25 @@ export type PaymentProviderPageRequest = {
   channel?: number;
 
   /* 客户端应用键，同一部署内区分多应用 */
-  clientAppKey?: null | string;
+  clientAppKey?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 运行环境（1=沙箱；2=正式） */
   environment?: number;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 支付场景（1=App；2=H5；3=小程序） */
   paymentScene?: number;
@@ -38,7 +38,7 @@ export type PaymentProviderPageRequest = {
   platform?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type PaymentProviderPageResponse = {
@@ -71,25 +71,25 @@ export type PaymentProviderAccountOptionListRequest = {
   channel?: number;
 
   /* 客户端应用键，同一部署内区分多应用 */
-  clientAppKey?: null | string;
+  clientAppKey?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 运行环境（1=沙箱；2=正式） */
   environment?: number;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 支付场景（1=App；2=H5；3=小程序） */
   paymentScene?: number;
@@ -98,7 +98,7 @@ export type PaymentProviderAccountOptionListRequest = {
   platform?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type PaymentProviderAccountOptionListResponse =
@@ -114,13 +114,13 @@ export type PaymentCredentialOptionListRequest = {
   [property: string]: any;
 
   /* 支付渠道（1=支付宝；2=微信） */
-  channel?: null | number;
+  channel?: number;
 
   /* 凭据用途（1=应用私钥；2=支付宝公钥；3=微信 APIv3 key；4=商户私钥） */
-  credentialType?: null | number;
+  credentialType?: number;
 
   /* 凭据状态（1=启用；2=禁用；3=过期） */
-  status?: null | number;
+  status?: number;
 };
 
 export type PaymentCredentialOptionListResponse =
@@ -136,13 +136,13 @@ export type PaymentCertificateOptionListRequest = {
   [property: string]: any;
 
   /* 证书用途（1=应用证书；2=平台证书；3=根证书；4=公钥证书） */
-  certificateType?: null | number;
+  certificateType?: number;
 
   /* 支付渠道（1=支付宝；2=微信） */
-  channel?: null | number;
+  channel?: number;
 
   /* 证书状态（1=启用；2=禁用；3=过期） */
-  status?: null | number;
+  status?: number;
 };
 
 export type PaymentCertificateOptionListResponse =
@@ -185,52 +185,52 @@ export type PaymentOrderPageRequest = {
   [property: string]: any;
 
   /* 支付渠道（1=支付宝；2=微信） */
-  channel?: null | number;
+  channel?: number;
 
   /* 客户端应用键 */
-  clientAppKey?: null | string;
+  clientAppKey?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 运行环境（1=沙箱；2=正式） */
-  environment?: null | number;
+  environment?: number;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 站内订单号 */
-  orderNo?: null | string;
+  orderNo?: string;
 
   /* 订单业务类型（1=虚拟币充值；2=VIP 订阅） */
   orderType?: number;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 支付场景（1=App；2=H5；3=小程序） */
-  paymentScene?: null | number;
+  paymentScene?: number;
 
   /* 客户端平台（1=Android；2=iOS；3=HarmonyOS；4=Web；5=小程序） */
-  platform?: null | number;
+  platform?: number;
 
   /* 支付 provider 账号选项值 */
-  providerConfigId?: null | number;
+  providerConfigId?: number;
 
   /* 第三方交易号 */
-  providerTradeNo?: null | string;
+  providerTradeNo?: string;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 订单状态（1=待支付；2=已支付；3=已关闭；4=退款中；5=已退款） */
   status?: number;
 
   /* 用户 ID */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type PaymentOrderPageResponse = {
@@ -260,34 +260,34 @@ export type PaymentReconcilePageRequest = {
   [property: string]: any;
 
   /* 支付渠道（1=支付宝；2=微信） */
-  channel?: null | number;
+  channel?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 差异类型（1=本地已支付 provider 未支付；2=本地待支付 provider 已支付；3=金额不一致；4=重复交易号；5=验签失败；6=退款差异） */
-  mismatchType?: null | number;
+  mismatchType?: number;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 站内订单号 */
-  orderNo?: null | string;
+  orderNo?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 第三方交易号 */
-  providerTradeNo?: null | string;
+  providerTradeNo?: string;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 对账状态（1=待处理；2=已确认；3=已修复；4=忽略） */
-  status?: null | number;
+  status?: number;
 };
 
 export type PaymentReconcilePageResponse = {

@@ -8,13 +8,13 @@ export type MessageMonitorDeliveryPageRequest = {
   [property: string]: any;
 
   /* 通知分类键，表示通知所属业务分类 */
-  categoryKey?: null | string;
+  categoryKey?: string;
 
   /* dispatch ID（正整数字符串） */
   dispatchId?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 关联的领域事件 ID（正整数字符串） */
   eventId?: string;
@@ -23,22 +23,22 @@ export type MessageMonitorDeliveryPageRequest = {
   eventKey?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 通知投影键 */
-  projectionKey?: null | string;
+  projectionKey?: string;
 
   /* 接收用户 ID */
-  receiverUserId?: null | number;
+  receiverUserId?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 业务投递状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
   status?: number;
@@ -81,10 +81,10 @@ export type MessageMonitorDispatchPageRequest = {
   [property: string]: any;
 
   /* 通知分类键，表示通知所属业务分类 */
-  categoryKey?: null | string;
+  categoryKey?: string;
 
   /* 通知投影业务状态（1=已投递；2=投递失败；3=重试中；4=因偏好关闭而跳过） */
-  deliveryStatus?: null | number;
+  deliveryStatus?: number;
 
   /* dispatch ID（正整数字符串） */
   dispatchId?: string;
@@ -96,7 +96,7 @@ export type MessageMonitorDispatchPageRequest = {
   domain?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 关联的领域事件 ID（正整数字符串） */
   eventId?: string;
@@ -105,22 +105,22 @@ export type MessageMonitorDispatchPageRequest = {
   eventKey?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 通知投影键 */
-  projectionKey?: null | string;
+  projectionKey?: string;
 
   /* 接收用户 ID */
-  receiverUserId?: null | number;
+  receiverUserId?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type MessageMonitorDispatchPageResponse = {
@@ -150,7 +150,7 @@ export type MessageMonitorWsSummaryRequest = {
   [property: string]: any;
 
   /* 统计窗口（小时） */
-  windowHours?: null | number;
+  windowHours?: number;
 };
 
 export type MessageMonitorWsSummaryResponse = MessageWsMonitorSummaryDto;
@@ -168,22 +168,22 @@ export type MessageNotificationTemplatesPageRequest = {
   categoryKey?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否启用 */
   isEnabled?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type MessageNotificationTemplatesPageResponse = {
