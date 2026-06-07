@@ -26,16 +26,33 @@ import { createSearchFormOptions } from '#/utils';
 import { getDetailSections } from './modules/model/detail';
 import {
   formSchema,
+  LEVEL_RULE_DEFAULT_BUSINESS,
   pageColumns,
   searchFormSchema,
 } from './modules/model/shared';
+
+function normalizeLevelRuleBusiness<T extends { business?: null | string }>(
+  values: T,
+): T {
+  return {
+    ...values,
+    business:
+      values.business === LEVEL_RULE_DEFAULT_BUSINESS ? null : values.business,
+  };
+}
 
 const gridOptions: VxeGridProps<BaseUserLevelRuleDto> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) =>
-        await growthLevelRulesPageApi(formatQuery({ page, formValues, sorts })),
+        await growthLevelRulesPageApi(
+          formatQuery({
+            page,
+            formValues: normalizeLevelRuleBusiness(formValues),
+            sorts,
+          }),
+        ),
     },
     sort: true,
   },
@@ -59,6 +76,7 @@ async function openFormModal(row?: BaseUserLevelRuleDto) {
   let record;
   if (row) {
     record = await growthLevelRulesDetailApi({ id: row.id });
+    record.business = record.business ?? LEVEL_RULE_DEFAULT_BUSINESS;
   }
   formApi.setData({ title: '等级规则', record, schema: formSchema }).open();
 }
@@ -71,16 +89,14 @@ function buildLevelRulePayload(
     name: values.name,
     color: values.color,
     description: values.description,
+    business: normalizeLevelRuleBusiness(values).business,
     requiredExperience: values.requiredExperience,
     sortOrder: values.sortOrder,
-    loginDays: values.loginDays,
-    purchasePayableRate: values.purchasePayableRate,
+    purchasePayableRate: Number(values.purchasePayableRate).toFixed(2),
     dailyTopicLimit: values.dailyTopicLimit,
     dailyReplyCommentLimit: values.dailyReplyCommentLimit,
     dailyLikeLimit: values.dailyLikeLimit,
     dailyFavoriteLimit: values.dailyFavoriteLimit,
-    workCollectionLimit: values.workCollectionLimit,
-    blacklistLimit: values.blacklistLimit,
     postInterval: values.postInterval,
     isEnabled: values.isEnabled,
   };

@@ -3,6 +3,27 @@ import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
 
+export const LEVEL_RULE_DEFAULT_BUSINESS = '__default__';
+
+export const levelRuleBusinessOptions = [
+  {
+    label: '默认业务域',
+    value: LEVEL_RULE_DEFAULT_BUSINESS,
+  },
+  {
+    label: '论坛业务域',
+    value: 'forum',
+  },
+];
+
+export function formatLevelRuleBusiness(value?: null | string) {
+  return (
+    levelRuleBusinessOptions.find(
+      (item) => item.value === (value ?? LEVEL_RULE_DEFAULT_BUSINESS),
+    )?.label ?? '默认业务域'
+  );
+}
+
 export const formSchema: EsFormSchema = [
   {
     component: 'Divider',
@@ -67,6 +88,18 @@ export const formSchema: EsFormSchema = [
     },
   },
   {
+    component: 'Select',
+    componentProps: {
+      clearable: false,
+      options: levelRuleBusinessOptions,
+      placeholder: '请选择业务域',
+    },
+    defaultValue: LEVEL_RULE_DEFAULT_BUSINESS,
+    fieldName: 'business',
+    label: '业务域',
+    rules: 'selectRequired',
+  },
+  {
     component: 'InputNumber',
     componentProps: {
       placeholder: '请输入所需经验值',
@@ -89,20 +122,13 @@ export const formSchema: EsFormSchema = [
   {
     component: 'InputNumber',
     componentProps: {
-      placeholder: '请输入所需登录天数',
+      max: 1,
       min: 0,
+      placeholder: '请选择积分支付比例（0-1）',
+      precision: 2,
+      step: 0.01,
     },
-    defaultValue: 0,
-    fieldName: 'loginDays',
-    label: '所需登录天数',
-    rules: 'required',
-  },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入积分支付比例（0-1）',
-    },
-    defaultValue: '1',
+    defaultValue: 1,
     fieldName: 'purchasePayableRate',
     label: '积分支付比例',
     rules: 'required',
@@ -167,30 +193,6 @@ export const formSchema: EsFormSchema = [
       placeholder: '0表示无限制',
       min: 0,
     },
-    defaultValue: 0,
-    fieldName: 'workCollectionLimit',
-    label: '作品收藏上限',
-    rules: 'required',
-    help: '0表示无限制',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      placeholder: '0表示无限制',
-      min: 0,
-    },
-    defaultValue: 0,
-    fieldName: 'blacklistLimit',
-    label: '黑名单上限',
-    rules: 'required',
-    help: '0表示无限制',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      placeholder: '0表示无限制',
-      min: 0,
-    },
     fieldName: 'postInterval',
     label: '发帖间隔秒数',
     rules: 'required',
@@ -233,17 +235,12 @@ export const pageColumns =
     description: {
       hide: true,
     },
+    business: {
+      formatter: ({ cellValue }) => formatLevelRuleBusiness(cellValue),
+      minWidth: 120,
+    },
     purchasePayableRate: {
-      hide: true,
-    },
-    loginDays: {
-      hide: true,
-    },
-    workCollectionLimit: {
-      hide: true,
-    },
-    blacklistLimit: {
-      hide: true,
+      minWidth: 120,
     },
     dailyReplyCommentLimit: {
       minWidth: 150,
@@ -274,6 +271,9 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(formSchema, {
     show: true,
   },
   isEnabled: {
+    show: true,
+  },
+  business: {
     show: true,
   },
   requiredExperience: {

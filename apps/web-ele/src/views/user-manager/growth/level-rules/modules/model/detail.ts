@@ -2,6 +2,8 @@ import type { BaseUserLevelRuleDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
+import { formatLevelRuleBusiness } from './shared';
+
 export function getDetailSections(detail: BaseUserLevelRuleDto) {
   return [
     {
@@ -26,6 +28,11 @@ export function getDetailSections(detail: BaseUserLevelRuleDto) {
         {
           label: '等级描述',
           value: detail?.description || '-',
+          type: 'text' as const,
+        },
+        {
+          label: '业务域',
+          value: formatLevelRuleBusiness(detail?.business),
           type: 'text' as const,
         },
         {

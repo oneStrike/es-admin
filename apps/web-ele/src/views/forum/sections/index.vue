@@ -184,6 +184,7 @@ loadSectionGroups();
 async function loadLevelOptions() {
   try {
     const data = await growthLevelRulesPageApi({
+      business: 'forum',
       isEnabled: true,
       pageSize: 500,
     });

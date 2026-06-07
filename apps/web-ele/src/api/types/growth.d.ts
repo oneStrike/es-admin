@@ -871,8 +871,6 @@ export type UserExperienceLevelDto = {
 export type BaseUserLevelRuleDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 黑名单上限（默认值 10） */
-  blacklistLimit: number;
   /* 业务域标识 */
   business?: null | string;
   /* 等级专属颜色（十六进制） */
@@ -895,8 +893,6 @@ export type BaseUserLevelRuleDto = {
   id: number;
   /* 是否启用 */
   isEnabled: boolean;
-  /* 所需登录天数（0=无登录天数要求） */
-  loginDays: number;
   /* 等级名称 */
   name: string;
   /* 发帖间隔秒数（0=不限制） */
@@ -907,11 +903,9 @@ export type BaseUserLevelRuleDto = {
   requiredExperience: number;
   /* 排序值（0=默认排序，数值越小越靠前） */
   sortOrder: number;
+
   /* 更新时间 */
   updatedAt: string;
-
-  /* 作品收藏上限（默认值 100） */
-  workCollectionLimit: number;
 };
 
 /**
@@ -922,8 +916,6 @@ export type BaseUserLevelRuleDto = {
 export type CreateUserLevelRuleDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 黑名单上限（默认值 10） */
-  blacklistLimit: number;
   /* 业务域标识 */
   business?: null | string;
   /* 等级专属颜色（十六进制） */
@@ -942,8 +934,6 @@ export type CreateUserLevelRuleDto = {
   icon?: null | string;
   /* 是否启用 */
   isEnabled: boolean;
-  /* 所需登录天数（0=无登录天数要求） */
-  loginDays: number;
   /* 等级名称 */
   name: string;
   /* 发帖间隔秒数（0=不限制） */
@@ -952,11 +942,9 @@ export type CreateUserLevelRuleDto = {
   purchasePayableRate: string;
   /* 所需经验值 */
   requiredExperience: number;
+
   /* 排序值（0=默认排序，数值越小越靠前） */
   sortOrder: number;
-
-  /* 作品收藏上限（默认值 100） */
-  workCollectionLimit: number;
 };
 
 /**
@@ -967,8 +955,6 @@ export type CreateUserLevelRuleDto = {
 export type UpdateUserLevelRuleDto = {
   /** 任意合法数值 */
   [property: string]: any;
-  /* 黑名单上限（默认值 10） */
-  blacklistLimit?: number;
   /* 业务域标识 */
   business?: null | string;
   /* 等级专属颜色（十六进制） */
@@ -989,8 +975,6 @@ export type UpdateUserLevelRuleDto = {
   id: number;
   /* 是否启用 */
   isEnabled?: boolean;
-  /* 所需登录天数（0=无登录天数要求） */
-  loginDays?: number;
   /* 等级名称 */
   name?: string;
   /* 发帖间隔秒数（0=不限制） */
@@ -999,11 +983,9 @@ export type UpdateUserLevelRuleDto = {
   purchasePayableRate?: string;
   /* 所需经验值 */
   requiredExperience?: number;
+
   /* 排序值（0=默认排序，数值越小越靠前） */
   sortOrder?: number;
-
-  /* 作品收藏上限（默认值 100） */
-  workCollectionLimit?: number;
 };
 
 /**
@@ -1077,6 +1059,8 @@ export type UserLevelPermissionsDto = {
 export type CheckUserLevelPermissionDto = {
   /** 任意合法数值 */
   [property: string]: any;
+  /* 业务域标识；默认业务域传空或不传，论坛业务域传 forum */
+  business?: null | string;
   /* 权限类型（dailyTopicLimit=每日发帖数量上限；dailyReplyCommentLimit=每日回复和评论数量上限；postInterval=发帖间隔秒数；dailyLikeLimit=每日点赞次数上限；dailyFavoriteLimit=每日收藏次数上限） */
   permissionType:
     | 'dailyFavoriteLimit'
@@ -1099,12 +1083,20 @@ export type UserLevelPermissionResultDto = {
   [property: string]: any;
   /* 当前等级名称 */
   currentLevel: string;
+  /* 距上次发帖/回复已过秒数，仅 postInterval 返回 */
+  elapsedSeconds?: null | number;
   /* 是否有权限 */
   hasPermission: boolean;
   /* 限制数量 */
   limit?: null | number;
+  /* 间隔限制秒数，仅 postInterval 返回 */
+  limitSeconds?: null | number;
+  /* 下次允许操作时间，仅 postInterval 且受限时返回 */
+  nextAllowedAt?: null | string;
   /* 剩余数量 */
   remaining?: null | number;
+  /* 距离下次允许操作剩余秒数，仅 postInterval 返回 */
+  remainingSeconds?: null | number;
 
   /* 已使用数量 */
   used?: null | number;
