@@ -2,12 +2,12 @@ import type { BaseGrowthRewardRuleDto } from '#/api/types';
 
 import { pointsTypeMap } from './constants';
 
-export function getDetailCards(detail: BaseGrowthRewardRuleDto) {
+export function getDetailSections(detail: BaseGrowthRewardRuleDto) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '规则类型',
           value: pointsTypeMap[detail?.type] || '-',
@@ -36,7 +36,7 @@ export function getDetailCards(detail: BaseGrowthRewardRuleDto) {
     {
       title: '其他信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '备注',
           value: detail?.remark || '-',

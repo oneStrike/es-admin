@@ -6,7 +6,7 @@ export type DetailTagType =
   | 'success'
   | 'warning';
 
-export interface DetailField {
+export interface RecordDescriptionItem {
   label: string;
   value: unknown;
   type: FieldType;
@@ -15,10 +15,10 @@ export interface DetailField {
   dateType?: string;
 }
 
-export interface DetailCard {
+export interface RecordDetailSection {
   title: string;
   show: boolean;
-  fields?: DetailField[];
+  items?: RecordDescriptionItem[];
   type?: 'html' | 'image' | 'text';
   content?: string;
   imageUrl?: string;

@@ -7,6 +7,8 @@ import type {
   WalletCurrencyPackageUpdateResponse,
   WalletCurrencyPackageUpdateStatusRequest,
   WalletCurrencyPackageUpdateStatusResponse,
+  WalletLedgerPageRequest,
+  WalletLedgerPageResponse,
 } from '../types/wallet.d';
 
 import { requestClient } from '#/api/request';
@@ -19,6 +21,18 @@ export async function walletCurrencyPackagePageApi(
 ): Promise<WalletCurrencyPackagePageResponse> {
   return requestClient.get<WalletCurrencyPackagePageResponse>(
     '/api/admin/wallet/currency-package/page',
+    { params },
+  );
+}
+
+/**
+ * 分页查询虚拟币流水
+ */
+export async function walletLedgerPageApi(
+  params: WalletLedgerPageRequest,
+): Promise<WalletLedgerPageResponse> {
+  return requestClient.get<WalletLedgerPageResponse>(
+    '/api/admin/wallet/ledger/page',
     { params },
   );
 }

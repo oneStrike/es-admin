@@ -27,14 +27,21 @@ import type {
   IconPickerProps,
   VbenFormFieldArrayProps,
 } from '@vben/common-ui';
+import type { ImageUploadOptions, TipTapProps } from '@vben/plugins/tiptap';
 import type { Recordable } from '@vben/types';
 
 import { defineAsyncComponent, defineComponent, h, ref } from 'vue';
 
 import { ApiComponent, globalShareState, IconPicker } from '@vben/common-ui';
 import { $t } from '@vben/locales';
+import { VbenTiptap } from '@vben/plugins/tiptap';
 
 import { ElNotification } from 'element-plus';
+
+import { useMessage } from '#/hooks/useFeedback';
+import { useUpload } from '#/hooks/useUpload';
+
+import { useEsModalPopperAppendTo } from './modal-popper';
 
 type ElTreeSelectSchemaProps = InstanceType<typeof ElTreeSelectType>['$props'];
 type ElTimePickerSchemaProps = InstanceType<typeof ElTimePickerType>['$props'];
@@ -145,8 +152,6 @@ const ElColorPicker = defineAsyncComponent(() =>
 
 const ElUpload = defineAsyncComponent(() => import('#/components/es-upload'));
 
-const RichText = defineAsyncComponent(() => import('#/components/es-editor'));
-
 const TableSelect = defineAsyncComponent(
   () => import('#/components/es-table-select'),
 );
@@ -155,10 +160,43 @@ const MultiColorPicker = defineAsyncComponent(
   () => import('#/components/es-multi-color-picker'),
 );
 
+type DefaultPlaceholderOptions = {
+  modalPopper?: boolean;
+};
+
+function hasCustomAppendTo(
+  props: Recordable<unknown>,
+  attrs: Recordable<unknown>,
+) {
+  return (
+    props.appendTo !== undefined ||
+    attrs.appendTo !== undefined ||
+    props['append-to'] !== undefined ||
+    attrs['append-to'] !== undefined
+  );
+}
+
+function getModalPopperProps(
+  props: Recordable<unknown>,
+  attrs: Recordable<unknown>,
+  appendTo?: HTMLElement,
+) {
+  if (!appendTo || hasCustomAppendTo(props, attrs)) {
+    return {};
+  }
+
+  if (props.teleported === false || attrs.teleported === false) {
+    return {};
+  }
+
+  return { appendTo };
+}
+
 const withDefaultPlaceholder = (
   component: Component,
   type: 'input' | 'select',
   componentProps: Recordable<unknown> = {},
+  options: DefaultPlaceholderOptions = {},
 ) => {
   return defineComponent({
     name: component.name,
@@ -170,6 +208,7 @@ const withDefaultPlaceholder = (
         $t(`ui.placeholder.${type}`);
       // 透传组件暴露的方法
       const innerRef = ref();
+      const modalPopperAppendTo = useEsModalPopperAppendTo();
       expose(
         new Proxy(
           {},
@@ -182,7 +221,20 @@ const withDefaultPlaceholder = (
       return () =>
         h(
           component,
-          { ...componentProps, placeholder, ...props, ...attrs, ref: innerRef },
+          {
+            ...componentProps,
+            ...(options.modalPopper
+              ? getModalPopperProps(
+                  { ...componentProps, ...props },
+                  attrs,
+                  modalPopperAppendTo.value,
+                )
+              : {}),
+            placeholder,
+            ...props,
+            ...attrs,
+            ref: innerRef,
+          },
           slots,
         );
     },
@@ -216,6 +268,42 @@ function normalizeRadioOption(option: unknown): Record<string, unknown> {
   return { label: String(option ?? ''), value: option };
 }
 
+function resolveTiptapUploadedFilePath(result: unknown) {
+  if (!result || typeof result !== 'object') {
+    return '';
+  }
+
+  const uploadResult = result as {
+    filePath?: string;
+    success?: Array<{ filePath?: string; url?: string }>;
+    url?: string;
+  };
+  return (
+    uploadResult.filePath ??
+    uploadResult.url ??
+    uploadResult.success?.[0]?.filePath ??
+    uploadResult.success?.[0]?.url ??
+    ''
+  );
+}
+
+const tiptapImageUpload: ImageUploadOptions = {
+  async upload(file, onProgress) {
+    const result = await useUpload(
+      '/api/admin/upload/file/upload',
+      file,
+      {},
+      (event) => onProgress?.(event.percent),
+    );
+    const filePath = resolveTiptapUploadedFilePath(result);
+    if (!filePath) {
+      useMessage.error('文件上传失败');
+      throw new Error('文件上传失败');
+    }
+    return filePath;
+  },
+};
+
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
 export type ComponentType =
   | 'ApiSelect'
@@ -230,7 +318,6 @@ export type ComponentType =
   | 'InputNumber'
   | 'MultiColorPicker'
   | 'RadioGroup'
-  | 'RichText'
   | 'Select'
   | 'Space'
   | 'Switch'
@@ -238,6 +325,7 @@ export type ComponentType =
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
+  | 'VbenTiptap'
   | BaseFormComponentType;
 
 /**
@@ -261,6 +349,7 @@ export interface ComponentPropsMap {
   TreeSelect: ElTreeSelectSchemaProps;
   Upload: UploadProps;
   VbenFormFieldArray: VbenFormFieldArrayProps<ComponentType, ComponentPropsMap>;
+  VbenTiptap: TipTapProps;
 }
 
 async function initComponentAdapter() {
@@ -279,6 +368,7 @@ async function initComponentAdapter() {
         loadingSlot: 'loading',
         visibleEvent: 'onVisibleChange',
       },
+      { modalPopper: true },
     ),
     ApiTreeSelect: withDefaultPlaceholder(
       {
@@ -294,6 +384,7 @@ async function initComponentAdapter() {
         optionsPropName: 'data',
         visibleEvent: 'onVisibleChange',
       },
+      { modalPopper: true },
     ),
     Checkbox: ElCheckbox,
     CheckboxGroup: (props, { attrs, slots }) => {
@@ -358,17 +449,25 @@ async function initComponentAdapter() {
         { ...slots, default: defaultSlot },
       );
     },
-    Select: (props, { attrs, slots }) => {
-      return h(
-        ElSelectV2,
-        {
-          ...attrs,
-          ...props,
-          options: resolveOptions(props, attrs),
-        },
-        slots,
-      );
-    },
+    Select: defineComponent({
+      name: 'Select',
+      inheritAttrs: false,
+      setup: (props: Record<string, unknown>, { attrs, slots }) => {
+        const modalPopperAppendTo = useEsModalPopperAppendTo();
+
+        return () =>
+          h(
+            ElSelectV2,
+            {
+              ...getModalPopperProps(props, attrs, modalPopperAppendTo.value),
+              ...attrs,
+              ...props,
+              options: resolveOptions(props, attrs),
+            },
+            slots,
+          );
+      },
+    }),
     Space: ElSpace,
     Switch: ElSwitch,
     TimePicker: (props, { attrs, slots }) => {
@@ -420,12 +519,30 @@ async function initComponentAdapter() {
         slots,
       );
     },
-    TreeSelect: withDefaultPlaceholder(ElTreeSelect, 'select'),
+    TreeSelect: withDefaultPlaceholder(
+      ElTreeSelect,
+      'select',
+      {},
+      {
+        modalPopper: true,
+      },
+    ),
     Upload: ElUpload,
-    ColorPicker: withDefaultPlaceholder(ElColorPicker, 'select'),
+    ColorPicker: withDefaultPlaceholder(
+      ElColorPicker,
+      'select',
+      {},
+      {
+        modalPopper: true,
+      },
+    ),
     MultiColorPicker: withDefaultPlaceholder(MultiColorPicker, 'select'),
     TableSelect: withDefaultPlaceholder(TableSelect, 'select'),
-    RichText,
+    VbenTiptap: withDefaultPlaceholder(VbenTiptap, 'input', {
+      imageUpload: tiptapImageUpload,
+      maxHeight: 600,
+      minHeight: 600,
+    }),
   };
 
   // 将组件注册到全局共享状态中

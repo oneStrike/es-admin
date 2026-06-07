@@ -4,7 +4,10 @@ import type {
   CouponDefinitionUpdateRequest,
   CouponGrantWorkflowCreateRequest,
 } from '#/api/types';
-import type { DetailCard, DetailField } from '#/components/es-record-detail';
+import type {
+  RecordDetailSection,
+  RecordDescriptionItem,
+} from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -635,7 +638,7 @@ export const couponGrantFormSchema: EsFormSchema = [
   },
 ];
 
-function getCouponAbilityFields(record: CouponRow): DetailField[] {
+function getCouponAbilityFields(record: CouponRow): RecordDescriptionItem[] {
   if (record.couponType === 1) {
     return [
       {
@@ -654,7 +657,7 @@ function getCouponAbilityFields(record: CouponRow): DetailField[] {
               label: '折扣比例',
               type: 'text',
               value: formatDiscountRate(record.discountRateBps),
-            } satisfies DetailField,
+            } satisfies RecordDescriptionItem,
           ]
         : []),
       ...((record.discountAmount ?? 0) > 0
@@ -663,7 +666,7 @@ function getCouponAbilityFields(record: CouponRow): DetailField[] {
               label: '立减金额',
               type: 'text',
               value: formatAmount(record.discountAmount),
-            } satisfies DetailField,
+            } satisfies RecordDescriptionItem,
           ]
         : []),
     ];
@@ -688,10 +691,10 @@ function getCouponAbilityFields(record: CouponRow): DetailField[] {
   ];
 }
 
-export function getCouponDetailCards(record: CouponRow) {
+export function getCouponDetailSections(record: CouponRow) {
   return [
     {
-      fields: [
+      items: [
         { label: 'ID', type: 'text', value: record.id },
         { label: '券名称', type: 'text', value: record.name },
         {
@@ -723,5 +726,5 @@ export function getCouponDetailCards(record: CouponRow) {
       show: true,
       title: '券定义',
     },
-  ] satisfies DetailCard[];
+  ] satisfies RecordDetailSection[];
 }

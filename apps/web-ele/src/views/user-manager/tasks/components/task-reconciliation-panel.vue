@@ -1,6 +1,10 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { AdminTaskReconciliationItemDto } from '#/api/types';
+
+import { VbenTableAction } from '@vben/common-ui';
 
 import { ElMessageBox } from 'element-plus';
 
@@ -153,6 +157,20 @@ async function retryPendingTaskRewards() {
     batchRetrying.value = false;
   }
 }
+
+function getTaskReconciliationActions(
+  row: AdminTaskReconciliationItemDto,
+): ActionItem[] {
+  return [
+    {
+      ifShow: () => hasRetryableTaskReward(row),
+      key: 'retry',
+      loading: retryingMap[row.id],
+      onClick: () => retryTaskReward(row),
+      text: '重试',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -208,16 +226,10 @@ async function retryPendingTaskRewards() {
       </template>
 
       <template #actions="{ row }">
-        <el-button
-          v-if="hasRetryableTaskReward(row)"
-          link
-          :loading="retryingMap[row.id]"
-          type="primary"
-          @click="retryTaskReward(row)"
-        >
-          重试
-        </el-button>
-        <span v-else>-</span>
+        <VbenTableAction
+          align="center"
+          :actions="getTaskReconciliationActions(row)"
+        />
       </template>
     </Grid>
   </div>

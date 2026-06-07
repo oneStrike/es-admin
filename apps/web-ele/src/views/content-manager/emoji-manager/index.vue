@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseEmojiAssetDto,
@@ -10,7 +12,7 @@ import type {
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -560,6 +562,39 @@ async function toggleAssetEnableStatus(row: EmojiAssetRow) {
   }
 }
 
+function getEmojiPackActions(row: EmojiPackRow): ActionItem[] {
+  return [
+    {
+      key: 'edit',
+      onClick: () => openPackFormModal(row),
+      text: '编辑',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeletePack(row),
+      text: '删除',
+    },
+  ];
+}
+
+function getEmojiAssetActions(row: EmojiAssetRow): ActionItem[] {
+  return [
+    {
+      key: 'edit',
+      onClick: () => openAssetFormModal(row),
+      text: '编辑',
+    },
+    {
+      danger: true,
+      disabled: !!row.isEnabled,
+      key: 'delete',
+      onClick: () => confirmDeleteAsset(row),
+      text: '删除',
+    },
+  ];
+}
+
 onMounted(() => {
   void loadPacks();
 });
@@ -608,15 +643,11 @@ onMounted(() => {
         </template>
 
         <template #packActions="{ row }">
-          <div class="my-1" @click.stop>
-            <el-button link type="primary" @click="openPackFormModal(row)">
-              编辑
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button link type="danger" @click="confirmDeletePack(row)">
-              删除
-            </el-button>
-          </div>
+          <VbenTableAction
+            align="center"
+            :actions="getEmojiPackActions(row)"
+            @click.stop
+          />
         </template>
       </PackGrid>
 
@@ -667,20 +698,10 @@ onMounted(() => {
         </template>
 
         <template #actions="{ row }">
-          <div class="my-1">
-            <el-button link type="primary" @click="openAssetFormModal(row)">
-              编辑
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button
-              link
-              type="danger"
-              :disabled="row.isEnabled"
-              @click="confirmDeleteAsset(row)"
-            >
-              删除
-            </el-button>
-          </div>
+          <VbenTableAction
+            align="center"
+            :actions="getEmojiAssetActions(row)"
+          />
         </template>
       </AssetGrid>
     </div>

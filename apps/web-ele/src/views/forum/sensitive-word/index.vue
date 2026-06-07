@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
@@ -9,7 +10,7 @@ import type {
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -120,6 +121,22 @@ async function toggleEnableStatus(record: BaseSensitiveWordDto) {
     record.loading = false;
   }
 }
+
+function getSensitiveWordActions(row: BaseSensitiveWordDto): ActionItem[] {
+  return [
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openFormModal(row),
+    },
+    {
+      danger: true,
+      key: 'delete',
+      text: '删除',
+      onClick: () => confirmDeleteSensitiveWord(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -151,19 +168,10 @@ async function toggleEnableStatus(record: BaseSensitiveWordDto) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button
-            link
-            type="danger"
-            @click="confirmDeleteSensitiveWord(row)"
-          >
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction
+          align="center"
+          :actions="getSensitiveWordActions(row)"
+        />
       </template>
     </Grid>
 

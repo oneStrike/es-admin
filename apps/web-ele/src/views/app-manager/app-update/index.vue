@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { AppUpdateFormValues } from './model/shared';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -8,7 +10,7 @@ import type {
   UpdateAppUpdateReleaseDto,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -19,12 +21,12 @@ import {
   appUpdateUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { formatUTC } from '#/utils';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import {
   appUpdateColumns,
   appUpdateFilter,
@@ -102,9 +104,24 @@ async function togglePublishStatus(record: AppUpdateReleaseListItemDto) {
 }
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '版本更新详情',
 });
+
+function getAppUpdateActions(row: AppUpdateReleaseListItemDto): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      text: '详情',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+    },
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openFormModal(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -120,7 +137,7 @@ const [DetailModal, detailApi] = useVbenModal({
         <el-text
           class="cursor-pointer hover:opacity-50"
           type="primary"
-          @click="detailApi.setData({ recordId: row.id }).open()"
+          @click="detailApi.setData({ id: row.id }).open()"
         >
           {{ row.versionName }}
         </el-text>
@@ -147,21 +164,7 @@ const [DetailModal, detailApi] = useVbenModal({
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-
-          <el-divider direction="vertical" />
-
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getAppUpdateActions(row)" />
       </template>
     </Grid>
 
@@ -169,7 +172,7 @@ const [DetailModal, detailApi] = useVbenModal({
 
     <DetailModal
       :api="appUpdateDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="w-[900px]"
     />
   </Page>

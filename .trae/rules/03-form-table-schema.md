@@ -44,7 +44,8 @@
 - 操作列通过 `actions: { show: true }` 显式开启即可。
 - `toTableColumns(...)` 已默认提供 `title: '操作'`、`fixed: 'right'`、`slots: { default: 'actions' }` 和默认宽度。
 - 业务侧只在按钮数量较多、较少或使用非默认 slot 时补充 `width`、`minWidth`、`slots` 等真实差异。
-- 表格操作展示优先通过业务 wrapper 接入 `VbenTableAction`，例如 `#/components/es-table-action`；不要在每个页面重复手写 `el-button + el-divider` 操作组。
+- 表格操作列统一直接使用 `@vben/common-ui` 的 `VbenTableAction` 和 `ActionItem` 类型。
+- 禁止恢复或新增 `EsTableAction`、旧路径转发、旧字段名解析或双协议兼容层；操作列按钮、下拉项、危险态、禁用态、加载态都应表达为 `ActionItem`。
 - `VbenTableAction` 只负责操作展示和点击分发；删除、禁用、重试、归档等危险操作的确认仍应由脚本侧 `useConfirm` 包裹。
 - 表格操作列中需要二次确认的操作，禁止在 slot 内使用 `el-popconfirm`；应在脚本中调用 `#/hooks/useFeedback` 的 `useConfirm` 完成确认后再执行业务动作。
 - 表格列不要重复声明 `vxe-table` 适配层和 `toTableColumns(...)` 已经提供的默认行为，例如 `align: 'center'`、普通列默认 `minWidth: 100`、全局 `showOverflow`、默认 toolbar、默认分页大小、默认远程多排序、默认行 hover 和 `keyField: 'id'`。

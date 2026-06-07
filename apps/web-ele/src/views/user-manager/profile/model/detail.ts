@@ -10,7 +10,7 @@ import {
   userStatusMap,
 } from './shared';
 
-export function getDetailCards(detail: AdminAppUserDetailDto) {
+export function getDetailSections(detail: AdminAppUserDetailDto) {
   const counts = detail.counts;
   const pointStats = detail.pointStats;
   const experienceStats = detail.experienceStats;
@@ -26,7 +26,7 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
     {
       title: '',
       show: true,
-      fields: [
+      items: [
         {
           label: '昵称',
           value: detail.nickname || detail.account,
@@ -71,7 +71,7 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
     {
       title: '基础资料',
       show: true,
-      fields: [
+      items: [
         {
           label: '手机号',
           value: detail.phoneNumber || '-',
@@ -117,7 +117,7 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
     {
       title: '成长数据',
       show: true,
-      fields: [
+      items: [
         {
           label: '当前积分',
           value: detail.points,
@@ -166,7 +166,7 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
     {
       title: '社区画像',
       show: true,
-      fields: [
+      items: [
         {
           label: '主题数',
           value: counts?.forumTopicCount ?? 0,
@@ -207,7 +207,7 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
         detail.status !== normalUserStatus ||
         !!detail.banReason ||
         !!detail.banUntil,
-      fields: [
+      items: [
         {
           label: '当前状态',
           value: getUserStatusText(detail.status),
@@ -233,7 +233,7 @@ export function getDetailCards(detail: AdminAppUserDetailDto) {
         !!detail.level ||
         !!experienceStats?.level ||
         !!experienceStats?.nextLevel,
-      fields: [
+      items: [
         {
           label: '当前等级所需经验',
           value:

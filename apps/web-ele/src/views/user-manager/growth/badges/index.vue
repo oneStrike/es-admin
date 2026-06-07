@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
@@ -11,7 +12,7 @@ import type { EsFormSchema } from '#/types';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -27,11 +28,11 @@ import {
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import EsModalTable from '#/components/es-modal-table';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions, formSchemaTransform } from '#/utils';
 
-import { getDetailCards } from './modules/model/detail';
+import { getDetailSections } from './modules/model/detail';
 import {
   formSchema,
   pageColumns,
@@ -102,7 +103,7 @@ const [Form, formApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '徽章详情',
 });
 
@@ -253,6 +254,37 @@ async function handleRevokeConfirm(rows: BadgeUserPageItemDto[]) {
   useMessage.success('操作成功');
   gridApi.reload();
 }
+
+function getBadgeActions(row: BaseUserBadgeDto): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      key: 'assign',
+      onClick: () => openAssignModal(row),
+      text: '分配',
+    },
+    {
+      key: 'revoke',
+      onClick: () => openRevokeModal(row),
+      text: '撤销',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteBadge(row),
+      text: '删除',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -275,38 +307,14 @@ async function handleRevokeConfirm(rows: BadgeUserPageItemDto[]) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openAssignModal(row)">
-            分配
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="warning" @click="openRevokeModal(row)">
-            撤销
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteBadge(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getBadgeActions(row)" />
       </template>
     </Grid>
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
       :api="growthBadgesDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="min-w-[800px]"
     />
     <AssignForm :on-submit="handleAssignSubmit" />

@@ -701,3 +701,60 @@ export const uploadFormSchema: EsFormSchema = [
     },
   },
 ];
+
+// ========== 钱包虚拟币展示配置 ==========
+export const walletCurrencyFormSchema: EsFormSchema = [
+  {
+    component: 'Divider',
+    fieldName: 'divider_wallet_currency',
+    hideLabel: true,
+    formItemClass: 'w-full',
+    renderComponentContent: () => {
+      return {
+        default: () =>
+          h('div', { class: 'text-lg font-bold' }, '钱包虚拟币展示'),
+      };
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'walletCurrencyAssetKey',
+    label: '资产键',
+    componentProps: {
+      disabled: true,
+      placeholder: 'reading_coin',
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'walletCurrencyName',
+    label: '展示名称',
+    rules: z.string().min(1, '请输入展示名称').max(20, '最多 20 个字符'),
+    componentProps: {
+      maxlength: 20,
+      placeholder: '请输入展示名称',
+      showWordLimit: true,
+    },
+  },
+  {
+    component: 'Input',
+    fieldName: 'walletCurrencyUnitName',
+    label: '单位名称',
+    rules: z.string().min(1, '请输入单位名称').max(10, '最多 10 个字符'),
+    componentProps: {
+      maxlength: 10,
+      placeholder: '请输入单位名称',
+      showWordLimit: true,
+    },
+  },
+  {
+    component: 'Upload',
+    fieldName: 'walletCurrencyIconUrl',
+    label: '图标',
+    componentProps: {
+      accept: 'image/*',
+      placeholder: '请上传虚拟币图标',
+      scene: 'system',
+    },
+  },
+];

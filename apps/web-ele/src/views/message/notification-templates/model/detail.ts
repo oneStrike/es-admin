@@ -4,7 +4,7 @@ import { formatUTC } from '#/utils';
 
 import { formatCategory, getEnabledOption } from './shared';
 
-export function getDetailCards(
+export function getDetailSections(
   detail: MessageNotificationTemplatesDetailResponse,
 ) {
   const enabled = getEnabledOption(detail.isEnabled);
@@ -13,7 +13,7 @@ export function getDetailCards(
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '模板 ID',
           value: detail.id,
@@ -46,7 +46,7 @@ export function getDetailCards(
     {
       title: '模板内容',
       show: true,
-      fields: [
+      items: [
         {
           label: '标题模板',
           value: detail.titleTemplate,
@@ -62,7 +62,7 @@ export function getDetailCards(
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt

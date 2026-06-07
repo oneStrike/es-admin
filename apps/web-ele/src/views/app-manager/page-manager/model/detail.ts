@@ -11,7 +11,7 @@ import { accessLevelObj } from './shared';
  * @param detail 页面配置详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: BaseAppPageDto) {
+export function getDetailSections(detail: BaseAppPageDto) {
   // 计算权限级别信息
   const accessLevelInfo = accessLevelObj[detail.accessLevel];
 
@@ -25,7 +25,7 @@ export function getDetailCards(detail: BaseAppPageDto) {
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '页面名称',
           value: detail?.name,
@@ -73,7 +73,7 @@ export function getDetailCards(detail: BaseAppPageDto) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail?.createdAt

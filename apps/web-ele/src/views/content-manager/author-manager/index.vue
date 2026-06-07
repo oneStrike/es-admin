@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
@@ -7,7 +8,7 @@ import type {
   UpdateAuthorDto,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -20,13 +21,13 @@ import {
   contentAuthorUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useDict } from '#/hooks/useDict';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import { authorColumns, authorSearchSchema, formSchema } from './model/shared';
 
 type AuthorRow = AuthorPageResponseDto & {
@@ -87,7 +88,7 @@ const [Form, formApi] = useVbenModal({
  * 详情弹窗
  */
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '作者详情',
 });
 
@@ -190,6 +191,37 @@ async function confirmDeleteAuthor(row: AuthorRow) {
 
   await deleteAuthor(row);
 }
+
+function openDetailModal(row: AuthorRow) {
+  detailApi
+    .setData({
+      nationalityMap: nationalityMap.value,
+      id: row.id,
+    })
+    .open();
+}
+
+function getAuthorActions(row: AuthorRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => openDetailModal(row),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      danger: true,
+      disabled: !!row.isEnabled,
+      key: 'delete',
+      onClick: () => confirmDeleteAuthor(row),
+      text: '删除',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -225,33 +257,7 @@ async function confirmDeleteAuthor(row: AuthorRow) {
       </template>
 
       <template #actions="{ row }">
-        <el-button
-          link
-          type="primary"
-          @click="
-            detailApi
-              .setData({
-                nationalityMap: nationalityMap.value,
-                recordId: row.id,
-              })
-              .open()
-          "
-        >
-          详情
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button link type="primary" @click="openFormModal(row)">
-          编辑
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button
-          link
-          type="danger"
-          :disabled="row.isEnabled"
-          @click="confirmDeleteAuthor(row)"
-        >
-          删除
-        </el-button>
+        <VbenTableAction align="center" :actions="getAuthorActions(row)" />
       </template>
     </Grid>
 
@@ -259,7 +265,7 @@ async function confirmDeleteAuthor(row: AuthorRow) {
     <Form :schema="formSchema" :on-submit="addOrUpdateAuthor" />
     <DetailModal
       :api="contentAuthorDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="min-w-[800px]"
     />
   </Page>

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   MessageDispatchPageItemDto,
@@ -8,7 +10,7 @@ import type {
 
 import { computed, onMounted, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { Page, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -195,6 +197,19 @@ async function confirmRetryDelivery(row: MessageNotificationDeliveryItemDto) {
   await retryDelivery(row);
 }
 
+function getDeliveryActions(
+  row: MessageNotificationDeliveryItemDto,
+): ActionItem[] {
+  return [
+    {
+      ifShow: () => canRetryDelivery(row),
+      key: 'retry',
+      onClick: () => confirmRetryDelivery(row),
+      text: '重新发送',
+    },
+  ];
+}
+
 onMounted(refreshOverview);
 </script>
 
@@ -288,15 +303,10 @@ onMounted(refreshOverview);
               </template>
 
               <template #actions="{ row }">
-                <el-button
-                  v-if="canRetryDelivery(row)"
-                  link
-                  type="primary"
-                  @click="confirmRetryDelivery(row)"
-                >
-                  重新发送
-                </el-button>
-                <span v-else>-</span>
+                <VbenTableAction
+                  align="center"
+                  :actions="getDeliveryActions(row)"
+                />
               </template>
             </DeliveryGrid>
           </div>

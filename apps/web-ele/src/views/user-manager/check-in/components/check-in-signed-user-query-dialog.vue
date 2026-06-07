@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminCheckInSignedUserPageItemDto,
@@ -8,7 +10,7 @@ import type {
 
 import { computed, nextTick, ref } from 'vue';
 
-import { useVbenModal, VbenButton } from '@vben/common-ui';
+import { useVbenModal, VbenButton, VbenTableAction } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -246,6 +248,23 @@ function formatGrantSummary(row: AdminCheckInSignedUserPageItemDto) {
     )
     .join('；');
 }
+
+function getSignedUserActions(
+  row: AdminCheckInSignedUserPageItemDto,
+): ActionItem[] {
+  const hasUserId = !!parsePositiveIntegerUserId(row.user?.id);
+
+  return [
+    {
+      disabled: !hasUserId,
+      key: 'viewUserCalendar',
+      loading: userDetailLoading.value,
+      onClick: () => viewUserCalendar(row),
+      text: '查看用户周期',
+      tooltip: hasUserId ? undefined : '用户信息缺失，无法查询用户周期',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -472,23 +491,10 @@ function formatGrantSummary(row: AdminCheckInSignedUserPageItemDto) {
           </template>
 
           <template #actions="{ row }">
-            <el-tooltip
-              :disabled="!!parsePositiveIntegerUserId(row.user?.id)"
-              content="用户信息缺失，无法查询用户周期"
-              placement="top"
-            >
-              <span>
-                <VbenButton
-                  :disabled="!parsePositiveIntegerUserId(row.user?.id)"
-                  :loading="userDetailLoading"
-                  class="h-auto px-0"
-                  variant="link"
-                  @click="viewUserCalendar(row)"
-                >
-                  查看用户周期
-                </VbenButton>
-              </span>
-            </el-tooltip>
+            <VbenTableAction
+              align="center"
+              :actions="getSignedUserActions(row)"
+            />
           </template>
         </Grid>
       </div>

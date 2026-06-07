@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
@@ -7,7 +8,7 @@ import type {
   GrowthRewardRulesUpdateRequest,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -18,11 +19,11 @@ import {
   growthRewardRulesUpdateApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils';
 
-import { getDetailCards } from './modules/model/detail';
+import { getDetailSections } from './modules/model/detail';
 import {
   formSchema,
   pageColumns,
@@ -81,7 +82,7 @@ const [Form, formApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '经验规则详情',
 });
 
@@ -145,6 +146,27 @@ async function toggleEnableStatus(
     row.loading = false;
   }
 }
+
+function getExperienceRuleActions(row: BaseGrowthRewardRuleDto): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteExperienceRule(row),
+      text: '删除',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -167,34 +189,17 @@ async function toggleEnableStatus(
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button
-            link
-            type="danger"
-            @click="confirmDeleteExperienceRule(row)"
-          >
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction
+          align="center"
+          :actions="getExperienceRuleActions(row)"
+        />
       </template>
     </Grid>
 
     <Form :on-submit="handleSubmit" />
     <DetailModal
       :api="growthRewardRulesDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="min-w-[800px]"
     />
   </Page>

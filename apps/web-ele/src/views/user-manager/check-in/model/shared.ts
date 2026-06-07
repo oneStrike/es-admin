@@ -3,7 +3,6 @@ import type {
   BaseCheckInPatternRewardRuleDto,
   CheckInReconciliationPageItemDto,
   CheckInStreakRuleDetailResponseDto,
-  GrowthRewardItemDto,
 } from '#/api/types';
 
 import {
@@ -18,6 +17,12 @@ export type CheckInRewardItemDto = {
   assetKey?: string;
   assetType: ApiCheckInRewardItemDto['assetType'];
   iconUrl?: string;
+};
+
+type GrowthRewardItemDto = {
+  amount: number;
+  assetKey?: null | string;
+  assetType: ApiCheckInRewardItemDto['assetType'];
 };
 
 export const checkInMakeupPeriodTypeOptions = [

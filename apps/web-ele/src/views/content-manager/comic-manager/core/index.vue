@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
 import type { BasicOption, Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -11,7 +12,7 @@ import type { UseDictItem } from '#/hooks/useDict';
 
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -30,7 +31,7 @@ import {
   growthLevelRulesPageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useDict } from '#/hooks/useDict';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
@@ -41,7 +42,7 @@ import { extractRelationIds } from '../../work-relations';
 import Chapter from '../chapter/index.vue';
 import ThirdPartyPlatform from '../third-party/index.vue';
 import { comicColumns } from './model/columns';
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import { formSchema, pageFilter } from './model/shared';
 
 defineOptions({ name: 'ComicManager' });
@@ -75,7 +76,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
 });
 const [ThirdPartyModal, ThirdPartyApi] = useVbenModal({
   connectedComponent: ThirdPartyPlatform,
@@ -314,6 +315,34 @@ function openChapterModal(record: BaseWorkDto) {
     })
     .open();
 }
+
+function getComicActions(record: BaseWorkDto): ActionItem[] {
+  return [
+    {
+      key: 'edit',
+      onClick: () => openFormModal(record),
+      text: '编辑',
+    },
+    {
+      key: 'chapters',
+      onClick: () => openChapterModal(record),
+      text: '章节',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteComic(record),
+      text: '删除',
+    },
+    {
+      ifShow: () => !!record.hasThirdPartySourceBinding,
+      key: 'syncLatestChapters',
+      loading: record.syncLoading,
+      onClick: () => syncLatestChapters(record),
+      text: '同步章节',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -348,9 +377,7 @@ function openChapterModal(record: BaseWorkDto) {
         <el-text
           class="cursor-pointer hover:opacity-50"
           type="primary"
-          @click="
-            detailApi.setData({ recordId: row.id, title: row.name }).open()
-          "
+          @click="detailApi.setData({ id: row.id, title: row.name }).open()"
         >
           {{ row.name }}
         </el-text>
@@ -397,30 +424,7 @@ function openChapterModal(record: BaseWorkDto) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openChapterModal(row)">
-            章节
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteComic(row)">
-            删除
-          </el-button>
-          <el-divider direction="vertical" />
-          <template v-if="row.hasThirdPartySourceBinding">
-            <el-button
-              link
-              type="primary"
-              :loading="row.syncLoading"
-              @click="syncLatestChapters(row)"
-            >
-              同步章节
-            </el-button>
-          </template>
-        </div>
+        <VbenTableAction align="center" :actions="getComicActions(row)" />
       </template>
     </Grid>
 
@@ -428,7 +432,7 @@ function openChapterModal(record: BaseWorkDto) {
 
     <DetailModal
       :api="contentComicDetailApi"
-      :cards="(data: BaseWorkDto) => getDetailCards(data, dataDict || {})"
+      :sections="(data: BaseWorkDto) => getDetailSections(data, dataDict || {})"
     />
 
     <ChapterModal />

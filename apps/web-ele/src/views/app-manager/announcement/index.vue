@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { AnnouncementPageOption, AnnouncementRow } from './model/shared';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -10,7 +12,7 @@ import type {
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -23,11 +25,11 @@ import {
   appPagePageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import {
   announcementFilter,
   createAnnouncementColumns,
@@ -304,9 +306,36 @@ function canPublish(record: AnnouncementRow): boolean {
 }
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '公告详情',
 });
+
+function getAnnouncementActions(record: AnnouncementRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => detailApi.setData({ id: record.id }).open(),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(record),
+      text: '编辑',
+    },
+    {
+      disabled: !canPublish(record),
+      key: 'publish',
+      onClick: () => confirmTogglePublishStatus(record),
+      text: getPublishButtonText(record),
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteAnnouncement(record),
+      text: '删除',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -342,7 +371,7 @@ const [DetailModal, detailApi] = useVbenModal({
         <el-text
           class="cursor-pointer hover:opacity-50"
           type="primary"
-          @click="detailApi.setData({ recordId: row.id }).open()"
+          @click="detailApi.setData({ id: row.id }).open()"
         >
           {{ row.title }}
         </el-text>
@@ -365,37 +394,10 @@ const [DetailModal, detailApi] = useVbenModal({
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-
-          <el-divider direction="vertical" />
-          <el-button
-            v-if="canPublish(row)"
-            link
-            :type="canPublish(row) ? 'primary' : 'danger'"
-            @click="confirmTogglePublishStatus(row)"
-          >
-            {{ getPublishButtonText(row) }}
-          </el-button>
-          <el-button link v-else disabled>
-            {{ getPublishButtonText(row) }}
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteAnnouncement(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction
+          align="center"
+          :actions="getAnnouncementActions(row)"
+        />
       </template>
     </Grid>
 
@@ -409,7 +411,7 @@ const [DetailModal, detailApi] = useVbenModal({
 
     <DetailModal
       :api="announcementDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="w-[1000px]"
     />
   </Page>

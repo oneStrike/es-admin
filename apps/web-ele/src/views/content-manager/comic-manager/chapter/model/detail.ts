@@ -9,12 +9,12 @@ import { readRuleMap } from './form';
  * 参考作品管理的详情配置模式
  * @param detail 章节详情数据
  */
-export function getDetailCards(detail: ComicChapterRecord) {
+export function getDetailSections(detail: ComicChapterRecord) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '章节标题',
           value: detail.title,
@@ -52,7 +52,7 @@ export function getDetailCards(detail: ComicChapterRecord) {
     {
       title: '权限设置',
       show: true,
-      fields: [
+      items: [
         {
           label: '查看规则',
           value: readRuleMap[detail.viewRule] || '-',
@@ -90,7 +90,7 @@ export function getDetailCards(detail: ComicChapterRecord) {
     {
       title: '价格设置',
       show: true,
-      fields: [
+      items: [
         {
           label: '章节价格',
           value: `${detail.price || 0}`,
@@ -101,7 +101,7 @@ export function getDetailCards(detail: ComicChapterRecord) {
     {
       title: '统计信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '浏览量',
           value: detail.viewCount || 0,
@@ -132,7 +132,7 @@ export function getDetailCards(detail: ComicChapterRecord) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt
@@ -159,7 +159,7 @@ export function getDetailCards(detail: ComicChapterRecord) {
     {
       title: '高级信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '管理员备注',
           value: detail.remark || '-',

@@ -31,6 +31,7 @@ import {
   siteFormSchema,
   thirdPartyResourceParseFormSchema,
   uploadFormSchema,
+  walletCurrencyFormSchema,
 } from './modules/model/shared';
 
 defineOptions({
@@ -49,6 +50,7 @@ const menuItems: Array<{ key: SystemConfigMenuKey; label: string }> = [
   { key: 'forumHashtag', label: '话题配置' },
   { key: 'security', label: '安全配置' },
   { key: 'thirdPartyResourceParse', label: '三方资源解析配置' },
+  { key: 'walletCurrency', label: '钱包虚拟币' },
   { key: 'upload', label: '上传配置' },
 ];
 
@@ -74,6 +76,9 @@ const currentSchema = computed(() => {
     }
     case 'upload': {
       return uploadFormSchema;
+    }
+    case 'walletCurrency': {
+      return walletCurrencyFormSchema;
     }
     default: {
       return siteFormSchema;

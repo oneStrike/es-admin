@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type { BaseTagDto, CreateTagDto, UpdateTagDto } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -153,6 +154,23 @@ async function confirmDeleteTag(row: TagRow) {
 
   await deleteTag(row);
 }
+
+function getTagActions(row: TagRow): ActionItem[] {
+  return [
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openFormModal(row),
+    },
+    {
+      danger: true,
+      disabled: !!row.isEnabled,
+      key: 'delete',
+      text: '删除',
+      onClick: () => confirmDeleteTag(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -175,18 +193,7 @@ async function confirmDeleteTag(row: TagRow) {
       </template>
 
       <template #actions="{ row }">
-        <el-button link type="primary" @click="openFormModal(row)">
-          编辑
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button
-          link
-          type="danger"
-          :disabled="!!row.isEnabled"
-          @click="confirmDeleteTag(row)"
-        >
-          删除
-        </el-button>
+        <VbenTableAction align="center" :actions="getTagActions(row)" />
       </template>
     </Grid>
 

@@ -8,12 +8,12 @@ import {
   sensitiveWordTypeOptions,
 } from './constants';
 
-export function getDetailCards(detail: BaseSensitiveWordDto) {
+export function getDetailSections(detail: BaseSensitiveWordDto) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '敏感词',
           value: detail?.word || '-',
@@ -63,7 +63,7 @@ export function getDetailCards(detail: BaseSensitiveWordDto) {
     {
       title: '其他信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail?.createdAt

@@ -72,7 +72,7 @@ export const formSchema: EsFormSchema = [
     label: '强制重新同意',
   },
   {
-    component: 'RichText',
+    component: 'VbenTiptap',
     componentProps: {
       placeholder: '请输入协议内容...',
     },

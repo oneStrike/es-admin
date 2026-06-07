@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
 import type { BasicOption, Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -9,7 +10,7 @@ import type {
 } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -27,7 +28,7 @@ import {
   growthLevelRulesPageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useDict } from '#/hooks/useDict';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
@@ -36,7 +37,7 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 import { extractRelationIds } from '../../work-relations';
 import Chapter from '../chapter/index.vue';
 import { novelColumns } from './model/columns';
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import { formSchema, pageFilter } from './model/shared';
 
 defineOptions({
@@ -71,7 +72,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
 });
 
 const tagOptions: BasicOption[] = [];
@@ -287,6 +288,27 @@ function openChapterModal(record: BaseWorkDto) {
     })
     .open();
 }
+
+function getNovelActions(record: BaseWorkDto): ActionItem[] {
+  return [
+    {
+      key: 'edit',
+      onClick: () => openFormModal(record),
+      text: '编辑',
+    },
+    {
+      key: 'chapters',
+      onClick: () => openChapterModal(record),
+      text: '章节',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteNovel(record),
+      text: '删除',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -318,9 +340,7 @@ function openChapterModal(record: BaseWorkDto) {
         <el-text
           class="cursor-pointer hover:opacity-50"
           type="primary"
-          @click="
-            detailApi.setData({ recordId: row.id, title: row.name }).open()
-          "
+          @click="detailApi.setData({ id: row.id, title: row.name }).open()"
         >
           {{ row.name }}
         </el-text>
@@ -367,19 +387,7 @@ function openChapterModal(record: BaseWorkDto) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openChapterModal(row)">
-            章节
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteNovel(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getNovelActions(row)" />
       </template>
     </Grid>
 
@@ -387,8 +395,8 @@ function openChapterModal(record: BaseWorkDto) {
 
     <DetailModal
       :api="contentNovelDetailApi"
-      :cards="
-        (data: BaseWorkDto) => getDetailCards(data, dataDict ?? emptyDict)
+      :sections="
+        (data: BaseWorkDto) => getDetailSections(data, dataDict ?? emptyDict)
       "
     />
 

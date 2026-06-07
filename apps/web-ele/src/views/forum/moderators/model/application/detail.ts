@@ -4,14 +4,14 @@ import { formatUTC } from '#/utils';
 
 import { applicationStatusMap } from './shared';
 
-export function getDetailCards(detail: ForumModeratorApplicationDto) {
+export function getDetailSections(detail: ForumModeratorApplicationDto) {
   const statusOption = applicationStatusMap[detail.status];
 
   return [
     {
       title: '',
       show: true,
-      fields: [
+      items: [
         {
           label: '申请标题',
           value: detail.applicant?.nickname
@@ -41,7 +41,7 @@ export function getDetailCards(detail: ForumModeratorApplicationDto) {
     {
       title: '申请信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '申请权限',
           value: detail.permissionNames?.join('、') || '-',
@@ -62,7 +62,7 @@ export function getDetailCards(detail: ForumModeratorApplicationDto) {
     {
       title: '审核信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '审核人',
           value: detail.auditor?.nickname || '-',
@@ -85,7 +85,7 @@ export function getDetailCards(detail: ForumModeratorApplicationDto) {
     {
       title: '板块信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '板块名称',
           value: detail.section?.name || '-',
@@ -101,7 +101,7 @@ export function getDetailCards(detail: ForumModeratorApplicationDto) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt

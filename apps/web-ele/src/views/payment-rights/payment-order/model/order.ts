@@ -2,7 +2,7 @@ import type {
   PaymentOrderPageResponse,
   PaymentOrderUpdateStatusRequest,
 } from '#/api/types';
-import type { DetailCard } from '#/components/es-record-detail';
+import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -252,10 +252,10 @@ export const paymentOrderConfirmFormSchema: EsFormSchema = [
   },
 ];
 
-export function getPaymentOrderDetailCards(record: PaymentOrderRow) {
+export function getPaymentOrderDetailSections(record: PaymentOrderRow) {
   return [
     {
-      fields: [
+      items: [
         { label: 'ID', type: 'text', value: record.id },
         { label: '订单号', type: 'text', value: record.orderNo },
         {
@@ -299,8 +299,8 @@ export function getPaymentOrderDetailCards(record: PaymentOrderRow) {
             show: true,
             title: '客户端支付参数',
             type: 'text',
-          } satisfies DetailCard,
+          } satisfies RecordDetailSection,
         ]
       : []),
-  ] satisfies DetailCard[];
+  ] satisfies RecordDetailSection[];
 }

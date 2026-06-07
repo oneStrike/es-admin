@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { SystemUserRow } from './model/shared';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -6,7 +8,7 @@ import type { SystemUserCreateRequest, UpdateUserDto } from '#/api/types';
 
 import { computed } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -201,6 +203,38 @@ async function confirmResetUserPassword(record: SystemUserRow) {
 
   await resetUserPassword(record);
 }
+
+function getUserActions(row: SystemUserRow): ActionItem[] {
+  if (!isSuperAdmin.value) {
+    return [
+      {
+        disabled: true,
+        key: 'noPermission',
+        text: '无操作权限',
+      },
+    ];
+  }
+
+  return [
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      key: 'resetPassword',
+      onClick: () => confirmResetUserPassword(row),
+      text: '重置密码',
+    },
+    {
+      disabled: !row.isLocked || row.loading,
+      key: 'unlock',
+      loading: row.loading,
+      onClick: () => confirmUnlockUser(row),
+      text: '解除锁定',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -266,35 +300,7 @@ async function confirmResetUserPassword(record: SystemUserRow) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <template v-if="isSuperAdmin">
-            <el-button link type="primary" @click="openFormModal(row)">
-              编辑
-            </el-button>
-
-            <el-divider direction="vertical" />
-            <el-button
-              link
-              type="warning"
-              @click="confirmResetUserPassword(row)"
-            >
-              重置密码
-            </el-button>
-
-            <el-divider direction="vertical" />
-            <el-button
-              link
-              type="warning"
-              :disabled="!row.isLocked || row.loading"
-              :loading="row.loading"
-              @click="confirmUnlockUser(row)"
-            >
-              解除锁定
-            </el-button>
-          </template>
-
-          <div v-if="!isSuperAdmin" class="text-gray-400">无操作权限</div>
-        </div>
+        <VbenTableAction align="center" :actions="getUserActions(row)" />
       </template>
     </Grid>
 

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AuditForumModeratorApplicationDto,
   ForumModeratorApplicationDto,
 } from '#/api/types';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -15,11 +17,11 @@ import {
   forumModeratorApplicationPageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from '../model/application/detail';
+import { getDetailSections } from '../model/application/detail';
 import {
   applicationColumns,
   auditFormSchema,
@@ -71,7 +73,7 @@ const [AuditForm, auditFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '版主申请详情',
 });
 
@@ -142,6 +144,29 @@ async function confirmDeleteApplication(row: ForumModeratorApplicationDto) {
   await deleteApplication(row);
 }
 
+function getApplicationActions(
+  row: ForumModeratorApplicationDto,
+): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+      text: '详情',
+    },
+    {
+      key: 'audit',
+      onClick: () => openAuditModal(row),
+      text: '审核',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteApplication(row),
+      text: '删除',
+    },
+  ];
+}
+
 async function reload() {
   await applicationGridApi.reload();
 }
@@ -175,23 +200,7 @@ defineExpose({
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openAuditModal(row)">
-            审核
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteApplication(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getApplicationActions(row)" />
       </template>
     </ApplicationGrid>
 
@@ -199,7 +208,7 @@ defineExpose({
 
     <DetailModal
       :api="forumModeratorApplicationDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="w-[980px]"
     />
   </div>

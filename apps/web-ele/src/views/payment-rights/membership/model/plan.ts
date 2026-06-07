@@ -5,7 +5,7 @@ import type {
   MembershipPlanPageResponse,
   MembershipPlanUpdateRequest,
 } from '#/api/types';
-import type { DetailCard } from '#/components/es-record-detail';
+import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -514,15 +514,15 @@ function createPlanBenefitConfigCard(record: VipPlanRow) {
     show: true,
     title: '套餐权益配置',
     type: 'text',
-  } satisfies DetailCard;
+  } satisfies RecordDetailSection;
 }
 
-export function getVipPlanDetailCards(record: VipPlanRow) {
+export function getVipPlanDetailSections(record: VipPlanRow) {
   const benefitConfigCard = createPlanBenefitConfigCard(record);
 
   return [
     {
-      fields: [
+      items: [
         {
           label: 'ID',
           type: 'text',
@@ -577,5 +577,5 @@ export function getVipPlanDetailCards(record: VipPlanRow) {
       title: 'VIP 套餐',
     },
     ...(benefitConfigCard ? [benefitConfigCard] : []),
-  ] satisfies DetailCard[];
+  ] satisfies RecordDetailSection[];
 }

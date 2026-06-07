@@ -4,7 +4,7 @@ import { formatUTC } from '#/utils';
 
 import { auditRoleMap, auditStatusMap, createSourceTypeMap } from './shared';
 
-export function getDetailCards(detail: ForumHashtagsDetailResponse) {
+export function getDetailSections(detail: ForumHashtagsDetailResponse) {
   const auditStatus = auditStatusMap[detail.auditStatus];
   const createSourceType = createSourceTypeMap[detail.createSourceType];
   const auditRole =
@@ -16,7 +16,7 @@ export function getDetailCards(detail: ForumHashtagsDetailResponse) {
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '话题名称',
           value: detail.displayName,
@@ -42,7 +42,7 @@ export function getDetailCards(detail: ForumHashtagsDetailResponse) {
     {
       title: '状态信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '审核状态',
           value: auditStatus?.label || '-',
@@ -67,7 +67,7 @@ export function getDetailCards(detail: ForumHashtagsDetailResponse) {
     {
       title: '引用统计',
       show: true,
-      fields: [
+      items: [
         {
           label: '关注人数',
           value: detail.followerCount,
@@ -95,7 +95,7 @@ export function getDetailCards(detail: ForumHashtagsDetailResponse) {
     {
       title: '审核信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '审核原因',
           value: detail.auditReason || '-',
@@ -123,7 +123,7 @@ export function getDetailCards(detail: ForumHashtagsDetailResponse) {
     {
       title: '敏感词',
       show: true,
-      fields: [
+      items: [
         {
           label: '命中数量',
           value: detail.sensitiveWordHits?.length ?? 0,
@@ -134,7 +134,7 @@ export function getDetailCards(detail: ForumHashtagsDetailResponse) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt

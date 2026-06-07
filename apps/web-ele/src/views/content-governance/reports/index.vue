@@ -1,17 +1,19 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { AdminReportPageItemDto, ReportHandleRequest } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { reportDetailApi, reportHandleApi, reportPageApi } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import {
   formatActorSummary,
   formatReporterSummary,
@@ -67,7 +69,7 @@ const [HandleForm, handleFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '举报详情',
 });
 
@@ -111,6 +113,22 @@ async function handleReportSubmit(values: ReportHandleFormValues) {
   handleFormApi.close();
   useMessage.success('处理成功');
   await gridApi.reload();
+}
+
+function getReportActions(row: AdminReportPageItemDto): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      text: '详情',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+    },
+    {
+      disabled: !canHandleReport(row),
+      key: 'handle',
+      text: '处理',
+      onClick: () => openHandleModal(row),
+    },
+  ];
 }
 </script>
 
@@ -231,24 +249,7 @@ async function handleReportSubmit(values: ReportHandleFormValues) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button
-            :disabled="!canHandleReport(row)"
-            link
-            type="primary"
-            @click="openHandleModal(row)"
-          >
-            处理
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getReportActions(row)" />
       </template>
     </Grid>
 
@@ -256,7 +257,7 @@ async function handleReportSubmit(values: ReportHandleFormValues) {
 
     <DetailModal
       :api="reportDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="w-[960px]"
     />
   </Page>

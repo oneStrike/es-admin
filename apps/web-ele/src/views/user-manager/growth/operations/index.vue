@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   GrowthRewardSettlementPageItemDto,
@@ -7,7 +9,13 @@ import type {
 
 import { computed, reactive, ref } from 'vue';
 
-import { Page, useVbenDrawer } from '@vben/common-ui';
+import {
+  Page,
+  useVbenDrawer,
+  VbenDescriptions,
+  VbenDescriptionsItem,
+  VbenTableAction,
+} from '@vben/common-ui';
 
 import { ElMessageBox } from 'element-plus';
 
@@ -217,6 +225,35 @@ async function retryPendingBatch() {
     batchRetrying.value = false;
   }
 }
+
+function getSettlementActions(
+  row: GrowthRewardSettlementPageItemDto,
+): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => openSettlementDetail(row),
+      text: '详情',
+    },
+    {
+      ifShow: () => hasRetryableSettlement(row),
+      key: 'retry',
+      loading: retryingMap[row.id],
+      onClick: () => retrySettlement(row),
+      text: '重试',
+    },
+  ];
+}
+
+function getRuleEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => openRuleEventDetail(row),
+      text: '详情',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -273,26 +310,10 @@ async function retryPendingBatch() {
             </template>
 
             <template #actions="{ row }">
-              <div class="my-1">
-                <el-button
-                  link
-                  type="primary"
-                  @click="openSettlementDetail(row)"
-                >
-                  详情
-                </el-button>
-                <template v-if="hasRetryableSettlement(row)">
-                  <el-divider direction="vertical" />
-                  <el-button
-                    link
-                    :loading="retryingMap[row.id]"
-                    type="primary"
-                    @click="retrySettlement(row)"
-                  >
-                    重试
-                  </el-button>
-                </template>
-              </div>
+              <VbenTableAction
+                align="center"
+                :actions="getSettlementActions(row)"
+              />
             </template>
           </RewardSettlementGrid>
         </div>
@@ -312,9 +333,10 @@ async function retryPendingBatch() {
             </template>
 
             <template #actions="{ row }">
-              <el-button link type="primary" @click="openRuleEventDetail(row)">
-                详情
-              </el-button>
+              <VbenTableAction
+                align="center"
+                :actions="getRuleEventActions(row)"
+              />
             </template>
           </RuleEventsGrid>
         </div>
@@ -323,81 +345,81 @@ async function retryPendingBatch() {
 
     <SettlementDetailDrawer :title="settlementDetailTitle">
       <div v-if="currentSettlement" class="growth-operations-detail">
-        <el-descriptions :column="2" border>
-          <el-descriptions-item label="结算 ID">
+        <VbenDescriptions :column="2" bordered>
+          <VbenDescriptionsItem label="结算 ID">
             {{ currentSettlement.id }}
-          </el-descriptions-item>
-          <el-descriptions-item label="用户 ID">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="用户 ID">
             {{ currentSettlement.userId }}
-          </el-descriptions-item>
-          <el-descriptions-item label="事件 key">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="事件 key">
             {{ currentSettlement.eventKey || '-' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="事件编码">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="事件编码">
             {{ getGrowthTypeLabel(currentSettlement.eventCode) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="来源">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="来源">
             {{ currentSettlement.source || '-' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="业务键">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="业务键">
             {{ currentSettlement.bizKey || '-' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="结算类型">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="结算类型">
             {{
               getOptionLabel(
                 settlementTypeOptions,
                 currentSettlement.settlementType,
               )
             }}
-          </el-descriptions-item>
-          <el-descriptions-item label="结算状态">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="结算状态">
             {{
               getOptionLabel(
                 settlementStatusOptions,
                 currentSettlement.settlementStatus,
               )
             }}
-          </el-descriptions-item>
-          <el-descriptions-item label="结算结果">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="结算结果">
             {{
               getOptionLabel(
                 settlementResultOptions,
                 currentSettlement.settlementResultType,
               )
             }}
-          </el-descriptions-item>
-          <el-descriptions-item label="重试次数">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="重试次数">
             {{ currentSettlement.retryCount }}
-          </el-descriptions-item>
-          <el-descriptions-item label="来源事实 ID">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="来源事实 ID">
             {{ currentSettlement.sourceRecordId ?? '-' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="目标">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="目标">
             {{ currentSettlement.targetType ?? '-' }} /
             {{ currentSettlement.targetId ?? '-' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="发生时间">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="发生时间">
             {{ formatDateTime(currentSettlement.eventOccurredAt) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="落定时间">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="落定时间">
             {{ formatDateTime(currentSettlement.settledAt) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="最近重试">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="最近重试">
             {{ formatDateTime(currentSettlement.lastRetryAt) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="创建时间">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="创建时间">
             {{ formatDateTime(currentSettlement.createdAt) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="更新时间">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="更新时间">
             {{ formatDateTime(currentSettlement.updatedAt) }}
-          </el-descriptions-item>
-          <el-descriptions-item :span="2" label="账本记录">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem :span="2" label="账本记录">
             {{ formatSettlementLedgerIds(currentSettlement) }}
-          </el-descriptions-item>
-          <el-descriptions-item :span="2" label="最后错误">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem :span="2" label="最后错误">
             {{ currentSettlement.lastError || '-' }}
-          </el-descriptions-item>
-        </el-descriptions>
+          </VbenDescriptionsItem>
+        </VbenDescriptions>
 
         <div class="growth-operations-detail__block">
           <div class="growth-operations-detail__title">原始载荷</div>
@@ -408,52 +430,52 @@ async function retryPendingBatch() {
 
     <RuleEventDetailDrawer :title="ruleEventDetailTitle">
       <div v-if="currentRuleEvent" class="growth-operations-detail">
-        <el-descriptions :column="2" border>
-          <el-descriptions-item label="规则类型">
+        <VbenDescriptions :column="2" bordered>
+          <VbenDescriptionsItem label="规则类型">
             {{ getGrowthTypeLabel(currentRuleEvent.ruleType) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="事件名称">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="事件名称">
             {{ currentRuleEvent.eventName }}
-          </el-descriptions-item>
-          <el-descriptions-item label="事件 key">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="事件 key">
             {{ currentRuleEvent.ruleKey }}
-          </el-descriptions-item>
-          <el-descriptions-item label="事件域">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="事件域">
             {{ getOptionLabel(ruleDomainOptions, currentRuleEvent.domain) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="实现状态">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="实现状态">
             {{ getOptionLabel(implStatusOptions, currentRuleEvent.implStatus) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="已接入 producer">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="已接入 producer">
             {{ formatBoolean(currentRuleEvent.isImplemented) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="有基础奖励">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="有基础奖励">
             {{ formatBoolean(currentRuleEvent.hasBaseReward) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="有关联任务">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="有关联任务">
             {{ formatBoolean(currentRuleEvent.hasTask) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="支持任务目标">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="支持任务目标">
             {{ formatBoolean(currentRuleEvent.supportsTaskObjective) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="治理门禁">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem label="治理门禁">
             {{
               getOptionLabel(
                 governanceGateOptions,
                 currentRuleEvent.governanceGate,
               )
             }}
-          </el-descriptions-item>
-          <el-descriptions-item :span="2" label="奖励策略">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem :span="2" label="奖励策略">
             {{ currentRuleEvent.rewardPolicy || '-' }}
-          </el-descriptions-item>
-          <el-descriptions-item :span="2" label="资产规则">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem :span="2" label="资产规则">
             <pre>{{ formatAssetRules(currentRuleEvent.assetRules) }}</pre>
-          </el-descriptions-item>
-          <el-descriptions-item :span="2" label="任务绑定">
+          </VbenDescriptionsItem>
+          <VbenDescriptionsItem :span="2" label="任务绑定">
             <pre>{{ formatTaskBinding(currentRuleEvent.taskBinding) }}</pre>
-          </el-descriptions-item>
-        </el-descriptions>
+          </VbenDescriptionsItem>
+        </VbenDescriptions>
       </div>
     </RuleEventDetailDrawer>
   </Page>

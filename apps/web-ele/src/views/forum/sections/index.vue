@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
 import type { BasicOption } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -12,7 +13,7 @@ import type {
   ForumSectionsUpdateRequest,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -41,13 +42,13 @@ import {
   PlusIcon,
 } from '#/components/es-icons';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from './modules/model/detail';
-import { getDetailCards as getSectionGroupDetailCards } from './modules/model/sectionGroupDetail';
+import { getDetailSections } from './modules/model/detail';
+import { getDetailSections as getSectionGroupDetailSections } from './modules/model/sectionGroupDetail';
 import { formSchema as sectionGroupFormSchema } from './modules/model/sectionGroupShared';
 import {
   formSchema,
@@ -330,12 +331,12 @@ async function confirmDeleteSection(record: BaseForumSectionDto) {
 }
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '板块详情',
 });
 
 const [SectionGroupDetailModal, sectionGroupDetailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '板块组详情',
 });
 
@@ -441,8 +442,35 @@ async function confirmRebuildAllSectionFollowCount() {
   await rebuildAllSectionFollowCount();
 }
 
-function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
-  return getDetailCards(detail, levelOptions.value);
+function getSectionDetailSections(detail: ForumSectionsDetailResponse) {
+  return getDetailSections(detail, levelOptions.value);
+}
+
+function getSectionActions(row: ForumSectionRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      key: 'rebuildFollowCount',
+      loading: row.rebuildLoading,
+      onClick: () => rebuildSectionFollowCount(row),
+      text: '重建关注数',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteSection(row),
+      text: '删除',
+    },
+  ];
 }
 </script>
 
@@ -497,9 +525,7 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
                   >
                     <div
                       @click.stop="
-                        sectionGroupDetailApi
-                          .setData({ recordId: data.id })
-                          .open()
+                        sectionGroupDetailApi.setData({ id: data.id }).open()
                       "
                     >
                       <AlertCircleIcon
@@ -575,32 +601,7 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
           />
         </template>
         <template #actions="{ row }">
-          <div class="my-1">
-            <el-button
-              link
-              type="primary"
-              @click="detailApi.setData({ recordId: row.id }).open()"
-            >
-              详情
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button link type="primary" @click="openFormModal(row)">
-              编辑
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button
-              link
-              :loading="row.rebuildLoading"
-              type="primary"
-              @click="rebuildSectionFollowCount(row)"
-            >
-              重建关注数
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button link type="danger" @click="confirmDeleteSection(row)">
-              删除
-            </el-button>
-          </div>
+          <VbenTableAction align="center" :actions="getSectionActions(row)" />
         </template>
       </Grid>
     </div>
@@ -609,7 +610,7 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
 
     <DetailModal
       :api="forumSectionsDetailApi"
-      :cards="getSectionDetailCards"
+      :sections="getSectionDetailSections"
       class="w-[800px]"
     />
 
@@ -620,7 +621,7 @@ function getSectionDetailCards(detail: ForumSectionsDetailResponse) {
 
     <SectionGroupDetailModal
       :api="forumSectionGroupsDetailApi"
-      :cards="getSectionGroupDetailCards"
+      :sections="getSectionGroupDetailSections"
       class="w-[800px]"
     />
   </Page>

@@ -152,11 +152,9 @@ export const formSchema: EsFormSchema = [
     rules: 'arrayRequired',
   },
   {
-    component: 'RichText',
+    component: 'VbenTiptap',
     componentProps: {
       placeholder: '请输入小说简介',
-      rows: 4,
-      type: 'textarea',
     },
     fieldName: 'description',
     formItemClass: 'col-span-2',

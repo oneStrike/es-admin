@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '@vben/plugins/vxe-table';
 
 import type {
@@ -7,7 +8,7 @@ import type {
   UpdateCategoryDto,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -171,6 +172,23 @@ async function confirmDeleteCategory(row: CategoryRow) {
 
   await deleteCategory(row);
 }
+
+function getCategoryActions(row: CategoryRow): ActionItem[] {
+  return [
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      danger: true,
+      disabled: !!row.isEnabled,
+      key: 'delete',
+      onClick: () => confirmDeleteCategory(row),
+      text: '删除',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -193,18 +211,7 @@ async function confirmDeleteCategory(row: CategoryRow) {
       </template>
 
       <template #actions="{ row }">
-        <el-button link type="primary" @click="openFormModal(row)">
-          编辑
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button
-          link
-          type="danger"
-          :disabled="row.isEnabled!"
-          @click="confirmDeleteCategory(row)"
-        >
-          删除
-        </el-button>
+        <VbenTableAction align="center" :actions="getCategoryActions(row)" />
       </template>
     </Grid>
 

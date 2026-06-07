@@ -10,7 +10,7 @@ const HTML_TAG_REGEX = /<[^>]+>/g;
 const HTML_SPACE_ENTITY_REGEX = /&nbsp;/gi;
 const EXTRA_WHITESPACE_REGEX = /\s+/g;
 
-function toPlainTextFromRichText(content?: null | string) {
+function toPlainTextFromHtml(content?: null | string) {
   if (!content) {
     return '-';
   }
@@ -121,7 +121,7 @@ export const formSchema: EsFormSchema = [
   {
     label: '板块描述',
     fieldName: 'description',
-    component: 'RichText',
+    component: 'VbenTiptap',
     formItemClass: 'col-span-2',
     componentProps: {
       placeholder: '请输入板块描述信息...',
@@ -154,7 +154,7 @@ export const sectionColumns =
       width: 260,
     },
     description: {
-      formatter: ({ cellValue }) => toPlainTextFromRichText(cellValue),
+      formatter: ({ cellValue }) => toPlainTextFromHtml(cellValue),
       showOverflow: 'tooltip',
       sort: 0,
     },

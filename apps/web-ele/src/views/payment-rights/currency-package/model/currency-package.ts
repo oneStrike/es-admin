@@ -3,7 +3,7 @@ import type {
   WalletCurrencyPackagePageResponse,
   WalletCurrencyPackageUpdateRequest,
 } from '#/api/types';
-import type { DetailCard } from '#/components/es-record-detail';
+import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -251,10 +251,10 @@ export const currencyPackageColumns =
     },
   );
 
-export function getCurrencyPackageDetailCards(record: CurrencyPackageRow) {
+export function getCurrencyPackageDetailSections(record: CurrencyPackageRow) {
   return [
     {
-      fields: [
+      items: [
         { label: 'ID', type: 'text', value: record.id },
         { label: '充值包名称', type: 'text', value: record.name },
         { label: '充值包业务键', type: 'text', value: record.packageKey },
@@ -273,5 +273,5 @@ export function getCurrencyPackageDetailCards(record: CurrencyPackageRow) {
       show: true,
       title: '虚拟币充值包',
     },
-  ] satisfies DetailCard[];
+  ] satisfies RecordDetailSection[];
 }

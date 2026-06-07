@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminAgreementDetailDto,
@@ -8,7 +10,7 @@ import type {
   UpdateAgreementDto,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { useClipboard } from '@vueuse/core';
 
@@ -21,12 +23,12 @@ import {
   agreementUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { fetchAgreementAccessHtml } from './access-preview';
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import { agreementColumns, agreementFilter, formSchema } from './model/shared';
 
 type AgreementRow = AdminAgreementListItemDto & {
@@ -132,7 +134,7 @@ async function handleSubmit(values: CreateAgreementDto | UpdateAgreementDto) {
 }
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '协议详情',
 });
 
@@ -185,6 +187,32 @@ async function togglePublishedStatus(record: AgreementStatusRecord) {
     record.loading = false;
   }
 }
+
+function getAgreementActions(row: AgreementRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      key: 'preview',
+      loading: previewLoadingId.value === row.id,
+      onClick: () => openPreview(row),
+      text: '预览',
+    },
+    {
+      key: 'copyAccessPath',
+      onClick: () => copyAccessPath(row),
+      text: '复制访问地址',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -207,32 +235,7 @@ async function togglePublishedStatus(record: AgreementStatusRecord) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button
-            link
-            :loading="previewLoadingId === row.id"
-            type="primary"
-            @click="openPreview(row)"
-          >
-            预览
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="copyAccessPath(row)">
-            复制访问地址
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getAgreementActions(row)" />
       </template>
     </Grid>
 
@@ -240,7 +243,7 @@ async function togglePublishedStatus(record: AgreementStatusRecord) {
 
     <DetailModal
       :api="agreementDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="w-[900px]"
     />
 

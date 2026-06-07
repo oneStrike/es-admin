@@ -47,6 +47,51 @@ export type WalletCurrencyPackagePageResponse = {
 };
 
 /**
+ *  类型定义 [WalletLedgerPageRequest]
+ *  @来源 钱包管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WalletLedgerPageRequest = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 结束时间 */
+  endDate?: string;
+
+  /* 排序字段，json格式 */
+  orderBy?: string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: number;
+
+  /* 开始时间 */
+  startDate?: string;
+
+  /* 用户 ID */
+  userId: number;
+};
+
+export type WalletLedgerPageResponse = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 列表数据 */
+  list?: WalletLedgerRecordDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
  *  类型定义 [WalletCurrencyPackageCreateRequest]
  *  @来源 钱包管理
  *  @更新时间 2026-05-09 22:20:06
@@ -102,6 +147,33 @@ export type BaseCurrencyPackageDto = {
 
   /* 更新时间 */
   updatedAt: string;
+};
+
+/**
+ *  类型定义 [WalletLedgerRecordDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WalletLedgerRecordDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 流水动作 */
+  action: 1 | 2 | 3 | 4;
+  /* 变更后余额 */
+  afterValue: number;
+  /* 变更值 */
+  amount: number;
+  /* 变更前余额 */
+  beforeValue: number;
+  /* 创建时间 */
+  createdAt: string;
+  /* 流水 ID */
+  id: number;
+  /* 展示备注 */
+  remark?: null | string;
+
+  /* 流水来源 */
+  source: string;
 };
 
 /**

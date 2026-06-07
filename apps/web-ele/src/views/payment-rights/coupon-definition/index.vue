@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type {
   CouponFormValues,
   CouponGrantFormValues,
@@ -12,7 +14,7 @@ import type {
   CouponDefinitionUpdateStatusRequest,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -24,7 +26,7 @@ import {
 } from '#/api/core';
 import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -44,7 +46,7 @@ import {
   couponSearchSchema,
   createCouponGrantOperationId,
   formatCouponAbility,
-  getCouponDetailCards,
+  getCouponDetailSections,
   mapCouponToFormRecord,
 } from './model/coupon';
 
@@ -99,7 +101,7 @@ const [GrantForm, grantFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '券定义详情',
 });
 
@@ -158,7 +160,7 @@ function openGrantModal(row: CouponRow) {
 
 function openDetailModal(row: CouponRow) {
   currentCoupon.value = row;
-  detailApi.setData({ recordId: row.id }).open();
+  detailApi.setData({ id: row.id }).open();
 }
 
 async function handleCreateSubmit(values: CouponFormValues) {
@@ -230,6 +232,26 @@ async function toggleEnableStatus(row: CouponRow) {
 async function getCurrentCoupon() {
   return currentCoupon.value;
 }
+
+function getCouponActions(row: CouponRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      text: '详情',
+      onClick: () => openDetailModal(row),
+    },
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openEditModal(row),
+    },
+    {
+      key: 'grant',
+      text: '发券',
+      onClick: () => openGrantModal(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -263,19 +285,7 @@ async function getCurrentCoupon() {
         </template>
 
         <template #actions="{ row }">
-          <div class="my-1 flex items-center">
-            <el-button link type="primary" @click="openDetailModal(row)">
-              详情
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button link type="primary" @click="openEditModal(row)">
-              编辑
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button link type="primary" @click="openGrantModal(row)">
-              发券
-            </el-button>
-          </div>
+          <VbenTableAction align="center" :actions="getCouponActions(row)" />
         </template>
       </CouponGrid>
 
@@ -285,7 +295,7 @@ async function getCurrentCoupon() {
 
       <DetailModal
         :api="getCurrentCoupon"
-        :cards="getCouponDetailCards"
+        :sections="getCouponDetailSections"
         class="w-[980px]"
       />
     </div>

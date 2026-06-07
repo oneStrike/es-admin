@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { NovelChapterRecord } from './model/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -9,7 +11,7 @@ import type {
   ContentNovelChapterUpdateRequest,
 } from '#/api/types';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -23,14 +25,14 @@ import {
   growthLevelRulesPageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
 
 import ContentEditor from './content-editor.vue';
 import { chapterColumns } from './model/columns';
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import { chapterFormSchema, chapterSearchFormSchema } from './model/form';
 
 defineOptions({
@@ -70,7 +72,7 @@ const [FormModal, formApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
 });
 
 const [ContentModal, contentApi] = useVbenModal({
@@ -158,7 +160,7 @@ function handleChapterSelectionChange(params: {
 function openDetailModal(record: NovelChapterRecord) {
   detailApi
     .setData({
-      recordId: record.id,
+      id: record.id,
       title: record.title,
     })
     .open();
@@ -300,6 +302,27 @@ async function toggleStatus(row: NovelChapterRecord) {
     row.loading = false;
   }
 }
+
+function getNovelChapterActions(row: NovelChapterRecord): ActionItem[] {
+  return [
+    {
+      key: 'content',
+      onClick: () => openContentModal(row),
+      text: '内容',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteChapter(row),
+      text: '删除',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -339,25 +362,19 @@ async function toggleStatus(row: NovelChapterRecord) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1 flex items-center justify-center gap-1">
-          <el-button link type="primary" @click="openContentModal(row)">
-            内容
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteChapter(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction
+          align="center"
+          :actions="getNovelChapterActions(row)"
+        />
       </template>
     </Grid>
 
     <FormModal :schema="chapterFormSchema" :on-submit="handleSubmit" />
 
-    <DetailModal :api="contentNovelChapterDetailApi" :cards="getDetailCards" />
+    <DetailModal
+      :api="contentNovelChapterDetailApi"
+      :sections="getDetailSections"
+    />
 
     <ContentModal />
   </Modal>

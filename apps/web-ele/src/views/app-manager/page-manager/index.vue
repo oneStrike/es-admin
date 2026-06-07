@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseAppPageDto,
@@ -6,7 +8,7 @@ import type {
   UpdateAppPageDto,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -17,11 +19,11 @@ import {
   appPageUpdateApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import {
   accessLevelObj,
   formSchema,
@@ -114,7 +116,7 @@ async function confirmDeletePage(record: BaseAppPageDto) {
 }
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '页面详情',
 });
 
@@ -130,6 +132,27 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
   } finally {
     record.loading = false;
   }
+}
+
+function getPageActions(row: BaseAppPageDto): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      text: '详情',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+    },
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openFormModal(row),
+    },
+    {
+      danger: true,
+      key: 'delete',
+      text: '删除',
+      onClick: () => confirmDeletePage(row),
+    },
+  ];
 }
 </script>
 
@@ -157,23 +180,7 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
         />
       </template>
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeletePage(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getPageActions(row)" />
       </template>
     </Grid>
 
@@ -181,7 +188,7 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
 
     <DetailModal
       :api="appPageDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="w-[800px]"
     />
   </Page>

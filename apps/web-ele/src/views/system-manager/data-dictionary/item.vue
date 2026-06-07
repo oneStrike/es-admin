@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseDictionaryDto,
@@ -7,7 +9,7 @@ import type {
   UpdateDictionaryItemDto,
 } from '#/api/types';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -175,6 +177,22 @@ async function confirmDeleteDictionary(row: BaseDictionaryItemDto) {
 
   await deleteDictionary(row);
 }
+
+function getDictionaryItemActions(row: BaseDictionaryItemDto): ActionItem[] {
+  return [
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openFormModal(row),
+    },
+    {
+      danger: true,
+      key: 'delete',
+      text: '删除',
+      onClick: () => confirmDeleteDictionary(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -195,13 +213,10 @@ async function confirmDeleteDictionary(row: BaseDictionaryItemDto) {
         />
       </template>
       <template #actions="{ row }">
-        <el-button link type="primary" @click="openFormModal(row)">
-          编辑
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button link type="danger" @click="confirmDeleteDictionary(row)">
-          删除
-        </el-button>
+        <VbenTableAction
+          align="center"
+          :actions="getDictionaryItemActions(row)"
+        />
       </template>
     </Grid>
 

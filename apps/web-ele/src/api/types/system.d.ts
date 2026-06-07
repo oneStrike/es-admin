@@ -70,9 +70,11 @@ export type BaseSystemConfigDto = {
   updatedAt: string;
   /* 最后修改人 ID */
   updatedById?: null | number;
-
   /* 上传配置 */
   uploadConfig?: UploadConfigDto;
+
+  /* 钱包虚拟币展示配置 */
+  walletCurrencyDisplayConfig?: WalletCurrencyDisplayConfigDto;
 };
 
 /**
@@ -207,6 +209,25 @@ export type ThirdPartyResourceParseConfigDto = {
 
   /* 每个资源解析通道允许排队的最大请求数 */
   maxQueueSize?: null | number;
+};
+
+/**
+ *  类型定义 [WalletCurrencyDisplayConfigDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WalletCurrencyDisplayConfigDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 虚拟币稳定资产键 */
+  assetKey?: null | string;
+  /* 虚拟币图标 URL */
+  currencyIconUrl?: null | string;
+  /* 虚拟币展示名称 */
+  currencyName?: null | string;
+
+  /* 虚拟币单位名称 */
+  currencyUnitName?: null | string;
 };
 
 /**
@@ -349,7 +370,9 @@ export type UpdateSystemConfigDto = {
   siteConfig?: SiteConfigDto;
   /* 三方资源解析配置 */
   thirdPartyResourceParseConfig?: ThirdPartyResourceParseConfigDto;
-
   /* 上传配置 */
   uploadConfig?: UploadConfigDto;
+
+  /* 钱包虚拟币展示配置 */
+  walletCurrencyDisplayConfig?: WalletCurrencyDisplayConfigDto;
 };

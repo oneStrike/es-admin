@@ -3,7 +3,7 @@ import type {
   MembershipBenefitPageResponse,
   MembershipBenefitUpdateRequest,
 } from '#/api/types';
-import type { DetailCard } from '#/components/es-record-detail';
+import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
 import { UploadSceneEnum } from '#/enum/api';
@@ -225,10 +225,10 @@ export const vipBenefitColumns =
     name: { fixed: 'left', minWidth: 180, slots: { default: 'detail' } },
   });
 
-export function getVipBenefitDetailCards(record: VipBenefitRow) {
+export function getVipBenefitDetailSections(record: VipBenefitRow) {
   return [
     {
-      fields: [
+      items: [
         { label: 'ID', type: 'text', value: record.id },
         { label: '权益名称', type: 'text', value: record.name },
         { label: '权益业务键', type: 'text', value: record.code },
@@ -252,5 +252,5 @@ export function getVipBenefitDetailCards(record: VipBenefitRow) {
       show: true,
       title: '会员权益定义',
     },
-  ] satisfies DetailCard[];
+  ] satisfies RecordDetailSection[];
 }

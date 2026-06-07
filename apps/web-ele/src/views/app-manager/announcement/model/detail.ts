@@ -17,7 +17,7 @@ import {
  * @param detail 公告详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: AnnouncementDetailResponse) {
+export function getDetailSections(detail: AnnouncementDetailResponse) {
   // 计算发布状态
   const publishStatus = getPublishStatus(
     detail.isPublished,
@@ -43,7 +43,7 @@ export function getDetailCards(detail: AnnouncementDetailResponse) {
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '公告标题',
           value: detail?.title,
@@ -106,7 +106,7 @@ export function getDetailCards(detail: AnnouncementDetailResponse) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '发布开始时间',
           value: detail?.publishStartTime
@@ -138,7 +138,7 @@ export function getDetailCards(detail: AnnouncementDetailResponse) {
     {
       title: '公告摘要',
       show: !!detail?.summary,
-      fields: [
+      items: [
         {
           label: '摘要内容',
           value: detail?.summary || '-',
@@ -149,7 +149,7 @@ export function getDetailCards(detail: AnnouncementDetailResponse) {
     {
       title: '关联页面',
       show: !!(detail?.pageId || detail?.appPage),
-      fields: [
+      items: [
         {
           label: '页面代码',
           value: detail?.appPage?.code,

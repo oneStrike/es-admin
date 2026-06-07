@@ -162,11 +162,9 @@ export const formSchema: EsFormSchema = [
 
   // ========== 作品简介 ==========
   {
-    component: 'RichText',
+    component: 'VbenTiptap',
     componentProps: {
-      type: 'textarea',
       placeholder: '请输入漫画简介',
-      rows: 4,
     },
     fieldName: 'description',
     label: '漫画简介',

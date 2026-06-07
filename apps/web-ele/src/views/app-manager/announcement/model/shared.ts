@@ -293,7 +293,7 @@ export const formSchema: EsFormSchema = [
   {
     label: '内容',
     fieldName: 'content',
-    component: 'RichText',
+    component: 'VbenTiptap',
     formItemClass: 'col-span-2',
     rules: 'required',
     componentProps: {

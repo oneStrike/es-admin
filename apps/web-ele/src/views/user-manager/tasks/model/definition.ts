@@ -2,7 +2,6 @@ import type {
   AdminTaskDefinitionDetailDto,
   AdminTaskDefinitionListItemDto,
   TaskEventTemplateOptionDto,
-  TaskTemplateFilterValueDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
 
@@ -12,6 +11,7 @@ import {
   buildTemplateKeyOptions,
   formatJsonTextarea,
   parseTaskRewardItems,
+  type TaskTemplateFilterValueDto,
   taskClaimModeOptions,
   taskDefinitionStatusOptions,
   taskRepeatTypeOptions,

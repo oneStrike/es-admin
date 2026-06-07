@@ -8,7 +8,7 @@ import type {
 
 import { computed, onMounted, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { Page, VbenDescriptions, VbenDescriptionsItem } from '@vben/common-ui';
 
 import { systemIp2regionStatusApi } from '#/api/core';
 import { getApiErrorMessage } from '#/api/error';
@@ -182,34 +182,34 @@ onMounted(loadStatus);
             type="warning"
           />
 
-          <el-descriptions :column="2" border label-width="96px" size="small">
-            <el-descriptions-item label="当前来源">
+          <VbenDescriptions :column="2" bordered size="small">
+            <VbenDescriptionsItem label="当前来源">
               <el-text>{{ getSourceLabel(statusData?.source) }}</el-text>
-            </el-descriptions-item>
-            <el-descriptions-item label="当前文件名">
+            </VbenDescriptionsItem>
+            <VbenDescriptionsItem label="当前文件名">
               <el-text class="break-all">
                 {{ statusData?.fileName || '-' }}
               </el-text>
-            </el-descriptions-item>
-            <el-descriptions-item label="文件大小">
+            </VbenDescriptionsItem>
+            <VbenDescriptionsItem label="文件大小">
               <el-text>{{ formatFileSize(statusData?.fileSize) }}</el-text>
-            </el-descriptions-item>
-            <el-descriptions-item label="生效时间">
+            </VbenDescriptionsItem>
+            <VbenDescriptionsItem label="生效时间">
               <el-text>
                 {{ formatDateTime(statusData?.activatedAt) }}
               </el-text>
-            </el-descriptions-item>
-            <el-descriptions-item label="文件路径" :span="2">
+            </VbenDescriptionsItem>
+            <VbenDescriptionsItem label="文件路径" :span="2">
               <el-text class="break-all font-mono" size="small">
                 {{ statusData?.filePath || '-' }}
               </el-text>
-            </el-descriptions-item>
-            <el-descriptions-item label="存储目录" :span="2">
+            </VbenDescriptionsItem>
+            <VbenDescriptionsItem label="存储目录" :span="2">
               <el-text class="break-all font-mono" size="small">
                 {{ statusData?.storageDir || '-' }}
               </el-text>
-            </el-descriptions-item>
-          </el-descriptions>
+            </VbenDescriptionsItem>
+          </VbenDescriptions>
         </el-card>
 
         <div class="space-y-6">

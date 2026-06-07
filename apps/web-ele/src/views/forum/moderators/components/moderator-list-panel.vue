@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { ForumModeratorDto } from '#/api/types';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -14,11 +16,11 @@ import {
 } from '#/api/core';
 import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import { getDetailCards } from '../model/detail';
+import { getDetailSections } from '../model/detail';
 import {
   buildAssignModeratorSectionPayload,
   buildCreateModeratorPayload,
@@ -87,7 +89,7 @@ const [AssignForm, assignFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '版主详情',
 });
 
@@ -104,7 +106,7 @@ function openCreateModal() {
 
 function openDetailModal(row: ForumModeratorRow) {
   currentModerator.value = row;
-  detailApi.setData({ recordId: row.id }).open();
+  detailApi.setData({ id: row.id }).open();
 }
 
 function openEditModal(row: ForumModeratorRow) {
@@ -207,6 +209,32 @@ async function toggleEnableStatus(row: ForumModeratorRow) {
   }
 }
 
+function getModeratorActions(row: ForumModeratorRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => openDetailModal(row),
+      text: '详情',
+    },
+    {
+      key: 'edit',
+      onClick: () => openEditModal(row),
+      text: '编辑',
+    },
+    {
+      key: 'assign',
+      onClick: () => openAssignModal(row),
+      text: '分配板块',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteModerator(row),
+      text: '删除',
+    },
+  ];
+}
+
 async function reload() {
   await moderatorGridApi.reload();
 }
@@ -249,23 +277,7 @@ defineExpose({
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button link type="primary" @click="openDetailModal(row)">
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openEditModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openAssignModal(row)">
-            分配板块
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteModerator(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getModeratorActions(row)" />
       </template>
     </ModeratorGrid>
 
@@ -278,7 +290,7 @@ defineExpose({
 
     <DetailModal
       :api="getCurrentModerator"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="w-[960px]"
     />
   </div>

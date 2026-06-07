@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   WorkflowItemDto,
@@ -9,7 +11,13 @@ import type {
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import {
+  Page,
+  useVbenModal,
+  VbenDescriptions,
+  VbenDescriptionsItem,
+  VbenTableAction,
+} from '@vben/common-ui';
 import { RotateCw } from '@vben/icons';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -327,6 +335,40 @@ function closeDetailSession() {
 function isCurrentDetailSession(jobId: string, sessionId: number) {
   return activeDetailJobId === jobId && detailSessionId === sessionId;
 }
+
+function getWorkflowActions(row: WorkflowJobDto): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      onClick: () => openDetail(row.jobId),
+      text: '详情',
+    },
+    {
+      key: 'records',
+      onClick: () => openRecords(row.jobId),
+      text: '处理记录',
+    },
+    {
+      ifShow: () => canArchiveWorkflow(row),
+      key: 'archive',
+      onClick: () => archiveJob(row),
+      text: '归档',
+    },
+    {
+      ifShow: () => canCancelWorkflow(row),
+      key: 'cancel',
+      onClick: () => cancelJob(row),
+      text: '取消',
+    },
+    {
+      danger: true,
+      ifShow: () => canExpireWorkflow(row),
+      key: 'expire',
+      onClick: () => expireJob(row),
+      text: '清理',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -361,36 +403,7 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
       </template>
 
       <template #actions="{ row }">
-        <el-button link type="primary" @click="openDetail(row.jobId)">
-          详情
-        </el-button>
-        <el-button link type="primary" @click="openRecords(row.jobId)">
-          处理记录
-        </el-button>
-        <el-button
-          v-if="canArchiveWorkflow(row)"
-          link
-          type="primary"
-          @click="archiveJob(row)"
-        >
-          归档
-        </el-button>
-        <el-button
-          v-if="canCancelWorkflow(row)"
-          link
-          type="warning"
-          @click="cancelJob(row)"
-        >
-          取消
-        </el-button>
-        <el-button
-          v-if="canExpireWorkflow(row)"
-          link
-          type="danger"
-          @click="expireJob(row)"
-        >
-          清理
-        </el-button>
+        <VbenTableAction align="center" :actions="getWorkflowActions(row)" />
       </template>
     </Grid>
 
@@ -509,24 +522,24 @@ function isCurrentDetailSession(jobId: string, sessionId: number) {
             <template #header>
               <span>{{ recordJob.displayName }}</span>
             </template>
-            <el-descriptions :column="2" border size="small">
-              <el-descriptions-item label="任务编号">
+            <VbenDescriptions :column="2" bordered size="small">
+              <VbenDescriptionsItem label="任务编号">
                 <el-text class="font-mono" truncated>
                   {{ recordJob.jobId }}
                 </el-text>
-              </el-descriptions-item>
-              <el-descriptions-item label="状态">
+              </VbenDescriptionsItem>
+              <VbenDescriptionsItem label="状态">
                 <el-tag :type="formatWorkflowJobStatus(recordJob).type">
                   {{ formatWorkflowJobStatus(recordJob).label }}
                 </el-tag>
-              </el-descriptions-item>
-              <el-descriptions-item label="已完成">
+              </VbenDescriptionsItem>
+              <VbenDescriptionsItem label="已完成">
                 {{ recordJob.successItemCount }}
-              </el-descriptions-item>
-              <el-descriptions-item label="未完成">
+              </VbenDescriptionsItem>
+              <VbenDescriptionsItem label="未完成">
                 {{ recordJob.failedItemCount }}
-              </el-descriptions-item>
-            </el-descriptions>
+              </VbenDescriptionsItem>
+            </VbenDescriptions>
           </el-card>
 
           <el-card

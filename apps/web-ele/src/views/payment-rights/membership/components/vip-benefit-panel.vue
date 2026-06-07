@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VipBenefitFormValues, VipBenefitRow } from '../model/benefit';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -7,7 +9,7 @@ import type {
   MembershipBenefitUpdateStatusRequest,
 } from '#/api/types';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -17,7 +19,7 @@ import {
   membershipBenefitUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -30,7 +32,7 @@ import {
 import {
   buildVipBenefitCreatePayload,
   buildVipBenefitUpdatePayload,
-  getVipBenefitDetailCards,
+  getVipBenefitDetailSections,
   vipBenefitColumns,
   vipBenefitFormSchema,
   vipBenefitSearchSchema,
@@ -77,7 +79,7 @@ const [EditForm, editFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '会员权益详情',
 });
 
@@ -118,7 +120,7 @@ function openEditModal(row: VipBenefitRow) {
 
 function openDetailModal(row: VipBenefitRow) {
   currentVipBenefit.value = row;
-  detailApi.setData({ recordId: row.id }).open();
+  detailApi.setData({ id: row.id }).open();
 }
 
 async function handleCreateSubmit(values: VipBenefitFormValues) {
@@ -154,6 +156,21 @@ async function toggleEnableStatus(row: VipBenefitRow) {
 async function getCurrentVipBenefit() {
   return currentVipBenefit.value;
 }
+
+function getVipBenefitActions(row: VipBenefitRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      text: '详情',
+      onClick: () => openDetailModal(row),
+    },
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openEditModal(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -186,15 +203,7 @@ async function getCurrentVipBenefit() {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1 flex items-center">
-          <el-button link type="primary" @click="openDetailModal(row)">
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openEditModal(row)">
-            编辑
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getVipBenefitActions(row)" />
       </template>
     </VipBenefitGrid>
 
@@ -206,7 +215,7 @@ async function getCurrentVipBenefit() {
 
     <DetailModal
       :api="getCurrentVipBenefit"
-      :cards="getVipBenefitDetailCards"
+      :sections="getVipBenefitDetailSections"
       class="w-[980px]"
     />
   </div>

@@ -1,17 +1,20 @@
 import type {
+  AdRewardCredentialOptionDto,
   AdRewardProviderCreateRequest,
   AdRewardProviderPageResponse,
   AdRewardProviderUpdateRequest,
 } from '#/api/types';
-import type { DetailCard } from '#/components/es-record-detail';
+import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
+import { adRewardCredentialOptionListApi } from '#/api/core';
 import { formSchemaTransform } from '#/utils';
 import { getOptionLabel } from '#/utils/options';
 
 import {
   adProviderOptions,
   adTargetScopeOptions,
+  enabledAdTargetScopeOptions,
   enabledStatusOptions,
   environmentOptions,
   platformOptions,
@@ -27,9 +30,7 @@ export type AdProviderFormValues = {
   appId?: unknown;
   callbackUrl?: unknown;
   clientAppKey?: unknown;
-  configMetadataText?: unknown;
-  configVersion?: unknown;
-  credentialVersionRef?: unknown;
+  credentialOptionRef?: unknown;
   dailyLimit?: unknown;
   environment?: unknown;
   id?: unknown;
@@ -40,6 +41,8 @@ export type AdProviderFormValues = {
   sortOrder?: unknown;
   targetScope?: unknown;
 };
+
+type OptionValue = boolean | number | string;
 
 function normalizeText(value: unknown) {
   if (typeof value !== 'string') {
@@ -95,58 +98,85 @@ function normalizeBoolean(value: unknown) {
   return typeof value === 'boolean' ? value : null;
 }
 
-function formatJsonTextarea(value: unknown) {
-  if (value === null || value === undefined || value === '') {
-    return '';
-  }
-
-  return JSON.stringify(value, null, 2);
-}
-
-function parseJsonObjectText(value: unknown, label: string) {
-  const text = normalizeText(value);
-
-  if (!text) {
-    return null;
-  }
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    throw new Error(`${label}必须是合法 JSON 对象`);
-  }
-
-  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new TypeError(`${label}必须是合法 JSON 对象`);
-  }
-
-  return parsed as Record<string, unknown>;
-}
-
-function escapeHtml(value: unknown) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+function readObject(value: unknown) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
 }
 
 function formatOptionText(
-  options: Array<{ label: string; value: boolean | number | string }>,
+  options: Array<{ label: string; value: OptionValue }>,
   value: unknown,
 ) {
+  return getOptionLabel(options, value as OptionValue) || String(value ?? '-');
+}
+
+function formatCredentialOptionLabel(item: Record<string, unknown>) {
+  const label = normalizeText(item.label) ?? normalizeText(item.value) ?? '-';
+  const fingerprint = normalizeText(item.fingerprint);
+  const disabledReason = normalizeText(item.disabledReason);
+
+  return [label, fingerprint, disabledReason].filter(Boolean).join(' / ');
+}
+
+function normalizeCredentialOptions(options: unknown) {
+  if (!Array.isArray(options)) {
+    return [];
+  }
+
+  return options.map((item) => {
+    const option = item as AdRewardCredentialOptionDto;
+    return {
+      ...option,
+      disabled: option.status !== 'available',
+      label: formatCredentialOptionLabel(option),
+    };
+  });
+}
+
+function credentialOptionSelectComponentProps() {
+  return {
+    afterFetch: normalizeCredentialOptions,
+    api: adRewardCredentialOptionListApi,
+    class: 'w-full',
+    clearable: true,
+    disabledField: 'disabled',
+    filterable: true,
+    placeholder: '请选择 SSV 密钥选项',
+    valueField: 'value',
+  };
+}
+
+function readCredentialMetadata(record: Pick<AdProviderRow, 'configMetadata'>) {
+  return readObject(record.configMetadata);
+}
+
+function readCredentialOptionRef(
+  record: Pick<AdProviderRow, 'configMetadata'>,
+) {
+  return normalizeText(readCredentialMetadata(record).credentialOptionRef);
+}
+
+function readCredentialFingerprint(
+  record: Pick<AdProviderRow, 'configMetadata'>,
+) {
+  return normalizeText(readCredentialMetadata(record).keyFingerprint);
+}
+
+export function getAdProviderCredentialOptionText(record: AdProviderRow) {
   return (
-    getOptionLabel(options, value as boolean | number | string) ||
-    String(value ?? '-')
+    readCredentialOptionRef(record) ||
+    normalizeText(record.credentialVersionRef) ||
+    '-'
   );
 }
 
 export function mapAdProviderToFormRecord(values: AdProviderRow) {
   return {
     ...values,
-    configMetadataText: formatJsonTextarea(values.configMetadata),
+    credentialOptionRef:
+      readCredentialOptionRef(values) ||
+      normalizeText(values.credentialVersionRef),
   };
 }
 
@@ -155,11 +185,9 @@ function buildAdProviderBase(values: AdProviderFormValues) {
     appId: normalizeNullableText(values.appId),
     callbackUrl: normalizeNullableText(values.callbackUrl),
     clientAppKey: normalizeNullableText(values.clientAppKey),
-    configMetadata: parseJsonObjectText(values.configMetadataText, '配置摘要'),
-    configVersion: normalizeNullableNumber(values.configVersion),
-    credentialVersionRef: requireText(
-      values.credentialVersionRef,
-      'SSV 密钥版本引用',
+    credentialOptionRef: requireText(
+      values.credentialOptionRef,
+      'SSV 密钥选项',
     ),
     dailyLimit: normalizeNullableNumber(values.dailyLimit),
     environment: requireInteger(values.environment, '运行环境') as 1 | 2,
@@ -216,9 +244,10 @@ export const adProviderFormSchema: EsFormSchema = [
     componentProps: {
       class: 'w-full',
       clearable: true,
-      options: adTargetScopeOptions,
+      options: enabledAdTargetScopeOptions,
       placeholder: '请选择目标范围',
     },
+    defaultValue: 1,
     fieldName: 'targetScope',
     label: '目标范围',
     rules: 'required',
@@ -248,6 +277,13 @@ export const adProviderFormSchema: EsFormSchema = [
     rules: 'required',
   },
   {
+    component: 'ApiSelect',
+    componentProps: credentialOptionSelectComponentProps,
+    fieldName: 'credentialOptionRef',
+    label: 'SSV 密钥选项',
+    rules: 'required',
+  },
+  {
     component: 'Input',
     componentProps: {
       clearable: true,
@@ -269,30 +305,10 @@ export const adProviderFormSchema: EsFormSchema = [
     component: 'Input',
     componentProps: {
       clearable: true,
-      placeholder: '请输入 SSV 密钥版本引用',
-    },
-    fieldName: 'credentialVersionRef',
-    label: 'SSV 密钥版本引用',
-    rules: 'required',
-  },
-  {
-    component: 'Input',
-    componentProps: {
-      clearable: true,
       placeholder: '请输入广告回调地址',
     },
     fieldName: 'callbackUrl',
     label: '广告回调地址',
-  },
-  {
-    component: 'InputNumber',
-    componentProps: {
-      class: '!w-full',
-      min: 0,
-      placeholder: '请输入配置版本',
-    },
-    fieldName: 'configVersion',
-    label: '配置版本',
   },
   {
     component: 'InputNumber',
@@ -324,28 +340,15 @@ export const adProviderFormSchema: EsFormSchema = [
     fieldName: 'isEnabled',
     label: '启用状态',
   },
-  {
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入 JSON 对象，禁止填写明文密钥',
-      rows: 4,
-      type: 'textarea',
-    },
-    fieldName: 'configMetadataText',
-    formItemClass: 'col-span-2',
-    label: '配置摘要',
-  },
 ];
 
 export const adProviderSearchSchema = formSchemaTransform.toSearchSchema(
   adProviderFormSchema,
   {
-    placementKey: { show: true },
     provider: { show: true },
     targetScope: { show: true },
     platform: { show: true },
     environment: { show: true },
-    clientAppKey: { show: true },
     isEnabled: {
       show: true,
       component: 'Select',
@@ -376,9 +379,12 @@ export const adProviderColumns =
     },
     appId: { hide: true },
     callbackUrl: { hide: true },
-    configMetadataText: { hide: true },
-    configVersion: { hide: true },
-    credentialVersionRef: { minWidth: 180, title: '密钥版本引用' },
+    configVersion: { minWidth: 110, show: true, title: '配置版本' },
+    credentialOptionRef: {
+      minWidth: 220,
+      slots: { default: 'credentialOption' },
+      title: 'SSV 密钥选项',
+    },
     dailyLimit: { title: '每日上限' },
     isEnabled: {
       minWidth: 110,
@@ -392,10 +398,13 @@ export const adProviderColumns =
     sortOrder: { hide: true },
   });
 
-export function getAdProviderDetailCards(record: AdProviderRow) {
+export function getAdProviderDetailSections(record: AdProviderRow) {
+  const credentialOptionRef = readCredentialOptionRef(record);
+  const keyFingerprint = readCredentialFingerprint(record);
+
   return [
     {
-      fields: [
+      items: [
         { label: 'ID', type: 'text', value: record.id },
         { label: '广告位 key', type: 'text', value: record.placementKey },
         {
@@ -429,9 +438,9 @@ export function getAdProviderDetailCards(record: AdProviderRow) {
         },
         { label: 'provider 应用 ID', type: 'text', value: record.appId ?? '-' },
         {
-          label: 'SSV 密钥版本引用',
+          label: '配置版本',
           type: 'text',
-          value: record.credentialVersionRef,
+          value: record.configVersion ?? '-',
         },
         {
           label: '每日次数上限',
@@ -455,17 +464,26 @@ export function getAdProviderDetailCards(record: AdProviderRow) {
       show: true,
       title: '广告 provider 配置',
     },
-    ...(record.configMetadata
-      ? [
-          {
-            content: `<pre class="whitespace-pre-wrap break-all text-xs">${escapeHtml(
-              formatJsonTextarea(record.configMetadata),
-            )}</pre>`,
-            show: true,
-            title: '配置摘要',
-            type: 'text',
-          } satisfies DetailCard,
-        ]
-      : []),
-  ] satisfies DetailCard[];
+    {
+      items: [
+        {
+          label: 'SSV 密钥选项',
+          type: 'text',
+          value: credentialOptionRef ?? '-',
+        },
+        {
+          label: '密钥版本引用',
+          type: 'text',
+          value: record.credentialVersionRef,
+        },
+        {
+          label: '密钥指纹',
+          type: 'text',
+          value: keyFingerprint ?? '-',
+        },
+      ],
+      show: true,
+      title: 'SSV 密钥摘要',
+    },
+  ] satisfies RecordDetailSection[];
 }

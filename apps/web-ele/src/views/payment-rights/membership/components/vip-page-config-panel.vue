@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type {
   VipPageConfigFormValues,
   VipPageConfigRow,
@@ -10,7 +12,7 @@ import type {
   MembershipPageConfigUpdateStatusRequest,
 } from '#/api/types';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -20,7 +22,7 @@ import {
   membershipPageConfigUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -32,7 +34,7 @@ import {
 import {
   buildVipPageConfigCreatePayload,
   buildVipPageConfigUpdatePayload,
-  getVipPageConfigDetailCards,
+  getVipPageConfigDetailSections,
   mapVipPageConfigToFormRecord,
   vipPageConfigColumns,
   vipPageConfigFormSchema,
@@ -79,7 +81,7 @@ const [EditForm, editFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '会员页配置详情',
 });
 
@@ -121,7 +123,7 @@ function openEditModal(row: VipPageConfigRow) {
 
 function openDetailModal(row: VipPageConfigRow) {
   currentVipPageConfig.value = row;
-  detailApi.setData({ recordId: row.id }).open();
+  detailApi.setData({ id: row.id }).open();
 }
 
 async function handleCreateSubmit(values: VipPageConfigFormValues) {
@@ -157,6 +159,21 @@ async function toggleEnableStatus(row: VipPageConfigRow) {
 async function getCurrentVipPageConfig() {
   return currentVipPageConfig.value;
 }
+
+function getVipPageConfigActions(row: VipPageConfigRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      text: '详情',
+      onClick: () => openDetailModal(row),
+    },
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openEditModal(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -189,15 +206,10 @@ async function getCurrentVipPageConfig() {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1 flex items-center">
-          <el-button link type="primary" @click="openDetailModal(row)">
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openEditModal(row)">
-            编辑
-          </el-button>
-        </div>
+        <VbenTableAction
+          align="center"
+          :actions="getVipPageConfigActions(row)"
+        />
       </template>
     </VipPageConfigGrid>
 
@@ -209,7 +221,7 @@ async function getCurrentVipPageConfig() {
 
     <DetailModal
       :api="getCurrentVipPageConfig"
-      :cards="getVipPageConfigDetailCards"
+      :sections="getVipPageConfigDetailSections"
       class="w-[980px]"
     />
   </div>

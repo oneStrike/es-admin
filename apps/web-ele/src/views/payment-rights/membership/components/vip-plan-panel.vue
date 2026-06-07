@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VipPlanFormValues, VipPlanRow } from '../model/plan';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -6,9 +8,8 @@ import type {
   MembershipPlanPageRequest,
   MembershipPlanUpdateStatusRequest,
 } from '#/api/types';
-import type { EsTableActionItem } from '#/components/es-table-action';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -17,8 +18,7 @@ import {
   membershipPlanUpdateApi,
   membershipPlanUpdateStatusApi,
 } from '#/api/core';
-import EsRecordDetail from '#/components/es-record-detail';
-import EsTableAction from '#/components/es-table-action';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -31,7 +31,7 @@ import {
 import {
   buildVipPlanCreatePayload,
   buildVipPlanUpdatePayload,
-  getVipPlanDetailCards,
+  getVipPlanDetailSections,
   mapVipPlanToFormRecord,
   vipPlanColumns,
   vipPlanSearchSchema,
@@ -76,7 +76,7 @@ const [PlanForm, planFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: 'VIP 套餐详情',
 });
 
@@ -98,7 +98,7 @@ async function resolveDetailRecord() {
 
 function openDetail(row: VipPlanRow) {
   currentDetailRecord.value = row;
-  detailApi.setData({ recordId: row.id }).open();
+  detailApi.setData({ id: row.id }).open();
 }
 
 function openFormModal(row?: VipPlanRow) {
@@ -133,7 +133,7 @@ async function toggleEnableStatus(row: VipPlanRow) {
   }
 }
 
-function getVipPlanActions(row: VipPlanRow): EsTableActionItem[] {
+function getVipPlanActions(row: VipPlanRow): ActionItem[] {
   return [
     {
       key: 'detail',
@@ -179,7 +179,7 @@ function getVipPlanActions(row: VipPlanRow): EsTableActionItem[] {
       </template>
 
       <template #actions="{ row }">
-        <EsTableAction :actions="getVipPlanActions(row)" />
+        <VbenTableAction align="center" :actions="getVipPlanActions(row)" />
       </template>
     </Grid>
 
@@ -187,7 +187,7 @@ function getVipPlanActions(row: VipPlanRow): EsTableActionItem[] {
 
     <DetailModal
       :api="resolveDetailRecord"
-      :cards="getVipPlanDetailCards"
+      :sections="getVipPlanDetailSections"
       class="w-[980px]"
     />
   </div>

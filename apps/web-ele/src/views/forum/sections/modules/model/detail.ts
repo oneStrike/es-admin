@@ -25,7 +25,7 @@ function getUserLevelRuleLabel(
  * @param detail 板块详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(
+export function getDetailSections(
   detail: ForumSectionsDetailResponse,
   levelOptions: BasicOption[] = [],
 ) {
@@ -44,7 +44,7 @@ export function getDetailCards(
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '板块名称',
           value: detail?.name,
@@ -80,7 +80,7 @@ export function getDetailCards(
     {
       title: '数据统计',
       show: true,
-      fields: [
+      items: [
         {
           label: '关注人数',
           value: detail?.followersCount,
@@ -121,7 +121,7 @@ export function getDetailCards(
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail?.createdAt

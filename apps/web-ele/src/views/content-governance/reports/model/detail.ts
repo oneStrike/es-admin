@@ -20,7 +20,7 @@ import {
   resolveReportTargetState,
 } from './shared';
 
-export function getDetailCards(detail: ReportDetailResponse) {
+export function getDetailSections(detail: ReportDetailResponse) {
   const status = reportStatusMap[detail.status];
   const reasonType = reasonTypeMap[detail.reasonType];
   const reporterState = resolveReporterState(detail.reporterSummary);
@@ -37,7 +37,7 @@ export function getDetailCards(detail: ReportDetailResponse) {
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '举报原因',
           value: reasonType?.label || detail.reasonType,
@@ -60,7 +60,7 @@ export function getDetailCards(detail: ReportDetailResponse) {
     {
       title: '举报人',
       show: !!detail.reporterSummary,
-      fields: [
+      items: [
         {
           label: '昵称',
           value: formatReporterSummary(detail.reporterSummary),
@@ -78,7 +78,7 @@ export function getDetailCards(detail: ReportDetailResponse) {
     {
       title: '业务场景',
       show: !!detail.sceneSummary,
-      fields: [
+      items: [
         {
           label: '场景类型',
           value: detail.sceneSummary?.sceneTypeName || '-',
@@ -104,7 +104,7 @@ export function getDetailCards(detail: ReportDetailResponse) {
     {
       title: '举报目标',
       show: !!detail.targetSummary,
-      fields: [
+      items: [
         {
           label: '目标类型',
           value: detail.targetSummary?.targetTypeName || '-',
@@ -137,7 +137,7 @@ export function getDetailCards(detail: ReportDetailResponse) {
     {
       title: '被举报评论',
       show: !!detail.commentSummary,
-      fields: [
+      items: [
         {
           label: '评论摘要',
           value: formatReportCommentSummary(detail.commentSummary),
@@ -160,7 +160,7 @@ export function getDetailCards(detail: ReportDetailResponse) {
     {
       title: '举报说明',
       show: true,
-      fields: [
+      items: [
         {
           label: '举报说明',
           value: detail.description || '-',
@@ -171,7 +171,7 @@ export function getDetailCards(detail: ReportDetailResponse) {
     {
       title: '处理信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '处理人',
           value: formatActorSummary(detail.handlerSummary),
@@ -199,7 +199,7 @@ export function getDetailCards(detail: ReportDetailResponse) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt

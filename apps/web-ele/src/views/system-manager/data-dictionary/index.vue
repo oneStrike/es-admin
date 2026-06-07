@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   BaseDictionaryDto,
@@ -6,7 +8,7 @@ import type {
   UpdateDictionaryDto,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as Api from '#/api/core';
@@ -138,6 +140,27 @@ async function addDictionary(
 const [Detail, detailApi] = useVbenModal({
   connectedComponent: DictionaryItem,
 });
+
+function getDictionaryActions(row: DictionaryRow): ActionItem[] {
+  return [
+    {
+      key: 'items',
+      text: '子项',
+      onClick: () => detailApi.setData({ record: row }).open(),
+    },
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openFormModal(row),
+    },
+    {
+      danger: true,
+      key: 'delete',
+      text: '删除',
+      onClick: () => confirmDeleteDictionary(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -159,21 +182,7 @@ const [Detail, detailApi] = useVbenModal({
       </template>
 
       <template #actions="{ row }">
-        <el-button
-          link
-          type="primary"
-          @click="detailApi.setData({ record: row }).open()"
-        >
-          子项
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button link type="primary" @click="openFormModal(row)">
-          编辑
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button link type="danger" @click="confirmDeleteDictionary(row)">
-          删除
-        </el-button>
+        <VbenTableAction align="center" :actions="getDictionaryActions(row)" />
       </template>
     </Grid>
 

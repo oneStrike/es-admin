@@ -8,7 +8,7 @@ import {
   userStatusMap,
 } from './shared';
 
-export function getDetailCards(detail: ForumTopicDetailResponse) {
+export function getDetailSections(detail: ForumTopicDetailResponse) {
   const auditStatus = auditStatusMap[detail.auditStatus];
   const userStatus = detail.user
     ? userStatusMap[detail.user.status]
@@ -25,7 +25,7 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '帖子标题',
           value: detail.title,
@@ -72,7 +72,7 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
     {
       title: '状态与互动',
       show: true,
-      fields: [
+      items: [
         {
           label: '置顶',
           value: detail.isPinned,
@@ -126,7 +126,7 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
     {
       title: '审核与话题',
       show: true,
-      fields: [
+      items: [
         {
           label: '审核人',
           value: formatTopicActorSummary(detail.auditorSummary),
@@ -161,7 +161,7 @@ export function getDetailCards(detail: ForumTopicDetailResponse) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt

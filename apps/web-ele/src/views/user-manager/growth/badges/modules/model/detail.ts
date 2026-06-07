@@ -2,12 +2,12 @@ import type { BaseUserBadgeDto } from '#/api/types';
 
 import { badgeTypeMap } from './constants';
 
-export function getDetailCards(detail: BaseUserBadgeDto) {
+export function getDetailSections(detail: BaseUserBadgeDto) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '徽章图标',
           value: detail?.icon,
@@ -51,7 +51,7 @@ export function getDetailCards(detail: BaseUserBadgeDto) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail?.createdAt,

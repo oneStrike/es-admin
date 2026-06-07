@@ -8,7 +8,8 @@ export type SystemConfigMenuKey =
   | 'security'
   | 'site'
   | 'thirdPartyResourceParse'
-  | 'upload';
+  | 'upload'
+  | 'walletCurrency';
 
 export type SystemConfigFormValues = Record<string, unknown>;
 
@@ -33,6 +34,13 @@ const THIRD_PARTY_RESOURCE_PARSE_DEFAULTS = {
   imageIntervalMs: 3000,
   maxQueueSize: 1000,
 } satisfies NonNullable<BaseSystemConfigDto['thirdPartyResourceParseConfig']>;
+
+const WALLET_CURRENCY_DISPLAY_DEFAULTS = {
+  assetKey: 'reading_coin',
+  currencyIconUrl: '',
+  currencyName: '阅读币',
+  currencyUnitName: '币',
+} satisfies NonNullable<BaseSystemConfigDto['walletCurrencyDisplayConfig']>;
 
 function textValue(value: unknown) {
   return typeof value === 'string' ? value : undefined;
@@ -177,6 +185,19 @@ export function buildSystemConfigFormValues(
       values.superbedWebp = superbed.webp ?? false;
       break;
     }
+    case 'walletCurrency': {
+      const walletCurrencyDisplayConfig = {
+        ...WALLET_CURRENCY_DISPLAY_DEFAULTS,
+        ...config?.walletCurrencyDisplayConfig,
+      };
+      values.walletCurrencyAssetKey = walletCurrencyDisplayConfig.assetKey;
+      values.walletCurrencyName = walletCurrencyDisplayConfig.currencyName;
+      values.walletCurrencyUnitName =
+        walletCurrencyDisplayConfig.currencyUnitName;
+      values.walletCurrencyIconUrl =
+        walletCurrencyDisplayConfig.currencyIconUrl;
+      break;
+    }
     default: {
       const siteConfig = config?.siteConfig ?? {};
       values.siteName = siteConfig.siteName;
@@ -212,6 +233,7 @@ export function buildSystemConfigUpdatePayload({
     siteConfig: currentConfig.siteConfig,
     thirdPartyResourceParseConfig: currentConfig.thirdPartyResourceParseConfig,
     uploadConfig: currentConfig.uploadConfig,
+    walletCurrencyDisplayConfig: currentConfig.walletCurrencyDisplayConfig,
   };
 
   switch (menuKey) {
@@ -378,6 +400,21 @@ export function buildSystemConfigUpdatePayload({
                 webp: booleanValue(values.superbedWebp),
               }
             : currentSuperbed,
+      };
+      break;
+    }
+    case 'walletCurrency': {
+      submitData.walletCurrencyDisplayConfig = {
+        assetKey: WALLET_CURRENCY_DISPLAY_DEFAULTS.assetKey,
+        currencyIconUrl:
+          textValue(values.walletCurrencyIconUrl) ??
+          WALLET_CURRENCY_DISPLAY_DEFAULTS.currencyIconUrl,
+        currencyName:
+          textValue(values.walletCurrencyName) ??
+          WALLET_CURRENCY_DISPLAY_DEFAULTS.currencyName,
+        currencyUnitName:
+          textValue(values.walletCurrencyUnitName) ??
+          WALLET_CURRENCY_DISPLAY_DEFAULTS.currencyUnitName,
       };
       break;
     }

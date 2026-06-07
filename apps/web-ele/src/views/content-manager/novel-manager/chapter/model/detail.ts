@@ -4,12 +4,12 @@ import { formatUTC } from '#/utils';
 
 import { readRuleMap } from './form';
 
-export function getDetailCards(detail: NovelChapterRecord) {
+export function getDetailSections(detail: NovelChapterRecord) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '章节标题',
           value: detail.title,
@@ -47,7 +47,7 @@ export function getDetailCards(detail: NovelChapterRecord) {
     {
       title: '权限设置',
       show: true,
-      fields: [
+      items: [
         {
           label: '查看规则',
           value: readRuleMap[detail.viewRule] || '-',
@@ -85,7 +85,7 @@ export function getDetailCards(detail: NovelChapterRecord) {
     {
       title: '价格设置',
       show: true,
-      fields: [
+      items: [
         {
           label: '章节价格',
           value: `${detail.price || 0}`,
@@ -96,7 +96,7 @@ export function getDetailCards(detail: NovelChapterRecord) {
     {
       title: '统计信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '浏览量',
           value: detail.viewCount || 0,
@@ -127,7 +127,7 @@ export function getDetailCards(detail: NovelChapterRecord) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt
@@ -154,7 +154,7 @@ export function getDetailCards(detail: NovelChapterRecord) {
     {
       title: '高级信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '管理员备注',
           value: detail.remark || '-',

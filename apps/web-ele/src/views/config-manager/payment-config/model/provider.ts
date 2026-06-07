@@ -3,7 +3,7 @@ import type {
   PaymentProviderPageResponse,
   PaymentProviderUpdateRequest,
 } from '#/api/types';
-import type { DetailCard } from '#/components/es-record-detail';
+import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
 import { formSchemaTransform } from '#/utils';
@@ -25,7 +25,7 @@ export type PaymentProviderConfigRow = NonNullable<
 };
 
 export type PaymentProviderFormValues = {
-  allowedReturnDomainsText?: unknown;
+  allowedReturnDomains?: unknown;
   apiV3KeyRef?: unknown;
   appCertRef?: unknown;
   appId?: unknown;
@@ -49,6 +49,10 @@ export type PaymentProviderFormValues = {
   returnUrl?: unknown;
   rootCertRef?: unknown;
   sortOrder?: unknown;
+};
+
+type AllowedReturnDomainRow = {
+  domain?: unknown;
 };
 
 function normalizeText(value: unknown) {
@@ -105,27 +109,6 @@ function normalizeBoolean(value: unknown) {
   return typeof value === 'boolean' ? value : null;
 }
 
-function normalizeStringArray(value: unknown) {
-  if (Array.isArray(value)) {
-    return value
-      .map((item) => normalizeText(item))
-      .filter((item): item is string => !!item);
-  }
-
-  if (typeof value !== 'string') {
-    return [];
-  }
-
-  return value
-    .split(/\r?\n|,/)
-    .map((item) => normalizeText(item))
-    .filter((item): item is string => !!item);
-}
-
-function formatStringArrayTextarea(value: unknown) {
-  return Array.isArray(value) ? value.filter(Boolean).join('\n') : '';
-}
-
 function formatJsonTextarea(value: unknown) {
   if (value === null || value === undefined || value === '') {
     return '';
@@ -174,10 +157,36 @@ function formatOptionText(
   );
 }
 
+function formatAllowedReturnDomainRows(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => ({ domain: normalizeText(item) ?? '' }))
+    .filter((item) => !!item.domain);
+}
+
+function buildAllowedReturnDomains(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        return undefined;
+      }
+
+      return normalizeText((item as AllowedReturnDomainRow).domain);
+    })
+    .filter((item): item is string => !!item);
+}
+
 export function mapProviderToFormRecord(values: PaymentProviderConfigRow) {
   return {
     ...values,
-    allowedReturnDomainsText: formatStringArrayTextarea(
+    allowedReturnDomains: formatAllowedReturnDomainRows(
       values.allowedReturnDomains,
     ),
     configMetadataText: formatJsonTextarea(values.configMetadata),
@@ -186,7 +195,9 @@ export function mapProviderToFormRecord(values: PaymentProviderConfigRow) {
 
 function buildPaymentProviderBase(values: PaymentProviderFormValues) {
   return {
-    allowedReturnDomains: normalizeStringArray(values.allowedReturnDomainsText),
+    allowedReturnDomains: buildAllowedReturnDomains(
+      values.allowedReturnDomains,
+    ),
     apiV3KeyRef: normalizeNullableText(values.apiV3KeyRef),
     appCertRef: normalizeNullableText(values.appCertRef),
     appId: normalizeNullableText(values.appId),
@@ -405,13 +416,24 @@ export const paymentProviderFormSchema: EsFormSchema = [
     label: '启用状态',
   },
   {
-    component: 'Input',
+    component: 'VbenFormFieldArray',
     componentProps: {
-      placeholder: '每行一个域名，或使用逗号分隔',
-      rows: 4,
-      type: 'textarea',
+      addButtonText: '添加返回域名',
+      emptyText: '暂无返回域名',
+      schema: [
+        {
+          component: 'Input',
+          componentProps: {
+            clearable: true,
+            placeholder: '请输入 H5 返回域名',
+          },
+          fieldName: 'domain',
+          label: '返回域名',
+          rules: 'required',
+        },
+      ],
     },
-    fieldName: 'allowedReturnDomainsText',
+    fieldName: 'allowedReturnDomains',
     formItemClass: 'col-span-2',
     label: 'H5 允许返回域名',
   },
@@ -471,7 +493,7 @@ export const paymentProviderColumns =
         minWidth: 180,
         slots: { default: 'detail' },
       },
-      allowedReturnDomainsText: { hide: true },
+      allowedReturnDomains: { hide: true },
       apiV3KeyRef: { hide: true },
       appCertRef: { hide: true },
       appId: { hide: true },
@@ -494,12 +516,12 @@ export const paymentProviderColumns =
     },
   );
 
-export function getPaymentProviderDetailCards(
+export function getPaymentProviderDetailSections(
   record: PaymentProviderConfigRow,
 ) {
   return [
     {
-      fields: [
+      items: [
         { label: 'ID', type: 'text', value: record.id },
         { label: '配置名称', type: 'text', value: record.configName ?? '-' },
         {
@@ -586,8 +608,8 @@ export function getPaymentProviderDetailCards(
             show: true,
             title: '配置摘要',
             type: 'text',
-          } satisfies DetailCard,
+          } satisfies RecordDetailSection,
         ]
       : []),
-  ] satisfies DetailCard[];
+  ] satisfies RecordDetailSection[];
 }

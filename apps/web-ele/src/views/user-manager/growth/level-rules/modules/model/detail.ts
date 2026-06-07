@@ -2,12 +2,12 @@ import type { BaseUserLevelRuleDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
-export function getDetailCards(detail: BaseUserLevelRuleDto) {
+export function getDetailSections(detail: BaseUserLevelRuleDto) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '等级图标',
           value: detail?.icon,
@@ -40,7 +40,7 @@ export function getDetailCards(detail: BaseUserLevelRuleDto) {
     {
       title: '升级要求',
       show: true,
-      fields: [
+      items: [
         {
           label: '所需经验值',
           value: detail?.requiredExperience || 0,
@@ -61,7 +61,7 @@ export function getDetailCards(detail: BaseUserLevelRuleDto) {
     {
       title: '权限限制',
       show: true,
-      fields: [
+      items: [
         {
           label: '每日发帖上限',
           value:
@@ -101,7 +101,7 @@ export function getDetailCards(detail: BaseUserLevelRuleDto) {
     {
       title: '其他信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail?.createdAt

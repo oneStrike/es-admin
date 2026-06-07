@@ -2,12 +2,12 @@ import type { AdminAgreementDetailDto } from '#/api/types';
 
 import { formatUTC } from '#/utils';
 
-export function getDetailCards(detail: AdminAgreementDetailDto) {
+export function getDetailSections(detail: AdminAgreementDetailDto) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '标题',
           value: detail.title,
@@ -57,7 +57,7 @@ export function getDetailCards(detail: AdminAgreementDetailDto) {
     {
       title: '管理信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: formatUTC(detail.createdAt, 'YYYY-MM-DD HH:mm:ss'),

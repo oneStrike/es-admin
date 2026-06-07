@@ -3,7 +3,7 @@ import type {
   MembershipPageConfigPageResponse,
   MembershipPageConfigUpdateRequest,
 } from '#/api/types';
-import type { DetailCard } from '#/components/es-record-detail';
+import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
 import { agreementPageApi, membershipPlanPageApi } from '#/api/core';
@@ -28,6 +28,10 @@ export type VipPageConfigFormValues = {
   sortOrder?: unknown;
   submitButtonTemplate?: unknown;
   title?: unknown;
+};
+
+type MemberNoticeItemRow = {
+  content?: unknown;
 };
 
 function normalizeText(value: unknown) {
@@ -84,28 +88,6 @@ function normalizeBoolean(value: unknown) {
   return typeof value === 'boolean' ? value : null;
 }
 
-function normalizeStringArray(value: unknown) {
-  if (Array.isArray(value)) {
-    return value
-      .map((item) => {
-        if (item && typeof item === 'object' && !Array.isArray(item)) {
-          return normalizeText((item as Record<string, unknown>).content);
-        }
-        return normalizeText(item);
-      })
-      .filter((item): item is string => !!item);
-  }
-
-  if (typeof value !== 'string') {
-    return [];
-  }
-
-  return value
-    .split(/\r?\n|,/)
-    .map((item) => normalizeText(item))
-    .filter((item): item is string => !!item);
-}
-
 function formatStringArrayRows(value: unknown) {
   if (!Array.isArray(value)) {
     return [];
@@ -114,6 +96,22 @@ function formatStringArrayRows(value: unknown) {
   return value
     .map((item) => ({ content: normalizeText(item) ?? '' }))
     .filter((item) => !!item.content);
+}
+
+function buildMemberNoticeItems(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        return undefined;
+      }
+
+      return normalizeText((item as MemberNoticeItemRow).content);
+    })
+    .filter((item): item is string => !!item);
 }
 
 function escapeHtml(value: unknown) {
@@ -305,7 +303,7 @@ function buildVipPageConfigBase(values: VipPageConfigFormValues) {
     agreementIds: normalizeAgreementIds(values.agreementIds),
     checkoutAgreementText: normalizeNullableText(values.checkoutAgreementText),
     isEnabled: normalizeBoolean(values.isEnabled),
-    memberNoticeItems: normalizeStringArray(values.memberNoticeItems),
+    memberNoticeItems: buildMemberNoticeItems(values.memberNoticeItems),
     planIds: normalizePlanIds(values.planIds),
     sortOrder: normalizeNullableNumber(values.sortOrder),
     submitButtonTemplate: normalizeNullableText(values.submitButtonTemplate),
@@ -481,10 +479,10 @@ export const vipPageConfigColumns =
     },
   );
 
-export function getVipPageConfigDetailCards(record: VipPageConfigRow) {
+export function getVipPageConfigDetailSections(record: VipPageConfigRow) {
   return [
     {
-      fields: [
+      items: [
         { label: 'ID', type: 'text', value: record.id },
         { label: '页面标题', type: 'text', value: record.title },
         { label: '页面业务键', type: 'text', value: record.pageKey },
@@ -523,5 +521,5 @@ export function getVipPageConfigDetailCards(record: VipPageConfigRow) {
       title: '会员说明条目',
       type: 'text',
     },
-  ] satisfies DetailCard[];
+  ] satisfies RecordDetailSection[];
 }

@@ -16,7 +16,7 @@ import {
   userStatusMap,
 } from './shared';
 
-export function getDetailCards(detail: CommentDetailResponse) {
+export function getDetailSections(detail: CommentDetailResponse) {
   const auditStatus = auditStatusMap[detail.auditStatus];
   const userStatus = detail.user
     ? userStatusMap[detail.user.status]
@@ -41,7 +41,7 @@ export function getDetailCards(detail: CommentDetailResponse) {
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '评论用户',
           value: formatCommentUser(detail.user),
@@ -76,7 +76,7 @@ export function getDetailCards(detail: CommentDetailResponse) {
     {
       title: '状态信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '审核状态',
           value: auditStatus?.label || '-',
@@ -123,7 +123,7 @@ export function getDetailCards(detail: CommentDetailResponse) {
     {
       title: '评论对象',
       show: !!detail.targetSummary,
-      fields: [
+      items: [
         {
           label: '对象类型',
           value:
@@ -160,7 +160,7 @@ export function getDetailCards(detail: CommentDetailResponse) {
     {
       title: '回复关系',
       show: !!detail.replyTo,
-      fields: [
+      items: [
         {
           label: '被回复用户',
           value: detail.replyTo?.user
@@ -187,7 +187,7 @@ export function getDetailCards(detail: CommentDetailResponse) {
     {
       title: '评论正文',
       show: true,
-      fields: [
+      items: [
         {
           label: '评论正文',
           value: toPlainTextFromHtml(detail.html),
@@ -198,7 +198,7 @@ export function getDetailCards(detail: CommentDetailResponse) {
     {
       title: '敏感词',
       show: true,
-      fields: [
+      items: [
         {
           label: '命中数量',
           value: detail.sensitiveWordHits?.length ?? 0,
@@ -226,7 +226,7 @@ export function getDetailCards(detail: CommentDetailResponse) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt

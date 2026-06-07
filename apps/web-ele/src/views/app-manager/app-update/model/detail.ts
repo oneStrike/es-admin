@@ -23,7 +23,7 @@ function formatFileSize(bytes?: null | number): string {
  * @param detail 版本更新详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
+export function getDetailSections(detail: AppUpdateReleaseDetailDto) {
   // 平台信息
   const platformInfo = platformOptionsObj[detail.platform];
 
@@ -31,7 +31,7 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '展示版本号',
           value: detail.versionName,
@@ -70,7 +70,7 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
         detail.packageOriginalName ||
         detail.packageFileSize
       ),
-      fields: [
+      items: [
         {
           label: '安装包来源',
           value:
@@ -109,7 +109,7 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
     {
       title: '弹窗背景设置',
       show: !!(detail.popupBackgroundImage || detail.popupBackgroundPosition),
-      fields: [
+      items: [
         {
           label: '背景图',
           value: detail.popupBackgroundImage,
@@ -131,7 +131,7 @@ export function getDetailCards(detail: AppUpdateReleaseDetailDto) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '发布时间',
           value: detail.publishedAt

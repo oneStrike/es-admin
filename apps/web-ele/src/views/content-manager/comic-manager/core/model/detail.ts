@@ -18,7 +18,7 @@ const viewRuleMap: Record<number, string> = {
 };
 
 // 定义卡片配置函数
-export function getDetailCards(
+export function getDetailSections(
   detail: BaseWorkDto,
   dataDict: Recordable<undefined | UseDictItem>,
 ) {
@@ -26,7 +26,7 @@ export function getDetailCards(
     {
       title: '',
       show: true,
-      fields: [
+      items: [
         {
           label: '漫画名称',
           value: detail.name,
@@ -55,7 +55,7 @@ export function getDetailCards(
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '漫画别名',
           value: detail.alias || '-',
@@ -97,7 +97,7 @@ export function getDetailCards(
     {
       title: '权限设置',
       show: true,
-      fields: [
+      items: [
         {
           label: '查看规则',
           value: viewRuleMap[detail.viewRule] || '-',
@@ -127,7 +127,7 @@ export function getDetailCards(
     {
       title: '价格设置',
       show: true,
-      fields: [
+      items: [
         {
           label: '作品价格',
           value: detail.price || 0,
@@ -148,7 +148,7 @@ export function getDetailCards(
     {
       title: '状态信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '发布状态',
           value: detail.isPublished,
@@ -187,7 +187,7 @@ export function getDetailCards(
     {
       title: '统计信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '浏览量',
           value: detail.viewCount || 0,
@@ -225,7 +225,7 @@ export function getDetailCards(
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt
@@ -265,7 +265,7 @@ export function getDetailCards(
     {
       title: '版权信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '版权信息',
           value: detail.copyright || '-',

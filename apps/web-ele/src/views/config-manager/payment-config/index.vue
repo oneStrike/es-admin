@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type {
   PaymentProviderConfigRow,
   PaymentProviderFormValues,
@@ -9,9 +11,8 @@ import type {
   PaymentProviderPageRequest,
   PaymentProviderUpdateStatusRequest,
 } from '#/api/types';
-import type { EsTableActionItem } from '#/components/es-table-action';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -21,8 +22,7 @@ import {
   paymentProviderUpdateStatusApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
-import EsTableAction from '#/components/es-table-action';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -35,7 +35,7 @@ import {
 import {
   buildPaymentProviderCreatePayload,
   buildPaymentProviderUpdatePayload,
-  getPaymentProviderDetailCards,
+  getPaymentProviderDetailSections,
   mapProviderToFormRecord,
   paymentProviderColumns,
   paymentProviderFormSchema,
@@ -93,7 +93,7 @@ const [EditForm, editFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '支付 provider 详情',
 });
 
@@ -139,7 +139,7 @@ function openEditModal(row: PaymentProviderConfigRow) {
 
 function openDetailModal(row: PaymentProviderConfigRow) {
   currentPaymentProvider.value = row;
-  detailApi.setData({ recordId: row.id }).open();
+  detailApi.setData({ id: row.id }).open();
 }
 
 async function handleCreateSubmit(values: PaymentProviderFormValues) {
@@ -174,7 +174,7 @@ async function toggleEnableStatus(row: PaymentProviderConfigRow) {
 
 function getPaymentProviderActions(
   row: PaymentProviderConfigRow,
-): EsTableActionItem[] {
+): ActionItem[] {
   return [
     {
       key: 'detail',
@@ -225,7 +225,10 @@ async function getCurrentPaymentProvider() {
         </template>
 
         <template #actions="{ row }">
-          <EsTableAction :actions="getPaymentProviderActions(row)" />
+          <VbenTableAction
+            align="center"
+            :actions="getPaymentProviderActions(row)"
+          />
         </template>
       </PaymentProviderGrid>
 
@@ -240,7 +243,7 @@ async function getCurrentPaymentProvider() {
 
       <DetailModal
         :api="getCurrentPaymentProvider"
-        :cards="getPaymentProviderDetailCards"
+        :sections="getPaymentProviderDetailSections"
         class="w-[980px]"
       />
     </div>

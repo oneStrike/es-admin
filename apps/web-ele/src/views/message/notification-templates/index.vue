@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminMessageNotificationTemplateDto,
@@ -9,7 +11,7 @@ import type {
 
 import { computed, nextTick, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -21,7 +23,7 @@ import {
   messageNotificationTemplatesUpdateApi,
   messageNotificationTemplatesUpdateEnabledApi,
 } from '#/api/core';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
@@ -30,7 +32,7 @@ import {
   getTemplateVariables,
   isNotificationCategoryKey,
 } from '../model/notification';
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import {
   createTemplateFormSchema,
   formatCategory,
@@ -97,7 +99,7 @@ const gridOptions: VxeGridProps<TemplateRow> = {
 };
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '通知模板详情',
 });
 
@@ -260,6 +262,27 @@ async function confirmDeleteTemplate(row: TemplateRow) {
 
   await deleteTemplate(row);
 }
+
+function getTemplateActions(row: TemplateRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      text: '详情',
+      onClick: () => detailApi.setData({ id: row.id }).open(),
+    },
+    {
+      key: 'edit',
+      text: '编辑',
+      onClick: () => openFormModal(row),
+    },
+    {
+      danger: true,
+      key: 'delete',
+      text: '删除',
+      onClick: () => confirmDeleteTemplate(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -291,23 +314,7 @@ async function confirmDeleteTemplate(row: TemplateRow) {
       </template>
 
       <template #actions="{ row }">
-        <div class="my-1">
-          <el-button
-            link
-            type="primary"
-            @click="detailApi.setData({ recordId: row.id }).open()"
-          >
-            详情
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteTemplate(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction align="center" :actions="getTemplateActions(row)" />
       </template>
     </Grid>
 
@@ -359,7 +366,7 @@ async function confirmDeleteTemplate(row: TemplateRow) {
 
     <DetailModal
       :api="messageNotificationTemplatesDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="w-[920px]"
     />
   </Page>

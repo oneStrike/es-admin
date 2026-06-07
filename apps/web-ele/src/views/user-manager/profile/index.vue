@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ActionItem } from '@vben/common-ui';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminAppUserDetailDto,
@@ -11,7 +13,7 @@ import type {
 
 import { computed } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
 import forge from 'node-forge';
@@ -30,12 +32,12 @@ import {
   authKeyPublicApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import UserOperationModal from './components/user-operation-modal.vue';
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import {
   createFormSchema,
   editFormSchema,
@@ -118,7 +120,7 @@ const [PasswordForm, passwordFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '用户详情',
 });
 
@@ -177,7 +179,7 @@ function openDetailModal(row: AdminAppUserPageItemDto) {
     return;
   }
 
-  detailApi.setData({ recordId: row.id }).open();
+  detailApi.setData({ id: row.id }).open();
 }
 
 function openOperationModal(row: AdminAppUserPageItemDto) {
@@ -422,6 +424,63 @@ function mapDetailToEditRecord(
     signature: detail.signature ?? undefined,
   };
 }
+
+function getUserActions(row: AdminAppUserPageItemDto): ActionItem[] {
+  return [
+    {
+      disabled: !!row.deletedAt,
+      key: 'detail',
+      onClick: () => openDetailModal(row),
+      text: '详情',
+    },
+    {
+      disabled: !!row.deletedAt,
+      key: 'operation',
+      onClick: () => openOperationModal(row),
+      text: '运营',
+    },
+  ];
+}
+
+function getUserDropdownActions(row: AdminAppUserPageItemDto): ActionItem[] {
+  if (!isSuperAdmin.value) {
+    return [];
+  }
+
+  return [
+    {
+      ifShow: () => !row.deletedAt,
+      key: 'edit',
+      onClick: () => handleRowCommand('edit', row),
+      text: '编辑资料',
+    },
+    {
+      ifShow: () => !row.deletedAt,
+      key: 'password',
+      onClick: () => handleRowCommand('password', row),
+      text: '重置密码',
+    },
+    {
+      ifShow: () => !row.deletedAt,
+      key: 'status',
+      onClick: () => handleRowCommand('status', row),
+      text: '用户状态',
+    },
+    {
+      danger: true,
+      ifShow: () => !row.deletedAt,
+      key: 'delete',
+      onClick: () => handleRowCommand('delete', row),
+      text: '删除用户',
+    },
+    {
+      ifShow: () => !!row.deletedAt,
+      key: 'restore',
+      onClick: () => handleRowCommand('restore', row),
+      text: '恢复用户',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -472,79 +531,12 @@ function mapDetailToEditRecord(
       </template>
 
       <template #actions="{ row }">
-        <div class="flex items-center justify-center">
-          <el-button
-            link
-            type="primary"
-            :disabled="!!row.deletedAt"
-            @click="openDetailModal(row)"
-          >
-            详情
-          </el-button>
-
-          <el-divider direction="vertical" />
-          <el-button
-            link
-            type="primary"
-            :disabled="!!row.deletedAt"
-            @click="openOperationModal(row)"
-          >
-            运营
-          </el-button>
-
-          <template v-if="isSuperAdmin">
-            <el-divider direction="vertical" />
-            <el-dropdown
-              @command="
-                (command: string) => {
-                  handleRowCommand(command, row);
-                }
-              "
-            >
-              <el-button link type="primary">更多</el-button>
-
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item
-                    v-if="!row.deletedAt"
-                    command="edit"
-                    :disabled="!isSuperAdmin"
-                  >
-                    编辑资料
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    v-if="!row.deletedAt"
-                    command="password"
-                    :disabled="!isSuperAdmin"
-                  >
-                    重置密码
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    v-if="!row.deletedAt"
-                    command="status"
-                    :disabled="!isSuperAdmin"
-                  >
-                    用户状态
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    v-if="!row.deletedAt"
-                    command="delete"
-                    :disabled="!isSuperAdmin"
-                  >
-                    删除用户
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    v-else
-                    command="restore"
-                    :disabled="!isSuperAdmin"
-                  >
-                    恢复用户
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </div>
+        <VbenTableAction
+          align="center"
+          :actions="getUserActions(row)"
+          :dropdown-actions="getUserDropdownActions(row)"
+          more-text="更多"
+        />
       </template>
     </Grid>
 
@@ -557,7 +549,7 @@ function mapDetailToEditRecord(
     />
     <DetailModal
       :api="appUsersDetailApi"
-      :cards="getDetailCards"
+      :sections="getDetailSections"
       class="!min-w-[900px]"
     />
     <OperationModal />

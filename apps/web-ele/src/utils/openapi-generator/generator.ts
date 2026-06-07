@@ -266,6 +266,32 @@ export class OpenAPIGenerator {
       : type;
   }
 
+  private buildIndexSignature(additionalProperties: any, exact = false) {
+    if (exact) {
+      return '';
+    }
+    if (additionalProperties && typeof additionalProperties === 'object') {
+      return `  /** 任意合法数值 */\n  [property: string]: ${mapSchemaToType(additionalProperties)}`;
+    }
+    return '  /** 任意合法数值 */\n  [property: string]: any';
+  }
+
+  private buildObjectType(
+    schema: any,
+    properties: string[],
+    options: { exact?: boolean; separator?: string } = {},
+  ) {
+    const separator = options.separator ?? '\n';
+    const additionalProperties = schema.additionalProperties;
+    const extraProperty = this.buildIndexSignature(
+      additionalProperties,
+      options.exact,
+    );
+    return `{
+${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
+}`;
+  }
+
   private buildOperationContexts(): OperationContext[] {
     const contexts: OperationContext[] = [];
 
@@ -527,7 +553,7 @@ export type ${typeName} = Record<string, any>`;
       updateTime,
     );
 
-    // 使用 type 而不是 interface，添加索引签名
+    // 使用 type 而不是 interface，保留项目既有请求兼容索引。
     return `${comment}
 export type ${typeName} = {
 ${properties.join('\n\n')}
@@ -575,12 +601,9 @@ ${properties.join('\n\n')}
       return `export type ${typeName} = undefined`;
     }
 
-    const objectType = `{
-${properties.join('\n\n')}
-
-  /** 任意合法数值 */
-  [property: string]: any
-}`;
+    const objectType = this.buildObjectType(dataSchema, properties, {
+      separator: '\n\n',
+    });
     return `export type ${typeName} = ${this.applySchemaNullable(
       dataSchema,
       objectType,
@@ -601,7 +624,7 @@ ${properties.join('\n\n')}
       const types = schema.allOf.map((s: any) => {
         if (s.properties) {
           const props = this.generatePropertiesFromSchema(s);
-          return `{\n${props.join('\n')}\n  /** 任意合法数值 */\n  [property: string]: any\n}`;
+          return this.buildObjectType(s, props);
         }
         return mapSchemaToType(s);
       });
@@ -621,7 +644,7 @@ export type ${typeName} = ${this.applySchemaNullable(schema, types.join(' & '))}
       const types = schemas.map((s: any) => {
         if (s.properties) {
           const props = this.generatePropertiesFromSchema(s);
-          return `{\n${props.join('\n')}\n  /** 任意合法数值 */\n  [property: string]: any\n}`;
+          return this.buildObjectType(s, props);
         }
         return mapSchemaToType(s);
       });
@@ -706,13 +729,9 @@ export type ${typeName} = ${this.applySchemaNullable(
       updateTime,
     );
 
-    // 对象类型添加索引签名
-    const objectType = `{
-${properties.join('\n')}
-
-  /** 任意合法数值 */
-  [property: string]: any
-}`;
+    const objectType = this.buildObjectType(schema, properties, {
+      exact: typeName === 'AdminAdRewardRecordDetailDto',
+    });
     return `${comment}
 export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;
   }

@@ -4,12 +4,12 @@ import { formatUTC } from '#/utils';
 
 import { moderatorRoleMap } from './shared';
 
-export function getDetailCards(detail: ForumModeratorDto) {
+export function getDetailSections(detail: ForumModeratorDto) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '昵称',
           value: detail.nickname,
@@ -42,7 +42,7 @@ export function getDetailCards(detail: ForumModeratorDto) {
     {
       title: '权限与板块',
       show: true,
-      fields: [
+      items: [
         {
           label: '权限名称',
           value: detail.permissionNames?.length
@@ -62,7 +62,7 @@ export function getDetailCards(detail: ForumModeratorDto) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail.createdAt

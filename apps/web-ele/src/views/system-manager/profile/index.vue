@@ -10,7 +10,12 @@ import type {
 
 import { onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import {
+  Page,
+  useVbenModal,
+  VbenDescriptions,
+  VbenDescriptionsItem,
+} from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -220,24 +225,24 @@ onMounted(async () => {
 
             <!-- 详细信息区域 -->
             <div class="flex-1 overflow-auto">
-              <el-descriptions class="profile-descriptions" :column="1" border>
-                <el-descriptions-item label="用户ID">
+              <VbenDescriptions :column="1" bordered>
+                <VbenDescriptionsItem label="用户ID">
                   <span class="font-mono text-foreground">{{
                     userInfo.id
                   }}</span>
-                </el-descriptions-item>
-                <el-descriptions-item label="用户名">
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="用户名">
                   {{ userInfo.username }}
-                </el-descriptions-item>
-                <el-descriptions-item label="手机号">
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="手机号">
                   {{ userInfo.mobile }}
-                </el-descriptions-item>
-                <el-descriptions-item label="角色">
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="角色">
                   <el-tag :type="userInfo.role === 1 ? 'danger' : 'primary'">
                     {{ formatRole(userInfo.role) }}
                   </el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item label="账户状态">
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="账户状态">
                   <el-tag
                     :type="
                       getStatusColor(userInfo.isEnabled, userInfo.isLocked)
@@ -245,24 +250,24 @@ onMounted(async () => {
                   >
                     {{ formatStatus(userInfo.isEnabled, userInfo.isLocked) }}
                   </el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item label="最后登录时间">
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="最后登录时间">
                   {{
                     userInfo.lastLoginAt
                       ? formatTime(userInfo.lastLoginAt)
                       : '-'
                   }}
-                </el-descriptions-item>
-                <el-descriptions-item label="最后登录IP">
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="最后登录IP">
                   {{ userInfo.lastLoginIp || '-' }}
-                </el-descriptions-item>
-                <el-descriptions-item label="创建时间">
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="创建时间">
                   {{ formatTime(userInfo.createdAt) }}
-                </el-descriptions-item>
-                <el-descriptions-item label="更新时间">
+                </VbenDescriptionsItem>
+                <VbenDescriptionsItem label="更新时间">
                   {{ formatTime(userInfo.updatedAt) }}
-                </el-descriptions-item>
-              </el-descriptions>
+                </VbenDescriptionsItem>
+              </VbenDescriptions>
             </div>
           </div>
         </div>
@@ -295,14 +300,3 @@ onMounted(async () => {
     />
   </Page>
 </template>
-
-<style>
-.profile-descriptions .el-descriptions__label {
-  font-weight: 600;
-  color: hsl(var(--foreground));
-}
-
-.profile-descriptions .el-descriptions__content {
-  color: hsl(var(--foreground));
-}
-</style>

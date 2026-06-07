@@ -1,12 +1,22 @@
 import type {
-  GrowthRewardItemDto,
   TaskEventTemplateOptionDto,
   TaskInstanceStepViewDto,
   TaskLatestEventSummaryDto,
   TaskTemplateFilterFieldDto,
-  TaskTemplateFilterValueDto,
   TaskUniqueFactSummaryDto,
 } from '#/api/types';
+
+export type GrowthRewardItemDto = {
+  amount: number;
+  assetKey?: null | string;
+  assetType: number;
+};
+
+export type TaskTemplateFilterValueDto = {
+  key: string;
+  label?: null | string;
+  value: unknown;
+};
 
 export const taskSceneTypeOptions = [
   { color: 'success' as const, label: '新手任务', value: 1 },

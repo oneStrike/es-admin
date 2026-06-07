@@ -35,7 +35,11 @@ import type { EsFormSchema } from '#/types';
 
 import { useRouter } from 'vue-router';
 
-import { useVbenModal } from '@vben/common-ui';
+import {
+  useVbenModal,
+  VbenDescriptions,
+  VbenDescriptionsItem,
+} from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -2081,16 +2085,21 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
           <el-scrollbar class="h-full" view-class="h-full">
             <div class="flex h-full min-h-0 flex-col gap-4">
               <div class="flex flex-wrap items-start gap-3">
-                <el-descriptions :column="4" border class="flex-1" size="small">
-                  <el-descriptions-item label="导入模式">
+                <VbenDescriptions
+                  :column="4"
+                  bordered
+                  class="flex-1"
+                  size="small"
+                >
+                  <VbenDescriptionsItem label="导入模式">
                     {{
                       importMode === 'createNew' ? '新建作品' : '挂载已有作品'
                     }}
-                  </el-descriptions-item>
-                  <el-descriptions-item label="章节数量">
+                  </VbenDescriptionsItem>
+                  <VbenDescriptionsItem label="章节数量">
                     {{ selectedMappings.length }}
-                  </el-descriptions-item>
-                  <el-descriptions-item label="作品封面">
+                  </VbenDescriptionsItem>
+                  <VbenDescriptionsItem label="作品封面">
                     {{
                       importMode === 'attachToExisting'
                         ? '不修改'
@@ -2098,43 +2107,43 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                           ? '三方下载'
                           : '本地上传'
                     }}
-                  </el-descriptions-item>
-                  <el-descriptions-item label="覆盖确认">
+                  </VbenDescriptionsItem>
+                  <VbenDescriptionsItem label="覆盖确认">
                     {{
                       updateWithoutOverwriteCount === 0 ? '已满足' : '未满足'
                     }}
-                  </el-descriptions-item>
+                  </VbenDescriptionsItem>
                   <template v-if="submittedTask">
-                    <el-descriptions-item label="任务ID">
+                    <VbenDescriptionsItem label="任务ID">
                       {{ submittedTask.jobId }}
-                    </el-descriptions-item>
-                    <el-descriptions-item label="任务状态">
+                    </VbenDescriptionsItem>
+                    <VbenDescriptionsItem label="任务状态">
                       <el-tag
                         :type="formatWorkflowStatus(submittedTask.status).type"
                       >
                         {{ formatWorkflowStatus(submittedTask.status).label }}
                       </el-tag>
-                    </el-descriptions-item>
-                    <el-descriptions-item label="创建时间">
+                    </VbenDescriptionsItem>
+                    <VbenDescriptionsItem label="创建时间">
                       {{ formatUTC(submittedTask.createdAt) || '-' }}
-                    </el-descriptions-item>
-                    <el-descriptions-item label="更新时间">
+                    </VbenDescriptionsItem>
+                    <VbenDescriptionsItem label="更新时间">
                       {{ formatUTC(submittedTask.updatedAt) || '-' }}
-                    </el-descriptions-item>
-                    <el-descriptions-item
+                    </VbenDescriptionsItem>
+                    <VbenDescriptionsItem
                       v-if="getSubmittedTaskReservationValue('dedupeKey')"
                       label="去重键"
                     >
                       {{ getSubmittedTaskReservationValue('dedupeKey') }}
-                    </el-descriptions-item>
-                    <el-descriptions-item
+                    </VbenDescriptionsItem>
+                    <VbenDescriptionsItem
                       v-if="getSubmittedTaskReservationValue('serialKey')"
                       label="串行键"
                     >
                       {{ getSubmittedTaskReservationValue('serialKey') }}
-                    </el-descriptions-item>
+                    </VbenDescriptionsItem>
                   </template>
-                </el-descriptions>
+                </VbenDescriptions>
                 <div class="flex gap-2">
                   <el-button
                     v-if="submittedTask"

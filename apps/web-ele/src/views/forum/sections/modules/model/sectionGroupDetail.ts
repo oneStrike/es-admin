@@ -7,12 +7,12 @@ import { formatUTC } from '#/utils';
  * @param detail 板块组详情数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(detail: BaseForumSectionGroupDto) {
+export function getDetailSections(detail: BaseForumSectionGroupDto) {
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '分组名称',
           value: detail?.name,
@@ -45,7 +45,7 @@ export function getDetailCards(detail: BaseForumSectionGroupDto) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '创建时间',
           value: detail?.createdAt

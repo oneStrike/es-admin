@@ -16,14 +16,14 @@ import {
   taskStepTriggerModeOptions,
 } from './options';
 
-export function getTaskDefinitionDetailCards(detail: TaskDetailResponse) {
+export function getTaskDefinitionDetailSections(detail: TaskDetailResponse) {
   const step = detail.steps?.[0];
 
   return [
     {
       title: '基本信息',
       show: true,
-      fields: [
+      items: [
         { label: '任务标题', type: 'title' as const, value: detail.title },
         { label: '任务编码', type: 'text' as const, value: detail.code || '-' },
         {
@@ -61,7 +61,7 @@ export function getTaskDefinitionDetailCards(detail: TaskDetailResponse) {
     {
       title: '任务配置',
       show: true,
-      fields: [
+      items: [
         {
           label: '领取方式',
           type: 'text' as const,
@@ -92,7 +92,7 @@ export function getTaskDefinitionDetailCards(detail: TaskDetailResponse) {
     {
       title: '完成条件',
       show: true,
-      fields: [
+      items: [
         {
           label: '完成条件说明',
           type: 'text' as const,
@@ -138,7 +138,7 @@ export function getTaskDefinitionDetailCards(detail: TaskDetailResponse) {
     {
       title: '时间信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '开始时间',
           type: 'text' as const,
@@ -168,7 +168,7 @@ export function getTaskDefinitionDetailCards(detail: TaskDetailResponse) {
     {
       title: '说明',
       show: true,
-      fields: [
+      items: [
         {
           label: '任务说明',
           type: 'text' as const,

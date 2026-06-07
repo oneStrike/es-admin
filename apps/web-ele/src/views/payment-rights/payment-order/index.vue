@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type {
   PaymentOrderConfirmFormValues,
   PaymentOrderRow,
@@ -10,13 +12,13 @@ import type {
   PaymentOrderUpdateStatusRequest,
 } from '#/api/types';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { paymentOrderPageApi, paymentOrderUpdateStatusApi } from '#/api/core';
 import { markHandledFormError } from '#/components/es-modal-form/error';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 import {
@@ -27,7 +29,7 @@ import {
 import {
   buildPaymentOrderConfirmPayload,
   canConfirmPaymentOrder,
-  getPaymentOrderDetailCards,
+  getPaymentOrderDetailSections,
   mapPaymentOrderToConfirmRecord,
   paymentOrderColumns,
   paymentOrderConfirmFormSchema,
@@ -75,7 +77,7 @@ const [ConfirmForm, confirmFormApi] = useVbenModal({
 });
 
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
   title: '支付订单详情',
 });
 
@@ -98,7 +100,7 @@ async function resolveDetailRecord() {
 
 function openDetail(row: PaymentOrderRow) {
   currentDetailRecord.value = row;
-  detailApi.setData({ recordId: row.id }).open();
+  detailApi.setData({ id: row.id }).open();
 }
 
 function openConfirmForm(row: PaymentOrderRow) {
@@ -127,6 +129,22 @@ async function handleConfirm(values: PaymentOrderConfirmFormValues) {
   confirmFormApi.close();
   await gridApi.reload();
 }
+
+function getPaymentOrderActions(row: PaymentOrderRow): ActionItem[] {
+  return [
+    {
+      key: 'detail',
+      text: '详情',
+      onClick: () => openDetail(row),
+    },
+    {
+      disabled: !canConfirmPaymentOrder(row),
+      key: 'confirm',
+      text: '确认支付',
+      onClick: () => openConfirmForm(row),
+    },
+  ];
+}
 </script>
 
 <template>
@@ -144,20 +162,10 @@ async function handleConfirm(values: PaymentOrderConfirmFormValues) {
         </template>
 
         <template #actions="{ row }">
-          <div class="my-1 flex items-center">
-            <el-button link type="primary" @click="openDetail(row)">
-              详情
-            </el-button>
-            <el-divider direction="vertical" />
-            <el-button
-              :disabled="!canConfirmPaymentOrder(row)"
-              link
-              type="primary"
-              @click="openConfirmForm(row)"
-            >
-              确认支付
-            </el-button>
-          </div>
+          <VbenTableAction
+            align="center"
+            :actions="getPaymentOrderActions(row)"
+          />
         </template>
       </Grid>
 
@@ -167,7 +175,7 @@ async function handleConfirm(values: PaymentOrderConfirmFormValues) {
       />
       <DetailModal
         :api="resolveDetailRecord"
-        :cards="getPaymentOrderDetailCards"
+        :sections="getPaymentOrderDetailSections"
         class="w-[980px]"
       />
     </div>

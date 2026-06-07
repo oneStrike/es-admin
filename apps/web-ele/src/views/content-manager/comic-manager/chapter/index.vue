@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ActionItem } from '@vben/common-ui';
+
 import type { ComicChapterRecord } from './model/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -10,7 +12,7 @@ import type {
   ContentComicChapterUpdateRequest,
 } from '#/api/types';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -25,7 +27,7 @@ import {
   growthLevelRulesPageApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
-import EsRecordDetail from '#/components/es-record-detail';
+import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { useForm } from '#/hooks/useForm';
 import { createSearchFormOptions } from '#/utils';
@@ -37,7 +39,7 @@ import {
   resolveComicChapterBulkAction,
 } from './model/bulk-actions';
 import { chapterColumns } from './model/columns';
-import { getDetailCards } from './model/detail';
+import { getDetailSections } from './model/detail';
 import { chapterFormSchema, chapterSearchFormSchema } from './model/form';
 
 defineOptions({
@@ -89,7 +91,7 @@ const [FormModal, formApi] = useVbenModal({
  * 详情弹窗 - 用于查看章节详情
  */
 const [DetailModal, detailApi] = useVbenModal({
-  connectedComponent: EsRecordDetail,
+  connectedComponent: RecordDetailModal,
 });
 
 /**
@@ -203,7 +205,7 @@ function clearChapterSelection() {
 function openDetailModal(record: ComicChapterRecord) {
   detailApi
     .setData({
-      recordId: record.id,
+      id: record.id,
       title: record.title,
     })
     .open();
@@ -397,6 +399,27 @@ async function toggleStatus(row: ComicChapterRecord) {
     row.loading = false;
   }
 }
+
+function getComicChapterActions(row: ComicChapterRecord): ActionItem[] {
+  return [
+    {
+      key: 'content',
+      onClick: () => openContentModal(row),
+      text: '内容',
+    },
+    {
+      key: 'edit',
+      onClick: () => openFormModal(row),
+      text: '编辑',
+    },
+    {
+      danger: true,
+      key: 'delete',
+      onClick: () => confirmDeleteChapter(row),
+      text: '删除',
+    },
+  ];
+}
 </script>
 
 <template>
@@ -451,19 +474,10 @@ async function toggleStatus(row: ComicChapterRecord) {
 
       <!-- 操作列 -->
       <template #actions="{ row }">
-        <div class="my-1 flex items-center justify-center gap-1">
-          <el-button link type="primary" @click="openContentModal(row)">
-            内容
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="primary" @click="openFormModal(row)">
-            编辑
-          </el-button>
-          <el-divider direction="vertical" />
-          <el-button link type="danger" @click="confirmDeleteChapter(row)">
-            删除
-          </el-button>
-        </div>
+        <VbenTableAction
+          align="center"
+          :actions="getComicChapterActions(row)"
+        />
       </template>
     </Grid>
 
@@ -471,7 +485,10 @@ async function toggleStatus(row: ComicChapterRecord) {
     <FormModal :schema="chapterFormSchema" :on-submit="handleSubmit" />
 
     <!-- 详情弹窗 -->
-    <DetailModal :api="contentComicChapterDetailApi" :cards="getDetailCards" />
+    <DetailModal
+      :api="contentComicChapterDetailApi"
+      :sections="getDetailSections"
+    />
 
     <!-- 内容管理弹窗 -->
     <ContentModal />

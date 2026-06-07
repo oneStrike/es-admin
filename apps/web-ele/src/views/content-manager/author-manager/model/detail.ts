@@ -16,7 +16,7 @@ type AuthorDetailExtraData = {
  * @param extraData 额外数据
  * @returns 卡片配置数组
  */
-export function getDetailCards(
+export function getDetailSections(
   detail: BaseAuthorDto,
   extraData?: AuthorDetailExtraData,
 ) {
@@ -36,7 +36,7 @@ export function getDetailCards(
     {
       title: '',
       show: true,
-      fields: [
+      items: [
         {
           label: '姓名',
           value: detail.name,
@@ -76,7 +76,7 @@ export function getDetailCards(
     {
       title: '作品信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '作品数量',
           value: detail.workCount ?? 0,
@@ -98,7 +98,7 @@ export function getDetailCards(
     {
       title: '管理信息',
       show: true,
-      fields: [
+      items: [
         {
           label: '备注',
           value: detail.remark || '-',

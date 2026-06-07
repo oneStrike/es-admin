@@ -6,9 +6,13 @@
 
 - 业务页面优先使用 Vben 与项目封装组件。
 - 只要 Vben 或项目业务层已有等价能力，就禁止在业务层直接搭建 Element Plus 的同类容器组件。
-- 上游 Vben 已提供能力且业务侧需要接入时，优先在 `apps/web-ele/src` 通过 adapter、wrapper 或现有业务组件内部替换落地，不直接修改 `packages/**` 基座。
-- 大量页面已经依赖同一业务入口时，应优先保留业务 API 并替换内部实现，例如保留 schema 的 `RichText` 别名、保留 `EsRecordDetail` 弹窗连接协议、通过 `EsTableAction` 包装表格操作。
-- 只有新增业务面或调用协议确实需要变化时，才逐步扩展新的组件别名或调用方式；不要为了露出上游组件名而批量改动稳定页面。
+- 上游 Vben 已提供能力且业务侧需要接入时，优先在 `apps/web-ele/src` 通过 adapter 或现有业务组件内部替换落地，不直接修改 `packages/**` 基座。
+- 已完成破坏性迁移的上游能力应直接使用上游组件名和调用协议，不再保留旧业务 wrapper、旧 schema 组件名、旧路径转发或旧字段解析。
+- 富文本 schema 统一使用 `VbenTiptap`，禁止新增 `RichText`/`EsEditor` 别名或兼容注册。
+- 表格操作列统一直接使用 `VbenTableAction`/`ActionItem`，禁止新增 `EsTableAction` 或手写 Element Plus 按钮组替代。
+- 业务详情展示优先使用 `VbenDescriptions`/`VbenDescriptionsItem`；通用记录详情弹窗使用 `#/components/record-detail-modal`，禁止恢复 `EsRecordDetail` 旧入口。
+- `record-detail-modal` 是破坏性迁移后的业务详情组件，只接受 `id`、`sections` 和 section `items` 协议；禁止恢复 `recordId`、`cards`、`DetailCard`、`DetailField` 等旧详情弹窗协议。
+- 详情富文本只能通过 `type: 'html'` section 进入组件内置净化渲染；普通 `type: 'text'` section 必须按文本节点展示，禁止把文本内容直接送入 `innerHTML`/`v-html`。
 - 页面壳、弹窗、抽屉、表单、表格、分页和弹窗选择器默认使用：
   - `Page`
   - `useVbenModal` / `VbenModal`
@@ -33,7 +37,7 @@
 - 禁止在有 Vben 或项目封装等价能力时直接使用 `el-dialog`、`el-drawer`、`el-table`、`el-pagination`。
 - 禁止手写整套查询表单、手写页面容器或重复封装同类基础能力。
 - Element Plus 仅允许作为小型业务原子控件使用，例如表格 slot 内的状态标签、提示、轻量按钮、日期选择等。
-- 详情展示容器优先使用 `VbenDescriptions` 或项目详情封装；`el-descriptions` 不应在业务详情弹窗中继续扩散。
+- 详情展示容器优先使用 `VbenDescriptions` 或项目详情封装；除非只是 Element Plus 原子控件内部能力且无 Vben 等价入口，业务详情区禁止继续使用 `el-descriptions`。
 - 表格 slot 或操作列中禁止使用 `el-popconfirm`；需要确认的操作统一在脚本中使用 `useConfirm`，避免在 VxeGrid 单元格内嵌确认浮层造成交互和状态管理分散。
 - 如果后续 Vben 或项目组件提供同等直接入口，应迁回 Vben 或项目封装。
 - 如确实需要绕过 Vben 组件，必须在改动说明中写明原因、替代方案和后续迁移条件。
