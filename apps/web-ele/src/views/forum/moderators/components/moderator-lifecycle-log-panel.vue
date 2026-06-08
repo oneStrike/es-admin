@@ -6,10 +6,7 @@ import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { forumModeratorLifecycleLogPageApi } from '#/api/core';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
-import {
-  lifecycleLogColumns,
-  searchFormSchema,
-} from '../model/lifecycle-log';
+import { lifecycleLogColumns, searchFormSchema } from '../model/lifecycle-log';
 
 const lifecycleLogGridOptions: VxeGridProps<ForumModeratorLifecycleLogDto> = {
   columns: lifecycleLogColumns,

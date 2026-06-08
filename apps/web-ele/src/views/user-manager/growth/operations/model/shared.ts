@@ -111,7 +111,10 @@ export function formatGrowthEventLabel(
 ) {
   if (value === null || value === undefined) return '-';
 
-  return options.find((item) => item.value === value)?.label || getGrowthTypeLabel(value);
+  return (
+    options.find((item) => item.value === value)?.label ||
+    getGrowthTypeLabel(value)
+  );
 }
 
 export function formatBoolean(value?: boolean | null) {

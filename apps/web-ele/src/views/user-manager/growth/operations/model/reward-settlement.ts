@@ -137,8 +137,7 @@ function createRewardSettlementListSchema(
 export function createRewardSettlementColumns(
   eventOptions: GrowthEventOption[] = [],
 ) {
-  return (
-  formSchemaTransform.toTableColumns<GrowthRewardSettlementPageItemDto>(
+  return formSchemaTransform.toTableColumns<GrowthRewardSettlementPageItemDto>(
     createRewardSettlementListSchema(eventOptions),
     {
       dateRange: { hide: true },
@@ -194,7 +193,6 @@ export function createRewardSettlementColumns(
         show: true,
       },
     },
-  )
   );
 }
 
@@ -223,35 +221,35 @@ export function createRewardSettlementSearchSchema(
   return formSchemaTransform.toSearchSchema(
     createRewardSettlementListSchema(eventOptions),
     {
-    userId: {
-      show: true,
-      component: 'TableSelect',
-      componentProps: createAppUserTableSelectProps({
-        emitScalar: true,
-        multiple: false,
-        placeholder: '搜索并选择 APP 用户',
-        title: '选择结算用户',
-      }),
-    },
-    eventCode: { show: true },
-    settlementType: { show: true },
-    settlementStatus: { show: true },
-    dateRange: { show: true },
-    id: {
-      show: false,
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '高级诊断：结算 ID',
+      userId: {
+        show: true,
+        component: 'TableSelect',
+        componentProps: createAppUserTableSelectProps({
+          emitScalar: true,
+          multiple: false,
+          placeholder: '搜索并选择 APP 用户',
+          title: '选择结算用户',
+        }),
       },
-    },
-    eventKey: {
-      show: false,
-      componentProps: {
-        clearable: true,
-        placeholder: '高级诊断：事件 key',
+      eventCode: { show: true },
+      settlementType: { show: true },
+      settlementStatus: { show: true },
+      dateRange: { show: true },
+      id: {
+        show: false,
+        componentProps: {
+          class: '!w-full',
+          min: 1,
+          placeholder: '高级诊断：结算 ID',
+        },
       },
-    },
+      eventKey: {
+        show: false,
+        componentProps: {
+          clearable: true,
+          placeholder: '高级诊断：事件 key',
+        },
+      },
     },
   );
 }

@@ -128,8 +128,7 @@ function createRuleEventsListSchema(
 export function createRuleEventsColumns(
   eventOptions: GrowthEventOption[] = [],
 ) {
-  return (
-  formSchemaTransform.toTableColumns<GrowthRuleEventPageItemDto>(
+  return formSchemaTransform.toTableColumns<GrowthRuleEventPageItemDto>(
     createRuleEventsListSchema(eventOptions),
     {
       type: { hide: true },
@@ -190,7 +189,6 @@ export function createRuleEventsColumns(
         width: 100,
       },
     },
-  )
   );
 }
 
@@ -200,11 +198,11 @@ export function createRuleEventsSearchSchema(
   return formSchemaTransform.toSearchSchema(
     createRuleEventsListSchema(eventOptions),
     {
-    type: { show: true },
-    hasBaseReward: { show: true },
-    hasTask: { show: true },
-    isImplemented: { show: true },
-    dateRange: { show: true },
+      type: { show: true },
+      hasBaseReward: { show: true },
+      hasTask: { show: true },
+      isImplemented: { show: true },
+      dateRange: { show: true },
     },
   );
 }

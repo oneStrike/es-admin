@@ -210,9 +210,7 @@ export function getDetailSections(detail: ForumTopicDetailResponse) {
         },
         {
           label: '视频',
-          value: detail.videos
-            ? JSON.stringify(detail.videos, null, 2)
-            : '-',
+          value: detail.videos ? JSON.stringify(detail.videos, null, 2) : '-',
           type: 'text' as const,
         },
       ],

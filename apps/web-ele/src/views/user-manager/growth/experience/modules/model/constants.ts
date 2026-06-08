@@ -151,5 +151,7 @@ export function formatExperienceEventLabel(
 ) {
   if (value === null || value === undefined) return '-';
 
-  return createExperienceEventLabelMap(options)[Number(value)] || `事件 ${value}`;
+  return (
+    createExperienceEventLabelMap(options)[Number(value)] || `事件 ${value}`
+  );
 }

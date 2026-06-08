@@ -434,7 +434,11 @@ export function createExperienceRecordColumns(
     { component: 'InputNumber', fieldName: 'userId', label: '用户' },
     { component: 'Select', fieldName: 'ruleType', label: '经验事件' },
     { component: 'InputNumber', fieldName: 'experience', label: '经验变化' },
-    { component: 'InputNumber', fieldName: 'beforeExperience', label: '变化前' },
+    {
+      component: 'InputNumber',
+      fieldName: 'beforeExperience',
+      label: '变化前',
+    },
     { component: 'InputNumber', fieldName: 'afterExperience', label: '变化后' },
     { component: 'Input', fieldName: 'remark', label: '说明' },
     { component: 'InputNumber', fieldName: 'ruleId', label: '关联规则' },
@@ -584,60 +588,68 @@ export function createExperienceEventCoverageSearchSchema(
   ];
 }
 
-export function createExperienceEventCoverageColumns():
-  VxeGridPropTypes.Columns<GrowthRuleEventPageItemDto> {
+export function createExperienceEventCoverageColumns(): VxeGridPropTypes.Columns<GrowthRuleEventPageItemDto> {
   const schema: EsFormSchema = [
     { component: 'InputNumber', fieldName: 'ruleType', label: '成长事件' },
     { component: 'Input', fieldName: 'domain', label: '事件域' },
     { component: 'Input', fieldName: 'implStatus', label: '实现状态' },
     { component: 'Input', fieldName: 'isRuleConfigurable', label: '允许配置' },
-    { component: 'Input', fieldName: 'supportsExperienceRule', label: '支持经验' },
+    {
+      component: 'Input',
+      fieldName: 'supportsExperienceRule',
+      label: '支持经验',
+    },
     { component: 'Input', fieldName: 'disabledReason', label: '不可配置原因' },
   ];
 
-  return formSchemaTransform.toTableColumns<GrowthRuleEventPageItemDto>(schema, {
-    ruleType: {
-      formatter: ({ row }) => row.eventName || `事件 ${row.ruleType}`,
-      fixed: 'left',
-      minWidth: 180,
-      showOverflow: 'tooltip',
-    },
-    domain: {
-      formatter: ({ cellValue }) =>
-        experienceRuleDomainOptions.find((item) => item.value === cellValue)
-          ?.label || cellValue || '-',
-      minWidth: 120,
-    },
-    implStatus: {
-      cellRender: {
-        name: 'CellTag',
-        props: { mapOptions: experienceImplStatusOptions },
+  return formSchemaTransform.toTableColumns<GrowthRuleEventPageItemDto>(
+    schema,
+    {
+      ruleType: {
+        formatter: ({ row }) => row.eventName || `事件 ${row.ruleType}`,
+        fixed: 'left',
+        minWidth: 180,
+        showOverflow: 'tooltip',
       },
-      minWidth: 120,
-    },
-    isRuleConfigurable: {
-      cellRender: {
-        name: 'CellTag',
-        props: { mapOptions: experienceEnabledOptions },
+      domain: {
+        formatter: ({ cellValue }) =>
+          experienceRuleDomainOptions.find((item) => item.value === cellValue)
+            ?.label ||
+          cellValue ||
+          '-',
+        minWidth: 120,
       },
-      minWidth: 120,
-    },
-    supportsExperienceRule: {
-      cellRender: {
-        name: 'CellTag',
-        props: { mapOptions: experienceEnabledOptions },
+      implStatus: {
+        cellRender: {
+          name: 'CellTag',
+          props: { mapOptions: experienceImplStatusOptions },
+        },
+        minWidth: 120,
       },
-      minWidth: 120,
+      isRuleConfigurable: {
+        cellRender: {
+          name: 'CellTag',
+          props: { mapOptions: experienceEnabledOptions },
+        },
+        minWidth: 120,
+      },
+      supportsExperienceRule: {
+        cellRender: {
+          name: 'CellTag',
+          props: { mapOptions: experienceEnabledOptions },
+        },
+        minWidth: 120,
+      },
+      disabledReason: {
+        minWidth: 180,
+        showOverflow: 'tooltip',
+      },
+      actions: {
+        show: true,
+        width: 120,
+      },
     },
-    disabledReason: {
-      minWidth: 180,
-      showOverflow: 'tooltip',
-    },
-    actions: {
-      show: true,
-      width: 120,
-    },
-  });
+  );
 }
 
 export function buildExperienceEventCoverageQuery(
@@ -699,8 +711,16 @@ export function getDiagnosticRecordSections(
       title: '诊断信息',
       show: true,
       items: [
-        { label: '规则 ID', type: 'text' as const, value: detail.ruleId ?? '-' },
-        { label: '账本来源', type: 'text' as const, value: detail.source ?? '-' },
+        {
+          label: '规则 ID',
+          type: 'text' as const,
+          value: detail.ruleId ?? '-',
+        },
+        {
+          label: '账本来源',
+          type: 'text' as const,
+          value: detail.source ?? '-',
+        },
         { label: '业务键', type: 'text' as const, value: detail.bizKey || '-' },
         {
           label: '目标',

@@ -411,7 +411,10 @@ function getEventActions(row: GrowthRuleEventPageItemDto): ActionItem[] {
     {
       key: 'configurable',
       onClick: () => openEventCoverageDetail(row),
-      text: row.isRuleConfigurable && row.supportsExperienceRule ? '可配置' : '查看',
+      text:
+        row.isRuleConfigurable && row.supportsExperienceRule
+          ? '可配置'
+          : '查看',
     },
   ];
 }
@@ -459,10 +462,7 @@ onMounted(() => {
             </template>
 
             <template #actions="{ row }">
-              <VbenTableAction
-                align="center"
-                :actions="getRuleActions(row)"
-              />
+              <VbenTableAction align="center" :actions="getRuleActions(row)" />
             </template>
           </RulesGrid>
         </div>
@@ -479,7 +479,9 @@ onMounted(() => {
                 effect="light"
                 round
               >
-                {{ getOptionLabel(experienceImplStatusOptions, row.implStatus) }}
+                {{
+                  getOptionLabel(experienceImplStatusOptions, row.implStatus)
+                }}
               </el-tag>
             </template>
 
@@ -524,10 +526,7 @@ onMounted(() => {
             </template>
 
             <template #actions="{ row }">
-              <VbenTableAction
-                align="center"
-                :actions="getEventActions(row)"
-              />
+              <VbenTableAction align="center" :actions="getEventActions(row)" />
             </template>
           </EventsGrid>
         </div>
