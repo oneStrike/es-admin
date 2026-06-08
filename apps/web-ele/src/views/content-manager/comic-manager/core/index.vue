@@ -4,9 +4,10 @@ import type { BasicOption, Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  BaseWorkDto,
+  AdminWorkDetailDto,
   ContentComicCreateRequest,
   ContentComicUpdateRequest,
+  PageWorkDto,
 } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
@@ -49,7 +50,18 @@ import { formSchema, pageFilter } from './model/shared';
 
 defineOptions({ name: 'ComicManager' });
 
-const gridOptions: VxeGridProps<BaseWorkDto> = {
+type ComicRow = PageWorkDto & {
+  loading?: boolean;
+  syncLoading?: boolean;
+};
+
+type ComicFormRecord = Partial<AdminWorkDetailDto> & {
+  authorIds?: number[];
+  categoryIds?: number[];
+  tagIds?: unknown[];
+};
+
+const gridOptions: VxeGridProps<ComicRow> = {
   columns: [],
   proxyConfig: {
     ajax: {
@@ -85,7 +97,7 @@ const [ThirdPartyModal, ThirdPartyApi] = useVbenModal({
 });
 
 const levelOptions: BasicOption[] = [];
-const currentComicRecord = ref<null | Partial<BaseWorkDto>>(null);
+const currentComicRecord = ref<ComicFormRecord | null>(null);
 const router = useRouter();
 
 // 加载会员等级选项
@@ -101,8 +113,8 @@ growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
   });
 });
 
-async function openFormModal(row?: BaseWorkDto) {
-  let record;
+async function openFormModal(row?: ComicRow) {
+  let record: ComicFormRecord | undefined;
   if (row) {
     record = await contentComicDetailApi({ id: row.id });
     record.authorIds = extractRelationIds(record?.authors, 'author');
@@ -206,13 +218,13 @@ function buildComicPayload(
     : ({ ...payload, type: 1 } as ContentComicCreateRequest);
 }
 
-async function deleteComic(record: BaseWorkDto) {
+async function deleteComic(record: ComicRow) {
   await contentComicDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
-async function confirmDeleteComic(record: BaseWorkDto) {
+async function confirmDeleteComic(record: ComicRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前漫画?',
     successMessage: false,
@@ -222,7 +234,7 @@ async function confirmDeleteComic(record: BaseWorkDto) {
   await deleteComic(record);
 }
 
-async function syncLatestChapters(record: BaseWorkDto) {
+async function syncLatestChapters(record: ComicRow) {
   const confirmed = await useConfirm({
     content: '是否后台同步当前作品章节?',
     successMessage: false,
@@ -241,7 +253,7 @@ async function syncLatestChapters(record: BaseWorkDto) {
 }
 
 async function toggleStatus(
-  record: BaseWorkDto,
+  record: ComicRow,
   field: 'isHot' | 'isNew' | 'isPublished' | 'isRecommended',
 ) {
   record.loading = true;
@@ -280,7 +292,7 @@ async function toggleStatus(
 }
 
 // 打开章节管理弹窗
-function openChapterModal(record: BaseWorkDto) {
+function openChapterModal(record: ComicRow) {
   chapterApi
     .setData({
       workId: record.id,
@@ -289,7 +301,7 @@ function openChapterModal(record: BaseWorkDto) {
     .open();
 }
 
-function getComicActions(record: BaseWorkDto): ActionItem[] {
+function getComicActions(record: ComicRow): ActionItem[] {
   return [
     {
       key: 'edit',
@@ -405,7 +417,9 @@ function getComicActions(record: BaseWorkDto): ActionItem[] {
 
     <DetailModal
       :api="contentComicDetailApi"
-      :sections="(data: BaseWorkDto) => getDetailSections(data, dataDict || {})"
+      :sections="
+        (data: AdminWorkDetailDto) => getDetailSections(data, dataDict || {})
+      "
     />
 
     <ChapterModal />

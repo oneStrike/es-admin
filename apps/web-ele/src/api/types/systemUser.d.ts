@@ -24,9 +24,6 @@ export type SystemUserProfileResponse = AdminUserResponseDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type SystemUserDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -39,41 +36,35 @@ export type SystemUserDetailResponse = AdminUserResponseDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type SystemUserPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否启用 */
   isEnabled?: boolean;
 
   /* 手机号 */
-  mobile?: null | string;
+  mobile?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 角色（0=普通管理员；1=超级管理员） */
   role?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 用户名 */
   username?: string;
 };
 
 export type SystemUserPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: AdminUserResponseDto[];
 
@@ -120,8 +111,6 @@ export type SystemUserUnlockResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UserRegisterDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 头像 */
   avatar?: null | string;
   /* 确认密码 */
@@ -132,7 +121,6 @@ export type UserRegisterDto = {
   password: string;
   /* 角色（0=普通管理员；1=超级管理员） */
   role: 0 | 1;
-
   /* 用户名 */
   username: string;
 };
@@ -143,8 +131,6 @@ export type UserRegisterDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateUserDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 头像 */
   avatar?: null | string;
   /* 主键id */
@@ -155,7 +141,6 @@ export type UpdateUserDto = {
   mobile?: null | string;
   /* 角色（0=普通管理员；1=超级管理员） */
   role: 0 | 1;
-
   /* 用户名 */
   username: string;
 };
@@ -166,8 +151,6 @@ export type UpdateUserDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminUserResponseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 头像 */
   avatar?: null | string;
   /* 创建时间 */
@@ -186,7 +169,6 @@ export type AdminUserResponseDto = {
   role: 0 | 1;
   /* 更新时间 */
   updatedAt: string;
-
   /* 用户名 */
   username: string;
 };
@@ -197,13 +179,10 @@ export type AdminUserResponseDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ChangePasswordDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 确认新密码 */
   confirmPassword: string;
   /* 新密码 */
   newPassword: string;
-
   /* 旧密码 */
   oldPassword: string;
 };
@@ -214,9 +193,6 @@ export type ChangePasswordDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -227,9 +203,6 @@ export type IdDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ResetAdminUserPasswordResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 一次性临时密码，仅本次响应返回 */
   temporaryPassword: string;
 };

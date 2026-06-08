@@ -4,35 +4,29 @@
  *  @更新时间 2026-05-09 22:20:06
  */
 export type WalletCurrencyPackagePageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 充值包名称 */
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type WalletCurrencyPackagePageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: BaseCurrencyPackageDto[];
 
@@ -52,32 +46,26 @@ export type WalletCurrencyPackagePageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type WalletLedgerPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 用户 ID */
   userId: number;
 };
 
 export type WalletLedgerPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: WalletLedgerRecordDto[];
 
@@ -124,8 +112,6 @@ export type WalletCurrencyPackageUpdateStatusResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type BaseCurrencyPackageDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 赠送虚拟币数量 */
   bonusAmount?: null | number;
   /* 创建时间 */
@@ -144,7 +130,6 @@ export type BaseCurrencyPackageDto = {
   price: number;
   /* 排序值 */
   sortOrder?: null | number;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -155,8 +140,6 @@ export type BaseCurrencyPackageDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type WalletLedgerRecordDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 流水动作 */
   action: 1 | 2 | 3 | 4;
   /* 变更后余额 */
@@ -171,7 +154,6 @@ export type WalletLedgerRecordDto = {
   id: number;
   /* 展示备注 */
   remark?: null | string;
-
   /* 流水来源 */
   source: string;
 };
@@ -182,8 +164,6 @@ export type WalletLedgerRecordDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateCurrencyPackageDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 赠送虚拟币数量 */
   bonusAmount?: null | number;
   /* 发放虚拟币数量 */
@@ -196,7 +176,6 @@ export type CreateCurrencyPackageDto = {
   packageKey: string;
   /* 支付价格，单位为分 */
   price: number;
-
   /* 排序值 */
   sortOrder?: null | number;
 };
@@ -207,8 +186,6 @@ export type CreateCurrencyPackageDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateCurrencyPackageDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 赠送虚拟币数量 */
   bonusAmount?: null | number;
   /* 发放虚拟币数量 */
@@ -223,7 +200,6 @@ export type UpdateCurrencyPackageDto = {
   packageKey?: string;
   /* 支付价格，单位为分 */
   price?: number;
-
   /* 排序值 */
   sortOrder?: null | number;
 };
@@ -234,11 +210,8 @@ export type UpdateCurrencyPackageDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateEnabledStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
-
   /* 状态 true启用 false禁用 */
   isEnabled: boolean;
 };

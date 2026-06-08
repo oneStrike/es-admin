@@ -1,6 +1,6 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseWorkDto } from '#/api/types';
+import type { AdminWorkDetailDto } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formatUTC } from '#/utils';
@@ -19,7 +19,7 @@ const viewRuleMap: Record<number, string> = {
 
 // 定义卡片配置函数
 export function getDetailSections(
-  detail: BaseWorkDto,
+  detail: AdminWorkDetailDto,
   dataDict: Recordable<undefined | UseDictItem>,
 ) {
   return [
@@ -111,13 +111,6 @@ export function getDetailSections(
           tagText: detail.canComment ? '是' : '否',
         },
         {
-          label: '允许下载',
-          value: detail.canDownload,
-          type: 'tag',
-          tagType: detail.canDownload ? 'success' : 'info',
-          tagText: detail.canDownload ? '是' : '否',
-        },
-        {
           label: '阅读会员等级ID',
           value: detail.requiredViewLevelId || '-',
           type: 'text',
@@ -129,18 +122,8 @@ export function getDetailSections(
       show: true,
       items: [
         {
-          label: '作品价格',
-          value: detail.price || 0,
-          type: 'text',
-        },
-        {
           label: '章节默认价格',
           value: detail.chapterPrice || 0,
-          type: 'text',
-        },
-        {
-          label: '购买数',
-          value: detail.purchaseCount || 0,
           type: 'text',
         },
       ],
@@ -210,9 +193,7 @@ export function getDetailSections(
         },
         {
           label: '评分',
-          value: detail.rating
-            ? `${detail.rating} (${detail.ratingCount}人)`
-            : '0 (0人)',
+          value: detail.rating ?? 0,
           type: 'text',
         },
         {

@@ -1,20 +1,25 @@
 import type {
+  MessageChatConversationPageRequest,
+  MessageChatConversationPageResponse,
+  MessageChatMessagePageRequest,
+  MessageChatMessagePageResponse,
   MessageMonitorDeliveryPageRequest,
   MessageMonitorDeliveryPageResponse,
   MessageMonitorDeliveryRetryRequest,
   MessageMonitorDeliveryRetryResponse,
   MessageMonitorDispatchPageRequest,
   MessageMonitorDispatchPageResponse,
+  MessageMonitorSummaryResponse,
   MessageMonitorWsSummaryRequest,
   MessageMonitorWsSummaryResponse,
   MessageNotificationTemplatesCreateRequest,
   MessageNotificationTemplatesCreateResponse,
-  MessageNotificationTemplatesDeleteRequest,
-  MessageNotificationTemplatesDeleteResponse,
   MessageNotificationTemplatesDetailRequest,
   MessageNotificationTemplatesDetailResponse,
   MessageNotificationTemplatesPageRequest,
   MessageNotificationTemplatesPageResponse,
+  MessageNotificationTemplatesPreviewRequest,
+  MessageNotificationTemplatesPreviewResponse,
   MessageNotificationTemplatesUpdateEnabledRequest,
   MessageNotificationTemplatesUpdateEnabledResponse,
   MessageNotificationTemplatesUpdateRequest,
@@ -36,7 +41,7 @@ export async function messageMonitorDeliveryPageApi(
 }
 
 /**
- * 按 dispatch ID 重试失败的通知投递
+ * 按投递记录重试失败的通知投递
  */
 export async function messageMonitorDeliveryRetryApi(
   params: MessageMonitorDeliveryRetryRequest,
@@ -44,6 +49,15 @@ export async function messageMonitorDeliveryRetryApi(
   return requestClient.post<MessageMonitorDeliveryRetryResponse>(
     '/api/admin/message/monitor/delivery/retry',
     params,
+  );
+}
+
+/**
+ * 获取消息运行摘要
+ */
+export async function messageMonitorSummaryApi(): Promise<MessageMonitorSummaryResponse> {
+  return requestClient.get<MessageMonitorSummaryResponse>(
+    '/api/admin/message/monitor/summary',
   );
 }
 
@@ -67,6 +81,30 @@ export async function messageMonitorWsSummaryApi(
 ): Promise<MessageMonitorWsSummaryResponse> {
   return requestClient.get<MessageMonitorWsSummaryResponse>(
     '/api/admin/message/monitor/ws/summary',
+    { params },
+  );
+}
+
+/**
+ * 分页查询聊天会话排查列表
+ */
+export async function messageChatConversationPageApi(
+  params: MessageChatConversationPageRequest,
+): Promise<MessageChatConversationPageResponse> {
+  return requestClient.get<MessageChatConversationPageResponse>(
+    '/api/admin/message/chat/conversation/page',
+    { params },
+  );
+}
+
+/**
+ * 分页查询聊天消息排查列表
+ */
+export async function messageChatMessagePageApi(
+  params: MessageChatMessagePageRequest,
+): Promise<MessageChatMessagePageResponse> {
+  return requestClient.get<MessageChatMessagePageResponse>(
+    '/api/admin/message/chat/message/page',
     { params },
   );
 }
@@ -132,13 +170,13 @@ export async function messageNotificationTemplatesUpdateEnabledApi(
 }
 
 /**
- * 删除通知模板
+ * 预览通知模板渲染结果
  */
-export async function messageNotificationTemplatesDeleteApi(
-  params: MessageNotificationTemplatesDeleteRequest,
-): Promise<MessageNotificationTemplatesDeleteResponse> {
-  return requestClient.post<MessageNotificationTemplatesDeleteResponse>(
-    '/api/admin/message/notification-templates/delete',
+export async function messageNotificationTemplatesPreviewApi(
+  params: MessageNotificationTemplatesPreviewRequest,
+): Promise<MessageNotificationTemplatesPreviewResponse> {
+  return requestClient.post<MessageNotificationTemplatesPreviewResponse>(
+    '/api/admin/message/notification-templates/preview',
     params,
   );
 }

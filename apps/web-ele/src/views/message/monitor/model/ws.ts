@@ -49,6 +49,16 @@ export function getWsSummaryItems(summary?: MessageWsMonitorSummaryDto | null) {
       value: summary?.resyncTriggerCount ?? '-',
     },
     {
+      label: '跨实例跳过次数',
+      tone: summary?.fanoutSkippedCount ? 'danger' : 'info',
+      value: summary?.fanoutSkippedCount ?? '-',
+    },
+    {
+      label: '跨实例发布失败',
+      tone: summary?.fanoutPublishErrorCount ? 'danger' : 'info',
+      value: summary?.fanoutPublishErrorCount ?? '-',
+    },
+    {
       label: '补偿成功次数',
       tone: 'success',
       value: summary?.resyncSuccessCount ?? '-',
@@ -73,6 +83,12 @@ export function getRealtimeSummaryText(
 ) {
   if (!summary) {
     return '选择统计窗口查看实时消息运行情况';
+  }
+  if (summary.realtimeDeploymentRisk) {
+    return (
+      summary.realtimeDeploymentConstraint ||
+      '当前窗口存在跨实例实时推送风险，请关注补偿拉取是否正常'
+    );
   }
   if (summary.ackErrorCount > 0) {
     return `当前窗口有 ${summary.ackErrorCount} 次确认失败，请结合送达明细查看`;

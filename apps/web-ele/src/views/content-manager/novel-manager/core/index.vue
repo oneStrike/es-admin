@@ -4,9 +4,10 @@ import type { BasicOption, Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
-  BaseWorkDto,
+  AdminWorkDetailDto,
   ContentNovelCreateRequest,
   ContentNovelUpdateRequest,
+  PageWorkDto,
 } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
@@ -46,7 +47,17 @@ defineOptions({
   name: 'NovelManager',
 });
 
-const gridOptions: VxeGridProps<BaseWorkDto> = {
+type NovelRow = PageWorkDto & {
+  loading?: boolean;
+};
+
+type NovelFormRecord = Partial<AdminWorkDetailDto> & {
+  authorIds?: number[];
+  categoryIds?: number[];
+  tagIds?: unknown[];
+};
+
+const gridOptions: VxeGridProps<NovelRow> = {
   columns: [],
   proxyConfig: {
     ajax: {
@@ -79,7 +90,7 @@ const [DetailModal, detailApi] = useVbenModal({
 
 const levelOptions: BasicOption[] = [];
 const emptyDict: Recordable<undefined | UseDictItem> = {};
-const currentNovelRecord = ref<null | Partial<BaseWorkDto>>(null);
+const currentNovelRecord = ref<NovelFormRecord | null>(null);
 
 growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
   const options =
@@ -93,8 +104,8 @@ growthLevelRulesPageApi({ isEnabled: true }).then((res) => {
   });
 });
 
-async function openFormModal(row?: BaseWorkDto) {
-  let record;
+async function openFormModal(row?: NovelRow) {
+  let record: NovelFormRecord | undefined;
   if (row) {
     record = await contentNovelDetailApi({ id: row.id });
     record.authorIds = extractRelationIds(record?.authors, 'author');
@@ -197,13 +208,13 @@ function buildNovelPayload(
     : ({ ...payload, type: 2 } as ContentNovelCreateRequest);
 }
 
-async function deleteNovel(record: BaseWorkDto) {
+async function deleteNovel(record: NovelRow) {
   await contentNovelDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   await gridApi.reload();
 }
 
-async function confirmDeleteNovel(record: BaseWorkDto) {
+async function confirmDeleteNovel(record: NovelRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前小说?',
     successMessage: false,
@@ -214,7 +225,7 @@ async function confirmDeleteNovel(record: BaseWorkDto) {
 }
 
 async function toggleStatus(
-  record: BaseWorkDto,
+  record: NovelRow,
   field: 'isHot' | 'isNew' | 'isPublished' | 'isRecommended',
 ) {
   record.loading = true;
@@ -252,7 +263,7 @@ async function toggleStatus(
   }
 }
 
-function openChapterModal(record: BaseWorkDto) {
+function openChapterModal(record: NovelRow) {
   chapterApi
     .setData({
       workId: record.id,
@@ -261,7 +272,7 @@ function openChapterModal(record: BaseWorkDto) {
     .open();
 }
 
-function getNovelActions(record: BaseWorkDto): ActionItem[] {
+function getNovelActions(record: NovelRow): ActionItem[] {
   return [
     {
       key: 'edit',
@@ -368,7 +379,8 @@ function getNovelActions(record: BaseWorkDto): ActionItem[] {
     <DetailModal
       :api="contentNovelDetailApi"
       :sections="
-        (data: BaseWorkDto) => getDetailSections(data, dataDict ?? emptyDict)
+        (data: AdminWorkDetailDto) =>
+          getDetailSections(data, dataDict ?? emptyDict)
       "
     />
 

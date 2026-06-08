@@ -31,6 +31,10 @@ import {
   searchFormSchema,
 } from './modules/model/shared';
 
+type LevelRuleRow = BaseUserLevelRuleDto & {
+  loading?: boolean;
+};
+
 function normalizeLevelRuleBusiness<T extends { business?: null | string }>(
   values: T,
 ): T {
@@ -41,7 +45,7 @@ function normalizeLevelRuleBusiness<T extends { business?: null | string }>(
   };
 }
 
-const gridOptions: VxeGridProps<BaseUserLevelRuleDto> = {
+const gridOptions: VxeGridProps<LevelRuleRow> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
@@ -72,7 +76,7 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '等级规则详情',
 });
 
-async function openFormModal(row?: BaseUserLevelRuleDto) {
+async function openFormModal(row?: LevelRuleRow) {
   let record;
   if (row) {
     record = await growthLevelRulesDetailApi({ id: row.id });
@@ -119,13 +123,13 @@ async function handleSubmit(
   gridApi.reload();
 }
 
-async function deleteLevelRule(record: BaseUserLevelRuleDto) {
+async function deleteLevelRule(record: LevelRuleRow) {
   await growthLevelRulesDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
-async function confirmDeleteLevelRule(record: BaseUserLevelRuleDto) {
+async function confirmDeleteLevelRule(record: LevelRuleRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前等级规则?',
     successMessage: false,
@@ -135,9 +139,7 @@ async function confirmDeleteLevelRule(record: BaseUserLevelRuleDto) {
   await deleteLevelRule(record);
 }
 
-async function toggleEnableStatus(
-  row: BaseUserLevelRuleDto & { loading?: boolean },
-) {
+async function toggleEnableStatus(row: LevelRuleRow) {
   row.loading = true;
   try {
     await growthLevelRulesUpdateApi({
@@ -155,7 +157,7 @@ function getLevelColorStyle(color?: null | string) {
   return color ? { '--level-rule-color': color } : undefined;
 }
 
-function getLevelRuleActions(row: BaseUserLevelRuleDto): ActionItem[] {
+function getLevelRuleActions(row: LevelRuleRow): ActionItem[] {
   return [
     {
       key: 'detail',

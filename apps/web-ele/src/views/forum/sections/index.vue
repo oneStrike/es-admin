@@ -85,6 +85,7 @@ type SectionGroupNode = Partial<BaseForumSectionGroupDto> & {
 };
 
 type ForumSectionRow = BaseForumSectionDto & {
+  loading?: boolean;
   rebuildLoading?: boolean;
 };
 
@@ -409,7 +410,7 @@ const [SectionGroupDetailModal, sectionGroupDetailApi] = useVbenModal({
   title: '板块组详情',
 });
 
-async function toggleEnableStatus(record: BaseForumSectionDto) {
+async function toggleEnableStatus(record: ForumSectionRow) {
   record.loading = true;
   try {
     await forumSectionsUpdateEnabledApi({

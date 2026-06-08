@@ -42,26 +42,23 @@ export type TaskTemplateOptionsResponse = TaskTemplateOptionsResponseDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
   sceneType?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 任务状态（0=草稿；1=生效中；2=已暂停；3=已归档） */
   status?: number;
@@ -71,9 +68,6 @@ export type TaskPageRequest = {
 };
 
 export type TaskPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: AdminTaskDefinitionListItemDto[];
 
@@ -93,9 +87,6 @@ export type TaskPageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -108,26 +99,23 @@ export type TaskDetailResponse = AdminTaskDefinitionDetailDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskInstancePageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
   sceneType?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
   status?: number;
@@ -140,9 +128,6 @@ export type TaskInstancePageRequest = {
 };
 
 export type TaskInstancePageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: TaskInstanceViewDto[];
 
@@ -162,32 +147,29 @@ export type TaskInstancePageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskInstanceReconciliationPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 任务实例 ID */
-  instanceId?: null | number;
+  instanceId?: number;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 奖励结算事实 ID */
-  rewardSettlementId?: null | number;
+  rewardSettlementId?: number;
 
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 任务头 ID */
   taskId?: number;
@@ -197,9 +179,6 @@ export type TaskInstanceReconciliationPageRequest = {
 };
 
 export type TaskInstanceReconciliationPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: AdminTaskReconciliationItemDto[];
 
@@ -239,11 +218,8 @@ export type TaskInstanceRewardRetryPendingBatchResponse =
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskEventFailurePageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 事件业务幂等键 */
   eventBizKey?: string;
@@ -255,16 +231,16 @@ export type TaskEventFailurePageRequest = {
   eventKey?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 失败事实状态（1=待重试；2=重试中；3=已解决；4=终态失败） */
   status?: number;
@@ -274,9 +250,6 @@ export type TaskEventFailurePageRequest = {
 };
 
 export type TaskEventFailurePageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: TaskEventFailurePageItemDto[];
 
@@ -316,8 +289,6 @@ export type TaskEventFailureRetryPendingBatchResponse =
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateTaskDefinitionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 领取方式（1=自动领取；2=手动领取） */
   claimMode: 1 | 2;
   /* 完成聚合策略（1=所有步骤完成即完成） */
@@ -342,9 +313,22 @@ export type CreateTaskDefinitionDto = {
   status: 0 | 1 | 2 | 3;
   /* 唯一步骤定义 */
   step: CreateTaskStepDto;
-
   /* 任务标题 */
   title: string;
+};
+
+/**
+ *  类型定义 [GrowthRewardItemDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type GrowthRewardItemDto = {
+  /* 奖励数量；必须为大于 0 的整数 */
+  amount: number;
+  /* 奖励资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
+  assetKey?: null | string;
+  /* 奖励资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
+  assetType: 1 | 2 | 3 | 4 | 5;
 };
 
 /**
@@ -353,8 +337,6 @@ export type CreateTaskDefinitionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateTaskStepDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 去重范围（1=按周期唯一；2=终身唯一） */
   dedupeScope?: 1 | 2 | null;
   /* 步骤描述 */
@@ -365,9 +347,22 @@ export type CreateTaskStepDto = {
   targetValue: number;
   /* 事件模板键 */
   templateKey?: null | string;
-
   /* 步骤触发方式（1=手动；2=事件驱动） */
   triggerMode: 1 | 2;
+};
+
+/**
+ *  类型定义 [TaskTemplateFilterValueDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type TaskTemplateFilterValueDto = {
+  /* 过滤字段稳定键 */
+  key: string;
+  /* 字段展示名称 */
+  label?: null | string;
+  /* 过滤字段值的结构化字符串表示 */
+  value: string;
 };
 
 /**
@@ -376,8 +371,6 @@ export type CreateTaskStepDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateTaskDefinitionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 领取方式（1=自动领取；2=手动领取） */
   claimMode?: 1 | 2;
   /* 完成聚合策略（1=所有步骤完成即完成） */
@@ -404,7 +397,6 @@ export type UpdateTaskDefinitionDto = {
   status?: 0 | 1 | 2 | 3;
   /* 唯一步骤定义 */
   step?: CreateTaskStepDto;
-
   /* 任务标题 */
   title?: string;
 };
@@ -415,11 +407,8 @@ export type UpdateTaskDefinitionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateTaskDefinitionStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
-
   /* 任务状态（0=草稿；1=生效中；2=已暂停；3=已归档） */
   status: 0 | 1 | 2 | 3;
 };
@@ -430,9 +419,6 @@ export type UpdateTaskDefinitionStatusDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -443,9 +429,6 @@ export type IdDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskTemplateOptionsResponseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 模板列表 */
   list: TaskEventTemplateOptionDto[];
 };
@@ -456,8 +439,6 @@ export type TaskTemplateOptionsResponseDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskEventTemplateOptionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 可选过滤字段列表 */
   availableFilterFields: TaskTemplateFilterFieldDto[];
   /* 底层事件实现状态（declared=已声明但未接线；implemented=已正式接线；legacy_compat=仅保留历史兼容） */
@@ -489,7 +470,6 @@ export type TaskEventTemplateOptionDto = {
     | 'user_profile';
   /* 模板稳定键 */
   templateKey: string;
-
   /* 需要在后台显式展示的提醒文案 */
   warningHints: string[];
 };
@@ -500,8 +480,6 @@ export type TaskEventTemplateOptionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskTemplateFilterFieldDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 字段业务说明 */
   description: string;
   /* 过滤字段稳定键 */
@@ -514,7 +492,6 @@ export type TaskTemplateFilterFieldDto = {
   options?: TaskTemplateFilterFieldOptionDto[];
   /* 运营填写提示 */
   placeholder?: null | string;
-
   /* 字段值类型（number=数值；string=字符串；boolean=布尔值） */
   valueType: 'boolean' | 'number' | 'string';
 };
@@ -525,11 +502,8 @@ export type TaskTemplateFilterFieldDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskTemplateFilterFieldOptionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 选项展示名 */
   label: string;
-
   /* 选项值 */
   value: string;
 };
@@ -540,8 +514,6 @@ export type TaskTemplateFilterFieldOptionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminTaskDefinitionListItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 活跃实例数量 */
   activeInstanceCount: number;
   /* 领取方式（1=自动领取；2=手动领取） */
@@ -578,7 +550,6 @@ export type AdminTaskDefinitionListItemDto = {
   stepCount: number;
   /* 任务标题 */
   title: string;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -589,8 +560,6 @@ export type AdminTaskDefinitionListItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminTaskDefinitionDetailDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 活跃实例数量 */
   activeInstanceCount: number;
   /* 领取方式（1=自动领取；2=手动领取） */
@@ -629,7 +598,6 @@ export type AdminTaskDefinitionDetailDto = {
   steps: TaskStepSummaryDto[];
   /* 任务标题 */
   title: string;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -640,8 +608,6 @@ export type AdminTaskDefinitionDetailDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskStepSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 创建时间 */
   createdAt: string;
   /* 去重范围（1=按周期唯一；2=终身唯一） */
@@ -664,7 +630,6 @@ export type TaskStepSummaryDto = {
   title: string;
   /* 步骤触发方式（1=手动；2=事件驱动） */
   triggerMode: 1 | 2;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -675,8 +640,6 @@ export type TaskStepSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskInstanceViewDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 领取时间 */
   claimedAt: null | string;
   /* 完成时间 */
@@ -692,7 +655,7 @@ export type TaskInstanceViewDto = {
   /* 是否需要奖励结算（0=无奖励；1=需要奖励结算） */
   rewardApplicable: number;
   /* 奖励结算摘要 */
-  rewardSettlement: TaskRewardSettlementSummaryDto;
+  rewardSettlement: null | TaskRewardSettlementSummaryDto;
   /* 奖励结算事实 ID */
   rewardSettlementId: null | number;
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
@@ -705,7 +668,6 @@ export type TaskInstanceViewDto = {
   updatedAt: string;
   /* 用户 ID */
   userId: number;
-
   /* 统一后的用户可见状态（claimable=可领取；claimed=已领取；in_progress=进行中；completed=已完成；reward_pending=奖励待补偿；reward_granted=奖励已到账；expired=已过期；unavailable=当前不可用） */
   visibleStatus:
     | 'claimable'
@@ -724,8 +686,6 @@ export type TaskInstanceViewDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskInstanceStepViewDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 步骤完成时间 */
   completedAt: null | string;
   /* 创建时间 */
@@ -740,7 +700,6 @@ export type TaskInstanceStepViewDto = {
   stepId: number;
   /* 目标值 */
   targetValue: number;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -751,8 +710,6 @@ export type TaskInstanceStepViewDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskRewardSettlementSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
   /* 最近一次失败原因 */
@@ -767,7 +724,6 @@ export type TaskRewardSettlementSummaryDto = {
   settledAt: null | string;
   /* 补偿结果类型（1=真实落账；2=命中幂等；3=本次处理失败） */
   settlementResultType: 1 | 2 | 3 | null;
-
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus: 0 | 1 | 2;
 };
@@ -778,8 +734,6 @@ export type TaskRewardSettlementSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminTaskReconciliationItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 领取时间 */
   claimedAt: null | string;
   /* 完成时间 */
@@ -793,11 +747,11 @@ export type AdminTaskReconciliationItemDto = {
   /* 主键id */
   id: number;
   /* 最近事件摘要 */
-  latestEvent: TaskLatestEventSummaryDto;
+  latestEvent: null | TaskLatestEventSummaryDto;
   /* 是否需要奖励结算（0=无奖励；1=需要奖励结算） */
   rewardApplicable: number;
   /* 奖励结算摘要 */
-  rewardSettlement: TaskRewardSettlementSummaryDto;
+  rewardSettlement: null | TaskRewardSettlementSummaryDto;
   /* 奖励结算事实 ID */
   rewardSettlementId: null | number;
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
@@ -805,7 +759,7 @@ export type AdminTaskReconciliationItemDto = {
   /* 步骤进度列表 */
   steps: TaskInstanceStepViewDto[];
   /* 任务头详情 */
-  task: AdminTaskDefinitionDetailDto;
+  task: AdminTaskDefinitionDetailDto | null;
   /* 任务头 ID */
   taskId: number;
   /* 唯一事实摘要列表 */
@@ -814,7 +768,6 @@ export type AdminTaskReconciliationItemDto = {
   updatedAt: string;
   /* 用户 ID */
   userId: number;
-
   /* 统一后的用户可见状态（claimable=可领取；claimed=已领取；in_progress=进行中；completed=已完成；reward_pending=奖励待补偿；reward_granted=奖励已到账；expired=已过期；unavailable=当前不可用） */
   visibleStatus:
     | 'claimable'
@@ -833,8 +786,6 @@ export type AdminTaskReconciliationItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskLatestEventSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 最近事件是否被接受计入进度 */
   accepted: boolean;
   /* 最近事件业务键 */
@@ -845,7 +796,6 @@ export type TaskLatestEventSummaryDto = {
   rejectReason: null | string;
   /* 最近事件目标 ID */
   targetId: null | number;
-
   /* 最近事件目标类型 */
   targetType: null | string;
 };
@@ -856,8 +806,6 @@ export type TaskLatestEventSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskUniqueFactSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 去重范围（1=按周期唯一；2=终身唯一） */
   dedupeScope: 1 | 2;
   /* 当前实例对应作用域内已命中的唯一事实数量 */
@@ -866,7 +814,6 @@ export type TaskUniqueFactSummaryDto = {
   latestDimensionValue: null | string;
   /* 最近一次命中的发生时间 */
   latestOccurredAt: null | string;
-
   /* 步骤定义 ID */
   stepId: number;
 };
@@ -877,8 +824,6 @@ export type TaskUniqueFactSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskRewardRetryResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 任务实例 ID */
   instanceId: number;
   /* 本次重试处理结果说明 */
@@ -887,7 +832,6 @@ export type TaskRewardRetryResultDto = {
   rewardSettlementId: null | number;
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus: 0 | 1 | 2 | null;
-
   /* 本次重试后是否已补偿成功 */
   succeeded: boolean;
 };
@@ -898,8 +842,6 @@ export type TaskRewardRetryResultDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type RetryTaskRewardBatchDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 创建结束日期（应用时区 YYYY-MM-DD，后端按次日零点开区间处理） */
   endDate?: null | string;
   /* 指定重试的任务实例 ID 列表；传入后只扫描这些实例 */
@@ -914,7 +856,6 @@ export type RetryTaskRewardBatchDto = {
   startDate?: null | string;
   /* 任务 ID；来自后台筛选条件 */
   taskId?: null | number;
-
   /* 用户 ID；来自后台筛选条件 */
   userId?: null | number;
 };
@@ -925,8 +866,6 @@ export type RetryTaskRewardBatchDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskRewardRetryBatchResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 本次补偿后仍未成功的任务实例数 */
   failedCount: number;
   /* 失败摘要列表，最多返回前 20 条 */
@@ -935,7 +874,6 @@ export type TaskRewardRetryBatchResultDto = {
   scannedCount: number;
   /* 本次扫描后判定不可重试并跳过的任务实例数 */
   skippedCount: number;
-
   /* 本次补偿成功数 */
   succeededCount: number;
 };
@@ -946,13 +884,10 @@ export type TaskRewardRetryBatchResultDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskRewardRetryFailureDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 任务实例 ID */
   instanceId: number;
   /* 失败原因摘要 */
   message: string;
-
   /* 奖励结算事实 ID */
   rewardSettlementId: null | number;
 };
@@ -963,8 +898,6 @@ export type TaskRewardRetryFailureDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskEventFailurePageItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 创建时间 */
   createdAt: string;
   /* 事件业务幂等键 */
@@ -1003,7 +936,6 @@ export type TaskEventFailurePageItemDto = {
   terminalReason: null | string;
   /* 更新时间 */
   updatedAt: string;
-
   /* 归属用户 ID */
   userId: number;
 };
@@ -1014,15 +946,12 @@ export type TaskEventFailurePageItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskEventFailureRetryResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 失败事实 ID */
   failureId: number;
   /* 处理结果说明 */
   message: string;
   /* 重试后的累计重试次数 */
   retryCount: number;
-
   /* 重试后的失败事实状态（1=待重试；2=重试中；3=已解决；4=终态失败） */
   status: 1 | 2 | 3 | 4;
 };
@@ -1033,9 +962,6 @@ export type TaskEventFailureRetryResultDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type RetryTaskEventFailureBatchDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 本次最多扫描的待重试失败事实数，最大 500 */
   limit?: null | number;
 };
@@ -1046,8 +972,6 @@ export type RetryTaskEventFailureBatchDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskEventFailureRetryBatchResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 本次重试后仍失败的事实数 */
   failedCount: number;
   /* 失败摘要列表，最多返回前 20 条 */
@@ -1056,7 +980,6 @@ export type TaskEventFailureRetryBatchResultDto = {
   scannedCount: number;
   /* 本次扫描后跳过的事实数 */
   skippedCount: number;
-
   /* 本次重试成功数 */
   succeededCount: number;
 };
@@ -1067,11 +990,8 @@ export type TaskEventFailureRetryBatchResultDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TaskEventFailureRetryFailureDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 失败事实 ID */
   failureId: number;
-
   /* 失败原因摘要 */
   message: string;
 };

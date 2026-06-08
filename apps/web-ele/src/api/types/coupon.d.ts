@@ -4,35 +4,29 @@
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CouponDefinitionPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
   couponType?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type CouponDefinitionPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: BaseCouponDefinitionDto[];
 
@@ -88,8 +82,6 @@ export type CouponGrantWorkflowCreateResponse = WorkflowJobDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type BaseCouponDefinitionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 补签次数 */
   benefitCount?: null | number;
   /* VIP 试用天数 */
@@ -112,7 +104,6 @@ export type BaseCouponDefinitionDto = {
   updatedAt: string;
   /* 单张券可用次数 */
   usageLimit?: null | number;
-
   /* 有效天数，后台创建的券定义必须为正整数 */
   validDays?: null | number;
 };
@@ -123,8 +114,6 @@ export type BaseCouponDefinitionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateCouponDefinitionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 补签次数 */
   benefitCount?: null | number;
   /* VIP 试用天数 */
@@ -141,7 +130,6 @@ export type CreateCouponDefinitionDto = {
   name: string;
   /* 单张券可用次数 */
   usageLimit?: null | number;
-
   /* 有效天数，后台创建的券定义必须为正整数 */
   validDays?: null | number;
 };
@@ -152,8 +140,6 @@ export type CreateCouponDefinitionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateCouponDefinitionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 补签次数 */
   benefitCount?: null | number;
   /* VIP 试用天数 */
@@ -172,7 +158,6 @@ export type UpdateCouponDefinitionDto = {
   name?: string;
   /* 单张券可用次数 */
   usageLimit?: null | number;
-
   /* 有效天数，后台创建的券定义必须为正整数 */
   validDays?: null | number;
 };
@@ -183,11 +168,8 @@ export type UpdateCouponDefinitionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateEnabledStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
-
   /* 状态 true启用 false禁用 */
   isEnabled: boolean;
 };
@@ -198,8 +180,6 @@ export type UpdateEnabledStatusDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateCouponGrantWorkflowDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 券定义 ID */
   couponDefinitionId: number;
   /* 后台批量发券操作幂等 ID */
@@ -208,7 +188,6 @@ export type CreateCouponGrantWorkflowDto = {
   quantity?: null | number;
   /* 后台备注 */
   remark?: null | string;
-
   /* APP 用户 ID 列表 */
   userIds: number[];
 };
@@ -219,8 +198,6 @@ export type CreateCouponGrantWorkflowDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type WorkflowJobDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 归档时间；为空表示未归档 */
   archivedAt?: null | string;
   /* 取消请求时间 */
@@ -265,7 +242,6 @@ export type WorkflowJobDto = {
   summary?: null | Record<string, any>;
   /* 更新时间 */
   updatedAt: string;
-
   /* 工作流类型 */
   workflowType: string;
 };

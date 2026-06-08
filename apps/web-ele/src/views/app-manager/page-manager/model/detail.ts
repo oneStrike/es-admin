@@ -90,11 +90,5 @@ export function getDetailSections(detail: BaseAppPageDto) {
         },
       ],
     },
-    {
-      title: '页面配置',
-      show: !!detail?.pageConfig,
-      type: 'json' as const,
-      content: detail?.pageConfig,
-    },
   ];
 }

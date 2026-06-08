@@ -41,6 +41,11 @@ import {
 type AnnouncementSubmitValues =
   | AnnouncementCreateRequest
   | AnnouncementUpdateRequest;
+type AnnouncementFormRecord = Awaited<
+  ReturnType<typeof announcementDetailApi>
+> & {
+  dateTimeRange?: [null | string | undefined, null | string | undefined];
+};
 type AnnouncementSearchValues = Partial<
   Pick<
     AnnouncementPageRequest,
@@ -188,7 +193,7 @@ function buildAnnouncementPageQuery(
 }
 
 async function openFormModal(row?: AnnouncementRow) {
-  let record;
+  let record: AnnouncementFormRecord | undefined;
   if (row) {
     record = await announcementDetailApi({ id: row.id });
     record.dateTimeRange = [record.publishStartTime, record.publishEndTime];

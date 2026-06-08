@@ -53,11 +53,15 @@ import {
   userStatusMap,
 } from './model/shared';
 
+type UserProfileRow = AdminAppUserPageItemDto & {
+  loading?: boolean;
+};
+
 const userStore = useUserStore();
 
 const isSuperAdmin = computed(() => userStore.userInfo?.role === 1);
 
-const gridOptions: VxeGridProps<AdminAppUserPageItemDto> = {
+const gridOptions: VxeGridProps<UserProfileRow> = {
   columns: userColumns,
   height: 'auto',
   proxyConfig: {
@@ -149,7 +153,7 @@ function optionalValue<T>(value?: null | T) {
   return value || undefined;
 }
 
-async function toggleUserEnabled(row: AdminAppUserPageItemDto) {
+async function toggleUserEnabled(row: UserProfileRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -173,7 +177,7 @@ async function toggleUserEnabled(row: AdminAppUserPageItemDto) {
   }
 }
 
-function openDetailModal(row: AdminAppUserPageItemDto) {
+function openDetailModal(row: UserProfileRow) {
   if (row.deletedAt) {
     useMessage.warning('已删除用户不能查看详情');
     return;
@@ -182,7 +186,7 @@ function openDetailModal(row: AdminAppUserPageItemDto) {
   detailApi.setData({ id: row.id }).open();
 }
 
-function openOperationModal(row: AdminAppUserPageItemDto) {
+function openOperationModal(row: UserProfileRow) {
   if (row.deletedAt) {
     useMessage.warning('已删除用户不能打开运营');
     return;
@@ -214,7 +218,7 @@ function openCreateModal() {
     .open();
 }
 
-async function openEditModal(row: AdminAppUserPageItemDto) {
+async function openEditModal(row: UserProfileRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -237,7 +241,7 @@ async function openEditModal(row: AdminAppUserPageItemDto) {
     .open();
 }
 
-function openStatusModal(row: AdminAppUserPageItemDto) {
+function openStatusModal(row: UserProfileRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -263,7 +267,7 @@ function openStatusModal(row: AdminAppUserPageItemDto) {
     .open();
 }
 
-function openPasswordModal(row: AdminAppUserPageItemDto) {
+function openPasswordModal(row: UserProfileRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -364,7 +368,7 @@ async function handleStatusSubmit(values: AppUsersUpdateStatusRequest) {
   await gridApi.reload();
 }
 
-async function handleRowCommand(command: string, row: AdminAppUserPageItemDto) {
+async function handleRowCommand(command: string, row: UserProfileRow) {
   if (!isSuperAdmin.value) {
     useMessage.warning('只有超级管理员才能执行此操作');
     return;
@@ -425,7 +429,7 @@ function mapDetailToEditRecord(
   };
 }
 
-function getUserActions(row: AdminAppUserPageItemDto): ActionItem[] {
+function getUserActions(row: UserProfileRow): ActionItem[] {
   return [
     {
       disabled: !!row.deletedAt,
@@ -442,7 +446,7 @@ function getUserActions(row: AdminAppUserPageItemDto): ActionItem[] {
   ];
 }
 
-function getUserDropdownActions(row: AdminAppUserPageItemDto): ActionItem[] {
+function getUserDropdownActions(row: UserProfileRow): ActionItem[] {
   if (!isSuperAdmin.value) {
     return [];
   }

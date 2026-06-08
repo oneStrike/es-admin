@@ -465,7 +465,7 @@ export const userColumns =
       width: 90,
     },
     levelName: {
-      formatter: ({ cellValue, row }) => cellValue ?? row.level?.name ?? '-',
+      formatter: ({ cellValue }) => cellValue ?? '-',
       minWidth: 120,
     },
     points: {

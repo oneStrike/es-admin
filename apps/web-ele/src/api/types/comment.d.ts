@@ -4,17 +4,14 @@
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CommentPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 实际回复的根评论 ID */
-  actualReplyToId?: null | number;
+  actualReplyToId?: number;
 
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: number;
 
   /* 创建日期结束（应用时区自然日，YYYY-MM-DD） */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 主键id */
   id?: number;
@@ -23,22 +20,22 @@ export type CommentPageRequest = {
   isHidden?: boolean;
 
   /* 关键词搜索（评论内容） */
-  keyword?: null | string;
+  keyword?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 回复的评论 ID */
-  replyToId?: null | number;
+  replyToId?: number;
 
   /* 创建日期开始（应用时区自然日，YYYY-MM-DD） */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 目标 ID */
   targetId?: number;
@@ -51,9 +48,6 @@ export type CommentPageRequest = {
 };
 
 export type CommentPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: AdminCommentPageItemDto[];
 
@@ -73,9 +67,6 @@ export type CommentPageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CommentDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -115,8 +106,6 @@ export type CommentDeleteResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminCommentPageItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 实际回复的根评论 ID */
   actualReplyToId?: null | number;
   /* 审核时间 */
@@ -144,20 +133,19 @@ export type AdminCommentPageItemDto = {
   /* 回复的评论 ID */
   replyToId?: null | number;
   /* 被回复评论展示摘要 */
-  replyToSummary?: InteractionReplyCommentSummaryDto;
+  replyToSummary?: InteractionReplyCommentSummaryDto | null;
   /* 敏感词命中记录 */
   sensitiveWordHits?: SensitiveWordHitDto[];
   /* 目标 ID */
   targetId: number;
   /* 评论目标展示摘要 */
-  targetSummary?: InteractionCommentTargetSummaryDto;
+  targetSummary?: InteractionCommentTargetSummaryDto | null;
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType: 1 | 2 | 3 | 4 | 5;
   /* 更新时间 */
   updatedAt: string;
   /* 评论作者信息 */
   user?: AdminCommentUserDto;
-
   /* 评论用户 ID */
   userId: number;
 };
@@ -168,8 +156,6 @@ export type AdminCommentPageItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type SensitiveWordHitDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 结束位置 */
   end: number;
   /* 命中字段（title=标题；content=正文） */
@@ -182,7 +168,6 @@ export type SensitiveWordHitDto = {
   start: number;
   /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
   type: 1 | 2 | 3 | 4 | 5;
-
   /* 敏感词 */
   word: string;
 };
@@ -193,8 +178,6 @@ export type SensitiveWordHitDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminCommentUserDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 头像URL */
   avatarUrl?: null | string;
   /* 主键id */
@@ -203,7 +186,6 @@ export type AdminCommentUserDto = {
   isEnabled: boolean;
   /* 昵称 */
   nickname: string;
-
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
   status: 1 | 2 | 3 | 4 | 5;
 };
@@ -214,8 +196,6 @@ export type AdminCommentUserDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type InteractionCommentTargetSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 目标审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: 0 | 1 | 2 | null;
   /* 目标删除时间 */
@@ -234,7 +214,6 @@ export type InteractionCommentTargetSummaryDto = {
   targetTypeName: string;
   /* 目标标题 */
   title?: null | string;
-
   /* 章节所属作品名称 */
   workName?: null | string;
 };
@@ -245,8 +224,6 @@ export type InteractionCommentTargetSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type InteractionReplyCommentSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 被回复评论审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2;
   /* 被回复评论 ID */
@@ -261,7 +238,6 @@ export type InteractionReplyCommentSummaryDto = {
   userIsEnabled?: boolean | null;
   /* 被回复评论用户昵称 */
   userNickname?: null | string;
-
   /* 被回复评论用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
   userStatus?: 1 | 2 | 3 | 4 | 5 | null;
 };
@@ -272,8 +248,6 @@ export type InteractionReplyCommentSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminCommentDetailDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 实际回复的根评论 ID */
   actualReplyToId?: null | number;
   /* 审核时间 */
@@ -281,7 +255,7 @@ export type AdminCommentDetailDto = {
   /* 审核人 ID */
   auditById?: null | number;
   /* 审核人展示摘要 */
-  auditorSummary?: InteractionActorSummaryDto;
+  auditorSummary?: InteractionActorSummaryDto | null;
   /* 审核原因 */
   auditReason?: null | string;
   /* 审核角色（0=版主；1=管理员） */
@@ -309,14 +283,13 @@ export type AdminCommentDetailDto = {
   /* 目标 ID */
   targetId: number;
   /* 评论目标展示摘要 */
-  targetSummary?: InteractionCommentTargetSummaryDto;
+  targetSummary?: InteractionCommentTargetSummaryDto | null;
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType: 1 | 2 | 3 | 4 | 5;
   /* 更新时间 */
   updatedAt: string;
   /* 评论作者信息 */
   user?: AdminCommentUserDto;
-
   /* 评论用户 ID */
   userId: number;
 };
@@ -327,8 +300,6 @@ export type AdminCommentDetailDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type InteractionActorSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 头像 */
   avatar?: null | string;
   /* 主键id */
@@ -337,7 +308,6 @@ export type InteractionActorSummaryDto = {
   nickname?: null | string;
   /* 角色名称 */
   roleName?: null | string;
-
   /* 用户名 */
   username: string;
 };
@@ -348,8 +318,6 @@ export type InteractionActorSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminCommentReplyTargetDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 实际回复的根评论 ID */
   actualReplyToId?: null | number;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
@@ -366,7 +334,6 @@ export type AdminCommentReplyTargetDto = {
   replyToId?: null | number;
   /* 被回复评论的作者信息 */
   user?: AdminCommentUserDto;
-
   /* 评论用户 ID */
   userId: number;
 };
@@ -377,13 +344,10 @@ export type AdminCommentReplyTargetDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateCommentAuditStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 审核原因 */
   auditReason?: null | string;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2;
-
   /* 主键id */
   id: number;
 };
@@ -394,11 +358,8 @@ export type UpdateCommentAuditStatusDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateCommentHiddenDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
-
   /* 是否隐藏 */
   isHidden: boolean;
 };
@@ -409,9 +370,6 @@ export type UpdateCommentHiddenDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };

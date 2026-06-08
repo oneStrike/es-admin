@@ -4,20 +4,17 @@
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AuditPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 操作类型（1=登录；2=登出；3=创建；4=更新；5=删除；6=上传；7=下载；8=导出；9=导入） */
-  actionType?: null | number;
+  actionType?: number;
 
   /* 接口类型（1=管理端；2=应用端；3=系统端；4=公共端） */
-  apiType?: null | number;
+  apiType?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* IP地址 */
-  ip?: null | string;
+  ip?: string;
 
   /* 操作是否成功 */
   isSuccess?: boolean;
@@ -26,31 +23,28 @@ export type AuditPageRequest = {
   method?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 请求路径 */
   path?: string;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 用户ID */
-  userId?: null | number;
+  userId?: number;
 
   /* 用户名 */
-  username?: null | string;
+  username?: string;
 };
 
 export type AuditPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: AuditItemDto[];
 
@@ -70,8 +64,6 @@ export type AuditPageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AuditItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 操作类型（1=登录；2=登出；3=创建；4=更新；5=删除；6=上传；7=下载；8=导出；9=导入） */
   actionType?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
   /* 操作类型展示文案 */
@@ -102,7 +94,6 @@ export type AuditItemDto = {
   userAgent?: null | string;
   /* 用户ID */
   userId?: null | number;
-
   /* 用户名 */
   username?: null | string;
 };

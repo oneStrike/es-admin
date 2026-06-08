@@ -5,6 +5,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   AdminMessageNotificationTemplateDto,
   MessageNotificationTemplatesCreateRequest,
+  MessageNotificationTemplatesPreviewResponse,
   MessageNotificationTemplatesUpdateEnabledRequest,
   MessageNotificationTemplatesUpdateRequest,
 } from '#/api/types';
@@ -17,14 +18,14 @@ import { useVbenForm } from '#/adapter/form';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   messageNotificationTemplatesCreateApi,
-  messageNotificationTemplatesDeleteApi,
   messageNotificationTemplatesDetailApi,
   messageNotificationTemplatesPageApi,
+  messageNotificationTemplatesPreviewApi,
   messageNotificationTemplatesUpdateApi,
   messageNotificationTemplatesUpdateEnabledApi,
 } from '#/api/core';
 import RecordDetailModal from '#/components/record-detail-modal';
-import { useConfirm, useMessage } from '#/hooks/useFeedback';
+import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import {
@@ -57,6 +58,10 @@ type TemplateFormValues = Partial<
 
 const editingRecord = ref<AdminMessageNotificationTemplateDto | null>(null);
 const selectedCategoryKey = ref('');
+const previewLoading = ref(false);
+const templatePreview = ref<MessageNotificationTemplatesPreviewResponse | null>(
+  null,
+);
 
 const availableTemplateVariables = computed(() =>
   getTemplateVariables(selectedCategoryKey.value),
@@ -121,11 +126,17 @@ const [TemplateModal, templateModalApi] = useVbenModal({
     if (!isOpen) {
       editingRecord.value = null;
       selectedCategoryKey.value = '';
+      templatePreview.value = null;
       return;
     }
 
     templateModalApi.setState({
       title: editingRecord.value ? '编辑通知模板' : '新增通知模板',
+    });
+    templateFormApi.setState({
+      schema: createTemplateFormSchema(handleCategoryChange, {
+        categoryDisabled: Boolean(editingRecord.value),
+      }),
     });
 
     void nextTick(async () => {
@@ -156,6 +167,7 @@ async function openFormModal(row?: TemplateRow) {
 
 async function handleCategoryChange(categoryKey?: string) {
   selectedCategoryKey.value = categoryKey || '';
+  templatePreview.value = null;
 
   if (!isNotificationCategoryKey(categoryKey)) {
     return;
@@ -195,8 +207,11 @@ async function handleSubmit(values: TemplateFormValues) {
 
   await (editingRecord.value
     ? messageNotificationTemplatesUpdateApi({
-        ...payload,
+        contentTemplate: payload.contentTemplate,
         id: editingRecord.value.id,
+        isEnabled: payload.isEnabled,
+        remark: payload.remark,
+        titleTemplate: payload.titleTemplate,
       } satisfies MessageNotificationTemplatesUpdateRequest)
     : messageNotificationTemplatesCreateApi(payload));
 
@@ -220,6 +235,7 @@ async function applyCurrentCategoryDefaults() {
   }
 
   await templateFormApi.setValues(defaults);
+  templatePreview.value = null;
 }
 
 async function appendTemplateVariable(
@@ -231,6 +247,7 @@ async function appendTemplateVariable(
   await templateFormApi.setValues({
     [fieldName]: `${currentValue}${variable}`,
   });
+  templatePreview.value = null;
 }
 
 async function toggleEnabled(row: TemplateRow) {
@@ -247,22 +264,6 @@ async function toggleEnabled(row: TemplateRow) {
   }
 }
 
-async function deleteTemplate(row: TemplateRow) {
-  await messageNotificationTemplatesDeleteApi({ id: row.id });
-  useMessage.success('删除成功');
-  await gridApi.reload();
-}
-
-async function confirmDeleteTemplate(row: TemplateRow) {
-  const confirmed = await useConfirm({
-    content: '确认删除当前通知模板?',
-    successMessage: false,
-  });
-  if (!confirmed) return;
-
-  await deleteTemplate(row);
-}
-
 function getTemplateActions(row: TemplateRow): ActionItem[] {
   return [
     {
@@ -275,13 +276,34 @@ function getTemplateActions(row: TemplateRow): ActionItem[] {
       text: '编辑',
       onClick: () => openFormModal(row),
     },
-    {
-      danger: true,
-      key: 'delete',
-      text: '删除',
-      onClick: () => confirmDeleteTemplate(row),
-    },
   ];
+}
+
+async function previewCurrentTemplate() {
+  const values = await templateFormApi.getValues();
+  if (!isNotificationCategoryKey(values.categoryKey)) {
+    useMessage.warning('请先选择通知分类');
+    return;
+  }
+
+  const titleTemplate = values.titleTemplate?.trim();
+  const contentTemplate = values.contentTemplate?.trim();
+  if (!titleTemplate || !contentTemplate) {
+    useMessage.warning('请完整填写标题模板和正文模板');
+    return;
+  }
+
+  previewLoading.value = true;
+  try {
+    templatePreview.value = await messageNotificationTemplatesPreviewApi({
+      categoryKey: values.categoryKey,
+      contentTemplate,
+      isEnabled: values.isEnabled ?? true,
+      titleTemplate,
+    });
+  } finally {
+    previewLoading.value = false;
+  }
 }
 </script>
 
@@ -297,9 +319,6 @@ function getTemplateActions(row: TemplateRow): ActionItem[] {
       <template #category="{ row }">
         <div class="min-w-0">
           <div class="truncate">{{ formatCategory(row) }}</div>
-          <div class="truncate text-xs text-gray-400">
-            {{ row.categoryKey }}
-          </div>
         </div>
       </template>
 
@@ -332,6 +351,9 @@ function getTemplateActions(row: TemplateRow): ActionItem[] {
           <el-button type="primary" @click="applyCurrentCategoryDefaults">
             套用默认模板
           </el-button>
+          <el-button :loading="previewLoading" @click="previewCurrentTemplate">
+            预览
+          </el-button>
         </div>
 
         <div class="mt-3 flex flex-wrap gap-2">
@@ -356,6 +378,27 @@ function getTemplateActions(row: TemplateRow): ActionItem[] {
               </el-button>
             </el-button-group>
           </el-tooltip>
+        </div>
+
+        <div
+          v-if="templatePreview"
+          class="mt-4 rounded-md border border-border bg-[var(--el-fill-color-lighter)] p-3"
+        >
+          <div class="flex flex-wrap items-center gap-2">
+            <el-tag :type="templatePreview.usedTemplate ? 'success' : 'info'">
+              {{ templatePreview.usedTemplate ? '模板生效' : '使用回退' }}
+            </el-tag>
+            <el-text type="info">{{ templatePreview.categoryLabel }}</el-text>
+            <el-text v-if="templatePreview.fallbackReason" type="warning">
+              {{ templatePreview.fallbackReason }}
+            </el-text>
+          </div>
+          <div class="mt-3 text-sm font-medium">
+            {{ templatePreview.title }}
+          </div>
+          <div class="mt-2 whitespace-pre-wrap text-sm text-gray-600">
+            {{ templatePreview.content }}
+          </div>
         </div>
       </div>
 

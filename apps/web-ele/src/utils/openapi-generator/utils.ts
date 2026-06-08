@@ -129,9 +129,17 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
           return 'Record<string, any>';
         }
 
-        return applyNullable(
-          `{\n${props.join(';\n')};\n  /** 任意合法数值 */\n  [property: string]: any;\n}`,
-        );
+        let extraProperty = '';
+        if (
+          schema.additionalProperties &&
+          typeof schema.additionalProperties === 'object'
+        ) {
+          extraProperty = `;\n  /** 任意合法数值 */\n  [property: string]: ${mapSchemaToType(schema.additionalProperties, depth + 1)}`;
+        } else if (schema.additionalProperties === true) {
+          extraProperty = ';\n  /** 任意合法数值 */\n  [property: string]: any';
+        }
+
+        return applyNullable(`{\n${props.join(';\n')}${extraProperty};\n}`);
       }
 
       // 处理 additionalProperties

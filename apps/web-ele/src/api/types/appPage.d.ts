@@ -13,9 +13,6 @@ export type AppPageCreateResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AppPagePageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
   accessLevel?: number;
 
@@ -23,10 +20,10 @@ export type AppPagePageRequest = {
   code?: string;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
-  enablePlatform?: null | string;
+  enablePlatform?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 页面启用状态 */
   isEnabled?: boolean;
@@ -35,22 +32,19 @@ export type AppPagePageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type AppPagePageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: BaseAppPageDto[];
 
@@ -70,9 +64,6 @@ export type AppPagePageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AppPageDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -85,9 +76,6 @@ export type AppPageDetailResponse = BaseAppPageDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AppPageCodeDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 页面编码（唯一标识） */
   code: string;
 };
@@ -118,8 +106,6 @@ export type AppPageDeleteResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateAppPageDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
   accessLevel: 0 | 1 | 2 | 3;
   /* 页面编码（唯一标识） */
@@ -134,7 +120,6 @@ export type CreateAppPageDto = {
   name: string;
   /* 页面路径（URL 路径） */
   path: string;
-
   /* 页面标题 */
   title: string;
 };
@@ -145,8 +130,6 @@ export type CreateAppPageDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type BaseAppPageDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
   accessLevel: 0 | 1 | 2 | 3;
   /* 页面编码（唯一标识） */
@@ -167,7 +150,6 @@ export type BaseAppPageDto = {
   path: string;
   /* 页面标题 */
   title: string;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -178,8 +160,6 @@ export type BaseAppPageDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateAppPageDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
   accessLevel?: 0 | 1 | 2 | 3;
   /* 页面编码（唯一标识） */
@@ -196,7 +176,6 @@ export type UpdateAppPageDto = {
   name?: string;
   /* 页面路径（URL 路径） */
   path?: string;
-
   /* 页面标题 */
   title?: string;
 };
@@ -207,9 +186,6 @@ export type UpdateAppPageDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type IdsDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id集合 */
   ids: number[];
 };

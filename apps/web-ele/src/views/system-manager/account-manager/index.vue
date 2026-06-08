@@ -38,6 +38,8 @@ defineOptions({
   name: 'SystemAccountManager',
 });
 
+type SystemUserFormValues = SystemUserCreateRequest | UpdateUserDto;
+
 const userStore = useUserStore();
 
 // 检查是否为超级管理员 (role: 1)
@@ -89,9 +91,9 @@ async function openFormModal(row?: SystemUserRow) {
 }
 
 function buildSystemUserPayload(
-  values: SystemUserCreateRequest | UpdateUserDto,
+  values: SystemUserFormValues,
 ): SystemUserCreateRequest | UpdateUserDto {
-  if ('id' in values && typeof values.id === 'number') {
+  if (isSystemUserUpdate(values)) {
     return {
       id: values.id,
       username: values.username,
@@ -112,8 +114,14 @@ function buildSystemUserPayload(
   } satisfies SystemUserCreateRequest;
 }
 
-async function handleSubmit(values: SystemUserCreateRequest | UpdateUserDto) {
-  if ('id' in values && values.id === userStore.userInfo?.id) {
+function isSystemUserUpdate(
+  values: SystemUserFormValues,
+): values is UpdateUserDto {
+  return 'id' in values && typeof values.id === 'number';
+}
+
+async function handleSubmit(values: SystemUserFormValues) {
+  if (isSystemUserUpdate(values) && values.id === userStore.userInfo?.id) {
     const selfDowngrade =
       values.role !== undefined && values.role !== userStore.userInfo?.role;
     const selfDisable = values.isEnabled === false;

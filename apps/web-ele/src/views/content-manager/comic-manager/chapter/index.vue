@@ -268,15 +268,21 @@ async function handleSubmit(
 
   const payload = buildComicChapterPayload(values, data.workId);
 
-  await (payload?.id
-    ? contentComicChapterUpdateApi(payload as ContentComicChapterUpdateRequest)
-    : contentComicChapterCreateApi(
-        payload as ContentComicChapterCreateRequest,
-      ));
+  await (isComicChapterUpdatePayload(payload)
+    ? contentComicChapterUpdateApi(payload)
+    : contentComicChapterCreateApi(payload));
 
   formApi.close();
-  useMessage.success(payload?.id ? '章节更新成功' : '章节创建成功');
+  useMessage.success(
+    isComicChapterUpdatePayload(payload) ? '章节更新成功' : '章节创建成功',
+  );
   gridApi.reload();
+}
+
+function isComicChapterUpdatePayload(
+  payload: ContentComicChapterCreateRequest | ContentComicChapterUpdateRequest,
+): payload is ContentComicChapterUpdateRequest {
+  return 'id' in payload && typeof payload.id === 'number';
 }
 
 function buildComicChapterPayload(

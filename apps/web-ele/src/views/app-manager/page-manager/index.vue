@@ -31,7 +31,11 @@ import {
   pageFilter,
 } from './model/shared';
 
-const gridOptions: VxeGridProps<BaseAppPageDto> = {
+type AppPageRow = BaseAppPageDto & {
+  loading?: boolean;
+};
+
+const gridOptions: VxeGridProps<AppPageRow> = {
   columns: pageColumns,
   height: 'auto',
   proxyConfig: {
@@ -61,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-async function openFormModal(row?: BaseAppPageDto) {
+async function openFormModal(row?: AppPageRow) {
   let record;
   if (row) {
     record = await appPageDetailApi({ id: row.id });
@@ -99,13 +103,13 @@ async function handleSubmit(values: CreateAppPageDto | UpdateAppPageDto) {
   gridApi.reload();
 }
 
-async function deletePage(record: BaseAppPageDto) {
+async function deletePage(record: AppPageRow) {
   await appPageDeleteApi({ ids: [record.id] });
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function confirmDeletePage(record: BaseAppPageDto) {
+async function confirmDeletePage(record: AppPageRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前项?',
     successMessage: false,
@@ -120,7 +124,7 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '页面详情',
 });
 
-async function toggleEnableStatus(record: BaseAppPageDto) {
+async function toggleEnableStatus(record: AppPageRow) {
   record.loading = true;
   try {
     await appPageUpdateApi({
@@ -134,7 +138,7 @@ async function toggleEnableStatus(record: BaseAppPageDto) {
   }
 }
 
-function getPageActions(row: BaseAppPageDto): ActionItem[] {
+function getPageActions(row: AppPageRow): ActionItem[] {
   return [
     {
       key: 'detail',

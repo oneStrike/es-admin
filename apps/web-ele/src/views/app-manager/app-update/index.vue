@@ -35,7 +35,11 @@ import {
   mapAppUpdateDetailToFormValues,
 } from './model/shared';
 
-const gridOptions: VxeGridProps<AppUpdateReleaseListItemDto> = {
+type AppUpdateReleaseRow = AppUpdateReleaseListItemDto & {
+  loading?: boolean;
+};
+
+const gridOptions: VxeGridProps<AppUpdateReleaseRow> = {
   columns: appUpdateColumns,
   height: 'auto',
   proxyConfig: {
@@ -68,7 +72,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions,
 });
 
-async function openFormModal(row?: AppUpdateReleaseListItemDto) {
+async function openFormModal(row?: AppUpdateReleaseRow) {
   let record;
   if (row) {
     record = mapAppUpdateDetailToFormValues(
@@ -89,7 +93,7 @@ async function handleSubmit(values: AppUpdateFormValues) {
   gridApi.reload();
 }
 
-async function togglePublishStatus(record: AppUpdateReleaseListItemDto) {
+async function togglePublishStatus(record: AppUpdateReleaseRow) {
   record.loading = true;
   try {
     await appUpdateUpdateStatusApi({
@@ -108,7 +112,7 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '版本更新详情',
 });
 
-function getAppUpdateActions(row: AppUpdateReleaseListItemDto): ActionItem[] {
+function getAppUpdateActions(row: AppUpdateReleaseRow): ActionItem[] {
   return [
     {
       key: 'detail',

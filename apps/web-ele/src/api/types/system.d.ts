@@ -1,3 +1,7 @@
+export type SystemIp2regionStatusResponse = Ip2regionRuntimeStatusDto;
+
+export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto;
+
 export type SystemConfigResponse = BaseSystemConfigDto;
 
 /**
@@ -9,9 +13,29 @@ export type SystemUpdateRequest = UpdateSystemConfigDto;
 
 export type SystemUpdateResponse = boolean;
 
-export type SystemIp2regionStatusResponse = Ip2regionRuntimeStatusDto;
-
-export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto;
+/**
+ *  类型定义 [Ip2regionRuntimeStatusDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type Ip2regionRuntimeStatusDto = {
+  /* 当前生效时间 */
+  activatedAt?: null | string;
+  /* 当前生效文件名 */
+  fileName?: null | string;
+  /* 当前生效文件绝对路径 */
+  filePath?: null | string;
+  /* 当前生效文件大小（字节） */
+  fileSize?: null | number;
+  /* 当前进程是否已加载可用属地库 */
+  ready: boolean;
+  /* 当前是否正在执行热切换 */
+  reloading: boolean;
+  /* 生效库来源（托管 active 目录；环境变量显式路径；仓库默认路径；无可用属地库） */
+  source: 'configured-path' | 'default-path' | 'managed-active' | 'unavailable';
+  /* ip2region 专用存储根目录 */
+  storageDir?: null | string;
+};
 
 /**
  *  类型定义 [BaseSystemConfigDto]
@@ -19,8 +43,6 @@ export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type BaseSystemConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 阿里云配置 */
   aliyunConfig?: AliyunConfigDto;
   /* 内容审核策略 */
@@ -45,7 +67,6 @@ export type BaseSystemConfigDto = {
   updatedById?: null | number;
   /* 上传配置 */
   uploadConfig?: UploadConfigDto;
-
   /* 钱包虚拟币展示配置 */
   walletCurrencyDisplayConfig?: WalletCurrencyDisplayConfigDto;
 };
@@ -56,13 +77,10 @@ export type BaseSystemConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AliyunConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* AccessKey ID（敏感字段，前端输入明文或 RSA 加密值） */
   accessKeyId?: null | string;
   /* AccessKey Secret（敏感字段，前端输入明文或 RSA 加密值） */
   accessKeySecret?: null | string;
-
   /* 短信服务配置 */
   sms?: AliyunSmsConfigDto;
 };
@@ -73,15 +91,12 @@ export type AliyunConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AliyunSmsConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 短信服务端点 */
   endpoint?: null | string;
   /* 短信签名名称 */
   signName?: null | string;
   /* 验证码过期时间（秒） */
   verifyCodeExpire?: null | number;
-
   /* 验证码长度 */
   verifyCodeLength?: null | number;
 };
@@ -92,8 +107,6 @@ export type AliyunSmsConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type SiteConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 联系邮箱 */
   contactEmail?: null | string;
   /* ICP备案号 */
@@ -106,7 +119,6 @@ export type SiteConfigDto = {
   siteKeywords?: null | string;
   /* 站点Logo URL */
   siteLogo?: null | string;
-
   /* 站点名称 */
   siteName?: null | string;
 };
@@ -117,9 +129,6 @@ export type SiteConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type OperationConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* forum 话题配置 */
   forumHashtagConfig?: ForumHashtagConfigDto;
 };
@@ -130,9 +139,6 @@ export type OperationConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ForumHashtagConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 话题创建模式（1=仅引用已存在且可用话题；2=正文中允许自动创建话题） */
   creationMode?: null | number;
 };
@@ -143,9 +149,6 @@ export type ForumHashtagConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type SecurityConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 远程图片导入安全配置 */
   remoteImageImport?: RemoteImageImportSecurityConfigDto;
 };
@@ -156,9 +159,6 @@ export type SecurityConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type RemoteImageImportSecurityConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 是否启用远程图片 DNS 不安全地址防护 */
   enableAddressGuard?: boolean | null;
 };
@@ -169,8 +169,6 @@ export type RemoteImageImportSecurityConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ThirdPartyResourceParseConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* CopyManga API 请求最小间隔（毫秒） */
   apiIntervalMs?: null | number;
   /* 是否启用三方资源解析节流 */
@@ -179,7 +177,6 @@ export type ThirdPartyResourceParseConfigDto = {
   hostCacheTtlSeconds?: null | number;
   /* 三方远程图片下载最小间隔（毫秒） */
   imageIntervalMs?: null | number;
-
   /* 每个资源解析通道允许排队的最大请求数 */
   maxQueueSize?: null | number;
 };
@@ -190,15 +187,12 @@ export type ThirdPartyResourceParseConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type WalletCurrencyDisplayConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 虚拟币稳定资产键 */
   assetKey?: null | string;
   /* 虚拟币图标 URL */
   currencyIconUrl?: null | string;
   /* 虚拟币展示名称 */
   currencyName?: null | string;
-
   /* 虚拟币单位名称 */
   currencyUnitName?: null | string;
 };
@@ -209,11 +203,8 @@ export type WalletCurrencyDisplayConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type MaintenanceConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 是否启用维护模式 */
   enableMaintenanceMode?: boolean | null;
-
   /* 维护模式提示信息 */
   maintenanceMessage?: null | string;
 };
@@ -224,15 +215,12 @@ export type MaintenanceConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ContentReviewPolicyDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 一般敏感词处理策略 */
   generalAction?: ContentReviewActionDto;
   /* 轻微敏感词处理策略 */
   lightAction?: ContentReviewActionDto;
   /* 是否记录敏感词命中明细 */
   recordHits?: boolean | null;
-
   /* 严重敏感词处理策略 */
   severeAction?: ContentReviewActionDto;
 };
@@ -243,11 +231,8 @@ export type ContentReviewPolicyDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ContentReviewActionDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: 0 | 1 | 2 | null;
-
   /* 是否隐藏 */
   isHidden?: boolean | null;
 };
@@ -258,15 +243,12 @@ export type ContentReviewActionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UploadConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 上传提供方（local=本地存储；qiniu=七牛云存储；superbed=Superbed图床） */
   provider?: 'local' | 'qiniu' | 'superbed' | null;
   /* 七牛上传配置 */
   qiniu?: QiniuUploadConfigDto;
   /* Superbed 上传配置 */
   superbed?: SuperbedUploadConfigDto;
-
   /* 当 provider 为 superbed 时，非图片文件是否自动回落本地 */
   superbedNonImageFallbackToLocal?: boolean | null;
 };
@@ -277,8 +259,6 @@ export type UploadConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type QiniuUploadConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 七牛 AccessKey（敏感字段，前端输入明文或 RSA 加密值） */
   accessKey?: null | string;
   /* 七牛存储空间 bucket */
@@ -293,7 +273,6 @@ export type QiniuUploadConfigDto = {
   secretKey?: null | string;
   /* 上传凭证有效期（秒） */
   tokenExpires?: null | number;
-
   /* 是否使用 HTTPS */
   useHttps?: boolean | null;
 };
@@ -304,8 +283,6 @@ export type QiniuUploadConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type SuperbedUploadConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* Superbed 相册分类，多个使用英文逗号分隔 */
   categories?: null | string;
   /* 是否开启压缩 */
@@ -314,7 +291,6 @@ export type SuperbedUploadConfigDto = {
   token?: null | string;
   /* 是否开启水印 */
   watermark?: boolean | null;
-
   /* 是否强制转 webp */
   webp?: boolean | null;
 };
@@ -325,8 +301,6 @@ export type SuperbedUploadConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateSystemConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 阿里云配置 */
   aliyunConfig?: AliyunConfigDto;
   /* 内容审核策略 */
@@ -345,34 +319,6 @@ export type UpdateSystemConfigDto = {
   thirdPartyResourceParseConfig?: ThirdPartyResourceParseConfigDto;
   /* 上传配置 */
   uploadConfig?: UploadConfigDto;
-
   /* 钱包虚拟币展示配置 */
   walletCurrencyDisplayConfig?: WalletCurrencyDisplayConfigDto;
-};
-
-/**
- *  类型定义 [Ip2regionRuntimeStatusDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type Ip2regionRuntimeStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 当前生效时间 */
-  activatedAt?: null | string;
-  /* 当前生效文件名 */
-  fileName?: null | string;
-  /* 当前生效文件绝对路径 */
-  filePath?: null | string;
-  /* 当前生效文件大小（字节） */
-  fileSize?: null | number;
-  /* 当前进程是否已加载可用属地库 */
-  ready: boolean;
-  /* 当前是否正在执行热切换 */
-  reloading: boolean;
-  /* 生效库来源（托管 active 目录；环境变量显式路径；仓库默认路径；无可用属地库） */
-  source: 'configured-path' | 'default-path' | 'managed-active' | 'unavailable';
-
-  /* ip2region 专用存储根目录 */
-  storageDir?: null | string;
 };

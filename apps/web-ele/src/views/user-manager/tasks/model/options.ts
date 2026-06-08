@@ -1,17 +1,11 @@
 import type {
+  GrowthRewardItemDto,
   TaskEventTemplateOptionDto,
   TaskInstanceStepViewDto,
   TaskLatestEventSummaryDto,
   TaskTemplateFilterFieldDto,
   TaskUniqueFactSummaryDto,
 } from '#/api/types';
-
-type GrowthRewardItemDto = {
-  [property: string]: unknown;
-  amount: number;
-  assetKey?: null | string;
-  assetType: number;
-};
 
 export type TaskTemplateFilterValueDto = {
   key: string;

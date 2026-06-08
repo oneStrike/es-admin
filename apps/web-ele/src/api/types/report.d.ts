@@ -4,29 +4,26 @@
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ReportPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 处置状态筛选（1=无需处置；2=处置成功；3=历史未处置；99=最新处置失败） */
-  dispositionStatus?: null | number;
+  dispositionStatus?: number;
 
   /* 创建日期结束（应用时区自然日，YYYY-MM-DD） */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 处理人 ID */
-  handlerId?: null | number;
+  handlerId?: number;
 
   /* 主键id */
   id?: number;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 举报原因类型（1=垃圾信息；2=不当内容；3=骚扰；4=版权侵权；99=其他） */
   reasonType?: number;
@@ -41,7 +38,7 @@ export type ReportPageRequest = {
   sceneType?: number;
 
   /* 创建日期开始（应用时区自然日，YYYY-MM-DD） */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
   status?: number;
@@ -57,9 +54,6 @@ export type ReportPageRequest = {
 };
 
 export type ReportPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: AdminReportPageItemDto[];
 
@@ -79,9 +73,6 @@ export type ReportPageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ReportDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -103,8 +94,6 @@ export type ReportHandleResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminReportPageItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 评论层级（1=根评论；2=回复评论） */
   commentLevel?: 1 | 2 | null;
   /* 创建时间 */
@@ -118,23 +107,23 @@ export type AdminReportPageItemDto = {
   /* 处理人 ID */
   handlerId?: null | number;
   /* 处理人展示摘要 */
-  handlerSummary?: InteractionActorSummaryDto;
+  handlerSummary?: InteractionActorSummaryDto | null;
   /* 处理备注 */
   handlingNote?: null | string;
   /* 主键id */
   id: number;
   /* 最新未解决处置失败记录 */
-  latestFailedDispositionAttempt?: ReportDispositionAttemptDto;
+  latestFailedDispositionAttempt?: null | ReportDispositionAttemptDto;
   /* 举报原因类型（1=垃圾信息；2=不当内容；3=骚扰；4=版权侵权；99=其他） */
   reasonType: 1 | 2 | 3 | 4 | 99;
   /* 举报人 ID */
   reporterId: number;
   /* 举报人展示摘要 */
-  reporterSummary?: InteractionAppUserSummaryDto;
+  reporterSummary?: InteractionAppUserSummaryDto | null;
   /* 业务场景根对象 ID */
   sceneId: number;
   /* 举报业务场景展示摘要 */
-  sceneSummary?: InteractionSceneSummaryDto;
+  sceneSummary?: InteractionSceneSummaryDto | null;
   /* 业务场景类型（1=漫画作品；2=小说作品；3=论坛主题；10=漫画章节；11=小说章节；12=用户主页） */
   sceneType: 1 | 2 | 3 | 10 | 11 | 12;
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
@@ -152,10 +141,9 @@ export type AdminReportPageItemDto = {
   /* 举报目标 ID */
   targetId: number;
   /* 举报目标展示摘要 */
-  targetSummary?: InteractionReportTargetSummaryDto;
+  targetSummary?: InteractionReportTargetSummaryDto | null;
   /* 举报目标类型（1=漫画；2=小说；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
   targetType: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -166,8 +154,6 @@ export type AdminReportPageItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type InteractionAppUserSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 头像URL */
   avatarUrl?: null | string;
   /* 主键id */
@@ -176,7 +162,6 @@ export type InteractionAppUserSummaryDto = {
   isEnabled: boolean;
   /* 昵称 */
   nickname: string;
-
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
   status: 1 | 2 | 3 | 4 | 5;
 };
@@ -187,8 +172,6 @@ export type InteractionAppUserSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type InteractionActorSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 头像 */
   avatar?: null | string;
   /* 主键id */
@@ -197,7 +180,6 @@ export type InteractionActorSummaryDto = {
   nickname?: null | string;
   /* 角色名称 */
   roleName?: null | string;
-
   /* 用户名 */
   username: string;
 };
@@ -208,8 +190,6 @@ export type InteractionActorSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type InteractionReportTargetSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 目标审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: 0 | 1 | 2 | null;
   /* 作者头像 URL */
@@ -236,7 +216,6 @@ export type InteractionReportTargetSummaryDto = {
   targetTypeName: string;
   /* 举报目标标题 */
   title?: null | string;
-
   /* 章节所属作品名称 */
   workName?: null | string;
 };
@@ -247,8 +226,6 @@ export type InteractionReportTargetSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type InteractionSceneSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 业务场景名称 */
   name?: null | string;
   /* 业务场景所属上级名称 */
@@ -259,7 +236,6 @@ export type InteractionSceneSummaryDto = {
   sceneType: 1 | 2 | 3 | 10 | 11 | 12;
   /* 业务场景类型名称 */
   sceneTypeName: string;
-
   /* 业务场景标题 */
   title?: null | string;
 };
@@ -270,8 +246,6 @@ export type InteractionSceneSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ReportDispositionAttemptDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 尝试发生时间 */
   attemptedAt: string;
   /* 创建时间 */
@@ -286,7 +260,6 @@ export type ReportDispositionAttemptDto = {
   reportId: number;
   /* 目标处置动作 */
   targetAction: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -297,12 +270,10 @@ export type ReportDispositionAttemptDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminReportDetailDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 评论层级（1=根评论；2=回复评论） */
   commentLevel?: 1 | 2 | null;
   /* 被举报评论展示摘要；仅举报目标为评论时返回 */
-  commentSummary?: InteractionReportCommentSummaryDto;
+  commentSummary?: InteractionReportCommentSummaryDto | null;
   /* 创建时间 */
   createdAt: string;
   /* 详细说明 */
@@ -314,23 +285,23 @@ export type AdminReportDetailDto = {
   /* 处理人 ID */
   handlerId?: null | number;
   /* 处理人展示摘要 */
-  handlerSummary?: InteractionActorSummaryDto;
+  handlerSummary?: InteractionActorSummaryDto | null;
   /* 处理备注 */
   handlingNote?: null | string;
   /* 主键id */
   id: number;
   /* 最新未解决处置失败记录 */
-  latestFailedDispositionAttempt?: ReportDispositionAttemptDto;
+  latestFailedDispositionAttempt?: null | ReportDispositionAttemptDto;
   /* 举报原因类型（1=垃圾信息；2=不当内容；3=骚扰；4=版权侵权；99=其他） */
   reasonType: 1 | 2 | 3 | 4 | 99;
   /* 举报人 ID */
   reporterId: number;
   /* 举报人展示摘要 */
-  reporterSummary?: InteractionAppUserSummaryDto;
+  reporterSummary?: InteractionAppUserSummaryDto | null;
   /* 业务场景根对象 ID */
   sceneId: number;
   /* 举报业务场景展示摘要 */
-  sceneSummary?: InteractionSceneSummaryDto;
+  sceneSummary?: InteractionSceneSummaryDto | null;
   /* 业务场景类型（1=漫画作品；2=小说作品；3=论坛主题；10=漫画章节；11=小说章节；12=用户主页） */
   sceneType: 1 | 2 | 3 | 10 | 11 | 12;
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
@@ -348,10 +319,9 @@ export type AdminReportDetailDto = {
   /* 举报目标 ID */
   targetId: number;
   /* 举报目标展示摘要 */
-  targetSummary?: InteractionReportTargetSummaryDto;
+  targetSummary?: InteractionReportTargetSummaryDto | null;
   /* 举报目标类型（1=漫画；2=小说；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
   targetType: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -362,8 +332,6 @@ export type AdminReportDetailDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type InteractionReportCommentSummaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 评论审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: 0 | 1 | 2;
   /* 评论 ID */
@@ -380,7 +348,6 @@ export type InteractionReportCommentSummaryDto = {
   userIsEnabled?: boolean | null;
   /* 评论用户昵称 */
   userNickname?: null | string;
-
   /* 评论用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
   userStatus?: 1 | 2 | 3 | 4 | 5 | null;
 };
@@ -391,8 +358,6 @@ export type InteractionReportCommentSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type HandleAdminReportDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 处理备注 */
   handlingNote?: null | string;
   /* 主键id */
@@ -403,7 +368,6 @@ export type HandleAdminReportDto = {
   status: 3 | 4;
   /* 目标处置动作（1=无需处置；2=隐藏评论；3=拒绝评论；4=隐藏论坛主题；5=拒绝论坛主题；6=禁用用户；7=禁言用户） */
   targetAction: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
   /* 目标处置原因；有效举报处置或显式无需处置时必填 */
   targetActionReason?: null | string;
 };

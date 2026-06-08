@@ -77,13 +77,6 @@ export function getDetailSections(detail: ForumModeratorDto) {
             : '-',
           type: 'text' as const,
         },
-        {
-          label: '删除时间',
-          value: detail.deletedAt
-            ? formatUTC(detail.deletedAt, 'YYYY-MM-DD HH:mm:ss')
-            : '-',
-          type: 'text' as const,
-        },
       ],
     },
   ];

@@ -31,10 +31,14 @@ import {
   searchFormSchema,
 } from './modules/model/shared';
 
+type SensitiveWordRow = BaseSensitiveWordDto & {
+  loading?: boolean;
+};
+
 const router = useRouter();
 const detectDrawerVisible = ref(false);
 
-const gridOptions: VxeGridProps<BaseSensitiveWordDto> = {
+const gridOptions: VxeGridProps<SensitiveWordRow> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
@@ -57,7 +61,7 @@ const [Form, formApi] = useVbenModal({
   connectedComponent: EsModalForm,
 });
 
-async function openFormModal(row?: BaseSensitiveWordDto) {
+async function openFormModal(row?: SensitiveWordRow) {
   formApi.setData({ title: '敏感词', record: row }).open();
 }
 
@@ -92,13 +96,13 @@ async function handleSubmit(
   gridApi.reload();
 }
 
-async function deleteSensitiveWord(record: BaseSensitiveWordDto) {
+async function deleteSensitiveWord(record: SensitiveWordRow) {
   await forumSensitiveWordDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
-async function confirmDeleteSensitiveWord(record: BaseSensitiveWordDto) {
+async function confirmDeleteSensitiveWord(record: SensitiveWordRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前敏感词?',
     successMessage: false,
@@ -108,7 +112,7 @@ async function confirmDeleteSensitiveWord(record: BaseSensitiveWordDto) {
   await deleteSensitiveWord(record);
 }
 
-async function toggleEnableStatus(record: BaseSensitiveWordDto) {
+async function toggleEnableStatus(record: SensitiveWordRow) {
   record.loading = true;
   try {
     await forumSensitiveWordUpdateStatusApi({
@@ -122,7 +126,7 @@ async function toggleEnableStatus(record: BaseSensitiveWordDto) {
   }
 }
 
-function getSensitiveWordActions(row: BaseSensitiveWordDto): ActionItem[] {
+function getSensitiveWordActions(row: SensitiveWordRow): ActionItem[] {
   return [
     {
       key: 'edit',

@@ -35,11 +35,8 @@ export type AuthKeyPublicResponse = RsaPublicKeyDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CaptchaDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 验证码,base64格式 */
   captcha: string;
-
   /* 验证码ID */
   captchaId: string;
 };
@@ -50,15 +47,12 @@ export type CaptchaDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UserLoginDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 验证码,base64格式 */
   captcha: string;
   /* 验证码ID */
   captchaId: string;
   /* 密码 */
   password: string;
-
   /* 用户名 */
   username: string;
 };
@@ -69,11 +63,8 @@ export type UserLoginDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type LoginResponseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 令牌信息 */
   tokens: TokenDto;
-
   /* 用户信息 */
   user: AdminUserResponseDto;
 };
@@ -84,11 +75,8 @@ export type LoginResponseDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type TokenDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 账号令牌 */
   accessToken: string;
-
   /* 刷新令牌 */
   refreshToken: string;
 };
@@ -99,8 +87,6 @@ export type TokenDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminUserResponseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 头像 */
   avatar?: null | string;
   /* 创建时间 */
@@ -119,7 +105,6 @@ export type AdminUserResponseDto = {
   role: 0 | 1;
   /* 更新时间 */
   updatedAt: string;
-
   /* 用户名 */
   username: string;
 };
@@ -130,9 +115,6 @@ export type AdminUserResponseDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type RefreshTokenDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 刷新令牌 */
   refreshToken: string;
 };
@@ -143,9 +125,6 @@ export type RefreshTokenDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type RsaPublicKeyDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* RSA公钥 */
   publicKey: string;
 };

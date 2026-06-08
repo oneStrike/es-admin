@@ -3,7 +3,6 @@ import type {
   PaymentOrderRepairPaidRequest,
   PaymentProviderAccountOptionDto,
 } from '#/api/types';
-import type { RecordDetailSection } from '#/components/record-detail-modal';
 import type { EsFormSchema } from '#/types';
 
 import { paymentProviderAccountOptionListApi } from '#/api/core';
@@ -132,15 +131,6 @@ function parseRequiredJsonObjectText(value: unknown, label: string) {
   }
 
   return parsed as Record<string, unknown>;
-}
-
-function escapeHtml(value: unknown) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
 }
 
 function formatOptionText(
@@ -539,17 +529,5 @@ export function getPaymentOrderDetailSections(record: PaymentOrderRow) {
       show: true,
       title: '支付订单',
     },
-    ...(record.clientPayPayload
-      ? [
-          {
-            content: `<pre class="whitespace-pre-wrap break-all text-xs">${escapeHtml(
-              formatJsonTextarea(record.clientPayPayload),
-            )}</pre>`,
-            show: true,
-            title: '客户端支付参数',
-            type: 'text',
-          } satisfies RecordDetailSection,
-        ]
-      : []),
-  ] satisfies RecordDetailSection[];
+  ];
 }

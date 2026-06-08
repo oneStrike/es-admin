@@ -30,6 +30,9 @@ import {
 } from './modules/model/shared';
 
 const POINTS_ASSET_TYPE = 1 as const;
+type RewardRuleRow = BaseGrowthRewardRuleDto & {
+  loading?: boolean;
+};
 
 function normalizeRewardRulePayload(
   values: GrowthRewardRulesCreateRequest | GrowthRewardRulesUpdateRequest,
@@ -50,7 +53,7 @@ function normalizeRewardRulePayload(
     : (payload as GrowthRewardRulesCreateRequest);
 }
 
-const gridOptions: VxeGridProps<BaseGrowthRewardRuleDto> = {
+const gridOptions: VxeGridProps<RewardRuleRow> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
@@ -85,7 +88,7 @@ const [DetailModal, detailApi] = useVbenModal({
   title: '积分规则详情',
 });
 
-async function openFormModal(row?: BaseGrowthRewardRuleDto) {
+async function openFormModal(row?: RewardRuleRow) {
   let record;
   if (row) {
     record = await growthRewardRulesDetailApi({ id: row.id });
@@ -107,9 +110,7 @@ async function handleSubmit(
   gridApi.reload();
 }
 
-async function toggleEnableStatus(
-  row: BaseGrowthRewardRuleDto & { loading?: boolean },
-) {
+async function toggleEnableStatus(row: RewardRuleRow) {
   row.loading = true;
   try {
     await growthRewardRulesUpdateApi({
@@ -130,7 +131,7 @@ async function toggleEnableStatus(
   }
 }
 
-function getPointRuleActions(row: BaseGrowthRewardRuleDto): ActionItem[] {
+function getPointRuleActions(row: RewardRuleRow): ActionItem[] {
   return [
     {
       key: 'detail',

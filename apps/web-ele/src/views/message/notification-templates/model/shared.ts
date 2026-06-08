@@ -67,12 +67,14 @@ export function formatCategory(
 
 export function createTemplateFormSchema(
   onCategoryChange?: (categoryKey?: string) => void,
+  options: { categoryDisabled?: boolean } = {},
 ): EsFormSchema {
   return [
     {
       component: 'Select',
       componentProps: {
         clearable: true,
+        disabled: options.categoryDisabled === true,
         filterable: true,
         onChange: onCategoryChange,
         options: notificationCategoryOptions,
@@ -171,8 +173,8 @@ export const pageColumns =
     templateFormSchema,
     {
       id: {
-        fixed: 'left',
         formatter: ({ cellValue }) => cellValue ?? '-',
+        hide: true,
         minWidth: 90,
         sort: -0.5,
         sortable: true,

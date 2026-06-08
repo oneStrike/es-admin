@@ -13,62 +13,56 @@ export type AnnouncementCreateResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AnnouncementPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
   announcementType?: number;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
-  enablePlatform?: null | string;
+  enablePlatform?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否置顶 */
   isPinned?: boolean;
 
   /* 是否仅筛选已发布公告 */
-  isPublished?: boolean | null;
+  isPublished?: boolean;
 
   /* 是否实时公告 */
   isRealtime?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 关联页面 id */
-  pageId?: null | number;
+  pageId?: number;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel?: number;
 
   /* 发布结束时间 */
-  publishEndTime?: null | string;
+  publishEndTime?: string;
 
   /* 发布开始时间 */
-  publishStartTime?: null | string;
+  publishStartTime?: string;
 
   /* 是否弹窗显示 */
   showAsPopup?: boolean;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 公告标题 */
   title?: string;
 };
 
 export type AnnouncementPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: BaseAnnouncementDto[];
 
@@ -88,9 +82,6 @@ export type AnnouncementPageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AnnouncementDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -130,8 +121,6 @@ export type AnnouncementDeleteResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateAnnouncementDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
   announcementType: 0 | 1 | 2 | 3 | 4;
   /* 公告内容详情 */
@@ -168,7 +157,6 @@ export type CreateAnnouncementDto = {
   showAsPopup: boolean;
   /* 公告摘要 */
   summary?: null | string;
-
   /* 公告标题 */
   title: string;
 };
@@ -179,8 +167,6 @@ export type CreateAnnouncementDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type BaseAnnouncementDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
   announcementType: 0 | 1 | 2 | 3 | 4;
   /* 公告内容详情 */
@@ -227,7 +213,6 @@ export type BaseAnnouncementDto = {
   title: string;
   /* 更新时间 */
   updatedAt: string;
-
   /* 浏览次数 */
   viewCount: number;
 };
@@ -238,8 +223,6 @@ export type BaseAnnouncementDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AnnouncementDetailDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
   announcementType: 0 | 1 | 2 | 3 | 4;
   /* 公告关联页面 */
@@ -288,7 +271,6 @@ export type AnnouncementDetailDto = {
   title: string;
   /* 更新时间 */
   updatedAt: string;
-
   /* 浏览次数 */
   viewCount: number;
 };
@@ -299,15 +281,12 @@ export type AnnouncementDetailDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AnnouncementRelatedPageDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 页面编码（唯一标识） */
   code: string;
   /* 主键id */
   id: number;
   /* 页面名称 */
   name: string;
-
   /* 页面路径（URL 路径） */
   path: string;
 };
@@ -318,8 +297,6 @@ export type AnnouncementRelatedPageDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateAnnouncementDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
   announcementType?: 0 | 1 | 2 | 3 | 4;
   /* 公告内容详情 */
@@ -358,7 +335,6 @@ export type UpdateAnnouncementDto = {
   showAsPopup?: boolean;
   /* 公告摘要 */
   summary?: null | string;
-
   /* 公告标题 */
   title?: string;
 };
@@ -369,11 +345,8 @@ export type UpdateAnnouncementDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdatePublishedStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
-
   /* 发布状态 true发布 false取消发布 */
   isPublished: boolean;
 };
@@ -384,9 +357,6 @@ export type UpdatePublishedStatusDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };

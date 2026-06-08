@@ -747,9 +747,7 @@ function resolveDraftRelationIds(
   return list ? extractRelationIds(list, relationKey) : fallbackIds;
 }
 
-function applyLocalWorkToDraft(
-  work: ContentComicDetailResponse | LocalWorkRow,
-) {
+function applyLocalWorkToDraft(work: ContentComicDetailResponse) {
   workDraft.value = {
     ...workDraft.value,
     ageRating: toDraftOptionalText(work.ageRating),
@@ -1142,11 +1140,6 @@ async function handleTargetWorkChange(id?: number) {
     return;
   }
 
-  const fallbackWork = localWorkRows.value.find((item) => item.id === id);
-  if (fallbackWork) {
-    applyLocalWorkToDraft(fallbackWork);
-  }
-
   localWorkLoading.value = true;
   try {
     const detail = await contentComicDetailApi({
@@ -1157,7 +1150,7 @@ async function handleTargetWorkChange(id?: number) {
       await searchLocalChapters();
     }
   } catch {
-    // 搜索行已先回填，详情加载失败时保留当前表单内容。
+    // 详情加载失败时保留当前表单内容，避免用分页行冒充详情数据。
   } finally {
     localWorkLoading.value = false;
   }

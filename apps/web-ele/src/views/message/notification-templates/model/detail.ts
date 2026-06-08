@@ -15,18 +15,8 @@ export function getDetailSections(
       show: true,
       items: [
         {
-          label: '模板 ID',
-          value: detail.id,
-          type: 'text' as const,
-        },
-        {
           label: '通知分类',
           value: formatCategory(detail),
-          type: 'text' as const,
-        },
-        {
-          label: '分类 key',
-          value: detail.categoryKey,
           type: 'text' as const,
         },
         {
@@ -39,6 +29,22 @@ export function getDetailSections(
         {
           label: '备注',
           value: detail.remark || '-',
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '技术信息',
+      show: true,
+      items: [
+        {
+          label: '模板 ID',
+          value: detail.id,
+          type: 'text' as const,
+        },
+        {
+          label: '分类 key',
+          value: detail.categoryKey,
           type: 'text' as const,
         },
       ],

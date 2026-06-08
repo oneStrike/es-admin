@@ -273,7 +273,10 @@ export class OpenAPIGenerator {
     if (additionalProperties && typeof additionalProperties === 'object') {
       return `  /** 任意合法数值 */\n  [property: string]: ${mapSchemaToType(additionalProperties)}`;
     }
-    return '  /** 任意合法数值 */\n  [property: string]: any';
+    if (additionalProperties === true) {
+      return '  /** 任意合法数值 */\n  [property: string]: any';
+    }
+    return '';
   }
 
   private buildObjectType(
@@ -553,13 +556,9 @@ export type ${typeName} = Record<string, any>`;
       updateTime,
     );
 
-    // 使用 type 而不是 interface，保留项目既有请求兼容索引。
     return `${comment}
 export type ${typeName} = {
 ${properties.join('\n\n')}
-
-  /** 任意合法数值 */
-  [property: string]: any
 }`;
   }
 
@@ -731,8 +730,8 @@ export type ${typeName} = ${this.applySchemaNullable(
 
     const exactSchemaTypes = new Set([
       'AdminAdRewardRecordDetailDto',
-      'UpdateWorkDto',
       'UpdateWorkChapterDto',
+      'UpdateWorkDto',
     ]);
     const objectType = this.buildObjectType(schema, properties, {
       exact: exactSchemaTypes.has(typeName),

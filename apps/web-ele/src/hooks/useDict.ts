@@ -23,7 +23,6 @@ function assertDictionaryItemList(
 export async function useDict(codes: string): Promise<Recordable<UseDictItem>> {
   const listResponse: unknown = await dictionaryItemListApi({
     dictionaryCode: codes,
-    isEnabled: true,
   });
   assertDictionaryItemList(listResponse);
 

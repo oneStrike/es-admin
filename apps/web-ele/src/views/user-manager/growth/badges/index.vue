@@ -45,6 +45,9 @@ defineOptions({
 });
 
 const currentBadge = ref<BaseUserBadgeDto | null>(null);
+type BadgeRow = BaseUserBadgeDto & {
+  loading?: boolean;
+};
 
 const userListSchema: EsFormSchema = [
   { component: 'InputNumber', fieldName: 'userId', label: '用户ID' },
@@ -76,7 +79,7 @@ const userColumns = formSchemaTransform.toTableColumns<BadgeUserPageItemDto>(
   },
 );
 
-const gridOptions: VxeGridProps<BaseUserBadgeDto> = {
+const gridOptions: VxeGridProps<BadgeRow> = {
   columns: pageColumns,
   proxyConfig: {
     ajax: {
@@ -116,7 +119,7 @@ const [RevokeModal, revokeApi] = useVbenModal({
   connectedComponent: EsModalTable,
 });
 
-async function openFormModal(row?: BaseUserBadgeDto) {
+async function openFormModal(row?: BadgeRow) {
   let record;
   if (row) {
     record = await growthBadgesDetailApi({ id: row.id });
@@ -155,13 +158,13 @@ async function handleSubmit(
   gridApi.reload();
 }
 
-async function deleteBadge(record: BaseUserBadgeDto) {
+async function deleteBadge(record: BadgeRow) {
   await growthBadgesDeleteApi({ id: record.id });
   useMessage.success('删除成功');
   gridApi.reload();
 }
 
-async function confirmDeleteBadge(record: BaseUserBadgeDto) {
+async function confirmDeleteBadge(record: BadgeRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前徽章?',
     successMessage: false,
@@ -171,7 +174,7 @@ async function confirmDeleteBadge(record: BaseUserBadgeDto) {
   await deleteBadge(record);
 }
 
-async function toggleEnableStatus(record: BaseUserBadgeDto) {
+async function toggleEnableStatus(record: BadgeRow) {
   record.loading = true;
   try {
     await growthBadgesUpdateStatusApi({
@@ -185,7 +188,7 @@ async function toggleEnableStatus(record: BaseUserBadgeDto) {
   }
 }
 
-function openAssignModal(record: BaseUserBadgeDto) {
+function openAssignModal(record: BadgeRow) {
   currentBadge.value = record;
   const userSelectProps = createAppUserTableSelectProps({
     enabledOnly: true,
@@ -208,7 +211,7 @@ function openAssignModal(record: BaseUserBadgeDto) {
     .open();
 }
 
-function openRevokeModal(record: BaseUserBadgeDto) {
+function openRevokeModal(record: BadgeRow) {
   currentBadge.value = record;
   revokeApi
     .setData({
@@ -253,7 +256,7 @@ async function handleRevokeConfirm(rows: BadgeUserPageItemDto[]) {
   gridApi.reload();
 }
 
-function getBadgeActions(row: BaseUserBadgeDto): ActionItem[] {
+function getBadgeActions(row: BadgeRow): ActionItem[] {
   return [
     {
       key: 'detail',

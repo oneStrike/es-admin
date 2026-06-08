@@ -31,38 +31,32 @@ export type AgreementUpdateStatusResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AgreementPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否已发布 */
   isPublished?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 是否展示在登录注册页 */
   showInAuth?: boolean;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 协议标题 */
   title?: string;
 };
 
 export type AgreementPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: AdminAgreementListItemDto[];
 
@@ -82,9 +76,6 @@ export type AgreementPageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AgreementDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -97,14 +88,11 @@ export type AgreementDetailResponse = AdminAgreementDetailDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AgreementAccessRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
 
-export type AgreementAccessResponse = undefined;
+export type AgreementAccessResponse = string;
 
 /**
  *  类型定义 [CreateAgreementDto]
@@ -112,8 +100,6 @@ export type AgreementAccessResponse = undefined;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateAgreementDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 协议内容 */
   content: string;
   /* 是否强制重新同意 */
@@ -122,7 +108,6 @@ export type CreateAgreementDto = {
   showInAuth: boolean;
   /* 协议标题 */
   title: string;
-
   /* 版本号 */
   version: string;
 };
@@ -133,8 +118,6 @@ export type CreateAgreementDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateAgreementDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 协议内容 */
   content: string;
   /* 主键id */
@@ -145,7 +128,6 @@ export type UpdateAgreementDto = {
   showInAuth: boolean;
   /* 协议标题 */
   title: string;
-
   /* 版本号 */
   version: string;
 };
@@ -156,11 +138,8 @@ export type UpdateAgreementDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdatePublishedStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
-
   /* 发布状态 true发布 false取消发布 */
   isPublished: boolean;
 };
@@ -171,8 +150,6 @@ export type UpdatePublishedStatusDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminAgreementListItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 协议 HTML 访问路径 */
   accessPath: string;
   /* 创建时间 */
@@ -191,7 +168,6 @@ export type AdminAgreementListItemDto = {
   title: string;
   /* 更新时间 */
   updatedAt: string;
-
   /* 版本号 */
   version: string;
 };
@@ -202,8 +178,6 @@ export type AdminAgreementListItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AdminAgreementDetailDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 协议 HTML 访问路径 */
   accessPath: string;
   /* 协议内容 */
@@ -224,7 +198,6 @@ export type AdminAgreementDetailDto = {
   title: string;
   /* 更新时间 */
   updatedAt: string;
-
   /* 版本号 */
   version: string;
 };

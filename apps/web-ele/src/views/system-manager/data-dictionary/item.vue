@@ -34,13 +34,17 @@ type ShareData = {
   record: BaseDictionaryDto;
 };
 
+type DictionaryItemRow = BaseDictionaryItemDto & {
+  loading?: boolean;
+};
+
 defineOptions({
   name: 'DictionaryItem',
 });
 
 const shareData = ref<ShareData>();
 
-const gridOptions: VxeGridProps<BaseDictionaryItemDto> = {
+const gridOptions: VxeGridProps<DictionaryItemRow> = {
   columns: dictionaryItemColumns,
   height: 'auto',
   rowConfig: {
@@ -137,7 +141,7 @@ async function addDictionaryItem(values: DictionaryItemFormValues) {
   gridApi.reload();
 }
 
-async function toggleEnableStatus(row: BaseDictionaryItemDto) {
+async function toggleEnableStatus(row: DictionaryItemRow) {
   const newStatus = !row.isEnabled;
   row.loading = true;
   try {
@@ -152,7 +156,7 @@ async function toggleEnableStatus(row: BaseDictionaryItemDto) {
   }
 }
 
-async function openFormModal(row?: BaseDictionaryItemDto) {
+async function openFormModal(row?: DictionaryItemRow) {
   formApi
     .setData({
       title: '数据字典子项',
@@ -162,13 +166,13 @@ async function openFormModal(row?: BaseDictionaryItemDto) {
     .open();
 }
 
-async function deleteDictionary(row: BaseDictionaryItemDto) {
+async function deleteDictionary(row: DictionaryItemRow) {
   await dictionaryItemDeleteApi({ id: row.id });
   useMessage.success('操作成功');
   gridApi.reload();
 }
 
-async function confirmDeleteDictionary(row: BaseDictionaryItemDto) {
+async function confirmDeleteDictionary(row: DictionaryItemRow) {
   const confirmed = await useConfirm({
     content: '确认删除当前项?',
     successMessage: false,
@@ -178,7 +182,7 @@ async function confirmDeleteDictionary(row: BaseDictionaryItemDto) {
   await deleteDictionary(row);
 }
 
-function getDictionaryItemActions(row: BaseDictionaryItemDto): ActionItem[] {
+function getDictionaryItemActions(row: DictionaryItemRow): ActionItem[] {
   return [
     {
       key: 'edit',

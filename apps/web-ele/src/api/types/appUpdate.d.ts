@@ -4,14 +4,11 @@
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AppUpdatePageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 内部构建号 */
   buildCode?: number;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 是否强制更新 */
   forceUpdate?: boolean;
@@ -20,28 +17,25 @@ export type AppUpdatePageRequest = {
   isPublished?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 发布平台（1=苹果端；2=安卓端） */
   platform?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 
   /* 展示版本号 */
   versionName?: string;
 };
 
 export type AppUpdatePageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: AppUpdateReleaseListItemDto[];
 
@@ -61,9 +55,6 @@ export type AppUpdatePageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AppUpdateDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -103,8 +94,6 @@ export type AppUpdateUpdateStatusResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AppUpdateReleaseListItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 内部构建号 */
   buildCode: number;
   /* 创建时间 */
@@ -123,7 +112,6 @@ export type AppUpdateReleaseListItemDto = {
   publishedAt?: null | string;
   /* 更新时间 */
   updatedAt: string;
-
   /* 展示版本号 */
   versionName: string;
 };
@@ -134,8 +122,6 @@ export type AppUpdateReleaseListItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type AppUpdateReleaseDetailDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 内部构建号 */
   buildCode: number;
   /* 创建时间 */
@@ -182,7 +168,6 @@ export type AppUpdateReleaseDetailDto = {
   updatedAt: string;
   /* 更新人 ID */
   updatedById?: null | number;
-
   /* 展示版本号 */
   versionName: string;
 };
@@ -193,8 +178,6 @@ export type AppUpdateReleaseDetailDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateAppUpdateReleaseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 内部构建号 */
   buildCode: number;
   /* 是否强制更新 */
@@ -227,7 +210,6 @@ export type CreateAppUpdateReleaseDto = {
     | null;
   /* 更新说明 */
   releaseNotes?: null | string;
-
   /* 展示版本号 */
   versionName: string;
 };
@@ -238,8 +220,6 @@ export type CreateAppUpdateReleaseDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateAppUpdateReleaseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 内部构建号 */
   buildCode: number;
   /* 是否强制更新 */
@@ -274,7 +254,6 @@ export type UpdateAppUpdateReleaseDto = {
     | null;
   /* 更新说明 */
   releaseNotes?: null | string;
-
   /* 展示版本号 */
   versionName: string;
 };
@@ -285,11 +264,8 @@ export type UpdateAppUpdateReleaseDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdatePublishedStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
-
   /* 发布状态 true发布 false取消发布 */
   isPublished: boolean;
 };

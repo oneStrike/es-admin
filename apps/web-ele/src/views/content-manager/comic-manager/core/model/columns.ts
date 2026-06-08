@@ -1,6 +1,6 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseWorkDto } from '#/api/types';
+import type { PageWorkDto } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formSchemaTransform } from '#/utils';
@@ -40,7 +40,7 @@ export const comicColumns = ({
   work_region,
   work_age_rating,
 }: Recordable<undefined | UseDictItem>) => {
-  return formSchemaTransform.toTableColumns<BaseWorkDto>(formSchema, {
+  return formSchemaTransform.toTableColumns<PageWorkDto>(formSchema, {
     ...hideFieldConfig,
     // ========== 核心信息（优先展示） ==========
     cover: {
@@ -71,7 +71,7 @@ export const comicColumns = ({
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseWorkDto['authors']) => {
+          formatter: (row: PageWorkDto['authors']) => {
             return extractRelationNames(row, 'author');
           },
         },
@@ -91,7 +91,7 @@ export const comicColumns = ({
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseWorkDto['categories']) => {
+          formatter: (row: PageWorkDto['categories']) => {
             return extractRelationNames(row, 'category');
           },
         },
@@ -104,7 +104,7 @@ export const comicColumns = ({
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseWorkDto['tags']) => {
+          formatter: (row: PageWorkDto['tags']) => {
             return extractRelationNames(row, 'tag');
           },
         },

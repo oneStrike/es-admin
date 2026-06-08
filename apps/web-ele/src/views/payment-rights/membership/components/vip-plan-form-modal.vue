@@ -390,7 +390,9 @@ async function handleConfirm() {
               :active-value="true"
               :inactive-value="false"
               :model-value="row.isEnabled !== false"
-              @change="(value) => setRowEnabled(row, value)"
+              @change="
+                (value: boolean | number | string) => setRowEnabled(row, value)
+              "
             />
           </div>
 

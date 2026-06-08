@@ -15,8 +15,6 @@ export type AppConfigUpdateResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type BaseAppConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 应用描述 */
   appDesc?: null | string;
   /* 应用 Logo URL */
@@ -43,7 +41,6 @@ export type BaseAppConfigDto = {
   updatedAt: string;
   /* 最后修改人ID */
   updatedById?: null | number;
-
   /* 配置版本号 */
   version: string;
 };
@@ -54,8 +51,6 @@ export type BaseAppConfigDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateAppConfigDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 应用描述 */
   appDesc?: null | string;
   /* 应用 Logo URL */
@@ -74,7 +69,6 @@ export type UpdateAppConfigDto = {
   secondaryColor?: null | string;
   /* 主题色 */
   themeColor: string;
-
   /* 配置版本号 */
   version: string;
 };

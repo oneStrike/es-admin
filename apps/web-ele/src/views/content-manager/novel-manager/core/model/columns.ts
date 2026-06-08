@@ -1,6 +1,6 @@
 import type { Recordable } from '@vben/types';
 
-import type { BaseWorkDto } from '#/api/types';
+import type { PageWorkDto } from '#/api/types';
 import type { UseDictItem } from '#/hooks/useDict';
 
 import { formSchemaTransform } from '#/utils';
@@ -40,7 +40,7 @@ export const novelColumns = ({
   work_publisher,
   work_region,
 }: Recordable<undefined | UseDictItem>) => {
-  return formSchemaTransform.toTableColumns<BaseWorkDto>(formSchema, {
+  return formSchemaTransform.toTableColumns<PageWorkDto>(formSchema, {
     ...hideFieldConfig,
     cover: {
       cellRender: {
@@ -67,7 +67,7 @@ export const novelColumns = ({
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseWorkDto['authors']) => {
+          formatter: (row: PageWorkDto['authors']) => {
             return extractRelationNames(row, 'author');
           },
         },
@@ -85,7 +85,7 @@ export const novelColumns = ({
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseWorkDto['categories']) => {
+          formatter: (row: PageWorkDto['categories']) => {
             return extractRelationNames(row, 'category');
           },
         },
@@ -98,7 +98,7 @@ export const novelColumns = ({
       cellRender: {
         name: 'CellTag',
         props: {
-          formatter: (row: BaseWorkDto['tags']) => {
+          formatter: (row: PageWorkDto['tags']) => {
             return extractRelationNames(row, 'tag');
           },
         },

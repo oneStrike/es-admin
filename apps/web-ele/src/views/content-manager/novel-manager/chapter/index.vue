@@ -206,14 +206,20 @@ async function handleSubmit(
 
   const payload = buildNovelChapterPayload(values, data.workId);
 
-  await (payload?.id
-    ? contentNovelChapterUpdateApi(payload as ContentNovelChapterUpdateRequest)
-    : contentNovelChapterCreateApi(
-        payload as ContentNovelChapterCreateRequest,
-      ));
+  await (isNovelChapterUpdatePayload(payload)
+    ? contentNovelChapterUpdateApi(payload)
+    : contentNovelChapterCreateApi(payload));
 
-  useMessage.success(payload?.id ? '章节更新成功' : '章节创建成功');
+  useMessage.success(
+    isNovelChapterUpdatePayload(payload) ? '章节更新成功' : '章节创建成功',
+  );
   await gridApi.reload();
+}
+
+function isNovelChapterUpdatePayload(
+  payload: ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest,
+): payload is ContentNovelChapterUpdateRequest {
+  return 'id' in payload && typeof payload.id === 'number';
 }
 
 function buildNovelChapterPayload(

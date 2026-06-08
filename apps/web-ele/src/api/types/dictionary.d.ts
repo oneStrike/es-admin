@@ -4,14 +4,11 @@
  *  @更新时间 2026-05-09 22:20:06
  */
 export type DictionaryPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 字典编码 */
   code?: string;
 
   /* 结束时间 */
-  endDate?: null | string;
+  endDate?: string;
 
   /* 字典状态（true=启用；false=禁用） */
   isEnabled?: boolean;
@@ -20,22 +17,19 @@ export type DictionaryPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 
   /* 开始时间 */
-  startDate?: null | string;
+  startDate?: string;
 };
 
 export type DictionaryPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: BaseDictionaryDto[];
 
@@ -55,9 +49,6 @@ export type DictionaryPageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type DictionaryDetailRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -106,9 +97,6 @@ export type DictionaryUpdateStatusResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type DictionaryItemPageRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 字典编码 */
   code?: string;
 
@@ -122,19 +110,16 @@ export type DictionaryItemPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: null | string;
+  orderBy?: string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex?: number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: null | number;
+  pageSize?: number;
 };
 
 export type DictionaryItemPageResponse = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 列表数据 */
   list?: BaseDictionaryItemDto[];
 
@@ -154,9 +139,6 @@ export type DictionaryItemPageResponse = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type DictionaryItemListRequest = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 所属字典编码 */
   dictionaryCode: string;
 };
@@ -214,8 +196,6 @@ export type DictionaryItemSwapSortOrderResponse = boolean;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type BaseDictionaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 字典编码 */
   code: string;
   /* 字典封面图片 URL */
@@ -230,7 +210,6 @@ export type BaseDictionaryDto = {
   isEnabled: boolean;
   /* 字典名称 */
   name: string;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -241,8 +220,6 @@ export type BaseDictionaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateDictionaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 字典编码 */
   code: string;
   /* 字典封面图片 URL */
@@ -251,7 +228,6 @@ export type CreateDictionaryDto = {
   description?: null | string;
   /* 字典状态（true=启用；false=禁用） */
   isEnabled: boolean;
-
   /* 字典名称 */
   name: string;
 };
@@ -262,8 +238,6 @@ export type CreateDictionaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateDictionaryDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 字典编码 */
   code?: string;
   /* 字典封面图片 URL */
@@ -274,7 +248,6 @@ export type UpdateDictionaryDto = {
   id: number;
   /* 字典状态（true=启用；false=禁用） */
   isEnabled?: boolean;
-
   /* 字典名称 */
   name?: string;
 };
@@ -285,9 +258,6 @@ export type UpdateDictionaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type IdDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-
   /* 主键id */
   id: number;
 };
@@ -298,11 +268,8 @@ export type IdDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateEnabledStatusDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 主键id */
   id: number;
-
   /* 状态 true启用 false禁用 */
   isEnabled: boolean;
 };
@@ -313,8 +280,6 @@ export type UpdateEnabledStatusDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type BaseDictionaryItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 字典项编码 */
   code: string;
   /* 字典项图标 URL */
@@ -333,7 +298,6 @@ export type BaseDictionaryItemDto = {
   name: string;
   /* 显示排序（数值越小越靠前） */
   sortOrder?: null | number;
-
   /* 更新时间 */
   updatedAt: string;
 };
@@ -344,8 +308,6 @@ export type BaseDictionaryItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type CreateDictionaryItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 字典项编码 */
   code: string;
   /* 字典项图标 URL */
@@ -358,7 +320,6 @@ export type CreateDictionaryItemDto = {
   isEnabled: boolean;
   /* 字典项名称 */
   name: string;
-
   /* 显示排序（数值越小越靠前） */
   sortOrder?: null | number;
 };
@@ -369,8 +330,6 @@ export type CreateDictionaryItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateDictionaryItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 字典项编码 */
   code?: string;
   /* 字典项图标 URL */
@@ -385,7 +344,6 @@ export type UpdateDictionaryItemDto = {
   isEnabled?: boolean;
   /* 字典项名称 */
   name?: string;
-
   /* 显示排序（数值越小越靠前） */
   sortOrder?: null | number;
 };
@@ -396,11 +354,8 @@ export type UpdateDictionaryItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type DragReorderDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 当前拖拽元素的id */
   dragId: number;
-
   /* 拖拽的目标位置id */
   targetId: number;
 };

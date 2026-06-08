@@ -6,8 +6,6 @@ export type UploadFileUploadResponse = UploadResponseDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UploadResponseDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 文件分类 */
   fileCategory: string;
   /* 文件名 */
@@ -28,7 +26,6 @@ export type UploadResponseDto = {
   scene: string;
   /* 上传时间 */
   uploadTime: string;
-
   /* 图片宽度 */
   width?: null | number;
 };

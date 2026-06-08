@@ -98,7 +98,7 @@ const recordsGridOptions: VxeGridProps<UserExperienceRecordDto> = {
   },
 };
 
-const rulesGridOptions: VxeGridProps<BaseGrowthRewardRuleDto> = {
+const rulesGridOptions: VxeGridProps<RuleRow> = {
   columns: createExperienceRuleColumns(configurableEventOptions),
   height: '100%',
   proxyConfig: {

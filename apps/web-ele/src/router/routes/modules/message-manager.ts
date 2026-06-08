@@ -29,6 +29,15 @@ const routes: RouteRecordRaw[] = [
           title: '消息运行',
         },
       },
+      {
+        name: 'MessageChatInvestigation',
+        path: '/message/chat-investigation',
+        component: () => import('#/views/message/chat-investigation/index.vue'),
+        meta: {
+          icon: 'codex:dot-circle',
+          title: '聊天排查',
+        },
+      },
     ],
   },
 ];

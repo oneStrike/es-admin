@@ -82,6 +82,15 @@ export async function workflowItemPageApi(
 }
 
 /**
+ * 查询工作流类型选项
+ */
+export async function workflowTypeOptionsApi(): Promise<WorkflowTypeOptionsResponse> {
+  return requestClient.get<WorkflowTypeOptionsResponse>(
+    '/api/admin/workflow/type-options',
+  );
+}
+
+/**
  * 取消工作流任务
  */
 export async function workflowCancelApi(
@@ -126,14 +135,5 @@ export async function workflowExpireApi(
   return requestClient.post<WorkflowExpireResponse>(
     '/api/admin/workflow/expire',
     params,
-  );
-}
-
-/**
- * 查询工作流类型选项
- */
-export async function workflowTypeOptionsApi(): Promise<WorkflowTypeOptionsResponse> {
-  return requestClient.get<WorkflowTypeOptionsResponse>(
-    '/api/admin/workflow/type-options',
   );
 }

@@ -4,6 +4,9 @@ import type { ActionItem } from '@vben/common-ui';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   MessageDispatchPageItemDto,
+  MessageMonitorDeliveryPageRequest,
+  MessageMonitorDispatchPageRequest,
+  MessageMonitorSummaryDto,
   MessageNotificationDeliveryItemDto,
   MessageWsMonitorSummaryDto,
 } from '#/api/types';
@@ -12,26 +15,28 @@ import { computed, onMounted, ref } from 'vue';
 
 import { Page, VbenTableAction } from '@vben/common-ui';
 
+import { ElMessageBox } from 'element-plus';
+
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   messageMonitorDeliveryPageApi,
   messageMonitorDeliveryRetryApi,
   messageMonitorDispatchPageApi,
+  messageMonitorSummaryApi,
   messageMonitorWsSummaryApi,
 } from '#/api/core';
 import EsFullHeightTabs from '#/components/es-full-height-tabs';
-import { useConfirm, useMessage } from '#/hooks/useFeedback';
+import { useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { deliveryColumns, deliverySearchFormSchema } from './model/delivery';
 import { dispatchColumns, dispatchSearchFormSchema } from './model/dispatch';
 import {
-  attentionSummaryQueries,
+  buildDeliveryPageQuery,
+  buildDispatchPageQuery,
   deliveryStatusMap,
   formatNullable,
   getMonitorNotificationCategoryLabel,
-  getPageTotal,
-  splitDateRange,
 } from './model/shared';
 import {
   getRealtimeSummaryText,
@@ -47,11 +52,7 @@ const activeTab = ref('dispatch');
 const windowHours = ref(24);
 const wsSummary = ref<MessageWsMonitorSummaryDto | null>(null);
 const overviewLoading = ref(false);
-const attentionSummary = ref({
-  failedDeliveryTotal: 0,
-  failedDispatchTotal: 0,
-  retryingDeliveryTotal: 0,
-});
+const monitorSummary = ref<MessageMonitorSummaryDto | null>(null);
 
 const realtimeSummaryText = computed(() =>
   getRealtimeSummaryText(wsSummary.value),
@@ -60,17 +61,22 @@ const overviewItems = computed(() => [
   {
     label: '送达失败',
     tone: 'danger',
-    value: attentionSummary.value.failedDeliveryTotal,
+    value: monitorSummary.value?.failedDeliveryCount ?? 0,
   },
   {
     label: '等待自动重试',
     tone: 'warning',
-    value: attentionSummary.value.retryingDeliveryTotal,
+    value: monitorSummary.value?.retryingDeliveryCount ?? 0,
   },
   {
     label: '发送任务失败',
     tone: 'danger',
-    value: attentionSummary.value.failedDispatchTotal,
+    value: monitorSummary.value?.failedDispatchCount ?? 0,
+  },
+  {
+    label: '发送任务重试中',
+    tone: 'warning',
+    value: monitorSummary.value?.retryingDispatchCount ?? 0,
   },
   ...getWsSummaryItems(wsSummary.value),
 ]);
@@ -80,13 +86,15 @@ const dispatchGridOptions: VxeGridProps<MessageDispatchPageItemDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await messageMonitorDispatchPageApi(
-          formatQuery({
+        const request = {
+          ...formatQuery({
             page,
-            formValues: splitDateRange(formValues),
+            formValues: buildDispatchPageQuery(formValues),
             sorts,
           }),
-        );
+        } satisfies MessageMonitorDispatchPageRequest;
+
+        return await messageMonitorDispatchPageApi(request);
       },
     },
     sort: true,
@@ -99,13 +107,15 @@ const deliveryGridOptions: VxeGridProps<MessageNotificationDeliveryItemDto> = {
   proxyConfig: {
     ajax: {
       query: async ({ page, sorts }, formValues) => {
-        return await messageMonitorDeliveryPageApi(
-          formatQuery({
+        const request = {
+          ...formatQuery({
             page,
-            formValues: splitDateRange(formValues),
+            formValues: buildDeliveryPageQuery(formValues),
             sorts,
           }),
-        );
+        } satisfies MessageMonitorDeliveryPageRequest;
+
+        return await messageMonitorDeliveryPageApi(request);
       },
     },
     sort: true,
@@ -133,17 +143,7 @@ async function fetchWsSummary() {
 }
 
 async function fetchAttentionSummary() {
-  const [failedDelivery, retryingDelivery, failedDispatch] = await Promise.all([
-    messageMonitorDeliveryPageApi(attentionSummaryQueries.failedDelivery),
-    messageMonitorDeliveryPageApi(attentionSummaryQueries.retryingDelivery),
-    messageMonitorDispatchPageApi(attentionSummaryQueries.failedDispatch),
-  ]);
-
-  attentionSummary.value = {
-    failedDeliveryTotal: getPageTotal(failedDelivery),
-    failedDispatchTotal: getPageTotal(failedDispatch),
-    retryingDeliveryTotal: getPageTotal(retryingDelivery),
-  };
+  monitorSummary.value = await messageMonitorSummaryApi();
 }
 
 async function refreshOverview() {
@@ -179,8 +179,53 @@ function metricTextClass(tone: string) {
   return classMap[tone] || classMap.info;
 }
 
-async function retryDelivery(row: MessageNotificationDeliveryItemDto) {
-  await messageMonitorDeliveryRetryApi({ dispatchId: row.dispatchId });
+function getRetryPromptContent(row: MessageNotificationDeliveryItemDto) {
+  const categoryLabel = getMonitorNotificationCategoryLabel({
+    categoryKey: row.categoryKey,
+    categoryLabel: row.categoryLabel,
+  });
+
+  return [
+    `接收用户：${formatNullable(row.receiverUserId)}`,
+    `通知类型：${categoryLabel}`,
+    `触发场景：${row.eventLabel || row.eventKey}`,
+    `失败原因：${formatNullable(row.failureReason)}`,
+  ].join('\n');
+}
+
+async function promptRetryReason(row: MessageNotificationDeliveryItemDto) {
+  try {
+    const result = await ElMessageBox.prompt(
+      getRetryPromptContent(row),
+      '重新发送通知',
+      {
+        cancelButtonText: '取消',
+        confirmButtonText: '提交重试',
+        draggable: true,
+        inputPlaceholder: '请填写本次人工重试原因',
+        inputType: 'textarea',
+        inputValidator(value) {
+          const reason = String(value || '').trim();
+          return reason.length >= 5 ? true : '请填写不少于 5 个字的重试原因';
+        },
+        type: 'warning',
+      },
+    );
+
+    return String(result.value || '').trim();
+  } catch {
+    return '';
+  }
+}
+
+async function retryDelivery(
+  row: MessageNotificationDeliveryItemDto,
+  reason: string,
+) {
+  await messageMonitorDeliveryRetryApi({
+    deliveryId: String(row.id),
+    reason,
+  });
   deliveryGridApi.markRowAsViewed(row);
   useMessage.success('重新发送已提交');
   await deliveryGridApi.reload();
@@ -188,13 +233,10 @@ async function retryDelivery(row: MessageNotificationDeliveryItemDto) {
 }
 
 async function confirmRetryDelivery(row: MessageNotificationDeliveryItemDto) {
-  const confirmed = await useConfirm({
-    content: `确认重新发送任务 ${formatNullable(row.dispatchId)} 对应的通知？`,
-    successMessage: false,
-  });
-  if (!confirmed) return;
+  const reason = await promptRetryReason(row);
+  if (!reason) return;
 
-  await retryDelivery(row);
+  await retryDelivery(row, reason);
 }
 
 function getDeliveryActions(
@@ -290,15 +332,6 @@ onMounted(refreshOverview);
               <template #deliveryStatus="{ row }">
                 <el-tag :type="getDeliveryStatus(row).color" size="small">
                   {{ getDeliveryStatus(row).label }}
-                </el-tag>
-              </template>
-
-              <template #usedTemplate="{ row }">
-                <el-tag
-                  :type="row.usedTemplate ? 'success' : 'info'"
-                  size="small"
-                >
-                  {{ row.usedTemplate ? '是' : '否' }}
                 </el-tag>
               </template>
 
