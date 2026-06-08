@@ -5,6 +5,8 @@ import { formatUTC } from '#/utils';
 import {
   formatActorSummary,
   formatCommentLevel,
+  formatDispositionAction,
+  formatLatestDispositionFailure,
   formatReportCommentSummary,
   formatReporterSummary,
   formatReportTargetExtra,
@@ -15,6 +17,7 @@ import {
   formatSceneTitle,
   reasonTypeMap,
   reportStatusMap,
+  resolveDispositionState,
   resolveReportCommentState,
   resolveReporterState,
   resolveReportTargetState,
@@ -26,6 +29,7 @@ export function getDetailSections(detail: ReportDetailResponse) {
   const reporterState = resolveReporterState(detail.reporterSummary);
   const targetState = resolveReportTargetState(detail.targetSummary);
   const commentState = resolveReportCommentState(detail.commentSummary);
+  const dispositionState = resolveDispositionState(detail);
 
   return [
     {
@@ -192,6 +196,46 @@ export function getDetailSections(detail: ReportDetailResponse) {
           value: detail.handledAt
             ? formatUTC(detail.handledAt, 'YYYY-MM-DD HH:mm:ss')
             : '-',
+          type: 'text' as const,
+        },
+      ],
+    },
+    {
+      title: '目标处置',
+      show: true,
+      items: [
+        {
+          label: '处置动作',
+          value: formatDispositionAction(detail.targetAction),
+          type: 'text' as const,
+        },
+        {
+          label: '处置状态',
+          value: dispositionState.label,
+          type: 'tag' as const,
+          tagText: dispositionState.label,
+          tagType: dispositionState.color,
+        },
+        {
+          label: '处置原因',
+          value: detail.targetActionReason || '-',
+          type: 'text' as const,
+        },
+        {
+          label: '完成时间',
+          value: detail.targetActionAppliedAt
+            ? formatUTC(detail.targetActionAppliedAt, 'YYYY-MM-DD HH:mm:ss')
+            : '-',
+          type: 'text' as const,
+        },
+        {
+          label: '处置结果',
+          value: detail.targetActionResult || '-',
+          type: 'text' as const,
+        },
+        {
+          label: '最新失败',
+          value: formatLatestDispositionFailure(detail),
           type: 'text' as const,
         },
       ],

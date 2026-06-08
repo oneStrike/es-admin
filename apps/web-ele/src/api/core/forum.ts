@@ -193,30 +193,6 @@ export async function forumModeratorsAssignSectionApi(
 }
 
 /**
- * 查看版主操作日志
- */
-export async function forumModeratorActionLogPageApi(
-  params?: ForumModeratorActionLogPageRequest,
-): Promise<ForumModeratorActionLogPageResponse> {
-  return requestClient.get<ForumModeratorActionLogPageResponse>(
-    '/api/admin/forum/moderator-action-log/page',
-    { params },
-  );
-}
-
-/**
- * 分页查询版主生命周期日志
- */
-export async function forumModeratorLifecycleLogPageApi(
-  params?: ForumModeratorLifecycleLogPageRequest,
-): Promise<ForumModeratorLifecycleLogPageResponse> {
-  return requestClient.get<ForumModeratorLifecycleLogPageResponse>(
-    '/api/admin/forum/moderator-lifecycle-log/page',
-    { params },
-  );
-}
-
-/**
  * 分页查询版主申请
  */
 export async function forumModeratorApplicationPageApi(
@@ -424,78 +400,6 @@ export async function forumSensitiveWordCountApi(): Promise<ForumSensitiveWordCo
 }
 
 /**
- * 分页查询论坛话题
- */
-export async function forumHashtagsPageApi(
-  params?: ForumHashtagsPageRequest,
-): Promise<ForumHashtagsPageResponse> {
-  return requestClient.get<ForumHashtagsPageResponse>(
-    '/api/admin/forum/hashtags/page',
-    { params },
-  );
-}
-
-/**
- * 获取论坛话题详情
- */
-export async function forumHashtagsDetailApi(
-  params: ForumHashtagsDetailRequest,
-): Promise<ForumHashtagsDetailResponse> {
-  return requestClient.get<ForumHashtagsDetailResponse>(
-    '/api/admin/forum/hashtags/detail',
-    { params },
-  );
-}
-
-/**
- * 创建论坛话题
- */
-export async function forumHashtagsCreateApi(
-  params: ForumHashtagsCreateRequest,
-): Promise<ForumHashtagsCreateResponse> {
-  return requestClient.post<ForumHashtagsCreateResponse>(
-    '/api/admin/forum/hashtags/create',
-    params,
-  );
-}
-
-/**
- * 更新论坛话题
- */
-export async function forumHashtagsUpdateApi(
-  params: ForumHashtagsUpdateRequest,
-): Promise<ForumHashtagsUpdateResponse> {
-  return requestClient.post<ForumHashtagsUpdateResponse>(
-    '/api/admin/forum/hashtags/update',
-    params,
-  );
-}
-
-/**
- * 更新论坛话题隐藏状态
- */
-export async function forumHashtagsUpdateHiddenApi(
-  params: ForumHashtagsUpdateHiddenRequest,
-): Promise<ForumHashtagsUpdateHiddenResponse> {
-  return requestClient.post<ForumHashtagsUpdateHiddenResponse>(
-    '/api/admin/forum/hashtags/update-hidden',
-    params,
-  );
-}
-
-/**
- * 更新论坛话题审核状态
- */
-export async function forumHashtagsUpdateAuditStatusApi(
-  params: ForumHashtagsUpdateAuditStatusRequest,
-): Promise<ForumHashtagsUpdateAuditStatusResponse> {
-  return requestClient.post<ForumHashtagsUpdateAuditStatusResponse>(
-    '/api/admin/forum/hashtags/update-audit-status',
-    params,
-  );
-}
-
-/**
  * 分页查询论坛主题列表
  */
 export async function forumTopicPageApi(
@@ -551,18 +455,6 @@ export async function forumTopicDeleteApi(
 ): Promise<ForumTopicDeleteResponse> {
   return requestClient.post<ForumTopicDeleteResponse>(
     '/api/admin/forum/topic/delete',
-    params,
-  );
-}
-
-/**
- * 恢复已删除论坛主题
- */
-export async function forumTopicRestoreApi(
-  params: ForumTopicRestoreRequest,
-): Promise<ForumTopicRestoreResponse> {
-  return requestClient.post<ForumTopicRestoreResponse>(
-    '/api/admin/forum/topic/restore',
     params,
   );
 }
@@ -635,6 +527,18 @@ export async function forumTopicUpdateAuditStatusApi(
 ): Promise<ForumTopicUpdateAuditStatusResponse> {
   return requestClient.post<ForumTopicUpdateAuditStatusResponse>(
     '/api/admin/forum/topic/update-audit-status',
+    params,
+  );
+}
+
+/**
+ * 恢复已删除论坛主题
+ */
+export async function forumTopicRestoreApi(
+  params: ForumTopicRestoreRequest,
+): Promise<ForumTopicRestoreResponse> {
+  return requestClient.post<ForumTopicRestoreResponse>(
+    '/api/admin/forum/topic/restore',
     params,
   );
 }
@@ -717,27 +621,6 @@ export async function forumSectionsUpdateEnabledApi(
   return requestClient.post<ForumSectionsUpdateEnabledResponse>(
     '/api/admin/forum/sections/update-enabled',
     params,
-  );
-}
-
-/**
- * 重建板块计数
- */
-export async function forumSectionsRebuildCountsApi(
-  params: ForumSectionsRebuildCountsRequest,
-): Promise<ForumSectionsRebuildCountsResponse> {
-  return requestClient.post<ForumSectionsRebuildCountsResponse>(
-    '/api/admin/forum/sections/rebuild-counts',
-    params,
-  );
-}
-
-/**
- * 全量重建板块计数
- */
-export async function forumSectionsRebuildCountsAllApi(): Promise<ForumSectionsRebuildCountsAllResponse> {
-  return requestClient.post<ForumSectionsRebuildCountsAllResponse>(
-    '/api/admin/forum/sections/rebuild-counts-all',
   );
 }
 
@@ -834,5 +717,122 @@ export async function forumSectionGroupsSwapSortOrderApi(
   return requestClient.post<ForumSectionGroupsSwapSortOrderResponse>(
     '/api/admin/forum/section-groups/swap-sort-order',
     params,
+  );
+}
+
+/**
+ * 重建板块计数
+ */
+export async function forumSectionsRebuildCountsApi(
+  params: ForumSectionsRebuildCountsRequest,
+): Promise<ForumSectionsRebuildCountsResponse> {
+  return requestClient.post<ForumSectionsRebuildCountsResponse>(
+    '/api/admin/forum/sections/rebuild-counts',
+    params,
+  );
+}
+
+/**
+ * 全量重建板块计数
+ */
+export async function forumSectionsRebuildCountsAllApi(): Promise<ForumSectionsRebuildCountsAllResponse> {
+  return requestClient.post<ForumSectionsRebuildCountsAllResponse>(
+    '/api/admin/forum/sections/rebuild-counts-all',
+  );
+}
+
+/**
+ * 分页查询论坛话题
+ */
+export async function forumHashtagsPageApi(
+  params?: ForumHashtagsPageRequest,
+): Promise<ForumHashtagsPageResponse> {
+  return requestClient.get<ForumHashtagsPageResponse>(
+    '/api/admin/forum/hashtags/page',
+    { params },
+  );
+}
+
+/**
+ * 获取论坛话题详情
+ */
+export async function forumHashtagsDetailApi(
+  params: ForumHashtagsDetailRequest,
+): Promise<ForumHashtagsDetailResponse> {
+  return requestClient.get<ForumHashtagsDetailResponse>(
+    '/api/admin/forum/hashtags/detail',
+    { params },
+  );
+}
+
+/**
+ * 创建论坛话题
+ */
+export async function forumHashtagsCreateApi(
+  params: ForumHashtagsCreateRequest,
+): Promise<ForumHashtagsCreateResponse> {
+  return requestClient.post<ForumHashtagsCreateResponse>(
+    '/api/admin/forum/hashtags/create',
+    params,
+  );
+}
+
+/**
+ * 更新论坛话题
+ */
+export async function forumHashtagsUpdateApi(
+  params: ForumHashtagsUpdateRequest,
+): Promise<ForumHashtagsUpdateResponse> {
+  return requestClient.post<ForumHashtagsUpdateResponse>(
+    '/api/admin/forum/hashtags/update',
+    params,
+  );
+}
+
+/**
+ * 更新论坛话题隐藏状态
+ */
+export async function forumHashtagsUpdateHiddenApi(
+  params: ForumHashtagsUpdateHiddenRequest,
+): Promise<ForumHashtagsUpdateHiddenResponse> {
+  return requestClient.post<ForumHashtagsUpdateHiddenResponse>(
+    '/api/admin/forum/hashtags/update-hidden',
+    params,
+  );
+}
+
+/**
+ * 更新论坛话题审核状态
+ */
+export async function forumHashtagsUpdateAuditStatusApi(
+  params: ForumHashtagsUpdateAuditStatusRequest,
+): Promise<ForumHashtagsUpdateAuditStatusResponse> {
+  return requestClient.post<ForumHashtagsUpdateAuditStatusResponse>(
+    '/api/admin/forum/hashtags/update-audit-status',
+    params,
+  );
+}
+
+/**
+ * 查看版主操作日志
+ */
+export async function forumModeratorActionLogPageApi(
+  params?: ForumModeratorActionLogPageRequest,
+): Promise<ForumModeratorActionLogPageResponse> {
+  return requestClient.get<ForumModeratorActionLogPageResponse>(
+    '/api/admin/forum/moderator-action-log/page',
+    { params },
+  );
+}
+
+/**
+ * 分页查询版主生命周期日志
+ */
+export async function forumModeratorLifecycleLogPageApi(
+  params?: ForumModeratorLifecycleLogPageRequest,
+): Promise<ForumModeratorLifecycleLogPageResponse> {
+  return requestClient.get<ForumModeratorLifecycleLogPageResponse>(
+    '/api/admin/forum/moderator-lifecycle-log/page',
+    { params },
   );
 }

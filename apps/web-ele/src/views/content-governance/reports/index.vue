@@ -16,17 +16,21 @@ import { createSearchFormOptions } from '#/utils/grid-form-config';
 import { getDetailSections } from './model/detail';
 import {
   formatActorSummary,
+  formatLatestDispositionFailure,
   formatReporterSummary,
   formatReportTargetExtra,
   formatReportTargetTitle,
   formatSceneExtra,
   formatSceneTitle,
   handleFormSchema,
+  noActionDispositionOptions,
   pageColumns,
+  resolveDispositionState,
   resolveReporterState,
   resolveReportTargetState,
   sceneTypeMap,
   searchFormSchema,
+  targetDispositionActionOptions,
   targetTypeMap,
 } from './model/shared';
 
@@ -74,7 +78,10 @@ const [DetailModal, detailApi] = useVbenModal({
 });
 
 type ReportHandleFormValues = Partial<
-  Pick<ReportHandleRequest, 'handlingNote' | 'id' | 'status'>
+  Pick<
+    ReportHandleRequest,
+    'handlingNote' | 'id' | 'status' | 'targetAction' | 'targetActionReason'
+  >
 >;
 
 function canHandleReport(row: AdminReportPageItemDto) {
@@ -82,6 +89,27 @@ function canHandleReport(row: AdminReportPageItemDto) {
 }
 
 function openHandleModal(row: AdminReportPageItemDto) {
+  const isCommentReport = row.targetType === 6;
+  const defaultTargetAction = isCommentReport ? 2 : 1;
+  const schema = handleFormSchema.map((item) => {
+    if (item.fieldName !== 'targetAction') {
+      return item;
+    }
+
+    return {
+      ...item,
+      componentProps: {
+        ...(typeof item.componentProps === 'object' &&
+        !Array.isArray(item.componentProps)
+          ? item.componentProps
+          : {}),
+        options: isCommentReport
+          ? targetDispositionActionOptions
+          : noActionDispositionOptions,
+      },
+    };
+  });
+
   handleFormApi
     .setData({
       cols: 1,
@@ -89,8 +117,10 @@ function openHandleModal(row: AdminReportPageItemDto) {
         handlingNote: row.handlingNote ?? '',
         id: row.id,
         status: 3,
+        targetAction: defaultTargetAction,
+        targetActionReason: '',
       },
-      schema: handleFormSchema,
+      schema,
       title: '处理举报',
       width: 720,
     })
@@ -99,16 +129,32 @@ function openHandleModal(row: AdminReportPageItemDto) {
 
 async function handleReportSubmit(values: ReportHandleFormValues) {
   const status = Number(values.status) as 3 | 4;
+  const targetAction = status === 4 ? 1 : Number(values.targetAction);
+  const targetActionReason = values.targetActionReason?.trim?.() || undefined;
 
   if (status !== 3 && status !== 4) {
     useMessage.warning('请选择有效处理结果');
     throw new Error('invalid report status');
+  }
+  if (![1, 2, 3].includes(targetAction)) {
+    useMessage.warning('请选择有效目标处置动作');
+    throw new Error('invalid report target action');
+  }
+  if (status === 3 && !targetActionReason) {
+    useMessage.warning(
+      targetAction === 1
+        ? '有效举报无需处置时必须填写原因'
+        : '执行目标处置时必须填写原因',
+    );
+    throw new Error('missing report disposition reason');
   }
 
   await reportHandleApi({
     handlingNote: values.handlingNote?.trim?.() || undefined,
     id: Number(values.id),
     status,
+    targetAction: targetAction as ReportHandleRequest['targetAction'],
+    targetActionReason,
   } satisfies ReportHandleRequest);
   handleFormApi.close();
   useMessage.success('处理成功');
@@ -233,6 +279,22 @@ function getReportActions(row: AdminReportPageItemDto): ActionItem[] {
             {{ row.handlerSummary.roleName }}
           </div>
         </div>
+        <span v-else>-</span>
+      </template>
+
+      <template #targetActionStatus="{ row }">
+        <el-tag :type="resolveDispositionState(row).color" size="small">
+          {{ resolveDispositionState(row).label }}
+        </el-tag>
+      </template>
+
+      <template #latestDispositionFailure="{ row }">
+        <span
+          v-if="row.latestFailedDispositionAttempt"
+          class="text-sm text-red-500"
+        >
+          {{ formatLatestDispositionFailure(row) }}
+        </span>
         <span v-else>-</span>
       </template>
 

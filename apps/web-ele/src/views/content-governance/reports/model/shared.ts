@@ -27,6 +27,23 @@ export const handleStatusOptions = reportStatusOptions
   .filter((item) => item.value === 3 || item.value === 4)
   .map(({ color: _color, ...rest }) => rest);
 
+export const targetDispositionActionOptions = [
+  { label: '无需处置', value: 1 },
+  { label: '隐藏评论', value: 2 },
+  { label: '拒绝评论', value: 3 },
+];
+
+export const noActionDispositionOptions = targetDispositionActionOptions.filter(
+  (item) => item.value === 1,
+);
+
+export const dispositionStatusOptions = [
+  { label: '无需处置', value: 1, color: 'info' as const },
+  { label: '处置成功', value: 2, color: 'success' as const },
+  { label: '历史未处置', value: 3, color: 'warning' as const },
+  { label: '最新处置失败', value: 99, color: 'danger' as const },
+];
+
 export const reasonTypeOptions = [
   { label: '垃圾信息', value: 1 },
   { label: '不当内容', value: 2 },
@@ -74,6 +91,14 @@ export const auditStatusMap = Object.fromEntries(
 export const reportStatusMap = Object.fromEntries(
   reportStatusOptions.map((item) => [item.value, item]),
 ) as Record<number, (typeof reportStatusOptions)[number]>;
+
+export const targetDispositionActionMap = Object.fromEntries(
+  targetDispositionActionOptions.map((item) => [item.value, item]),
+) as Record<number, (typeof targetDispositionActionOptions)[number]>;
+
+export const dispositionStatusMap = Object.fromEntries(
+  dispositionStatusOptions.map((item) => [item.value, item]),
+) as Record<number, (typeof dispositionStatusOptions)[number]>;
 
 export const reasonTypeMap = Object.fromEntries(
   reasonTypeOptions.map((item) => [item.value, item]),
@@ -132,6 +157,43 @@ export function formatCommentLevel(commentLevel?: null | number) {
 
 export function formatReportDescription(description?: null | string) {
   return description?.trim() || '-';
+}
+
+export function formatDispositionAction(action?: null | number) {
+  if (action === null || action === undefined) {
+    return '-';
+  }
+
+  return targetDispositionActionMap[action]?.label || action;
+}
+
+export function resolveDispositionState(report: AdminReportPageItemDto) {
+  if (report.latestFailedDispositionAttempt) {
+    return (
+      dispositionStatusMap[99] || {
+        color: 'danger' as const,
+        label: '最新处置失败',
+        value: 99,
+      }
+    );
+  }
+
+  return (
+    dispositionStatusMap[report.targetActionStatus] || {
+      color: 'info' as const,
+      label: '未知状态',
+      value: report.targetActionStatus,
+    }
+  );
+}
+
+export function formatLatestDispositionFailure(report: AdminReportPageItemDto) {
+  const attempt = report.latestFailedDispositionAttempt;
+  if (!attempt) {
+    return '-';
+  }
+
+  return joinText([attempt.failureCode, attempt.failureMessage]);
 }
 
 export function formatReporterSummary(
@@ -310,6 +372,12 @@ const reportFieldCatalog = {
     fieldName: 'targetType',
     label: '目标类型',
   },
+  targetActionStatus: {
+    component: 'Select',
+    componentProps: { options: dispositionStatusOptions },
+    fieldName: 'targetActionStatus',
+    label: '处置状态',
+  },
 } satisfies Record<string, ReportSchemaField>;
 
 function createReportField(
@@ -343,6 +411,27 @@ export const handleFormSchema: EsFormSchema = [
     rules: 'required',
   }),
   {
+    component: 'RadioGroup',
+    componentProps: {
+      class: 'w-full',
+      options: targetDispositionActionOptions,
+      placeholder: '请选择目标处置动作',
+    },
+    fieldName: 'targetAction',
+    label: '目标处置',
+    rules: 'required',
+  },
+  {
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入目标处置原因；有效举报无需处置时也必须说明原因',
+      rows: 4,
+      type: 'textarea',
+    },
+    fieldName: 'targetActionReason',
+    label: '处置原因',
+  },
+  {
     component: 'Input',
     componentProps: {
       placeholder: '请输入处理备注',
@@ -364,6 +453,12 @@ const pageListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'sceneExtra', label: '所属对象' },
   createReportField('reasonType'),
   createReportField('status', { label: '状态' }),
+  createReportField('targetActionStatus'),
+  {
+    component: 'Input',
+    fieldName: 'latestDispositionFailure',
+    label: '处置异常',
+  },
   { component: 'Input', fieldName: 'description', label: '举报说明' },
   { component: 'Input', fieldName: 'handlerSummary', label: '处理人' },
   { component: 'Input', fieldName: 'evidenceUrl', label: '证据' },
@@ -462,6 +557,15 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
         placeholder: '场景类型',
       },
     },
+    dispositionStatus: {
+      component: 'Select',
+      componentProps: {
+        clearable: true,
+        options: dispositionStatusOptions,
+        placeholder: '处置状态',
+      },
+      fieldName: 'dispositionStatus',
+    },
     dateRange: {
       componentProps: {
         clearable: true,
@@ -469,46 +573,6 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
         startPlaceholder: '创建开始时间',
         type: 'daterange',
         valueFormat: 'YYYY-MM-DD',
-      },
-    },
-    id: {
-      componentProps: {
-        class: '!w-full',
-        controlsPosition: 'right',
-        min: 1,
-        placeholder: '举报 ID',
-      },
-    },
-    targetId: {
-      componentProps: {
-        class: '!w-full',
-        controlsPosition: 'right',
-        min: 1,
-        placeholder: '目标 ID',
-      },
-    },
-    sceneId: {
-      componentProps: {
-        class: '!w-full',
-        controlsPosition: 'right',
-        min: 1,
-        placeholder: '场景 ID',
-      },
-    },
-    reporterId: {
-      componentProps: {
-        class: '!w-full',
-        controlsPosition: 'right',
-        min: 1,
-        placeholder: '举报人 ID',
-      },
-    },
-    handlerId: {
-      componentProps: {
-        class: '!w-full',
-        controlsPosition: 'right',
-        min: 1,
-        placeholder: '处理人 ID',
       },
     },
   },
@@ -550,6 +614,14 @@ export const pageColumns =
         name: 'CellTag',
       },
       minWidth: 120,
+    },
+    targetActionStatus: {
+      minWidth: 120,
+      slots: { default: 'targetActionStatus' },
+    },
+    latestDispositionFailure: {
+      minWidth: 220,
+      slots: { default: 'latestDispositionFailure' },
     },
     description: {
       formatter: ({ cellValue }) => formatReportDescription(cellValue),

@@ -393,14 +393,6 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
         valueFormat: 'YYYY-MM-DD',
       },
     },
-    id: {
-      componentProps: {
-        class: '!w-full',
-        controlsPosition: 'right',
-        min: 1,
-        placeholder: '评论 ID',
-      },
-    },
     selectedUserIds: {
       componentProps: () => ({
         ...createAppUserTableSelectProps({
@@ -410,14 +402,6 @@ export const searchFormSchema = formSchemaTransform.toSearchSchema(
           title: '选择评论用户',
         }),
       }),
-    },
-    targetId: {
-      componentProps: {
-        class: '!w-full',
-        controlsPosition: 'right',
-        min: 1,
-        placeholder: '目标 ID',
-      },
     },
   },
 );

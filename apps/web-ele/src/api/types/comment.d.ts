@@ -8,13 +8,13 @@ export type CommentPageRequest = {
   [property: string]: any;
 
   /* 实际回复的根评论 ID */
-  actualReplyToId?: number;
+  actualReplyToId?: null | number;
 
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus?: number;
 
   /* 创建日期结束（应用时区自然日，YYYY-MM-DD） */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 主键id */
   id?: number;
@@ -23,22 +23,22 @@ export type CommentPageRequest = {
   isHidden?: boolean;
 
   /* 关键词搜索（评论内容） */
-  keyword?: string;
+  keyword?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 回复的评论 ID */
-  replyToId?: number;
+  replyToId?: null | number;
 
   /* 创建日期开始（应用时区自然日，YYYY-MM-DD） */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 目标 ID */
   targetId?: number;
@@ -144,13 +144,13 @@ export type AdminCommentPageItemDto = {
   /* 回复的评论 ID */
   replyToId?: null | number;
   /* 被回复评论展示摘要 */
-  replyToSummary?: InteractionReplyCommentSummaryDto | null;
+  replyToSummary?: InteractionReplyCommentSummaryDto;
   /* 敏感词命中记录 */
   sensitiveWordHits?: SensitiveWordHitDto[];
   /* 目标 ID */
   targetId: number;
   /* 评论目标展示摘要 */
-  targetSummary?: InteractionCommentTargetSummaryDto | null;
+  targetSummary?: InteractionCommentTargetSummaryDto;
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType: 1 | 2 | 3 | 4 | 5;
   /* 更新时间 */
@@ -281,7 +281,7 @@ export type AdminCommentDetailDto = {
   /* 审核人 ID */
   auditById?: null | number;
   /* 审核人展示摘要 */
-  auditorSummary?: InteractionActorSummaryDto | null;
+  auditorSummary?: InteractionActorSummaryDto;
   /* 审核原因 */
   auditReason?: null | string;
   /* 审核角色（0=版主；1=管理员） */
@@ -309,7 +309,7 @@ export type AdminCommentDetailDto = {
   /* 目标 ID */
   targetId: number;
   /* 评论目标展示摘要 */
-  targetSummary?: InteractionCommentTargetSummaryDto | null;
+  targetSummary?: InteractionCommentTargetSummaryDto;
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
   targetType: 1 | 2 | 3 | 4 | 5;
   /* 更新时间 */

@@ -46,22 +46,22 @@ export type TaskPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
   sceneType?: number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 任务状态（0=草稿；1=生效中；2=已暂停；3=已归档） */
   status?: number;
@@ -112,22 +112,22 @@ export type TaskInstancePageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
   sceneType?: number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
   status?: number;
@@ -166,28 +166,28 @@ export type TaskInstanceReconciliationPageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 任务实例 ID */
-  instanceId?: number;
+  instanceId?: null | number;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 奖励结算事实 ID */
-  rewardSettlementId?: number;
+  rewardSettlementId?: null | number;
 
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus?: number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 任务头 ID */
   taskId?: number;
@@ -243,7 +243,7 @@ export type TaskEventFailurePageRequest = {
   [property: string]: any;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 事件业务幂等键 */
   eventBizKey?: string;
@@ -255,16 +255,16 @@ export type TaskEventFailurePageRequest = {
   eventKey?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 失败事实状态（1=待重试；2=重试中；3=已解决；4=终态失败） */
   status?: number;
@@ -348,23 +348,6 @@ export type CreateTaskDefinitionDto = {
 };
 
 /**
- *  类型定义 [GrowthRewardItemDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type GrowthRewardItemDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 奖励数量；必须为大于 0 的整数 */
-  amount: number;
-  /* 奖励资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
-  assetKey?: null | string;
-
-  /* 奖励资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType: 1 | 2 | 3 | 4 | 5;
-};
-
-/**
  *  类型定义 [CreateTaskStepDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -385,23 +368,6 @@ export type CreateTaskStepDto = {
 
   /* 步骤触发方式（1=手动；2=事件驱动） */
   triggerMode: 1 | 2;
-};
-
-/**
- *  类型定义 [TaskTemplateFilterValueDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type TaskTemplateFilterValueDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 过滤字段稳定键 */
-  key: string;
-  /* 字段展示名称 */
-  label?: null | string;
-
-  /* 过滤字段值的结构化字符串表示 */
-  value: string;
 };
 
 /**
@@ -705,7 +671,7 @@ export type TaskInstanceViewDto = {
   /* 是否需要奖励结算（0=无奖励；1=需要奖励结算） */
   rewardApplicable: number;
   /* 奖励结算摘要 */
-  rewardSettlement: null | TaskRewardSettlementSummaryDto;
+  rewardSettlement: TaskRewardSettlementSummaryDto;
   /* 奖励结算事实 ID */
   rewardSettlementId: null | number;
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
@@ -806,11 +772,11 @@ export type AdminTaskReconciliationItemDto = {
   /* 主键id */
   id: number;
   /* 最近事件摘要 */
-  latestEvent: null | TaskLatestEventSummaryDto;
+  latestEvent: TaskLatestEventSummaryDto;
   /* 是否需要奖励结算（0=无奖励；1=需要奖励结算） */
   rewardApplicable: number;
   /* 奖励结算摘要 */
-  rewardSettlement: null | TaskRewardSettlementSummaryDto;
+  rewardSettlement: TaskRewardSettlementSummaryDto;
   /* 奖励结算事实 ID */
   rewardSettlementId: null | number;
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
@@ -818,7 +784,7 @@ export type AdminTaskReconciliationItemDto = {
   /* 步骤进度列表 */
   steps: TaskInstanceStepViewDto[];
   /* 任务头详情 */
-  task: AdminTaskDefinitionDetailDto | null;
+  task: AdminTaskDefinitionDetailDto;
   /* 任务头 ID */
   taskId: number;
   /* 唯一事实摘要列表 */
