@@ -1,10 +1,11 @@
+import type { TaskTemplateFilterValueDto } from './options';
+
 import type {
   AdminTaskDefinitionDetailDto,
   AdminTaskDefinitionListItemDto,
   TaskEventTemplateOptionDto,
 } from '#/api/types';
 import type { EsFormSchema } from '#/types';
-import type { TaskTemplateFilterValueDto } from './options';
 
 import { formSchemaTransform } from '#/utils';
 
@@ -87,6 +88,27 @@ function buildTemplateFilterFieldOptions(
       label: `${item.label} · ${formatFilterValueType(item.valueType)}`,
       value: item.key,
     })) || []
+  );
+}
+
+function getTemplateFilterField(
+  templateOptions: TaskEventTemplateOptionDto[],
+  templateKey: unknown,
+  key: unknown,
+) {
+  const selectedTemplate = getSelectedTemplate(templateOptions, templateKey);
+  return typeof key === 'string'
+    ? selectedTemplate?.availableFilterFields.find((item) => item.key === key)
+    : undefined;
+}
+
+function buildTemplateFilterValueOptions(
+  templateOptions: TaskEventTemplateOptionDto[],
+  values: { key?: string; stepTemplateKey?: string },
+) {
+  return (
+    getTemplateFilterField(templateOptions, values.stepTemplateKey, values.key)
+      ?.options || []
   );
 }
 
@@ -329,11 +351,23 @@ export function createTaskDefinitionFormSchema(
             rules: 'required',
           },
           {
-            component: 'Input',
-            componentProps: {
+            component: 'Select',
+            componentProps: (values: {
+              key?: string;
+              stepTemplateKey?: string;
+            }) => ({
+              allowCreate: true,
+              class: 'w-full',
               clearable: true,
-              placeholder: '按字段类型填写值',
-            },
+              filterable: true,
+              options: buildTemplateFilterValueOptions(templateOptions, values),
+              placeholder:
+                getTemplateFilterField(
+                  templateOptions,
+                  values.stepTemplateKey,
+                  values.key,
+                )?.placeholder || '请选择或填写过滤值',
+            }),
             fieldName: 'value',
             label: '过滤值',
             rules: 'required',

@@ -227,6 +227,8 @@ export type WorkflowExpireRequest = WorkflowExpireDto;
 
 export type WorkflowExpireResponse = WorkflowJobDto;
 
+export type WorkflowTypeOptionsResponse = WorkflowTypeOptionsResponseDto;
+
 /**
  *  类型定义 [WorkflowJobDto]
  *  @来源 components.schemas
@@ -609,4 +611,36 @@ export type WorkflowExpireDto = {
 
   /* 工作流任务ID */
   jobId: string;
+};
+
+/**
+ *  类型定义 [WorkflowTypeOptionsResponseDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowTypeOptionsResponseDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+
+  /* 工作流类型选项列表 */
+  list: WorkflowTypeOptionDto[];
+};
+
+/**
+ *  类型定义 [WorkflowTypeOptionDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WorkflowTypeOptionDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 工作流说明 */
+  description?: null | string;
+  /* 是否可在后台筛选中展示为启用 */
+  enabled: boolean;
+  /* 运营侧展示名称 */
+  label: string;
+
+  /* 工作流类型 */
+  type: string;
 };

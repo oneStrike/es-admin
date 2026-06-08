@@ -508,9 +508,30 @@ export type TaskTemplateFilterFieldDto = {
   key: string;
   /* 运营侧可见名称 */
   label: string;
+  /* 后端匹配操作符 */
+  operator?: null | string;
+  /* 可选择的受控选项；为空时按 valueType 使用普通输入 */
+  options?: TaskTemplateFilterFieldOptionDto[];
+  /* 运营填写提示 */
+  placeholder?: null | string;
 
   /* 字段值类型（number=数值；string=字符串；boolean=布尔值） */
   valueType: 'boolean' | 'number' | 'string';
+};
+
+/**
+ *  类型定义 [TaskTemplateFilterFieldOptionDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type TaskTemplateFilterFieldOptionDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 选项展示名 */
+  label: string;
+
+  /* 选项值 */
+  value: string;
 };
 
 /**
@@ -879,9 +900,23 @@ export type TaskRewardRetryResultDto = {
 export type RetryTaskRewardBatchDto = {
   /** 任意合法数值 */
   [property: string]: any;
-
+  /* 创建结束日期（应用时区 YYYY-MM-DD，后端按次日零点开区间处理） */
+  endDate?: null | string;
+  /* 指定重试的任务实例 ID 列表；传入后只扫描这些实例 */
+  instanceIds?: number[];
   /* 本次最多扫描的待补偿任务实例数，最大 500 */
   limit?: null | number;
+  /* 奖励结算事实 ID；来自后台高级诊断筛选条件 */
+  rewardSettlementId?: null | number;
+  /* 奖励结算状态；来自后台筛选条件 */
+  settlementStatus?: 0 | 1 | 2 | null;
+  /* 创建开始日期（应用时区 YYYY-MM-DD） */
+  startDate?: null | string;
+  /* 任务 ID；来自后台筛选条件 */
+  taskId?: null | number;
+
+  /* 用户 ID；来自后台筛选条件 */
+  userId?: null | number;
 };
 
 /**

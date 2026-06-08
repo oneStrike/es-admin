@@ -2,7 +2,10 @@
 import type { ActionItem } from '@vben/common-ui';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { AdminTaskReconciliationItemDto } from '#/api/types';
+import type {
+  AdminTaskReconciliationItemDto,
+  TaskInstanceRewardRetryPendingBatchRequest,
+} from '#/api/types';
 
 import { VbenTableAction } from '@vben/common-ui';
 
@@ -116,12 +119,73 @@ async function retryTaskReward(row: AdminTaskReconciliationItemDto) {
   }
 }
 
+function getPositiveInteger(value: unknown) {
+  return typeof value === 'number' && Number.isInteger(value) && value > 0
+    ? value
+    : undefined;
+}
+
+function buildBatchRetryScope(formValues: Record<string, unknown>) {
+  const scope: TaskInstanceRewardRetryPendingBatchRequest = {};
+  const instanceId = getPositiveInteger(formValues.instanceId);
+  const taskId = getPositiveInteger(formValues.taskId);
+  const userId = getPositiveInteger(formValues.userId);
+  const rewardSettlementId = getPositiveInteger(formValues.rewardSettlementId);
+
+  if (instanceId) scope.instanceIds = [instanceId];
+  if (taskId) scope.taskId = taskId;
+  if (userId) scope.userId = userId;
+  if (rewardSettlementId) scope.rewardSettlementId = rewardSettlementId;
+  if (typeof formValues.settlementStatus === 'number') {
+    scope.settlementStatus =
+      formValues.settlementStatus as TaskInstanceRewardRetryPendingBatchRequest['settlementStatus'];
+  }
+  if (typeof formValues.startDate === 'string') {
+    scope.startDate = formValues.startDate;
+  }
+  if (typeof formValues.endDate === 'string') {
+    scope.endDate = formValues.endDate;
+  }
+
+  return scope;
+}
+
+function hasBatchRetryScope(scope: TaskInstanceRewardRetryPendingBatchRequest) {
+  return Boolean(
+    scope.instanceIds?.length ||
+    scope.taskId ||
+    scope.userId ||
+    scope.rewardSettlementId ||
+    scope.settlementStatus !== undefined ||
+    scope.startDate ||
+    scope.endDate,
+  );
+}
+
+async function getCurrentBatchRetryScope() {
+  const { dateRange, ...restFormValues } =
+    ((await gridApi.formApi.getValues()) as Record<string, unknown>) || {};
+  const [startDate, endDate] = Array.isArray(dateRange) ? dateRange : [];
+
+  return buildBatchRetryScope({
+    ...restFormValues,
+    endDate,
+    startDate,
+  });
+}
+
 async function retryPendingTaskRewards() {
+  const scope = await getCurrentBatchRetryScope();
+  if (!hasBatchRetryScope(scope)) {
+    useMessage.warning('请先选择任务、用户、补偿状态或创建日期后再批量重试');
+    return;
+  }
+
   let inputValue: string;
 
   try {
     const result = await ElMessageBox.prompt(
-      '批量重试会扫描任务模块待补偿实例，不受当前筛选影响。可选填写本次最多扫描数量，最大 500。',
+      '批量重试只会扫描当前筛选范围内的待补偿实例。可选填写本次最多扫描数量，最大 500。',
       '批量重试任务奖励补偿',
       {
         cancelButtonText: '取消',
@@ -146,9 +210,10 @@ async function retryPendingTaskRewards() {
   batchRetrying.value = true;
   try {
     const limit = inputValue ? Number(inputValue) : undefined;
-    const result = await taskInstanceRewardRetryPendingBatchApi(
-      limit ? { limit } : {},
-    );
+    const result = await taskInstanceRewardRetryPendingBatchApi({
+      ...scope,
+      ...(limit ? { limit } : {}),
+    });
     useMessage.success(
       `批量重试完成：扫描 ${result.scannedCount}，成功 ${result.succeededCount}，跳过 ${result.skippedCount}，失败 ${result.failedCount}`,
     );
@@ -183,7 +248,7 @@ function getTaskReconciliationActions(
           type="primary"
           @click="retryPendingTaskRewards"
         >
-          批量重试待补偿（不受当前筛选影响）
+          批量重试当前筛选待补偿
         </el-button>
       </template>
 

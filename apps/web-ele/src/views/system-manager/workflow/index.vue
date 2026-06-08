@@ -29,6 +29,7 @@ import {
   workflowItemPageApi,
   workflowPageApi,
   workflowRetryItemsApi,
+  workflowTypeOptionsApi,
 } from '#/api/core';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
 import { createSearchFormOptions, formatUTC } from '#/utils';
@@ -47,6 +48,7 @@ import {
   formatWorkflowOperator,
   formatWorkflowType,
   getWorkflowItemCheckboxDisabledReason,
+  setWorkflowTypeOptions,
   workflowColumns,
   workflowItemColumns,
   workflowItemSearchSchema,
@@ -171,6 +173,7 @@ const [RecordModal, recordApi] = useVbenModal({
 });
 
 onMounted(async () => {
+  await loadWorkflowTypeOptions();
   const queryJobId = getInitialJobId();
   if (!queryJobId) {
     return;
@@ -190,6 +193,12 @@ function getInitialJobId() {
   const rawJobId = route.query.jobId;
   const jobId = Array.isArray(rawJobId) ? rawJobId[0] : rawJobId;
   return typeof jobId === 'string' ? jobId.trim() : '';
+}
+
+async function loadWorkflowTypeOptions() {
+  const result = await workflowTypeOptionsApi();
+  setWorkflowTypeOptions(result.list);
+  gridApi.formApi.setState?.({ schema: workflowSearchSchema });
 }
 
 async function loadDetail(jobId: string, options: { reset?: boolean } = {}) {

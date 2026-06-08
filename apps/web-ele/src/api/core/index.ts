@@ -367,3 +367,4 @@ export { workflowCancelApi } from './workflow';
 export { workflowArchiveApi } from './workflow';
 export { workflowRetryItemsApi } from './workflow';
 export { workflowExpireApi } from './workflow';
+export { workflowTypeOptionsApi } from './workflow';

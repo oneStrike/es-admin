@@ -7,6 +7,7 @@ import type {
   WorkflowItemPageRequest,
   WorkflowJobDto,
   WorkflowPageRequest,
+  WorkflowTypeOptionDto,
 } from '#/api/types/workflow';
 import type { EsFormSchema } from '#/types';
 
@@ -76,12 +77,23 @@ export const workflowArchiveScopeOptions = [
   { label: '全部', value: 'all' },
 ] as const;
 
-export const workflowTypeOptions = [
-  { label: '三方导入', value: 'content-import.third-party-import' },
-  { label: '三方同步', value: 'content-import.third-party-sync' },
-  { label: '压缩包导入', value: 'content-import.archive-import' },
-  { label: '批量发券', value: 'coupon.admin-grant-batch' },
-] as const;
+export const workflowTypeOptions: Array<{
+  disabled?: boolean;
+  label: string;
+  value: string;
+}> = [];
+
+export function setWorkflowTypeOptions(options: WorkflowTypeOptionDto[]) {
+  workflowTypeOptions.splice(
+    0,
+    workflowTypeOptions.length,
+    ...options.map((item) => ({
+      disabled: !item.enabled,
+      label: item.label,
+      value: item.type,
+    })),
+  );
+}
 
 const workflowListSchema: EsFormSchema = [
   { component: 'Input', fieldName: 'displayName', label: '任务' },
@@ -137,9 +149,9 @@ export const workflowSearchSchema = formSchemaTransform.toSearchSchema(
   workflowListSchema,
   {
     jobId: {
-      show: true,
+      show: false,
       componentProps: {
-        placeholder: '工作流任务 ID',
+        placeholder: '高级诊断：工作流任务 ID',
       },
     },
     workflowType: {
@@ -162,10 +174,10 @@ export const workflowSearchSchema = formSchemaTransform.toSearchSchema(
       component: 'DatePicker',
       componentProps: {
         endPlaceholder: '结束时间',
-        format: 'YYYY-MM-DD HH:mm:ss',
+        format: 'YYYY-MM-DD',
         startPlaceholder: '开始时间',
-        type: 'datetimerange',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
       },
       fieldName: 'dateRange',
       label: '创建时间',
