@@ -14,7 +14,6 @@ import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  contentCategoryPageApi,
   contentNovelCreateApi,
   contentNovelDeleteApi,
   contentNovelDetailApi,
@@ -78,7 +77,6 @@ const [DetailModal, detailApi] = useVbenModal({
   connectedComponent: RecordDetailModal,
 });
 
-const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
 const emptyDict: Recordable<undefined | UseDictItem> = {};
 const currentNovelRecord = ref<null | Partial<BaseWorkDto>>(null);
@@ -104,21 +102,6 @@ async function openFormModal(row?: BaseWorkDto) {
     record.tagIds = extractRelationOptions(record?.tags, 'tag');
   }
   currentNovelRecord.value = record ?? null;
-
-  if (categoryOptions.length === 0) {
-    const data = await contentCategoryPageApi({
-      pageSize: 500,
-    });
-    categoryOptions.push(
-      ...(data.list?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      })) || []),
-    );
-    useForm.setOptions(formSchema, {
-      categoryIds: categoryOptions,
-    });
-  }
 
   formApi.setData({ title: '小说', record }).open();
 }
@@ -206,13 +189,12 @@ function buildNovelPayload(
       normalizeRelationIds(values.tagIds) ??
       normalizeRelationIds(currentNovelRecord.value?.tagIds) ??
       [],
-    type: 2,
     viewRule: values.viewRule ?? currentNovelRecord.value?.viewRule ?? 0,
   };
 
   return 'id' in values && typeof values.id === 'number'
     ? ({ id: values.id, ...payload } as ContentNovelUpdateRequest)
-    : (payload as ContentNovelCreateRequest);
+    : ({ ...payload, type: 2 } as ContentNovelCreateRequest);
 }
 
 async function deleteNovel(record: BaseWorkDto) {

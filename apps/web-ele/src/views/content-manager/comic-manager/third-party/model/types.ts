@@ -16,6 +16,8 @@ export type {
   ContentAuthorPageRequest,
   ContentCategoryCreateRequest,
   ContentCategoryPageRequest,
+  ContentComicChapterPageRequest,
+  ContentComicChapterPageResponse,
   ContentComicDetailRequest,
   ContentComicDetailResponse,
   ContentComicPageRequest,

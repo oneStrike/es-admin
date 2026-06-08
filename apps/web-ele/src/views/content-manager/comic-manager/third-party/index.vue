@@ -7,6 +7,8 @@ import type {
   ContentAuthorPageRequest,
   ContentCategoryCreateRequest,
   ContentCategoryPageRequest,
+  ContentComicChapterPageRequest,
+  ContentComicChapterPageResponse,
   ContentComicDetailRequest,
   ContentComicDetailResponse,
   ContentComicPageRequest,
@@ -49,6 +51,7 @@ import {
   contentAuthorPageApi,
   contentCategoryCreateApi,
   contentCategoryPageApi,
+  contentComicChapterPageApi,
   contentComicDetailApi,
   contentComicPageApi,
   contentComicThirdPartyChapterContentDetailApi,
@@ -210,6 +213,7 @@ const loading = ref(false);
 const previewLoading = ref(false);
 const relationLoading = ref(false);
 const localWorkLoading = ref(false);
+const localChapterLoading = ref(false);
 const contentPreviewLoading = ref(false);
 const importLoading = ref(false);
 const nextStepLoading = ref(false);
@@ -224,6 +228,7 @@ const targetWorkId = ref<number>();
 const localWorkKeyword = ref('');
 const localWorkOptions = ref<LocalOption[]>([]);
 const localWorkRows = ref<LocalWorkRow[]>([]);
+const localChapterOptions = ref<LocalOption[]>([]);
 const workCoverMode =
   ref<Extract<WorkCoverMode, 'local' | 'provider'>>('provider');
 const localWorkCoverPath = ref('');
@@ -816,6 +821,15 @@ function toLocalOptions(list: LocalEntityRow[] | undefined): LocalOption[] {
   }));
 }
 
+function toChapterOptions(
+  list: ContentComicChapterPageResponse['list'] | undefined,
+): LocalOption[] {
+  return (list || []).map((item) => ({
+    label: `${item.sortOrder ?? 0}. ${item.title}`,
+    value: item.id,
+  }));
+}
+
 function ensureRelationOptions(
   options: { value: LocalOption[] },
   matchedOptions: LocalOption[],
@@ -1119,6 +1133,11 @@ async function searchLocalWorks(query = '') {
 }
 
 async function handleTargetWorkChange(id?: number) {
+  localChapterOptions.value = [];
+  chapterMappings.value = chapterMappings.value.map((item) => ({
+    ...item,
+    targetChapterId: undefined,
+  }));
   if (!id) {
     return;
   }
@@ -1135,11 +1154,33 @@ async function handleTargetWorkChange(id?: number) {
     } satisfies ContentComicDetailRequest);
     if (targetWorkId.value === id) {
       applyLocalWorkToDraft(detail);
+      await searchLocalChapters();
     }
   } catch {
     // 搜索行已先回填，详情加载失败时保留当前表单内容。
   } finally {
     localWorkLoading.value = false;
+  }
+}
+
+async function searchLocalChapters(keyword = '') {
+  const workId = targetWorkId.value;
+  if (!workId) {
+    localChapterOptions.value = [];
+    return;
+  }
+
+  localChapterLoading.value = true;
+  try {
+    const response = await contentComicChapterPageApi({
+      pageIndex: 1,
+      pageSize: 50,
+      title: keyword.trim() || undefined,
+      workId,
+    } satisfies ContentComicChapterPageRequest);
+    localChapterOptions.value = toChapterOptions(response.list);
+  } finally {
+    localChapterLoading.value = false;
   }
 }
 
@@ -1323,7 +1364,7 @@ function validateChapterStep() {
     (item) => item.action === 'update' && !item.targetChapterId,
   );
   if (invalidUpdate) {
-    useMessage.warning(`章节「${invalidUpdate.title}」缺少目标章节ID`);
+    useMessage.warning(`章节「${invalidUpdate.title}」缺少目标章节`);
     return false;
   }
 
@@ -1943,13 +1984,27 @@ function getSubmittedTaskReservationValue(field: 'dedupeKey' | 'serialKey') {
                     </el-form-item>
                     <el-form-item
                       v-if="activeMapping.action === 'update'"
-                      label="目标章节ID"
+                      label="目标章节"
                     >
-                      <el-input-number
+                      <el-select
                         v-model="activeMapping.targetChapterId"
-                        :min="1"
+                        :loading="localChapterLoading"
                         class="!w-full"
-                      />
+                        clearable
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请选择目标章节"
+                        @focus="searchLocalChapters()"
+                        @remote-method="searchLocalChapters"
+                      >
+                        <el-option
+                          v-for="item in localChapterOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
                     </el-form-item>
                     <el-form-item label="查看规则">
                       <el-select

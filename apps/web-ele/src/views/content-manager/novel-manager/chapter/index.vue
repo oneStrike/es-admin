@@ -6,6 +6,7 @@ import type { NovelChapterRecord } from './model/types';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   ContentNovelChapterBatchDeleteRequest,
+  ContentNovelChapterBatchUpdateStatusRequest,
   ContentNovelChapterCreateRequest,
   ContentNovelChapterPageResponse,
   ContentNovelChapterUpdateRequest,
@@ -16,6 +17,7 @@ import { useVbenModal, VbenTableAction } from '@vben/common-ui';
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   contentNovelChapterBatchDeleteApi,
+  contentNovelChapterBatchUpdateStatusApi,
   contentNovelChapterCreateApi,
   contentNovelChapterDeleteApi,
   contentNovelChapterDetailApi,
@@ -292,15 +294,32 @@ async function confirmBatchDeleteChapters() {
 async function toggleStatus(row: NovelChapterRecord) {
   row.loading = true;
   try {
-    await contentNovelChapterUpdateApi({
-      id: row.id,
+    await contentNovelChapterBatchUpdateStatusApi({
+      ids: [row.id],
       isPublished: !row.isPublished,
-    } as ContentNovelChapterUpdateRequest);
+    });
     useMessage.success('状态切换成功');
     await gridApi.reload();
   } finally {
     row.loading = false;
   }
+}
+
+async function batchUpdateChapterStatus(isPublished: boolean) {
+  const ids = selectedChapterIds.value;
+  if (ids.length === 0) {
+    useMessage.warning('请先选择章节');
+    return;
+  }
+
+  await contentNovelChapterBatchUpdateStatusApi({
+    ids,
+    isPublished,
+  } satisfies ContentNovelChapterBatchUpdateStatusRequest);
+  useMessage.success(isPublished ? '已批量发布章节' : '已批量下架章节');
+  selectedChapterRows.value = [];
+  gridApi.grid?.clearCheckboxRow?.();
+  await gridApi.reload();
 }
 
 function getNovelChapterActions(row: NovelChapterRecord): ActionItem[] {
@@ -338,6 +357,19 @@ function getNovelChapterActions(row: NovelChapterRecord): ActionItem[] {
           @click="confirmBatchDeleteChapters"
         >
           批量删除
+        </el-button>
+        <el-button
+          :disabled="selectedChapterIds.length === 0"
+          type="success"
+          @click="batchUpdateChapterStatus(true)"
+        >
+          批量发布
+        </el-button>
+        <el-button
+          :disabled="selectedChapterIds.length === 0"
+          @click="batchUpdateChapterStatus(false)"
+        >
+          批量下架
         </el-button>
       </template>
 

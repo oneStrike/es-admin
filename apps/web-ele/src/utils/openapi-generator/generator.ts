@@ -729,8 +729,13 @@ export type ${typeName} = ${this.applySchemaNullable(
       updateTime,
     );
 
+    const exactSchemaTypes = new Set([
+      'AdminAdRewardRecordDetailDto',
+      'UpdateWorkDto',
+      'UpdateWorkChapterDto',
+    ]);
     const objectType = this.buildObjectType(schema, properties, {
-      exact: typeName === 'AdminAdRewardRecordDetailDto',
+      exact: exactSchemaTypes.has(typeName),
     });
     return `${comment}
 export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;

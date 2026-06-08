@@ -574,6 +574,15 @@ export type ForumTopicDeleteRequest = IdDto;
 export type ForumTopicDeleteResponse = boolean;
 
 /**
+ *  类型定义 [ForumTopicRestoreRequest]
+ *  @来源 论坛管理/主题管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumTopicRestoreRequest = RestoreForumTopicDto;
+
+export type ForumTopicRestoreResponse = boolean;
+
+/**
  *  类型定义 [ForumTopicMoveRequest]
  *  @来源 论坛管理/主题管理
  *  @更新时间 2026-05-09 22:20:06
@@ -626,15 +635,6 @@ export type ForumTopicUpdateHiddenResponse = boolean;
 export type ForumTopicUpdateAuditStatusRequest = UpdateForumTopicAuditStatusDto;
 
 export type ForumTopicUpdateAuditStatusResponse = boolean;
-
-/**
- *  类型定义 [ForumTopicRestoreRequest]
- *  @来源 论坛管理/主题管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ForumTopicRestoreRequest = RestoreForumTopicDto;
-
-export type ForumTopicRestoreResponse = boolean;
 
 /**
  *  类型定义 [ForumSectionsPageRequest]
@@ -745,6 +745,18 @@ export type ForumSectionsDeleteResponse = boolean;
 export type ForumSectionsUpdateEnabledRequest = UpdateForumSectionEnabledDto;
 
 export type ForumSectionsUpdateEnabledResponse = boolean;
+
+/**
+ *  类型定义 [ForumSectionsRebuildCountsRequest]
+ *  @来源 论坛管理/板块管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumSectionsRebuildCountsRequest = IdDto;
+
+export type ForumSectionsRebuildCountsResponse =
+  ForumSectionCountRepairResultDto;
+
+export type ForumSectionsRebuildCountsAllResponse = boolean;
 
 /**
  *  类型定义 [ForumSectionsSwapSortOrderRequest]
@@ -864,18 +876,6 @@ export type ForumSectionGroupsSwapSortOrderRequest =
   SwapForumSectionGroupSortDto;
 
 export type ForumSectionGroupsSwapSortOrderResponse = boolean;
-
-/**
- *  类型定义 [ForumSectionsRebuildCountsRequest]
- *  @来源 论坛管理/板块管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ForumSectionsRebuildCountsRequest = IdDto;
-
-export type ForumSectionsRebuildCountsResponse =
-  ForumSectionCountRepairResultDto;
-
-export type ForumSectionsRebuildCountsAllResponse = boolean;
 
 /**
  *  类型定义 [ForumHashtagsPageRequest]
@@ -2229,6 +2229,21 @@ export type UpdateForumTopicDto = {
 };
 
 /**
+ *  类型定义 [RestoreForumTopicDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type RestoreForumTopicDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 主键id */
+  id: number;
+
+  /* 关联的板块ID */
+  sectionId?: number;
+};
+
+/**
  *  类型定义 [MoveForumTopicDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -2318,21 +2333,6 @@ export type UpdateForumTopicAuditStatusDto = {
 
   /* 主键id */
   id: number;
-};
-
-/**
- *  类型定义 [RestoreForumTopicDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type RestoreForumTopicDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 主键id */
-  id: number;
-
-  /* 关联的板块ID */
-  sectionId?: number;
 };
 
 /**
@@ -2553,6 +2553,29 @@ export type UpdateForumSectionEnabledDto = {
 };
 
 /**
+ *  类型定义 [ForumSectionCountRepairResultDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumSectionCountRepairResultDto = {
+  /** 任意合法数值 */
+  [property: string]: any;
+  /* 评论数 */
+  commentCount: number;
+  /* 关注人数 */
+  followersCount: number;
+  /* 主键id */
+  id: number;
+  /* 最后发表时间 */
+  lastPostAt?: null | string;
+  /* 最后发表主题ID */
+  lastTopicId?: null | number;
+
+  /* 主题数 */
+  topicCount: number;
+};
+
+/**
  *  类型定义 [SwapForumSectionSortDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -2666,29 +2689,6 @@ export type SwapForumSectionGroupSortDto = {
 
   /* 拖拽的目标位置id */
   targetId: number;
-};
-
-/**
- *  类型定义 [ForumSectionCountRepairResultDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ForumSectionCountRepairResultDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
-  /* 评论数 */
-  commentCount: number;
-  /* 关注人数 */
-  followersCount: number;
-  /* 主键id */
-  id: number;
-  /* 最后发表时间 */
-  lastPostAt?: null | string;
-  /* 最后发表主题ID */
-  lastTopicId?: null | number;
-
-  /* 主题数 */
-  topicCount: number;
 };
 
 /**

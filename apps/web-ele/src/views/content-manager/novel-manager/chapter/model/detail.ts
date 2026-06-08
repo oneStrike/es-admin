@@ -160,21 +160,6 @@ export function getDetailSections(detail: NovelChapterRecord) {
           value: detail.remark || '-',
           type: 'text',
         },
-        {
-          label: '章节ID',
-          value: detail.id || '-',
-          type: 'text',
-        },
-        {
-          label: '作品ID',
-          value: detail.workId || '-',
-          type: 'text',
-        },
-        {
-          label: '查看等级ID',
-          value: detail.requiredViewLevelId || '-',
-          type: 'text',
-        },
       ],
     },
   ];

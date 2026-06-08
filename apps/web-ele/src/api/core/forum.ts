@@ -460,6 +460,18 @@ export async function forumTopicDeleteApi(
 }
 
 /**
+ * 恢复已删除论坛主题
+ */
+export async function forumTopicRestoreApi(
+  params: ForumTopicRestoreRequest,
+): Promise<ForumTopicRestoreResponse> {
+  return requestClient.post<ForumTopicRestoreResponse>(
+    '/api/admin/forum/topic/restore',
+    params,
+  );
+}
+
+/**
  * 移动论坛主题板块
  */
 export async function forumTopicMoveApi(
@@ -527,18 +539,6 @@ export async function forumTopicUpdateAuditStatusApi(
 ): Promise<ForumTopicUpdateAuditStatusResponse> {
   return requestClient.post<ForumTopicUpdateAuditStatusResponse>(
     '/api/admin/forum/topic/update-audit-status',
-    params,
-  );
-}
-
-/**
- * 恢复已删除论坛主题
- */
-export async function forumTopicRestoreApi(
-  params: ForumTopicRestoreRequest,
-): Promise<ForumTopicRestoreResponse> {
-  return requestClient.post<ForumTopicRestoreResponse>(
-    '/api/admin/forum/topic/restore',
     params,
   );
 }
@@ -621,6 +621,27 @@ export async function forumSectionsUpdateEnabledApi(
   return requestClient.post<ForumSectionsUpdateEnabledResponse>(
     '/api/admin/forum/sections/update-enabled',
     params,
+  );
+}
+
+/**
+ * 重建板块计数
+ */
+export async function forumSectionsRebuildCountsApi(
+  params: ForumSectionsRebuildCountsRequest,
+): Promise<ForumSectionsRebuildCountsResponse> {
+  return requestClient.post<ForumSectionsRebuildCountsResponse>(
+    '/api/admin/forum/sections/rebuild-counts',
+    params,
+  );
+}
+
+/**
+ * 全量重建板块计数
+ */
+export async function forumSectionsRebuildCountsAllApi(): Promise<ForumSectionsRebuildCountsAllResponse> {
+  return requestClient.post<ForumSectionsRebuildCountsAllResponse>(
+    '/api/admin/forum/sections/rebuild-counts-all',
   );
 }
 
@@ -717,27 +738,6 @@ export async function forumSectionGroupsSwapSortOrderApi(
   return requestClient.post<ForumSectionGroupsSwapSortOrderResponse>(
     '/api/admin/forum/section-groups/swap-sort-order',
     params,
-  );
-}
-
-/**
- * 重建板块计数
- */
-export async function forumSectionsRebuildCountsApi(
-  params: ForumSectionsRebuildCountsRequest,
-): Promise<ForumSectionsRebuildCountsResponse> {
-  return requestClient.post<ForumSectionsRebuildCountsResponse>(
-    '/api/admin/forum/sections/rebuild-counts',
-    params,
-  );
-}
-
-/**
- * 全量重建板块计数
- */
-export async function forumSectionsRebuildCountsAllApi(): Promise<ForumSectionsRebuildCountsAllResponse> {
-  return requestClient.post<ForumSectionsRebuildCountsAllResponse>(
-    '/api/admin/forum/sections/rebuild-counts-all',
   );
 }
 

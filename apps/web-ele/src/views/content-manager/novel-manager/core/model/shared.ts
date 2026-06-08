@@ -2,14 +2,22 @@ import type { EsFormSchema } from '#/types';
 
 import { cloneDeep } from 'es-toolkit';
 
-import { contentAuthorPageApi, contentTagPageApi } from '#/api/core';
-import { AuthorTypeEnum, ContentPermissionEnum } from '#/enum';
+import {
+  contentAuthorPageApi,
+  contentCategoryPageApi,
+  contentTagPageApi,
+} from '#/api/core';
+import { AuthorTypeEnum, ContentPermissionEnum, ContentTypeEnum } from '#/enum';
 import { formSchemaTransform } from '#/utils';
 import { optionsToMap } from '#/utils/options';
 import {
   authorColumns,
   authorSearchSchema,
 } from '#/views/content-manager/author-manager/model/shared';
+import {
+  categoryColumns,
+  categorySearchSchema,
+} from '#/views/content-manager/category-manager/model/shared';
 import {
   tagSearchSchema,
   tagSelectorColumns,
@@ -107,7 +115,7 @@ export const formSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
-      placeholder: '请选择地区代码',
+      placeholder: '请选择地区',
     },
     fieldName: 'region',
     label: '地区',
@@ -116,7 +124,7 @@ export const formSchema: EsFormSchema = [
   {
     component: 'Select',
     componentProps: {
-      placeholder: '请选择语言代码',
+      placeholder: '请选择语言',
     },
     fieldName: 'language',
     label: '语言',
@@ -132,12 +140,30 @@ export const formSchema: EsFormSchema = [
     rules: 'required',
   },
   {
-    component: 'Select',
-    componentProps: {
-      filterable: true,
-      multiple: true,
-      options: [],
-      placeholder: '输入分类名称进行搜索',
+    component: 'TableSelect',
+    componentProps: () => {
+      return {
+        api: async (value: Record<string, unknown>) => {
+          return contentCategoryPageApi({
+            ...value,
+            contentType: JSON.stringify([ContentTypeEnum.NOVEL]),
+            isEnabled: true,
+          });
+        },
+        columns: cloneDeep(categoryColumns).filter((item) =>
+          ['icon', 'name', 'sortOrder'].includes(
+            typeof item?.field === 'string' ? item?.field : '',
+          ),
+        ),
+        multiple: true,
+        placeholder: '请选择小说分类',
+        searchSchema: cloneDeep(categorySearchSchema).filter((item) =>
+          ['name'].includes(
+            typeof item?.fieldName === 'string' ? item?.fieldName : '',
+          ),
+        ),
+        selectionMode: 'multiple',
+      };
     },
     fieldName: 'categoryIds',
     label: '分类',
@@ -169,9 +195,11 @@ export const formSchema: EsFormSchema = [
     rules: 'arrayRequired',
   },
   {
-    component: 'VbenTiptap',
+    component: 'Input',
     componentProps: {
       placeholder: '请输入小说简介',
+      rows: 4,
+      type: 'textarea',
     },
     fieldName: 'description',
     formItemClass: 'col-span-2',

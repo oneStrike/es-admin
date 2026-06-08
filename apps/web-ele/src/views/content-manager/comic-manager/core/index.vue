@@ -16,7 +16,6 @@ import { Page, useVbenModal, VbenTableAction } from '@vben/common-ui';
 
 import { formatQuery, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  contentCategoryPageApi,
   contentComicCreateApi,
   contentComicDeleteApi,
   contentComicDetailApi,
@@ -85,7 +84,6 @@ const [ThirdPartyModal, ThirdPartyApi] = useVbenModal({
   connectedComponent: ThirdPartyPlatform,
 });
 
-const categoryOptions: BasicOption[] = [];
 const levelOptions: BasicOption[] = [];
 const currentComicRecord = ref<null | Partial<BaseWorkDto>>(null);
 const router = useRouter();
@@ -112,21 +110,6 @@ async function openFormModal(row?: BaseWorkDto) {
     record.tagIds = extractRelationOptions(record?.tags, 'tag');
   }
   currentComicRecord.value = record ?? null;
-
-  if (categoryOptions.length === 0) {
-    const data = await contentCategoryPageApi({
-      pageSize: 500,
-    });
-    categoryOptions.push(
-      ...(data.list?.map((item) => ({
-        label: item.name,
-        value: item.id,
-      })) || []),
-    );
-    useForm.setOptions(formSchema, {
-      categoryIds: categoryOptions,
-    });
-  }
 
   formApi.setData({ title: '漫画', record }).open();
 }
@@ -215,13 +198,12 @@ function buildComicPayload(
       normalizeRelationIds(values.tagIds) ??
       normalizeRelationIds(currentComicRecord.value?.tagIds) ??
       [],
-    type: 1,
     viewRule: values.viewRule ?? currentComicRecord.value?.viewRule ?? 0,
   };
 
   return 'id' in values && typeof values.id === 'number'
     ? ({ id: values.id, ...payload } as ContentComicUpdateRequest)
-    : (payload as ContentComicCreateRequest);
+    : ({ ...payload, type: 1 } as ContentComicCreateRequest);
 }
 
 async function deleteComic(record: BaseWorkDto) {

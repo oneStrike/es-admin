@@ -913,6 +913,16 @@ export type ContentNovelChapterBatchDeleteRequest = IdsDto;
 export type ContentNovelChapterBatchDeleteResponse = boolean;
 
 /**
+ *  类型定义 [ContentNovelChapterBatchUpdateStatusRequest]
+ *  @来源 内容管理/小说管理/章节管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentNovelChapterBatchUpdateStatusRequest =
+  BatchUpdatePublishedStatusDto;
+
+export type ContentNovelChapterBatchUpdateStatusResponse = boolean;
+
+/**
  *  类型定义 [ContentNovelChapterSwapSortOrderRequest]
  *  @来源 内容管理/小说管理/章节管理
  *  @更新时间 2026-05-09 22:20:06
@@ -1833,8 +1843,6 @@ export type BaseWorkDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateWorkDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 年龄分级 */
   ageRating?: null | string;
   /* 作品别名 */
@@ -1891,9 +1899,6 @@ export type UpdateWorkDto = {
   serialStatus?: 0 | 1 | 2 | 3 | 4;
   /* 标签ID列表 */
   tagIds?: number[];
-  /* 作品类型（1=漫画；2=小说） */
-  type?: 1 | 2;
-
   /* 阅读规则（0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
   viewRule?: 0 | 1 | 2 | 3;
 };
@@ -2067,8 +2072,6 @@ export type AdminWorkChapterPageItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UpdateWorkChapterDto = {
-  /** 任意合法数值 */
-  [property: string]: any;
   /* 是否允许评论 */
   canComment?: boolean;
   /* 是否允许下载 */
@@ -2101,11 +2104,6 @@ export type UpdateWorkChapterDto = {
   title?: string;
   /* 查看规则（-1=继承作品；0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
   viewRule?: -1 | 0 | 1 | 2 | 3;
-  /* 作品ID */
-  workId?: number;
-
-  /* 作品类型（1=漫画；2=小说） */
-  workType?: 1 | 2;
 };
 
 /**

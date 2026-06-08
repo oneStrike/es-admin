@@ -138,6 +138,8 @@ import type {
   ContentEmojiPackUpdateSceneTypeResponse,
   ContentNovelChapterBatchDeleteRequest,
   ContentNovelChapterBatchDeleteResponse,
+  ContentNovelChapterBatchUpdateStatusRequest,
+  ContentNovelChapterBatchUpdateStatusResponse,
   ContentNovelChapterContentDeleteRequest,
   ContentNovelChapterContentDeleteResponse,
   ContentNovelChapterContentDetailRequest,
@@ -809,6 +811,18 @@ export async function contentNovelChapterBatchDeleteApi(
 ): Promise<ContentNovelChapterBatchDeleteResponse> {
   return requestClient.post<ContentNovelChapterBatchDeleteResponse>(
     '/api/admin/content/novel/chapter/batch-delete',
+    params,
+  );
+}
+
+/**
+ * 批量更新小说章节发布状态
+ */
+export async function contentNovelChapterBatchUpdateStatusApi(
+  params: ContentNovelChapterBatchUpdateStatusRequest,
+): Promise<ContentNovelChapterBatchUpdateStatusResponse> {
+  return requestClient.post<ContentNovelChapterBatchUpdateStatusResponse>(
+    '/api/admin/content/novel/chapter/batch-update-status',
     params,
   );
 }
