@@ -19,6 +19,7 @@ export { announcementDetailApi } from './announcement';
 export { announcementUpdateApi } from './announcement';
 export { announcementUpdateStatusApi } from './announcement';
 export { announcementDeleteApi } from './announcement';
+export { announcementRetryFanoutApi } from './announcement';
 export { apiHealthApi } from './api';
 export { apiReadyApi } from './api';
 export { appConfigActiveApi } from './appConfig';

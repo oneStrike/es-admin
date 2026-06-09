@@ -7,6 +7,8 @@ import type {
   AnnouncementDetailResponse,
   AnnouncementPageRequest,
   AnnouncementPageResponse,
+  AnnouncementRetryFanoutRequest,
+  AnnouncementRetryFanoutResponse,
   AnnouncementUpdateRequest,
   AnnouncementUpdateResponse,
   AnnouncementUpdateStatusRequest,
@@ -83,6 +85,18 @@ export async function announcementDeleteApi(
 ): Promise<AnnouncementDeleteResponse> {
   return requestClient.post<AnnouncementDeleteResponse>(
     '/api/admin/announcement/delete',
+    params,
+  );
+}
+
+/**
+ * 重试公告消息中心通知
+ */
+export async function announcementRetryFanoutApi(
+  params: AnnouncementRetryFanoutRequest,
+): Promise<AnnouncementRetryFanoutResponse> {
+  return requestClient.post<AnnouncementRetryFanoutResponse>(
+    '/api/admin/announcement/retry-fanout',
     params,
   );
 }

@@ -7,8 +7,11 @@ import {
   announcementPriorityObj,
   announcementTypeObj,
   enablePlatform,
+  fanoutStatusObj,
+  formatFanoutEventKey,
   formatPublishEndTime,
   getPublishStatus,
+  popupBackgroundPositionOptions,
   publishStatusObj,
 } from './shared';
 
@@ -21,7 +24,9 @@ export function getDetailSections(detail: AnnouncementDetailResponse) {
   // 计算发布状态
   const publishStatus = getPublishStatus(
     detail.isPublished,
+    detail.publishStartTime,
     detail.publishEndTime,
+    detail.publishStatus,
   );
 
   // 计算平台标签
@@ -88,14 +93,14 @@ export function getDetailSections(detail: AnnouncementDetailResponse) {
           tagText: detail?.isPinned ? '是' : '否',
         },
         {
-          label: '实时公告',
+          label: '消息中心通知',
           value: detail?.isRealtime,
           type: 'tag' as const,
           tagType: detail?.isRealtime ? 'success' : 'info',
           tagText: detail?.isRealtime ? '是' : '否',
         },
         {
-          label: '首页弹窗',
+          label: 'APP 弹窗',
           value: detail?.showAsPopup,
           type: 'tag' as const,
           tagType: detail?.showAsPopup ? 'success' : 'info',
@@ -171,11 +176,72 @@ export function getDetailSections(detail: AnnouncementDetailResponse) {
       ].filter((field) => field.show),
     },
     {
-      title: '弹窗背景图',
-      show: !!detail?.popupBackgroundImage,
-      type: 'image' as const,
-      imageUrl: detail?.popupBackgroundImage,
-      pinTop: false,
+      title: '弹窗设置',
+      show: !!(detail?.popupBackgroundImage || detail?.popupBackgroundPosition),
+      items: [
+        {
+          label: '背景图',
+          value: detail?.popupBackgroundImage,
+          type: 'image' as const,
+          show: !!detail?.popupBackgroundImage,
+        },
+        {
+          label: '背景图位置',
+          value: detail?.popupBackgroundPosition
+            ? (popupBackgroundPositionOptions.find(
+                (item) => item.value === detail.popupBackgroundPosition,
+              )?.label ?? detail.popupBackgroundPosition)
+            : '-',
+          type: 'text' as const,
+          show: !!detail?.popupBackgroundPosition,
+        },
+      ].filter((field) => field.show !== false),
+    },
+    {
+      title: '消息中心通知',
+      show:
+        detail?.isRealtime ||
+        (detail?.fanoutStatus !== null && detail?.fanoutStatus !== undefined) ||
+        !!detail?.fanoutDesiredEventKey ||
+        !!detail?.fanoutLastError,
+      items: [
+        {
+          label: '通知状态',
+          value:
+            detail?.fanoutStatus === null || detail?.fanoutStatus === undefined
+              ? '-'
+              : (fanoutStatusObj[detail.fanoutStatus]?.label ??
+                detail.fanoutStatus),
+          type: 'tag' as const,
+          tagText:
+            detail?.fanoutStatus === null || detail?.fanoutStatus === undefined
+              ? '-'
+              : (fanoutStatusObj[detail.fanoutStatus]?.label ??
+                String(detail.fanoutStatus)),
+          tagType:
+            detail?.fanoutStatus === null || detail?.fanoutStatus === undefined
+              ? 'info'
+              : (fanoutStatusObj[detail.fanoutStatus]?.tagType ?? 'info'),
+        },
+        {
+          label: '目标事件',
+          value: formatFanoutEventKey(detail?.fanoutDesiredEventKey),
+          type: 'text' as const,
+        },
+        {
+          label: '通知更新时间',
+          value: detail?.fanoutUpdatedAt
+            ? formatUTC(detail.fanoutUpdatedAt, 'YYYY-MM-DD HH:mm:ss')
+            : '-',
+          type: 'text' as const,
+        },
+        {
+          label: '失败原因',
+          value: detail?.fanoutLastError || '-',
+          type: 'text' as const,
+          show: !!detail?.fanoutLastError,
+        },
+      ].filter((field) => field.show !== false),
     },
     {
       title: '公告内容',

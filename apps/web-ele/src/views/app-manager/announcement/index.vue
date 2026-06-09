@@ -20,6 +20,7 @@ import {
   announcementDeleteApi,
   announcementDetailApi,
   announcementPageApi,
+  announcementRetryFanoutApi,
   announcementUpdateApi,
   announcementUpdateStatusApi,
   appPagePageApi,
@@ -27,12 +28,15 @@ import {
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
+import { formatUTC } from '#/utils';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import { getDetailSections } from './model/detail';
 import {
   announcementFilter,
   createAnnouncementColumns,
+  fanoutStatusObj,
+  formatPageOptionLabel,
   formSchema,
   getPublishStatus,
   publishStatusObj,
@@ -50,10 +54,13 @@ type AnnouncementSearchValues = Partial<
   Pick<
     AnnouncementPageRequest,
     | 'announcementType'
+    | 'fanoutStatus'
     | 'isPinned'
     | 'isRealtime'
     | 'pageId'
     | 'priorityLevel'
+    | 'publishStatus'
+    | 'showAsPopup'
     | 'title'
   >
 > & {
@@ -99,9 +106,11 @@ appPagePageApi({
 
       return [
         {
-          label: pageItem.name,
+          code: pageItem.code,
+          label: formatPageOptionLabel(pageItem),
+          name: pageItem.name,
+          path: pageItem.path,
           value: pageItem.id,
-          ...pageItem,
         },
       ];
     }) || [];
@@ -188,6 +197,15 @@ function buildAnnouncementPageQuery(
   if (formValues.isRealtime !== undefined) {
     query.isRealtime = formValues.isRealtime;
   }
+  if (formValues.showAsPopup !== undefined) {
+    query.showAsPopup = formValues.showAsPopup;
+  }
+  if (formValues.publishStatus !== undefined) {
+    query.publishStatus = formValues.publishStatus;
+  }
+  if (formValues.fanoutStatus !== undefined) {
+    query.fanoutStatus = formValues.fanoutStatus;
+  }
 
   return query;
 }
@@ -222,7 +240,9 @@ function buildAnnouncementPayload(values: AnnouncementSubmitValues) {
       isPinned: values.isPinned ?? false,
       showAsPopup: values.showAsPopup ?? false,
       popupBackgroundImage: values.popupBackgroundImage,
-      popupBackgroundPosition: values.popupBackgroundPosition,
+      popupBackgroundPosition: values.showAsPopup
+        ? (values.popupBackgroundPosition ?? 'center')
+        : values.popupBackgroundPosition,
       summary: values.summary,
       content: values.content,
     } satisfies AnnouncementUpdateRequest;
@@ -240,7 +260,9 @@ function buildAnnouncementPayload(values: AnnouncementSubmitValues) {
     isPinned: values.isPinned ?? false,
     showAsPopup: values.showAsPopup ?? false,
     popupBackgroundImage: values.popupBackgroundImage,
-    popupBackgroundPosition: values.popupBackgroundPosition,
+    popupBackgroundPosition: values.showAsPopup
+      ? (values.popupBackgroundPosition ?? 'center')
+      : values.popupBackgroundPosition,
     summary: values.summary,
     content: values.content,
   } satisfies AnnouncementCreateRequest;
@@ -265,7 +287,8 @@ async function deleteAnnouncement(record: AnnouncementRow) {
 
 async function confirmDeleteAnnouncement(record: AnnouncementRow) {
   const confirmed = await useConfirm({
-    content: '确认删除当前项?',
+    content:
+      '确认下线当前公告？下线后 APP 将不再展示，消息中心会同步撤回通知。',
     successMessage: false,
   });
   if (!confirmed) return;
@@ -293,21 +316,24 @@ async function confirmTogglePublishStatus(record: AnnouncementRow) {
   await togglePublishStatus(record);
 }
 
-function getPublishButtonText(record: AnnouncementRow): string {
-  const status = getPublishStatus(record.isPublished, record.publishEndTime);
-
-  if (status === 'unpublished') {
-    return '发布';
-  } else if (status === 'published') {
-    return '取消发布';
-  } else {
-    return '重新发布';
-  }
+async function retryFanout(record: AnnouncementRow) {
+  await announcementRetryFanoutApi({ id: record.id });
+  useMessage.success('已重新提交消息中心通知');
+  gridApi.reload();
 }
 
-function canPublish(record: AnnouncementRow): boolean {
-  const status = getPublishStatus(record.isPublished, record.publishEndTime);
-  return status !== 'expired';
+async function confirmRetryFanout(record: AnnouncementRow) {
+  const confirmed = await useConfirm({
+    content: '确认重试当前公告的消息中心通知？',
+    successMessage: false,
+  });
+  if (!confirmed) return;
+
+  await retryFanout(record);
+}
+
+function getPublishButtonText(record: AnnouncementRow): string {
+  return record.isPublished ? '取消发布' : '发布';
 }
 
 const [DetailModal, detailApi] = useVbenModal({
@@ -328,16 +354,24 @@ function getAnnouncementActions(record: AnnouncementRow): ActionItem[] {
       text: '编辑',
     },
     {
-      disabled: !canPublish(record),
       key: 'publish',
       onClick: () => confirmTogglePublishStatus(record),
       text: getPublishButtonText(record),
     },
+    ...(record.fanoutStatus === 3
+      ? [
+          {
+            key: 'retryFanout',
+            onClick: () => confirmRetryFanout(record),
+            text: '重试通知',
+          },
+        ]
+      : []),
     {
       danger: true,
       key: 'delete',
       onClick: () => confirmDeleteAnnouncement(record),
-      text: '删除',
+      text: '下线',
     },
   ];
 }
@@ -370,7 +404,7 @@ function getAnnouncementActions(record: AnnouncementRow): ActionItem[] {
             v-if="row.isRealtime"
             size="small"
           >
-            实时
+            消息
           </el-tag>
         </div>
         <el-text
@@ -386,16 +420,43 @@ function getAnnouncementActions(record: AnnouncementRow): ActionItem[] {
         <el-tag
           :type="
             publishStatusObj[
-              getPublishStatus(row.isPublished, row.publishEndTime)
+              getPublishStatus(
+                row.isPublished,
+                row.publishStartTime,
+                row.publishEndTime,
+                row.publishStatus,
+              )
             ]?.tagType || 'info'
           "
         >
           {{
             publishStatusObj[
-              getPublishStatus(row.isPublished, row.publishEndTime)
+              getPublishStatus(
+                row.isPublished,
+                row.publishStartTime,
+                row.publishEndTime,
+                row.publishStatus,
+              )
             ]?.label
           }}
         </el-tag>
+      </template>
+
+      <template #fanoutStatus="{ row }">
+        <el-tag
+          v-if="row.fanoutStatus != null"
+          :type="fanoutStatusObj[row.fanoutStatus]?.tagType || 'info'"
+        >
+          {{ fanoutStatusObj[row.fanoutStatus]?.label || row.fanoutStatus }}
+        </el-tag>
+        <el-text v-else type="info">-</el-text>
+      </template>
+
+      <template #fanoutUpdatedAt="{ row }">
+        <el-text v-if="row.fanoutUpdatedAt">
+          {{ formatUTC(row.fanoutUpdatedAt, 'YYYY-MM-DD HH:mm:ss') }}
+        </el-text>
+        <el-text v-else type="info">-</el-text>
       </template>
 
       <template #actions="{ row }">
