@@ -35,7 +35,7 @@ export type AgreementPageRequest = {
   endDate?: null | string;
 
   /* 是否已发布 */
-  isPublished?: boolean;
+  isPublished?: boolean | null;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -47,27 +47,27 @@ export type AgreementPageRequest = {
   pageSize?: null | number;
 
   /* 是否展示在登录注册页 */
-  showInAuth?: boolean;
+  showInAuth?: boolean | null;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 协议标题 */
-  title?: string;
+  title?: null | string;
 };
 
 export type AgreementPageResponse = {
   /* 列表数据 */
-  list?: AdminAgreementListItemDto[];
+  list?: AdminAgreementListItemDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -161,7 +161,7 @@ export type AdminAgreementListItemDto = {
   /* 是否已发布 */
   isPublished: boolean;
   /* 发布时间 */
-  publishedAt: null | string;
+  publishedAt?: null | string;
   /* 是否展示在登录注册页 */
   showInAuth: boolean;
   /* 协议标题 */
@@ -191,7 +191,7 @@ export type AdminAgreementDetailDto = {
   /* 是否已发布 */
   isPublished: boolean;
   /* 发布时间 */
-  publishedAt: null | string;
+  publishedAt?: null | string;
   /* 是否展示在登录注册页 */
   showInAuth: boolean;
   /* 协议标题 */

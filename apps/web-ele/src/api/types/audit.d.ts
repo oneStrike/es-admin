@@ -5,10 +5,10 @@
  */
 export type AuditPageRequest = {
   /* 操作类型（1=登录；2=登出；3=创建；4=更新；5=删除；6=上传；7=下载；8=导出；9=导入） */
-  actionType?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
+  actionType?: null | number;
 
   /* 接口类型（1=管理端；2=应用端；3=系统端；4=公共端） */
-  apiType?: 1 | 2 | 3 | 4 | null;
+  apiType?: null | number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -17,10 +17,10 @@ export type AuditPageRequest = {
   ip?: null | string;
 
   /* 操作是否成功 */
-  isSuccess?: boolean;
+  isSuccess?: boolean | null;
 
   /* 请求方法（GET；POST；PUT；DELETE；PATCH；HEAD；OPTIONS） */
-  method?: 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
+  method?: null | string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -32,7 +32,7 @@ export type AuditPageRequest = {
   pageSize?: null | number;
 
   /* 请求路径 */
-  path?: string;
+  path?: null | string;
 
   /* 开始时间 */
   startDate?: null | string;
@@ -46,16 +46,16 @@ export type AuditPageRequest = {
 
 export type AuditPageResponse = {
   /* 列表数据 */
-  list?: AuditItemDto[];
+  list?: AuditItemDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -65,11 +65,11 @@ export type AuditPageResponse = {
  */
 export type AuditItemDto = {
   /* 操作类型（1=登录；2=登出；3=创建；4=更新；5=删除；6=上传；7=下载；8=导出；9=导入） */
-  actionType?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
+  actionType?: null | number;
   /* 操作类型展示文案 */
   actionTypeLabel?: null | string;
   /* 接口类型（1=管理端；2=应用端；3=系统端；4=公共端） */
-  apiType?: 1 | 2 | 3 | 4 | null;
+  apiType?: null | number;
   /* 自定义日志内容 */
   content: string;
   /* 创建时间 */

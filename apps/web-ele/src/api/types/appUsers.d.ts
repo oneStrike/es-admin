@@ -5,10 +5,10 @@
  */
 export type AppUsersPageRequest = {
   /* 账号 */
-  account?: string;
+  account?: null | string;
 
   /* 删除态筛选（0=未删除；1=已删除；2=全部） */
-  deletedScope?: 0 | 1 | 2 | null;
+  deletedScope?: null | number;
 
   /* 邮箱 */
   emailAddress?: null | string;
@@ -17,10 +17,10 @@ export type AppUsersPageRequest = {
   endDate?: null | string;
 
   /* 主键id */
-  id?: number;
+  id?: null | number;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 最后登录结束时间 */
   lastLoginEndDate?: null | string;
@@ -32,7 +32,7 @@ export type AppUsersPageRequest = {
   levelId?: null | number;
 
   /* 昵称 */
-  nickname?: string;
+  nickname?: null | string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -50,21 +50,21 @@ export type AppUsersPageRequest = {
   startDate?: null | string;
 
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status?: 1 | 2 | 3 | 4 | 5;
+  status?: null | number;
 };
 
 export type AppUsersPageResponse = {
   /* 列表数据 */
-  list?: AdminAppUserPageItemDto[];
+  list?: AdminAppUserPageItemDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -202,16 +202,16 @@ export type AppUsersPointsRecordPageRequest = {
 
 export type AppUsersPointsRecordPageResponse = {
   /* 列表数据 */
-  list?: AdminAppUserPointRecordDto[];
+  list?: AdminAppUserPointRecordDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -251,10 +251,10 @@ export type AppUsersExperienceStatsResponse = AdminAppUserExperienceStatsDto;
  */
 export type AppUsersExperienceRecordPageRequest = {
   /* 幂等业务键 */
-  bizKey?: string;
+  bizKey?: null | string;
 
   /* 经验变更方向（1=增加；2=减少） */
-  deltaDirection?: 1 | 2 | null;
+  deltaDirection?: null | number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -281,54 +281,7 @@ export type AppUsersExperienceRecordPageRequest = {
   ruleId?: null | number;
 
   /* 成长记录关联的事件编码（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  ruleType?:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801
-    | null;
+  ruleType?: null | number;
 
   /* 账本来源（如 growth_rule、task_bonus、purchase） */
   source?: null | string;
@@ -348,16 +301,16 @@ export type AppUsersExperienceRecordPageRequest = {
 
 export type AppUsersExperienceRecordPageResponse = {
   /* 列表数据 */
-  list?: AdminAppUserExperienceRecordDto[];
+  list?: AdminAppUserExperienceRecordDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -367,7 +320,7 @@ export type AppUsersExperienceRecordPageResponse = {
  */
 export type AppUsersGrowthRecordPageRequest = {
   /* 资产类型（1=积分；2=经验） */
-  assetType?: 1 | 2 | 3 | 4 | 5;
+  assetType?: null | number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -385,54 +338,7 @@ export type AppUsersGrowthRecordPageRequest = {
   ruleId?: null | number;
 
   /* 成长记录关联的事件编码（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  ruleType?:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801
-    | null;
+  ruleType?: null | number;
 
   /* 开始时间 */
   startDate?: null | string;
@@ -449,16 +355,16 @@ export type AppUsersGrowthRecordPageRequest = {
 
 export type AppUsersGrowthRecordPageResponse = {
   /* 列表数据 */
-  list?: AdminAppUserGrowthLedgerRecordDto[];
+  list?: AdminAppUserGrowthLedgerRecordDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -483,10 +389,10 @@ export type AppUsersBadgesPageRequest = {
   eventKey?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 徽章名称 */
-  name?: string;
+  name?: null | string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -498,7 +404,7 @@ export type AppUsersBadgesPageRequest = {
   pageSize?: null | number;
 
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type?: 1 | 2 | 3;
+  type?: null | number;
 
   /* 用户id */
   userId: number;
@@ -506,16 +412,16 @@ export type AppUsersBadgesPageRequest = {
 
 export type AppUsersBadgesPageResponse = {
   /* 列表数据 */
-  list?: UserBadgeItemDto[];
+  list?: null | UserBadgeItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -545,51 +451,51 @@ export type AdminAppUserPageItemDto = {
   /* 账号 */
   account: string;
   /* 头像URL */
-  avatarUrl: null | string;
+  avatarUrl?: null | string;
   /* 封禁原因 */
-  banReason: null | string;
+  banReason?: null | string;
   /* 封禁到期时间 */
-  banUntil: null | string;
+  banUntil?: null | string;
   /* 个人简介 */
-  bio: null | string;
+  bio?: null | string;
   /* 出生日期 */
-  birthDate: null | string;
+  birthDate?: null | string;
   /* 用户计数 */
   counts: AdminAppUserCountDto;
   /* 创建时间 */
   createdAt: string;
   /* 删除时间 */
-  deletedAt: null | string;
+  deletedAt?: null | string;
   /* 邮箱 */
-  emailAddress: null | string;
+  emailAddress?: null | string;
   /* 当前经验值 */
   experience: number;
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType: 0 | 1 | 2 | 3 | 4;
+  genderType: number;
   /* 主键id */
   id: number;
   /* 是否启用 */
   isEnabled: boolean;
   /* 最后登录时间 */
-  lastLoginAt: null | string;
+  lastLoginAt?: null | string;
   /* 最后登录IP */
-  lastLoginIp: null | string;
+  lastLoginIp?: null | string;
   /* 等级ID */
-  levelId: null | number;
+  levelId?: null | number;
   /* 等级名称 */
-  levelName: null | string;
+  levelName?: null | string;
   /* 昵称 */
   nickname: string;
   /* 手机号 */
-  phoneNumber: null | string;
+  phoneNumber?: null | string;
   /* 当前积分 */
   points: number;
   /* 个人主页背景图片URL */
-  profileBackgroundImageUrl: null | string;
+  profileBackgroundImageUrl?: null | string;
   /* 个性签名 */
-  signature: null | string;
+  signature?: null | string;
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status: 1 | 2 | 3 | 4 | 5;
+  status: number;
   /* 更新时间 */
   updatedAt: string;
 };
@@ -635,57 +541,57 @@ export type AdminAppUserDetailDto = {
   /* 账号 */
   account: string;
   /* 头像URL */
-  avatarUrl: null | string;
+  avatarUrl?: null | string;
   /* 已拥有徽章数量 */
   badgeCount: number;
   /* 封禁原因 */
-  banReason: null | string;
+  banReason?: null | string;
   /* 封禁到期时间 */
-  banUntil: null | string;
+  banUntil?: null | string;
   /* 个人简介 */
-  bio: null | string;
+  bio?: null | string;
   /* 出生日期 */
-  birthDate: null | string;
+  birthDate?: null | string;
   /* 用户计数 */
   counts: AdminAppUserCountDto;
   /* 创建时间 */
   createdAt: string;
   /* 删除时间 */
-  deletedAt: null | string;
+  deletedAt?: null | string;
   /* 邮箱 */
-  emailAddress: null | string;
+  emailAddress?: null | string;
   /* 当前经验值 */
   experience: number;
   /* 经验统计 */
   experienceStats: AdminAppUserExperienceStatsDto;
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType: 0 | 1 | 2 | 3 | 4;
+  genderType: number;
   /* 主键id */
   id: number;
   /* 是否启用 */
   isEnabled: boolean;
   /* 最后登录时间 */
-  lastLoginAt: null | string;
+  lastLoginAt?: null | string;
   /* 最后登录IP */
-  lastLoginIp: null | string;
+  lastLoginIp?: null | string;
   /* 等级信息 */
   level: AdminAppUserLevelDto;
   /* 等级ID */
-  levelId: null | number;
+  levelId?: null | number;
   /* 昵称 */
   nickname: string;
   /* 手机号 */
-  phoneNumber: null | string;
+  phoneNumber?: null | string;
   /* 当前积分 */
   points: number;
   /* 积分统计 */
   pointStats: UserPointStatsFieldsDto;
   /* 个人主页背景图片URL */
-  profileBackgroundImageUrl: null | string;
+  profileBackgroundImageUrl?: null | string;
   /* 个性签名 */
-  signature: null | string;
+  signature?: null | string;
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status: 1 | 2 | 3 | 4 | 5;
+  status: number;
   /* 更新时间 */
   updatedAt: string;
 };
@@ -727,7 +633,7 @@ export type AdminAppUserExperienceStatsDto = {
   /* 当前经验值 */
   currentExperience: number;
   /* 距离下一等级的经验差值 */
-  gapToNextLevel: null | number;
+  gapToNextLevel?: null | number;
   /* 当前等级信息 */
   level: AdminAppUserLevelDto;
   /* 下一等级信息 */
@@ -751,9 +657,9 @@ export type CreateAdminAppUserDto = {
   /* 邮箱 */
   emailAddress?: null | string;
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType?: 0 | 1 | 2 | 3 | 4;
+  genderType?: null | number;
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
   /* 昵称 */
   nickname: string;
   /* 前端 RSA 加密后的密码 */
@@ -765,7 +671,7 @@ export type CreateAdminAppUserDto = {
   /* 个性签名 */
   signature?: null | string;
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status?: 1 | 2 | 3 | 4 | 5;
+  status?: null | number;
 };
 
 /**
@@ -783,11 +689,11 @@ export type UpdateAdminAppUserProfileDto = {
   /* 邮箱 */
   emailAddress?: null | string;
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  genderType?: 0 | 1 | 2 | 3 | 4;
+  genderType?: null | number;
   /* 主键id */
   id: number;
   /* 昵称 */
-  nickname?: string;
+  nickname?: null | string;
   /* 手机号 */
   phoneNumber?: null | string;
   /* 个人主页背景图片URL */
@@ -821,7 +727,7 @@ export type UpdateAdminAppUserStatusDto = {
   /* 主键id */
   id: number;
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status: 1 | 2 | 3 | 4 | 5;
+  status: number;
 };
 
 /**
@@ -885,7 +791,7 @@ export type AdminAppUserPointRecordDto = {
   /* 变化前积分 */
   beforePoints: number;
   /* 扩展上下文（仅返回白名单解释字段） */
-  context: null | Record<string, any>;
+  context?: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
   /* 主键ID */
@@ -893,62 +799,15 @@ export type AdminAppUserPointRecordDto = {
   /* 积分变化（正数为获得，负数为消费） */
   points: number;
   /* 账本说明文案 */
-  remark: null | string;
+  remark?: null | string;
   /* 关联的规则ID */
-  ruleId: null | number;
+  ruleId?: null | number;
   /* 成长记录关联的事件编码（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  ruleType:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801
-    | null;
+  ruleType?: null | number;
   /* 关联目标ID */
-  targetId: null | number;
+  targetId?: null | number;
   /* 关联目标类型 */
-  targetType: null | number;
+  targetType?: null | number;
   /* 关联的用户ID */
   userId: number;
 };
@@ -964,53 +823,7 @@ export type AdminAppUserGrowthRuleActionDto = {
   /* 内部操作备注，仅用于审计与排障，不会作为用户账本说明文案 */
   operationNote?: null | string;
   /* 人工操作目标规则类型（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  ruleType:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801;
+  ruleType: number;
   /* 用户id */
   userId: number;
 };
@@ -1048,7 +861,7 @@ export type AdminAppUserExperienceRecordDto = {
   /* 变化前经验值 */
   beforeExperience: number;
   /* 扩展上下文（仅返回白名单解释字段） */
-  context: null | Record<string, any>;
+  context?: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
   /* 经验值变化 */
@@ -1056,62 +869,15 @@ export type AdminAppUserExperienceRecordDto = {
   /* 主键ID */
   id: number;
   /* 账本说明文案 */
-  remark: null | string;
+  remark?: null | string;
   /* 关联的规则ID */
-  ruleId: null | number;
+  ruleId?: null | number;
   /* 成长记录关联的事件编码（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  ruleType:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801
-    | null;
+  ruleType?: null | number;
   /* 关联目标ID */
-  targetId: null | number;
+  targetId?: null | number;
   /* 关联目标类型 */
-  targetType: null | number;
+  targetType?: null | number;
   /* 关联的用户ID */
   userId: number;
 };
@@ -1125,11 +891,11 @@ export type AdminAppUserGrowthLedgerRecordDto = {
   /* 变更后余额 */
   afterValue: number;
   /* 资产类型（1=积分；2=经验） */
-  assetType: 1 | 2 | 3 | 4 | 5;
+  assetType: number;
   /* 变更前余额 */
   beforeValue: number;
   /* 扩展上下文（仅返回白名单解释字段） */
-  context: null | Record<string, any>;
+  context?: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
   /* 变更值（正数为发放，负数为扣减） */
@@ -1137,62 +903,15 @@ export type AdminAppUserGrowthLedgerRecordDto = {
   /* 主键ID */
   id: number;
   /* 账本说明文案 */
-  remark: null | string;
+  remark?: null | string;
   /* 关联的规则ID */
-  ruleId: null | number;
+  ruleId?: null | number;
   /* 成长记录关联的事件编码（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  ruleType:
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 16
-    | 100
-    | 101
-    | 102
-    | 103
-    | 104
-    | 200
-    | 201
-    | 202
-    | 203
-    | 204
-    | 300
-    | 301
-    | 302
-    | 303
-    | 304
-    | 305
-    | 306
-    | 400
-    | 401
-    | 402
-    | 403
-    | 404
-    | 405
-    | 406
-    | 600
-    | 601
-    | 602
-    | 700
-    | 701
-    | 702
-    | 703
-    | 800
-    | 801
-    | null;
+  ruleType?: null | number;
   /* 关联目标ID */
-  targetId: null | number;
+  targetId?: null | number;
   /* 关联目标类型 */
-  targetType: null | number;
+  targetType?: null | number;
   /* 更新时间 */
   updatedAt?: null | string;
   /* 关联的用户ID */
@@ -1218,15 +937,15 @@ export type UserBadgeItemDto = {
  */
 export type UserBadgeOutputDto = {
   /* 业务域标识 */
-  business: null | string;
+  business?: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 徽章描述 */
-  description: null | string;
+  description?: null | string;
   /* 事件键 */
-  eventKey: null | string;
+  eventKey?: null | string;
   /* 徽章图标URL */
-  icon: null | string;
+  icon?: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -1236,7 +955,7 @@ export type UserBadgeOutputDto = {
   /* 排序值（0=默认排序，数值越小越靠前） */
   sortOrder: number;
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type: 1 | 2 | 3;
+  type: number;
   /* 更新时间 */
   updatedAt: string;
 };
@@ -1252,3 +971,10 @@ export type AssignUserBadgeDto = {
   /* 用户ID */
   userId: number;
 };
+
+/**
+ *  类型定义 [BaseUserBadgeDto]
+ *  @来源 legacy compatibility alias
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BaseUserBadgeDto = UserBadgeOutputDto;

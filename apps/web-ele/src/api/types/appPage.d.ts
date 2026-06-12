@@ -14,10 +14,10 @@ export type AppPageCreateResponse = boolean;
  */
 export type AppPagePageRequest = {
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel?: 0 | 1 | 2 | 3;
+  accessLevel?: null | number;
 
   /* 页面编码（唯一标识） */
-  code?: string;
+  code?: null | string;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
   enablePlatform?: null | string;
@@ -26,10 +26,10 @@ export type AppPagePageRequest = {
   endDate?: null | string;
 
   /* 页面启用状态 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 页面名称 */
-  name?: string;
+  name?: null | string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -46,16 +46,16 @@ export type AppPagePageRequest = {
 
 export type AppPagePageResponse = {
   /* 列表数据 */
-  list?: AppPageOutputDto[];
+  list?: AppPageOutputDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -107,13 +107,13 @@ export type AppPageDeleteResponse = boolean;
  */
 export type CreateAppPageDto = {
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel: 0 | 1 | 2 | 3;
+  accessLevel: number;
   /* 页面编码（唯一标识） */
   code: string;
   /* 页面描述信息 */
   description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: (1 | 2 | 3)[] | null;
+  enablePlatform?: null | number[];
   /* 页面启用状态 */
   isEnabled: boolean;
   /* 页面名称 */
@@ -131,15 +131,15 @@ export type CreateAppPageDto = {
  */
 export type AppPageOutputDto = {
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel: 0 | 1 | 2 | 3;
+  accessLevel: number;
   /* 页面编码（唯一标识） */
   code: string;
   /* 创建时间 */
   createdAt: string;
   /* 页面描述信息 */
-  description: null | string;
+  description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform: (1 | 2 | 3)[] | null;
+  enablePlatform?: null | number[];
   /* 主键id */
   id: number;
   /* 页面启用状态 */
@@ -161,23 +161,23 @@ export type AppPageOutputDto = {
  */
 export type UpdateAppPageDto = {
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel?: 0 | 1 | 2 | 3;
+  accessLevel?: null | number;
   /* 页面编码（唯一标识） */
-  code?: string;
+  code?: null | string;
   /* 页面描述信息 */
   description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: (1 | 2 | 3)[] | null;
+  enablePlatform?: null | number[];
   /* 主键id */
   id: number;
   /* 页面启用状态 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
   /* 页面名称 */
-  name?: string;
+  name?: null | string;
   /* 页面路径（URL 路径） */
-  path?: string;
+  path?: null | string;
   /* 页面标题 */
-  title?: string;
+  title?: null | string;
 };
 
 /**
@@ -189,3 +189,10 @@ export type IdsDto = {
   /* 主键id集合 */
   ids: number[];
 };
+
+/**
+ *  类型定义 [BaseAppPageDto]
+ *  @来源 legacy compatibility alias
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BaseAppPageDto = AppPageOutputDto;

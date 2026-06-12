@@ -59,16 +59,16 @@ export type CheckInCalendarSignedUserPageRequest = {
 
 export type CheckInCalendarSignedUserPageResponse = {
   /* 列表数据 */
-  list?: AdminCheckInSignedUserPageItemDto[];
+  list?: AdminCheckInSignedUserPageItemDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -111,24 +111,24 @@ export type CheckInStreakPageRequest = {
   startDate?: null | string;
 
   /* 记录状态（0=草稿；1=已排期；2=生效中；3=已过期；4=已终止）。 */
-  status?: 0 | 1 | 2 | 3 | 4 | null;
+  status?: null | number;
 
   /* 命中奖励所需的连续签到天数。 */
-  streakDays?: number;
+  streakDays?: null | number;
 };
 
 export type CheckInStreakPageResponse = {
   /* 列表数据 */
-  list?: CheckInStreakRuleDetailResponseDto[];
+  list?: CheckInStreakRuleDetailResponseDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -170,16 +170,16 @@ export type CheckInStreakHistoryPageRequest = {
 
 export type CheckInStreakHistoryPageResponse = {
   /* 列表数据 */
-  list?: CheckInStreakRuleDetailResponseDto[];
+  list?: CheckInStreakRuleDetailResponseDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -226,7 +226,7 @@ export type CheckInReconciliationPageRequest = {
   grantId?: null | number;
 
   /* 连续奖励结算状态（0=待补偿重试；1=已补偿成功；2=终态失败）。 */
-  grantSettlementStatus?: 0 | 1 | 2 | null;
+  grantSettlementStatus?: null | number;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -241,7 +241,7 @@ export type CheckInReconciliationPageRequest = {
   recordId?: null | number;
 
   /* 基础奖励结算状态（0=待补偿重试；1=已补偿成功；2=终态失败）。 */
-  recordSettlementStatus?: 0 | 1 | 2 | null;
+  recordSettlementStatus?: null | number;
 
   /* 连续签到规则 ID。 */
   ruleId?: null | number;
@@ -255,16 +255,16 @@ export type CheckInReconciliationPageRequest = {
 
 export type CheckInReconciliationPageResponse = {
   /* 列表数据 */
-  list?: CheckInReconciliationPageItemDto[];
+  list?: CheckInReconciliationPageItemDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -293,7 +293,7 @@ export type CheckInStreakRepairResponse = RepairCheckInStreakResponseDto;
  */
 export type CheckInConfigDetailResponseDto = {
   /* 默认基础奖励项。 */
-  baseRewardItems: CheckInRewardItemDto[] | null;
+  baseRewardItems?: CheckInRewardItemDto[] | null;
   /* 创建时间 */
   createdAt: string;
   /* 具体日期奖励规则列表。 */
@@ -303,15 +303,15 @@ export type CheckInConfigDetailResponseDto = {
   /* 是否启用签到功能。 */
   isEnabled: boolean;
   /* 补签图标 URL。 */
-  makeupIconUrl: null | string;
+  makeupIconUrl?: null | string;
   /* 补签周期类型（1=按自然周；2=按自然月）。 */
-  makeupPeriodType: 1 | 2;
+  makeupPeriodType: number;
   /* 周期模式奖励规则列表。 */
   patternRewardRules: BaseCheckInPatternRewardRuleDto[];
   /* 每周期系统发放的补签额度。 */
   periodicAllowance: number;
   /* 基础奖励日历汇总图标 URL。 */
-  rewardOverviewIconUrl: null | string;
+  rewardOverviewIconUrl?: null | string;
   /* 更新时间 */
   updatedAt: string;
 };
@@ -327,9 +327,9 @@ export type CheckInRewardItemDto = {
   /* 奖励资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
   assetKey?: null | string;
   /* 奖励资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType: 1 | 2 | 3 | 4 | 5;
+  assetType: number;
   /* 签到奖励图标 URL。 */
-  iconUrl: null | string;
+  iconUrl?: null | string;
 };
 
 /**
@@ -343,7 +343,7 @@ export type CheckInDateRewardRuleFieldsDto = {
   /* 具体日期奖励项列表。 */
   rewardItems: CheckInRewardItemDto[];
   /* 该日期奖励概览图标 URL。 */
-  rewardOverviewIconUrl: null | string;
+  rewardOverviewIconUrl?: null | string;
 };
 
 /**
@@ -353,15 +353,15 @@ export type CheckInDateRewardRuleFieldsDto = {
  */
 export type BaseCheckInPatternRewardRuleDto = {
   /* 按月固定日期时使用，1..31。 */
-  monthDay: null | number;
+  monthDay?: null | number;
   /* 周期模式类型（1=按周固定星期几；2=按月固定日期；3=按月最后一天）。 */
-  patternType: 1 | 2 | 3;
+  patternType: number;
   /* 周期模式奖励项列表。 */
   rewardItems: CheckInRewardItemDto[];
   /* 该周期奖励概览图标 URL。 */
-  rewardOverviewIconUrl: null | string;
+  rewardOverviewIconUrl?: null | string;
   /* 按周固定星期几时使用，1=周一；7=周日。 */
-  weekday: null | number;
+  weekday?: null | number;
 };
 
 /**
@@ -389,13 +389,13 @@ export type AdminCheckInCalendarDetailResponseDto = {
  */
 export type AdminCheckInCalendarDayDto = {
   /* 按签到事实冻结奖励快照聚合出的当日基础奖励实际概览。 */
-  baseRewardActualOverview: CheckInRewardItemDto[] | null;
+  baseRewardActualOverview?: CheckInRewardItemDto[] | null;
   /* 按签到事实冻结奖励快照聚合出的当日基础奖励概览图标 URL。 */
-  baseRewardActualOverviewIconUrl: null | string;
+  baseRewardActualOverviewIconUrl?: null | string;
   /* 当前生效配置对该日期的奖励规则投影视图；这是 current-config projection，不是历史冻结配置快照。 */
-  baseRewardConfigProjectionOverview: CheckInRewardItemDto[] | null;
+  baseRewardConfigProjectionOverview?: CheckInRewardItemDto[] | null;
   /* 当前生效配置对该日期的奖励概览图标 URL。 */
-  baseRewardConfigProjectionOverviewIconUrl: null | string;
+  baseRewardConfigProjectionOverviewIconUrl?: null | string;
   /* 当前周期内展示序号。 */
   dayIndex: number;
   /* 是否为未来日期。 */
@@ -505,13 +505,13 @@ export type CheckInCalendarDayDto = {
   /* 是否为今天。 */
   isToday: boolean;
   /* 该日补签图标 URL；普通签到日或未签到日为空。 */
-  makeupIconUrl: null | string;
+  makeupIconUrl?: null | string;
   /* 该日基础奖励快照。 */
-  rewardItems: CheckInRewardItemDto[] | null;
+  rewardItems?: CheckInRewardItemDto[] | null;
   /* 该日基础奖励概览图标 URL。 */
-  rewardOverviewIconUrl: null | string;
+  rewardOverviewIconUrl?: null | string;
   /* 该日基础奖励补偿摘要。 */
-  rewardSettlement: CheckInRewardSettlementSummaryDto | null;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
   /* 自然日。 */
   signDate: string;
 };
@@ -525,19 +525,19 @@ export type CheckInRewardSettlementSummaryDto = {
   /* 主键id */
   id: number;
   /* 最近一次失败原因 */
-  lastError: null | string;
+  lastError?: null | string;
   /* 最近一次重试时间 */
-  lastRetryAt: null | string;
+  lastRetryAt?: null | string;
   /* 本次补偿关联到账本记录 ID 列表 */
   ledgerRecordIds: number[];
   /* 已执行的补偿重试次数 */
   retryCount: number;
   /* 最近一次补偿状态落定时间 */
-  settledAt: null | string;
+  settledAt?: null | string;
   /* 补偿结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
-  settlementResultType: 1 | 2 | 3 | null;
+  settlementResultType?: null | number;
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
-  settlementStatus: 0 | 1 | 2;
+  settlementStatus: number;
 };
 
 /**
@@ -553,21 +553,21 @@ export type AdminCheckInSignedUserPageItemDto = {
   /* 主键id */
   id: number;
   /* 签到类型（1=正常签到；2=补签）。 */
-  recordType: 1 | 2;
+  recordType: number;
   /* 冻结的补签图标 URL；普通签到时为空。 */
-  resolvedMakeupIconUrl: null | string;
+  resolvedMakeupIconUrl?: null | string;
   /* 冻结的基础奖励快照。 */
-  resolvedRewardItems: CheckInRewardItemDto[] | null;
+  resolvedRewardItems?: CheckInRewardItemDto[] | null;
   /* 冻结的基础奖励概览图标 URL。 */
-  resolvedRewardOverviewIconUrl: null | string;
+  resolvedRewardOverviewIconUrl?: null | string;
   /* 基础奖励命中的规则键。 */
-  resolvedRewardRuleKey: null | string;
+  resolvedRewardRuleKey?: null | string;
   /* 基础奖励解析来源（1=默认基础奖励；2=具体日期奖励；3=周期模式奖励）。 */
-  resolvedRewardSourceType: 1 | 2 | 3 | null;
+  resolvedRewardSourceType?: null | number;
   /* 基础奖励补偿摘要。 */
-  rewardSettlement: CheckInRewardSettlementSummaryDto | null;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
   /* 关联的奖励补偿记录 ID。 */
-  rewardSettlementId: null | number;
+  rewardSettlementId?: null | number;
   /* 签到自然日。 */
   signDate: string;
   /* 更新时间 */
@@ -591,11 +591,11 @@ export type CheckInGrantItemDto = {
   /* 冻结的连续奖励快照。 */
   rewardItems: CheckInRewardItemDto[];
   /* 冻结的连续奖励概览图标 URL。 */
-  rewardOverviewIconUrl: null | string;
+  rewardOverviewIconUrl?: null | string;
   /* 连续奖励补偿摘要。 */
-  rewardSettlement: CheckInRewardSettlementSummaryDto | null;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
   /* 关联的奖励补偿记录 ID。 */
-  rewardSettlementId: null | number;
+  rewardSettlementId?: null | number;
   /* 连续奖励规则编码。 */
   ruleCode: string;
   /* 连续签到规则 ID。 */
@@ -617,7 +617,7 @@ export type CheckInGrantItemDto = {
  */
 export type AdminCheckInSignedUserDto = {
   /* 头像URL */
-  avatarUrl: null | string;
+  avatarUrl?: null | string;
   /* 主键id */
   id: number;
   /* 昵称 */
@@ -633,15 +633,15 @@ export type UpdateCheckInConfigDto = {
   /* 默认基础奖励项。 */
   baseRewardItems?: CheckInRewardItemDto[] | null;
   /* 具体日期奖励规则列表。 */
-  dateRewardRules?: CheckInDateRewardRuleFieldsDto[];
+  dateRewardRules?: CheckInDateRewardRuleFieldsDto[] | null;
   /* 是否启用签到功能。 */
   isEnabled: boolean;
   /* 补签图标 URL。 */
   makeupIconUrl?: null | string;
   /* 补签周期类型（1=按自然周；2=按自然月）。 */
-  makeupPeriodType: 1 | 2;
+  makeupPeriodType: number;
   /* 周期模式奖励规则列表。 */
-  patternRewardRules?: BaseCheckInPatternRewardRuleDto[];
+  patternRewardRules?: BaseCheckInPatternRewardRuleDto[] | null;
   /* 每周期系统发放的补签额度。 */
   periodicAllowance: number;
   /* 基础奖励日历汇总图标 URL。 */
@@ -669,23 +669,23 @@ export type CheckInStreakRuleDetailResponseDto = {
   /* 生效开始时间。 */
   effectiveFrom: string;
   /* 生效结束时间。 */
-  effectiveTo: null | string;
+  effectiveTo?: null | string;
   /* 主键id */
   id: number;
   /* 是否为当前生效版本。 */
   isCurrent: boolean;
   /* 发布策略（1=立即生效；2=次日生效；3=指定时间生效）。 */
-  publishStrategy: 1 | 2 | 3;
+  publishStrategy: number;
   /* 是否允许重复发放。 */
   repeatable?: boolean | null;
   /* 连续奖励奖励项列表。 */
   rewardItems: CheckInRewardItemDto[];
   /* 连续奖励概览图标 URL。 */
-  rewardOverviewIconUrl: null | string;
+  rewardOverviewIconUrl?: null | string;
   /* 连续奖励规则编码。 */
   ruleCode: string;
   /* 记录状态（0=草稿；1=已排期；2=生效中；3=已过期；4=已终止）。 */
-  status?: 0 | 1 | 2 | 3 | 4 | null;
+  status?: null | number;
   /* 命中奖励所需的连续签到天数。 */
   streakDays: number;
   /* 更新时间 */
@@ -703,13 +703,13 @@ export type PublishCheckInStreakRuleDto = {
   /* 指定生效时间；仅当发布策略需要明确时间点时传入。 */
   effectiveFrom?: null | string;
   /* 发布策略（1=立即生效；2=次日生效；3=指定时间生效）。 */
-  publishStrategy: 1 | 2 | 3;
+  publishStrategy: number;
   /* 是否允许重复发放。 */
   repeatable?: boolean | null;
   /* 连续奖励奖励项列表。 */
   rewardItems: CheckInRewardItemDto[];
   /* 连续奖励概览图标 URL。 */
-  rewardOverviewIconUrl: null | string;
+  rewardOverviewIconUrl?: null | string;
   /* 命中奖励所需的连续签到天数。 */
   streakDays: number;
 };
@@ -737,21 +737,21 @@ export type CheckInReconciliationPageItemDto = {
   /* 签到记录 ID。 */
   recordId: number;
   /* 签到类型（1=正常签到；2=补签）。 */
-  recordType: 1 | 2;
+  recordType: number;
   /* 冻结的补签图标 URL；普通签到时为空。 */
-  resolvedMakeupIconUrl: null | string;
+  resolvedMakeupIconUrl?: null | string;
   /* 冻结的基础奖励快照。 */
-  resolvedRewardItems: CheckInRewardItemDto[] | null;
+  resolvedRewardItems?: CheckInRewardItemDto[] | null;
   /* 冻结的基础奖励概览图标 URL。 */
-  resolvedRewardOverviewIconUrl: null | string;
+  resolvedRewardOverviewIconUrl?: null | string;
   /* 基础奖励命中的规则键。 */
-  resolvedRewardRuleKey: null | string;
+  resolvedRewardRuleKey?: null | string;
   /* 基础奖励解析来源（1=默认基础奖励；2=具体日期奖励；3=周期模式奖励）。 */
-  resolvedRewardSourceType: 1 | 2 | 3 | null;
+  resolvedRewardSourceType?: null | number;
   /* 基础奖励补偿摘要。 */
-  rewardSettlement: CheckInRewardSettlementSummaryDto | null;
+  rewardSettlement?: CheckInRewardSettlementSummaryDto | null;
   /* 关联的奖励补偿记录 ID。 */
-  rewardSettlementId: null | number;
+  rewardSettlementId?: null | number;
   /* 签到自然日。 */
   signDate: string;
   /* 更新时间 */
@@ -771,7 +771,7 @@ export type RepairCheckInRewardDto = {
   /* 基础奖励对应的签到记录 ID。 */
   recordId?: null | number;
   /* 补偿目标类型（1=基础奖励；2=连续奖励）。 */
-  targetType: 1 | 2;
+  targetType: number;
 };
 
 /**
@@ -787,7 +787,7 @@ export type RepairCheckInRewardResponseDto = {
   /* 本次补偿是否成功。 */
   success: boolean;
   /* 补偿目标类型（1=基础奖励；2=连续奖励）。 */
-  targetType: 1 | 2;
+  targetType: number;
 };
 
 /**
@@ -811,11 +811,11 @@ export type RepairCheckInStreakResponseDto = {
   /* 重算后的当前连续签到天数。 */
   currentStreak: number;
   /* 重算后的最近签到日期；无签到记录时为空。 */
-  lastSignedDate: null | string;
+  lastSignedDate?: null | string;
   /* 本次成功补偿落账的连续奖励发放 ID 列表。 */
   settledGrantIds: number[];
   /* 重算后的当前连续区间开始日期；无连续记录时为空。 */
-  streakStartedAt: null | string;
+  streakStartedAt?: null | string;
   /* 已重算的用户 ID。 */
   userId: number;
 };

@@ -8,10 +8,10 @@ export type WalletCurrencyPackagePageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 充值包名称 */
-  name?: string;
+  name?: null | string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -28,16 +28,16 @@ export type WalletCurrencyPackagePageRequest = {
 
 export type WalletCurrencyPackagePageResponse = {
   /* 列表数据 */
-  list?: AdminCurrencyPackagePageItemDto[];
+  list?: AdminCurrencyPackagePageItemDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -67,16 +67,16 @@ export type WalletLedgerPageRequest = {
 
 export type WalletLedgerPageResponse = {
   /* 列表数据 */
-  list?: WalletLedgerRecordDto[];
+  list?: null | WalletLedgerRecordDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -141,7 +141,7 @@ export type AdminCurrencyPackagePageItemDto = {
  */
 export type WalletLedgerRecordDto = {
   /* 流水动作（1=发放资产；2=扣减资产；3=规则判定过程；4=授予徽章） */
-  action: 1 | 2 | 3 | 4;
+  action: number;
   /* 变更后余额 */
   afterValue: number;
   /* 变更值 */
@@ -153,7 +153,7 @@ export type WalletLedgerRecordDto = {
   /* 流水 ID */
   id: number;
   /* 展示备注 */
-  remark: null | string;
+  remark?: null | string;
   /* 流水来源 */
   source: string;
 };
@@ -165,11 +165,11 @@ export type WalletLedgerRecordDto = {
  */
 export type CreateCurrencyPackageDto = {
   /* 赠送虚拟币数量 */
-  bonusAmount?: number;
+  bonusAmount?: null | number;
   /* 发放虚拟币数量 */
   currencyAmount: number;
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
   /* 充值包名称 */
   name: string;
   /* 充值包业务键 */
@@ -177,7 +177,7 @@ export type CreateCurrencyPackageDto = {
   /* 支付价格，单位为分 */
   price: number;
   /* 排序值 */
-  sortOrder?: number;
+  sortOrder?: null | number;
 };
 
 /**
@@ -187,21 +187,21 @@ export type CreateCurrencyPackageDto = {
  */
 export type UpdateCurrencyPackageDto = {
   /* 赠送虚拟币数量 */
-  bonusAmount?: number;
+  bonusAmount?: null | number;
   /* 发放虚拟币数量 */
-  currencyAmount?: number;
+  currencyAmount?: null | number;
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
   /* 充值包名称 */
-  name?: string;
+  name?: null | string;
   /* 充值包业务键 */
-  packageKey?: string;
+  packageKey?: null | string;
   /* 支付价格，单位为分 */
-  price?: number;
+  price?: null | number;
   /* 排序值 */
-  sortOrder?: number;
+  sortOrder?: null | number;
 };
 
 /**

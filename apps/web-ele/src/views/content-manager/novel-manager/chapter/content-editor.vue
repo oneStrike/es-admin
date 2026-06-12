@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ContentNovelChapterUpdateRequest } from '#/api/types';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import {
@@ -70,10 +72,11 @@ async function handleSave() {
 
   loading.value = true;
   try {
-    await contentNovelChapterUpdateApi({
+    const payload = {
       content: content.value,
       id: shareData.value.chapterId,
-    });
+    } as ContentNovelChapterUpdateRequest & { content: string };
+    await contentNovelChapterUpdateApi(payload);
     useMessage.success('正文保存成功');
     modalApi.close();
   } finally {

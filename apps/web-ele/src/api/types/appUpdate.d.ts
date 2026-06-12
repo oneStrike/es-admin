@@ -5,16 +5,16 @@
  */
 export type AppUpdatePageRequest = {
   /* 内部构建号 */
-  buildCode?: number;
+  buildCode?: null | number;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 是否强制更新 */
-  forceUpdate?: boolean;
+  forceUpdate?: boolean | null;
 
   /* 是否已发布 */
-  isPublished?: boolean;
+  isPublished?: boolean | null;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -26,27 +26,27 @@ export type AppUpdatePageRequest = {
   pageSize?: null | number;
 
   /* 发布平台（1=苹果端；2=安卓端） */
-  platform?: 1 | 2;
+  platform?: null | number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 展示版本号 */
-  versionName?: string;
+  versionName?: null | string;
 };
 
 export type AppUpdatePageResponse = {
   /* 列表数据 */
-  list?: AppUpdateReleaseListItemDto[];
+  list?: AppUpdateReleaseListItemDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -107,9 +107,9 @@ export type AppUpdateReleaseListItemDto = {
   /* 是否已发布 */
   isPublished: boolean;
   /* 发布平台（1=苹果端；2=安卓端） */
-  platform: 1 | 2;
+  platform: number;
   /* 发布时间 */
-  publishedAt: null | string;
+  publishedAt?: null | string;
   /* 更新时间 */
   updatedAt: string;
   /* 展示版本号 */
@@ -127,7 +127,7 @@ export type AppUpdateReleaseDetailDto = {
   /* 创建时间 */
   createdAt: string;
   /* 创建人 ID */
-  createdById: null | number;
+  createdById?: null | number;
   /* 是否强制更新 */
   forceUpdate: boolean;
   /* 主键id */
@@ -135,21 +135,21 @@ export type AppUpdateReleaseDetailDto = {
   /* 是否已发布 */
   isPublished: boolean;
   /* 上传安装包大小（字节） */
-  packageFileSize: null | number;
+  packageFileSize?: null | number;
   /* 上传安装包 MIME 类型 */
-  packageMimeType: null | string;
+  packageMimeType?: null | string;
   /* 上传安装包原始文件名 */
-  packageOriginalName: null | string;
+  packageOriginalName?: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
-  packageSourceType: 1 | 2 | 3 | null;
+  packageSourceType?: null | number;
   /* 安装包地址（后台上传文件地址、外部下载地址或外部中转页地址） */
-  packageUrl: null | string;
+  packageUrl?: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
-  platform: 1 | 2;
+  platform: number;
   /* 更新弹窗背景图地址 */
-  popupBackgroundImage: null | string;
+  popupBackgroundImage?: null | string;
   /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
-  popupBackgroundPosition:
+  popupBackgroundPosition?:
     | 'bottom center'
     | 'bottom left'
     | 'bottom right'
@@ -161,13 +161,13 @@ export type AppUpdateReleaseDetailDto = {
     | 'top right'
     | null;
   /* 发布时间 */
-  publishedAt: null | string;
+  publishedAt?: null | string;
   /* 更新说明 */
-  releaseNotes: null | string;
+  releaseNotes?: null | string;
   /* 更新时间 */
   updatedAt: string;
   /* 更新人 ID */
-  updatedById: null | number;
+  updatedById?: null | number;
   /* 展示版本号 */
   versionName: string;
 };
@@ -189,11 +189,11 @@ export type AppUpdateReleaseWriteDto = {
   /* 上传安装包原始文件名 */
   packageOriginalName?: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
-  packageSourceType?: 1 | 2 | 3 | null;
+  packageSourceType?: null | number;
   /* 安装包地址（后台上传文件地址、外部下载地址或外部中转页地址） */
   packageUrl?: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
-  platform: 1 | 2;
+  platform: number;
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string;
   /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
@@ -233,11 +233,11 @@ export type UpdateAppUpdateReleaseDto = {
   /* 上传安装包原始文件名 */
   packageOriginalName?: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
-  packageSourceType?: 1 | 2 | 3 | null;
+  packageSourceType?: null | number;
   /* 安装包地址（后台上传文件地址、外部下载地址或外部中转页地址） */
   packageUrl?: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
-  platform: 1 | 2;
+  platform: number;
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string;
   /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
@@ -269,3 +269,10 @@ export type UpdatePublishedStatusDto = {
   /* 发布状态 true发布 false取消发布 */
   isPublished: boolean;
 };
+
+/**
+ *  类型定义 [CreateAppUpdateReleaseDto]
+ *  @来源 legacy compatibility alias
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type CreateAppUpdateReleaseDto = AppUpdateReleaseWriteDto;

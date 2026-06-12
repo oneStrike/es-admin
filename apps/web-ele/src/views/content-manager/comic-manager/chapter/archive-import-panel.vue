@@ -646,10 +646,10 @@ async function handleConfirmImport() {
     previewJobId.value = '';
     const nextTask: ArchiveTaskDetail = {
       ...currentTask,
+      lastError: null,
       resultItems: [],
       status: ARCHIVE_STATUS.PENDING,
     };
-    delete nextTask.lastError;
     taskDetail.value = nextTask;
     await fetchTaskDetail(currentTask.jobId);
   } finally {

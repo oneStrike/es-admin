@@ -59,6 +59,10 @@ function booleanValue(value: unknown) {
   return typeof value === 'boolean' ? value : undefined;
 }
 
+function optionalConfig<T extends object>(value: null | T | undefined) {
+  return value ?? ({} as Partial<T>);
+}
+
 // Generated API narrows audit status to the backend enum, so filter form values.
 function contentReviewAuditStatusValue(value: unknown) {
   const status = numberValue(value);
@@ -99,8 +103,8 @@ export function buildSystemConfigFormValues(
 
   switch (menuKey) {
     case 'aliyun': {
-      const aliyunConfig = config?.aliyunConfig ?? {};
-      const sms = aliyunConfig.sms ?? {};
+      const aliyunConfig = optionalConfig(config?.aliyunConfig);
+      const sms = optionalConfig(aliyunConfig.sms);
       values.accessKeyId = aliyunConfig.accessKeyId;
       values.accessKeySecret = aliyunConfig.accessKeySecret;
       values.smsEndpoint = sms.endpoint;
@@ -110,10 +114,10 @@ export function buildSystemConfigFormValues(
       break;
     }
     case 'contentReview': {
-      const policy = config?.contentReviewPolicy ?? {};
-      const light = policy.lightAction ?? {};
-      const general = policy.generalAction ?? {};
-      const severe = policy.severeAction ?? {};
+      const policy = optionalConfig(config?.contentReviewPolicy);
+      const light = optionalConfig(policy.lightAction);
+      const general = optionalConfig(policy.generalAction);
+      const severe = optionalConfig(policy.severeAction);
       values.recordHits = policy.recordHits;
       values.lightActionIsHidden = light.isHidden;
       values.lightActionAuditStatus = light.auditStatus;
@@ -124,19 +128,22 @@ export function buildSystemConfigFormValues(
       break;
     }
     case 'forumHashtag': {
-      const forumHashtagConfig =
-        config?.operationConfig?.forumHashtagConfig ?? {};
+      const forumHashtagConfig = optionalConfig(
+        config?.operationConfig?.forumHashtagConfig,
+      );
       values.forumHashtagCreationMode = forumHashtagConfig.creationMode ?? 1;
       break;
     }
     case 'maintenance': {
-      const maintenanceConfig = config?.maintenanceConfig ?? {};
+      const maintenanceConfig = optionalConfig(config?.maintenanceConfig);
       values.enableMaintenanceMode = maintenanceConfig.enableMaintenanceMode;
       values.maintenanceMessage = maintenanceConfig.maintenanceMessage;
       break;
     }
     case 'security': {
-      const remoteImageImport = config?.securityConfig?.remoteImageImport ?? {};
+      const remoteImageImport = optionalConfig(
+        config?.securityConfig?.remoteImageImport,
+      );
       values.remoteImageImportEnableAddressGuard =
         remoteImageImport.enableAddressGuard ?? true;
       break;
@@ -164,9 +171,9 @@ export function buildSystemConfigFormValues(
       break;
     }
     case 'upload': {
-      const uploadConfig = config?.uploadConfig ?? {};
-      const qiniu = uploadConfig.qiniu ?? {};
-      const superbed = uploadConfig.superbed ?? {};
+      const uploadConfig = optionalConfig(config?.uploadConfig);
+      const qiniu = optionalConfig(uploadConfig.qiniu);
+      const superbed = optionalConfig(uploadConfig.superbed);
       values.uploadProvider = uploadConfig.provider || 'local';
       values.superbedNonImageFallbackToLocal =
         uploadConfig.superbedNonImageFallbackToLocal ?? false;
@@ -199,7 +206,7 @@ export function buildSystemConfigFormValues(
       break;
     }
     default: {
-      const siteConfig = config?.siteConfig ?? {};
+      const siteConfig = optionalConfig(config?.siteConfig);
       values.siteName = siteConfig.siteName;
       values.siteDescription = siteConfig.siteDescription;
       values.siteKeywords = siteConfig.siteKeywords;
@@ -238,7 +245,7 @@ export function buildSystemConfigUpdatePayload({
 
   switch (menuKey) {
     case 'aliyun': {
-      const currentAliyunConfig = currentConfig.aliyunConfig ?? {};
+      const currentAliyunConfig = optionalConfig(currentConfig.aliyunConfig);
       submitData.aliyunConfig = {
         ...currentAliyunConfig,
         accessKeyId: encryptedSecretValue(
@@ -262,7 +269,7 @@ export function buildSystemConfigUpdatePayload({
       break;
     }
     case 'contentReview': {
-      const currentPolicy = currentConfig.contentReviewPolicy ?? {};
+      const currentPolicy = optionalConfig(currentConfig.contentReviewPolicy);
       submitData.contentReviewPolicy = {
         ...currentPolicy,
         recordHits: booleanValue(values.recordHits),
@@ -291,9 +298,12 @@ export function buildSystemConfigUpdatePayload({
       break;
     }
     case 'forumHashtag': {
-      const currentOperationConfig = currentConfig.operationConfig ?? {};
-      const currentForumHashtagConfig =
-        currentOperationConfig.forumHashtagConfig ?? {};
+      const currentOperationConfig = optionalConfig(
+        currentConfig.operationConfig,
+      );
+      const currentForumHashtagConfig = optionalConfig(
+        currentOperationConfig.forumHashtagConfig,
+      );
       submitData.operationConfig = {
         ...currentOperationConfig,
         forumHashtagConfig: {
@@ -304,7 +314,9 @@ export function buildSystemConfigUpdatePayload({
       break;
     }
     case 'maintenance': {
-      const currentMaintenanceConfig = currentConfig.maintenanceConfig ?? {};
+      const currentMaintenanceConfig = optionalConfig(
+        currentConfig.maintenanceConfig,
+      );
       submitData.maintenanceConfig = {
         ...currentMaintenanceConfig,
         enableMaintenanceMode: booleanValue(values.enableMaintenanceMode),
@@ -313,9 +325,12 @@ export function buildSystemConfigUpdatePayload({
       break;
     }
     case 'security': {
-      const currentSecurityConfig = currentConfig.securityConfig ?? {};
-      const currentRemoteImageImport =
-        currentSecurityConfig.remoteImageImport ?? {};
+      const currentSecurityConfig = optionalConfig(
+        currentConfig.securityConfig,
+      );
+      const currentRemoteImageImport = optionalConfig(
+        currentSecurityConfig.remoteImageImport,
+      );
       submitData.securityConfig = {
         ...currentSecurityConfig,
         remoteImageImport: {
@@ -327,8 +342,9 @@ export function buildSystemConfigUpdatePayload({
       break;
     }
     case 'thirdPartyResourceParse': {
-      const currentThirdPartyResourceParseConfig =
-        currentConfig.thirdPartyResourceParseConfig ?? {};
+      const currentThirdPartyResourceParseConfig = optionalConfig(
+        currentConfig.thirdPartyResourceParseConfig,
+      );
       submitData.thirdPartyResourceParseConfig = {
         ...currentThirdPartyResourceParseConfig,
         apiIntervalMs:
@@ -352,9 +368,9 @@ export function buildSystemConfigUpdatePayload({
       break;
     }
     case 'upload': {
-      const currentUploadConfig = currentConfig.uploadConfig ?? {};
-      const currentQiniu = currentUploadConfig.qiniu ?? {};
-      const currentSuperbed = currentUploadConfig.superbed ?? {};
+      const currentUploadConfig = optionalConfig(currentConfig.uploadConfig);
+      const currentQiniu = optionalConfig(currentUploadConfig.qiniu);
+      const currentSuperbed = optionalConfig(currentUploadConfig.superbed);
       const provider = uploadProviderValue(values.uploadProvider);
       submitData.uploadConfig = {
         ...currentUploadConfig,
@@ -419,7 +435,7 @@ export function buildSystemConfigUpdatePayload({
       break;
     }
     default: {
-      const currentSiteConfig = currentConfig.siteConfig ?? {};
+      const currentSiteConfig = optionalConfig(currentConfig.siteConfig);
       submitData.siteConfig = {
         ...currentSiteConfig,
         contactEmail: textValue(values.contactEmail),

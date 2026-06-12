@@ -1,4 +1,4 @@
-export type RewardAssetType = 1 | 2 | 3 | 4 | 5;
+export type RewardAssetType = number;
 
 export type RewardConfigAssetOption = {
   assetKeyLabel?: string;

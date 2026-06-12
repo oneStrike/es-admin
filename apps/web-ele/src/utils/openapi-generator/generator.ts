@@ -604,7 +604,11 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
   }
 
   private buildTypeProperty(name: string, required: string, type: string) {
-    return `${formatPropertyKey(name)}${required}: ${type}`;
+    const nullableType =
+      required === '?' && !type.split(/\s*\|\s*/).includes('null')
+        ? `${type} | null`
+        : type;
+    return `${formatPropertyKey(name)}${required}: ${nullableType}`;
   }
 
   private buildUrlExpression(
@@ -912,7 +916,10 @@ export type ${aliasName} = ${targetName}`);
           propName,
           propSchema as any,
         );
-        const required = schema.required?.includes(propName) ? '' : '?';
+        const required =
+          schema.required?.includes(propName) && !this.isNullableSchema(prop)
+            ? ''
+            : '?';
 
         // 使用改进的类型映射
         const type = mapSchemaToType(prop);
@@ -949,7 +956,9 @@ export type ${aliasName} = ${targetName}`);
     // 处理查询参数
     for (const param of this.getRequestParameters(operation)) {
       const required = param.required ? '' : '?';
-      const type = mapSchemaToType(param.schema || { type: 'string' });
+      const type = this.mapRequestParameterSchemaToType(
+        param.schema || { type: 'string' },
+      );
       const requestParamName =
         requestParamNames.get(this.buildRequestParamKey(param)) || param.name;
       const description = param.description
@@ -1389,6 +1398,23 @@ export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;
 
     // 数组/基础类型等：在生成中会作为必填单字段(items/value)输出
     return false;
+  }
+
+  private isStringEnumSchema(schema: any): boolean {
+    return Boolean(
+      schema &&
+      (!schema.type || this.hasSchemaType(schema, 'string')) &&
+      Array.isArray(schema.enum) &&
+      schema.enum.some((item: any) => typeof item === 'string'),
+    );
+  }
+
+  private mapRequestParameterSchemaToType(schema: any): string {
+    if (this.isStringEnumSchema(schema)) {
+      return this.applySchemaNullable(schema, 'string');
+    }
+
+    return mapSchemaToType(schema);
   }
 
   private normalizePathSegments(value: string): string[] {

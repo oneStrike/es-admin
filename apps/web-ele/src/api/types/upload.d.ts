@@ -27,7 +27,7 @@ export type UploadResponseDto = {
   /* 文件扩展名 */
   fileType: string;
   /* 图片高度 */
-  height: null | number;
+  height?: null | number;
   /* 文件 MIME 类型 */
   mimeType: string;
   /* 原始文件名 */
@@ -37,5 +37,5 @@ export type UploadResponseDto = {
   /* 上传时间 */
   uploadTime: string;
   /* 图片宽度 */
-  width: null | number;
+  width?: null | number;
 };

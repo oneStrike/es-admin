@@ -102,7 +102,7 @@ export type AdminUserResponseDto = {
   /* 手机号 */
   mobile?: null | string;
   /* 角色（0=普通管理员；1=超级管理员） */
-  role: 0 | 1;
+  role: number;
   /* 更新时间 */
   updatedAt: string;
   /* 用户名 */

@@ -181,9 +181,7 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
       // 处理枚举值
       if (schema.enum && Array.isArray(schema.enum)) {
         const enumValues = schema.enum.filter((item: any) => item !== null);
-        return enumValues.length === 0
-          ? 'null'
-          : applyNullable(enumValues.join(' | '));
+        return enumValues.length === 0 ? 'null' : applyNullable('number');
       }
       return applyNullable('number');
     }
@@ -301,7 +299,7 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
             enumValues.map((val: string) => `'${val}'`).join(' | '),
           );
         } else if (firstType === 'number') {
-          return applyNullable(enumValues.join(' | '));
+          return applyNullable('number');
         }
       }
 

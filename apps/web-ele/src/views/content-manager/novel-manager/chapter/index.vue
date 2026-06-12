@@ -226,7 +226,9 @@ function buildNovelChapterPayload(
   values: ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest,
   workId: number,
 ): ContentNovelChapterCreateRequest | ContentNovelChapterUpdateRequest {
+  const contentPayload = 'content' in values ? { content: values.content } : {};
   const payload = {
+    ...contentPayload,
     cover: values.cover,
     sortOrder: values.sortOrder,
     title: values.title,
@@ -234,7 +236,6 @@ function buildNovelChapterPayload(
     requiredViewLevelId: values.requiredViewLevelId,
     publishAt: values.publishAt,
     description: values.description,
-    content: values.content,
     remark: values.remark,
     canComment:
       values.canComment ?? currentChapterRecord.value?.canComment ?? true,

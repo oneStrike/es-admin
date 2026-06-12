@@ -318,7 +318,6 @@ export function buildExperienceRuleQuery(
     assetKey: EXPERIENCE_ASSET_KEY,
     assetType: EXPERIENCE_ASSET_TYPE,
     endDate,
-    includeArchived: restFormValues.includeArchived,
     isEnabled: restFormValues.isEnabled,
     pageIndex: restFormValues.pageIndex,
     pageSize: restFormValues.pageSize,

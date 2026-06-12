@@ -25,7 +25,7 @@ export type CheckInConfigDateRuleDraft = {
 export type CheckInConfigPatternRuleDraft = {
   localId: string;
   monthDay?: number;
-  patternType: 1 | 2 | 3;
+  patternType: number;
   rewardItems: CheckInRewardItemDto[];
   rewardOverviewIconUrl?: string;
   weekday?: number;
@@ -35,7 +35,7 @@ export type CheckInConfigFormState = {
   baseRewardItems: CheckInRewardItemDto[];
   dateRules: CheckInConfigDateRuleDraft[];
   makeupIconUrl?: string;
-  makeupPeriodType: 1 | 2;
+  makeupPeriodType: number;
   patternRules: CheckInConfigPatternRuleDraft[];
   periodicAllowance: number;
   rewardOverviewIconUrl?: string;

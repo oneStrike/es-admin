@@ -40,7 +40,7 @@ export type SystemConfigDetailDto = {
   /* 更新时间 */
   updatedAt: string;
   /* 最后修改人 ID */
-  updatedById: null | number;
+  updatedById?: null | number;
   /* 上传配置 */
   uploadConfig: UploadConfigOutputDto;
   /* 钱包虚拟币展示配置 */
@@ -208,7 +208,7 @@ export type ContentReviewPolicyOutputDto = {
  */
 export type ContentReviewActionOutputDto = {
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: number;
   /* 是否隐藏 */
   isHidden: boolean;
 };
@@ -262,13 +262,13 @@ export type SuperbedUploadConfigOutputDto = {
   /* Superbed 相册分类，多个使用英文逗号分隔 */
   categories: string;
   /* 是否开启压缩 */
-  compress: boolean | null;
+  compress?: boolean | null;
   /* Superbed token（敏感字段，管理端读取时脱敏） */
   token: string;
   /* 是否开启水印 */
-  watermark: boolean | null;
+  watermark?: boolean | null;
   /* 是否强制转 webp */
-  webp: boolean | null;
+  webp?: boolean | null;
 };
 
 /**
@@ -278,25 +278,25 @@ export type SuperbedUploadConfigOutputDto = {
  */
 export type UpdateSystemConfigDto = {
   /* 阿里云配置 */
-  aliyunConfig?: AliyunConfigDto;
+  aliyunConfig?: AliyunConfigDto | null;
   /* 内容审核策略 */
-  contentReviewPolicy?: ContentReviewPolicyDto;
+  contentReviewPolicy?: ContentReviewPolicyDto | null;
   /* 主键id */
   id: number;
   /* 维护配置 */
-  maintenanceConfig?: MaintenanceConfigDto;
+  maintenanceConfig?: MaintenanceConfigDto | null;
   /* 运营配置 */
-  operationConfig?: OperationConfigDto;
+  operationConfig?: null | OperationConfigDto;
   /* 安全配置 */
-  securityConfig?: SecurityConfigDto;
+  securityConfig?: null | SecurityConfigDto;
   /* 站点配置 */
-  siteConfig?: SiteConfigDto;
+  siteConfig?: null | SiteConfigDto;
   /* 三方资源解析配置 */
-  thirdPartyResourceParseConfig?: ThirdPartyResourceParseConfigDto;
+  thirdPartyResourceParseConfig?: null | ThirdPartyResourceParseConfigDto;
   /* 上传配置 */
-  uploadConfig?: UploadConfigDto;
+  uploadConfig?: null | UploadConfigDto;
   /* 钱包虚拟币展示配置 */
-  walletCurrencyDisplayConfig?: WalletCurrencyDisplayConfigDto;
+  walletCurrencyDisplayConfig?: null | WalletCurrencyDisplayConfigDto;
 };
 
 /**
@@ -310,7 +310,7 @@ export type AliyunConfigDto = {
   /* AccessKey Secret（敏感字段，前端输入明文或 RSA 加密值） */
   accessKeySecret?: null | string;
   /* 短信服务配置 */
-  sms?: AliyunSmsConfigDto;
+  sms?: AliyunSmsConfigDto | null;
 };
 
 /**
@@ -358,7 +358,7 @@ export type SiteConfigDto = {
  */
 export type OperationConfigDto = {
   /* forum 话题配置 */
-  forumHashtagConfig?: ForumHashtagConfigDto;
+  forumHashtagConfig?: ForumHashtagConfigDto | null;
 };
 
 /**
@@ -378,7 +378,7 @@ export type ForumHashtagConfigDto = {
  */
 export type SecurityConfigDto = {
   /* 远程图片导入安全配置 */
-  remoteImageImport?: RemoteImageImportSecurityConfigDto;
+  remoteImageImport?: null | RemoteImageImportSecurityConfigDto;
 };
 
 /**
@@ -444,13 +444,13 @@ export type MaintenanceConfigDto = {
  */
 export type ContentReviewPolicyDto = {
   /* 一般敏感词处理策略 */
-  generalAction?: ContentReviewActionDto;
+  generalAction?: ContentReviewActionDto | null;
   /* 轻微敏感词处理策略 */
-  lightAction?: ContentReviewActionDto;
+  lightAction?: ContentReviewActionDto | null;
   /* 是否记录敏感词命中明细 */
   recordHits?: boolean | null;
   /* 严重敏感词处理策略 */
-  severeAction?: ContentReviewActionDto;
+  severeAction?: ContentReviewActionDto | null;
 };
 
 /**
@@ -460,7 +460,7 @@ export type ContentReviewPolicyDto = {
  */
 export type ContentReviewActionDto = {
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: 0 | 1 | 2 | null;
+  auditStatus?: null | number;
   /* 是否隐藏 */
   isHidden?: boolean | null;
 };
@@ -474,9 +474,9 @@ export type UploadConfigDto = {
   /* 上传提供方（本地存储；七牛云存储；Superbed 图床） */
   provider?: 'local' | 'qiniu' | 'superbed' | null;
   /* 七牛上传配置 */
-  qiniu?: QiniuUploadConfigDto;
+  qiniu?: null | QiniuUploadConfigDto;
   /* Superbed 上传配置 */
-  superbed?: SuperbedUploadConfigDto;
+  superbed?: null | SuperbedUploadConfigDto;
   /* 当 provider 为 superbed 时，非图片文件是否自动回落本地 */
   superbedNonImageFallbackToLocal?: boolean | null;
 };
@@ -530,13 +530,13 @@ export type SuperbedUploadConfigDto = {
  */
 export type Ip2regionRuntimeStatusDto = {
   /* 当前生效时间 */
-  activatedAt: null | string;
+  activatedAt?: null | string;
   /* 当前生效文件名 */
-  fileName: null | string;
+  fileName?: null | string;
   /* 当前生效文件绝对路径 */
-  filePath: null | string;
+  filePath?: null | string;
   /* 当前生效文件大小（字节） */
-  fileSize: null | number;
+  fileSize?: null | number;
   /* 当前进程是否已加载可用属地库 */
   ready: boolean;
   /* 当前是否正在执行热切换 */
@@ -546,3 +546,10 @@ export type Ip2regionRuntimeStatusDto = {
   /* ip2region 专用存储根目录 */
   storageDir: string;
 };
+
+/**
+ *  类型定义 [BaseSystemConfigDto]
+ *  @来源 legacy compatibility alias
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BaseSystemConfigDto = SystemConfigDetailDto;

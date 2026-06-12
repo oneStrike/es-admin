@@ -218,7 +218,7 @@ const tests: TestCase[] = [
 
       const { typesContent } = generateModule(spec, 'checkIn');
 
-      assert.match(typesContent, /latestRecord: CheckInRewardItem \| null/);
+      assert.match(typesContent, /latestRecord\?: CheckInRewardItem \| null/);
       assert.match(
         typesContent,
         /lastSettlement\?: CheckInRewardSettlement \| null/,
@@ -763,18 +763,18 @@ const tests: TestCase[] = [
       };
 
       const { typesContent: workflowTypes } = generateModule(spec, 'workflow');
-      assert.match(workflowTypes, /error: WorkflowErrorFactsDto \| null/);
-      assert.match(workflowTypes, /lastError: WorkflowErrorFactsDto \| null/);
+      assert.match(workflowTypes, /error\?: WorkflowErrorFactsDto \| null/);
+      assert.match(workflowTypes, /lastError\?: WorkflowErrorFactsDto \| null/);
       assert.match(workflowTypes, /code: 'KNOWN_ERROR' \| \(string & \{\}\)/);
 
       const { typesContent: contentTypes } = generateModule(spec, 'content');
-      assert.match(contentTypes, /lastError: WorkflowErrorFactsDto \| null/);
-      assert.match(contentTypes, /lastRetry: WorkflowErrorFactsDto \| null/);
-      assert.match(contentTypes, /warning: WorkflowErrorFactsDto \| null/);
-      assert.match(contentTypes, /error: WorkflowErrorFactsDto \| null/);
+      assert.match(contentTypes, /lastError\?: WorkflowErrorFactsDto \| null/);
+      assert.match(contentTypes, /lastRetry\?: WorkflowErrorFactsDto \| null/);
+      assert.match(contentTypes, /warning\?: WorkflowErrorFactsDto \| null/);
+      assert.match(contentTypes, /error\?: WorkflowErrorFactsDto \| null/);
       assert.match(
         contentTypes,
-        /keywords: Record<string, string\[\]> \| null/,
+        /keywords\?: Record<string, string\[\]> \| null/,
       );
       assert.match(
         contentTypes,
@@ -784,11 +784,11 @@ const tests: TestCase[] = [
       const { typesContent: checkInTypes } = generateModule(spec, 'checkIn');
       assert.match(
         checkInTypes,
-        /rewardSettlement: CheckInRewardSettlementSummaryDto \| null/,
+        /rewardSettlement\?: CheckInRewardSettlementSummaryDto \| null/,
       );
 
       const { typesContent: growthTypes } = generateModule(spec, 'growth');
-      assert.match(growthTypes, /user: UserExperienceRecordUserDto \| null/);
+      assert.match(growthTypes, /user\?: UserExperienceRecordUserDto \| null/);
     },
   },
   {
@@ -1221,7 +1221,7 @@ const tests: TestCase[] = [
         'generatorTransport',
       );
 
-      assert.match(typesContent, /kind\?: 'topic' \| 'post' \| null/);
+      assert.match(typesContent, /kind\?: string \| null/);
       assert.match(typesContent, /page: number/);
       assert.match(typesContent, /"filter-type"\?: string/);
       assert.match(typesContent, /range\?: TransportRangeDto/);

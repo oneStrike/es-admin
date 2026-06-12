@@ -40,7 +40,7 @@ export type SystemUserPageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 手机号 */
   mobile?: null | string;
@@ -55,27 +55,27 @@ export type SystemUserPageRequest = {
   pageSize?: null | number;
 
   /* 角色（0=普通管理员；1=超级管理员） */
-  role?: 0 | 1;
+  role?: null | number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 用户名 */
-  username?: string;
+  username?: null | string;
 };
 
 export type SystemUserPageResponse = {
   /* 列表数据 */
-  list?: AdminUserResponseDto[];
+  list?: AdminUserResponseDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -120,7 +120,7 @@ export type UserRegisterDto = {
   /* 密码 */
   password: string;
   /* 角色（0=普通管理员；1=超级管理员） */
-  role: 0 | 1;
+  role: number;
   /* 用户名 */
   username: string;
 };
@@ -140,7 +140,7 @@ export type UpdateUserDto = {
   /* 手机号 */
   mobile?: null | string;
   /* 角色（0=普通管理员；1=超级管理员） */
-  role: 0 | 1;
+  role: number;
   /* 用户名 */
   username: string;
 };
@@ -166,7 +166,7 @@ export type AdminUserResponseDto = {
   /* 手机号 */
   mobile?: null | string;
   /* 角色（0=普通管理员；1=超级管理员） */
-  role: 0 | 1;
+  role: number;
   /* 更新时间 */
   updatedAt: string;
   /* 用户名 */

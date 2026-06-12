@@ -8,16 +8,16 @@ export type CommentPageRequest = {
   actualReplyToId?: null | number;
 
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: 0 | 1 | 2;
+  auditStatus?: null | number;
 
   /* 创建日期结束（应用时区自然日，YYYY-MM-DD） */
   endDate?: null | string;
 
   /* 主键id */
-  id?: number;
+  id?: null | number;
 
   /* 是否隐藏 */
-  isHidden?: boolean;
+  isHidden?: boolean | null;
 
   /* 关键词搜索（评论内容） */
   keyword?: null | string;
@@ -38,27 +38,27 @@ export type CommentPageRequest = {
   startDate?: null | string;
 
   /* 目标 ID */
-  targetId?: number;
+  targetId?: null | number;
 
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
-  targetType?: 1 | 2 | 3 | 4 | 5;
+  targetType?: null | number;
 
   /* 评论用户 ID */
-  userId?: number;
+  userId?: null | number;
 };
 
 export type CommentPageResponse = {
   /* 列表数据 */
-  list?: AdminCommentPageItemDto[];
+  list?: AdminCommentPageItemDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -107,21 +107,21 @@ export type CommentDeleteResponse = boolean;
  */
 export type AdminCommentPageItemDto = {
   /* 实际回复的根评论 ID */
-  actualReplyToId: null | number;
+  actualReplyToId?: null | number;
   /* 审核时间 */
-  auditAt: null | string;
+  auditAt?: null | string;
   /* 审核人 ID */
-  auditById: null | number;
+  auditById?: null | number;
   /* 审核原因 */
-  auditReason: null | string;
+  auditReason?: null | string;
   /* 审核角色（0=版主；1=管理员） */
-  auditRole: 0 | 1 | null;
+  auditRole?: null | number;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: number;
   /* 创建时间 */
   createdAt: string;
   /* 楼层号 */
-  floor: null | number;
+  floor?: null | number;
   /* 评论正文 HTML；对外唯一正文表示 */
   html: string;
   /* 主键id */
@@ -131,17 +131,17 @@ export type AdminCommentPageItemDto = {
   /* 点赞数 */
   likeCount: number;
   /* 回复的评论 ID */
-  replyToId: null | number;
+  replyToId?: null | number;
   /* 被回复评论展示摘要 */
   replyToSummary: InteractionReplyCommentSummaryDto;
   /* 敏感词命中记录 */
-  sensitiveWordHits: null | SensitiveWordHitDto[];
+  sensitiveWordHits?: null | SensitiveWordHitDto[];
   /* 目标 ID */
   targetId: number;
   /* 评论目标展示摘要 */
   targetSummary: InteractionCommentTargetSummaryDto;
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
-  targetType: 1 | 2 | 3 | 4 | 5;
+  targetType: number;
   /* 更新时间 */
   updatedAt: string;
   /* 评论作者信息 */
@@ -161,13 +161,13 @@ export type SensitiveWordHitDto = {
   /* 命中字段（标题；正文） */
   field: string;
   /* 敏感词级别（1=严重；2=一般；3=轻微） */
-  level: 1 | 2 | 3;
+  level: number;
   /* 替换词 */
-  replaceWord: null | string;
+  replaceWord?: null | string;
   /* 起始位置 */
   start: number;
   /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
-  type: 1 | 2 | 3 | 4 | 5;
+  type: number;
   /* 敏感词 */
   word: string;
 };
@@ -179,7 +179,7 @@ export type SensitiveWordHitDto = {
  */
 export type AdminCommentUserDto = {
   /* 头像URL */
-  avatarUrl: null | string;
+  avatarUrl?: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -187,7 +187,7 @@ export type AdminCommentUserDto = {
   /* 昵称 */
   nickname: string;
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status: 1 | 2 | 3 | 4 | 5;
+  status: number;
 };
 
 /**
@@ -197,25 +197,25 @@ export type AdminCommentUserDto = {
  */
 export type InteractionCommentTargetSummaryDto = {
   /* 目标审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2 | null;
+  auditStatus?: null | number;
   /* 目标删除时间 */
-  deletedAt: null | string;
+  deletedAt?: null | string;
   /* 目标是否隐藏 */
-  isHidden: boolean | null;
+  isHidden?: boolean | null;
   /* 目标名称 */
-  name: null | string;
+  name?: null | string;
   /* 论坛主题所属板块名称 */
-  sectionName: null | string;
+  sectionName?: null | string;
   /* 评论目标 ID */
   targetId: number;
   /* 评论目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
-  targetType: 1 | 2 | 3 | 4 | 5;
+  targetType: number;
   /* 评论目标类型名称 */
   targetTypeName: string;
   /* 目标标题 */
-  title: null | string;
+  title?: null | string;
   /* 章节所属作品名称 */
-  workName: null | string;
+  workName?: null | string;
 };
 
 /**
@@ -225,21 +225,21 @@ export type InteractionCommentTargetSummaryDto = {
  */
 export type InteractionReplyCommentSummaryDto = {
   /* 被回复评论审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: number;
   /* 被回复评论 ID */
   commentId: number;
   /* 被回复评论内容摘要 */
-  contentExcerpt: null | string;
+  contentExcerpt?: null | string;
   /* 被回复评论是否隐藏 */
   isHidden: boolean;
   /* 被回复评论用户头像 URL */
-  userAvatarUrl: null | string;
+  userAvatarUrl?: null | string;
   /* 被回复评论用户是否启用 */
-  userIsEnabled: boolean | null;
+  userIsEnabled?: boolean | null;
   /* 被回复评论用户昵称 */
-  userNickname: null | string;
+  userNickname?: null | string;
   /* 被回复评论用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  userStatus: 1 | 2 | 3 | 4 | 5 | null;
+  userStatus?: null | number;
 };
 
 /**
@@ -249,25 +249,25 @@ export type InteractionReplyCommentSummaryDto = {
  */
 export type AdminCommentDetailDto = {
   /* 实际回复的根评论 ID */
-  actualReplyToId: null | number;
+  actualReplyToId?: null | number;
   /* 审核时间 */
-  auditAt: null | string;
+  auditAt?: null | string;
   /* 审核人 ID */
-  auditById: null | number;
+  auditById?: null | number;
   /* 审核人展示摘要 */
   auditorSummary: InteractionActorSummaryDto;
   /* 审核原因 */
-  auditReason: null | string;
+  auditReason?: null | string;
   /* 审核角色（0=版主；1=管理员） */
-  auditRole: 0 | 1 | null;
+  auditRole?: null | number;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: number;
   /* 创建时间 */
   createdAt: string;
   /* 删除时间 */
-  deletedAt: null | string;
+  deletedAt?: null | string;
   /* 楼层号 */
-  floor: null | number;
+  floor?: null | number;
   /* 评论正文 HTML；对外唯一正文表示 */
   html: string;
   /* 主键id */
@@ -279,15 +279,15 @@ export type AdminCommentDetailDto = {
   /* 被回复评论简要信息 */
   replyTo: AdminCommentReplyTargetDto;
   /* 回复的评论 ID */
-  replyToId: null | number;
+  replyToId?: null | number;
   /* 敏感词命中记录 */
-  sensitiveWordHits: null | SensitiveWordHitDto[];
+  sensitiveWordHits?: null | SensitiveWordHitDto[];
   /* 目标 ID */
   targetId: number;
   /* 评论目标展示摘要 */
   targetSummary: InteractionCommentTargetSummaryDto;
   /* 目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题） */
-  targetType: 1 | 2 | 3 | 4 | 5;
+  targetType: number;
   /* 更新时间 */
   updatedAt: string;
   /* 评论作者信息 */
@@ -303,13 +303,13 @@ export type AdminCommentDetailDto = {
  */
 export type InteractionActorSummaryDto = {
   /* 头像 */
-  avatar: null | string;
+  avatar?: null | string;
   /* 主键id */
   id: number;
   /* 昵称；管理员默认使用用户名兜底 */
-  nickname: null | string;
+  nickname?: null | string;
   /* 角色名称 */
-  roleName: null | string;
+  roleName?: null | string;
   /* 用户名 */
   username: string;
 };
@@ -321,13 +321,13 @@ export type InteractionActorSummaryDto = {
  */
 export type AdminCommentReplyTargetDto = {
   /* 实际回复的根评论 ID */
-  actualReplyToId: null | number;
+  actualReplyToId?: null | number;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: number;
   /* 创建时间 */
   createdAt: string;
   /* 删除时间 */
-  deletedAt: null | string;
+  deletedAt?: null | string;
   /* 评论正文 HTML；对外唯一正文表示 */
   html: string;
   /* 主键id */
@@ -335,7 +335,7 @@ export type AdminCommentReplyTargetDto = {
   /* 是否隐藏 */
   isHidden: boolean;
   /* 回复的评论 ID */
-  replyToId: null | number;
+  replyToId?: null | number;
   /* 被回复评论的作者信息 */
   user: AdminCommentUserDto;
   /* 评论用户 ID */
@@ -351,7 +351,7 @@ export type UpdateCommentAuditStatusDto = {
   /* 审核原因 */
   auditReason?: null | string;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus: 0 | 1 | 2;
+  auditStatus: number;
   /* 主键id */
   id: number;
 };

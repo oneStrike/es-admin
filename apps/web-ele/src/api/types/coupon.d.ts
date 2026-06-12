@@ -5,7 +5,7 @@
  */
 export type CouponDefinitionPageRequest = {
   /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
-  couponType?: 1 | 2 | 3 | 4;
+  couponType?: null | number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -28,16 +28,16 @@ export type CouponDefinitionPageRequest = {
 
 export type CouponDefinitionPageResponse = {
   /* 列表数据 */
-  list?: CouponDefinitionOutputDto[];
+  list?: CouponDefinitionOutputDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -87,7 +87,7 @@ export type CouponDefinitionOutputDto = {
   /* VIP 试用天数 */
   benefitDays: number;
   /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
-  couponType: 1 | 2 | 3 | 4;
+  couponType: number;
   /* 创建时间 */
   createdAt: string;
   /* 折扣金额 */
@@ -119,7 +119,7 @@ export type CreateCouponDefinitionDto = {
   /* VIP 试用天数 */
   benefitDays?: null | number;
   /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
-  couponType: 1 | 2 | 3 | 4;
+  couponType: number;
   /* 折扣金额 */
   discountAmount?: null | number;
   /* 折扣率基点，10000=不打折 */
@@ -145,7 +145,7 @@ export type UpdateCouponDefinitionDto = {
   /* VIP 试用天数 */
   benefitDays?: null | number;
   /* 券类型（1=阅读券；2=折扣券；3=VIP 试用卡；4=补签卡） */
-  couponType?: 1 | 2 | 3 | 4;
+  couponType?: null | number;
   /* 折扣金额 */
   discountAmount?: null | number;
   /* 折扣率基点，10000=不打折 */
@@ -155,7 +155,7 @@ export type UpdateCouponDefinitionDto = {
   /* 是否启用 */
   isEnabled?: boolean | null;
   /* 券名称 */
-  name?: string;
+  name?: null | string;
   /* 单张券可用次数 */
   usageLimit?: null | number;
   /* 有效天数，后台创建的券定义必须为正整数 */
@@ -199,33 +199,33 @@ export type CreateCouponGrantWorkflowDto = {
  */
 export type WorkflowJobDto = {
   /* 归档时间；为空表示未归档 */
-  archivedAt: null | string;
+  archivedAt?: null | string;
   /* 取消请求时间 */
-  cancelRequestedAt: null | string;
+  cancelRequestedAt?: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 展示名称 */
   displayName: string;
   /* 草稿过期时间 */
-  expiresAt: null | string;
+  expiresAt?: null | string;
   /* 失败条目数 */
   failedItemCount: number;
   /* 完成时间 */
-  finishedAt: null | string;
+  finishedAt?: null | string;
   /* 主键ID */
   id: number;
   /* 工作流任务ID */
   jobId: string;
   /* 操作者类型（1=后台管理员；2=系统） */
-  operatorType: 1 | 2;
+  operatorType: number;
   /* 后台管理员操作者ID；系统任务为空 */
-  operatorUserId: null | number;
+  operatorUserId?: null | number;
   /* 当前进度展示代码；后台根据代码和上下文生成文案 */
-  progressCode: null | string;
+  progressCode?: null | string;
   /* 当前进度展示上下文 */
-  progressContext: null | Record<string, any>;
+  progressContext?: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
-  progressDetail: null | Record<string, any>;
+  progressDetail?: null | Record<string, any>;
   /* 进度百分比 */
   progressPercent: number;
   /* 选中条目数 */
@@ -233,15 +233,22 @@ export type WorkflowJobDto = {
   /* 跳过条目数 */
   skippedItemCount: number;
   /* 开始处理时间 */
-  startedAt: null | string;
+  startedAt?: null | string;
   /* 任务状态（1=草稿；2=待处理；3=处理中；4=成功；5=部分失败；6=失败；7=已取消；8=已过期） */
-  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  status: number;
   /* 成功条目数 */
   successItemCount: number;
   /* 运行时非查询诊断摘要 */
-  summary: null | Record<string, any>;
+  summary?: null | Record<string, any>;
   /* 更新时间 */
   updatedAt: string;
   /* 工作流类型 */
   workflowType: string;
 };
+
+/**
+ *  类型定义 [BaseCouponDefinitionDto]
+ *  @来源 legacy compatibility alias
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BaseCouponDefinitionDto = CouponDefinitionOutputDto;

@@ -27,7 +27,7 @@ export interface ArchiveImportTaskState {
 type ArchiveProgressDetail = null | Record<string, unknown> | undefined;
 
 export interface ArchiveResultImageProgressItem {
-  chapterId: number;
+  chapterId?: null | number;
   importedImageCount: number;
   status: number;
 }

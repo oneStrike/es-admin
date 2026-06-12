@@ -5,16 +5,16 @@
  */
 export type DictionaryPageRequest = {
   /* 字典编码 */
-  code?: string;
+  code?: null | string;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 字典状态 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 字典名称 */
-  name?: string;
+  name?: null | string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -31,16 +31,16 @@ export type DictionaryPageRequest = {
 
 export type DictionaryPageResponse = {
   /* 列表数据 */
-  list?: DictionaryOutputDto[];
+  list?: DictionaryOutputDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -98,16 +98,16 @@ export type DictionaryUpdateStatusResponse = boolean;
  */
 export type DictionaryItemPageRequest = {
   /* 字典编码 */
-  code?: string;
+  code?: null | string;
 
   /* 所属字典编码 */
   dictionaryCode: string;
 
   /* 字典状态 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
 
   /* 字典名称 */
-  name?: string;
+  name?: null | string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -121,16 +121,16 @@ export type DictionaryItemPageRequest = {
 
 export type DictionaryItemPageResponse = {
   /* 列表数据 */
-  list?: DictionaryItemOutputDto[];
+  list?: DictionaryItemOutputDto[] | null;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 每页条数 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 总条数 */
-  total?: number;
+  total?: null | number;
 };
 
 /**
@@ -199,11 +199,11 @@ export type DictionaryOutputDto = {
   /* 字典编码 */
   code: string;
   /* 字典封面图片 URL */
-  cover: null | string;
+  cover?: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 字典描述信息 */
-  description: null | string;
+  description?: null | string;
   /* 主键id */
   id: number;
   /* 字典状态 */
@@ -239,7 +239,7 @@ export type CreateDictionaryDto = {
  */
 export type UpdateDictionaryDto = {
   /* 字典编码 */
-  code?: string;
+  code?: null | string;
   /* 字典封面图片 URL */
   cover?: null | string;
   /* 字典描述信息 */
@@ -247,9 +247,9 @@ export type UpdateDictionaryDto = {
   /* 主键id */
   id: number;
   /* 字典状态 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
   /* 字典名称 */
-  name?: string;
+  name?: null | string;
 };
 
 /**
@@ -283,11 +283,11 @@ export type DictionaryItemOutputDto = {
   /* 字典项编码 */
   code: string;
   /* 字典项图标 URL */
-  cover: null | string;
+  cover?: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 字典项描述信息 */
-  description: null | string;
+  description?: null | string;
   /* 所属字典编码 */
   dictionaryCode: string;
   /* 主键id */
@@ -297,7 +297,7 @@ export type DictionaryItemOutputDto = {
   /* 字典项名称 */
   name: string;
   /* 显示排序（数值越小越靠前） */
-  sortOrder: null | number;
+  sortOrder?: null | number;
   /* 更新时间 */
   updatedAt: string;
 };
@@ -331,19 +331,19 @@ export type CreateDictionaryItemDto = {
  */
 export type UpdateDictionaryItemDto = {
   /* 字典项编码 */
-  code?: string;
+  code?: null | string;
   /* 字典项图标 URL */
   cover?: null | string;
   /* 字典项描述信息 */
   description?: null | string;
   /* 所属字典编码 */
-  dictionaryCode?: string;
+  dictionaryCode?: null | string;
   /* 主键id */
   id: number;
   /* 字典项状态 */
-  isEnabled?: boolean;
+  isEnabled?: boolean | null;
   /* 字典项名称 */
-  name?: string;
+  name?: null | string;
   /* 显示排序（数值越小越靠前） */
   sortOrder?: null | number;
 };
@@ -359,3 +359,17 @@ export type DragReorderDto = {
   /* 拖拽的目标位置id */
   targetId: number;
 };
+
+/**
+ *  类型定义 [BaseDictionaryDto]
+ *  @来源 legacy compatibility alias
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BaseDictionaryDto = DictionaryOutputDto;
+
+/**
+ *  类型定义 [BaseDictionaryItemDto]
+ *  @来源 legacy compatibility alias
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type BaseDictionaryItemDto = DictionaryItemOutputDto;

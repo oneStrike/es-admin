@@ -812,7 +812,9 @@ function createChapterMapping(
   };
 }
 
-function toLocalOptions(list: LocalEntityRow[] | undefined): LocalOption[] {
+function toLocalOptions(
+  list: LocalEntityRow[] | null | undefined,
+): LocalOption[] {
   return (list || []).map((item) => ({
     label: item.name,
     value: item.id,
