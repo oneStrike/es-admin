@@ -8,30 +8,30 @@ export type DictionaryPageRequest = {
   code?: string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
-  /* 字典状态（true=启用；false=禁用） */
+  /* 字典状态 */
   isEnabled?: boolean;
 
   /* 字典名称 */
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type DictionaryPageResponse = {
   /* 列表数据 */
-  list?: BaseDictionaryDto[];
+  list?: DictionaryOutputDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -53,7 +53,7 @@ export type DictionaryDetailRequest = {
   id: number;
 };
 
-export type DictionaryDetailResponse = BaseDictionaryDto;
+export type DictionaryDetailResponse = DictionaryOutputDto;
 
 /**
  *  类型定义 [DictionaryCreateRequest]
@@ -103,25 +103,25 @@ export type DictionaryItemPageRequest = {
   /* 所属字典编码 */
   dictionaryCode: string;
 
-  /* 字典状态（true=启用；false=禁用） */
+  /* 字典状态 */
   isEnabled?: boolean;
 
   /* 字典名称 */
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 };
 
 export type DictionaryItemPageResponse = {
   /* 列表数据 */
-  list?: BaseDictionaryItemDto[];
+  list?: DictionaryItemOutputDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -143,7 +143,7 @@ export type DictionaryItemListRequest = {
   dictionaryCode: string;
 };
 
-export type DictionaryItemListResponse = BaseDictionaryItemDto;
+export type DictionaryItemListResponse = DictionaryItemOutputDto[];
 
 /**
  *  类型定义 [DictionaryItemCreateRequest]
@@ -191,22 +191,22 @@ export type DictionaryItemSwapSortOrderRequest = DragReorderDto;
 export type DictionaryItemSwapSortOrderResponse = boolean;
 
 /**
- *  类型定义 [BaseDictionaryDto]
+ *  类型定义 [DictionaryOutputDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type BaseDictionaryDto = {
+export type DictionaryOutputDto = {
   /* 字典编码 */
   code: string;
   /* 字典封面图片 URL */
-  cover?: null | string;
+  cover: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 字典描述信息 */
-  description?: null | string;
+  description: null | string;
   /* 主键id */
   id: number;
-  /* 字典状态（true=启用；false=禁用） */
+  /* 字典状态 */
   isEnabled: boolean;
   /* 字典名称 */
   name: string;
@@ -226,7 +226,7 @@ export type CreateDictionaryDto = {
   cover?: null | string;
   /* 字典描述信息 */
   description?: null | string;
-  /* 字典状态（true=启用；false=禁用） */
+  /* 字典状态 */
   isEnabled: boolean;
   /* 字典名称 */
   name: string;
@@ -246,7 +246,7 @@ export type UpdateDictionaryDto = {
   description?: null | string;
   /* 主键id */
   id: number;
-  /* 字典状态（true=启用；false=禁用） */
+  /* 字典状态 */
   isEnabled?: boolean;
   /* 字典名称 */
   name?: string;
@@ -275,29 +275,29 @@ export type UpdateEnabledStatusDto = {
 };
 
 /**
- *  类型定义 [BaseDictionaryItemDto]
+ *  类型定义 [DictionaryItemOutputDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type BaseDictionaryItemDto = {
+export type DictionaryItemOutputDto = {
   /* 字典项编码 */
   code: string;
   /* 字典项图标 URL */
-  cover?: null | string;
+  cover: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 字典项描述信息 */
-  description?: null | string;
+  description: null | string;
   /* 所属字典编码 */
   dictionaryCode: string;
   /* 主键id */
   id: number;
-  /* 字典项状态（true=启用；false=禁用） */
+  /* 字典项状态 */
   isEnabled: boolean;
   /* 字典项名称 */
   name: string;
   /* 显示排序（数值越小越靠前） */
-  sortOrder?: null | number;
+  sortOrder: null | number;
   /* 更新时间 */
   updatedAt: string;
 };
@@ -316,7 +316,7 @@ export type CreateDictionaryItemDto = {
   description?: null | string;
   /* 所属字典编码 */
   dictionaryCode: string;
-  /* 字典项状态（true=启用；false=禁用） */
+  /* 字典项状态 */
   isEnabled: boolean;
   /* 字典项名称 */
   name: string;
@@ -340,7 +340,7 @@ export type UpdateDictionaryItemDto = {
   dictionaryCode?: string;
   /* 主键id */
   id: number;
-  /* 字典项状态（true=启用；false=禁用） */
+  /* 字典项状态 */
   isEnabled?: boolean;
   /* 字典项名称 */
   name?: string;

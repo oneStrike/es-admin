@@ -42,6 +42,19 @@ export interface NamingConfig {
 
 // 移除了格式化配置接口
 
+export interface SchemaPropertyOverride {
+  additionalProperties?: any;
+  nullable?: boolean;
+  openEnumString?: boolean;
+  type?: string | string[];
+}
+
+const emojiKeywordsOverride: SchemaPropertyOverride = {
+  additionalProperties: { items: { type: 'string' }, type: 'array' },
+  nullable: true,
+  type: 'object',
+};
+
 /**
  * OpenAPI 生成器配置
  */
@@ -72,6 +85,13 @@ export interface OpenAPIGeneratorConfig {
   directoryResolver: (path: string) => string;
   /** 生成前是否清理之前的文件 */
   cleanBeforeGenerate: boolean;
+  /** 旧 DTO 名称兼容别名；仅当目标类型已在同模块生成时才发射 */
+  legacyTypeAliases?: Record<string, string>;
+  /** 后端已确认但远端 OpenAPI 丢失的 schema 属性契约补丁 */
+  schemaPropertyOverrides?: Record<
+    string,
+    Record<string, SchemaPropertyOverride>
+  >;
 }
 
 /**
@@ -123,11 +143,87 @@ export const defaultConfig: OpenAPIGeneratorConfig = {
   directoryResolver: () => '',
   // 默认不清理之前的文件
   cleanBeforeGenerate: true,
+  legacyTypeAliases: {
+    ForumModeratorLifecycleLogDto: 'BaseForumModeratorLifecycleLogDto',
+  },
+  schemaPropertyOverrides: {
+    AdminCheckInSignedUserPageItemDto: {
+      rewardSettlement: { nullable: true },
+    },
+    CheckInCalendarDayDto: {
+      rewardSettlement: { nullable: true },
+    },
+    CheckInGrantItemDto: {
+      rewardSettlement: { nullable: true },
+    },
+    CheckInReconciliationPageItemDto: {
+      rewardSettlement: { nullable: true },
+    },
+    ComicArchiveMatchedItemDto: {
+      warning: { nullable: true },
+    },
+    ComicArchiveResultItemDto: {
+      error: { nullable: true },
+    },
+    ComicArchiveTaskResponseDto: {
+      lastError: { nullable: true },
+    },
+    ContentImportItemDto: {
+      lastError: { nullable: true },
+      lastRetry: { nullable: true },
+    },
+    BaseEmojiAssetDto: {
+      keywords: emojiKeywordsOverride,
+    },
+    CreateEmojiAssetDto: {
+      keywords: emojiKeywordsOverride,
+    },
+    EmojiAssetOutputDto: {
+      keywords: emojiKeywordsOverride,
+    },
+    UpdateEmojiAssetDto: {
+      keywords: emojiKeywordsOverride,
+    },
+    UserExperienceRecordDetailDto: {
+      user: { nullable: true },
+    },
+    UserExperienceRecordDto: {
+      user: { nullable: true },
+    },
+    WorkflowAttemptDto: {
+      error: { nullable: true },
+    },
+    WorkflowErrorFactsDto: {
+      code: { openEnumString: true },
+    },
+    WorkflowItemDto: {
+      lastError: { nullable: true },
+    },
+    WorkflowJobDto: {
+      error: { nullable: true },
+      lastError: { nullable: true },
+    },
+  },
 };
 
 export function mergeOpenAPIGeneratorConfig(
   config: Partial<OpenAPIGeneratorConfig> = {},
 ): OpenAPIGeneratorConfig {
+  const schemaPropertyOverrides: Record<
+    string,
+    Record<string, SchemaPropertyOverride>
+  > = {
+    ...defaultConfig.schemaPropertyOverrides,
+  };
+  for (const [schemaName, overrides] of Object.entries(
+    config.schemaPropertyOverrides || {},
+  )) {
+    schemaPropertyOverrides[schemaName] = {
+      ...schemaPropertyOverrides[schemaName],
+      ...overrides,
+    };
+  }
+
   return {
     ...defaultConfig,
     ...config,
@@ -149,6 +245,7 @@ export function mergeOpenAPIGeneratorConfig(
         ...config.proxyConfig?.headers,
       },
     },
+    schemaPropertyOverrides,
   };
 }
 

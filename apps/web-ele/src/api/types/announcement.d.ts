@@ -14,7 +14,7 @@ export type AnnouncementCreateResponse = boolean;
  */
 export type AnnouncementPageRequest = {
   /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
-  announcementType?: number;
+  announcementType?: 0 | 1 | 2 | 3 | 4;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
   enablePlatform?: null | string;
@@ -22,8 +22,8 @@ export type AnnouncementPageRequest = {
   /* 结束时间 */
   endDate?: null | string;
 
-  /* 消息中心通知状态（0=待处理；1=处理中；2=成功；3=失败） */
-  fanoutStatus?: 0 | 1 | 2 | 3;
+  /* 消息中心扇出状态（0=待处理；1=处理中；2=成功；3=失败） */
+  fanoutStatus?: 0 | 1 | 2 | 3 | null;
 
   /* 是否置顶 */
   isPinned?: boolean;
@@ -31,7 +31,7 @@ export type AnnouncementPageRequest = {
   /* 是否仅筛选已发布公告 */
   isPublished?: boolean | null;
 
-  /* 是否同步消息中心通知 */
+  /* 是否同步到消息中心 */
   isRealtime?: boolean;
 
   /* 排序字段，json格式 */
@@ -47,7 +47,7 @@ export type AnnouncementPageRequest = {
   pageSize?: null | number;
 
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
-  priorityLevel?: number;
+  priorityLevel?: 0 | 1 | 2 | 3;
 
   /* 发布结束时间 */
   publishEndTime?: null | string;
@@ -55,8 +55,8 @@ export type AnnouncementPageRequest = {
   /* 发布开始时间 */
   publishStartTime?: null | string;
 
-  /* 派生发布状态（unpublished=未发布；scheduled=待生效；active=生效中；expired=已过期） */
-  publishStatus?: 'active' | 'expired' | 'scheduled' | 'unpublished';
+  /* 派生发布状态（未发布；待生效；生效中；已过期） */
+  publishStatus?: 'active' | 'expired' | 'scheduled' | 'unpublished' | null;
 
   /* 是否弹窗显示 */
   showAsPopup?: boolean;
@@ -144,13 +144,13 @@ export type CreateAnnouncementDto = {
   enablePlatform?: (1 | 2 | 3)[];
   /* 是否置顶 */
   isPinned: boolean;
-  /* 是否同步消息中心通知 */
+  /* 是否同步到消息中心 */
   isRealtime: boolean;
   /* 关联页面 id */
   pageId?: null | number;
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string;
-  /* 弹窗背景图片位置（CSS background-position 值，默认 center=居中） */
+  /* 弹窗背景图片位置（CSS background-position 值，默认居中） */
   popupBackgroundPosition?:
     | 'bottom center'
     | 'bottom left'
@@ -160,8 +160,7 @@ export type CreateAnnouncementDto = {
     | 'right center'
     | 'top center'
     | 'top left'
-    | 'top right'
-    | null;
+    | 'top right';
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
@@ -174,80 +173,6 @@ export type CreateAnnouncementDto = {
   summary?: null | string;
   /* 公告标题 */
   title: string;
-};
-
-/**
- *  类型定义 [BaseAnnouncementDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type BaseAnnouncementDto = {
-  /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
-  announcementType: 0 | 1 | 2 | 3 | 4;
-  /* 公告内容详情 */
-  content: string;
-  /* 创建时间 */
-  createdAt: string;
-  /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: (1 | 2 | 3)[];
-  /* 主键id */
-  id: number;
-  /* 是否置顶 */
-  isPinned: boolean;
-  /* 是否发布 */
-  isPublished: boolean;
-  /* 是否同步消息中心通知 */
-  isRealtime: boolean;
-  /* 关联页面 id */
-  pageId?: null | number;
-  /* 公告弹窗背景图片 URL */
-  popupBackgroundImage?: null | string;
-  /* 弹窗背景图片位置（CSS background-position 值，默认 center=居中） */
-  popupBackgroundPosition?:
-    | 'bottom center'
-    | 'bottom left'
-    | 'bottom right'
-    | 'center'
-    | 'left center'
-    | 'right center'
-    | 'top center'
-    | 'top left'
-    | 'top right'
-    | null;
-  /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
-  priorityLevel: 0 | 1 | 2 | 3;
-  /* 发布结束时间 */
-  publishEndTime?: null | string;
-  /* 发布开始时间 */
-  publishStartTime?: null | string;
-  /* 是否弹窗显示 */
-  showAsPopup: boolean;
-  /* 公告摘要 */
-  summary?: null | string;
-  /* 公告标题 */
-  title: string;
-  /* 更新时间 */
-  updatedAt: string;
-  /* 浏览次数 */
-  viewCount: number;
-};
-
-/**
- *  类型定义 [AnnouncementRuntimeFieldsDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type AnnouncementRuntimeFieldsDto = {
-  /* 消息中心通知目标事件 */
-  fanoutDesiredEventKey: null | string;
-  /* 最近一次消息中心通知错误 */
-  fanoutLastError: null | string;
-  /* 消息中心通知状态（0=待处理；1=处理中；2=成功；3=失败） */
-  fanoutStatus: 0 | 1 | 2 | 3 | null;
-  /* 最近一次消息中心通知更新时间 */
-  fanoutUpdatedAt: null | string;
-  /* 派生发布状态（unpublished=未发布；scheduled=待生效；active=生效中；expired=已过期） */
-  publishStatus: 'active' | 'expired' | 'scheduled' | 'unpublished';
 };
 
 /**
@@ -255,8 +180,65 @@ export type AnnouncementRuntimeFieldsDto = {
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type AnnouncementPageItemDto = AnnouncementRuntimeFieldsDto &
-  BaseAnnouncementDto;
+export type AnnouncementPageItemDto = {
+  /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
+  announcementType: 0 | 1 | 2 | 3 | 4;
+  /* 公告内容详情 */
+  content: string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 启用的平台（1=H5；2=App；3=小程序） */
+  enablePlatform: (1 | 2 | 3)[];
+  /* 最近一次消息中心扇出目标事件 */
+  fanoutDesiredEventKey: null | string;
+  /* 最近一次消息中心扇出错误 */
+  fanoutLastError: null | string;
+  /* 消息中心扇出状态（0=待处理；1=处理中；2=成功；3=失败） */
+  fanoutStatus: 0 | 1 | 2 | 3 | null;
+  /* 最近一次消息中心扇出更新时间 */
+  fanoutUpdatedAt: null | string;
+  /* 主键id */
+  id: number;
+  /* 是否置顶 */
+  isPinned: boolean;
+  /* 是否发布 */
+  isPublished: boolean;
+  /* 是否同步到消息中心 */
+  isRealtime: boolean;
+  /* 关联页面 id */
+  pageId: null | number;
+  /* 公告弹窗背景图片 URL */
+  popupBackgroundImage: null | string;
+  /* 弹窗背景图片位置（CSS background-position 值，默认居中） */
+  popupBackgroundPosition:
+    | 'bottom center'
+    | 'bottom left'
+    | 'bottom right'
+    | 'center'
+    | 'left center'
+    | 'right center'
+    | 'top center'
+    | 'top left'
+    | 'top right';
+  /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
+  priorityLevel: 0 | 1 | 2 | 3;
+  /* 发布结束时间 */
+  publishEndTime: null | string;
+  /* 发布开始时间 */
+  publishStartTime: null | string;
+  /* 派生发布状态（未发布；待生效；生效中；已过期） */
+  publishStatus: 'active' | 'expired' | 'scheduled' | 'unpublished';
+  /* 是否弹窗显示 */
+  showAsPopup: boolean;
+  /* 公告摘要 */
+  summary: null | string;
+  /* 公告标题 */
+  title: string;
+  /* 更新时间 */
+  updatedAt: string;
+  /* 浏览次数 */
+  viewCount: number;
+};
 
 /**
  *  类型定义 [AnnouncementDetailDto]
@@ -267,20 +249,20 @@ export type AnnouncementDetailDto = {
   /* 公告类型（0=平台公告；1=活动公告；2=维护公告；3=更新公告；4=政策公告） */
   announcementType: 0 | 1 | 2 | 3 | 4;
   /* 公告关联页面 */
-  appPage?: AnnouncementRelatedPageDto | null;
+  appPage: AnnouncementRelatedPageDto;
   /* 公告内容详情 */
   content: string;
   /* 创建时间 */
   createdAt: string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: (1 | 2 | 3)[];
-  /* 消息中心通知目标事件 */
+  enablePlatform: (1 | 2 | 3)[];
+  /* 最近一次消息中心扇出目标事件 */
   fanoutDesiredEventKey: null | string;
-  /* 最近一次消息中心通知错误 */
+  /* 最近一次消息中心扇出错误 */
   fanoutLastError: null | string;
-  /* 消息中心通知状态（0=待处理；1=处理中；2=成功；3=失败） */
+  /* 消息中心扇出状态（0=待处理；1=处理中；2=成功；3=失败） */
   fanoutStatus: 0 | 1 | 2 | 3 | null;
-  /* 最近一次消息中心通知更新时间 */
+  /* 最近一次消息中心扇出更新时间 */
   fanoutUpdatedAt: null | string;
   /* 主键id */
   id: number;
@@ -288,14 +270,14 @@ export type AnnouncementDetailDto = {
   isPinned: boolean;
   /* 是否发布 */
   isPublished: boolean;
-  /* 是否同步消息中心通知 */
+  /* 是否同步到消息中心 */
   isRealtime: boolean;
   /* 关联页面 id */
-  pageId?: null | number;
+  pageId: null | number;
   /* 公告弹窗背景图片 URL */
-  popupBackgroundImage?: null | string;
-  /* 弹窗背景图片位置（CSS background-position 值，默认 center=居中） */
-  popupBackgroundPosition?:
+  popupBackgroundImage: null | string;
+  /* 弹窗背景图片位置（CSS background-position 值，默认居中） */
+  popupBackgroundPosition:
     | 'bottom center'
     | 'bottom left'
     | 'bottom right'
@@ -304,20 +286,19 @@ export type AnnouncementDetailDto = {
     | 'right center'
     | 'top center'
     | 'top left'
-    | 'top right'
-    | null;
+    | 'top right';
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel: 0 | 1 | 2 | 3;
   /* 发布结束时间 */
-  publishEndTime?: null | string;
+  publishEndTime: null | string;
   /* 发布开始时间 */
-  publishStartTime?: null | string;
-  /* 派生发布状态（unpublished=未发布；scheduled=待生效；active=生效中；expired=已过期） */
+  publishStartTime: null | string;
+  /* 派生发布状态（未发布；待生效；生效中；已过期） */
   publishStatus: 'active' | 'expired' | 'scheduled' | 'unpublished';
   /* 是否弹窗显示 */
   showAsPopup: boolean;
   /* 公告摘要 */
-  summary?: null | string;
+  summary: null | string;
   /* 公告标题 */
   title: string;
   /* 更新时间 */
@@ -358,13 +339,13 @@ export type UpdateAnnouncementDto = {
   id: number;
   /* 是否置顶 */
   isPinned?: boolean;
-  /* 是否同步消息中心通知 */
+  /* 是否同步到消息中心 */
   isRealtime?: boolean;
   /* 关联页面 id */
   pageId?: null | number;
   /* 公告弹窗背景图片 URL */
   popupBackgroundImage?: null | string;
-  /* 弹窗背景图片位置（CSS background-position 值，默认 center=居中） */
+  /* 弹窗背景图片位置（CSS background-position 值，默认居中） */
   popupBackgroundPosition?:
     | 'bottom center'
     | 'bottom left'
@@ -374,8 +355,7 @@ export type UpdateAnnouncementDto = {
     | 'right center'
     | 'top center'
     | 'top left'
-    | 'top right'
-    | null;
+    | 'top right';
   /* 公告优先级（0=低优先级；1=中优先级；2=高优先级；3=紧急） */
   priorityLevel?: 0 | 1 | 2 | 3;
   /* 发布结束时间 */

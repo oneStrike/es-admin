@@ -1,3 +1,13 @@
+/**
+ *  类型定义 [UploadFileUploadRequest]
+ *  @来源 系统管理/文件上传
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type UploadFileUploadRequest = {
+  /* 上传场景 */
+  scene?: null | string;
+};
+
 export type UploadFileUploadResponse = UploadResponseDto;
 
 /**
@@ -17,7 +27,7 @@ export type UploadResponseDto = {
   /* 文件扩展名 */
   fileType: string;
   /* 图片高度 */
-  height?: null | number;
+  height: null | number;
   /* 文件 MIME 类型 */
   mimeType: string;
   /* 原始文件名 */
@@ -27,5 +37,5 @@ export type UploadResponseDto = {
   /* 上传时间 */
   uploadTime: string;
   /* 图片宽度 */
-  width?: null | number;
+  width: null | number;
 };

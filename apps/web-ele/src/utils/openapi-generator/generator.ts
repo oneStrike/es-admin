@@ -12,12 +12,65 @@ import { mergeOpenAPIGeneratorConfig, TEMPLATES } from './config';
 import {
   collectReferencedTypes,
   formatCurrentTime,
-  mapOpenAPIType,
+  formatPropertyKey,
+  isNullableSchema,
+  isValidIdentifier,
   mapSchemaToType,
   resolveRef,
   toCamelCase,
   toPascalCase,
 } from './utils';
+
+const RESERVED_BINDING_NAMES = new Set([
+  'arguments',
+  'await',
+  'break',
+  'case',
+  'catch',
+  'class',
+  'const',
+  'continue',
+  'debugger',
+  'default',
+  'delete',
+  'do',
+  'else',
+  'enum',
+  'eval',
+  'export',
+  'extends',
+  'false',
+  'finally',
+  'for',
+  'function',
+  'if',
+  'implements',
+  'import',
+  'in',
+  'instanceof',
+  'interface',
+  'let',
+  'new',
+  'null',
+  'package',
+  'private',
+  'protected',
+  'public',
+  'return',
+  'static',
+  'super',
+  'switch',
+  'this',
+  'throw',
+  'true',
+  'try',
+  'typeof',
+  'var',
+  'void',
+  'while',
+  'with',
+  'yield',
+]);
 
 /**
  * OpenAPI 代码生成器核心类
@@ -134,6 +187,7 @@ export class OpenAPIGenerator {
     const apiMethods: string[] = [];
     const typeDefinitions: string[] = [];
     const referencedTypes = new Set<string>();
+    const emittedTypes = new Set<string>();
 
     for (const { path, method, operation, methodInfo } of paths) {
       const resolvedMethodInfo =
@@ -150,6 +204,7 @@ export class OpenAPIGenerator {
         const requestTypeDef = this.generateRequestType(requestType, operation);
         if (requestTypeDef) {
           typeDefinitions.push(requestTypeDef);
+          emittedTypes.add(requestType);
           imports.add(requestType);
           finalRequestType = requestType;
           this.getRequestParameters(operation).forEach((param: any) => {
@@ -173,6 +228,7 @@ export class OpenAPIGenerator {
         );
         if (responseTypeDef) {
           typeDefinitions.push(responseTypeDef);
+          emittedTypes.add(responseType);
           imports.add(responseType);
           finalResponseType = responseType;
           collectReferencedTypes(
@@ -202,8 +258,11 @@ export class OpenAPIGenerator {
       const schemaTypeDef = this.generateSchemaType(typeName);
       if (schemaTypeDef) {
         typeDefinitions.push(schemaTypeDef);
+        emittedTypes.add(typeName);
       }
     }
+
+    typeDefinitions.push(...this.generateLegacyTypeAliases(emittedTypes));
 
     // 使用最终文件名（去掉.ts扩展名）来生成正确的类型导入路径
     const typeFileName = finalFileName
@@ -266,6 +325,61 @@ export class OpenAPIGenerator {
       : type;
   }
 
+  private applySchemaPropertyOverride(
+    ownerTypeName: string | undefined,
+    propName: string,
+    prop: any,
+  ): any {
+    const override = ownerTypeName
+      ? this.config.schemaPropertyOverrides?.[ownerTypeName]?.[propName]
+      : undefined;
+
+    if (!override) {
+      return prop;
+    }
+
+    const { openEnumString, ...schemaOverride } = override;
+    const nextProp = { ...prop, ...schemaOverride };
+
+    if (openEnumString && Array.isArray(prop.enum)) {
+      const enumSchema = { ...prop, ...schemaOverride, nullable: false };
+      nextProp.anyOf = [enumSchema, { type: 'string' }];
+      delete nextProp.enum;
+    }
+
+    return nextProp;
+  }
+
+  private buildBindingName(
+    name: string,
+    index: number,
+    usedNames?: Set<string>,
+  ): string {
+    const baseName = this.isBindingIdentifier(name)
+      ? name
+      : `requestParam${index}`;
+
+    if (!usedNames?.has(baseName)) {
+      return baseName;
+    }
+
+    return `requestParam${index}`;
+  }
+
+  private buildDestructuredParamExpression(
+    localName: string,
+    requestParamName: string,
+  ): string {
+    if (
+      this.isBindingIdentifier(requestParamName) &&
+      localName === requestParamName
+    ) {
+      return requestParamName;
+    }
+
+    return `${formatPropertyKey(requestParamName)}: ${localName}`;
+  }
+
   private buildIndexSignature(additionalProperties: any, exact = false) {
     if (exact) {
       return '';
@@ -277,6 +391,29 @@ export class OpenAPIGenerator {
       return '  /** 任意合法数值 */\n  [property: string]: any';
     }
     return '';
+  }
+
+  private buildLocalParamNames(
+    params: any[],
+    requestParamNames: Map<string, string>,
+  ): Map<string, string> {
+    const localNames = new Map<string, string>();
+    const usedNames = new Set<string>();
+
+    params.forEach((param, index) => {
+      const key = this.buildRequestParamKey(param);
+      const requestParamName = requestParamNames.get(key) || param.name;
+      let localName = this.buildBindingName(requestParamName, index, usedNames);
+
+      if (usedNames.has(localName)) {
+        localName = `requestParam${index}`;
+      }
+
+      usedNames.add(localName);
+      localNames.set(key, localName);
+    });
+
+    return localNames;
   }
 
   private buildObjectType(
@@ -330,6 +467,173 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
     }
 
     return contexts;
+  }
+
+  private buildParamAccessExpression(source: string, name: string): string {
+    return this.isIdentifier(name)
+      ? `${source}.${name}`
+      : `${source}[${JSON.stringify(name)}]`;
+  }
+
+  private buildQueryConfigExpression(
+    queryParams: any[],
+    source?: string,
+    shorthand = false,
+    localNames?: Map<string, string>,
+    requestParamNames?: Map<string, string>,
+  ): string {
+    const paramsExpression = this.buildQueryParamsExpression(
+      queryParams,
+      source,
+      shorthand,
+      localNames,
+      requestParamNames,
+    );
+    return paramsExpression === 'params'
+      ? '{ params }'
+      : `{ params: ${paramsExpression} }`;
+  }
+
+  private buildQueryParamsExpression(
+    queryParams: any[],
+    source?: string,
+    shorthand = false,
+    localNames?: Map<string, string>,
+    requestParamNames?: Map<string, string>,
+  ): string {
+    if (queryParams.length === 0) {
+      return 'params';
+    }
+
+    if (!source && !shorthand) {
+      return 'params';
+    }
+
+    const valueSource = source || 'params';
+    const queryProperties = queryParams
+      .map((param) => {
+        const requestParamName =
+          requestParamNames?.get(this.buildRequestParamKey(param)) ||
+          param.name;
+        const localName = localNames?.get(this.buildRequestParamKey(param));
+        const valueExpression =
+          localName ||
+          this.buildParamAccessExpression(valueSource, requestParamName);
+
+        if (
+          shorthand &&
+          localName === param.name &&
+          this.isBindingIdentifier(param.name)
+        ) {
+          return param.name;
+        }
+        if (this.isIdentifier(param.name)) {
+          return `${param.name}: ${valueExpression}`;
+        }
+        return `${JSON.stringify(param.name)}: ${valueExpression}`;
+      })
+      .join(', ');
+
+    return `{ ${queryProperties} }`;
+  }
+
+  private buildRequestConfigExpression(
+    method: string,
+    options: {
+      data?: string;
+      localNames?: Map<string, string>;
+      queryParams?: any[];
+      querySource?: string;
+      requestParamNames?: Map<string, string>;
+      shorthand?: boolean;
+    } = {},
+  ): string {
+    const entries = [`method: '${method}'`];
+
+    if (options.data) {
+      entries.push(`data: ${options.data}`);
+    }
+
+    if (options.queryParams?.length) {
+      entries.push(
+        `params: ${this.buildQueryParamsExpression(
+          options.queryParams,
+          options.querySource,
+          options.shorthand,
+          options.localNames,
+          options.requestParamNames,
+        )}`,
+      );
+    }
+
+    return `{ ${entries.join(', ')} }`;
+  }
+
+  private buildRequestParamKey(param: any): string {
+    return `${param.in || 'param'}:${param.name}`;
+  }
+
+  private buildRequestParamNames(operation: any): Map<string, string> {
+    const params = this.getRequestParameters(operation);
+    const nameCounts = new Map<string, number>();
+    const paramNames = new Map<string, string>();
+    const usedNames = new Set<string>();
+
+    for (const param of params) {
+      nameCounts.set(param.name, (nameCounts.get(param.name) || 0) + 1);
+    }
+
+    params.forEach((param, index) => {
+      const hasDuplicateName = (nameCounts.get(param.name) || 0) > 1;
+      const preferredName = hasDuplicateName
+        ? toCamelCase(`${param.in || 'param'}-${param.name}`)
+        : param.name;
+      let finalName = preferredName;
+
+      if (usedNames.has(finalName)) {
+        finalName = toCamelCase(
+          `${param.in || 'param'}-${index}-${param.name}`,
+        );
+      }
+
+      usedNames.add(finalName);
+      paramNames.set(this.buildRequestParamKey(param), finalName);
+    });
+
+    return paramNames;
+  }
+
+  private buildTypeProperty(name: string, required: string, type: string) {
+    return `${formatPropertyKey(name)}${required}: ${type}`;
+  }
+
+  private buildUrlExpression(
+    path: string,
+    pathParams: any[],
+    localNames?: Map<string, string>,
+    requestParamNames?: Map<string, string>,
+  ): string {
+    if (pathParams.length === 0) {
+      return `'${path}'`;
+    }
+
+    const templatedPath = path.replaceAll(
+      /\{([^}]+)\}/g,
+      (_placeholder, paramName) => {
+        const pathParam = pathParams.find((param) => param.name === paramName);
+        const key = pathParam
+          ? this.buildRequestParamKey(pathParam)
+          : `path:${paramName}`;
+        const requestParamName = pathParam
+          ? requestParamNames?.get(key) || pathParam.name
+          : paramName;
+        return `\${encodeURIComponent(String(${
+          localNames?.get(key) ||
+          this.buildParamAccessExpression('params', requestParamName)
+        }))}`;
+      },
+    );
+    return `\`${templatedPath}\``;
   }
 
   /**
@@ -402,34 +706,131 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
 
     const paramType = resolvedRequestType;
     const responseType = resolvedResponseType;
+    const paramsOptional =
+      paramType !== 'void' && this.isAllRequestFieldsOptional(operation);
 
     // 根据 HTTP 方法生成不同的调用方式
     let httpCall: string;
     const upperMethod = method.toUpperCase();
+    const lowerMethod = method.toLowerCase();
+    const bodySchema = this.getRequestBodySchema(operation);
+    const pathParams = this.getRequestParametersByLocation(operation, 'path');
+    const queryParams = this.getRequestParametersByLocation(operation, 'query');
+    const requestParamNames = this.buildRequestParamNames(operation);
+    const urlExpression = this.buildUrlExpression(
+      path,
+      pathParams,
+      undefined,
+      requestParamNames,
+    );
+    const hasBody = Boolean(bodySchema);
+    const hasPathParams = pathParams.length > 0;
+    const hasQueryParams = queryParams.length > 0;
+    const queryConfig = this.buildQueryConfigExpression(
+      queryParams,
+      hasPathParams ? 'params' : undefined,
+      false,
+      undefined,
+      requestParamNames,
+    );
 
     if (upperMethod === 'GET' || upperMethod === 'DELETE') {
       // GET 和 DELETE 请求，参数通过 params 传递
       httpCall =
-        paramType === 'void'
-          ? `return ${this.config.httpHandler}.${method.toLowerCase()}<${responseType}>('${path}');`
-          : `return ${this.config.httpHandler}.${method.toLowerCase()}<${responseType}>('${path}', { params });`;
+        paramType === 'void' || !hasQueryParams
+          ? `return ${this.config.httpHandler}.${lowerMethod}<${responseType}>(${urlExpression});`
+          : `return ${this.config.httpHandler}.${lowerMethod}<${responseType}>(${urlExpression}, ${queryConfig});`;
     } else if (upperMethod === 'POST' || upperMethod === 'PUT') {
-      // POST 和 PUT 请求，参数直接传递
-      httpCall =
-        paramType === 'void'
-          ? `return ${this.config.httpHandler}.${method.toLowerCase()}<${responseType}>('${path}');`
-          : `return ${this.config.httpHandler}.${method.toLowerCase()}<${responseType}>('${path}', params);`;
+      if (paramType === 'void') {
+        httpCall = `return ${this.config.httpHandler}.${lowerMethod}<${responseType}>(${urlExpression});`;
+      } else if (!hasBody) {
+        httpCall = hasQueryParams
+          ? `return ${this.config.httpHandler}.${lowerMethod}<${responseType}>(${urlExpression}, undefined, ${queryConfig});`
+          : `return ${this.config.httpHandler}.${lowerMethod}<${responseType}>(${urlExpression});`;
+      } else if (!hasPathParams && !hasQueryParams) {
+        httpCall = `return ${this.config.httpHandler}.${lowerMethod}<${responseType}>(${urlExpression}, params);`;
+      } else {
+        const bodyParamsExpression = paramsOptional ? 'params ?? {}' : 'params';
+        const requestParams = [...pathParams, ...queryParams];
+        const localNames = this.buildLocalParamNames(
+          requestParams,
+          requestParamNames,
+        );
+        const destructuredNames = requestParams
+          .map((param) =>
+            this.buildDestructuredParamExpression(
+              localNames.get(this.buildRequestParamKey(param)) || param.name,
+              requestParamNames.get(this.buildRequestParamKey(param)) ||
+                param.name,
+            ),
+          )
+          .join(', ');
+        const bodyUrlExpression = this.buildUrlExpression(
+          path,
+          pathParams,
+          localNames,
+          requestParamNames,
+        );
+        const requestConfig = hasQueryParams
+          ? `, ${this.buildQueryConfigExpression(
+              queryParams,
+              undefined,
+              true,
+              localNames,
+              requestParamNames,
+            )}`
+          : '';
+        httpCall = `const { ${destructuredNames}, ...bodyParams } = ${bodyParamsExpression};
+    return ${this.config.httpHandler}.${lowerMethod}<${responseType}>(${bodyUrlExpression}, bodyParams${requestConfig});`;
+      }
     } else {
       // 其他 HTTP 方法使用通用的 request 方法
-      httpCall =
-        paramType === 'void'
-          ? `return ${this.config.httpHandler}.request<${responseType}>({ url: '${path}', method: '${upperMethod}' });`
-          : `return ${this.config.httpHandler}.request<${responseType}>({ url: '${path}', method: '${upperMethod}', data: params });`;
+      if (paramType === 'void') {
+        httpCall = `return ${this.config.httpHandler}.request<${responseType}>(${urlExpression}, { method: '${upperMethod}' });`;
+      } else if (!hasBody) {
+        const requestConfig = this.buildRequestConfigExpression(upperMethod, {
+          queryParams,
+          requestParamNames,
+          querySource: hasPathParams ? 'params' : undefined,
+        });
+        httpCall = `return ${this.config.httpHandler}.request<${responseType}>(${urlExpression}, ${requestConfig});`;
+      } else if (!hasPathParams && !hasQueryParams) {
+        httpCall = `return ${this.config.httpHandler}.request<${responseType}>(${urlExpression}, { method: '${upperMethod}', data: params });`;
+      } else {
+        const bodyParamsExpression = paramsOptional ? 'params ?? {}' : 'params';
+        const requestParams = [...pathParams, ...queryParams];
+        const localNames = this.buildLocalParamNames(
+          requestParams,
+          requestParamNames,
+        );
+        const destructuredNames = requestParams
+          .map((param) =>
+            this.buildDestructuredParamExpression(
+              localNames.get(this.buildRequestParamKey(param)) || param.name,
+              requestParamNames.get(this.buildRequestParamKey(param)) ||
+                param.name,
+            ),
+          )
+          .join(', ');
+        const bodyUrlExpression = this.buildUrlExpression(
+          path,
+          pathParams,
+          localNames,
+          requestParamNames,
+        );
+        const requestConfig = this.buildRequestConfigExpression(upperMethod, {
+          data: 'bodyParams',
+          localNames,
+          queryParams,
+          requestParamNames,
+          shorthand: true,
+        });
+        httpCall = `const { ${destructuredNames}, ...bodyParams } = ${bodyParamsExpression};
+    return ${this.config.httpHandler}.request<${responseType}>(${bodyUrlExpression}, ${requestConfig});`;
+      }
     }
 
     // 生成方法签名
-    const paramsOptional =
-      paramType !== 'void' && this.isAllRequestFieldsOptional(operation);
     const paramSignature =
       paramType === 'void'
         ? ''
@@ -444,10 +845,48 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
   }`;
   }
 
+  private generateLegacyTypeAliases(emittedTypes: Set<string>): string[] {
+    const aliasEntries = Object.entries(this.config.legacyTypeAliases || {});
+    if (aliasEntries.length === 0) {
+      return [];
+    }
+
+    const schemaNames = new Set(
+      Object.keys(this.spec?.components?.schemas || {}),
+    );
+    const updateTime = formatCurrentTime(this.config.dateTimeOptions);
+    const aliases: string[] = [];
+
+    for (const [aliasName, targetName] of aliasEntries) {
+      if (
+        aliasName === targetName ||
+        schemaNames.has(aliasName) ||
+        emittedTypes.has(aliasName) ||
+        !emittedTypes.has(targetName)
+      ) {
+        continue;
+      }
+
+      const comment = TEMPLATES.typeComment(
+        aliasName,
+        'legacy compatibility alias',
+        updateTime,
+      );
+      aliases.push(`${comment}
+export type ${aliasName} = ${targetName}`);
+      emittedTypes.add(aliasName);
+    }
+
+    return aliases;
+  }
+
   /**
    * 从 schema 生成属性
    */
-  private generatePropertiesFromSchema(schema: any): string[] {
+  private generatePropertiesFromSchema(
+    schema: any,
+    ownerTypeName?: string,
+  ): string[] {
     const properties: string[] = [];
 
     // 处理 $ref 引用 - 这种情况应该在上层处理，这里不应该出现
@@ -468,7 +907,11 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
 
     if (this.hasSchemaType(schema, 'object') && schema.properties) {
       for (const [propName, propSchema] of Object.entries(schema.properties)) {
-        const prop = propSchema as any;
+        const prop = this.applySchemaPropertyOverride(
+          ownerTypeName,
+          propName,
+          propSchema as any,
+        );
         const required = schema.required?.includes(propName) ? '' : '?';
 
         // 使用改进的类型映射
@@ -478,7 +921,7 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
           ? `  /* ${prop.description} */`
           : '';
         properties.push(
-          [description, `  ${propName}${required}: ${type}`]
+          [description, `  ${this.buildTypeProperty(propName, required, type)}`]
             .filter(Boolean)
             .join('\n'),
         );
@@ -500,19 +943,23 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
    */
   private generateRequestType(typeName: string, operation: any): null | string {
     const properties: string[] = [];
+    let bodyRefType: null | string = null;
+    const requestParamNames = this.buildRequestParamNames(operation);
 
     // 处理查询参数
     for (const param of this.getRequestParameters(operation)) {
       const required = param.required ? '' : '?';
-      const type = mapOpenAPIType(
-        param.schema?.type || 'string',
-        param.schema?.format,
-      );
+      const type = mapSchemaToType(param.schema || { type: 'string' });
+      const requestParamName =
+        requestParamNames.get(this.buildRequestParamKey(param)) || param.name;
       const description = param.description
         ? `  /* ${param.description} */`
         : '';
       properties.push(
-        [description, `  ${param.name}${required}: ${type}`]
+        [
+          description,
+          `  ${this.buildTypeProperty(requestParamName, required, type)}`,
+        ]
           .filter(Boolean)
           .join('\n'),
       );
@@ -521,29 +968,31 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
     const schema = this.getRequestBodySchema(operation);
     if (schema) {
       if (schema.$ref) {
-        const refType = resolveRef(schema.$ref);
-        const updateTime = formatCurrentTime(this.config.dateTimeOptions);
-        const comment = TEMPLATES.typeComment(
-          typeName,
-          operation.tags?.[0] || '',
-          updateTime,
-        );
-        return `${comment}
-export type ${typeName} = ${refType}`;
-      }
-
-      const bodyProps = this.generatePropertiesFromSchema(schema);
-      if (bodyProps.length > 0) {
-        properties.push(...bodyProps);
-      } else if (properties.length === 0) {
-        const updateTime = formatCurrentTime(this.config.dateTimeOptions);
-        const comment = TEMPLATES.typeComment(
-          typeName,
-          operation.tags?.[0] || '',
-          updateTime,
-        );
-        return `${comment}
+        bodyRefType = resolveRef(schema.$ref) as string;
+        if (properties.length === 0) {
+          const updateTime = formatCurrentTime(this.config.dateTimeOptions);
+          const comment = TEMPLATES.typeComment(
+            typeName,
+            operation.tags?.[0] || '',
+            updateTime,
+          );
+          return `${comment}
+export type ${typeName} = ${bodyRefType}`;
+        }
+      } else {
+        const bodyProps = this.generatePropertiesFromSchema(schema);
+        if (bodyProps.length > 0) {
+          properties.push(...bodyProps);
+        } else if (properties.length === 0) {
+          const updateTime = formatCurrentTime(this.config.dateTimeOptions);
+          const comment = TEMPLATES.typeComment(
+            typeName,
+            operation.tags?.[0] || '',
+            updateTime,
+          );
+          return `${comment}
 export type ${typeName} = Record<string, any>`;
+        }
       }
     }
 
@@ -559,7 +1008,7 @@ export type ${typeName} = Record<string, any>`;
     return `${comment}
 export type ${typeName} = {
 ${properties.join('\n\n')}
-}`;
+}${bodyRefType ? ` & ${bodyRefType}` : ''}`;
   }
 
   /**
@@ -577,7 +1026,7 @@ ${properties.join('\n\n')}
 
     if (
       dataSchema.type &&
-      ['boolean', 'integer', 'number', 'string'].some((type) =>
+      ['boolean', 'integer', 'null', 'number', 'string'].some((type) =>
         this.hasSchemaType(dataSchema, type),
       )
     ) {
@@ -622,7 +1071,7 @@ ${properties.join('\n\n')}
     if (schema.allOf) {
       const types = schema.allOf.map((s: any) => {
         if (s.properties) {
-          const props = this.generatePropertiesFromSchema(s);
+          const props = this.generatePropertiesFromSchema(s, typeName);
           return this.buildObjectType(s, props);
         }
         return mapSchemaToType(s);
@@ -642,7 +1091,7 @@ export type ${typeName} = ${this.applySchemaNullable(schema, types.join(' & '))}
       const schemas = schema.oneOf || schema.anyOf;
       const types = schemas.map((s: any) => {
         if (s.properties) {
-          const props = this.generatePropertiesFromSchema(s);
+          const props = this.generatePropertiesFromSchema(s, typeName);
           return this.buildObjectType(s, props);
         }
         return mapSchemaToType(s);
@@ -683,7 +1132,7 @@ export type ${typeName} = ${enumType}`;
     // 检查是否是基础类型
     if (
       schema.type &&
-      ['boolean', 'integer', 'number', 'string'].some((type) =>
+      ['boolean', 'integer', 'null', 'number', 'string'].some((type) =>
         this.hasSchemaType(schema, type),
       )
     ) {
@@ -698,7 +1147,7 @@ export type ${typeName} = ${baseType}`;
     }
 
     // 处理对象类型
-    const properties = this.generatePropertiesFromSchema(schema);
+    const properties = this.generatePropertiesFromSchema(schema, typeName);
 
     if (properties.length === 0) {
       // 如果没有属性但有 additionalProperties，生成 Record 类型
@@ -812,6 +1261,17 @@ export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;
     );
   }
 
+  private getRequestParametersByLocation(
+    operation: any,
+    location: 'path' | 'query',
+  ): any[] {
+    if (!Array.isArray(operation.parameters)) {
+      return [];
+    }
+
+    return operation.parameters.filter((param: any) => param.in === location);
+  }
+
   /**
    * 获取响应 schema
    */
@@ -889,11 +1349,16 @@ export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;
     return hasAny;
   }
 
+  private isBindingIdentifier(name: string): boolean {
+    return this.isIdentifier(name) && !RESERVED_BINDING_NAMES.has(name);
+  }
+
+  private isIdentifier(name: string): boolean {
+    return isValidIdentifier(name);
+  }
+
   private isNullableSchema(schema: any): boolean {
-    return Boolean(
-      schema?.nullable ||
-      (Array.isArray(schema?.type) && schema.type.includes('null')),
-    );
+    return isNullableSchema(schema);
   }
 
   /**
@@ -927,7 +1392,10 @@ export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;
   }
 
   private normalizePathSegments(value: string): string[] {
-    return value.split('/').filter(Boolean);
+    return value
+      .split('/')
+      .filter(Boolean)
+      .map((segment) => segment.replace(/^\{(.+)\}$/, '$1').replace(/^:/, ''));
   }
 
   private resolveMethodInfo(

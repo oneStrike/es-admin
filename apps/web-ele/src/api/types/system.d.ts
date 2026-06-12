@@ -1,8 +1,4 @@
-export type SystemIp2regionStatusResponse = Ip2regionRuntimeStatusDto;
-
-export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto;
-
-export type SystemConfigResponse = BaseSystemConfigDto;
+export type SystemConfigResponse = SystemConfigDetailDto;
 
 /**
  *  类型定义 [SystemUpdateRequest]
@@ -13,42 +9,278 @@ export type SystemUpdateRequest = UpdateSystemConfigDto;
 
 export type SystemUpdateResponse = boolean;
 
+export type SystemIp2regionStatusResponse = Ip2regionRuntimeStatusDto;
+
+export type SystemIp2regionUploadResponse = Ip2regionRuntimeStatusDto;
+
 /**
- *  类型定义 [Ip2regionRuntimeStatusDto]
+ *  类型定义 [SystemConfigDetailDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type Ip2regionRuntimeStatusDto = {
-  /* 当前生效时间 */
-  activatedAt?: null | string;
-  /* 当前生效文件名 */
-  fileName?: null | string;
-  /* 当前生效文件绝对路径 */
-  filePath?: null | string;
-  /* 当前生效文件大小（字节） */
-  fileSize?: null | number;
-  /* 当前进程是否已加载可用属地库 */
-  ready: boolean;
-  /* 当前是否正在执行热切换 */
-  reloading: boolean;
-  /* 生效库来源（托管 active 目录；环境变量显式路径；仓库默认路径；无可用属地库） */
-  source: 'configured-path' | 'default-path' | 'managed-active' | 'unavailable';
-  /* ip2region 专用存储根目录 */
-  storageDir?: null | string;
+export type SystemConfigDetailDto = {
+  /* 阿里云配置 */
+  aliyunConfig: AliyunConfigOutputDto;
+  /* 内容审核策略 */
+  contentReviewPolicy: ContentReviewPolicyOutputDto;
+  /* 创建时间 */
+  createdAt: string;
+  /* 主键id */
+  id: number;
+  /* 维护配置 */
+  maintenanceConfig: MaintenanceConfigOutputDto;
+  /* 运营配置 */
+  operationConfig: OperationConfigOutputDto;
+  /* 安全配置 */
+  securityConfig: SecurityConfigOutputDto;
+  /* 站点配置 */
+  siteConfig: SiteConfigOutputDto;
+  /* 三方资源解析配置 */
+  thirdPartyResourceParseConfig: ThirdPartyResourceParseConfigOutputDto;
+  /* 更新时间 */
+  updatedAt: string;
+  /* 最后修改人 ID */
+  updatedById: null | number;
+  /* 上传配置 */
+  uploadConfig: UploadConfigOutputDto;
+  /* 钱包虚拟币展示配置 */
+  walletCurrencyDisplayConfig: WalletCurrencyDisplayConfigOutputDto;
 };
 
 /**
- *  类型定义 [BaseSystemConfigDto]
+ *  类型定义 [AliyunConfigOutputDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type BaseSystemConfigDto = {
+export type AliyunConfigOutputDto = {
+  /* AccessKey ID（敏感字段，管理端读取时脱敏） */
+  accessKeyId: string;
+  /* AccessKey Secret（敏感字段，管理端读取时脱敏） */
+  accessKeySecret: string;
+  /* 短信服务配置 */
+  sms: AliyunSmsConfigOutputDto;
+};
+
+/**
+ *  类型定义 [AliyunSmsConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type AliyunSmsConfigOutputDto = {
+  /* 短信服务端点 */
+  endpoint: string;
+  /* 短信签名名称 */
+  signName: string;
+  /* 验证码过期时间（秒） */
+  verifyCodeExpire: number;
+  /* 验证码长度 */
+  verifyCodeLength: number;
+};
+
+/**
+ *  类型定义 [SiteConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type SiteConfigOutputDto = {
+  /* 联系邮箱 */
+  contactEmail: string;
+  /* ICP备案号 */
+  icpNumber: string;
+  /* 站点描述 */
+  siteDescription: string;
+  /* 站点图标 URL */
+  siteFavicon: string;
+  /* 站点关键词（SEO用） */
+  siteKeywords: string;
+  /* 站点Logo URL */
+  siteLogo: string;
+  /* 站点名称 */
+  siteName: string;
+};
+
+/**
+ *  类型定义 [OperationConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type OperationConfigOutputDto = {
+  /* forum 话题配置 */
+  forumHashtagConfig: ForumHashtagConfigOutputDto;
+};
+
+/**
+ *  类型定义 [ForumHashtagConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ForumHashtagConfigOutputDto = {
+  /* 话题创建模式（1=仅引用已存在且可用话题；2=正文中允许自动创建话题） */
+  creationMode: number;
+};
+
+/**
+ *  类型定义 [SecurityConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type SecurityConfigOutputDto = {
+  /* 远程图片导入安全配置 */
+  remoteImageImport: RemoteImageImportSecurityConfigOutputDto;
+};
+
+/**
+ *  类型定义 [RemoteImageImportSecurityConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type RemoteImageImportSecurityConfigOutputDto = {
+  /* 是否启用远程图片 DNS 不安全地址防护 */
+  enableAddressGuard: boolean;
+};
+
+/**
+ *  类型定义 [ThirdPartyResourceParseConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ThirdPartyResourceParseConfigOutputDto = {
+  /* CopyManga API 请求最小间隔（毫秒） */
+  apiIntervalMs: number;
+  /* 是否启用三方资源解析节流 */
+  enabled: boolean;
+  /* CopyManga host discovery 缓存 TTL（秒） */
+  hostCacheTtlSeconds: number;
+  /* 三方远程图片下载最小间隔（毫秒） */
+  imageIntervalMs: number;
+  /* 每个资源解析通道允许排队的最大请求数 */
+  maxQueueSize: number;
+};
+
+/**
+ *  类型定义 [WalletCurrencyDisplayConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type WalletCurrencyDisplayConfigOutputDto = {
+  /* 虚拟币稳定资产键 */
+  assetKey: string;
+  /* 虚拟币图标 URL */
+  currencyIconUrl: string;
+  /* 虚拟币展示名称 */
+  currencyName: string;
+  /* 虚拟币单位名称 */
+  currencyUnitName: string;
+};
+
+/**
+ *  类型定义 [MaintenanceConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type MaintenanceConfigOutputDto = {
+  /* 是否启用维护模式 */
+  enableMaintenanceMode: boolean;
+  /* 维护模式提示信息 */
+  maintenanceMessage: string;
+};
+
+/**
+ *  类型定义 [ContentReviewPolicyOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentReviewPolicyOutputDto = {
+  /* 一般敏感词处理策略 */
+  generalAction: ContentReviewActionOutputDto;
+  /* 轻微敏感词处理策略 */
+  lightAction: ContentReviewActionOutputDto;
+  /* 是否记录敏感词命中明细 */
+  recordHits: boolean;
+  /* 严重敏感词处理策略 */
+  severeAction: ContentReviewActionOutputDto;
+};
+
+/**
+ *  类型定义 [ContentReviewActionOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentReviewActionOutputDto = {
+  /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
+  auditStatus: 0 | 1 | 2;
+  /* 是否隐藏 */
+  isHidden: boolean;
+};
+
+/**
+ *  类型定义 [UploadConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type UploadConfigOutputDto = {
+  /* 上传提供方（本地存储；七牛云存储；Superbed 图床） */
+  provider: 'local' | 'qiniu' | 'superbed';
+  /* 七牛上传配置 */
+  qiniu: QiniuUploadConfigOutputDto;
+  /* Superbed 上传配置 */
+  superbed: SuperbedUploadConfigOutputDto;
+  /* 当 provider 为 superbed 时，非图片文件是否自动回落本地 */
+  superbedNonImageFallbackToLocal: boolean;
+};
+
+/**
+ *  类型定义 [QiniuUploadConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type QiniuUploadConfigOutputDto = {
+  /* 七牛 AccessKey（敏感字段，管理端读取时脱敏） */
+  accessKey: string;
+  /* 七牛存储空间 bucket */
+  bucket: string;
+  /* 七牛公开访问域名 */
+  domain: string;
+  /* 七牛对象前缀 */
+  pathPrefix: string;
+  /* 七牛区域 ID，留空时自动查询 */
+  region: string;
+  /* 七牛 SecretKey（敏感字段，管理端读取时脱敏） */
+  secretKey: string;
+  /* 上传凭证有效期（秒） */
+  tokenExpires: number;
+  /* 是否使用 HTTPS */
+  useHttps: boolean;
+};
+
+/**
+ *  类型定义 [SuperbedUploadConfigOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type SuperbedUploadConfigOutputDto = {
+  /* Superbed 相册分类，多个使用英文逗号分隔 */
+  categories: string;
+  /* 是否开启压缩 */
+  compress: boolean | null;
+  /* Superbed token（敏感字段，管理端读取时脱敏） */
+  token: string;
+  /* 是否开启水印 */
+  watermark: boolean | null;
+  /* 是否强制转 webp */
+  webp: boolean | null;
+};
+
+/**
+ *  类型定义 [UpdateSystemConfigDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type UpdateSystemConfigDto = {
   /* 阿里云配置 */
   aliyunConfig?: AliyunConfigDto;
   /* 内容审核策略 */
   contentReviewPolicy?: ContentReviewPolicyDto;
-  /* 创建时间 */
-  createdAt: string;
   /* 主键id */
   id: number;
   /* 维护配置 */
@@ -61,10 +293,6 @@ export type BaseSystemConfigDto = {
   siteConfig?: SiteConfigDto;
   /* 三方资源解析配置 */
   thirdPartyResourceParseConfig?: ThirdPartyResourceParseConfigDto;
-  /* 更新时间 */
-  updatedAt: string;
-  /* 最后修改人 ID */
-  updatedById?: null | number;
   /* 上传配置 */
   uploadConfig?: UploadConfigDto;
   /* 钱包虚拟币展示配置 */
@@ -243,7 +471,7 @@ export type ContentReviewActionDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UploadConfigDto = {
-  /* 上传提供方（local=本地存储；qiniu=七牛云存储；superbed=Superbed图床） */
+  /* 上传提供方（本地存储；七牛云存储；Superbed 图床） */
   provider?: 'local' | 'qiniu' | 'superbed' | null;
   /* 七牛上传配置 */
   qiniu?: QiniuUploadConfigDto;
@@ -296,29 +524,25 @@ export type SuperbedUploadConfigDto = {
 };
 
 /**
- *  类型定义 [UpdateSystemConfigDto]
+ *  类型定义 [Ip2regionRuntimeStatusDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type UpdateSystemConfigDto = {
-  /* 阿里云配置 */
-  aliyunConfig?: AliyunConfigDto;
-  /* 内容审核策略 */
-  contentReviewPolicy?: ContentReviewPolicyDto;
-  /* 主键id */
-  id: number;
-  /* 维护配置 */
-  maintenanceConfig?: MaintenanceConfigDto;
-  /* 运营配置 */
-  operationConfig?: OperationConfigDto;
-  /* 安全配置 */
-  securityConfig?: SecurityConfigDto;
-  /* 站点配置 */
-  siteConfig?: SiteConfigDto;
-  /* 三方资源解析配置 */
-  thirdPartyResourceParseConfig?: ThirdPartyResourceParseConfigDto;
-  /* 上传配置 */
-  uploadConfig?: UploadConfigDto;
-  /* 钱包虚拟币展示配置 */
-  walletCurrencyDisplayConfig?: WalletCurrencyDisplayConfigDto;
+export type Ip2regionRuntimeStatusDto = {
+  /* 当前生效时间 */
+  activatedAt: null | string;
+  /* 当前生效文件名 */
+  fileName: null | string;
+  /* 当前生效文件绝对路径 */
+  filePath: null | string;
+  /* 当前生效文件大小（字节） */
+  fileSize: null | number;
+  /* 当前进程是否已加载可用属地库 */
+  ready: boolean;
+  /* 当前是否正在执行热切换 */
+  reloading: boolean;
+  /* 生效库来源（托管 active 目录；环境变量显式路径；仓库默认路径；无可用属地库） */
+  source: 'configured-path' | 'default-path' | 'managed-active' | 'unavailable';
+  /* ip2region 专用存储根目录 */
+  storageDir: string;
 };

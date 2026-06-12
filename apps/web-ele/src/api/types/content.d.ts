@@ -14,19 +14,19 @@ export type ContentComicCreateResponse = boolean;
  */
 export type ContentComicPageRequest = {
   /* 年龄分级 */
-  ageRating?: string;
+  ageRating?: null | string;
 
   /* 作者名称 */
-  author?: string;
+  author?: null | string;
 
   /* 作者ID */
-  authorId?: number;
+  authorId?: null | number;
 
   /* 分类ID列表 */
-  categoryIds?: any[];
+  categoryIds?: number[];
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否热门 */
   isHot?: boolean;
@@ -47,31 +47,31 @@ export type ContentComicPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 出版社 */
-  publisher?: string;
+  publisher?: null | string;
 
   /* 地区代码 */
   region?: string;
 
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
-  serialStatus?: number;
+  serialStatus?: 0 | 1 | 2 | 3 | 4;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 标签ID列表 */
-  tagIds?: any[];
+  tagIds?: number[];
 
   /* 作品类型（1=漫画；2=小说） */
-  type?: number;
+  type?: 1 | 2;
 };
 
 export type ContentComicPageResponse = {
@@ -176,7 +176,7 @@ export type ContentComicChapterPageRequest = {
   canDownload?: boolean;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否试读 */
   isPreview?: boolean;
@@ -185,22 +185,22 @@ export type ContentComicChapterPageRequest = {
   isPublished?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 章节标题 */
   title?: string;
 
   /* 查看规则（-1=继承作品；0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
-  viewRule?: number;
+  viewRule?: -1 | 0 | 1 | 2 | 3;
 
   /* 作品ID */
   workId: number;
@@ -230,7 +230,7 @@ export type ContentComicChapterDetailRequest = {
   id: number;
 };
 
-export type ContentComicChapterDetailResponse = IdDto;
+export type ContentComicChapterDetailResponse = AdminWorkChapterDetailDto;
 
 /**
  *  类型定义 [ContentComicChapterUpdateRequest]
@@ -348,7 +348,7 @@ export type ContentComicChapterContentClearResponse = boolean;
  */
 export type ContentComicChapterContentArchivePreviewRequest = {
   /* 单章节压缩包对应的章节ID */
-  chapterId?: number;
+  chapterId?: null | number;
 
   /* 预解析会话工作流任务ID */
   jobId: string;
@@ -376,7 +376,7 @@ export type ContentComicChapterContentArchiveSessionResponse = WorkflowJobIdDto;
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ContentComicChapterContentArchiveDiscardRequest =
-  DiscardComicArchiveDto;
+  ComicArchiveWorkflowJobIdDto;
 
 export type ContentComicChapterContentArchiveDiscardResponse = WorkflowJobDto;
 
@@ -412,25 +412,25 @@ export type ContentComicThirdPartyPlatformListResponse = PlatformResponseDto[];
  */
 export type ContentComicThirdPartySearchPageRequest = {
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 搜索关键词 */
   keyword: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 平台代码 */
   platform: string;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type ContentComicThirdPartySearchPageResponse = {
@@ -457,7 +457,7 @@ export type ContentComicThirdPartyDetailRequest = {
   comicId: string;
 
   /* 章节分组 */
-  group?: string;
+  group?: null | string;
 
   /* 平台代码 */
   platform: string;
@@ -475,7 +475,7 @@ export type ContentComicThirdPartyChapterListRequest = {
   comicId: string;
 
   /* 章节分组 */
-  group?: string;
+  group?: null | string;
 
   /* 平台代码 */
   platform: string;
@@ -490,8 +490,8 @@ export type ContentComicThirdPartyChapterListResponse =
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ContentComicThirdPartyChapterContentDetailRequest = {
-  /* 三方章节内容接口版本；CopyManga type=1 使用 chapter，type>=2 使用 chapterN */
-  chapterApiVersion?: number;
+  /* 三方章节内容接口版本；CopyManga 第一版使用 chapter，第二版及以上使用 chapterN */
+  chapterApiVersion?: null | number;
 
   /* 章节ID */
   chapterId: string;
@@ -500,7 +500,7 @@ export type ContentComicThirdPartyChapterContentDetailRequest = {
   comicId: string;
 
   /* 章节分组 */
-  group?: string;
+  group?: null | string;
 
   /* 平台代码 */
   platform: string;
@@ -514,8 +514,7 @@ export type ContentComicThirdPartyChapterContentDetailResponse =
  *  @来源 内容管理/漫画管理/三方平台解析
  *  @更新时间 2026-05-09 22:20:06
  */
-export type ContentComicThirdPartyImportPreviewRequest =
-  ThirdPartyComicImportPreviewRequestDto;
+export type ContentComicThirdPartyImportPreviewRequest = DetailComicRequestDto;
 
 export type ContentComicThirdPartyImportPreviewResponse =
   ThirdPartyComicImportPreviewDto;
@@ -547,25 +546,25 @@ export type ContentComicThirdPartySyncLatestResponse = WorkflowJobDto;
  */
 export type ContentComicThirdPartyImportItemPageRequest = {
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 工作流任务ID */
   jobId?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 条目状态（1=待处理；2=处理中；3=成功；4=失败；5=重试中；6=已跳过） */
-  status?: number;
+  status?: 1 | 2 | 3 | 4 | 5 | 6;
 };
 
 export type ContentComicThirdPartyImportItemPageResponse = {
@@ -598,19 +597,19 @@ export type ContentNovelCreateResponse = boolean;
  */
 export type ContentNovelPageRequest = {
   /* 年龄分级 */
-  ageRating?: string;
+  ageRating?: null | string;
 
   /* 作者名称 */
-  author?: string;
+  author?: null | string;
 
   /* 作者ID */
-  authorId?: number;
+  authorId?: null | number;
 
   /* 分类ID列表 */
-  categoryIds?: any[];
+  categoryIds?: number[];
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否热门 */
   isHot?: boolean;
@@ -631,31 +630,31 @@ export type ContentNovelPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 出版社 */
-  publisher?: string;
+  publisher?: null | string;
 
   /* 地区代码 */
   region?: string;
 
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
-  serialStatus?: number;
+  serialStatus?: 0 | 1 | 2 | 3 | 4;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 标签ID列表 */
-  tagIds?: any[];
+  tagIds?: number[];
 
   /* 作品类型（1=漫画；2=小说） */
-  type?: number;
+  type?: 1 | 2;
 };
 
 export type ContentNovelPageResponse = {
@@ -760,7 +759,7 @@ export type ContentNovelChapterPageRequest = {
   canDownload?: boolean;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否试读 */
   isPreview?: boolean;
@@ -769,22 +768,22 @@ export type ContentNovelChapterPageRequest = {
   isPublished?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 章节标题 */
   title?: string;
 
   /* 查看规则（-1=继承作品；0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
-  viewRule?: number;
+  viewRule?: -1 | 0 | 1 | 2 | 3;
 
   /* 作品ID */
   workId: number;
@@ -814,7 +813,7 @@ export type ContentNovelChapterDetailRequest = {
   id: number;
 };
 
-export type ContentNovelChapterDetailResponse = IdDto;
+export type ContentNovelChapterDetailResponse = AdminWorkChapterDetailDto;
 
 /**
  *  类型定义 [ContentNovelChapterUpdateRequest]
@@ -899,229 +898,6 @@ export type ContentNovelChapterContentDeleteRequest = IdDto;
 export type ContentNovelChapterContentDeleteResponse = boolean;
 
 /**
- *  类型定义 [ContentEmojiPackPageRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiPackPageRequest = {
-  /* 表情包编码 */
-  code?: string;
-
-  /* 结束时间 */
-  endDate?: string;
-
-  /* 启用状态 */
-  isEnabled?: boolean;
-
-  /* 表情包名称 */
-  name?: string;
-
-  /* 排序字段，json格式 */
-  orderBy?: string;
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 单页大小，最大500，默认15 */
-  pageSize?: number;
-
-  /* 开始时间 */
-  startDate?: string;
-
-  /* 是否在选择器可见 */
-  visibleInPicker?: boolean;
-};
-
-export type ContentEmojiPackPageResponse = {
-  /* 列表数据 */
-  list?: BaseEmojiPackDto[];
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 每页条数 */
-  pageSize?: number;
-
-  /* 总条数 */
-  total?: number;
-};
-
-/**
- *  类型定义 [ContentEmojiPackDetailRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiPackDetailRequest = {
-  /* 主键id */
-  id: number;
-};
-
-export type ContentEmojiPackDetailResponse = BaseEmojiPackDto;
-
-/**
- *  类型定义 [ContentEmojiPackCreateRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiPackCreateRequest = CreateEmojiPackDto;
-
-export type ContentEmojiPackCreateResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiPackUpdateRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiPackUpdateRequest = UpdateEmojiPackDto;
-
-export type ContentEmojiPackUpdateResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiPackDeleteRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiPackDeleteRequest = IdDto;
-
-export type ContentEmojiPackDeleteResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiPackUpdateEnabledRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiPackUpdateEnabledRequest = UpdateEnabledStatusDto;
-
-export type ContentEmojiPackUpdateEnabledResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiPackSwapSortOrderRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiPackSwapSortOrderRequest = DragReorderDto;
-
-export type ContentEmojiPackSwapSortOrderResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiPackUpdateSceneTypeRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiPackUpdateSceneTypeRequest =
-  UpdateEmojiPackSceneTypeDto;
-
-export type ContentEmojiPackUpdateSceneTypeResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiAssetPageRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiAssetPageRequest = {
-  /* 分类 */
-  category?: string;
-
-  /* 结束时间 */
-  endDate?: string;
-
-  /* 启用状态 */
-  isEnabled?: boolean;
-
-  /* 资源类型（1=unicode,2=custom） */
-  kind?: number;
-
-  /* 排序字段，json格式 */
-  orderBy?: string;
-
-  /* 表情包ID */
-  packId?: number;
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 单页大小，最大500，默认15 */
-  pageSize?: number;
-
-  /* 短码（custom 必填） */
-  shortcode?: string;
-
-  /* 开始时间 */
-  startDate?: string;
-};
-
-export type ContentEmojiAssetPageResponse = {
-  /* 列表数据 */
-  list?: BaseEmojiAssetDto[];
-
-  /* 当前页码（从1开始） */
-  pageIndex?: number;
-
-  /* 每页条数 */
-  pageSize?: number;
-
-  /* 总条数 */
-  total?: number;
-};
-
-/**
- *  类型定义 [ContentEmojiAssetDetailRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiAssetDetailRequest = {
-  /* 主键id */
-  id: number;
-};
-
-export type ContentEmojiAssetDetailResponse = BaseEmojiAssetDto;
-
-/**
- *  类型定义 [ContentEmojiAssetCreateRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiAssetCreateRequest = CreateEmojiAssetDto;
-
-export type ContentEmojiAssetCreateResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiAssetUpdateRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiAssetUpdateRequest = UpdateEmojiAssetDto;
-
-export type ContentEmojiAssetUpdateResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiAssetDeleteRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiAssetDeleteRequest = IdDto;
-
-export type ContentEmojiAssetDeleteResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiAssetUpdateEnabledRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiAssetUpdateEnabledRequest = UpdateEnabledStatusDto;
-
-export type ContentEmojiAssetUpdateEnabledResponse = boolean;
-
-/**
- *  类型定义 [ContentEmojiAssetSwapSortOrderRequest]
- *  @来源 内容管理/表情管理
- *  @更新时间 2026-05-09 22:20:06
- */
-export type ContentEmojiAssetSwapSortOrderRequest = DragReorderDto;
-
-export type ContentEmojiAssetSwapSortOrderResponse = boolean;
-
-/**
  *  类型定义 [ContentAuthorCreateRequest]
  *  @来源 内容管理/作者管理
  *  @更新时间 2026-05-09 22:20:06
@@ -1137,12 +913,12 @@ export type ContentAuthorCreateResponse = boolean;
  */
 export type ContentAuthorPageRequest = {
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  gender?: number;
+  gender?: 0 | 1 | 2 | 3 | 4;
 
-  /* 启用状态（true=启用；false=禁用） */
+  /* 启用状态 */
   isEnabled?: boolean;
 
   /* 是否为推荐作者（用于前台推荐展示） */
@@ -1152,22 +928,22 @@ export type ContentAuthorPageRequest = {
   name?: string;
 
   /* 国籍 */
-  nationality?: string;
+  nationality?: null | string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 作者角色类型筛选 JSON 字符串，例如 [1,2] */
-  type?: string;
+  type?: null | string;
 };
 
 export type ContentAuthorPageResponse = {
@@ -1194,7 +970,7 @@ export type ContentAuthorDetailRequest = {
   id: number;
 };
 
-export type ContentAuthorDetailResponse = BaseAuthorDto;
+export type ContentAuthorDetailResponse = AuthorOutputBaseDto;
 
 /**
  *  类型定义 [ContentAuthorUpdateRequest]
@@ -1272,10 +1048,10 @@ export type ContentCategoryCreateResponse = boolean;
  */
 export type ContentCategoryPageRequest = {
   /* 分类关联的内容类型 JSON 字符串，例如 [1,2] */
-  contentType?: string;
+  contentType?: null | string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
   isEnabled?: boolean;
@@ -1284,21 +1060,21 @@ export type ContentCategoryPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type ContentCategoryPageResponse = {
   /* 列表数据 */
-  list?: BaseCategoryDto[];
+  list?: CategoryOutputDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -1320,7 +1096,7 @@ export type ContentCategoryDetailRequest = {
   id: number;
 };
 
-export type ContentCategoryDetailResponse = BaseCategoryDto;
+export type ContentCategoryDetailResponse = CategoryOutputDto;
 
 /**
  *  类型定义 [ContentCategoryUpdateRequest]
@@ -1374,7 +1150,7 @@ export type ContentTagCreateResponse = boolean;
  */
 export type ContentTagPageRequest = {
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否启用 */
   isEnabled?: boolean;
@@ -1383,16 +1159,16 @@ export type ContentTagPageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type ContentTagPageResponse = {
@@ -1456,6 +1232,229 @@ export type ContentTagDeleteResponse = boolean;
 export type ContentTagSwapSortOrderRequest = UpdateTagSortDto;
 
 export type ContentTagSwapSortOrderResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiPackPageRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiPackPageRequest = {
+  /* 表情包编码 */
+  code?: string;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 启用状态 */
+  isEnabled?: boolean;
+
+  /* 表情包名称 */
+  name?: string;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
+
+  /* 是否在选择器可见 */
+  visibleInPicker?: boolean;
+};
+
+export type ContentEmojiPackPageResponse = {
+  /* 列表数据 */
+  list?: EmojiPackOutputDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
+ *  类型定义 [ContentEmojiPackDetailRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiPackDetailRequest = {
+  /* 主键id */
+  id: number;
+};
+
+export type ContentEmojiPackDetailResponse = EmojiPackOutputDto;
+
+/**
+ *  类型定义 [ContentEmojiPackCreateRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiPackCreateRequest = CreateEmojiPackDto;
+
+export type ContentEmojiPackCreateResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiPackUpdateRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiPackUpdateRequest = UpdateEmojiPackDto;
+
+export type ContentEmojiPackUpdateResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiPackDeleteRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiPackDeleteRequest = IdDto;
+
+export type ContentEmojiPackDeleteResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiPackUpdateEnabledRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiPackUpdateEnabledRequest = UpdateEnabledStatusDto;
+
+export type ContentEmojiPackUpdateEnabledResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiPackSwapSortOrderRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiPackSwapSortOrderRequest = DragReorderDto;
+
+export type ContentEmojiPackSwapSortOrderResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiPackUpdateSceneTypeRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiPackUpdateSceneTypeRequest =
+  UpdateEmojiPackSceneTypeDto;
+
+export type ContentEmojiPackUpdateSceneTypeResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiAssetPageRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiAssetPageRequest = {
+  /* 分类 */
+  category?: null | string;
+
+  /* 结束时间 */
+  endDate?: null | string;
+
+  /* 启用状态 */
+  isEnabled?: boolean;
+
+  /* 资源类型（1=unicode,2=custom） */
+  kind?: 1 | 2;
+
+  /* 排序字段，json格式 */
+  orderBy?: null | string;
+
+  /* 表情包ID */
+  packId?: number;
+
+  /* 当前页码（从1开始） */
+  pageIndex?: null | number;
+
+  /* 单页大小，最大500，默认15 */
+  pageSize?: null | number;
+
+  /* 短码（custom 必填） */
+  shortcode?: null | string;
+
+  /* 开始时间 */
+  startDate?: null | string;
+};
+
+export type ContentEmojiAssetPageResponse = {
+  /* 列表数据 */
+  list?: EmojiAssetOutputDto[];
+
+  /* 当前页码（从1开始） */
+  pageIndex?: number;
+
+  /* 每页条数 */
+  pageSize?: number;
+
+  /* 总条数 */
+  total?: number;
+};
+
+/**
+ *  类型定义 [ContentEmojiAssetDetailRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiAssetDetailRequest = {
+  /* 主键id */
+  id: number;
+};
+
+export type ContentEmojiAssetDetailResponse = EmojiAssetOutputDto;
+
+/**
+ *  类型定义 [ContentEmojiAssetCreateRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiAssetCreateRequest = CreateEmojiAssetDto;
+
+export type ContentEmojiAssetCreateResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiAssetUpdateRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiAssetUpdateRequest = UpdateEmojiAssetDto;
+
+export type ContentEmojiAssetUpdateResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiAssetDeleteRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiAssetDeleteRequest = IdDto;
+
+export type ContentEmojiAssetDeleteResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiAssetUpdateEnabledRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiAssetUpdateEnabledRequest = UpdateEnabledStatusDto;
+
+export type ContentEmojiAssetUpdateEnabledResponse = boolean;
+
+/**
+ *  类型定义 [ContentEmojiAssetSwapSortOrderRequest]
+ *  @来源 内容管理/表情管理
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type ContentEmojiAssetSwapSortOrderRequest = DragReorderDto;
+
+export type ContentEmojiAssetSwapSortOrderResponse = boolean;
 
 /**
  *  类型定义 [CreateWorkDto]
@@ -1530,7 +1529,7 @@ export type CreateWorkDto = {
  */
 export type PageWorkDto = {
   /* 年龄分级 */
-  ageRating?: null | string;
+  ageRating: null | string;
   /* 作者列表 */
   authors: AuthorInfoDto[];
   /* 分类列表 */
@@ -1558,9 +1557,9 @@ export type PageWorkDto = {
   /* 热度值 */
   popularity: number;
   /* 发布日期 */
-  publishAt?: null | string;
+  publishAt: null | string;
   /* 出版社 */
-  publisher?: null | string;
+  publisher: null | string;
   /* 地区代码 */
   region: string;
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
@@ -1580,15 +1579,15 @@ export type PageWorkDto = {
  */
 export type AuthorInfoDto = {
   /* 作者头像 URL */
-  avatar?: null | string;
+  avatar: null | string;
   /* 主键id */
   id: number;
   /* 当前用户是否已关注该作者 */
-  isFollowed?: boolean | null;
+  isFollowed: boolean;
   /* 作者姓名 */
   name: string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: (1 | 2)[];
+  type: (1 | 2)[] | null;
 };
 
 /**
@@ -1598,7 +1597,7 @@ export type AuthorInfoDto = {
  */
 export type CategoryInfoDto = {
   /* 分类图标 URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 分类名称 */
@@ -1612,7 +1611,7 @@ export type CategoryInfoDto = {
  */
 export type TagInfoDto = {
   /* 标签图标 URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 标签名称 */
@@ -1626,9 +1625,9 @@ export type TagInfoDto = {
  */
 export type AdminWorkDetailDto = {
   /* 年龄分级 */
-  ageRating?: null | string;
+  ageRating: null | string;
   /* 作品别名 */
-  alias?: null | string;
+  alias: null | string;
   /* 作者列表 */
   authors: AuthorInfoDto[];
   /* 是否允许评论 */
@@ -1638,13 +1637,13 @@ export type AdminWorkDetailDto = {
   /* 章节默认价格 */
   chapterPrice: number;
   /* 章节默认购买价格信息 */
-  chapterPurchasePricing?: ContentPurchasePricingDto | null;
+  chapterPurchasePricing: ContentPurchasePricingDto;
   /* 评论数 */
   commentCount: number;
   /* 继续阅读章节 */
-  continueChapter?: ContinueReadingChapterDto;
+  continueChapter: ContinueReadingChapterDto;
   /* 版权信息 */
-  copyright?: null | string;
+  copyright: null | string;
   /* 作品封面 */
   cover: string;
   /* 创建时间 */
@@ -1652,7 +1651,7 @@ export type AdminWorkDetailDto = {
   /* 作品简介 */
   description: string;
   /* 免责声明 */
-  disclaimer?: null | string;
+  disclaimer: null | string;
   /* 下载数 */
   downloadCount: number;
   /* 收藏数 */
@@ -1660,7 +1659,7 @@ export type AdminWorkDetailDto = {
   /* 是否已收藏 */
   favorited: boolean;
   /* 论坛板块ID */
-  forumSectionId?: null | number;
+  forumSectionId: null | number;
   /* 是否存在三方来源绑定 */
   hasThirdPartySourceBinding: boolean;
   /* 主键id */
@@ -1676,9 +1675,9 @@ export type AdminWorkDetailDto = {
   /* 语言代码 */
   language: string;
   /* 最近阅读时间 */
-  lastReadAt?: null | string;
+  lastReadAt: null | string;
   /* 最近更新时间 */
-  lastUpdated?: null | string;
+  lastUpdated: null | string;
   /* 点赞数 */
   likeCount: number;
   /* 是否已点赞 */
@@ -1686,23 +1685,23 @@ export type AdminWorkDetailDto = {
   /* 作品名称 */
   name: string;
   /* 原始来源 */
-  originalSource?: null | string;
+  originalSource: null | string;
   /* 热度值 */
   popularity: number;
   /* 发布日期 */
-  publishAt?: null | string;
+  publishAt: null | string;
   /* 出版社 */
-  publisher?: null | string;
+  publisher: null | string;
   /* 评分 */
-  rating?: null | number;
+  rating: null | number;
   /* 推荐权重 */
   recommendWeight: number;
   /* 地区代码 */
   region: string;
   /* 备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 历史阅读等级ID（目标态不参与阅读权限） */
-  requiredViewLevelId?: null | number;
+  requiredViewLevelId: null | number;
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
   serialStatus: 0 | 1 | 2 | 3 | 4;
   /* 标签列表 */
@@ -1746,7 +1745,7 @@ export type ContinueReadingChapterDto = {
   /* 排序值 */
   sortOrder: number;
   /* 章节副标题 */
-  subtitle?: null | string;
+  subtitle: null | string;
   /* 章节标题 */
   title: string;
 };
@@ -1885,8 +1884,6 @@ export type CreateWorkChapterDto = {
   canComment: boolean;
   /* 是否允许下载 */
   canDownload: boolean;
-  /* 章节内容 */
-  content?: null | string;
   /* 章节封面 */
   cover?: null | string;
   /* 章节简介 */
@@ -1928,7 +1925,7 @@ export type AdminWorkChapterPageItemDto = {
   /* 是否允许下载 */
   canDownload: boolean;
   /* 章节封面 */
-  cover?: null | string;
+  cover: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 主键id */
@@ -1940,13 +1937,13 @@ export type AdminWorkChapterPageItemDto = {
   /* 章节价格 */
   price: number;
   /* 发布时间 */
-  publishAt?: null | string;
+  publishAt: null | string;
   /* 历史阅读等级ID（目标态不参与阅读权限） */
-  requiredViewLevelId?: null | number;
+  requiredViewLevelId: null | number;
   /* 排序值 */
   sortOrder: number;
   /* 章节副标题 */
-  subtitle?: null | string;
+  subtitle: null | string;
   /* 章节标题 */
   title: string;
   /* 更新时间 */
@@ -1960,6 +1957,98 @@ export type AdminWorkChapterPageItemDto = {
 };
 
 /**
+ *  类型定义 [AdminWorkChapterDetailDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type AdminWorkChapterDetailDto = {
+  /* 是否允许评论 */
+  canComment: boolean;
+  /* 是否允许下载 */
+  canDownload: boolean;
+  /* 评论数 */
+  commentCount: number;
+  /* 章节内容（漫画为图片路径数组，小说为文件路径） */
+  content: null | string;
+  /* 章节封面 */
+  cover: null | string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 章节简介 */
+  description: null | string;
+  /* 下载数 */
+  downloadCount: number;
+  /* 主键id */
+  id: number;
+  /* 是否试读 */
+  isPreview: boolean;
+  /* 是否发布 */
+  isPublished: boolean;
+  /* 点赞数 */
+  likeCount: number;
+  /* 章节价格 */
+  price: number;
+  /* 发布时间 */
+  publishAt: null | string;
+  /* 购买数 */
+  purchaseCount: number;
+  /* 备注 */
+  remark: null | string;
+  /* 历史阅读等级摘要；为空表示不限制等级 */
+  requiredViewLevel: AdminWorkChapterRequiredViewLevelDto;
+  /* 历史阅读等级ID（目标态不参与阅读权限） */
+  requiredViewLevelId: null | number;
+  /* 排序值 */
+  sortOrder: number;
+  /* 章节副标题 */
+  subtitle: null | string;
+  /* 章节标题 */
+  title: string;
+  /* 更新时间 */
+  updatedAt: string;
+  /* 浏览数 */
+  viewCount: number;
+  /* 查看规则（-1=继承作品；0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
+  viewRule: -1 | 0 | 1 | 2 | 3;
+  /* 字数 */
+  wordCount: number;
+  /* 所属作品摘要 */
+  work: AdminWorkChapterWorkSummaryDto;
+  /* 作品ID */
+  workId: number;
+  /* 作品类型（1=漫画；2=小说） */
+  workType: 1 | 2;
+};
+
+/**
+ *  类型定义 [AdminWorkChapterWorkSummaryDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type AdminWorkChapterWorkSummaryDto = {
+  /* 作品 ID */
+  id: number;
+  /* 作品名称 */
+  name: string;
+  /* 作品类型（1=漫画；2=小说） */
+  type: 1 | 2;
+};
+
+/**
+ *  类型定义 [AdminWorkChapterRequiredViewLevelDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type AdminWorkChapterRequiredViewLevelDto = {
+  /* 等级专属颜色 */
+  color: null | string;
+  /* 等级规则 ID */
+  id: number;
+  /* 等级名称 */
+  name: string;
+};
+
+/**
  *  类型定义 [UpdateWorkChapterDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -1969,8 +2058,6 @@ export type UpdateWorkChapterDto = {
   canComment?: boolean;
   /* 是否允许下载 */
   canDownload?: boolean;
-  /* 章节内容 */
-  content?: null | string;
   /* 章节封面 */
   cover?: null | string;
   /* 章节简介 */
@@ -2050,7 +2137,7 @@ export type UploadResponseDto = {
   /* 文件扩展名 */
   fileType: string;
   /* 图片高度 */
-  height?: null | number;
+  height: null | number;
   /* 文件 MIME 类型 */
   mimeType: string;
   /* 原始文件名 */
@@ -2060,7 +2147,7 @@ export type UploadResponseDto = {
   /* 上传时间 */
   uploadTime: string;
   /* 图片宽度 */
-  width?: null | number;
+  width: null | number;
 };
 
 /**
@@ -2109,38 +2196,40 @@ export type MoveComicContentDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ComicArchiveTaskResponseDto = {
+  /* 原始压缩包名称 */
+  archiveName: null | string;
   /* 任务过期时间 */
   expiresAt: string;
   /* 完成处理时间 */
-  finishedAt?: null | string;
+  finishedAt: null | string;
   /* 被忽略的路径列表 */
   ignoredItems: ComicArchiveIgnoredItemDto[];
   /* 导入工作流任务ID */
   jobId: string;
   /* 最后一次错误事实；admin 负责表达 */
-  lastError?: null | WorkflowErrorFactsDto;
+  lastError: null | WorkflowErrorFactsDto;
   /* 匹配成功的章节列表 */
   matchedItems: ComicArchiveMatchedItemDto[];
   /* 预解析模式（1=单章节压缩包；2=多章节压缩包） */
   mode: 1 | 2;
   /* 当前进度展示代码；后台根据代码和上下文生成文案 */
-  progressCode?: null | string;
+  progressCode: null | string;
   /* 当前进度展示上下文 */
-  progressContext?: null | Record<string, any>;
+  progressContext: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
-  progressDetail?: null | Record<string, any>;
+  progressDetail: null | Record<string, any>;
   /* 是否需要用户确认 */
   requireConfirm: boolean;
   /* 正式导入结果列表 */
   resultItems: ComicArchiveResultItemDto[];
   /* 开始处理时间 */
-  startedAt?: null | string;
+  startedAt: null | string;
   /* 任务状态（0=草稿；1=待处理；2=处理中；3=成功；4=部分失败；5=失败；6=已过期；7=已取消） */
   status: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
   /* 预解析汇总信息 */
   summary: ComicArchiveSummaryDto;
   /* 作品ID */
-  workId: number;
+  workId: null | number;
 };
 
 /**
@@ -2168,7 +2257,7 @@ export type ComicArchiveMatchedItemDto = {
   /* 匹配结果表达事实 */
   statusContext: Record<string, any>;
   /* 覆盖风险事实；admin 负责表达 */
-  warning?: null | WorkflowErrorFactsDto;
+  warning: null | WorkflowErrorFactsDto;
 };
 
 /**
@@ -2177,7 +2266,7 @@ export type ComicArchiveMatchedItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type WorkflowErrorFactsDto = {
-  /* 错误或状态码 */
+  /* 错误或状态码，返回归档导入、内容导入、三方导入、数据库写入或工作流运行错误等稳定代码 */
   code:
     | 'ARCHIVE_CHAPTER_IMPORT_FAILED'
     | 'ARCHIVE_IMPORT_CHAPTER_NOT_FOUND'
@@ -2202,7 +2291,8 @@ export type WorkflowErrorFactsDto = {
     | 'THIRD_PARTY_RESOURCE_PARSE_FAILED'
     | 'THIRD_PARTY_SYNC_COMPLETED'
     | 'UNKNOWN_WORKFLOW_ERROR'
-    | 'UNKNOWN_WORKFLOW_PROGRESS';
+    | 'UNKNOWN_WORKFLOW_PROGRESS'
+    | (string & {});
   /* 可公开给 admin 表达层使用的事实 */
   context: Record<string, any>;
   /* 错误领域 */
@@ -2238,11 +2328,11 @@ export type ComicArchiveIgnoredItemDto = {
  */
 export type ComicArchiveResultItemDto = {
   /* 章节ID */
-  chapterId: number;
+  chapterId: null | number;
   /* 章节标题 */
   chapterTitle: string;
   /* 失败事实；admin 负责表达 */
-  error?: null | WorkflowErrorFactsDto;
+  error: null | WorkflowErrorFactsDto;
   /* 已导入图片数量 */
   importedImageCount: number;
   /* 执行状态（0=待处理；1=成功；2=失败） */
@@ -2286,11 +2376,11 @@ export type WorkflowJobIdDto = {
 };
 
 /**
- *  类型定义 [DiscardComicArchiveDto]
+ *  类型定义 [ComicArchiveWorkflowJobIdDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type DiscardComicArchiveDto = {
+export type ComicArchiveWorkflowJobIdDto = {
   /* 导入工作流任务ID */
   jobId: string;
 };
@@ -2302,19 +2392,19 @@ export type DiscardComicArchiveDto = {
  */
 export type WorkflowJobDto = {
   /* 归档时间；为空表示未归档 */
-  archivedAt?: null | string;
+  archivedAt: null | string;
   /* 取消请求时间 */
-  cancelRequestedAt?: null | string;
+  cancelRequestedAt: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 展示名称 */
   displayName: string;
   /* 草稿过期时间 */
-  expiresAt?: null | string;
+  expiresAt: null | string;
   /* 失败条目数 */
   failedItemCount: number;
   /* 完成时间 */
-  finishedAt?: null | string;
+  finishedAt: null | string;
   /* 主键ID */
   id: number;
   /* 工作流任务ID */
@@ -2322,13 +2412,13 @@ export type WorkflowJobDto = {
   /* 操作者类型（1=后台管理员；2=系统） */
   operatorType: 1 | 2;
   /* 后台管理员操作者ID；系统任务为空 */
-  operatorUserId?: null | number;
+  operatorUserId: null | number;
   /* 当前进度展示代码；后台根据代码和上下文生成文案 */
-  progressCode?: null | string;
+  progressCode: null | string;
   /* 当前进度展示上下文 */
-  progressContext?: null | Record<string, any>;
+  progressContext: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
-  progressDetail?: null | Record<string, any>;
+  progressDetail: null | Record<string, any>;
   /* 进度百分比 */
   progressPercent: number;
   /* 选中条目数 */
@@ -2336,13 +2426,13 @@ export type WorkflowJobDto = {
   /* 跳过条目数 */
   skippedItemCount: number;
   /* 开始处理时间 */
-  startedAt?: null | string;
+  startedAt: null | string;
   /* 任务状态（1=草稿；2=待处理；3=处理中；4=成功；5=部分失败；6=失败；7=已取消；8=已过期） */
   status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   /* 成功条目数 */
   successItemCount: number;
   /* 运行时非查询诊断摘要 */
-  summary?: null | Record<string, any>;
+  summary: null | Record<string, any>;
   /* 更新时间 */
   updatedAt: string;
   /* 工作流类型 */
@@ -2512,11 +2602,11 @@ export type ThirdPartyComicImageDto = {
 };
 
 /**
- *  类型定义 [ThirdPartyComicImportPreviewRequestDto]
+ *  类型定义 [DetailComicRequestDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type ThirdPartyComicImportPreviewRequestDto = {
+export type DetailComicRequestDto = {
   /* 漫画ID */
   comicId: string;
   /* 章节分组 */
@@ -2561,8 +2651,6 @@ export type ThirdPartyComicImportPreviewDto = {
 export type ThirdPartyComicSourceSnapshotDto = {
   /* 抓取时间 */
   fetchedAt: string;
-  /* 兼容旧三方路径标识 */
-  pathWord?: null | string;
   /* 三方漫画ID */
   providerComicId: string;
   /* 三方章节分组路径标识 */
@@ -2580,19 +2668,19 @@ export type ThirdPartyComicSourceSnapshotDto = {
  */
 export type ThirdPartyComicImportPreviewWorkDraftDto = {
   /* 作品别名 */
-  alias?: null | string;
+  alias: null | string;
   /* 作品简介 */
   description: string;
   /* 作品名称 */
   name: string;
   /* 原始来源 */
-  originalSource?: null | string;
+  originalSource: string;
   /* 管理员备注 */
-  remark?: null | string;
+  remark: string;
   /* 建议地区 */
-  suggestedRegion?: null | string;
+  suggestedRegion: null | string;
   /* 建议连载状态 */
-  suggestedSerialStatus?: null | number;
+  suggestedSerialStatus: null | number;
 };
 
 /**
@@ -2604,7 +2692,7 @@ export type ThirdPartyComicCoverOptionsDto = {
   /* 是否必须本地上传封面 */
   localRequired: boolean;
   /* 三方封面候选 */
-  provider?: null | ThirdPartyComicProviderCoverOptionDto;
+  provider: ThirdPartyComicProviderCoverOptionDto;
 };
 
 /**
@@ -2668,8 +2756,8 @@ export type ThirdPartyComicImportRequestDto = {
   /* 三方漫画ID */
   comicId: string;
   /* 作品封面处理方式 */
-  cover?: null | ThirdPartyComicImportCoverDto;
-  /* 导入模式（createNew=新建本地作品；attachToExisting=挂载已有本地作品） */
+  cover?: ThirdPartyComicImportCoverDto;
+  /* 导入模式（新建本地作品；挂载已有本地作品） */
   mode: 'attachToExisting' | 'createNew';
   /* 平台代码 */
   platform: string;
@@ -2678,7 +2766,7 @@ export type ThirdPartyComicImportRequestDto = {
   /* 目标作品ID */
   targetWorkId?: null | number;
   /* 新建作品草稿 */
-  workDraft?: null | ThirdPartyComicImportWorkDraftDto;
+  workDraft?: ThirdPartyComicImportWorkDraftDto;
 };
 
 /**
@@ -2689,7 +2777,7 @@ export type ThirdPartyComicImportRequestDto = {
 export type ThirdPartyComicImportCoverDto = {
   /* 本地上传路径 */
   localPath?: null | string;
-  /* 封面处理方式（provider=使用第三方平台图片；local=使用本地已上传图片；skip=跳过封面处理） */
+  /* 封面处理方式（使用第三方平台图片；使用本地已上传图片；跳过封面处理） */
   mode: 'local' | 'provider' | 'skip';
   /* 三方图片ID */
   providerImageId?: null | string;
@@ -2749,7 +2837,7 @@ export type ThirdPartyComicImportWorkDraftDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ThirdPartyComicImportChapterItemDto = {
-  /* 章节导入动作（create=新建章节；update=更新已有章节） */
+  /* 章节导入动作（新建章节；更新已有章节） */
   action: 'create' | 'update';
   /* 是否允许评论 */
   canComment?: boolean | null;
@@ -2758,7 +2846,7 @@ export type ThirdPartyComicImportChapterItemDto = {
   /* 三方章节内容接口版本 */
   chapterApiVersion?: null | number;
   /* 章节封面处理方式 */
-  cover?: null | ThirdPartyComicImportCoverDto;
+  cover?: ThirdPartyComicImportCoverDto;
   /* 三方章节创建时间 */
   datetimeCreated?: null | string;
   /* 三方章节分组 */
@@ -2816,19 +2904,19 @@ export type ContentImportItemDto = {
   /* 条目类型（1=漫画章节） */
   itemType: 1;
   /* 最近错误事实；admin 负责根据 code/context 表达 */
-  lastError?: null | WorkflowErrorFactsDto;
+  lastError: null | WorkflowErrorFactsDto;
   /* 最近自动重试事实；admin 负责根据 code/context 表达 */
-  lastRetry?: null | WorkflowErrorFactsDto;
+  lastRetry: null | WorkflowErrorFactsDto;
   /* 本地章节ID */
-  localChapterId?: null | number;
+  localChapterId: null | number;
   /* 最大自动重试次数 */
   maxAutoRetries: number;
   /* 条目元数据 */
-  metadata?: null | Record<string, any>;
+  metadata: null | Record<string, any>;
   /* 自动重试下次可执行时间 */
-  nextRetryAt?: null | string;
+  nextRetryAt: null | string;
   /* 三方章节ID */
-  providerChapterId?: null | string;
+  providerChapterId: null | string;
   /* 排序值 */
   sortOrder: number;
   /* 当前阶段（1=预览中；2=读取来源；3=准备元数据；4=读取内容；5=导入图片；6=写入内容；7=清理残留；8=已完成） */
@@ -2839,216 +2927,6 @@ export type ContentImportItemDto = {
   title: string;
   /* 更新时间 */
   updatedAt: string;
-};
-
-/**
- *  类型定义 [BaseEmojiPackDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type BaseEmojiPackDto = {
-  /* 表情包编码 */
-  code: string;
-  /* 创建时间 */
-  createdAt: string;
-  /* 创建人ID */
-  createdById?: null | number;
-  /* 描述 */
-  description?: null | string;
-  /* 图标地址 */
-  iconUrl?: null | string;
-  /* 主键id */
-  id: number;
-  /* 启用状态 */
-  isEnabled: boolean;
-  /* 表情包名称 */
-  name: string;
-  /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType: (1 | 2 | 3)[];
-  /* 排序值 */
-  sortOrder: number;
-  /* 更新时间 */
-  updatedAt: string;
-  /* 更新人ID */
-  updatedById?: null | number;
-  /* 是否在选择器可见 */
-  visibleInPicker: boolean;
-};
-
-/**
- *  类型定义 [CreateEmojiPackDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type CreateEmojiPackDto = {
-  /* 表情包编码 */
-  code: string;
-  /* 描述 */
-  description?: null | string;
-  /* 图标地址 */
-  iconUrl?: null | string;
-  /* 启用状态 */
-  isEnabled?: boolean | null;
-  /* 表情包名称 */
-  name: string;
-  /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType: (1 | 2 | 3)[];
-  /* 排序值 */
-  sortOrder?: null | number;
-  /* 是否在选择器可见 */
-  visibleInPicker?: boolean | null;
-};
-
-/**
- *  类型定义 [UpdateEmojiPackDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type UpdateEmojiPackDto = {
-  /* 表情包编码 */
-  code?: string;
-  /* 描述 */
-  description?: null | string;
-  /* 图标地址 */
-  iconUrl?: null | string;
-  /* 主键id */
-  id: number;
-  /* 启用状态 */
-  isEnabled?: boolean | null;
-  /* 表情包名称 */
-  name?: string;
-  /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType?: (1 | 2 | 3)[];
-  /* 排序值 */
-  sortOrder?: null | number;
-  /* 是否在选择器可见 */
-  visibleInPicker?: boolean | null;
-};
-
-/**
- *  类型定义 [UpdateEnabledStatusDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type UpdateEnabledStatusDto = {
-  /* 主键id */
-  id: number;
-  /* 状态 true启用 false禁用 */
-  isEnabled: boolean;
-};
-
-/**
- *  类型定义 [UpdateEmojiPackSceneTypeDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type UpdateEmojiPackSceneTypeDto = {
-  /* 主键id */
-  id: number;
-  /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType: (1 | 2 | 3)[];
-};
-
-/**
- *  类型定义 [BaseEmojiAssetDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type BaseEmojiAssetDto = {
-  /* 分类 */
-  category?: null | string;
-  /* 创建时间 */
-  createdAt: string;
-  /* 创建人ID */
-  createdById?: null | number;
-  /* 主键id */
-  id: number;
-  /* 资源地址（custom 必填） */
-  imageUrl?: null | string;
-  /* 是否动图 */
-  isAnimated: boolean;
-  /* 启用状态 */
-  isEnabled: boolean;
-  /* 关键词（多语言） */
-  keywords?: null | Record<string, string[]>;
-  /* 资源类型（1=unicode,2=custom） */
-  kind: 1 | 2;
-  /* 表情包ID */
-  packId: number;
-  /* 短码（custom 必填） */
-  shortcode?: null | string;
-  /* 排序值 */
-  sortOrder: number;
-  /* 静态资源地址 */
-  staticUrl?: null | string;
-  /* Unicode 序列（unicode 必填） */
-  unicodeSequence?: null | string;
-  /* 更新时间 */
-  updatedAt: string;
-  /* 更新人ID */
-  updatedById?: null | number;
-};
-
-/**
- *  类型定义 [CreateEmojiAssetDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type CreateEmojiAssetDto = {
-  /* 分类 */
-  category?: null | string;
-  /* 资源地址（custom 必填） */
-  imageUrl?: null | string;
-  /* 是否动图 */
-  isAnimated?: boolean | null;
-  /* 启用状态 */
-  isEnabled?: boolean | null;
-  /* 关键词（多语言） */
-  keywords?: null | Record<string, string[]>;
-  /* 资源类型（1=unicode,2=custom） */
-  kind: 1 | 2;
-  /* 表情包ID */
-  packId: number;
-  /* 短码（custom 必填） */
-  shortcode?: null | string;
-  /* 排序值 */
-  sortOrder?: null | number;
-  /* 静态资源地址 */
-  staticUrl?: null | string;
-  /* Unicode 序列（unicode 必填） */
-  unicodeSequence?: null | string;
-};
-
-/**
- *  类型定义 [UpdateEmojiAssetDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type UpdateEmojiAssetDto = {
-  /* 分类 */
-  category?: null | string;
-  /* 主键id */
-  id: number;
-  /* 资源地址（custom 必填） */
-  imageUrl?: null | string;
-  /* 是否动图 */
-  isAnimated?: boolean | null;
-  /* 启用状态 */
-  isEnabled?: boolean | null;
-  /* 关键词（多语言） */
-  keywords?: null | Record<string, string[]>;
-  /* 资源类型（1=unicode,2=custom） */
-  kind?: 1 | 2;
-  /* 表情包ID */
-  packId?: number;
-  /* 短码（custom 必填） */
-  shortcode?: null | string;
-  /* 排序值 */
-  sortOrder?: null | number;
-  /* 静态资源地址 */
-  staticUrl?: null | string;
-  /* Unicode 序列（unicode 必填） */
-  unicodeSequence?: null | string;
 };
 
 /**
@@ -3070,7 +2948,7 @@ export type CreateAuthorDto = {
   /* 管理员备注 */
   remark?: null | string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: (1 | 2)[];
+  type?: (1 | 2)[] | null;
 };
 
 /**
@@ -3080,7 +2958,7 @@ export type CreateAuthorDto = {
  */
 export type AuthorPageResponseDto = {
   /* 作者头像 URL */
-  avatar?: null | string;
+  avatar: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 粉丝数量（冗余字段，用于前台展示） */
@@ -3089,16 +2967,16 @@ export type AuthorPageResponseDto = {
   gender: 0 | 1 | 2 | 3 | 4;
   /* 主键id */
   id: number;
-  /* 启用状态（true=启用；false=禁用） */
+  /* 启用状态 */
   isEnabled: boolean;
   /* 是否为推荐作者（用于前台推荐展示） */
   isRecommended: boolean;
   /* 作者姓名 */
   name: string;
   /* 国籍 */
-  nationality?: null | string;
+  nationality: null | string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: (1 | 2)[];
+  type: (1 | 2)[] | null;
   /* 更新时间 */
   updatedAt: string;
   /* 作品数量（冗余字段，用于提升查询性能） */
@@ -3106,35 +2984,35 @@ export type AuthorPageResponseDto = {
 };
 
 /**
- *  类型定义 [BaseAuthorDto]
+ *  类型定义 [AuthorOutputBaseDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type BaseAuthorDto = {
+export type AuthorOutputBaseDto = {
   /* 作者头像 URL */
-  avatar?: null | string;
+  avatar: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 作者描述 */
-  description?: null | string;
+  description: null | string;
   /* 粉丝数量（冗余字段，用于前台展示） */
   followersCount: number;
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
   gender: 0 | 1 | 2 | 3 | 4;
   /* 主键id */
   id: number;
-  /* 启用状态（true=启用；false=禁用） */
+  /* 启用状态 */
   isEnabled: boolean;
   /* 是否为推荐作者（用于前台推荐展示） */
   isRecommended: boolean;
   /* 作者姓名 */
   name: string;
   /* 国籍 */
-  nationality?: null | string;
+  nationality: null | string;
   /* 管理员备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: (1 | 2)[];
+  type: (1 | 2)[] | null;
   /* 更新时间 */
   updatedAt: string;
   /* 作品数量（冗余字段，用于提升查询性能） */
@@ -3162,7 +3040,7 @@ export type UpdateAuthorDto = {
   /* 管理员备注 */
   remark?: null | string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: (1 | 2)[];
+  type?: (1 | 2)[] | null;
 };
 
 /**
@@ -3173,7 +3051,7 @@ export type UpdateAuthorDto = {
 export type UpdateAuthorStatusDto = {
   /* 主键id */
   id: number;
-  /* 启用状态（true=启用；false=禁用） */
+  /* 启用状态 */
   isEnabled: boolean;
 };
 
@@ -3220,7 +3098,7 @@ export type AuthorWorkCountRepairResultDto = {
  */
 export type CreateCategoryDto = {
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: (1 | 2 | 3)[];
+  contentType?: (1 | 2 | 3)[] | null;
   /* 分类描述 */
   description?: null | string;
   /* 分类图标 URL */
@@ -3234,19 +3112,19 @@ export type CreateCategoryDto = {
 };
 
 /**
- *  类型定义 [BaseCategoryDto]
+ *  类型定义 [CategoryOutputDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type BaseCategoryDto = {
+export type CategoryOutputDto = {
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: (1 | 2 | 3)[];
+  contentType: (1 | 2 | 3)[] | null;
   /* 创建时间 */
   createdAt: string;
   /* 分类描述 */
-  description?: null | string;
+  description: null | string;
   /* 分类图标 URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -3268,7 +3146,7 @@ export type BaseCategoryDto = {
  */
 export type UpdateCategoryDto = {
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: (1 | 2 | 3)[];
+  contentType?: (1 | 2 | 3)[] | null;
   /* 分类描述 */
   description?: null | string;
   /* 分类图标 URL */
@@ -3332,9 +3210,9 @@ export type AdminTagDto = {
   /* 创建时间 */
   createdAt: string;
   /* 标签描述 */
-  description?: null | string;
+  description: null | string;
   /* 标签图标 URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -3366,6 +3244,18 @@ export type UpdateTagDto = {
 };
 
 /**
+ *  类型定义 [UpdateEnabledStatusDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type UpdateEnabledStatusDto = {
+  /* 主键id */
+  id: number;
+  /* 状态 true启用 false禁用 */
+  isEnabled: boolean;
+};
+
+/**
  *  类型定义 [UpdateTagSortDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -3375,4 +3265,202 @@ export type UpdateTagSortDto = {
   dragId: number;
   /* 拖拽的目标位置id */
   targetId: number;
+};
+
+/**
+ *  类型定义 [EmojiPackOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type EmojiPackOutputDto = {
+  /* 表情包编码 */
+  code: string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 创建人ID */
+  createdById: null | number;
+  /* 描述 */
+  description: null | string;
+  /* 图标地址 */
+  iconUrl: null | string;
+  /* 主键id */
+  id: number;
+  /* 启用状态 */
+  isEnabled: boolean;
+  /* 表情包名称 */
+  name: string;
+  /* 场景类型（1=聊天,2=评论,3=论坛主题） */
+  sceneType: (1 | 2 | 3)[];
+  /* 排序值 */
+  sortOrder: number;
+  /* 更新时间 */
+  updatedAt: string;
+  /* 更新人ID */
+  updatedById: null | number;
+  /* 是否在选择器可见 */
+  visibleInPicker: boolean;
+};
+
+/**
+ *  类型定义 [CreateEmojiPackDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type CreateEmojiPackDto = {
+  /* 表情包编码 */
+  code: string;
+  /* 描述 */
+  description?: null | string;
+  /* 图标地址 */
+  iconUrl?: null | string;
+  /* 启用状态 */
+  isEnabled?: boolean | null;
+  /* 表情包名称 */
+  name: string;
+  /* 场景类型（1=聊天,2=评论,3=论坛主题） */
+  sceneType: (1 | 2 | 3)[];
+  /* 排序值 */
+  sortOrder?: null | number;
+  /* 是否在选择器可见 */
+  visibleInPicker?: boolean | null;
+};
+
+/**
+ *  类型定义 [UpdateEmojiPackDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type UpdateEmojiPackDto = {
+  /* 表情包编码 */
+  code?: string;
+  /* 描述 */
+  description?: null | string;
+  /* 图标地址 */
+  iconUrl?: null | string;
+  /* 主键id */
+  id: number;
+  /* 启用状态 */
+  isEnabled?: boolean | null;
+  /* 表情包名称 */
+  name?: string;
+  /* 场景类型（1=聊天,2=评论,3=论坛主题） */
+  sceneType?: (1 | 2 | 3)[];
+  /* 排序值 */
+  sortOrder?: null | number;
+  /* 是否在选择器可见 */
+  visibleInPicker?: boolean | null;
+};
+
+/**
+ *  类型定义 [UpdateEmojiPackSceneTypeDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type UpdateEmojiPackSceneTypeDto = {
+  /* 主键id */
+  id: number;
+  /* 场景类型（1=聊天,2=评论,3=论坛主题） */
+  sceneType: (1 | 2 | 3)[];
+};
+
+/**
+ *  类型定义 [EmojiAssetOutputDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type EmojiAssetOutputDto = {
+  /* 分类 */
+  category: null | string;
+  /* 创建时间 */
+  createdAt: string;
+  /* 创建人ID */
+  createdById: null | number;
+  /* 主键id */
+  id: number;
+  /* 资源地址（custom 必填） */
+  imageUrl: null | string;
+  /* 是否动图 */
+  isAnimated: boolean;
+  /* 启用状态 */
+  isEnabled: boolean;
+  /* 关键词（多语言） */
+  keywords: null | Record<string, string[]>;
+  /* 资源类型（1=unicode,2=custom） */
+  kind: 1 | 2;
+  /* 表情包ID */
+  packId: number;
+  /* 短码（custom 必填） */
+  shortcode: null | string;
+  /* 排序值 */
+  sortOrder: number;
+  /* 静态资源地址 */
+  staticUrl: null | string;
+  /* Unicode 序列（unicode 必填） */
+  unicodeSequence: null | string;
+  /* 更新时间 */
+  updatedAt: string;
+  /* 更新人ID */
+  updatedById: null | number;
+};
+
+/**
+ *  类型定义 [CreateEmojiAssetDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type CreateEmojiAssetDto = {
+  /* 分类 */
+  category?: null | string;
+  /* 资源地址（custom 必填） */
+  imageUrl?: null | string;
+  /* 是否动图 */
+  isAnimated?: boolean | null;
+  /* 启用状态 */
+  isEnabled?: boolean | null;
+  /* 关键词（多语言） */
+  keywords?: null | Record<string, string[]>;
+  /* 资源类型（1=unicode,2=custom） */
+  kind: 1 | 2;
+  /* 表情包ID */
+  packId: number;
+  /* 短码（custom 必填） */
+  shortcode?: null | string;
+  /* 排序值 */
+  sortOrder?: null | number;
+  /* 静态资源地址 */
+  staticUrl?: null | string;
+  /* Unicode 序列（unicode 必填） */
+  unicodeSequence?: null | string;
+};
+
+/**
+ *  类型定义 [UpdateEmojiAssetDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type UpdateEmojiAssetDto = {
+  /* 分类 */
+  category?: null | string;
+  /* 主键id */
+  id: number;
+  /* 资源地址（custom 必填） */
+  imageUrl?: null | string;
+  /* 是否动图 */
+  isAnimated?: boolean | null;
+  /* 启用状态 */
+  isEnabled?: boolean | null;
+  /* 关键词（多语言） */
+  keywords?: null | Record<string, string[]>;
+  /* 资源类型（1=unicode,2=custom） */
+  kind?: 1 | 2;
+  /* 表情包ID */
+  packId?: number;
+  /* 短码（custom 必填） */
+  shortcode?: null | string;
+  /* 排序值 */
+  sortOrder?: null | number;
+  /* 静态资源地址 */
+  staticUrl?: null | string;
+  /* Unicode 序列（unicode 必填） */
+  unicodeSequence?: null | string;
 };

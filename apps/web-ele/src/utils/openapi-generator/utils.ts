@@ -19,6 +19,14 @@ export function toPascalCase(str: string): string {
   return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
 }
 
+export function isValidIdentifier(name: string): boolean {
+  return /^[A-Za-z_$][\w$]*$/.test(name);
+}
+
+export function formatPropertyKey(name: string): string {
+  return isValidIdentifier(name) ? name : JSON.stringify(name);
+}
+
 /**
  * 映射 OpenAPI 类型到 TypeScript 类型
  */
@@ -49,22 +57,87 @@ export function wrapArrayItemType(type: string): string {
   return /\s[&|]\s/.test(type) ? `(${type})` : type;
 }
 
+export function isNullableSchema(schema: any): boolean {
+  if (!schema) return false;
+
+  return Boolean(
+    schema.nullable ||
+    (Array.isArray(schema.type) && schema.type.includes('null')) ||
+    (Array.isArray(schema.enum) && schema.enum.includes(null)) ||
+    schema.oneOf?.some((item: any) => isNullSchema(item)) ||
+    schema.anyOf?.some((item: any) => isNullSchema(item)),
+  );
+}
+
+function isNullSchema(schema: any): boolean {
+  return Boolean(
+    schema?.type === 'null' ||
+    (Array.isArray(schema?.type) &&
+      schema.type.length === 1 &&
+      schema.type.includes('null')) ||
+    (Array.isArray(schema?.enum) &&
+      schema.enum.length === 1 &&
+      schema.enum[0] === null),
+  );
+}
+
+function stripNullType(schema: any): any {
+  if (!schema || !Array.isArray(schema.type)) return schema;
+
+  const type = schema.type.filter((item: string) => item !== 'null');
+  let normalizedType: string | string[];
+  if (type.length === 0) {
+    normalizedType = 'null';
+  } else if (type.length === 1) {
+    normalizedType = type[0];
+  } else {
+    normalizedType = type;
+  }
+
+  return {
+    ...schema,
+    nullable: false,
+    type: normalizedType,
+  };
+}
+
 /**
  * 映射 schema 到 TypeScript 类型
  */
 export function mapSchemaToType(schema: any, depth: number = 0): string {
   if (!schema) return 'any';
 
-  const allowsNull =
-    schema.nullable ||
-    (Array.isArray(schema.type) && schema.type.includes('null'));
+  const allowsNull = isNullableSchema(schema);
   const applyNullable = (type: string) =>
-    allowsNull && !type.split(/\s*\|\s*/).includes('null')
+    allowsNull && type && !type.split(/\s*\|\s*/).includes('null')
       ? `${type} | null`
-      : type;
+      : type || (allowsNull ? 'null' : 'any');
 
   const joinTypes = (types: string[], separator: ' & ' | ' | ') =>
     [...new Set(types)].join(separator);
+  const isStringEnumSchema = (target: any) =>
+    target?.type === 'string' && Array.isArray(target.enum);
+  const isPlainStringSchema = (target: any) =>
+    target?.type === 'string' && !target.enum && !target.const;
+  const mapUnionSchemas = (schemas: any[]) => {
+    const effectiveSchemas = schemas.filter((item: any) => !isNullSchema(item));
+    if (effectiveSchemas.length === 0) {
+      return 'null';
+    }
+
+    const hasStringEnum = effectiveSchemas.some((item: any) =>
+      isStringEnumSchema(item),
+    );
+    const hasPlainString = effectiveSchemas.some((item: any) =>
+      isPlainStringSchema(item),
+    );
+    const types = effectiveSchemas.map((s: any) =>
+      hasStringEnum && hasPlainString && isPlainStringSchema(s)
+        ? '(string & {})'
+        : mapSchemaToType(s, depth + 1),
+    );
+    return applyNullable(joinTypes(types, ' | '));
+  };
 
   // 处理 $ref 引用
   if (schema.$ref) {
@@ -79,15 +152,17 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
 
   if (schema.oneOf || schema.anyOf) {
     const schemas = schema.oneOf || schema.anyOf;
-    const types = schemas.map((s: any) => mapSchemaToType(s, depth + 1));
-    return applyNullable(joinTypes(types, ' | '));
+    return mapUnionSchemas(schemas);
   }
 
   if (Array.isArray(schema.type)) {
-    const types = schema.type.map((type: string) =>
-      type === 'null'
-        ? 'null'
-        : mapSchemaToType({ ...schema, nullable: false, type }, depth),
+    const effectiveSchema = stripNullType(schema);
+    const types = (
+      Array.isArray(effectiveSchema.type)
+        ? effectiveSchema.type
+        : [effectiveSchema.type]
+    ).map((type: string) =>
+      mapSchemaToType({ ...effectiveSchema, nullable: false, type }, depth),
     );
     return applyNullable(joinTypes(types, ' | '));
   }
@@ -105,7 +180,10 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
     case 'number': {
       // 处理枚举值
       if (schema.enum && Array.isArray(schema.enum)) {
-        return applyNullable(schema.enum.join(' | '));
+        const enumValues = schema.enum.filter((item: any) => item !== null);
+        return enumValues.length === 0
+          ? 'null'
+          : applyNullable(enumValues.join(' | '));
       }
       return applyNullable('number');
     }
@@ -121,12 +199,25 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
           ([key, prop]: [string, any]) => {
             const required = schema.required?.includes(key) ? '' : '?';
             const propType = mapSchemaToType(prop, depth + 1);
-            return `  ${key}${required}: ${propType}`;
+            return `  ${formatPropertyKey(key)}${required}: ${propType}`;
           },
         );
 
         if (props.length === 0) {
-          return 'Record<string, any>';
+          if (
+            schema.additionalProperties &&
+            typeof schema.additionalProperties === 'object'
+          ) {
+            const valueType = mapSchemaToType(
+              schema.additionalProperties,
+              depth + 1,
+            );
+            return applyNullable(`Record<string, ${valueType}>`);
+          }
+          if (schema.additionalProperties === true) {
+            return applyNullable('Record<string, any>');
+          }
+          return applyNullable('Record<string, any>');
         }
 
         let extraProperty = '';
@@ -159,8 +250,13 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
     case 'string': {
       // 处理字符串枚举
       if (schema.enum && Array.isArray(schema.enum)) {
+        const enumValues = schema.enum.filter((item: any) => item !== null);
+        if (enumValues.length === 0) {
+          return 'null';
+        }
+
         return applyNullable(
-          schema.enum.map((val: any) => `'${val}'`).join(' | '),
+          enumValues.map((val: any) => `'${val}'`).join(' | '),
         );
       }
 
@@ -194,13 +290,18 @@ export function mapSchemaToType(schema: any, depth: number = 0): string {
 
       // 处理枚举但没有类型的情况
       if (schema.enum && Array.isArray(schema.enum)) {
-        const firstType = typeof schema.enum[0];
+        const enumValues = schema.enum.filter((item: any) => item !== null);
+        if (enumValues.length === 0) {
+          return 'null';
+        }
+
+        const firstType = typeof enumValues[0];
         if (firstType === 'string') {
           return applyNullable(
-            schema.enum.map((val: string) => `'${val}'`).join(' | '),
+            enumValues.map((val: string) => `'${val}'`).join(' | '),
           );
         } else if (firstType === 'number') {
-          return applyNullable(schema.enum.join(' | '));
+          return applyNullable(enumValues.join(' | '));
         }
       }
 
@@ -242,7 +343,6 @@ export function collectReferencedTypes(
   if (schema.$ref) {
     const typeName = resolveRef(schema.$ref);
     referencedTypes.add(typeName as string);
-    return;
   }
 
   // 处理 allOf, oneOf, anyOf
@@ -250,35 +350,38 @@ export function collectReferencedTypes(
     for (const subSchema of schema.allOf) {
       collectReferencedTypes(subSchema, referencedTypes);
     }
-    return;
   }
 
   if (schema.oneOf) {
     for (const subSchema of schema.oneOf) {
       collectReferencedTypes(subSchema, referencedTypes);
     }
-    return;
   }
 
   if (schema.anyOf) {
     for (const subSchema of schema.anyOf) {
       collectReferencedTypes(subSchema, referencedTypes);
     }
-    return;
   }
 
   // 处理数组类型
-  if (schema.type === 'array' && schema.items) {
+  if (
+    (schema.type === 'array' ||
+      (Array.isArray(schema.type) && schema.type.includes('array'))) &&
+    schema.items
+  ) {
     collectReferencedTypes(schema.items, referencedTypes);
-    return;
   }
 
   // 处理对象类型
-  if (schema.type === 'object' && schema.properties) {
+  if (
+    (schema.type === 'object' ||
+      (Array.isArray(schema.type) && schema.type.includes('object'))) &&
+    schema.properties
+  ) {
     for (const prop of Object.values(schema.properties)) {
       collectReferencedTypes(prop, referencedTypes);
     }
-    return;
   }
 
   // 处理 additionalProperties

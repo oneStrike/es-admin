@@ -32,25 +32,25 @@ export type AgreementUpdateStatusResponse = boolean;
  */
 export type AgreementPageRequest = {
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否已发布 */
   isPublished?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 是否展示在登录注册页 */
   showInAuth?: boolean;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 协议标题 */
   title?: string;
@@ -92,7 +92,7 @@ export type AgreementAccessRequest = {
   id: number;
 };
 
-export type AgreementAccessResponse = string;
+export type AgreementAccessResponse = undefined;
 
 /**
  *  类型定义 [CreateAgreementDto]
@@ -161,7 +161,7 @@ export type AdminAgreementListItemDto = {
   /* 是否已发布 */
   isPublished: boolean;
   /* 发布时间 */
-  publishedAt?: null | string;
+  publishedAt: null | string;
   /* 是否展示在登录注册页 */
   showInAuth: boolean;
   /* 协议标题 */
@@ -191,7 +191,7 @@ export type AdminAgreementDetailDto = {
   /* 是否已发布 */
   isPublished: boolean;
   /* 发布时间 */
-  publishedAt?: null | string;
+  publishedAt: null | string;
   /* 是否展示在登录注册页 */
   showInAuth: boolean;
   /* 协议标题 */

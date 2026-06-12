@@ -53,15 +53,6 @@ export async function messageMonitorDeliveryRetryApi(
 }
 
 /**
- * 获取消息运行摘要
- */
-export async function messageMonitorSummaryApi(): Promise<MessageMonitorSummaryResponse> {
-  return requestClient.get<MessageMonitorSummaryResponse>(
-    '/api/admin/message/monitor/summary',
-  );
-}
-
-/**
  * 分页查询通知 dispatch 调度结果
  */
 export async function messageMonitorDispatchPageApi(
@@ -82,6 +73,15 @@ export async function messageMonitorWsSummaryApi(
   return requestClient.get<MessageMonitorWsSummaryResponse>(
     '/api/admin/message/monitor/ws/summary',
     { params },
+  );
+}
+
+/**
+ * 获取消息运行摘要
+ */
+export async function messageMonitorSummaryApi(): Promise<MessageMonitorSummaryResponse> {
+  return requestClient.get<MessageMonitorSummaryResponse>(
+    '/api/admin/message/monitor/summary',
   );
 }
 

@@ -8,7 +8,7 @@ export type AppUpdatePageRequest = {
   buildCode?: number;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 是否强制更新 */
   forceUpdate?: boolean;
@@ -17,19 +17,19 @@ export type AppUpdatePageRequest = {
   isPublished?: boolean;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 发布平台（1=苹果端；2=安卓端） */
-  platform?: number;
+  platform?: 1 | 2;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 展示版本号 */
   versionName?: string;
@@ -66,7 +66,7 @@ export type AppUpdateDetailResponse = AppUpdateReleaseDetailDto;
  *  @来源 APP管理/版本更新
  *  @更新时间 2026-05-09 22:20:06
  */
-export type AppUpdateCreateRequest = CreateAppUpdateReleaseDto;
+export type AppUpdateCreateRequest = AppUpdateReleaseWriteDto;
 
 export type AppUpdateCreateResponse = boolean;
 
@@ -109,7 +109,7 @@ export type AppUpdateReleaseListItemDto = {
   /* 发布平台（1=苹果端；2=安卓端） */
   platform: 1 | 2;
   /* 发布时间 */
-  publishedAt?: null | string;
+  publishedAt: null | string;
   /* 更新时间 */
   updatedAt: string;
   /* 展示版本号 */
@@ -127,7 +127,7 @@ export type AppUpdateReleaseDetailDto = {
   /* 创建时间 */
   createdAt: string;
   /* 创建人 ID */
-  createdById?: null | number;
+  createdById: null | number;
   /* 是否强制更新 */
   forceUpdate: boolean;
   /* 主键id */
@@ -135,21 +135,21 @@ export type AppUpdateReleaseDetailDto = {
   /* 是否已发布 */
   isPublished: boolean;
   /* 上传安装包大小（字节） */
-  packageFileSize?: null | number;
+  packageFileSize: null | number;
   /* 上传安装包 MIME 类型 */
-  packageMimeType?: null | string;
+  packageMimeType: null | string;
   /* 上传安装包原始文件名 */
-  packageOriginalName?: null | string;
+  packageOriginalName: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
-  packageSourceType?: 1 | 2 | 3 | null;
-  /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
-  packageUrl?: null | string;
+  packageSourceType: 1 | 2 | 3 | null;
+  /* 安装包地址（后台上传文件地址、外部下载地址或外部中转页地址） */
+  packageUrl: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
   platform: 1 | 2;
   /* 更新弹窗背景图地址 */
-  popupBackgroundImage?: null | string;
-  /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
-  popupBackgroundPosition?:
+  popupBackgroundImage: null | string;
+  /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
+  popupBackgroundPosition:
     | 'bottom center'
     | 'bottom left'
     | 'bottom right'
@@ -161,23 +161,23 @@ export type AppUpdateReleaseDetailDto = {
     | 'top right'
     | null;
   /* 发布时间 */
-  publishedAt?: null | string;
+  publishedAt: null | string;
   /* 更新说明 */
-  releaseNotes?: null | string;
+  releaseNotes: null | string;
   /* 更新时间 */
   updatedAt: string;
   /* 更新人 ID */
-  updatedById?: null | number;
+  updatedById: null | number;
   /* 展示版本号 */
   versionName: string;
 };
 
 /**
- *  类型定义 [CreateAppUpdateReleaseDto]
+ *  类型定义 [AppUpdateReleaseWriteDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type CreateAppUpdateReleaseDto = {
+export type AppUpdateReleaseWriteDto = {
   /* 内部构建号 */
   buildCode: number;
   /* 是否强制更新 */
@@ -190,13 +190,13 @@ export type CreateAppUpdateReleaseDto = {
   packageOriginalName?: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
   packageSourceType?: 1 | 2 | 3 | null;
-  /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
+  /* 安装包地址（后台上传文件地址、外部下载地址或外部中转页地址） */
   packageUrl?: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
   platform: 1 | 2;
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string;
-  /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
+  /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
   popupBackgroundPosition?:
     | 'bottom center'
     | 'bottom left'
@@ -234,13 +234,13 @@ export type UpdateAppUpdateReleaseDto = {
   packageOriginalName?: null | string;
   /* 安装包来源（1=后台上传；2=外部下载地址；3=外部中转页） */
   packageSourceType?: 1 | 2 | 3 | null;
-  /* 安装包地址（UPLOAD=上传文件地址；URL=外部下载地址；CUSTOM=外部中转页地址） */
+  /* 安装包地址（后台上传文件地址、外部下载地址或外部中转页地址） */
   packageUrl?: null | string;
   /* 发布平台（1=苹果端；2=安卓端） */
   platform: 1 | 2;
   /* 更新弹窗背景图地址 */
   popupBackgroundImage?: null | string;
-  /* 更新弹窗背景图位置（center=居中；top center=顶部居中；top left=顶部靠左；top right=顶部靠右；bottom center=底部居中；bottom left=底部靠左；bottom right=底部靠右；left center=左侧居中；right center=右侧居中） */
+  /* 更新弹窗背景图位置（居中、顶部居中、顶部靠左、顶部靠右、底部居中、底部靠左、底部靠右、左侧居中、右侧居中） */
   popupBackgroundPosition?:
     | 'bottom center'
     | 'bottom left'

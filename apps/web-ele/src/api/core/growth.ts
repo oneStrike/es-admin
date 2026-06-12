@@ -44,8 +44,6 @@ import type {
   GrowthRewardRulesArchiveResponse,
   GrowthRewardRulesCreateRequest,
   GrowthRewardRulesCreateResponse,
-  GrowthRewardRulesDeleteRequest,
-  GrowthRewardRulesDeleteResponse,
   GrowthRewardRulesDetailRequest,
   GrowthRewardRulesDetailResponse,
   GrowthRewardRulesPageRequest,
@@ -63,63 +61,6 @@ import type {
 } from '../types/growth.d';
 
 import { requestClient } from '#/api/request';
-
-/**
- * 按事件聚合查看积分规则、经验规则与任务 bonus 关联关系
- */
-export async function growthRuleEventsPageApi(
-  params?: GrowthRuleEventsPageRequest,
-): Promise<GrowthRuleEventsPageResponse> {
-  return requestClient.get<GrowthRuleEventsPageResponse>(
-    '/api/admin/growth/rule-events/page',
-    { params },
-  );
-}
-
-/**
- * 查询允许配置基础奖励规则的成长事件选项
- */
-export async function growthRewardEventOptionListApi(): Promise<GrowthRewardEventOptionListResponse> {
-  return requestClient.get<GrowthRewardEventOptionListResponse>(
-    '/api/admin/growth/reward-event-option/list',
-  );
-}
-
-/**
- * 分页查询通用成长奖励补偿记录
- */
-export async function growthRewardSettlementPageApi(
-  params?: GrowthRewardSettlementPageRequest,
-): Promise<GrowthRewardSettlementPageResponse> {
-  return requestClient.get<GrowthRewardSettlementPageResponse>(
-    '/api/admin/growth/reward-settlement/page',
-    { params },
-  );
-}
-
-/**
- * 重试单条通用成长奖励补偿
- */
-export async function growthRewardSettlementRetryApi(
-  params: GrowthRewardSettlementRetryRequest,
-): Promise<GrowthRewardSettlementRetryResponse> {
-  return requestClient.post<GrowthRewardSettlementRetryResponse>(
-    '/api/admin/growth/reward-settlement/retry',
-    params,
-  );
-}
-
-/**
- * 批量重试待补偿的通用成长奖励记录
- */
-export async function growthRewardSettlementRetryPendingBatchApi(
-  params?: GrowthRewardSettlementRetryPendingBatchRequest,
-): Promise<GrowthRewardSettlementRetryPendingBatchResponse> {
-  return requestClient.post<GrowthRewardSettlementRetryPendingBatchResponse>(
-    '/api/admin/growth/reward-settlement/retry-pending/batch',
-    params,
-  );
-}
 
 /**
  * 获取用户经验记录分页
@@ -368,6 +309,63 @@ export async function growthBadgesStatsApi(): Promise<GrowthBadgesStatsResponse>
 }
 
 /**
+ * 按事件聚合查看积分规则、经验规则与任务 bonus 关联关系
+ */
+export async function growthRuleEventsPageApi(
+  params?: GrowthRuleEventsPageRequest,
+): Promise<GrowthRuleEventsPageResponse> {
+  return requestClient.get<GrowthRuleEventsPageResponse>(
+    '/api/admin/growth/rule-events/page',
+    { params },
+  );
+}
+
+/**
+ * 查询允许配置基础奖励规则的成长事件选项
+ */
+export async function growthRewardEventOptionListApi(): Promise<GrowthRewardEventOptionListResponse> {
+  return requestClient.get<GrowthRewardEventOptionListResponse>(
+    '/api/admin/growth/reward-event-option/list',
+  );
+}
+
+/**
+ * 分页查询通用成长奖励补偿记录
+ */
+export async function growthRewardSettlementPageApi(
+  params?: GrowthRewardSettlementPageRequest,
+): Promise<GrowthRewardSettlementPageResponse> {
+  return requestClient.get<GrowthRewardSettlementPageResponse>(
+    '/api/admin/growth/reward-settlement/page',
+    { params },
+  );
+}
+
+/**
+ * 重试单条通用成长奖励补偿
+ */
+export async function growthRewardSettlementRetryApi(
+  params: GrowthRewardSettlementRetryRequest,
+): Promise<GrowthRewardSettlementRetryResponse> {
+  return requestClient.post<GrowthRewardSettlementRetryResponse>(
+    '/api/admin/growth/reward-settlement/retry',
+    params,
+  );
+}
+
+/**
+ * 批量重试待补偿的通用成长奖励记录
+ */
+export async function growthRewardSettlementRetryPendingBatchApi(
+  params?: GrowthRewardSettlementRetryPendingBatchRequest,
+): Promise<GrowthRewardSettlementRetryPendingBatchResponse> {
+  return requestClient.post<GrowthRewardSettlementRetryPendingBatchResponse>(
+    '/api/admin/growth/reward-settlement/retry-pending/batch',
+    params,
+  );
+}
+
+/**
  * 分页查询成长奖励规则
  */
 export async function growthRewardRulesPageApi(
@@ -411,18 +409,6 @@ export async function growthRewardRulesUpdateApi(
 ): Promise<GrowthRewardRulesUpdateResponse> {
   return requestClient.post<GrowthRewardRulesUpdateResponse>(
     '/api/admin/growth/reward-rules/update',
-    params,
-  );
-}
-
-/**
- * 归档成长奖励规则（兼容旧删除路由）
- */
-export async function growthRewardRulesDeleteApi(
-  params: GrowthRewardRulesDeleteRequest,
-): Promise<GrowthRewardRulesDeleteResponse> {
-  return requestClient.post<GrowthRewardRulesDeleteResponse>(
-    '/api/admin/growth/reward-rules/delete',
     params,
   );
 }

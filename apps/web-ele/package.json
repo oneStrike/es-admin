@@ -16,7 +16,7 @@
   },
   "type": "module",
   "scripts": {
-    "att": "pnpx tsx ./src/utils/openapi-generator/index.ts && eslint --cache --fix ./src/api --parser-options project:./tsconfig.json && pnpm exec oxfmt --write ./src/api",
+    "att": "pnpm exec jiti ./src/utils/openapi-generator/index.ts && pnpm exec jiti ./src/utils/openapi-generator/validate-generator-output.ts && eslint --cache --fix ./src/api --parser-options project:./tsconfig.json && pnpm exec oxfmt --write ./src/api",
     "build": "pnpm vite build --mode production",
     "build:analyze": "pnpm vite build --mode analyze",
     "dev": "pnpm vite --mode development",
@@ -56,6 +56,7 @@
   "devDependencies": {
     "@types/node-forge": "catalog:",
     "dotenv": "catalog:",
+    "jiti": "catalog:",
     "ts-node": "catalog:",
     "unplugin-auto-import": "catalog:",
     "unplugin-element-plus": "catalog:",

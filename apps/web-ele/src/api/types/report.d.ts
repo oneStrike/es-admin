@@ -5,28 +5,28 @@
  */
 export type ReportPageRequest = {
   /* 处置状态筛选（1=无需处置；2=处置成功；3=历史未处置；99=最新处置失败） */
-  dispositionStatus?: number;
+  dispositionStatus?: 1 | 2 | 3 | 99 | null;
 
   /* 创建日期结束（应用时区自然日，YYYY-MM-DD） */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 处理人 ID */
-  handlerId?: number;
+  handlerId?: null | number;
 
   /* 主键id */
   id?: number;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 举报原因类型（1=垃圾信息；2=不当内容；3=骚扰；4=版权侵权；99=其他） */
-  reasonType?: number;
+  reasonType?: 1 | 2 | 3 | 4 | 99;
 
   /* 举报人 ID */
   reporterId?: number;
@@ -35,22 +35,22 @@ export type ReportPageRequest = {
   sceneId?: number;
 
   /* 业务场景类型（1=漫画作品；2=小说作品；3=论坛主题；10=漫画章节；11=小说章节；12=用户主页） */
-  sceneType?: number;
+  sceneType?: 1 | 2 | 3 | 10 | 11 | 12;
 
   /* 创建日期开始（应用时区自然日，YYYY-MM-DD） */
-  startDate?: string;
+  startDate?: null | string;
 
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
-  status?: number;
+  status?: 1 | 2 | 3 | 4;
 
   /* 目标处置状态（1=无需处置；2=已处置；3=历史已处理但无处置记录） */
-  targetActionStatus?: number;
+  targetActionStatus?: 1 | 2 | 3;
 
   /* 举报目标 ID */
   targetId?: number;
 
   /* 举报目标类型（1=漫画；2=小说；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
-  targetType?: number;
+  targetType?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
 };
 
 export type ReportPageResponse = {
@@ -95,35 +95,35 @@ export type ReportHandleResponse = boolean;
  */
 export type AdminReportPageItemDto = {
   /* 评论层级（1=根评论；2=回复评论） */
-  commentLevel?: 1 | 2 | null;
+  commentLevel: 1 | 2 | null;
   /* 创建时间 */
   createdAt: string;
   /* 详细说明 */
-  description?: null | string;
+  description: null | string;
   /* 证据图片URL */
-  evidenceUrl?: null | string;
+  evidenceUrl: null | string;
   /* 处理时间 */
-  handledAt?: null | string;
+  handledAt: null | string;
   /* 处理人 ID */
-  handlerId?: null | number;
+  handlerId: null | number;
   /* 处理人展示摘要 */
-  handlerSummary?: InteractionActorSummaryDto | null;
+  handlerSummary: InteractionActorSummaryDto;
   /* 处理备注 */
-  handlingNote?: null | string;
+  handlingNote: null | string;
   /* 主键id */
   id: number;
   /* 最新未解决处置失败记录 */
-  latestFailedDispositionAttempt?: null | ReportDispositionAttemptDto;
+  latestFailedDispositionAttempt: ReportDispositionAttemptDto;
   /* 举报原因类型（1=垃圾信息；2=不当内容；3=骚扰；4=版权侵权；99=其他） */
   reasonType: 1 | 2 | 3 | 4 | 99;
   /* 举报人 ID */
   reporterId: number;
   /* 举报人展示摘要 */
-  reporterSummary?: InteractionAppUserSummaryDto | null;
+  reporterSummary: InteractionAppUserSummaryDto;
   /* 业务场景根对象 ID */
   sceneId: number;
   /* 举报业务场景展示摘要 */
-  sceneSummary?: InteractionSceneSummaryDto | null;
+  sceneSummary: InteractionSceneSummaryDto;
   /* 业务场景类型（1=漫画作品；2=小说作品；3=论坛主题；10=漫画章节；11=小说章节；12=用户主页） */
   sceneType: 1 | 2 | 3 | 10 | 11 | 12;
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
@@ -131,17 +131,17 @@ export type AdminReportPageItemDto = {
   /* 目标处置动作（1=无需处置；2=隐藏评论；3=拒绝评论；4=隐藏论坛主题；5=拒绝论坛主题；6=禁用用户；7=禁言用户） */
   targetAction: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   /* 目标处置完成时间 */
-  targetActionAppliedAt?: null | string;
+  targetActionAppliedAt: null | string;
   /* 目标处置原因 */
-  targetActionReason?: null | string;
+  targetActionReason: null | string;
   /* 目标处置结构化结果 */
-  targetActionResult?: null | string;
+  targetActionResult: null | Record<string, any>;
   /* 目标处置状态（1=无需处置；2=已处置；3=历史已处理但无处置记录） */
   targetActionStatus: 1 | 2 | 3;
   /* 举报目标 ID */
   targetId: number;
   /* 举报目标展示摘要 */
-  targetSummary?: InteractionReportTargetSummaryDto | null;
+  targetSummary: InteractionReportTargetSummaryDto;
   /* 举报目标类型（1=漫画；2=小说；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
   targetType: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   /* 更新时间 */
@@ -155,7 +155,7 @@ export type AdminReportPageItemDto = {
  */
 export type InteractionAppUserSummaryDto = {
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -173,13 +173,13 @@ export type InteractionAppUserSummaryDto = {
  */
 export type InteractionActorSummaryDto = {
   /* 头像 */
-  avatar?: null | string;
+  avatar: null | string;
   /* 主键id */
   id: number;
   /* 昵称；管理员默认使用用户名兜底 */
-  nickname?: null | string;
+  nickname: null | string;
   /* 角色名称 */
-  roleName?: null | string;
+  roleName: null | string;
   /* 用户名 */
   username: string;
 };
@@ -191,23 +191,23 @@ export type InteractionActorSummaryDto = {
  */
 export type InteractionReportTargetSummaryDto = {
   /* 目标审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: 0 | 1 | 2 | null;
+  auditStatus: 0 | 1 | 2 | null;
   /* 作者头像 URL */
-  authorAvatarUrl?: null | string;
+  authorAvatarUrl: null | string;
   /* 作者昵称 */
-  authorNickname?: null | string;
+  authorNickname: null | string;
   /* 举报评论内容摘要 */
-  contentExcerpt?: null | string;
+  contentExcerpt: null | string;
   /* 目标删除时间 */
-  deletedAt?: null | string;
+  deletedAt: null | string;
   /* 目标用户是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled: boolean | null;
   /* 目标是否隐藏 */
-  isHidden?: boolean | null;
+  isHidden: boolean | null;
   /* 举报目标名称 */
-  name?: null | string;
+  name: null | string;
   /* 目标用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  status?: 1 | 2 | 3 | 4 | 5 | null;
+  status: 1 | 2 | 3 | 4 | 5 | null;
   /* 举报目标 ID */
   targetId: number;
   /* 举报目标类型（1=漫画作品；2=小说作品；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
@@ -215,9 +215,9 @@ export type InteractionReportTargetSummaryDto = {
   /* 举报目标类型名称 */
   targetTypeName: string;
   /* 举报目标标题 */
-  title?: null | string;
+  title: null | string;
   /* 章节所属作品名称 */
-  workName?: null | string;
+  workName: null | string;
 };
 
 /**
@@ -227,9 +227,9 @@ export type InteractionReportTargetSummaryDto = {
  */
 export type InteractionSceneSummaryDto = {
   /* 业务场景名称 */
-  name?: null | string;
+  name: null | string;
   /* 业务场景所属上级名称 */
-  parentName?: null | string;
+  parentName: null | string;
   /* 业务场景 ID */
   sceneId: number;
   /* 业务场景类型（1=漫画作品；2=小说作品；3=论坛主题；10=漫画章节；11=小说章节；12=用户主页） */
@@ -237,7 +237,7 @@ export type InteractionSceneSummaryDto = {
   /* 业务场景类型名称 */
   sceneTypeName: string;
   /* 业务场景标题 */
-  title?: null | string;
+  title: null | string;
 };
 
 /**
@@ -251,14 +251,14 @@ export type ReportDispositionAttemptDto = {
   /* 创建时间 */
   createdAt: string;
   /* 失败码 */
-  failureCode?: null | string;
+  failureCode: null | string;
   /* 失败信息 */
-  failureMessage?: null | string;
+  failureMessage: null | string;
   /* 主键id */
   id: number;
   /* 举报 ID */
   reportId: number;
-  /* 目标处置动作 */
+  /* 目标处置动作（1=无需处置；2=隐藏评论；3=拒绝评论；4=隐藏论坛主题；5=拒绝论坛主题；6=禁用用户；7=禁言用户） */
   targetAction: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   /* 更新时间 */
   updatedAt: string;
@@ -271,37 +271,37 @@ export type ReportDispositionAttemptDto = {
  */
 export type AdminReportDetailDto = {
   /* 评论层级（1=根评论；2=回复评论） */
-  commentLevel?: 1 | 2 | null;
+  commentLevel: 1 | 2 | null;
   /* 被举报评论展示摘要；仅举报目标为评论时返回 */
-  commentSummary?: InteractionReportCommentSummaryDto | null;
+  commentSummary: InteractionReportCommentSummaryDto;
   /* 创建时间 */
   createdAt: string;
   /* 详细说明 */
-  description?: null | string;
+  description: null | string;
   /* 证据图片URL */
-  evidenceUrl?: null | string;
+  evidenceUrl: null | string;
   /* 处理时间 */
-  handledAt?: null | string;
+  handledAt: null | string;
   /* 处理人 ID */
-  handlerId?: null | number;
+  handlerId: null | number;
   /* 处理人展示摘要 */
-  handlerSummary?: InteractionActorSummaryDto | null;
+  handlerSummary: InteractionActorSummaryDto;
   /* 处理备注 */
-  handlingNote?: null | string;
+  handlingNote: null | string;
   /* 主键id */
   id: number;
   /* 最新未解决处置失败记录 */
-  latestFailedDispositionAttempt?: null | ReportDispositionAttemptDto;
+  latestFailedDispositionAttempt: ReportDispositionAttemptDto;
   /* 举报原因类型（1=垃圾信息；2=不当内容；3=骚扰；4=版权侵权；99=其他） */
   reasonType: 1 | 2 | 3 | 4 | 99;
   /* 举报人 ID */
   reporterId: number;
   /* 举报人展示摘要 */
-  reporterSummary?: InteractionAppUserSummaryDto | null;
+  reporterSummary: InteractionAppUserSummaryDto;
   /* 业务场景根对象 ID */
   sceneId: number;
   /* 举报业务场景展示摘要 */
-  sceneSummary?: InteractionSceneSummaryDto | null;
+  sceneSummary: InteractionSceneSummaryDto;
   /* 业务场景类型（1=漫画作品；2=小说作品；3=论坛主题；10=漫画章节；11=小说章节；12=用户主页） */
   sceneType: 1 | 2 | 3 | 10 | 11 | 12;
   /* 举报状态（1=待处理；2=处理中；3=已解决；4=已驳回） */
@@ -309,17 +309,17 @@ export type AdminReportDetailDto = {
   /* 目标处置动作（1=无需处置；2=隐藏评论；3=拒绝评论；4=隐藏论坛主题；5=拒绝论坛主题；6=禁用用户；7=禁言用户） */
   targetAction: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   /* 目标处置完成时间 */
-  targetActionAppliedAt?: null | string;
+  targetActionAppliedAt: null | string;
   /* 目标处置原因 */
-  targetActionReason?: null | string;
+  targetActionReason: null | string;
   /* 目标处置结构化结果 */
-  targetActionResult?: null | string;
+  targetActionResult: null | Record<string, any>;
   /* 目标处置状态（1=无需处置；2=已处置；3=历史已处理但无处置记录） */
   targetActionStatus: 1 | 2 | 3;
   /* 举报目标 ID */
   targetId: number;
   /* 举报目标展示摘要 */
-  targetSummary?: InteractionReportTargetSummaryDto | null;
+  targetSummary: InteractionReportTargetSummaryDto;
   /* 举报目标类型（1=漫画；2=小说；3=漫画章节；4=小说章节；5=论坛主题；6=评论；7=用户） */
   targetType: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   /* 更新时间 */
@@ -339,17 +339,17 @@ export type InteractionReportCommentSummaryDto = {
   /* 评论层级（1=根评论；2=回复评论） */
   commentLevel: 1 | 2;
   /* 评论内容摘要 */
-  contentExcerpt?: null | string;
+  contentExcerpt: null | string;
   /* 评论是否隐藏 */
   isHidden: boolean;
   /* 评论用户头像 URL */
-  userAvatarUrl?: null | string;
+  userAvatarUrl: null | string;
   /* 评论用户是否启用 */
-  userIsEnabled?: boolean | null;
+  userIsEnabled: boolean | null;
   /* 评论用户昵称 */
-  userNickname?: null | string;
+  userNickname: null | string;
   /* 评论用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
-  userStatus?: 1 | 2 | 3 | 4 | 5 | null;
+  userStatus: 1 | 2 | 3 | 4 | 5 | null;
 };
 
 /**
@@ -368,6 +368,6 @@ export type HandleAdminReportDto = {
   status: 3 | 4;
   /* 目标处置动作（1=无需处置；2=隐藏评论；3=拒绝评论；4=隐藏论坛主题；5=拒绝论坛主题；6=禁用用户；7=禁言用户） */
   targetAction: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-  /* 目标处置原因；有效举报处置或显式无需处置时必填 */
+  /* 目标处置原因 */
   targetActionReason?: null | string;
 };

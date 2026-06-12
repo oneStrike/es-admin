@@ -142,6 +142,7 @@ catalog:
   happy-dom: ^20.9.0
   html-minifier-terser: ^7.2.0
   is-ci: ^4.1.0
+  jiti: ^2.7.0
   json-bigint: ^1.0.0
   jsonwebtoken: ^9.0.3
   knip: ^6.15.0

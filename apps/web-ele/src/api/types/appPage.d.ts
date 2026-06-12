@@ -14,16 +14,16 @@ export type AppPageCreateResponse = boolean;
  */
 export type AppPagePageRequest = {
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel?: number;
+  accessLevel?: 0 | 1 | 2 | 3;
 
   /* 页面编码（唯一标识） */
   code?: string;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
-  enablePlatform?: string;
+  enablePlatform?: null | string;
 
   /* 结束时间 */
-  endDate?: string;
+  endDate?: null | string;
 
   /* 页面启用状态 */
   isEnabled?: boolean;
@@ -32,21 +32,21 @@ export type AppPagePageRequest = {
   name?: string;
 
   /* 排序字段，json格式 */
-  orderBy?: string;
+  orderBy?: null | string;
 
   /* 当前页码（从1开始） */
-  pageIndex?: number;
+  pageIndex?: null | number;
 
   /* 单页大小，最大500，默认15 */
-  pageSize?: number;
+  pageSize?: null | number;
 
   /* 开始时间 */
-  startDate?: string;
+  startDate?: null | string;
 };
 
 export type AppPagePageResponse = {
   /* 列表数据 */
-  list?: BaseAppPageDto[];
+  list?: AppPageOutputDto[];
 
   /* 当前页码（从1开始） */
   pageIndex?: number;
@@ -68,7 +68,7 @@ export type AppPageDetailRequest = {
   id: number;
 };
 
-export type AppPageDetailResponse = BaseAppPageDto;
+export type AppPageDetailResponse = AppPageOutputDto;
 
 /**
  *  类型定义 [AppPageCodeDetailRequest]
@@ -80,7 +80,7 @@ export type AppPageCodeDetailRequest = {
   code: string;
 };
 
-export type AppPageCodeDetailResponse = BaseAppPageDto;
+export type AppPageCodeDetailResponse = AppPageOutputDto;
 
 /**
  *  类型定义 [AppPageUpdateRequest]
@@ -113,7 +113,7 @@ export type CreateAppPageDto = {
   /* 页面描述信息 */
   description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: (1 | 2 | 3)[];
+  enablePlatform?: (1 | 2 | 3)[] | null;
   /* 页面启用状态 */
   isEnabled: boolean;
   /* 页面名称 */
@@ -125,11 +125,11 @@ export type CreateAppPageDto = {
 };
 
 /**
- *  类型定义 [BaseAppPageDto]
+ *  类型定义 [AppPageOutputDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
  */
-export type BaseAppPageDto = {
+export type AppPageOutputDto = {
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
   accessLevel: 0 | 1 | 2 | 3;
   /* 页面编码（唯一标识） */
@@ -137,9 +137,9 @@ export type BaseAppPageDto = {
   /* 创建时间 */
   createdAt: string;
   /* 页面描述信息 */
-  description?: null | string;
+  description: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: (1 | 2 | 3)[];
+  enablePlatform: (1 | 2 | 3)[] | null;
   /* 主键id */
   id: number;
   /* 页面启用状态 */
@@ -167,7 +167,7 @@ export type UpdateAppPageDto = {
   /* 页面描述信息 */
   description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: (1 | 2 | 3)[];
+  enablePlatform?: (1 | 2 | 3)[] | null;
   /* 主键id */
   id: number;
   /* 页面启用状态 */
