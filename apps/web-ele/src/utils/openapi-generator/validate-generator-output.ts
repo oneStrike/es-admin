@@ -218,7 +218,8 @@ const tests: TestCase[] = [
 
       const { typesContent } = generateModule(spec, 'checkIn');
 
-      assert.match(typesContent, /latestRecord\?: CheckInRewardItem \| null/);
+      assert.match(typesContent, /latestRecord: CheckInRewardItem \| null/);
+      assert.doesNotMatch(typesContent, /latestRecord\?:/);
       assert.match(
         typesContent,
         /lastSettlement\?: CheckInRewardSettlement \| null/,
@@ -763,15 +764,15 @@ const tests: TestCase[] = [
       };
 
       const { typesContent: workflowTypes } = generateModule(spec, 'workflow');
-      assert.match(workflowTypes, /error\?: WorkflowErrorFactsDto \| null/);
-      assert.match(workflowTypes, /lastError\?: WorkflowErrorFactsDto \| null/);
+      assert.match(workflowTypes, /error: WorkflowErrorFactsDto \| null/);
+      assert.match(workflowTypes, /lastError: WorkflowErrorFactsDto \| null/);
       assert.match(workflowTypes, /code: 'KNOWN_ERROR' \| \(string & \{\}\)/);
 
       const { typesContent: contentTypes } = generateModule(spec, 'content');
-      assert.match(contentTypes, /lastError\?: WorkflowErrorFactsDto \| null/);
-      assert.match(contentTypes, /lastRetry\?: WorkflowErrorFactsDto \| null/);
-      assert.match(contentTypes, /warning\?: WorkflowErrorFactsDto \| null/);
-      assert.match(contentTypes, /error\?: WorkflowErrorFactsDto \| null/);
+      assert.match(contentTypes, /lastError: WorkflowErrorFactsDto \| null/);
+      assert.match(contentTypes, /lastRetry: WorkflowErrorFactsDto \| null/);
+      assert.match(contentTypes, /warning: WorkflowErrorFactsDto \| null/);
+      assert.match(contentTypes, /error: WorkflowErrorFactsDto \| null/);
       assert.match(
         contentTypes,
         /keywords\?: Record<string, string\[\]> \| null/,
@@ -784,11 +785,85 @@ const tests: TestCase[] = [
       const { typesContent: checkInTypes } = generateModule(spec, 'checkIn');
       assert.match(
         checkInTypes,
-        /rewardSettlement\?: CheckInRewardSettlementSummaryDto \| null/,
+        /rewardSettlement: CheckInRewardSettlementSummaryDto \| null/,
       );
 
       const { typesContent: growthTypes } = generateModule(spec, 'growth');
-      assert.match(growthTypes, /user\?: UserExperienceRecordUserDto \| null/);
+      assert.match(growthTypes, /user: UserExperienceRecordUserDto \| null/);
+    },
+  },
+  {
+    name: 'honors ApiPageDoc page envelope required markers only in responses',
+    run() {
+      const spec: OpenAPISpec = {
+        openapi: '3.0.0',
+        info: baseInfo,
+        paths: {
+          '/api/admin/generator-page/list': {
+            get: {
+              tags: ['生成器分页'],
+              summary: '分页响应',
+              responses: {
+                '200': {
+                  content: {
+                    'application/json': {
+                      schema: {
+                        type: 'object',
+                        properties: {
+                          data: {
+                            type: 'object',
+                            properties: {
+                              pageIndex: {
+                                type: 'number',
+                                required: true,
+                              },
+                              pageSize: {
+                                type: 'number',
+                                required: true,
+                              },
+                              total: {
+                                type: 'number',
+                                required: true,
+                              },
+                              list: {
+                                type: 'array',
+                                required: true,
+                                items: {
+                                  $ref: '#/components/schemas/GeneratorPageItemDto',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        components: {
+          schemas: {
+            GeneratorPageItemDto: {
+              type: 'object',
+              properties: { id: { type: 'integer' } },
+              required: ['id'],
+            },
+          },
+        },
+      };
+
+      const { typesContent } = generateModule(spec, 'generatorPage');
+
+      assert.match(typesContent, /list: GeneratorPageItemDto\[\]/);
+      assert.match(typesContent, /pageIndex: number/);
+      assert.match(typesContent, /pageSize: number/);
+      assert.match(typesContent, /total: number/);
+      assert.doesNotMatch(typesContent, /list\?:/);
+      assert.doesNotMatch(typesContent, /pageIndex\?:/);
+      assert.doesNotMatch(typesContent, /pageSize\?:/);
+      assert.doesNotMatch(typesContent, /total\?:/);
     },
   },
   {
@@ -954,7 +1029,7 @@ const tests: TestCase[] = [
                     schema: {
                       type: 'object',
                       properties: {
-                        'display-name': { type: 'string' },
+                        'display-name': { type: 'string', required: true },
                         count: { type: 'integer' },
                       },
                       required: ['count'],
@@ -1224,6 +1299,7 @@ const tests: TestCase[] = [
       assert.match(typesContent, /kind\?: string \| null/);
       assert.match(typesContent, /page: number/);
       assert.match(typesContent, /"filter-type"\?: string/);
+      assert.doesNotMatch(typesContent, /"filter-type"\?: string \| null/);
       assert.match(typesContent, /range\?: TransportRangeDto/);
       assert.match(typesContent, /owner\?: TransportOwnerDto \| null/);
       assert.match(
@@ -1248,6 +1324,7 @@ const tests: TestCase[] = [
         typesContent,
         /export type GeneratorTransportPostMixedRequest = \{[\s\S]*dryRun\?: boolean[\s\S]*\} & TransportBodyDto/,
       );
+      assert.doesNotMatch(typesContent, /dryRun\?: boolean \| null/);
       assert.match(
         typesContent,
         /export type GeneratorTransportPostInlineBodyRequest = \{[\s\S]*"display-name"\?: string[\s\S]*count: number[\s\S]*\}/,

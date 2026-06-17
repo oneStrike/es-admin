@@ -12,17 +12,18 @@ import {
 } from '../../shared/reward-config/reward-config';
 
 export type CheckInReconciliationRow = CheckInReconciliationPageItemDto;
-export type CheckInRewardItemDto = {
+export type CheckInRewardItemValue = {
   amount: ApiCheckInRewardItemDto['amount'];
-  assetKey?: string;
+  assetKey?: ApiCheckInRewardItemDto['assetKey'];
   assetType: ApiCheckInRewardItemDto['assetType'];
-  iconUrl?: string;
+  iconUrl: ApiCheckInRewardItemDto['iconUrl'];
 };
 
 type GrowthRewardItemDto = {
   amount: number;
   assetKey?: null | string;
   assetType: ApiCheckInRewardItemDto['assetType'];
+  iconUrl?: null | string;
 };
 
 export const checkInMakeupPeriodTypeOptions = [
@@ -92,26 +93,27 @@ export const weeklyCalendarLabels = [
 ];
 
 export function cloneRewardItems(
-  rewardItems?: Array<CheckInRewardItemDto | GrowthRewardItemDto> | null,
+  rewardItems?: Array<CheckInRewardItemValue | GrowthRewardItemDto> | null,
 ) {
   const normalizedRewardItems = (rewardItems || []).map((item) => ({
     ...item,
     assetKey: item.assetKey ?? '',
   }));
 
-  return cloneSharedRewardItems(
-    normalizedRewardItems,
-  ) as CheckInRewardItemDto[];
+  return cloneSharedRewardItems(normalizedRewardItems).map((item) => ({
+    ...item,
+    iconUrl: item.iconUrl ?? null,
+  })) as CheckInRewardItemValue[];
 }
 
 export function hasRewardItems(
-  rewardItems?: Array<CheckInRewardItemDto | GrowthRewardItemDto> | null,
+  rewardItems?: Array<CheckInRewardItemValue | GrowthRewardItemDto> | null,
 ) {
   return (rewardItems || []).length > 0;
 }
 
 export function formatRewardSummary(
-  rewardItems?: Array<CheckInRewardItemDto | GrowthRewardItemDto> | null,
+  rewardItems?: Array<CheckInRewardItemValue | GrowthRewardItemDto> | null,
 ) {
   const normalizedRewardItems = (rewardItems || []).map((item) => ({
     ...item,
@@ -128,13 +130,14 @@ export function buildBaseRewardItems(
   points?: null | number,
   experience?: null | number,
 ) {
-  const rewardItems: CheckInRewardItemDto[] = [];
+  const rewardItems: CheckInRewardItemValue[] = [];
 
   if (typeof points === 'number' && points > 0) {
     rewardItems.push({
       amount: Number(points),
       assetKey: '',
       assetType: 1,
+      iconUrl: null,
     });
   }
 
@@ -143,6 +146,7 @@ export function buildBaseRewardItems(
       amount: Number(experience),
       assetKey: '',
       assetType: 2,
+      iconUrl: null,
     });
   }
 
@@ -150,7 +154,7 @@ export function buildBaseRewardItems(
 }
 
 export function parseBaseRewardItems(
-  rewardItems?: CheckInRewardItemDto[] | null,
+  rewardItems?: CheckInRewardItemValue[] | null,
 ) {
   const rewardValue = {
     experience: undefined as number | undefined,
@@ -234,12 +238,15 @@ export function sortStreakRules<
   });
 }
 
-export function sortPatternRules<
-  T extends Pick<
-    BaseCheckInPatternRewardRuleDto,
-    'monthDay' | 'patternType' | 'weekday'
-  >,
->(rules: T[]) {
+type SortablePatternRule = Pick<
+  BaseCheckInPatternRewardRuleDto,
+  'patternType'
+> & {
+  monthDay?: null | number;
+  weekday?: null | number;
+};
+
+export function sortPatternRules<T extends SortablePatternRule>(rules: T[]) {
   return rules.toSorted((left, right) => {
     if (left.patternType !== right.patternType) {
       return left.patternType - right.patternType;

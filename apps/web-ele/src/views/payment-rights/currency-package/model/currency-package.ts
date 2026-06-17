@@ -46,10 +46,6 @@ function normalizeOptionalNumber(value: unknown) {
   return Number.isFinite(numberValue) ? numberValue : undefined;
 }
 
-function normalizeNullableNumber(value: unknown) {
-  return normalizeOptionalNumber(value) ?? null;
-}
-
 function requireInteger(value: unknown, label: string) {
   const numberValue = normalizeOptionalNumber(value);
 
@@ -75,7 +71,7 @@ function requireText(value: unknown, label: string) {
 }
 
 function normalizeBoolean(value: unknown) {
-  return typeof value === 'boolean' ? value : null;
+  return typeof value === 'boolean' ? value : undefined;
 }
 
 function formatCentAmount(value: unknown) {
@@ -100,13 +96,13 @@ function formatOptionText(
 
 function buildCurrencyPackageBase(values: CurrencyPackageFormValues) {
   return {
-    bonusAmount: normalizeNullableNumber(values.bonusAmount),
+    bonusAmount: normalizeOptionalNumber(values.bonusAmount),
     currencyAmount: requireInteger(values.currencyAmount, '发放虚拟币数量'),
     isEnabled: normalizeBoolean(values.isEnabled),
     name: requireText(values.name, '充值包名称'),
     packageKey: requireText(values.packageKey, '充值包业务键'),
     price: requireInteger(values.price, '支付价格'),
-    sortOrder: normalizeNullableNumber(values.sortOrder),
+    sortOrder: normalizeOptionalNumber(values.sortOrder),
   } satisfies WalletCurrencyPackageCreateRequest;
 }
 

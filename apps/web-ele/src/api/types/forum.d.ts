@@ -8,7 +8,7 @@ export type ForumModeratorsPageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 用户昵称关键词 */
   nickname?: null | string;
@@ -29,21 +29,21 @@ export type ForumModeratorsPageRequest = {
   startDate?: null | string;
 
   /* 用户id */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type ForumModeratorsPageResponse = {
   /* 列表数据 */
-  list?: ForumModeratorDto[] | null;
+  list: ForumModeratorDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -102,7 +102,7 @@ export type ForumModeratorsAssignSectionResponse = boolean;
  */
 export type ForumModeratorApplicationPageRequest = {
   /* 申请人用户ID */
-  applicantId?: null | number;
+  applicantId?: number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -120,27 +120,27 @@ export type ForumModeratorApplicationPageRequest = {
   pageSize?: null | number;
 
   /* 申请板块ID */
-  sectionId?: null | number;
+  sectionId?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 申请状态（0=待审核；1=已通过；2=已拒绝） */
-  status?: null | number;
+  status?: number;
 };
 
 export type ForumModeratorApplicationPageResponse = {
   /* 列表数据 */
-  list?: ForumModeratorApplicationDto[] | null;
+  list: ForumModeratorApplicationDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -214,16 +214,16 @@ export type ForumSearchPageRequest = {
 
 export type ForumSearchPageResponse = {
   /* 列表数据 */
-  list?: ForumSearchResultDto[] | null;
+  list: ForumSearchResultDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -236,13 +236,13 @@ export type ForumSensitiveWordPageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 敏感词级别（1=严重；2=一般；3=轻微） */
-  level?: null | number;
+  level?: number;
 
   /* 匹配模式（1=精确匹配；2=模糊匹配） */
-  matchMode?: null | number;
+  matchMode?: number;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -257,24 +257,24 @@ export type ForumSensitiveWordPageRequest = {
   startDate?: null | string;
 
   /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
-  type?: null | number;
+  type?: number;
 
   /* 敏感词 */
-  word?: null | string;
+  word?: string;
 };
 
 export type ForumSensitiveWordPageResponse = {
   /* 列表数据 */
-  list?: null | SensitiveWordOutputDto[];
+  list: SensitiveWordOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -383,16 +383,16 @@ export type ForumSensitiveWordHitLogPageRequest = {
 
 export type ForumSensitiveWordHitLogPageResponse = {
   /* 列表数据 */
-  list?: null | SensitiveWordHitLogPageItemDto[];
+  list: SensitiveWordHitLogPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -427,7 +427,7 @@ export type ForumSensitiveWordCountResponse = SensitiveWordCountResponseDto;
  */
 export type ForumTopicPageRequest = {
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: null | number;
+  auditStatus?: number;
 
   /* 删除状态筛选（正常；已删除；全部） */
   deletedState?: null | string;
@@ -436,16 +436,16 @@ export type ForumTopicPageRequest = {
   endDate?: null | string;
 
   /* 是否精华 */
-  isFeatured?: boolean | null;
+  isFeatured?: boolean;
 
   /* 是否隐藏 */
-  isHidden?: boolean | null;
+  isHidden?: boolean;
 
   /* 是否锁定 */
-  isLocked?: boolean | null;
+  isLocked?: boolean;
 
   /* 是否置顶 */
-  isPinned?: boolean | null;
+  isPinned?: boolean;
 
   /* 关键词搜索（标题或内容） */
   keyword?: null | string;
@@ -460,27 +460,27 @@ export type ForumTopicPageRequest = {
   pageSize?: null | number;
 
   /* 关联的板块ID */
-  sectionId?: null | number;
+  sectionId?: number;
 
   /* 创建日期开始（应用时区自然日，YYYY-MM-DD） */
   startDate?: null | string;
 
   /* 用户ID */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type ForumTopicPageResponse = {
   /* 列表数据 */
-  list?: AdminForumTopicPageItemDto[] | null;
+  list: AdminForumTopicPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -598,13 +598,13 @@ export type ForumSectionsPageRequest = {
   groupId?: null | number;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 是否仅筛选未分组板块；为 true 时忽略 groupId */
   isUngrouped?: boolean | null;
 
   /* 板块名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -619,21 +619,21 @@ export type ForumSectionsPageRequest = {
   startDate?: null | string;
 
   /* 审核策略（0=不审核；1=严重敏感词触发审核；2=一般敏感词触发审核；3=轻度敏感词触发审核；4=强制人工审核） */
-  topicReviewPolicy?: null | number;
+  topicReviewPolicy?: number;
 };
 
 export type ForumSectionsPageResponse = {
   /* 列表数据 */
-  list?: AdminForumSectionDto[] | null;
+  list: AdminForumSectionDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -717,10 +717,10 @@ export type ForumSectionGroupsPageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 分组名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -737,16 +737,16 @@ export type ForumSectionGroupsPageRequest = {
 
 export type ForumSectionGroupsPageResponse = {
   /* 列表数据 */
-  list?: ForumSectionGroupOutputDto[] | null;
+  list: ForumSectionGroupOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -815,13 +815,13 @@ export type ForumSectionGroupsSwapSortOrderResponse = boolean;
  */
 export type ForumHashtagsPageRequest = {
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: null | number;
+  auditStatus?: number;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 是否隐藏 */
-  isHidden?: boolean | null;
+  isHidden?: boolean;
 
   /* 关键词搜索（displayName 或 slug） */
   keyword?: null | string;
@@ -841,16 +841,16 @@ export type ForumHashtagsPageRequest = {
 
 export type ForumHashtagsPageResponse = {
   /* 列表数据 */
-  list?: AdminForumHashtagDto[] | null;
+  list: AdminForumHashtagDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -909,13 +909,13 @@ export type ForumHashtagsUpdateAuditStatusResponse = boolean;
  */
 export type ForumModeratorActionLogPageRequest = {
   /* 操作类型（1=置顶主题；2=取消置顶主题；3=加精主题；4=取消加精主题；5=锁定主题；6=取消锁定主题；7=删除主题；8=移动主题；9=审核主题；10=删除评论；11=隐藏主题；12=取消隐藏主题；13=审核评论；14=隐藏评论；15=取消隐藏评论；16=恢复主题；17=更新主题内容） */
-  actionType?: null | number;
+  actionType?: number;
 
   /* 治理发起方类型（1=版主；2=后台管理员） */
-  actorType?: null | number;
+  actorType?: number;
 
   /* 治理发起用户ID；版主为 app 用户ID，后台管理员为后台用户ID */
-  actorUserId?: null | number;
+  actorUserId?: number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -936,24 +936,24 @@ export type ForumModeratorActionLogPageRequest = {
   startDate?: null | string;
 
   /* 操作目标ID */
-  targetId?: null | number;
+  targetId?: number;
 
   /* 操作目标类型（1=论坛主题；2=论坛评论） */
-  targetType?: null | number;
+  targetType?: number;
 };
 
 export type ForumModeratorActionLogPageResponse = {
   /* 列表数据 */
-  list?: ForumModeratorActionLogDto[] | null;
+  list: ForumModeratorActionLogDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -963,7 +963,7 @@ export type ForumModeratorActionLogPageResponse = {
  */
 export type ForumModeratorLifecycleLogPageRequest = {
   /* 后台操作者用户ID */
-  actorAdminUserId?: null | number;
+  actorAdminUserId?: number;
 
   /* 关联申请ID */
   applicationId?: null | number;
@@ -972,7 +972,7 @@ export type ForumModeratorLifecycleLogPageRequest = {
   endDate?: null | string;
 
   /* 生命周期事件类型（1=创建版主；2=恢复版主；3=更新作用域；4=分配板块；5=启用版主；6=禁用版主；7=移除版主；8=申请通过；9=申请拒绝） */
-  eventType?: null | number;
+  eventType?: number;
 
   /* 关联版主ID */
   moderatorId?: null | number;
@@ -992,16 +992,16 @@ export type ForumModeratorLifecycleLogPageRequest = {
 
 export type ForumModeratorLifecycleLogPageResponse = {
   /* 列表数据 */
-  list?: BaseForumModeratorLifecycleLogDto[] | null;
+  list: BaseForumModeratorLifecycleLogDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -1011,13 +1011,12 @@ export type ForumModeratorLifecycleLogPageResponse = {
  */
 export type ForumModeratorDto = {
   /* 用户头像 */
-  avatar?: null | string;
+  avatar: null | string;
   /* 创建时间 */
   createdAt: string;
-  /* 所属分组 */
-  group: ForumModeratorGroupDto;
+  group: ForumModeratorGroupDto | null;
   /* 分组ID（为空表示非分组版主） */
-  groupId?: null | number;
+  groupId: null | number;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -1029,7 +1028,7 @@ export type ForumModeratorDto = {
   /* 权限列表（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
   permissions: number[];
   /* 备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 版主角色类型（1=超级版主；2=分组版主；3=板块版主） */
   roleType: number;
   /* 可治理板块总数 */
@@ -1089,7 +1088,7 @@ export type CreateForumModeratorDto = {
   /* 版主角色类型（1=超级版主；2=分组版主；3=板块版主） */
   roleType: number;
   /* 板块ID列表；仅板块版主场景使用。 */
-  sectionIds?: null | number[];
+  sectionIds?: number[];
   /* 用户id */
   userId: number;
 };
@@ -1105,15 +1104,15 @@ export type UpdateForumModeratorDto = {
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 版主权限列表（1=置顶；2=加精；3=锁定；4=删除；5=审核；6=移动） */
   permissions?: null | number[];
   /* 备注 */
   remark?: null | string;
   /* 版主角色类型（1=超级版主；2=分组版主；3=板块版主） */
-  roleType?: null | number;
+  roleType?: number;
   /* 板块ID列表；仅板块版主场景使用。 */
-  sectionIds?: null | number[];
+  sectionIds?: number[];
 };
 
 /**
@@ -1151,13 +1150,12 @@ export type ForumModeratorApplicationDto = {
   /* 申请人用户ID */
   applicantId: number;
   /* 审核时间 */
-  auditAt?: null | string;
+  auditAt: null | string;
   /* 审核人ID */
-  auditById?: null | number;
-  /* 审核人信息 */
-  auditor: ForumModeratorApplicationUserDto;
+  auditById: null | number;
+  auditor: ForumModeratorApplicationUserDto | null;
   /* 审核意见 */
-  auditReason?: null | string;
+  auditReason: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 主键id */
@@ -1169,7 +1167,7 @@ export type ForumModeratorApplicationDto = {
   /* 申请理由 */
   reason: string;
   /* 备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 板块信息 */
   section: ForumModeratorApplicationSectionDto;
   /* 申请板块ID */
@@ -1187,7 +1185,7 @@ export type ForumModeratorApplicationDto = {
  */
 export type ForumModeratorApplicationUserDto = {
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl: null | string;
   /* 主键id */
   id: number;
   /* 昵称 */
@@ -1203,7 +1201,7 @@ export type ForumModeratorApplicationSectionDto = {
   /* 板块封面 */
   cover: string;
   /* 板块描述 */
-  description?: null | string;
+  description: null | string;
   /* 板块图标 */
   icon: string;
   /* 主键id */
@@ -1235,11 +1233,11 @@ export type AuditForumModeratorApplicationDto = {
  */
 export type ForumSearchResultDto = {
   /* 评论内容摘要；仅评论搜索结果返回。 */
-  commentContentSnippet?: null | string;
+  commentContentSnippet: null | string;
   /* 评论数 */
   commentCount: number;
   /* 评论ID；仅评论搜索结果返回。 */
-  commentId?: null | number;
+  commentId: null | number;
   /* 创建时间 */
   createdAt: string;
   /* 收藏数 */
@@ -1253,13 +1251,13 @@ export type ForumSearchResultDto = {
   /* 板块名称 */
   sectionName: string;
   /* 主题内容摘要 */
-  topicContentSnippet?: null | string;
+  topicContentSnippet: null | string;
   /* 主题ID */
   topicId: number;
   /* 主题标题 */
   topicTitle: string;
   /* 用户头像 */
-  userAvatarUrl?: null | string;
+  userAvatarUrl: null | string;
   /* 用户ID */
   userId: number;
   /* 用户昵称 */
@@ -1277,7 +1275,7 @@ export type SensitiveWordOutputDto = {
   /* 创建时间 */
   createdAt: string;
   /* 创建人ID */
-  createdBy?: null | number;
+  createdBy: null | number;
   /* 命中次数 */
   hitCount: number;
   /* 主键id */
@@ -1285,21 +1283,21 @@ export type SensitiveWordOutputDto = {
   /* 是否启用 */
   isEnabled: boolean;
   /* 最后命中时间 */
-  lastHitAt?: null | string;
+  lastHitAt: null | string;
   /* 敏感词级别（1=严重；2=一般；3=轻微） */
   level: number;
   /* 匹配模式（1=精确匹配；2=模糊匹配） */
   matchMode: number;
   /* 备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 替换词 */
-  replaceWord?: null | string;
+  replaceWord: null | string;
   /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
   type: number;
   /* 更新时间 */
   updatedAt: string;
   /* 更新人ID */
-  updatedBy?: null | number;
+  updatedBy: null | number;
   /* 敏感词 */
   word: string;
 };
@@ -1379,7 +1377,7 @@ export type SensitiveWordDetectDto = {
  */
 export type SensitiveWordDetectResponseDto = {
   /* 最高敏感等级（1=严重；2=一般；3=轻微） */
-  highestLevel?: null | number;
+  highestLevel: null | number;
   /* 命中的敏感词列表 */
   hits: SensitiveWordHitDto[];
 };
@@ -1397,7 +1395,7 @@ export type SensitiveWordHitDto = {
   /* 敏感词级别（1=严重；2=一般；3=轻微） */
   level: number;
   /* 替换词 */
-  replaceWord?: null | string;
+  replaceWord: null | string;
   /* 起始位置 */
   start: number;
   /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
@@ -1489,7 +1487,7 @@ export type SensitiveWordTopHitStatisticsDto = {
   /* 命中次数 */
   hitCount: number;
   /* 最后命中时间 */
-  lastHitAt?: null | string;
+  lastHitAt: null | string;
   /* 敏感词级别（1=严重；2=一般；3=轻微） */
   level: number;
   /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
@@ -1504,8 +1502,7 @@ export type SensitiveWordTopHitStatisticsDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type SensitiveWordHitLogPageItemDto = {
-  /* 作者摘要 */
-  authorSummary: SensitiveWordHitLogAuthorSummaryDto;
+  authorSummary: null | SensitiveWordHitLogAuthorSummaryDto;
   /* 命中时间 */
   createdAt: string;
   /* 命中实体ID */
@@ -1527,7 +1524,7 @@ export type SensitiveWordHitLogPageItemDto = {
   /* 敏感词类型（1=政治；2=色情；3=暴力；4=广告；5=其他） */
   type: number;
   /* 敏感词库中的词 */
-  word?: null | string;
+  word: null | string;
 };
 
 /**
@@ -1537,21 +1534,21 @@ export type SensitiveWordHitLogPageItemDto = {
  */
 export type SensitiveWordHitLogEntitySummaryDto = {
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
-  auditStatus?: null | number;
+  auditStatus: null | number;
   /* 是否可跳转到内容处置入口 */
   canNavigate: boolean;
   /* 是否隐藏 */
-  isHidden?: boolean | null;
+  isHidden: boolean | null;
   /* 内容摘要 */
-  snippet?: null | string;
+  snippet: null | string;
   /* 实体状态返回值域（内容可查看；内容已删除；内容已隐藏；不可处置；关联实体缺失） */
   status: 'available' | 'deleted' | 'forbidden' | 'hidden' | 'missing';
   /* 评论目标ID */
-  targetId?: null | number;
+  targetId: null | number;
   /* 评论目标类型 */
-  targetType?: null | number;
+  targetType: null | number;
   /* 主题标题 */
-  title?: null | string;
+  title: null | string;
 };
 
 /**
@@ -1561,15 +1558,15 @@ export type SensitiveWordHitLogEntitySummaryDto = {
  */
 export type SensitiveWordHitLogAuthorSummaryDto = {
   /* 作者头像URL */
-  avatarUrl?: null | string;
+  avatarUrl: null | string;
   /* 作者ID */
   id: number;
   /* 作者是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled: boolean | null;
   /* 作者昵称 */
-  nickname?: null | string;
+  nickname: null | string;
   /* 作者状态 */
-  status?: null | number;
+  status: null | number;
 };
 
 /**
@@ -1601,7 +1598,7 @@ export type SensitiveWordReplaceResponseDto = {
  */
 export type SensitiveWordHighestLevelResponseDto = {
   /* 最高敏感等级（1=严重；2=一般；3=轻微） */
-  highestLevel?: null | number;
+  highestLevel: null | number;
 };
 
 /**
@@ -1633,9 +1630,9 @@ export type SensitiveWordCountResponseDto = {
  */
 export type AdminForumTopicPageItemDto = {
   /* 审核时间 */
-  auditAt?: null | string;
+  auditAt: null | string;
   /* 审核拒绝原因 */
-  auditReason?: null | string;
+  auditReason: null | string;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: number;
   /* 评论次数 */
@@ -1645,7 +1642,7 @@ export type AdminForumTopicPageItemDto = {
   /* 创建时间 */
   createdAt: string;
   /* 删除时间 */
-  deletedAt?: null | string;
+  deletedAt: null | string;
   /* 收藏次数 */
   favoriteCount: number;
   /* 主键id */
@@ -1661,23 +1658,21 @@ export type AdminForumTopicPageItemDto = {
   /* 是否置顶 */
   isPinned: boolean;
   /* 最后评论时间 */
-  lastCommentAt?: null | string;
+  lastCommentAt: null | string;
   /* 最后评论用户ID */
-  lastCommentUserId?: null | number;
+  lastCommentUserId: null | number;
   /* 点赞次数 */
   likeCount: number;
   /* 关联的板块ID */
   sectionId: number;
-  /* 所属板块摘要 */
-  sectionSummary: AdminForumTopicSectionSummaryDto;
+  sectionSummary: AdminForumTopicSectionSummaryDto | null;
   /* 主题标题 */
   title: string;
   /* 更新时间 */
   updatedAt: string;
   /* 用户ID */
   userId: number;
-  /* 发帖用户摘要 */
-  userSummary: AdminForumTopicUserSummaryDto;
+  userSummary: AdminForumTopicUserSummaryDto | null;
   /* 主题视频 JSON 值 */
   videos: string;
   /* 浏览次数 */
@@ -1733,13 +1728,13 @@ export type ForumTopicContentPreviewSegmentDto = {
  */
 export type AdminForumTopicUserSummaryDto = {
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
   isEnabled: boolean;
   /* 论坛等级名称 */
-  levelName?: null | string;
+  levelName: null | string;
   /* 昵称 */
   nickname: string;
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
@@ -1753,7 +1748,7 @@ export type AdminForumTopicUserSummaryDto = {
  */
 export type AdminForumTopicSectionSummaryDto = {
   /* 所属分组名称 */
-  groupName?: null | string;
+  groupName: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -1771,11 +1766,10 @@ export type AdminForumTopicSectionSummaryDto = {
  */
 export type AdminForumTopicDetailDto = {
   /* 审核时间 */
-  auditAt?: null | string;
-  /* 审核人摘要 */
-  auditorSummary: InteractionActorSummaryDto;
+  auditAt: null | string;
+  auditorSummary: InteractionActorSummaryDto | null;
   /* 审核拒绝原因 */
-  auditReason?: null | string;
+  auditReason: null | string;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: number;
   /* 评论次数 */
@@ -1783,7 +1777,7 @@ export type AdminForumTopicDetailDto = {
   /* 创建时间 */
   createdAt: string;
   /* 删除时间 */
-  deletedAt?: null | string;
+  deletedAt: null | string;
   /* 收藏次数 */
   favoriteCount: number;
   /* 主题关联话题 */
@@ -1803,9 +1797,9 @@ export type AdminForumTopicDetailDto = {
   /* 是否置顶 */
   isPinned: boolean;
   /* 最后评论时间 */
-  lastCommentAt?: null | string;
+  lastCommentAt: null | string;
   /* 最后评论用户ID */
-  lastCommentUserId?: null | number;
+  lastCommentUserId: null | number;
   /* 点赞次数 */
   likeCount: number;
   /* 所属板块 */
@@ -1813,13 +1807,12 @@ export type AdminForumTopicDetailDto = {
   /* 关联的板块ID */
   sectionId: number;
   /* 敏感词命中记录 */
-  sensitiveWordHits?: null | SensitiveWordHitDto[];
+  sensitiveWordHits: null | SensitiveWordHitDto[];
   /* 主题标题 */
   title: string;
   /* 更新时间 */
   updatedAt: string;
-  /* 发帖用户 */
-  user: AdminForumTopicUserDto;
+  user: AdminForumTopicUserDto | null;
   /* 用户ID */
   userId: number;
   /* 乐观锁版本号 */
@@ -1839,7 +1832,7 @@ export type ForumHashtagBriefDto = {
   /* 可见评论引用数 */
   commentRefCount: number;
   /* 运营描述 */
-  description?: null | string;
+  description: null | string;
   /* 展示名称 */
   displayName: string;
   /* 关注人数 */
@@ -1847,7 +1840,7 @@ export type ForumHashtagBriefDto = {
   /* 主键id */
   id: number;
   /* 最近一次被引用时间 */
-  lastReferencedAt?: null | string;
+  lastReferencedAt: null | string;
   /* 归一化 slug */
   slug: string;
   /* 可见主题引用数 */
@@ -1863,7 +1856,7 @@ export type AdminForumTopicSectionDto = {
   /* 板块封面 */
   cover: string;
   /* 板块描述 */
-  description?: null | string;
+  description: null | string;
   /* 板块图标 */
   icon: string;
   /* 主键id */
@@ -1883,29 +1876,27 @@ export type AdminForumTopicSectionDto = {
  */
 export type AdminForumTopicUserDto = {
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl: null | string;
   /* 封禁原因 */
-  banReason?: null | string;
+  banReason: null | string;
   /* 封禁到期时间 */
-  banUntil?: null | string;
+  banUntil: null | string;
   /* 个人简介 */
-  bio?: null | string;
-  /* 用户计数 */
-  counts: AdminForumTopicUserCountDto;
+  bio: null | string;
+  counts: AdminForumTopicUserCountDto | null;
   /* 主键id */
   id: number;
   /* 是否启用 */
   isEnabled: boolean;
-  /* 论坛等级 */
-  level: AdminForumTopicUserLevelDto;
+  level: AdminForumTopicUserLevelDto | null;
   /* 等级ID */
-  levelId?: null | number;
+  levelId: null | number;
   /* 昵称 */
   nickname: string;
   /* 当前积分 */
   points: number;
   /* 个性签名 */
-  signature?: null | string;
+  signature: null | string;
   /* 用户状态（1=正常；2=禁言；3=永久禁言；4=封禁；5=永久封禁） */
   status: number;
 };
@@ -1939,7 +1930,7 @@ export type AdminForumTopicUserCountDto = {
  */
 export type AdminForumTopicUserLevelDto = {
   /* 等级图标URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 等级名称 */
@@ -1955,13 +1946,13 @@ export type AdminForumTopicUserLevelDto = {
  */
 export type InteractionActorSummaryDto = {
   /* 头像 */
-  avatar?: null | string;
+  avatar: null | string;
   /* 主键id */
   id: number;
   /* 昵称；管理员默认使用用户名兜底 */
-  nickname?: null | string;
+  nickname: null | string;
   /* 角色名称 */
-  roleName?: null | string;
+  roleName: null | string;
   /* 用户名 */
   username: string;
 };
@@ -1975,15 +1966,15 @@ export type CreateForumTopicDto = {
   /* 正文 HTML；唯一写入合同，纯文本编辑器也需输出最小 HTML */
   html: string;
   /* 主题图片列表 */
-  images?: null | string[];
+  images?: string[];
   /* 关联的板块ID */
   sectionId: number;
   /* 主题标题 */
-  title?: null | string;
+  title?: string;
   /* 用户ID */
   userId: number;
   /* 主题视频 JSON 值 */
-  videos?: null | string;
+  videos?: string;
 };
 
 /**
@@ -1997,11 +1988,11 @@ export type UpdateForumTopicDto = {
   /* 主键id */
   id: number;
   /* 主题图片列表 */
-  images?: null | string[];
+  images?: string[];
   /* 主题标题 */
-  title?: null | string;
+  title?: string;
   /* 主题视频 JSON 值 */
-  videos?: null | string;
+  videos?: string;
 };
 
 /**
@@ -2013,7 +2004,7 @@ export type RestoreForumTopicDto = {
   /* 主键id */
   id: number;
   /* 关联的板块ID */
-  sectionId?: null | number;
+  sectionId?: number;
 };
 
 /**
@@ -2083,7 +2074,7 @@ export type UpdateForumTopicHiddenDto = {
  */
 export type UpdateForumTopicAuditStatusDto = {
   /* 审核拒绝原因 */
-  auditReason?: null | string;
+  auditReason: null | string;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: number;
   /* 主键id */
@@ -2103,11 +2094,11 @@ export type AdminForumSectionDto = {
   /* 创建时间 */
   createdAt: string;
   /* 板块描述 */
-  description?: null | string;
+  description: null | string;
   /* 关注人数 */
   followersCount: number;
   /* 板块分组ID（为空表示未分组） */
-  groupId?: null | number;
+  groupId: null | number;
   /* 板块图标 */
   icon: string;
   /* 主键id */
@@ -2115,13 +2106,13 @@ export type AdminForumSectionDto = {
   /* 是否启用 */
   isEnabled: boolean;
   /* 最后发表时间 */
-  lastPostAt?: null | string;
+  lastPostAt: null | string;
   /* 最后发表主题ID */
-  lastTopicId?: null | number;
+  lastTopicId: null | number;
   /* 板块名称 */
   name: string;
   /* 备注信息 */
-  remark?: null | string;
+  remark: null | string;
   /* 排序权重 */
   sortOrder: number;
   /* 主题数 */
@@ -2131,7 +2122,7 @@ export type AdminForumSectionDto = {
   /* 更新时间 */
   updatedAt: string;
   /* 用户等级规则ID（为空表示所有用户） */
-  userLevelRuleId?: null | number;
+  userLevelRuleId: null | number;
 };
 
 /**
@@ -2147,13 +2138,12 @@ export type AdminForumSectionDetailDto = {
   /* 创建时间 */
   createdAt: string;
   /* 板块描述 */
-  description?: null | string;
+  description: null | string;
   /* 关注人数 */
   followersCount: number;
-  /* 所属分组；未分组板块为空 */
-  group: ForumSectionGroupSummaryDto;
+  group: ForumSectionGroupSummaryDto | null;
   /* 板块分组ID（为空表示未分组） */
-  groupId?: null | number;
+  groupId: null | number;
   /* 板块图标 */
   icon: string;
   /* 主键id */
@@ -2161,13 +2151,13 @@ export type AdminForumSectionDetailDto = {
   /* 是否启用 */
   isEnabled: boolean;
   /* 最后发表时间 */
-  lastPostAt?: null | string;
+  lastPostAt: null | string;
   /* 最后发表主题ID */
-  lastTopicId?: null | number;
+  lastTopicId: null | number;
   /* 板块名称 */
   name: string;
   /* 备注信息 */
-  remark?: null | string;
+  remark: null | string;
   /* 排序权重 */
   sortOrder: number;
   /* 主题数 */
@@ -2177,7 +2167,7 @@ export type AdminForumSectionDetailDto = {
   /* 更新时间 */
   updatedAt: string;
   /* 用户等级规则ID（为空表示所有用户） */
-  userLevelRuleId?: null | number;
+  userLevelRuleId: null | number;
 };
 
 /**
@@ -2187,7 +2177,7 @@ export type AdminForumSectionDetailDto = {
  */
 export type ForumSectionGroupSummaryDto = {
   /* 分组描述 */
-  description?: null | string;
+  description: null | string;
   /* 主键ID */
   id: number;
   /* 是否启用 */
@@ -2204,8 +2194,7 @@ export type ForumSectionGroupSummaryDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type ForumSectionTreeNodeDto = {
-  /* 分组信息；未分组节点为空 */
-  group: ForumSectionGroupOutputDto;
+  group: ForumSectionGroupOutputDto | null;
   /* 是否为未分组节点 */
   isUngrouped: boolean;
   /* 该节点下的板块列表 */
@@ -2221,7 +2210,7 @@ export type ForumSectionGroupOutputDto = {
   /* 创建时间 */
   createdAt: string;
   /* 分组描述 */
-  description?: null | string;
+  description: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -2271,25 +2260,25 @@ export type CreateForumSectionDto = {
  */
 export type UpdateForumSectionDto = {
   /* 板块封面 */
-  cover?: null | string;
+  cover?: string;
   /* 板块描述 */
   description?: null | string;
   /* 板块分组ID（为空表示未分组） */
   groupId?: null | number;
   /* 板块图标 */
-  icon?: null | string;
+  icon?: string;
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 板块名称 */
-  name?: null | string;
+  name?: string;
   /* 备注信息 */
   remark?: null | string;
   /* 排序权重 */
-  sortOrder?: null | number;
+  sortOrder?: number;
   /* 审核策略（0=不审核；1=严重敏感词触发审核；2=一般敏感词触发审核；3=轻度敏感词触发审核；4=强制人工审核） */
-  topicReviewPolicy?: null | number;
+  topicReviewPolicy?: number;
   /* 用户等级规则ID（为空表示所有用户） */
   userLevelRuleId?: null | number;
 };
@@ -2319,9 +2308,9 @@ export type ForumSectionCountRepairResultDto = {
   /* 主键id */
   id: number;
   /* 最后发表时间 */
-  lastPostAt?: null | string;
+  lastPostAt: null | string;
   /* 最后发表主题ID */
-  lastTopicId?: null | number;
+  lastTopicId: null | number;
   /* 主题数 */
   topicCount: number;
 };
@@ -2367,13 +2356,13 @@ export type UpdateForumSectionGroupDto = {
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 分组版主数量限制（0表示不限制） */
-  maxModerators?: null | number;
+  maxModerators?: number;
   /* 分组名称 */
-  name?: null | string;
+  name?: string;
   /* 排序权重 */
-  sortOrder?: null | number;
+  sortOrder?: number;
 };
 
 /**
@@ -2407,13 +2396,13 @@ export type SwapForumSectionGroupSortDto = {
  */
 export type AdminForumHashtagDto = {
   /* 审核时间 */
-  auditAt?: null | string;
+  auditAt: null | string;
   /* 审核人 ID */
-  auditById?: null | number;
+  auditById: null | number;
   /* 审核原因 */
-  auditReason?: null | string;
+  auditReason: null | string;
   /* 审核角色（0=版主；1=管理员） */
-  auditRole?: null | number;
+  auditRole: null | number;
   /* 审核状态（0=待审核；1=已通过；2=已拒绝） */
   auditStatus: number;
   /* 可见评论引用数 */
@@ -2421,11 +2410,11 @@ export type AdminForumHashtagDto = {
   /* 创建时间 */
   createdAt: string;
   /* 创建该话题资源的用户 ID */
-  createdByUserId?: null | number;
+  createdByUserId: null | number;
   /* 创建来源（1=管理员创建；2=topic 正文自动创建；3=comment 正文自动创建） */
   createSourceType: number;
   /* 运营描述 */
-  description?: null | string;
+  description: null | string;
   /* 展示名称 */
   displayName: string;
   /* 关注人数 */
@@ -2435,11 +2424,11 @@ export type AdminForumHashtagDto = {
   /* 是否隐藏 */
   isHidden: boolean;
   /* 最近一次被引用时间 */
-  lastReferencedAt?: null | string;
+  lastReferencedAt: null | string;
   /* 人工热度加权 */
   manualBoost: number;
   /* 敏感词命中记录 */
-  sensitiveWordHits?: null | SensitiveWordHitDto[];
+  sensitiveWordHits: null | SensitiveWordHitDto[];
   /* 归一化 slug */
   slug: string;
   /* 可见主题引用数 */
@@ -2459,7 +2448,7 @@ export type CreateForumHashtagDto = {
   /* 展示名称 */
   displayName: string;
   /* 人工热度加权 */
-  manualBoost?: null | number;
+  manualBoost?: number;
 };
 
 /**
@@ -2473,7 +2462,7 @@ export type UpdateForumHashtagDto = {
   /* 主键id */
   id: number;
   /* 人工热度加权 */
-  manualBoost?: null | number;
+  manualBoost?: number;
 };
 
 /**
@@ -2517,15 +2506,15 @@ export type ForumModeratorActionLogDto = {
   /* 治理发起用户ID；版主为 app 用户ID，后台管理员为后台用户ID */
   actorUserId: number;
   /* 操作后数据快照 */
-  afterData?: null | string;
+  afterData: null | string;
   /* 操作前数据快照 */
-  beforeData?: null | string;
+  beforeData: null | string;
   /* 操作时间 */
   createdAt: string;
   /* 主键ID */
   id: number;
   /* 版主ID；后台管理员发起的治理日志为空 */
-  moderatorId?: null | number;
+  moderatorId: null | number;
   /* 操作目标ID */
   targetId: number;
   /* 操作目标类型（1=论坛主题；2=论坛评论） */
@@ -2541,11 +2530,11 @@ export type BaseForumModeratorLifecycleLogDto = {
   /* 后台操作者用户ID */
   actorAdminUserId: number;
   /* 操作后快照 */
-  afterData?: null | string;
+  afterData: null | string;
   /* 关联申请ID */
-  applicationId?: null | number;
+  applicationId: null | number;
   /* 操作前快照 */
-  beforeData?: null | string;
+  beforeData: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 生命周期事件类型（1=创建版主；2=恢复版主；3=更新作用域；4=分配板块；5=启用版主；6=禁用版主；7=移除版主；8=申请通过；9=申请拒绝） */
@@ -2553,9 +2542,9 @@ export type BaseForumModeratorLifecycleLogDto = {
   /* 主键id */
   id: number;
   /* 关联版主ID */
-  moderatorId?: null | number;
+  moderatorId: null | number;
   /* 操作原因或审核意见 */
-  reason?: null | string;
+  reason: null | string;
 };
 
 /**

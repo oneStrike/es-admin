@@ -1,4 +1,4 @@
-import type { CheckInRewardItemDto } from './shared';
+import type { CheckInRewardItemValue } from './shared';
 
 import type {
   CheckInConfigDetailResponse,
@@ -18,7 +18,7 @@ import {
 export type CheckInConfigDateRuleDraft = {
   localId: string;
   rewardDate: string;
-  rewardItems: CheckInRewardItemDto[];
+  rewardItems: CheckInRewardItemValue[];
   rewardOverviewIconUrl?: string;
 };
 
@@ -26,13 +26,13 @@ export type CheckInConfigPatternRuleDraft = {
   localId: string;
   monthDay?: number;
   patternType: number;
-  rewardItems: CheckInRewardItemDto[];
+  rewardItems: CheckInRewardItemValue[];
   rewardOverviewIconUrl?: string;
   weekday?: number;
 };
 
 export type CheckInConfigFormState = {
-  baseRewardItems: CheckInRewardItemDto[];
+  baseRewardItems: CheckInRewardItemValue[];
   dateRules: CheckInConfigDateRuleDraft[];
   makeupIconUrl?: string;
   makeupPeriodType: number;
@@ -131,7 +131,7 @@ export function buildConfigUpdatePayload(
       .map((rule) => ({
         rewardDate: rule.rewardDate,
         rewardItems: cloneRewardItems(rule.rewardItems),
-        rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
+        rewardOverviewIconUrl: rule.rewardOverviewIconUrl ?? null,
       })),
     isEnabled,
     makeupIconUrl: state.makeupIconUrl,
@@ -139,14 +139,14 @@ export function buildConfigUpdatePayload(
     patternRewardRules: sortPatternRules(compatiblePatternRules)
       .filter((rule) => hasValidPatternRule(rule))
       .map((rule) => ({
-        monthDay: rule.patternType === 2 ? rule.monthDay : undefined,
+        monthDay: rule.patternType === 2 ? (rule.monthDay ?? null) : null,
         patternType: rule.patternType,
         rewardItems: cloneRewardItems(rule.rewardItems),
-        rewardOverviewIconUrl: rule.rewardOverviewIconUrl,
-        weekday: rule.patternType === 1 ? rule.weekday : undefined,
+        rewardOverviewIconUrl: rule.rewardOverviewIconUrl ?? null,
+        weekday: rule.patternType === 1 ? (rule.weekday ?? null) : null,
       })),
     periodicAllowance: Number(state.periodicAllowance || 0),
-    rewardOverviewIconUrl: state.rewardOverviewIconUrl,
+    rewardOverviewIconUrl: state.rewardOverviewIconUrl ?? null,
   };
 }
 
@@ -331,7 +331,7 @@ export function getMonthLastDayRule(state: CheckInConfigFormState) {
 
 export function upsertDateRule(params: {
   rewardDate: string;
-  rewardItems: CheckInRewardItemDto[];
+  rewardItems: CheckInRewardItemValue[];
   rewardOverviewIconUrl?: string;
   state: CheckInConfigFormState;
 }) {
@@ -366,7 +366,7 @@ export function removeDateRule(params: {
 export function upsertPatternRule(params: {
   monthDay?: number;
   patternType: 1 | 2 | 3;
-  rewardItems: CheckInRewardItemDto[];
+  rewardItems: CheckInRewardItemValue[];
   rewardOverviewIconUrl?: string;
   state: CheckInConfigFormState;
   weekday?: number;

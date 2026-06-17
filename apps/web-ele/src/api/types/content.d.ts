@@ -23,28 +23,28 @@ export type ContentComicPageRequest = {
   authorId?: null | number;
 
   /* 分类ID列表 */
-  categoryIds?: null | number[];
+  categoryIds?: number[];
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 是否热门 */
-  isHot?: boolean | null;
+  isHot?: boolean;
 
   /* 是否新作 */
-  isNew?: boolean | null;
+  isNew?: boolean;
 
   /* 是否发布 */
-  isPublished?: boolean | null;
+  isPublished?: boolean;
 
   /* 是否推荐 */
-  isRecommended?: boolean | null;
+  isRecommended?: boolean;
 
   /* 语言代码 */
-  language?: null | string;
+  language?: string;
 
   /* 作品名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -59,33 +59,33 @@ export type ContentComicPageRequest = {
   publisher?: null | string;
 
   /* 地区代码 */
-  region?: null | string;
+  region?: string;
 
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
-  serialStatus?: null | number;
+  serialStatus?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 标签ID列表 */
-  tagIds?: null | number[];
+  tagIds?: number[];
 
   /* 作品类型（1=漫画；2=小说） */
-  type?: null | number;
+  type?: number;
 };
 
 export type ContentComicPageResponse = {
   /* 列表数据 */
-  list?: null | PageWorkDto[];
+  list: PageWorkDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -170,19 +170,19 @@ export type ContentComicChapterCreateResponse = boolean;
  */
 export type ContentComicChapterPageRequest = {
   /* 是否允许评论 */
-  canComment?: boolean | null;
+  canComment?: boolean;
 
   /* 是否允许下载 */
-  canDownload?: boolean | null;
+  canDownload?: boolean;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 是否试读 */
-  isPreview?: boolean | null;
+  isPreview?: boolean;
 
   /* 是否发布 */
-  isPublished?: boolean | null;
+  isPublished?: boolean;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -197,10 +197,10 @@ export type ContentComicChapterPageRequest = {
   startDate?: null | string;
 
   /* 章节标题 */
-  title?: null | string;
+  title?: string;
 
   /* 查看规则（-1=继承作品；0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
-  viewRule?: null | number;
+  viewRule?: number;
 
   /* 作品ID */
   workId: number;
@@ -208,16 +208,16 @@ export type ContentComicChapterPageRequest = {
 
 export type ContentComicChapterPageResponse = {
   /* 列表数据 */
-  list?: AdminWorkChapterPageItemDto[] | null;
+  list: AdminWorkChapterPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -435,16 +435,16 @@ export type ContentComicThirdPartySearchPageRequest = {
 
 export type ContentComicThirdPartySearchPageResponse = {
   /* 列表数据 */
-  list?: null | SearchComicItemDto[];
+  list: SearchComicItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -549,7 +549,7 @@ export type ContentComicThirdPartyImportItemPageRequest = {
   endDate?: null | string;
 
   /* 工作流任务ID */
-  jobId?: null | string;
+  jobId?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -564,21 +564,21 @@ export type ContentComicThirdPartyImportItemPageRequest = {
   startDate?: null | string;
 
   /* 条目状态（1=待处理；2=处理中；3=成功；4=失败；5=重试中；6=已跳过） */
-  status?: null | number;
+  status?: number;
 };
 
 export type ContentComicThirdPartyImportItemPageResponse = {
   /* 列表数据 */
-  list?: ContentImportItemDto[] | null;
+  list: ContentImportItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -606,28 +606,28 @@ export type ContentNovelPageRequest = {
   authorId?: null | number;
 
   /* 分类ID列表 */
-  categoryIds?: null | number[];
+  categoryIds?: number[];
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 是否热门 */
-  isHot?: boolean | null;
+  isHot?: boolean;
 
   /* 是否新作 */
-  isNew?: boolean | null;
+  isNew?: boolean;
 
   /* 是否发布 */
-  isPublished?: boolean | null;
+  isPublished?: boolean;
 
   /* 是否推荐 */
-  isRecommended?: boolean | null;
+  isRecommended?: boolean;
 
   /* 语言代码 */
-  language?: null | string;
+  language?: string;
 
   /* 作品名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -642,33 +642,33 @@ export type ContentNovelPageRequest = {
   publisher?: null | string;
 
   /* 地区代码 */
-  region?: null | string;
+  region?: string;
 
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
-  serialStatus?: null | number;
+  serialStatus?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 标签ID列表 */
-  tagIds?: null | number[];
+  tagIds?: number[];
 
   /* 作品类型（1=漫画；2=小说） */
-  type?: null | number;
+  type?: number;
 };
 
 export type ContentNovelPageResponse = {
   /* 列表数据 */
-  list?: null | PageWorkDto[];
+  list: PageWorkDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -753,19 +753,19 @@ export type ContentNovelChapterCreateResponse = boolean;
  */
 export type ContentNovelChapterPageRequest = {
   /* 是否允许评论 */
-  canComment?: boolean | null;
+  canComment?: boolean;
 
   /* 是否允许下载 */
-  canDownload?: boolean | null;
+  canDownload?: boolean;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 是否试读 */
-  isPreview?: boolean | null;
+  isPreview?: boolean;
 
   /* 是否发布 */
-  isPublished?: boolean | null;
+  isPublished?: boolean;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -780,10 +780,10 @@ export type ContentNovelChapterPageRequest = {
   startDate?: null | string;
 
   /* 章节标题 */
-  title?: null | string;
+  title?: string;
 
   /* 查看规则（-1=继承作品；0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
-  viewRule?: null | number;
+  viewRule?: number;
 
   /* 作品ID */
   workId: number;
@@ -791,16 +791,16 @@ export type ContentNovelChapterPageRequest = {
 
 export type ContentNovelChapterPageResponse = {
   /* 列表数据 */
-  list?: AdminWorkChapterPageItemDto[] | null;
+  list: AdminWorkChapterPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -916,16 +916,16 @@ export type ContentAuthorPageRequest = {
   endDate?: null | string;
 
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  gender?: null | number;
+  gender?: number;
 
   /* 启用状态 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 是否为推荐作者（用于前台推荐展示） */
-  isRecommended?: boolean | null;
+  isRecommended?: boolean;
 
   /* 作者姓名 */
-  name?: null | string;
+  name?: string;
 
   /* 国籍 */
   nationality?: null | string;
@@ -948,16 +948,16 @@ export type ContentAuthorPageRequest = {
 
 export type ContentAuthorPageResponse = {
   /* 列表数据 */
-  list?: AuthorPageResponseDto[] | null;
+  list: AuthorPageResponseDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -1054,10 +1054,10 @@ export type ContentCategoryPageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 分类名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -1074,16 +1074,16 @@ export type ContentCategoryPageRequest = {
 
 export type ContentCategoryPageResponse = {
   /* 列表数据 */
-  list?: CategoryOutputDto[] | null;
+  list: CategoryOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -1153,10 +1153,10 @@ export type ContentTagPageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 标签名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -1173,16 +1173,16 @@ export type ContentTagPageRequest = {
 
 export type ContentTagPageResponse = {
   /* 列表数据 */
-  list?: AdminTagDto[] | null;
+  list: AdminTagDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -1240,16 +1240,16 @@ export type ContentTagSwapSortOrderResponse = boolean;
  */
 export type ContentEmojiPackPageRequest = {
   /* 表情包编码 */
-  code?: null | string;
+  code?: string;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 启用状态 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 表情包名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -1264,21 +1264,21 @@ export type ContentEmojiPackPageRequest = {
   startDate?: null | string;
 
   /* 是否在选择器可见 */
-  visibleInPicker?: boolean | null;
+  visibleInPicker?: boolean;
 };
 
 export type ContentEmojiPackPageResponse = {
   /* 列表数据 */
-  list?: EmojiPackOutputDto[] | null;
+  list: EmojiPackOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -1361,16 +1361,16 @@ export type ContentEmojiAssetPageRequest = {
   endDate?: null | string;
 
   /* 启用状态 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 资源类型（1=unicode,2=custom） */
-  kind?: null | number;
+  kind?: number;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
 
   /* 表情包ID */
-  packId?: null | number;
+  packId?: number;
 
   /* 当前页码（从1开始） */
   pageIndex?: null | number;
@@ -1387,16 +1387,16 @@ export type ContentEmojiAssetPageRequest = {
 
 export type ContentEmojiAssetPageResponse = {
   /* 列表数据 */
-  list?: EmojiAssetOutputDto[] | null;
+  list: EmojiAssetOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -1529,7 +1529,7 @@ export type CreateWorkDto = {
  */
 export type PageWorkDto = {
   /* 年龄分级 */
-  ageRating?: null | string;
+  ageRating: null | string;
   /* 作者列表 */
   authors: AuthorInfoDto[];
   /* 分类列表 */
@@ -1557,9 +1557,9 @@ export type PageWorkDto = {
   /* 热度值 */
   popularity: number;
   /* 发布日期 */
-  publishAt?: null | string;
+  publishAt: null | string;
   /* 出版社 */
-  publisher?: null | string;
+  publisher: null | string;
   /* 地区代码 */
   region: string;
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
@@ -1579,7 +1579,7 @@ export type PageWorkDto = {
  */
 export type AuthorInfoDto = {
   /* 作者头像 URL */
-  avatar?: null | string;
+  avatar: null | string;
   /* 主键id */
   id: number;
   /* 当前用户是否已关注该作者 */
@@ -1587,7 +1587,7 @@ export type AuthorInfoDto = {
   /* 作者姓名 */
   name: string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: null | number[];
+  type: null | number[];
 };
 
 /**
@@ -1597,7 +1597,7 @@ export type AuthorInfoDto = {
  */
 export type CategoryInfoDto = {
   /* 分类图标 URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 分类名称 */
@@ -1611,7 +1611,7 @@ export type CategoryInfoDto = {
  */
 export type TagInfoDto = {
   /* 标签图标 URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 标签名称 */
@@ -1625,9 +1625,9 @@ export type TagInfoDto = {
  */
 export type AdminWorkDetailDto = {
   /* 年龄分级 */
-  ageRating?: null | string;
+  ageRating: null | string;
   /* 作品别名 */
-  alias?: null | string;
+  alias: null | string;
   /* 作者列表 */
   authors: AuthorInfoDto[];
   /* 是否允许评论 */
@@ -1636,14 +1636,12 @@ export type AdminWorkDetailDto = {
   categories: CategoryInfoDto[];
   /* 章节默认价格 */
   chapterPrice: number;
-  /* 章节默认购买价格信息 */
-  chapterPurchasePricing: ContentPurchasePricingDto;
+  chapterPurchasePricing: ContentPurchasePricingDto | null;
   /* 评论数 */
   commentCount: number;
-  /* 继续阅读章节 */
-  continueChapter: ContinueReadingChapterDto;
+  continueChapter: ContinueReadingChapterDto | null;
   /* 版权信息 */
-  copyright?: null | string;
+  copyright: null | string;
   /* 作品封面 */
   cover: string;
   /* 创建时间 */
@@ -1651,7 +1649,7 @@ export type AdminWorkDetailDto = {
   /* 作品简介 */
   description: string;
   /* 免责声明 */
-  disclaimer?: null | string;
+  disclaimer: null | string;
   /* 下载数 */
   downloadCount: number;
   /* 收藏数 */
@@ -1659,7 +1657,7 @@ export type AdminWorkDetailDto = {
   /* 是否已收藏 */
   favorited: boolean;
   /* 论坛板块ID */
-  forumSectionId?: null | number;
+  forumSectionId: null | number;
   /* 是否存在三方来源绑定 */
   hasThirdPartySourceBinding: boolean;
   /* 主键id */
@@ -1675,9 +1673,9 @@ export type AdminWorkDetailDto = {
   /* 语言代码 */
   language: string;
   /* 最近阅读时间 */
-  lastReadAt?: null | string;
+  lastReadAt: null | string;
   /* 最近更新时间 */
-  lastUpdated?: null | string;
+  lastUpdated: null | string;
   /* 点赞数 */
   likeCount: number;
   /* 是否已点赞 */
@@ -1685,23 +1683,23 @@ export type AdminWorkDetailDto = {
   /* 作品名称 */
   name: string;
   /* 原始来源 */
-  originalSource?: null | string;
+  originalSource: null | string;
   /* 热度值 */
   popularity: number;
   /* 发布日期 */
-  publishAt?: null | string;
+  publishAt: null | string;
   /* 出版社 */
-  publisher?: null | string;
+  publisher: null | string;
   /* 评分 */
-  rating?: null | number;
+  rating: null | number;
   /* 推荐权重 */
   recommendWeight: number;
   /* 地区代码 */
   region: string;
   /* 备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 历史阅读等级ID（目标态不参与阅读权限） */
-  requiredViewLevelId?: null | number;
+  requiredViewLevelId: null | number;
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
   serialStatus: number;
   /* 标签列表 */
@@ -1745,7 +1743,7 @@ export type ContinueReadingChapterDto = {
   /* 排序值 */
   sortOrder: number;
   /* 章节副标题 */
-  subtitle?: null | string;
+  subtitle: null | string;
   /* 章节标题 */
   title: string;
 };
@@ -1761,37 +1759,37 @@ export type UpdateWorkDto = {
   /* 作品别名 */
   alias?: null | string;
   /* 作者ID列表 */
-  authorIds?: null | number[];
+  authorIds?: number[];
   /* 是否允许评论 */
-  canComment?: boolean | null;
+  canComment?: boolean;
   /* 分类ID列表 */
-  categoryIds?: null | number[];
+  categoryIds?: number[];
   /* 章节默认价格 */
-  chapterPrice?: null | number;
+  chapterPrice?: number;
   /* 版权信息 */
   copyright?: null | string;
   /* 作品封面 */
-  cover?: null | string;
+  cover?: string;
   /* 作品简介 */
-  description?: null | string;
+  description?: string;
   /* 免责声明 */
   disclaimer?: null | string;
   /* 主键id */
   id: number;
   /* 是否热门 */
-  isHot?: boolean | null;
+  isHot?: boolean;
   /* 是否新作 */
-  isNew?: boolean | null;
+  isNew?: boolean;
   /* 是否发布 */
-  isPublished?: boolean | null;
+  isPublished?: boolean;
   /* 是否推荐 */
-  isRecommended?: boolean | null;
+  isRecommended?: boolean;
   /* 语言代码 */
-  language?: null | string;
+  language?: string;
   /* 最近更新时间 */
   lastUpdated?: null | string;
   /* 作品名称 */
-  name?: null | string;
+  name?: string;
   /* 原始来源 */
   originalSource?: null | string;
   /* 发布日期 */
@@ -1801,19 +1799,19 @@ export type UpdateWorkDto = {
   /* 评分 */
   rating?: null | number;
   /* 推荐权重 */
-  recommendWeight?: null | number;
+  recommendWeight?: number;
   /* 地区代码 */
-  region?: null | string;
+  region?: string;
   /* 备注 */
   remark?: null | string;
   /* 历史阅读等级ID（目标态不参与阅读权限） */
   requiredViewLevelId?: null | number;
   /* 连载状态（0=未开始，1=连载中，2=已完结，3=暂停更新，4=已停更） */
-  serialStatus?: null | number;
+  serialStatus?: number;
   /* 标签ID列表 */
-  tagIds?: null | number[];
+  tagIds?: number[];
   /* 阅读规则（0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
-  viewRule?: null | number;
+  viewRule?: number;
 };
 
 /**
@@ -1925,7 +1923,7 @@ export type AdminWorkChapterPageItemDto = {
   /* 是否允许下载 */
   canDownload: boolean;
   /* 章节封面 */
-  cover?: null | string;
+  cover: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 主键id */
@@ -1937,13 +1935,13 @@ export type AdminWorkChapterPageItemDto = {
   /* 章节价格 */
   price: number;
   /* 发布时间 */
-  publishAt?: null | string;
+  publishAt: null | string;
   /* 历史阅读等级ID（目标态不参与阅读权限） */
-  requiredViewLevelId?: null | number;
+  requiredViewLevelId: null | number;
   /* 排序值 */
   sortOrder: number;
   /* 章节副标题 */
-  subtitle?: null | string;
+  subtitle: null | string;
   /* 章节标题 */
   title: string;
   /* 更新时间 */
@@ -1969,13 +1967,13 @@ export type AdminWorkChapterDetailDto = {
   /* 评论数 */
   commentCount: number;
   /* 章节内容（漫画为图片路径数组，小说为文件路径） */
-  content?: null | string;
+  content: null | string;
   /* 章节封面 */
-  cover?: null | string;
+  cover: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 章节简介 */
-  description?: null | string;
+  description: null | string;
   /* 下载数 */
   downloadCount: number;
   /* 主键id */
@@ -1989,19 +1987,18 @@ export type AdminWorkChapterDetailDto = {
   /* 章节价格 */
   price: number;
   /* 发布时间 */
-  publishAt?: null | string;
+  publishAt: null | string;
   /* 购买数 */
   purchaseCount: number;
   /* 备注 */
-  remark?: null | string;
-  /* 历史阅读等级摘要；为空表示不限制等级 */
-  requiredViewLevel: AdminWorkChapterRequiredViewLevelDto;
+  remark: null | string;
+  requiredViewLevel: AdminWorkChapterRequiredViewLevelDto | null;
   /* 历史阅读等级ID（目标态不参与阅读权限） */
-  requiredViewLevelId?: null | number;
+  requiredViewLevelId: null | number;
   /* 排序值 */
   sortOrder: number;
   /* 章节副标题 */
-  subtitle?: null | string;
+  subtitle: null | string;
   /* 章节标题 */
   title: string;
   /* 更新时间 */
@@ -2041,7 +2038,7 @@ export type AdminWorkChapterWorkSummaryDto = {
  */
 export type AdminWorkChapterRequiredViewLevelDto = {
   /* 等级专属颜色 */
-  color?: null | string;
+  color: null | string;
   /* 等级规则 ID */
   id: number;
   /* 等级名称 */
@@ -2055,9 +2052,9 @@ export type AdminWorkChapterRequiredViewLevelDto = {
  */
 export type UpdateWorkChapterDto = {
   /* 是否允许评论 */
-  canComment?: boolean | null;
+  canComment?: boolean;
   /* 是否允许下载 */
-  canDownload?: boolean | null;
+  canDownload?: boolean;
   /* 章节封面 */
   cover?: null | string;
   /* 章节简介 */
@@ -2065,11 +2062,11 @@ export type UpdateWorkChapterDto = {
   /* 主键id */
   id: number;
   /* 是否试读 */
-  isPreview?: boolean | null;
+  isPreview?: boolean;
   /* 发布状态 */
   isPublished?: boolean | null;
   /* 章节价格 */
-  price?: null | number;
+  price?: number;
   /* 发布时间 */
   publishAt?: null | string;
   /* 备注 */
@@ -2077,13 +2074,13 @@ export type UpdateWorkChapterDto = {
   /* 历史阅读等级ID（目标态不参与阅读权限） */
   requiredViewLevelId?: null | number;
   /* 排序值 */
-  sortOrder?: null | number;
+  sortOrder?: number;
   /* 章节副标题 */
   subtitle?: null | string;
   /* 章节标题 */
-  title?: null | string;
+  title?: string;
   /* 查看规则（-1=继承作品；0=所有人可见；1=登录用户可见；2=VIP可见；3=需购买可见） */
-  viewRule?: null | number;
+  viewRule?: number;
 };
 
 /**
@@ -2137,7 +2134,7 @@ export type UploadResponseDto = {
   /* 文件扩展名 */
   fileType: string;
   /* 图片高度 */
-  height?: null | number;
+  height: null | number;
   /* 文件 MIME 类型 */
   mimeType: string;
   /* 原始文件名 */
@@ -2147,7 +2144,7 @@ export type UploadResponseDto = {
   /* 上传时间 */
   uploadTime: string;
   /* 图片宽度 */
-  width?: null | number;
+  width: null | number;
 };
 
 /**
@@ -2197,39 +2194,38 @@ export type MoveComicContentDto = {
  */
 export type ComicArchiveTaskResponseDto = {
   /* 原始压缩包名称 */
-  archiveName?: null | string;
+  archiveName: null | string;
   /* 任务过期时间 */
   expiresAt: string;
   /* 完成处理时间 */
-  finishedAt?: null | string;
+  finishedAt: null | string;
   /* 被忽略的路径列表 */
   ignoredItems: ComicArchiveIgnoredItemDto[];
   /* 导入工作流任务ID */
   jobId: string;
-  /* 最后一次错误事实；admin 负责表达 */
-  lastError?: null | WorkflowErrorFactsDto;
+  lastError: null | WorkflowErrorFactsDto;
   /* 匹配成功的章节列表 */
   matchedItems: ComicArchiveMatchedItemDto[];
   /* 预解析模式（1=单章节压缩包；2=多章节压缩包） */
   mode: number;
   /* 当前进度展示代码；后台根据代码和上下文生成文案 */
-  progressCode?: null | string;
+  progressCode: null | string;
   /* 当前进度展示上下文 */
-  progressContext?: null | Record<string, any>;
+  progressContext: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
-  progressDetail?: null | Record<string, any>;
+  progressDetail: null | Record<string, any>;
   /* 是否需要用户确认 */
   requireConfirm: boolean;
   /* 正式导入结果列表 */
   resultItems: ComicArchiveResultItemDto[];
   /* 开始处理时间 */
-  startedAt?: null | string;
+  startedAt: null | string;
   /* 任务状态（0=草稿；1=待处理；2=处理中；3=成功；4=部分失败；5=失败；6=已过期；7=已取消） */
   status: number;
   /* 预解析汇总信息 */
   summary: ComicArchiveSummaryDto;
   /* 作品ID */
-  workId?: null | number;
+  workId: null | number;
 };
 
 /**
@@ -2256,8 +2252,7 @@ export type ComicArchiveMatchedItemDto = {
   statusCode: string;
   /* 匹配结果表达事实 */
   statusContext: Record<string, any>;
-  /* 覆盖风险事实；admin 负责表达 */
-  warning?: null | WorkflowErrorFactsDto;
+  warning: null | WorkflowErrorFactsDto;
 };
 
 /**
@@ -2328,11 +2323,10 @@ export type ComicArchiveIgnoredItemDto = {
  */
 export type ComicArchiveResultItemDto = {
   /* 章节ID */
-  chapterId?: null | number;
+  chapterId: null | number;
   /* 章节标题 */
   chapterTitle: string;
-  /* 失败事实；admin 负责表达 */
-  error?: null | WorkflowErrorFactsDto;
+  error: null | WorkflowErrorFactsDto;
   /* 已导入图片数量 */
   importedImageCount: number;
   /* 执行状态（0=待处理；1=成功；2=失败） */
@@ -2392,19 +2386,19 @@ export type ComicArchiveWorkflowJobIdDto = {
  */
 export type WorkflowJobDto = {
   /* 归档时间；为空表示未归档 */
-  archivedAt?: null | string;
+  archivedAt: null | string;
   /* 取消请求时间 */
-  cancelRequestedAt?: null | string;
+  cancelRequestedAt: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 展示名称 */
   displayName: string;
   /* 草稿过期时间 */
-  expiresAt?: null | string;
+  expiresAt: null | string;
   /* 失败条目数 */
   failedItemCount: number;
   /* 完成时间 */
-  finishedAt?: null | string;
+  finishedAt: null | string;
   /* 主键ID */
   id: number;
   /* 工作流任务ID */
@@ -2412,13 +2406,13 @@ export type WorkflowJobDto = {
   /* 操作者类型（1=后台管理员；2=系统） */
   operatorType: number;
   /* 后台管理员操作者ID；系统任务为空 */
-  operatorUserId?: null | number;
+  operatorUserId: null | number;
   /* 当前进度展示代码；后台根据代码和上下文生成文案 */
-  progressCode?: null | string;
+  progressCode: null | string;
   /* 当前进度展示上下文 */
-  progressContext?: null | Record<string, any>;
+  progressContext: null | Record<string, any>;
   /* 结构化进度详情快照；用于展示当前运行中的子进度 */
-  progressDetail?: null | Record<string, any>;
+  progressDetail: null | Record<string, any>;
   /* 进度百分比 */
   progressPercent: number;
   /* 选中条目数 */
@@ -2426,13 +2420,13 @@ export type WorkflowJobDto = {
   /* 跳过条目数 */
   skippedItemCount: number;
   /* 开始处理时间 */
-  startedAt?: null | string;
+  startedAt: null | string;
   /* 任务状态（1=草稿；2=待处理；3=处理中；4=成功；5=部分失败；6=失败；7=已取消；8=已过期） */
   status: number;
   /* 成功条目数 */
   successItemCount: number;
   /* 运行时非查询诊断摘要 */
-  summary?: null | Record<string, any>;
+  summary: null | Record<string, any>;
   /* 更新时间 */
   updatedAt: string;
   /* 工作流类型 */
@@ -2668,7 +2662,7 @@ export type ThirdPartyComicSourceSnapshotDto = {
  */
 export type ThirdPartyComicImportPreviewWorkDraftDto = {
   /* 作品别名 */
-  alias?: null | string;
+  alias: null | string;
   /* 作品简介 */
   description: string;
   /* 作品名称 */
@@ -2678,9 +2672,9 @@ export type ThirdPartyComicImportPreviewWorkDraftDto = {
   /* 管理员备注 */
   remark: string;
   /* 建议地区 */
-  suggestedRegion?: null | string;
+  suggestedRegion: null | string;
   /* 建议连载状态 */
-  suggestedSerialStatus?: null | number;
+  suggestedSerialStatus: null | number;
 };
 
 /**
@@ -2691,8 +2685,7 @@ export type ThirdPartyComicImportPreviewWorkDraftDto = {
 export type ThirdPartyComicCoverOptionsDto = {
   /* 是否必须本地上传封面 */
   localRequired: boolean;
-  /* 三方封面候选 */
-  provider: ThirdPartyComicProviderCoverOptionDto;
+  provider: null | ThirdPartyComicProviderCoverOptionDto;
 };
 
 /**
@@ -2755,7 +2748,6 @@ export type ThirdPartyComicImportRequestDto = {
   chapters: ThirdPartyComicImportChapterItemDto[];
   /* 三方漫画ID */
   comicId: string;
-  /* 作品封面处理方式 */
   cover?: null | ThirdPartyComicImportCoverDto;
   /* 导入模式（新建本地作品；挂载已有本地作品） */
   mode: 'attachToExisting' | 'createNew';
@@ -2765,7 +2757,6 @@ export type ThirdPartyComicImportRequestDto = {
   sourceSnapshot: ThirdPartyComicSourceSnapshotDto;
   /* 目标作品ID */
   targetWorkId?: null | number;
-  /* 新建作品草稿 */
   workDraft?: null | ThirdPartyComicImportWorkDraftDto;
 };
 
@@ -2845,7 +2836,6 @@ export type ThirdPartyComicImportChapterItemDto = {
   canDownload?: boolean | null;
   /* 三方章节内容接口版本 */
   chapterApiVersion?: null | number;
-  /* 章节封面处理方式 */
   cover?: null | ThirdPartyComicImportCoverDto;
   /* 三方章节创建时间 */
   datetimeCreated?: null | string;
@@ -2903,20 +2893,18 @@ export type ContentImportItemDto = {
   itemId: string;
   /* 条目类型（1=漫画章节） */
   itemType: number;
-  /* 最近错误事实；admin 负责根据 code/context 表达 */
-  lastError?: null | WorkflowErrorFactsDto;
-  /* 最近自动重试事实；admin 负责根据 code/context 表达 */
-  lastRetry?: null | WorkflowErrorFactsDto;
+  lastError: null | WorkflowErrorFactsDto;
+  lastRetry: null | WorkflowErrorFactsDto;
   /* 本地章节ID */
-  localChapterId?: null | number;
+  localChapterId: null | number;
   /* 最大自动重试次数 */
   maxAutoRetries: number;
   /* 条目元数据 */
-  metadata?: null | Record<string, any>;
+  metadata: null | Record<string, any>;
   /* 自动重试下次可执行时间 */
-  nextRetryAt?: null | string;
+  nextRetryAt: null | string;
   /* 三方章节ID */
-  providerChapterId?: null | string;
+  providerChapterId: null | string;
   /* 排序值 */
   sortOrder: number;
   /* 当前阶段（1=预览中；2=读取来源；3=准备元数据；4=读取内容；5=导入图片；6=写入内容；7=清理残留；8=已完成） */
@@ -2958,7 +2946,7 @@ export type CreateAuthorDto = {
  */
 export type AuthorPageResponseDto = {
   /* 作者头像 URL */
-  avatar?: null | string;
+  avatar: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 粉丝数量（冗余字段，用于前台展示） */
@@ -2974,9 +2962,9 @@ export type AuthorPageResponseDto = {
   /* 作者姓名 */
   name: string;
   /* 国籍 */
-  nationality?: null | string;
+  nationality: null | string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: null | number[];
+  type: null | number[];
   /* 更新时间 */
   updatedAt: string;
   /* 作品数量（冗余字段，用于提升查询性能） */
@@ -2990,11 +2978,11 @@ export type AuthorPageResponseDto = {
  */
 export type AuthorOutputBaseDto = {
   /* 作者头像 URL */
-  avatar?: null | string;
+  avatar: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 作者描述 */
-  description?: null | string;
+  description: null | string;
   /* 粉丝数量（冗余字段，用于前台展示） */
   followersCount: number;
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
@@ -3008,11 +2996,11 @@ export type AuthorOutputBaseDto = {
   /* 作者姓名 */
   name: string;
   /* 国籍 */
-  nationality?: null | string;
+  nationality: null | string;
   /* 管理员备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 作者角色类型（1=漫画家；2=轻小说作者） */
-  type?: null | number[];
+  type: null | number[];
   /* 更新时间 */
   updatedAt: string;
   /* 作品数量（冗余字段，用于提升查询性能） */
@@ -3030,11 +3018,11 @@ export type UpdateAuthorDto = {
   /* 作者描述 */
   description?: null | string;
   /* 性别（0=未知；1=男性；2=女性；3=其他；4=保密） */
-  gender?: null | number;
+  gender?: number;
   /* 主键id */
   id: number;
   /* 作者姓名 */
-  name?: null | string;
+  name?: string;
   /* 国籍 */
   nationality?: null | string;
   /* 管理员备注 */
@@ -3118,13 +3106,13 @@ export type CreateCategoryDto = {
  */
 export type CategoryOutputDto = {
   /* 分类关联的内容类型（1=漫画；2=小说；3=帖子） */
-  contentType?: null | number[];
+  contentType: null | number[];
   /* 创建时间 */
   createdAt: string;
   /* 分类描述 */
-  description?: null | string;
+  description: null | string;
   /* 分类图标 URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -3154,11 +3142,11 @@ export type UpdateCategoryDto = {
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 分类名称 */
-  name?: null | string;
+  name?: string;
   /* 排序值 */
-  sortOrder?: null | number;
+  sortOrder?: number;
 };
 
 /**
@@ -3210,9 +3198,9 @@ export type AdminTagDto = {
   /* 创建时间 */
   createdAt: string;
   /* 标签描述 */
-  description?: null | string;
+  description: null | string;
   /* 标签图标 URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -3238,9 +3226,9 @@ export type UpdateTagDto = {
   /* 主键id */
   id: number;
   /* 标签名称 */
-  name?: null | string;
+  name?: string;
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder?: null | number;
+  sortOrder?: number;
 };
 
 /**
@@ -3278,11 +3266,11 @@ export type EmojiPackOutputDto = {
   /* 创建时间 */
   createdAt: string;
   /* 创建人ID */
-  createdById?: null | number;
+  createdById: null | number;
   /* 描述 */
-  description?: null | string;
+  description: null | string;
   /* 图标地址 */
-  iconUrl?: null | string;
+  iconUrl: null | string;
   /* 主键id */
   id: number;
   /* 启用状态 */
@@ -3296,7 +3284,7 @@ export type EmojiPackOutputDto = {
   /* 更新时间 */
   updatedAt: string;
   /* 更新人ID */
-  updatedById?: null | number;
+  updatedById: null | number;
   /* 是否在选择器可见 */
   visibleInPicker: boolean;
 };
@@ -3332,7 +3320,7 @@ export type CreateEmojiPackDto = {
  */
 export type UpdateEmojiPackDto = {
   /* 表情包编码 */
-  code?: null | string;
+  code?: string;
   /* 描述 */
   description?: null | string;
   /* 图标地址 */
@@ -3342,9 +3330,9 @@ export type UpdateEmojiPackDto = {
   /* 启用状态 */
   isEnabled?: boolean | null;
   /* 表情包名称 */
-  name?: null | string;
+  name?: string;
   /* 场景类型（1=聊天,2=评论,3=论坛主题） */
-  sceneType?: null | number[];
+  sceneType?: number[];
   /* 排序值 */
   sortOrder?: null | number;
   /* 是否在选择器可见 */
@@ -3370,37 +3358,37 @@ export type UpdateEmojiPackSceneTypeDto = {
  */
 export type EmojiAssetOutputDto = {
   /* 分类 */
-  category?: null | string;
+  category: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 创建人ID */
-  createdById?: null | number;
+  createdById: null | number;
   /* 主键id */
   id: number;
   /* 资源地址（custom 必填） */
-  imageUrl?: null | string;
+  imageUrl: null | string;
   /* 是否动图 */
   isAnimated: boolean;
   /* 启用状态 */
   isEnabled: boolean;
   /* 关键词（多语言） */
-  keywords?: null | Record<string, string[]>;
+  keywords: null | Record<string, string[]>;
   /* 资源类型（1=unicode,2=custom） */
   kind: number;
   /* 表情包ID */
   packId: number;
   /* 短码（custom 必填） */
-  shortcode?: null | string;
+  shortcode: null | string;
   /* 排序值 */
   sortOrder: number;
   /* 静态资源地址 */
-  staticUrl?: null | string;
+  staticUrl: null | string;
   /* Unicode 序列（unicode 必填） */
-  unicodeSequence?: null | string;
+  unicodeSequence: null | string;
   /* 更新时间 */
   updatedAt: string;
   /* 更新人ID */
-  updatedById?: null | number;
+  updatedById: null | number;
 };
 
 /**
@@ -3452,9 +3440,9 @@ export type UpdateEmojiAssetDto = {
   /* 关键词（多语言） */
   keywords?: null | Record<string, string[]>;
   /* 资源类型（1=unicode,2=custom） */
-  kind?: null | number;
+  kind?: number;
   /* 表情包ID */
-  packId?: null | number;
+  packId?: number;
   /* 短码（custom 必填） */
   shortcode?: null | string;
   /* 排序值 */

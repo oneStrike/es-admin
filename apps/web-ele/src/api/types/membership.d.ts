@@ -11,7 +11,7 @@ export type MembershipPlanPageRequest = {
   isEnabled?: boolean | null;
 
   /* 套餐名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -31,16 +31,16 @@ export type MembershipPlanPageRequest = {
 
 export type MembershipPlanPageResponse = {
   /* 列表数据 */
-  list?: MembershipPlanItemDto[] | null;
+  list: MembershipPlanItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -77,7 +77,7 @@ export type MembershipPlanUpdateStatusResponse = boolean;
  */
 export type MembershipBenefitPageRequest = {
   /* 权益类型（1=纯展示；2=券发放） */
-  benefitType?: null | number;
+  benefitType?: number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -86,7 +86,7 @@ export type MembershipBenefitPageRequest = {
   isEnabled?: boolean | null;
 
   /* 权益名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -103,16 +103,16 @@ export type MembershipBenefitPageRequest = {
 
 export type MembershipBenefitPageResponse = {
   /* 列表数据 */
-  list?: MembershipBenefitDefinitionOutputDto[] | null;
+  list: MembershipBenefitDefinitionOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -163,7 +163,7 @@ export type MembershipPageConfigPageRequest = {
   pageIndex?: null | number;
 
   /* 页面业务键，由服务端生成 */
-  pageKey?: null | string;
+  pageKey?: string;
 
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number;
@@ -172,21 +172,21 @@ export type MembershipPageConfigPageRequest = {
   startDate?: null | string;
 
   /* 页面标题 */
-  title?: null | string;
+  title?: string;
 };
 
 export type MembershipPageConfigPageResponse = {
   /* 列表数据 */
-  list?: MembershipPageConfigItemDto[] | null;
+  list: MembershipPageConfigItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -263,7 +263,7 @@ export type MembershipPlanBenefitItemDto = {
   /* 会员权益定义 ID */
   benefitId: number;
   /* 权益配置值：纯展示权益为空或展示元数据；券发放权益必须配置 couponDefinitionId/grantCount，可选 validDays 覆盖赠券有效期 */
-  benefitValue?: null | Record<string, any>;
+  benefitValue: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
   /* 发放策略（1=仅展示；2=开通时自动发放） */
@@ -315,7 +315,7 @@ export type MembershipBenefitDefinitionOutputDto = {
  */
 export type CreateMembershipPlanDto = {
   /* 套餐关联权益列表 */
-  benefits?: MembershipPlanBenefitInputDto[] | null;
+  benefits?: MembershipPlanBenefitInputDto[];
   /* 开通赠送积分数量 */
   bonusPointAmount?: null | number;
   /* 订阅页营销标签 */
@@ -361,23 +361,23 @@ export type MembershipPlanBenefitInputDto = {
  */
 export type UpdateMembershipPlanDto = {
   /* 套餐关联权益列表 */
-  benefits?: MembershipPlanBenefitInputDto[] | null;
+  benefits?: MembershipPlanBenefitInputDto[];
   /* 开通赠送积分数量 */
   bonusPointAmount?: null | number;
   /* 订阅页营销标签 */
   displayTag?: null | string;
   /* 有效天数 */
-  durationDays?: null | number;
+  durationDays?: number;
   /* 主键id */
   id: number;
   /* 是否启用 */
   isEnabled?: boolean | null;
   /* 套餐名称 */
-  name?: null | string;
+  name?: string;
   /* 划线原价，单位为分 */
   originalPriceAmount?: null | number;
   /* 套餐售价，单位为分 */
-  priceAmount?: null | number;
+  priceAmount?: number;
   /* 排序值 */
   sortOrder?: null | number;
   /* 套餐层级（1=VIP；2=超级 VIP） */
@@ -423,7 +423,7 @@ export type CreateMembershipBenefitDefinitionDto = {
  */
 export type UpdateMembershipBenefitDefinitionDto = {
   /* 权益类型（1=纯展示；2=券发放） */
-  benefitType?: null | number;
+  benefitType?: number;
   /* 权益说明 */
   description?: null | string;
   /* 权益图标资源键或 URL */
@@ -433,7 +433,7 @@ export type UpdateMembershipBenefitDefinitionDto = {
   /* 是否启用 */
   isEnabled?: boolean | null;
   /* 权益名称 */
-  name?: null | string;
+  name?: string;
   /* 排序值 */
   sortOrder?: null | number;
 };
@@ -455,7 +455,7 @@ export type MembershipPageConfigItemDto = {
   /* 是否启用 */
   isEnabled: boolean;
   /* 会员说明条目 */
-  memberNoticeItems?: null | string[];
+  memberNoticeItems: null | string[];
   /* 页面业务键，由服务端生成 */
   pageKey: string;
   /* 绑定套餐列表 */
@@ -485,7 +485,7 @@ export type AgreementListItemDto = {
   /* 是否已发布 */
   isPublished: boolean;
   /* 发布时间 */
-  publishedAt?: null | string;
+  publishedAt: null | string;
   /* 是否展示在登录注册页 */
   showInAuth: boolean;
   /* 协议标题 */
@@ -537,15 +537,15 @@ export type MembershipPlanOutputDto = {
  */
 export type CreateMembershipPageConfigDto = {
   /* 关联协议 ID 列表，按输入顺序展示 */
-  agreementIds?: null | number[];
+  agreementIds?: number[];
   /* 确认开通协议提示文案 */
   checkoutAgreementText?: null | string;
   /* 是否启用 */
   isEnabled?: boolean | null;
   /* 会员说明条目 */
-  memberNoticeItems?: null | string[];
+  memberNoticeItems?: string[];
   /* 绑定套餐 ID 列表，按输入顺序展示 */
-  planIds?: null | number[];
+  planIds?: number[];
   /* 排序值 */
   sortOrder?: null | number;
   /* 支付按钮文案模板 */
@@ -561,7 +561,7 @@ export type CreateMembershipPageConfigDto = {
  */
 export type UpdateMembershipPageConfigDto = {
   /* 关联协议 ID 列表，按输入顺序展示 */
-  agreementIds?: null | number[];
+  agreementIds?: number[];
   /* 确认开通协议提示文案 */
   checkoutAgreementText?: null | string;
   /* 主键id */
@@ -569,15 +569,15 @@ export type UpdateMembershipPageConfigDto = {
   /* 是否启用 */
   isEnabled?: boolean | null;
   /* 会员说明条目 */
-  memberNoticeItems?: null | string[];
+  memberNoticeItems?: string[];
   /* 绑定套餐 ID 列表，按输入顺序展示 */
-  planIds?: null | number[];
+  planIds?: number[];
   /* 排序值 */
   sortOrder?: null | number;
   /* 支付按钮文案模板 */
   submitButtonTemplate?: null | string;
   /* 页面标题 */
-  title?: null | string;
+  title?: string;
 };
 
 /**

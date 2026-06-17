@@ -40,7 +40,7 @@ export type SystemUserPageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 手机号 */
   mobile?: null | string;
@@ -55,27 +55,27 @@ export type SystemUserPageRequest = {
   pageSize?: null | number;
 
   /* 角色（0=普通管理员；1=超级管理员） */
-  role?: null | number;
+  role?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 用户名 */
-  username?: null | string;
+  username?: string;
 };
 
 export type SystemUserPageResponse = {
   /* 列表数据 */
-  list?: AdminUserResponseDto[] | null;
+  list: AdminUserResponseDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**

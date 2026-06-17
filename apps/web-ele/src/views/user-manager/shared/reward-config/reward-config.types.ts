@@ -12,9 +12,9 @@ export type RewardConfigAssetOption = {
 
 export type RewardConfigItemValue = {
   amount: number;
-  assetKey?: string;
+  assetKey?: null | string;
   assetType: RewardAssetType;
-  iconUrl?: string;
+  iconUrl?: null | string;
 };
 
 export type RewardConfigValue = {
