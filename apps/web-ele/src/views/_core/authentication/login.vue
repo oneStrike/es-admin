@@ -8,8 +8,8 @@ import { computed } from 'vue';
 import { AuthenticationLogin, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { authCaptchaApi } from '#/api/core';
 import { useAuthStore } from '#/store';
+import { authCaptchaNoRefreshApi } from '#/utils/auth-no-refresh';
 
 defineOptions({ name: 'Login' });
 
@@ -22,7 +22,7 @@ type LoginFormValues = Pick<
 >;
 
 async function fetchCaptcha() {
-  captchaData.value = await authCaptchaApi();
+  captchaData.value = await authCaptchaNoRefreshApi();
 }
 fetchCaptcha();
 

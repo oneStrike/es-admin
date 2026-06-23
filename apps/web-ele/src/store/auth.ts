@@ -10,13 +10,12 @@ import { ElNotification } from 'element-plus';
 import forge from 'node-forge';
 import { defineStore } from 'pinia';
 
-import {
-  authKeyPublicApi,
-  authLoginApi,
-  authLogoutApi,
-  systemUserProfileApi,
-} from '#/api/core';
+import { authLogoutApi, systemUserProfileApi } from '#/api/core';
 import { $t } from '#/locales';
+import {
+  authKeyPublicNoRefreshApi,
+  authLoginNoRefreshApi,
+} from '#/utils/auth-no-refresh';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -50,7 +49,7 @@ export const useAuthStore = defineStore('auth', () => {
       });
       // 使用加密后的密码
       params.password = forge.util.encode64(encrypted);
-      const { tokens } = await authLoginApi(params);
+      const { tokens } = await authLoginNoRefreshApi(params);
 
       // 如果成功获取到 accessToken
       if (tokens.accessToken && tokens.refreshToken) {
@@ -142,7 +141,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (publicKey.value) {
       return publicKey.value;
     }
-    const res = await authKeyPublicApi();
+    const res = await authKeyPublicNoRefreshApi();
     publicKey.value = res.publicKey;
     return publicKey.value;
   }

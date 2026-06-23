@@ -29,11 +29,11 @@ import {
   appUsersRestoreApi,
   appUsersUpdateEnabledApi,
   appUsersUpdateStatusApi,
-  authKeyPublicApi,
 } from '#/api/core';
 import EsModalForm from '#/components/es-modal-form/index.vue';
 import RecordDetailModal from '#/components/record-detail-modal';
 import { useConfirm, useMessage } from '#/hooks/useFeedback';
+import { authKeyPublicNoRefreshApi } from '#/utils/auth-no-refresh';
 import { createSearchFormOptions } from '#/utils/grid-form-config';
 
 import UserOperationModal from './components/user-operation-modal.vue';
@@ -133,7 +133,7 @@ const [OperationModal, operationApi] = useVbenModal({
 });
 
 async function encryptPassword(password: string) {
-  const publicKey = await authKeyPublicApi();
+  const publicKey = await authKeyPublicNoRefreshApi();
   const publicKeyPem = forge.pki.publicKeyFromPem(publicKey.publicKey);
   const encrypted = publicKeyPem.encrypt(password, 'RSA-OAEP', {
     md: forge.md.sha256.create(),
