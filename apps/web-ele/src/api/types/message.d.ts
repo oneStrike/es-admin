@@ -65,6 +65,8 @@ export type MessageMonitorDeliveryRetryRequest =
 
 export type MessageMonitorDeliveryRetryResponse = boolean;
 
+export type MessageMonitorSummaryResponse = MessageMonitorSummaryDto;
+
 /**
  *  类型定义 [MessageMonitorDispatchPageRequest]
  *  @来源 消息中心/监控
@@ -139,8 +141,6 @@ export type MessageMonitorWsSummaryRequest = {
 };
 
 export type MessageMonitorWsSummaryResponse = MessageWsMonitorSummaryDto;
-
-export type MessageMonitorSummaryResponse = MessageMonitorSummaryDto;
 
 /**
  *  类型定义 [MessageChatConversationPageRequest]
@@ -410,6 +410,24 @@ export type RetryMessageNotificationDeliveryDto = {
 };
 
 /**
+ *  类型定义 [MessageMonitorSummaryDto]
+ *  @来源 components.schemas
+ *  @更新时间 2026-05-09 22:20:06
+ */
+export type MessageMonitorSummaryDto = {
+  /* 失败投递数量 */
+  failedDeliveryCount: number;
+  /* 失败发送任务数量 */
+  failedDispatchCount: number;
+  /* 重试中投递数量 */
+  retryingDeliveryCount: number;
+  /* 重试中发送任务数量 */
+  retryingDispatchCount: number;
+  /* 快照时间 */
+  snapshotAt: string;
+};
+
+/**
  *  类型定义 [MessageDispatchPageItemDto]
  *  @来源 components.schemas
  *  @更新时间 2026-05-09 22:20:06
@@ -483,24 +501,6 @@ export type MessageWsMonitorSummaryDto = {
   windowHours: number;
   /* 统计窗口起始时间 */
   windowStartAt: string;
-};
-
-/**
- *  类型定义 [MessageMonitorSummaryDto]
- *  @来源 components.schemas
- *  @更新时间 2026-05-09 22:20:06
- */
-export type MessageMonitorSummaryDto = {
-  /* 失败投递数量 */
-  failedDeliveryCount: number;
-  /* 失败发送任务数量 */
-  failedDispatchCount: number;
-  /* 重试中投递数量 */
-  retryingDeliveryCount: number;
-  /* 重试中发送任务数量 */
-  retryingDispatchCount: number;
-  /* 快照时间 */
-  snapshotAt: string;
 };
 
 /**

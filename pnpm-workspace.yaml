@@ -78,7 +78,6 @@ catalog:
   '@tiptap/vue-3': ^3.26.0
   '@tsdown/css': ^0.22.2
   '@tinymce/tinymce-vue': ^6.3.0
-  '@tiptap/core': ^3.24.0
   '@types/archiver': ^7.0.0
   '@types/html-minifier-terser': ^7.0.2
   '@types/json-bigint': ^1.0.4
