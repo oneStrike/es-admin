@@ -3,11 +3,10 @@ import type { EsModalFormProps } from './types';
 
 import type { EsFormSchema } from '#/types';
 
-import { computed, provide, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ES_MODAL_POPPER_APPEND_TO_KEY } from '#/adapter/component/modal-popper';
 import { useVbenForm } from '#/adapter/form';
 
 defineOptions({
@@ -23,17 +22,6 @@ const sharedData = ref<Partial<EsModalFormProps>>({
 });
 
 const showForm = ref(false);
-
-const modalPopperAnchorRef = ref<HTMLElement>();
-const modalPopperAppendTo = computed<HTMLElement | undefined>(() => {
-  const target = modalPopperAnchorRef.value?.closest(
-    '[role="dialog"][data-dismissable-layer]',
-  );
-
-  return target instanceof HTMLElement ? target : undefined;
-});
-
-provide(ES_MODAL_POPPER_APPEND_TO_KEY, modalPopperAppendTo);
 
 const modalTitle = computed(() => {
   return sharedData.value.record &&
@@ -105,10 +93,5 @@ const [BaseForm, formApi] = useVbenForm({
       <el-button @click="formApi.resetForm()">重置</el-button>
     </template>
     <BaseForm v-if="showForm" :schema="normalizedSchema" />
-    <div
-      ref="modalPopperAnchorRef"
-      aria-hidden="true"
-      class="pointer-events-none absolute size-0 overflow-hidden"
-    ></div>
   </Modal>
 </template>
