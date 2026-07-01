@@ -17,10 +17,10 @@ export type AuditPageRequest = {
   ip?: null | string;
 
   /* 操作是否成功 */
-  isSuccess?: boolean | null;
+  isSuccess?: boolean;
 
   /* 请求方法（GET；POST；PUT；DELETE；PATCH；HEAD；OPTIONS） */
-  method?: null | string;
+  method?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -32,7 +32,7 @@ export type AuditPageRequest = {
   pageSize?: null | number;
 
   /* 请求路径 */
-  path?: null | string;
+  path?: string;
 
   /* 开始时间 */
   startDate?: null | string;
@@ -46,16 +46,16 @@ export type AuditPageRequest = {
 
 export type AuditPageResponse = {
   /* 列表数据 */
-  list?: AuditItemDto[] | null;
+  list: AuditItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**

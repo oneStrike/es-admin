@@ -5,19 +5,19 @@
  */
 export type PaymentProviderPageRequest = {
   /* 支付渠道（1=支付宝；2=微信） */
-  channel?: null | number;
+  channel?: number;
 
   /* 客户端应用键，同一部署内区分多应用 */
-  clientAppKey?: null | string;
+  clientAppKey?: string;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 运行环境（1=沙箱；2=正式） */
-  environment?: null | number;
+  environment?: number;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -29,10 +29,10 @@ export type PaymentProviderPageRequest = {
   pageSize?: null | number;
 
   /* 支付场景（1=App；2=H5；3=小程序） */
-  paymentScene?: null | number;
+  paymentScene?: number;
 
   /* 客户端平台（1=安卓端；2=苹果端；3=鸿蒙端；4=网页端；5=小程序） */
-  platform?: null | number;
+  platform?: number;
 
   /* 开始时间 */
   startDate?: null | string;
@@ -40,16 +40,16 @@ export type PaymentProviderPageRequest = {
 
 export type PaymentProviderPageResponse = {
   /* 列表数据 */
-  list?: AdminPaymentProviderConfigPageItemDto[] | null;
+  list: AdminPaymentProviderConfigPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -59,19 +59,19 @@ export type PaymentProviderPageResponse = {
  */
 export type PaymentProviderAccountOptionListRequest = {
   /* 支付渠道（1=支付宝；2=微信） */
-  channel?: null | number;
+  channel?: number;
 
   /* 客户端应用键，同一部署内区分多应用 */
-  clientAppKey?: null | string;
+  clientAppKey?: string;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 运行环境（1=沙箱；2=正式） */
-  environment?: null | number;
+  environment?: number;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -83,10 +83,10 @@ export type PaymentProviderAccountOptionListRequest = {
   pageSize?: null | number;
 
   /* 支付场景（1=App；2=H5；3=小程序） */
-  paymentScene?: null | number;
+  paymentScene?: number;
 
   /* 客户端平台（1=安卓端；2=苹果端；3=鸿蒙端；4=网页端；5=小程序） */
-  platform?: null | number;
+  platform?: number;
 
   /* 开始时间 */
   startDate?: null | string;
@@ -185,7 +185,7 @@ export type PaymentOrderPageRequest = {
   orderNo?: null | string;
 
   /* 订单业务类型（1=虚拟币充值；2=VIP 订阅） */
-  orderType?: null | number;
+  orderType?: number;
 
   /* 当前页码（从1开始） */
   pageIndex?: null | number;
@@ -209,7 +209,7 @@ export type PaymentOrderPageRequest = {
   startDate?: null | string;
 
   /* 订单状态（1=待支付；2=已支付；3=已关闭；4=退款中；5=已退款） */
-  status?: null | number;
+  status?: number;
 
   /* 用户 ID */
   userId?: null | number;
@@ -217,16 +217,16 @@ export type PaymentOrderPageRequest = {
 
 export type PaymentOrderPageResponse = {
   /* 列表数据 */
-  list?: AdminPaymentOrderPageItemDto[] | null;
+  list: AdminPaymentOrderPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -268,16 +268,16 @@ export type PaymentReconcilePageRequest = {
 
 export type PaymentReconcilePageResponse = {
   /* 列表数据 */
-  list?: AdminPaymentReconciliationPageItemDto[] | null;
+  list: AdminPaymentReconciliationPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -296,7 +296,7 @@ export type PaymentOrderRepairPaidResponse = PaymentOrderResultDto;
  */
 export type AdminPaymentProviderConfigPageItemDto = {
   /* H5 允许返回域名列表 */
-  allowedReturnDomains?: null | string[];
+  allowedReturnDomains: null | string[];
   /* provider 应用 ID */
   appId: string;
   /* 证书模式（1=普通密钥；2=证书模式） */
@@ -306,7 +306,7 @@ export type AdminPaymentProviderConfigPageItemDto = {
   /* 客户端应用键，同一部署内区分多应用 */
   clientAppKey: string;
   /* 配置摘要，不包含明文密钥 */
-  configMetadata?: null | Record<string, any>;
+  configMetadata: null | Record<string, any>;
   /* 配置名称，供后台识别 */
   configName: string;
   /* 创建时间 */
@@ -320,13 +320,13 @@ export type AdminPaymentProviderConfigPageItemDto = {
   /* provider 商户 ID */
   mchId: string;
   /* 通知回调地址 */
-  notifyUrl?: null | string;
+  notifyUrl: null | string;
   /* 支付场景（1=App；2=H5；3=小程序） */
   paymentScene: number;
   /* 客户端平台（1=安卓端；2=苹果端；3=鸿蒙端；4=网页端；5=小程序） */
   platform: number;
   /* H5 返回地址 */
-  returnUrl?: null | string;
+  returnUrl: null | string;
   /* 排序值 */
   sortOrder: number;
   /* 更新时间 */
@@ -374,7 +374,7 @@ export type PaymentProviderCredentialOptionDto = {
   /* 凭据用途（1=应用私钥；2=支付宝公钥；3=微信 APIv3 key；4=商户私钥） */
   credentialType: number;
   /* 过期时间 */
-  expiredAt?: null | string;
+  expiredAt: null | string;
   /* 凭据指纹 */
   fingerprint: string;
   /* 选项展示名 */
@@ -400,7 +400,7 @@ export type PaymentProviderCertificateOptionDto = {
   /* 支付渠道（1=支付宝；2=微信） */
   channel: number;
   /* 过期时间 */
-  expiredAt?: null | string;
+  expiredAt: null | string;
   /* 证书指纹 */
   fingerprint: string;
   /* 选项展示名 */
@@ -428,23 +428,23 @@ export type CreatePaymentProviderConfigDto = {
   /* 应用证书选项 ID，后台写入时解析为内部引用 */
   appCertificateId?: null | number;
   /* provider 应用 ID */
-  appId?: null | string;
+  appId?: string;
   /* 证书模式（1=普通密钥；2=证书模式） */
-  certMode?: null | number;
+  certMode?: number;
   /* 支付渠道（1=支付宝；2=微信） */
   channel: number;
   /* 客户端应用键，同一部署内区分多应用 */
-  clientAppKey?: null | string;
+  clientAppKey?: string;
   /* 配置名称，供后台识别 */
-  configName?: null | string;
+  configName?: string;
   /* 主凭据选项 ID，后台写入时解析为内部密钥版本引用 */
   credentialOptionId?: null | number;
   /* 运行环境（1=沙箱；2=正式） */
   environment: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* provider 商户 ID */
-  mchId?: null | string;
+  mchId?: string;
   /* 通知回调地址 */
   notifyUrl?: null | string;
   /* 支付场景（1=App；2=H5；3=小程序） */
@@ -462,7 +462,7 @@ export type CreatePaymentProviderConfigDto = {
   /* 根证书选项 ID，后台写入时解析为内部引用 */
   rootCertificateId?: null | number;
   /* 排序值 */
-  sortOrder?: null | number;
+  sortOrder?: number;
 };
 
 /**
@@ -478,31 +478,31 @@ export type UpdatePaymentProviderConfigDto = {
   /* 应用证书选项 ID，后台写入时解析为内部引用 */
   appCertificateId?: null | number;
   /* provider 应用 ID */
-  appId?: null | string;
+  appId?: string;
   /* 证书模式（1=普通密钥；2=证书模式） */
-  certMode?: null | number;
+  certMode?: number;
   /* 支付渠道（1=支付宝；2=微信） */
-  channel?: null | number;
+  channel?: number;
   /* 客户端应用键，同一部署内区分多应用 */
-  clientAppKey?: null | string;
+  clientAppKey?: string;
   /* 配置名称，供后台识别 */
-  configName?: null | string;
+  configName?: string;
   /* 主凭据选项 ID，后台写入时解析为内部密钥版本引用 */
   credentialOptionId?: null | number;
   /* 运行环境（1=沙箱；2=正式） */
-  environment?: null | number;
+  environment?: number;
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* provider 商户 ID */
-  mchId?: null | string;
+  mchId?: string;
   /* 通知回调地址 */
   notifyUrl?: null | string;
   /* 支付场景（1=App；2=H5；3=小程序） */
-  paymentScene?: null | number;
+  paymentScene?: number;
   /* 客户端平台（1=安卓端；2=苹果端；3=鸿蒙端；4=网页端；5=小程序） */
-  platform?: null | number;
+  platform?: number;
   /* 平台证书选项 ID，后台写入时解析为内部引用 */
   platformCertificateId?: null | number;
   /* 应用私钥凭据选项 ID，后台写入时解析为内部引用 */
@@ -514,7 +514,7 @@ export type UpdatePaymentProviderConfigDto = {
   /* 根证书选项 ID，后台写入时解析为内部引用 */
   rootCertificateId?: null | number;
   /* 排序值 */
-  sortOrder?: null | number;
+  sortOrder?: number;
 };
 
 /**
@@ -540,7 +540,7 @@ export type AdminPaymentOrderPageItemDto = {
   /* 客户端应用键 */
   clientAppKey: string;
   /* 关闭时间 */
-  closedAt?: null | string;
+  closedAt: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 运行环境（1=沙箱；2=正式） */
@@ -554,7 +554,7 @@ export type AdminPaymentOrderPageItemDto = {
   /* 实付金额，单位为分 */
   paidAmount: number;
   /* 支付完成时间 */
-  paidAt?: null | string;
+  paidAt: null | string;
   /* 应付金额，单位为分 */
   payableAmount: number;
   /* 支付场景（1=App；2=H5；3=小程序） */
@@ -568,9 +568,9 @@ export type AdminPaymentOrderPageItemDto = {
   /* 下单时 provider 配置版本展示 */
   providerConfigVersionLabel: string;
   /* 第三方交易号 */
-  providerTradeNo?: null | string;
+  providerTradeNo: null | string;
   /* 退款完成时间 */
-  refundedAt?: null | string;
+  refundedAt: null | string;
   /* 订单状态（1=待支付；2=已支付；3=已关闭；4=退款中；5=已退款） */
   status: number;
   /* 订阅模式（1=一次性） */
@@ -596,9 +596,9 @@ export type AdminPaymentReconciliationPageItemDto = {
   /* 币种 */
   currency: string;
   /* 对账证据摘要，敏感字段已脱敏 */
-  evidence?: null | Record<string, any>;
+  evidence: null | Record<string, any>;
   /* 处理备注 */
-  handledRemark?: null | string;
+  handledRemark: null | string;
   /* 主键id */
   id: number;
   /* 本地金额，单位为分 */
@@ -610,13 +610,13 @@ export type AdminPaymentReconciliationPageItemDto = {
   /* 站内订单号 */
   orderNo: string;
   /* 支付订单 ID */
-  paymentOrderId?: null | number;
+  paymentOrderId: null | number;
   /* provider 金额，单位为分 */
-  providerAmount?: null | number;
+  providerAmount: null | number;
   /* provider 订单状态 */
   providerStatus: string;
   /* 第三方交易号 */
-  providerTradeNo?: null | string;
+  providerTradeNo: null | string;
   /* 退款执行是否开放；本轮固定为 false */
   refundExecutionAvailable: boolean;
   /* 是否允许通过异常修复置为已支付 */

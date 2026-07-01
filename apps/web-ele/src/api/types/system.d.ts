@@ -40,7 +40,7 @@ export type SystemConfigDetailDto = {
   /* 更新时间 */
   updatedAt: string;
   /* 最后修改人 ID */
-  updatedById?: null | number;
+  updatedById: null | number;
   /* 上传配置 */
   uploadConfig: UploadConfigOutputDto;
   /* 钱包虚拟币展示配置 */
@@ -262,13 +262,13 @@ export type SuperbedUploadConfigOutputDto = {
   /* Superbed 相册分类，多个使用英文逗号分隔 */
   categories: string;
   /* 是否开启压缩 */
-  compress?: boolean | null;
+  compress: boolean | null;
   /* Superbed token（敏感字段，管理端读取时脱敏） */
   token: string;
   /* 是否开启水印 */
-  watermark?: boolean | null;
+  watermark: boolean | null;
   /* 是否强制转 webp */
-  webp?: boolean | null;
+  webp: boolean | null;
 };
 
 /**
@@ -278,25 +278,25 @@ export type SuperbedUploadConfigOutputDto = {
  */
 export type UpdateSystemConfigDto = {
   /* 阿里云配置 */
-  aliyunConfig?: AliyunConfigDto | null;
+  aliyunConfig?: AliyunConfigDto;
   /* 内容审核策略 */
-  contentReviewPolicy?: ContentReviewPolicyDto | null;
+  contentReviewPolicy?: ContentReviewPolicyDto;
   /* 主键id */
   id: number;
   /* 维护配置 */
-  maintenanceConfig?: MaintenanceConfigDto | null;
+  maintenanceConfig?: MaintenanceConfigDto;
   /* 运营配置 */
-  operationConfig?: null | OperationConfigDto;
+  operationConfig?: OperationConfigDto;
   /* 安全配置 */
-  securityConfig?: null | SecurityConfigDto;
+  securityConfig?: SecurityConfigDto;
   /* 站点配置 */
-  siteConfig?: null | SiteConfigDto;
+  siteConfig?: SiteConfigDto;
   /* 三方资源解析配置 */
-  thirdPartyResourceParseConfig?: null | ThirdPartyResourceParseConfigDto;
+  thirdPartyResourceParseConfig?: ThirdPartyResourceParseConfigDto;
   /* 上传配置 */
-  uploadConfig?: null | UploadConfigDto;
+  uploadConfig?: UploadConfigDto;
   /* 钱包虚拟币展示配置 */
-  walletCurrencyDisplayConfig?: null | WalletCurrencyDisplayConfigDto;
+  walletCurrencyDisplayConfig?: WalletCurrencyDisplayConfigDto;
 };
 
 /**
@@ -310,7 +310,7 @@ export type AliyunConfigDto = {
   /* AccessKey Secret（敏感字段，前端输入明文或 RSA 加密值） */
   accessKeySecret?: null | string;
   /* 短信服务配置 */
-  sms?: AliyunSmsConfigDto | null;
+  sms?: AliyunSmsConfigDto;
 };
 
 /**
@@ -358,7 +358,7 @@ export type SiteConfigDto = {
  */
 export type OperationConfigDto = {
   /* forum 话题配置 */
-  forumHashtagConfig?: ForumHashtagConfigDto | null;
+  forumHashtagConfig?: ForumHashtagConfigDto;
 };
 
 /**
@@ -378,7 +378,7 @@ export type ForumHashtagConfigDto = {
  */
 export type SecurityConfigDto = {
   /* 远程图片导入安全配置 */
-  remoteImageImport?: null | RemoteImageImportSecurityConfigDto;
+  remoteImageImport?: RemoteImageImportSecurityConfigDto;
 };
 
 /**
@@ -444,13 +444,13 @@ export type MaintenanceConfigDto = {
  */
 export type ContentReviewPolicyDto = {
   /* 一般敏感词处理策略 */
-  generalAction?: ContentReviewActionDto | null;
+  generalAction?: ContentReviewActionDto;
   /* 轻微敏感词处理策略 */
-  lightAction?: ContentReviewActionDto | null;
+  lightAction?: ContentReviewActionDto;
   /* 是否记录敏感词命中明细 */
   recordHits?: boolean | null;
   /* 严重敏感词处理策略 */
-  severeAction?: ContentReviewActionDto | null;
+  severeAction?: ContentReviewActionDto;
 };
 
 /**
@@ -474,9 +474,9 @@ export type UploadConfigDto = {
   /* 上传提供方（本地存储；七牛云存储；Superbed 图床） */
   provider?: 'local' | 'qiniu' | 'superbed' | null;
   /* 七牛上传配置 */
-  qiniu?: null | QiniuUploadConfigDto;
+  qiniu?: QiniuUploadConfigDto;
   /* Superbed 上传配置 */
-  superbed?: null | SuperbedUploadConfigDto;
+  superbed?: SuperbedUploadConfigDto;
   /* 当 provider 为 superbed 时，非图片文件是否自动回落本地 */
   superbedNonImageFallbackToLocal?: boolean | null;
 };
@@ -530,13 +530,13 @@ export type SuperbedUploadConfigDto = {
  */
 export type Ip2regionRuntimeStatusDto = {
   /* 当前生效时间 */
-  activatedAt?: null | string;
+  activatedAt: null | string;
   /* 当前生效文件名 */
-  fileName?: null | string;
+  fileName: null | string;
   /* 当前生效文件绝对路径 */
-  filePath?: null | string;
+  filePath: null | string;
   /* 当前生效文件大小（字节） */
-  fileSize?: null | number;
+  fileSize: null | number;
   /* 当前进程是否已加载可用属地库 */
   ready: boolean;
   /* 当前是否正在执行热切换 */

@@ -110,10 +110,6 @@ function normalizeOptionalNumber(value: unknown) {
   return Number.isFinite(numberValue) ? numberValue : undefined;
 }
 
-function normalizeNullableNumber(value: unknown) {
-  return normalizeOptionalNumber(value) ?? null;
-}
-
 function normalizeOptionalInteger(value: unknown, label: string) {
   const numberValue = normalizeOptionalNumber(value);
 
@@ -143,7 +139,7 @@ function requireInteger(value: unknown, label: string) {
 }
 
 function normalizeBoolean(value: unknown) {
-  return typeof value === 'boolean' ? value : null;
+  return typeof value === 'boolean' ? value : undefined;
 }
 
 function formatOptionText(
@@ -388,15 +384,15 @@ function buildPaymentProviderBase(values: PaymentProviderFormValues) {
       values.appCertificateId,
       '应用证书',
     ),
-    appId: normalizeNullableText(values.appId),
-    certMode: normalizeNullableNumber(values.certMode),
+    appId: normalizeText(values.appId),
+    certMode: normalizeOptionalNumber(values.certMode),
     channel: requireInteger(values.channel, '支付渠道') as 1 | 2,
-    clientAppKey: normalizeNullableText(values.clientAppKey),
-    configName: normalizeNullableText(values.configName),
+    clientAppKey: normalizeText(values.clientAppKey),
+    configName: normalizeText(values.configName),
     credentialOptionId: requireInteger(values.credentialOptionId, '主支付凭据'),
     environment: requireInteger(values.environment, '运行环境') as 1 | 2,
     isEnabled: normalizeBoolean(values.isEnabled),
-    mchId: normalizeNullableText(values.mchId),
+    mchId: normalizeText(values.mchId),
     notifyUrl: normalizeNullableText(values.notifyUrl),
     paymentScene: requireInteger(values.paymentScene, '支付场景') as 1 | 2 | 3,
     platform: requireInteger(values.platform, '客户端平台') as
@@ -422,7 +418,7 @@ function buildPaymentProviderBase(values: PaymentProviderFormValues) {
       values.rootCertificateId,
       '根证书',
     ),
-    sortOrder: normalizeNullableNumber(values.sortOrder),
+    sortOrder: normalizeOptionalNumber(values.sortOrder),
   } satisfies PaymentProviderCreateRequest;
 }
 

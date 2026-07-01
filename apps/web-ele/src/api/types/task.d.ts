@@ -55,30 +55,30 @@ export type TaskPageRequest = {
   pageSize?: null | number;
 
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
-  sceneType?: null | number;
+  sceneType?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 任务状态（0=草稿；1=生效中；2=已暂停；3=已归档） */
-  status?: null | number;
+  status?: number;
 
   /* 任务标题 */
-  title?: null | string;
+  title?: string;
 };
 
 export type TaskPageResponse = {
   /* 列表数据 */
-  list?: AdminTaskDefinitionListItemDto[] | null;
+  list: AdminTaskDefinitionListItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -112,33 +112,33 @@ export type TaskInstancePageRequest = {
   pageSize?: null | number;
 
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
-  sceneType?: null | number;
+  sceneType?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
-  status?: null | number;
+  status?: number;
 
   /* 任务头 ID */
-  taskId?: null | number;
+  taskId?: number;
 
   /* 用户 ID */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type TaskInstancePageResponse = {
   /* 列表数据 */
-  list?: AdminTaskInstancePageItemDto[] | null;
+  list: AdminTaskInstancePageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -166,30 +166,30 @@ export type TaskInstanceReconciliationPageRequest = {
   rewardSettlementId?: null | number;
 
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
-  settlementStatus?: null | number;
+  settlementStatus?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 任务头 ID */
-  taskId?: null | number;
+  taskId?: number;
 
   /* 用户 ID */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type TaskInstanceReconciliationPageResponse = {
   /* 列表数据 */
-  list?: AdminTaskReconciliationItemDto[] | null;
+  list: AdminTaskReconciliationItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -222,13 +222,13 @@ export type TaskEventFailurePageRequest = {
   endDate?: null | string;
 
   /* 事件业务幂等键 */
-  eventBizKey?: null | string;
+  eventBizKey?: string;
 
   /* 成长事件编码 */
-  eventCode?: null | number;
+  eventCode?: number;
 
   /* 成长事件 key */
-  eventKey?: null | string;
+  eventKey?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -243,24 +243,24 @@ export type TaskEventFailurePageRequest = {
   startDate?: null | string;
 
   /* 失败事实状态（1=待重试；2=重试中；3=已解决；4=终态失败） */
-  status?: null | number;
+  status?: number;
 
   /* 归属用户 ID */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type TaskEventFailurePageResponse = {
   /* 列表数据 */
-  list?: BaseTaskEventFailureDto[] | null;
+  list: BaseTaskEventFailureDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -372,9 +372,9 @@ export type TaskTemplateFilterValueDto = {
  */
 export type UpdateTaskDefinitionDto = {
   /* 领取方式（1=自动领取；2=手动领取） */
-  claimMode?: null | number;
+  claimMode?: number;
   /* 完成聚合策略（1=所有步骤完成即完成） */
-  completionPolicy?: null | number;
+  completionPolicy?: number;
   /* 任务封面 */
   cover?: null | string;
   /* 任务描述 */
@@ -384,21 +384,21 @@ export type UpdateTaskDefinitionDto = {
   /* 主键id */
   id: number;
   /* 重复周期类型（0=一次性；1=每日；2=每周；3=每月） */
-  repeatType?: null | number;
+  repeatType?: number;
   /* 任务完成后统一发放的奖励项列表 */
   rewardItems?: GrowthRewardItemDto[] | null;
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
-  sceneType?: null | number;
+  sceneType?: number;
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder?: null | number;
+  sortOrder?: number;
   /* 生效开始时间 */
   startAt?: null | string;
   /* 任务状态（0=草稿；1=生效中；2=已暂停；3=已归档） */
-  status?: null | number;
+  status?: number;
   /* 唯一步骤定义 */
-  step?: CreateTaskStepDto | null;
+  step?: CreateTaskStepDto;
   /* 任务标题 */
-  title?: null | string;
+  title?: string;
 };
 
 /**
@@ -489,7 +489,7 @@ export type TaskTemplateFilterFieldDto = {
   /* 后端匹配操作符 */
   operator?: null | string;
   /* 可选择的受控选项；为空时按 valueType 使用普通输入 */
-  options?: null | TaskTemplateFilterFieldOptionDto[];
+  options?: TaskTemplateFilterFieldOptionDto[];
   /* 运营填写提示 */
   placeholder?: null | string;
   /* 字段值类型（数值；字符串；布尔值） */
@@ -523,13 +523,13 @@ export type AdminTaskDefinitionListItemDto = {
   /* 完成聚合策略（1=所有步骤完成即完成） */
   completionPolicy: number;
   /* 任务封面 */
-  cover?: null | string;
+  cover: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 任务描述 */
-  description?: null | string;
+  description: null | string;
   /* 生效结束时间 */
-  endAt?: null | string;
+  endAt: null | string;
   /* 主键id */
   id: number;
   /* 待补偿奖励数量 */
@@ -537,13 +537,13 @@ export type AdminTaskDefinitionListItemDto = {
   /* 重复周期类型（0=一次性；1=每日；2=每周；3=每月） */
   repeatType: number;
   /* 任务完成后统一发放的奖励项列表 */
-  rewardItems?: GrowthRewardItemDto[] | null;
+  rewardItems: GrowthRewardItemDto[] | null;
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
   sceneType: number;
   /* 排序值（0=默认排序，数值越小越靠前） */
   sortOrder: number;
   /* 生效开始时间 */
-  startAt?: null | string;
+  startAt: null | string;
   /* 任务状态（0=草稿；1=生效中；2=已暂停；3=已归档） */
   status: number;
   /* 步骤数量 */
@@ -569,13 +569,13 @@ export type AdminTaskDefinitionDetailDto = {
   /* 完成聚合策略（1=所有步骤完成即完成） */
   completionPolicy: number;
   /* 任务封面 */
-  cover?: null | string;
+  cover: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 任务描述 */
-  description?: null | string;
+  description: null | string;
   /* 生效结束时间 */
-  endAt?: null | string;
+  endAt: null | string;
   /* 主键id */
   id: number;
   /* 待补偿奖励数量 */
@@ -583,13 +583,13 @@ export type AdminTaskDefinitionDetailDto = {
   /* 重复周期类型（0=一次性；1=每日；2=每周；3=每月） */
   repeatType: number;
   /* 任务完成后统一发放的奖励项列表 */
-  rewardItems?: GrowthRewardItemDto[] | null;
+  rewardItems: GrowthRewardItemDto[] | null;
   /* 任务场景类型（1=新手引导；2=日常；4=活动） */
   sceneType: number;
   /* 排序值（0=默认排序，数值越小越靠前） */
   sortOrder: number;
   /* 生效开始时间 */
-  startAt?: null | string;
+  startAt: null | string;
   /* 任务状态（0=草稿；1=生效中；2=已暂停；3=已归档） */
   status: number;
   /* 步骤数量 */
@@ -611,11 +611,11 @@ export type TaskStepSummaryDto = {
   /* 创建时间 */
   createdAt: string;
   /* 去重范围（1=按周期唯一；2=终身唯一） */
-  dedupeScope?: null | number;
+  dedupeScope: null | number;
   /* 步骤描述 */
-  description?: null | string;
+  description: null | string;
   /* 步骤过滤条件列表 */
-  filters?: null | TaskTemplateFilterValueDto[];
+  filters: null | TaskTemplateFilterValueDto[];
   /* 主键id */
   id: number;
   /* 步骤稳定键 */
@@ -625,7 +625,7 @@ export type TaskStepSummaryDto = {
   /* 完成次数 */
   targetValue: number;
   /* 事件模板键 */
-  templateKey?: null | string;
+  templateKey: null | string;
   /* 步骤标题 */
   title: string;
   /* 步骤触发方式（1=手动；2=事件驱动） */
@@ -641,29 +641,27 @@ export type TaskStepSummaryDto = {
  */
 export type AdminTaskInstancePageItemDto = {
   /* 领取时间 */
-  claimedAt?: null | string;
+  claimedAt: null | string;
   /* 完成时间 */
-  completedAt?: null | string;
+  completedAt: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 周期键 */
   cycleKey: string;
   /* 过期时间 */
-  expiredAt?: null | string;
+  expiredAt: null | string;
   /* 主键id */
   id: number;
   /* 是否需要奖励结算（0=无奖励；1=需要奖励结算） */
   rewardApplicable: number;
-  /* 奖励结算摘要 */
-  rewardSettlement: TaskRewardSettlementSummaryDto;
+  rewardSettlement: null | TaskRewardSettlementSummaryDto;
   /* 奖励结算事实 ID */
-  rewardSettlementId?: null | number;
+  rewardSettlementId: null | number;
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
   status: number;
   /* 步骤进度列表 */
   steps: TaskInstanceStepViewDto[];
-  /* 任务头详情 */
-  task: AdminTaskDefinitionDetailDto;
+  task: AdminTaskDefinitionDetailDto | null;
   /* 任务头 ID */
   taskId: number;
   /* 更新时间 */
@@ -689,7 +687,7 @@ export type AdminTaskInstancePageItemDto = {
  */
 export type TaskInstanceStepViewDto = {
   /* 步骤完成时间 */
-  completedAt?: null | string;
+  completedAt: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 当前进度值 */
@@ -715,17 +713,17 @@ export type TaskRewardSettlementSummaryDto = {
   /* 主键id */
   id: number;
   /* 最近一次失败原因 */
-  lastError?: null | string;
+  lastError: null | string;
   /* 最近一次重试时间 */
-  lastRetryAt?: null | string;
+  lastRetryAt: null | string;
   /* 本次补偿关联到账本记录 ID 列表 */
   ledgerRecordIds: number[];
   /* 已执行的补偿重试次数 */
   retryCount: number;
   /* 最近一次补偿状态落定时间 */
-  settledAt?: null | string;
+  settledAt: null | string;
   /* 补偿结果类型（1=真实落账；2=命中幂等；3=本次处理失败） */
-  settlementResultType?: null | number;
+  settlementResultType: null | number;
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus: number;
 };
@@ -737,31 +735,28 @@ export type TaskRewardSettlementSummaryDto = {
  */
 export type AdminTaskReconciliationItemDto = {
   /* 领取时间 */
-  claimedAt?: null | string;
+  claimedAt: null | string;
   /* 完成时间 */
-  completedAt?: null | string;
+  completedAt: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 周期键 */
   cycleKey: string;
   /* 过期时间 */
-  expiredAt?: null | string;
+  expiredAt: null | string;
   /* 主键id */
   id: number;
-  /* 最近事件摘要 */
-  latestEvent: TaskLatestEventSummaryDto;
+  latestEvent: null | TaskLatestEventSummaryDto;
   /* 是否需要奖励结算（0=无奖励；1=需要奖励结算） */
   rewardApplicable: number;
-  /* 奖励结算摘要 */
-  rewardSettlement: TaskRewardSettlementSummaryDto;
+  rewardSettlement: null | TaskRewardSettlementSummaryDto;
   /* 奖励结算事实 ID */
-  rewardSettlementId?: null | number;
+  rewardSettlementId: null | number;
   /* 实例状态（0=待开始；1=进行中；2=已完成；3=已过期） */
   status: number;
   /* 步骤进度列表 */
   steps: TaskInstanceStepViewDto[];
-  /* 任务头详情 */
-  task: AdminTaskDefinitionDetailDto;
+  task: AdminTaskDefinitionDetailDto | null;
   /* 任务头 ID */
   taskId: number;
   /* 唯一事实摘要列表 */
@@ -791,15 +786,15 @@ export type TaskLatestEventSummaryDto = {
   /* 最近事件是否被接受计入进度 */
   accepted: boolean;
   /* 最近事件业务键 */
-  eventBizKey?: null | string;
+  eventBizKey: null | string;
   /* 最近事件发生时间 */
-  occurredAt?: null | string;
+  occurredAt: null | string;
   /* 最近事件拒绝原因 */
-  rejectReason?: null | string;
+  rejectReason: null | string;
   /* 最近事件目标 ID */
-  targetId?: null | number;
+  targetId: null | number;
   /* 最近事件目标类型 */
-  targetType?: null | string;
+  targetType: null | string;
 };
 
 /**
@@ -813,9 +808,9 @@ export type TaskUniqueFactSummaryDto = {
   /* 当前实例对应作用域内已命中的唯一事实数量 */
   factCount: number;
   /* 最近一次命中的唯一维度值 */
-  latestDimensionValue?: null | string;
+  latestDimensionValue: null | string;
   /* 最近一次命中的发生时间 */
-  latestOccurredAt?: null | string;
+  latestOccurredAt: null | string;
   /* 步骤定义 ID */
   stepId: number;
 };
@@ -831,9 +826,9 @@ export type TaskRewardRetryResultDto = {
   /* 本次重试处理结果说明 */
   message: string;
   /* 奖励结算事实 ID */
-  rewardSettlementId?: null | number;
+  rewardSettlementId: null | number;
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
-  settlementStatus?: null | number;
+  settlementStatus: null | number;
   /* 本次重试后是否已补偿成功 */
   succeeded: boolean;
 };
@@ -847,7 +842,7 @@ export type RetryTaskRewardBatchDto = {
   /* 创建结束日期（应用时区 YYYY-MM-DD，后端按次日零点开区间处理） */
   endDate?: null | string;
   /* 指定重试的任务实例 ID 列表；传入后只扫描这些实例 */
-  instanceIds?: null | number[];
+  instanceIds?: number[];
   /* 本次最多扫描的待补偿任务实例数，最大 500 */
   limit?: null | number;
   /* 奖励结算事实 ID；来自后台高级诊断筛选条件 */
@@ -891,7 +886,7 @@ export type TaskRewardRetryFailureDto = {
   /* 失败原因摘要 */
   message: string;
   /* 奖励结算事实 ID */
-  rewardSettlementId?: null | number;
+  rewardSettlementId: null | number;
 };
 
 /**
@@ -913,29 +908,29 @@ export type BaseTaskEventFailureDto = {
   /* 任务事件消费失败幂等键 */
   idempotencyKey: string;
   /* 最近一次失败原因 */
-  lastErrorMessage?: null | string;
+  lastErrorMessage: null | string;
   /* 最近一次重试时间 */
-  lastRetryAt?: null | string;
+  lastRetryAt: null | string;
   /* 事件发生时间 */
   occurredAt: string;
   /* 重试所需事件快照 JSON */
   requestPayload: Record<string, any>;
   /* 解决时间 */
-  resolvedAt?: null | string;
+  resolvedAt: null | string;
   /* 已执行重试次数，默认最多 5 次 */
   retryCount: number;
   /* 失败事实状态（1=待重试；2=重试中；3=已解决；4=终态失败） */
   status: number;
   /* 事件目标 ID */
-  targetId?: null | number;
+  targetId: null | number;
   /* 事件目标类型 */
-  targetType?: null | string;
+  targetType: null | string;
   /* 事件模板键 */
-  templateKey?: null | string;
+  templateKey: null | string;
   /* 终态失败时间 */
-  terminalErrorAt?: null | string;
+  terminalErrorAt: null | string;
   /* 终态失败原因 */
-  terminalReason?: null | string;
+  terminalReason: null | string;
   /* 更新时间 */
   updatedAt: string;
   /* 归属用户 ID */

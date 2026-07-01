@@ -14,10 +14,10 @@ export type AppPageCreateResponse = boolean;
  */
 export type AppPagePageRequest = {
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel?: null | number;
+  accessLevel?: number;
 
   /* 页面编码（唯一标识） */
-  code?: null | string;
+  code?: string;
 
   /* 启用平台筛选 JSON 字符串，例如 [1,2] */
   enablePlatform?: null | string;
@@ -26,10 +26,10 @@ export type AppPagePageRequest = {
   endDate?: null | string;
 
   /* 页面启用状态 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 页面名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -46,16 +46,16 @@ export type AppPagePageRequest = {
 
 export type AppPagePageResponse = {
   /* 列表数据 */
-  list?: AppPageOutputDto[] | null;
+  list: AppPageOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -137,9 +137,9 @@ export type AppPageOutputDto = {
   /* 创建时间 */
   createdAt: string;
   /* 页面描述信息 */
-  description?: null | string;
+  description: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
-  enablePlatform?: null | number[];
+  enablePlatform: null | number[];
   /* 主键id */
   id: number;
   /* 页面启用状态 */
@@ -161,9 +161,9 @@ export type AppPageOutputDto = {
  */
 export type UpdateAppPageDto = {
   /* 页面权限级别（0=游客；1=登录；2=会员；3=高级会员） */
-  accessLevel?: null | number;
+  accessLevel?: number;
   /* 页面编码（唯一标识） */
-  code?: null | string;
+  code?: string;
   /* 页面描述信息 */
   description?: null | string;
   /* 启用的平台（1=H5；2=App；3=小程序） */
@@ -171,13 +171,13 @@ export type UpdateAppPageDto = {
   /* 主键id */
   id: number;
   /* 页面启用状态 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 页面名称 */
-  name?: null | string;
+  name?: string;
   /* 页面路径（URL 路径） */
-  path?: null | string;
+  path?: string;
   /* 页面标题 */
-  title?: null | string;
+  title?: string;
 };
 
 /**

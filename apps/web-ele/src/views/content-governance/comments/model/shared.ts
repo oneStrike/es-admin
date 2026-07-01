@@ -126,7 +126,7 @@ export function toPlainTextFromHtml(content?: null | string) {
   return text || '-';
 }
 
-export function formatCommentUser(user?: AdminCommentUserDto) {
+export function formatCommentUser(user?: AdminCommentUserDto | null) {
   return user?.nickname || '未知用户';
 }
 

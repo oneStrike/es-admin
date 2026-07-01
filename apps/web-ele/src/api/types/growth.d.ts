@@ -5,7 +5,7 @@
  */
 export type GrowthExperienceRecordPageRequest = {
   /* 幂等业务键 */
-  bizKey?: null | string;
+  bizKey?: string;
 
   /* 经验变更方向（1=增加；2=减少） */
   deltaDirection?: null | number;
@@ -55,16 +55,16 @@ export type GrowthExperienceRecordPageRequest = {
 
 export type GrowthExperienceRecordPageResponse = {
   /* 列表数据 */
-  list?: null | UserExperienceRecordDto[];
+  list: UserExperienceRecordDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -105,10 +105,10 @@ export type GrowthLevelRulesPageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 等级名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -125,16 +125,16 @@ export type GrowthLevelRulesPageRequest = {
 
 export type GrowthLevelRulesPageResponse = {
   /* 列表数据 */
-  list?: null | UserLevelRuleOutputDto[];
+  list: UserLevelRuleOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -210,14 +210,17 @@ export type GrowthBadgesPageRequest = {
   /* 业务域标识 */
   business?: null | string;
 
+  /* 结束时间 */
+  endDate?: null | string;
+
   /* 事件键 */
   eventKey?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 徽章名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -228,22 +231,25 @@ export type GrowthBadgesPageRequest = {
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number;
 
+  /* 开始时间 */
+  startDate?: null | string;
+
   /* 徽章类型（1=系统徽章；2=成就徽章；3=活动徽章） */
-  type?: null | number;
+  type?: number;
 };
 
 export type GrowthBadgesPageResponse = {
   /* 列表数据 */
-  list?: null | UserBadgeOutputDto[];
+  list: UserBadgeOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -321,6 +327,9 @@ export type GrowthBadgesUserPageRequest = {
   /* 徽章ID */
   badgeId: number;
 
+  /* 结束时间 */
+  endDate?: null | string;
+
   /* 排序字段，json格式 */
   orderBy?: null | string;
 
@@ -329,20 +338,23 @@ export type GrowthBadgesUserPageRequest = {
 
   /* 单页大小，最大500，默认15 */
   pageSize?: null | number;
+
+  /* 开始时间 */
+  startDate?: null | string;
 };
 
 export type GrowthBadgesUserPageResponse = {
   /* 列表数据 */
-  list?: BadgeUserPageItemDto[] | null;
+  list: BadgeUserPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 export type GrowthBadgesStatsResponse = UserBadgeStatisticsDto;
@@ -386,16 +398,16 @@ export type GrowthRuleEventsPageRequest = {
 
 export type GrowthRuleEventsPageResponse = {
   /* 列表数据 */
-  list?: GrowthRuleEventPageItemDto[] | null;
+  list: GrowthRuleEventPageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 export type GrowthRewardEventOptionListResponse =
@@ -423,30 +435,30 @@ export type GrowthRewardSettlementPageRequest = {
   pageSize?: null | number;
 
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
-  settlementStatus?: null | number;
+  settlementStatus?: number;
 
   /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */
-  settlementType?: null | number;
+  settlementType?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 用户id */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type GrowthRewardSettlementPageResponse = {
   /* 列表数据 */
-  list?: BaseGrowthRewardSettlementDto[] | null;
+  list: BaseGrowthRewardSettlementDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -476,13 +488,13 @@ export type GrowthRewardSettlementRetryPendingBatchResponse =
  */
 export type GrowthRewardRulesPageRequest = {
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType?: null | number;
+  assetType?: number;
 
   /* 结束时间 */
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -500,21 +512,21 @@ export type GrowthRewardRulesPageRequest = {
   status?: null | number;
 
   /* 成长规则类型（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  type?: null | number;
+  type?: number;
 };
 
 export type GrowthRewardRulesPageResponse = {
   /* 列表数据 */
-  list?: GrowthRewardRuleOutputDto[] | null;
+  list: GrowthRewardRuleOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -569,7 +581,7 @@ export type UserExperienceRecordDto = {
   /* 幂等业务键 */
   bizKey: string;
   /* 扩展上下文（仅返回白名单解释字段）；无上下文时为 null */
-  context?: null | Record<string, any>;
+  context: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
   /* 经验值变化 */
@@ -577,21 +589,20 @@ export type UserExperienceRecordDto = {
   /* 主键ID */
   id: number;
   /* 账本说明文案；无说明时为 null */
-  remark?: null | string;
+  remark: null | string;
   /* 关联的规则 ID；无规则时为 null */
-  ruleId?: null | number;
+  ruleId: null | number;
   /* 成长记录关联的事件编码（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效）；无事件时为 null */
-  ruleType?: null | number;
+  ruleType: null | number;
   /* 账本来源；无来源时为 null */
-  source?: null | string;
+  source: null | string;
   /* 关联目标 ID；无目标时为 null */
-  targetId?: null | number;
+  targetId: null | number;
   /* 关联目标类型；无目标时为 null */
-  targetType?: null | number;
+  targetType: null | number;
   /* 更新时间；账本记录无更新时间时为 null */
-  updatedAt?: null | string;
-  /* 经验所属用户摘要；用户已不存在时为 null */
-  user?: null | UserExperienceRecordUserDto;
+  updatedAt: null | string;
+  user: null | UserExperienceRecordUserDto;
   /* 关联的用户ID */
   userId: number;
 };
@@ -605,7 +616,7 @@ export type UserExperienceRecordUserDto = {
   /* 账号 */
   account: string;
   /* 头像URL */
-  avatarUrl?: null | string;
+  avatarUrl: null | string;
   /* 主键id */
   id: number;
   /* 昵称 */
@@ -625,31 +636,30 @@ export type UserExperienceRecordDetailDto = {
   /* 幂等业务键 */
   bizKey: string;
   /* 扩展上下文（仅返回白名单解释字段）；无上下文时为 null */
-  context?: null | Record<string, any>;
+  context: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
   /* 完整诊断上下文；无上下文时为 null */
-  diagnosticContext?: null | Record<string, any>;
+  diagnosticContext: null | Record<string, any>;
   /* 经验值变化 */
   experience: number;
   /* 主键ID */
   id: number;
   /* 账本说明文案；无说明时为 null */
-  remark?: null | string;
+  remark: null | string;
   /* 关联的规则 ID；无规则时为 null */
-  ruleId?: null | number;
+  ruleId: null | number;
   /* 成长记录关联的事件编码（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效）；无事件时为 null */
-  ruleType?: null | number;
+  ruleType: null | number;
   /* 账本来源；无来源时为 null */
-  source?: null | string;
+  source: null | string;
   /* 关联目标 ID；无目标时为 null */
-  targetId?: null | number;
+  targetId: null | number;
   /* 关联目标类型；无目标时为 null */
-  targetType?: null | number;
+  targetType: null | number;
   /* 更新时间；账本记录无更新时间时为 null */
-  updatedAt?: null | string;
-  /* 经验所属用户摘要；用户已不存在时为 null */
-  user?: null | UserExperienceRecordUserDto;
+  updatedAt: null | string;
+  user: null | UserExperienceRecordUserDto;
   /* 关联的用户ID */
   userId: number;
 };
@@ -662,8 +672,7 @@ export type UserExperienceRecordDetailDto = {
 export type UserExperienceStatsDto = {
   /* 当前经验值 */
   currentExperience: number;
-  /* 当前等级信息 */
-  level: UserExperienceLevelDto;
+  level: null | UserExperienceLevelDto;
   /* 今日获得经验值 */
   todayEarned: number;
 };
@@ -689,9 +698,9 @@ export type UserExperienceLevelDto = {
  */
 export type UserLevelRuleOutputDto = {
   /* 业务域标识 */
-  business?: null | string;
+  business: null | string;
   /* 等级专属颜色（十六进制） */
-  color?: null | string;
+  color: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 每日收藏次数上限（0=不限制） */
@@ -703,9 +712,9 @@ export type UserLevelRuleOutputDto = {
   /* 每日发帖数量上限（0=不限制） */
   dailyTopicLimit: number;
   /* 等级描述 */
-  description?: null | string;
+  description: null | string;
   /* 等级图标URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -771,13 +780,13 @@ export type UpdateUserLevelRuleDto = {
   /* 等级专属颜色（十六进制） */
   color?: null | string;
   /* 每日收藏次数上限（0=不限制） */
-  dailyFavoriteLimit?: null | number;
+  dailyFavoriteLimit?: number;
   /* 每日点赞次数上限（0=不限制） */
-  dailyLikeLimit?: null | number;
+  dailyLikeLimit?: number;
   /* 每日回复和评论数量上限（0=不限制） */
-  dailyReplyCommentLimit?: null | number;
+  dailyReplyCommentLimit?: number;
   /* 每日发帖数量上限（0=不限制） */
-  dailyTopicLimit?: null | number;
+  dailyTopicLimit?: number;
   /* 等级描述 */
   description?: null | string;
   /* 等级图标URL */
@@ -785,17 +794,17 @@ export type UpdateUserLevelRuleDto = {
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 等级名称 */
-  name?: null | string;
+  name?: string;
   /* 发帖间隔秒数（0=不限制） */
-  postInterval?: null | number;
+  postInterval?: number;
   /* 积分支付比例（0-1之间的小数，1表示原价支付） */
-  purchasePayableRate?: null | string;
+  purchasePayableRate?: string;
   /* 所需经验值 */
-  requiredExperience?: null | number;
+  requiredExperience?: number;
   /* 排序值（0=默认排序，数值越小越靠前） */
-  sortOrder?: null | number;
+  sortOrder?: number;
 };
 
 /**
@@ -817,17 +826,17 @@ export type UserLevelInfoDto = {
   /* 当前经验值 */
   currentExperience: number;
   /* 等级专属颜色（十六进制） */
-  levelColor?: null | string;
+  levelColor: null | string;
   /* 等级描述 */
-  levelDescription?: null | string;
+  levelDescription: null | string;
   /* 等级图标URL */
-  levelIcon?: null | string;
+  levelIcon: null | string;
   /* 等级ID */
   levelId: number;
   /* 等级名称 */
   levelName: string;
   /* 下一等级所需经验值 */
-  nextLevelExperience?: null | number;
+  nextLevelExperience: null | number;
   /* 等级权限 */
   permissions: UserLevelPermissionsDto;
   /* 升级进度百分比 */
@@ -880,21 +889,21 @@ export type UserLevelPermissionResultDto = {
   /* 当前等级名称 */
   currentLevel: string;
   /* 距上次发帖/回复已过秒数，仅 postInterval 返回 */
-  elapsedSeconds?: null | number;
+  elapsedSeconds: null | number;
   /* 是否有权限 */
   hasPermission: boolean;
   /* 限制数量 */
-  limit?: null | number;
+  limit: null | number;
   /* 间隔限制秒数，仅 postInterval 返回 */
-  limitSeconds?: null | number;
+  limitSeconds: null | number;
   /* 下次允许操作时间，仅 postInterval 且受限时返回 */
-  nextAllowedAt?: null | string;
+  nextAllowedAt: null | string;
   /* 剩余数量 */
-  remaining?: null | number;
+  remaining: null | number;
   /* 距离下次允许操作剩余秒数，仅 postInterval 返回 */
-  remainingSeconds?: null | number;
+  remainingSeconds: null | number;
   /* 已使用数量 */
-  used?: null | number;
+  used: null | number;
 };
 
 /**
@@ -932,15 +941,15 @@ export type UserLevelDistributionItemDto = {
  */
 export type UserBadgeOutputDto = {
   /* 业务域标识 */
-  business?: null | string;
+  business: null | string;
   /* 创建时间 */
   createdAt: string;
   /* 徽章描述 */
-  description?: null | string;
+  description: null | string;
   /* 事件键 */
-  eventKey?: null | string;
+  eventKey: null | string;
   /* 徽章图标URL */
-  icon?: null | string;
+  icon: null | string;
   /* 主键id */
   id: number;
   /* 是否启用 */
@@ -1052,11 +1061,11 @@ export type BadgeUserPageItemDto = {
  */
 export type BadgeUserInfoDto = {
   /* 头像地址 */
-  avatar?: null | string;
+  avatar: null | string;
   /* 主键id */
   id: number;
   /* 等级名称 */
-  level?: null | string;
+  level: null | string;
   /* 昵称 */
   nickname: string;
   /* 当前积分 */
@@ -1101,8 +1110,7 @@ export type UserBadgeTypeDistributionItemDto = {
  *  @更新时间 2026-05-09 22:20:06
  */
 export type UserBadgeTopBadgeItemDto = {
-  /* 徽章信息 */
-  badge: UserBadgeOutputDto;
+  badge: null | UserBadgeOutputDto;
   /* 分配次数 */
   count: number;
 };
@@ -1116,7 +1124,7 @@ export type GrowthRuleEventPageItemDto = {
   /* 基础奖励资产规则摘要列表 */
   assetRules: GrowthRuleAssetSummaryDto[];
   /* 不可配置原因；可配置时为 null */
-  disabledReason?: null | string;
+  disabledReason: null | string;
   /* 事件所属领域（论坛；评论；漫画作品；小说作品；漫画章节；小说章节；互动；徽章；资料；社交；举报；系统） */
   domain:
     | 'badge'
@@ -1172,7 +1180,7 @@ export type GrowthRuleAssetSummaryDto = {
   /* 奖励值 */
   amount: number;
   /* 资产键；积分/经验为 null，扩展资产使用稳定业务键 */
-  assetKey?: null | string;
+  assetKey: null | string;
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
   assetType: number;
   /* 每日上限（0=无限制） */
@@ -1184,7 +1192,7 @@ export type GrowthRuleAssetSummaryDto = {
   /* 规则是否启用 */
   isEnabled: boolean;
   /* 规则备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 总上限（0=无限制） */
   totalLimit: number;
 };
@@ -1262,17 +1270,17 @@ export type BaseGrowthRewardSettlementDto = {
   /* 创建时间 */
   createdAt: string;
   /* 成长记录关联的事件编码（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  eventCode?: null | number;
+  eventCode: null | number;
   /* 成长事件 key */
-  eventKey?: null | string;
+  eventKey: null | string;
   /* 原始事件发生时间 */
   eventOccurredAt: string;
   /* 主键id */
   id: number;
   /* 最近一次失败原因 */
-  lastError?: null | string;
+  lastError: null | string;
   /* 最近一次重试时间 */
-  lastRetryAt?: null | string;
+  lastRetryAt: null | string;
   /* 本次补偿关联到账本记录 ID 列表 */
   ledgerRecordIds: number[];
   /* 补偿重放用的原始载荷快照；通用成长事件、任务奖励、签到基础奖励、签到连续奖励会分别写入各自结构 */
@@ -1280,9 +1288,9 @@ export type BaseGrowthRewardSettlementDto = {
   /* 已执行的补偿重试次数 */
   retryCount: number;
   /* 最近一次补偿状态落定时间 */
-  settledAt?: null | string;
+  settledAt: null | string;
   /* 补偿结果类型（1=本次真实落账；2=命中幂等未重复落账；3=本次处理失败） */
-  settlementResultType?: null | number;
+  settlementResultType: null | number;
   /* 补偿状态（0=待补偿重试；1=已补偿成功；2=终态失败） */
   settlementStatus: number;
   /* 补偿记录类型（1=通用成长事件；2=任务奖励；3=签到基础奖励；4=签到连续奖励） */
@@ -1290,11 +1298,11 @@ export type BaseGrowthRewardSettlementDto = {
   /* 奖励来源 */
   source: string;
   /* 来源事实主键（任务奖励通常为 instanceId） */
-  sourceRecordId?: null | number;
+  sourceRecordId: null | number;
   /* 目标 ID */
-  targetId?: null | number;
+  targetId: null | number;
   /* 目标类型 */
-  targetType?: null | number;
+  targetType: null | number;
   /* 更新时间 */
   updatedAt: string;
   /* 归属用户 ID */
@@ -1332,13 +1340,13 @@ export type GrowthRewardSettlementRetryBatchResultDto = {
  */
 export type GrowthRewardRuleOutputDto = {
   /* 归档时间；为空表示当前生效规则 */
-  archivedAt?: null | string;
+  archivedAt: null | string;
   /* 归档操作者管理员 ID；系统迁移自动归档为空 */
-  archivedBy?: null | number;
+  archivedBy: null | number;
   /* 归档原因说明 */
-  archiveReason?: null | string;
+  archiveReason: null | string;
   /* 归档原因码 */
-  archiveReasonCode?: null | string;
+  archiveReasonCode: null | string;
   /* 资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
   assetKey?: null | string;
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
@@ -1354,7 +1362,7 @@ export type GrowthRewardRuleOutputDto = {
   /* 是否启用 */
   isEnabled: boolean;
   /* 备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 总上限（0=无限制） */
   totalLimit: number;
   /* 成长规则类型（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
@@ -1396,21 +1404,21 @@ export type UpdateGrowthRewardRuleDto = {
   /* 资产键；积分/经验必须为空字符串，道具/虚拟货币/等级必须提供稳定业务键 */
   assetKey?: null | string;
   /* 资产类型（1=积分；2=经验；3=道具；4=虚拟货币；5=等级） */
-  assetType?: null | number;
+  assetType?: number;
   /* 每日上限（0=无限制） */
-  dailyLimit?: null | number;
+  dailyLimit?: number;
   /* 规则变动值；必须为正整数 */
-  delta?: null | number;
+  delta?: number;
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 备注 */
   remark?: null | string;
   /* 总上限（0=无限制） */
-  totalLimit?: null | number;
+  totalLimit?: number;
   /* 成长规则类型（1=发帖奖励；2=回复奖励；3=主题获赞；4=回复获赞；5=主题被收藏；6=每日签到；7=后台人工调整；8=主题浏览；9=主题举报历史口径；10=评论奖励；11=评论获赞；12=评论举报历史口径；16=主题被评论；100=漫画作品浏览；101=漫画作品点赞；102=漫画作品收藏；103=漫画作品举报历史口径；104=漫画作品评论；200=小说作品浏览；201=小说作品点赞；202=小说作品收藏；203=小说作品举报历史口径；204=小说作品评论；300=漫画章节阅读；301=漫画章节点赞；302=漫画章节购买；303=漫画章节下载；304=漫画章节兑换；305=漫画章节举报历史口径；306=漫画章节评论；400=小说章节阅读；401=小说章节点赞；402=小说章节购买；403=小说章节下载；404=小说章节兑换；405=小说章节举报历史口径；406=小说章节评论；600=获得徽章；601=完善资料；602=上传头像；700=关注用户；701=被关注；702=分享内容；703=邀请用户；800=举报有效；801=举报无效） */
-  type?: null | number;
+  type?: number;
 };
 
 /**

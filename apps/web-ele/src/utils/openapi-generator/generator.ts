@@ -72,6 +72,18 @@ const RESERVED_BINDING_NAMES = new Set([
   'yield',
 ]);
 
+const PAGE_ENVELOPE_REQUIRED_PROPERTY_NAMES = new Set([
+  'list',
+  'pageIndex',
+  'pageSize',
+  'total',
+]);
+
+// Remove with COMPATIBILITY_TRACKER.md once ApiPageDoc emits parent required[].
+interface PropertyGenerationContext {
+  usage?: 'response-page-envelope';
+}
+
 /**
  * OpenAPI 代码生成器核心类
  */
@@ -604,11 +616,7 @@ ${[properties.join(separator), extraProperty].filter(Boolean).join('\n\n')}
   }
 
   private buildTypeProperty(name: string, required: string, type: string) {
-    const nullableType =
-      required === '?' && !type.split(/\s*\|\s*/).includes('null')
-        ? `${type} | null`
-        : type;
-    return `${formatPropertyKey(name)}${required}: ${nullableType}`;
+    return `${formatPropertyKey(name)}${required}: ${type}`;
   }
 
   private buildUrlExpression(
@@ -890,6 +898,7 @@ export type ${aliasName} = ${targetName}`);
   private generatePropertiesFromSchema(
     schema: any,
     ownerTypeName?: string,
+    context: PropertyGenerationContext = {},
   ): string[] {
     const properties: string[] = [];
 
@@ -916,10 +925,9 @@ export type ${aliasName} = ${targetName}`);
           propName,
           propSchema as any,
         );
-        const required =
-          schema.required?.includes(propName) && !this.isNullableSchema(prop)
-            ? ''
-            : '?';
+        const required = this.isPropertyRequired(schema, propName, context)
+          ? ''
+          : '?';
 
         // 使用改进的类型映射
         const type = mapSchemaToType(prop);
@@ -1052,7 +1060,19 @@ ${properties.join('\n\n')}
       return `export type ${typeName} = ${mappedType || 'undefined'}`;
     }
 
-    const properties = this.generatePropertiesFromSchema(dataSchema);
+    const propertyContext = this.isResponsePageEnvelopeSchema(
+      response,
+      dataSchema,
+    )
+      ? ({
+          usage: 'response-page-envelope',
+        } satisfies PropertyGenerationContext)
+      : undefined;
+    const properties = this.generatePropertiesFromSchema(
+      dataSchema,
+      undefined,
+      propertyContext,
+    );
 
     if (properties.length === 0) {
       return `export type ${typeName} = undefined`;
@@ -1368,6 +1388,41 @@ export type ${typeName} = ${this.applySchemaNullable(schema, objectType)}`;
 
   private isNullableSchema(schema: any): boolean {
     return isNullableSchema(schema);
+  }
+
+  private isPropertyRequired(
+    schema: any,
+    propName: string,
+    context: PropertyGenerationContext,
+  ): boolean {
+    if (Array.isArray(schema.required) && schema.required.includes(propName)) {
+      return true;
+    }
+
+    return Boolean(
+      context.usage === 'response-page-envelope' &&
+      PAGE_ENVELOPE_REQUIRED_PROPERTY_NAMES.has(propName),
+    );
+  }
+
+  private isResponsePageEnvelopeSchema(
+    response: any,
+    dataSchema: any,
+  ): boolean {
+    const responseSchema = this.getPreferredContentSchema(response?.content);
+    const envelopeDataSchema = responseSchema?.properties?.data;
+
+    if (!envelopeDataSchema || envelopeDataSchema !== dataSchema) {
+      return false;
+    }
+
+    if (!this.hasSchemaType(dataSchema, 'object') || !dataSchema.properties) {
+      return false;
+    }
+
+    return [...PAGE_ENVELOPE_REQUIRED_PROPERTY_NAMES].every((propName) =>
+      Object.prototype.hasOwnProperty.call(dataSchema.properties, propName),
+    );
   }
 
   /**

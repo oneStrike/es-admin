@@ -5,7 +5,7 @@ import type {
   CheckInConfigFormState,
   CheckInConfigPreviewDay,
 } from '../model/config';
-import type { CheckInRewardItemDto } from '../model/shared';
+import type { CheckInRewardItemValue } from '../model/shared';
 
 import type {
   AdminCheckInCalendarOverviewResponseDto,
@@ -69,7 +69,7 @@ defineOptions({
 
 type RewardEditorState = {
   originalScope?: Exclude<CheckInConfigEditorKind, 'base'>;
-  rewardItems: CheckInRewardItemDto[];
+  rewardItems: CheckInRewardItemValue[];
   rewardOverviewIconUrl?: string;
   scope: CheckInConfigEditorKind;
   scopeOptions: Array<{ label: string; value: CheckInConfigEditorKind }>;

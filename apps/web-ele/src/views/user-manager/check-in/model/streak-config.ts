@@ -1,25 +1,19 @@
-import type { CheckInRewardItemDto } from './shared';
+import type { CheckInRewardItemValue } from './shared';
 
-import type { CheckInStreakDetailResponse } from '#/api/types';
+import type {
+  CheckInStreakDetailResponse,
+  CheckInStreakPublishRequest,
+} from '#/api/types';
 
 import { cloneRewardItems, hasRewardItems } from './shared';
 
 export type CheckInStreakRuleDetail = CheckInStreakDetailResponse;
 
-export type CheckInStreakPublishPayload = {
-  effectiveFrom?: string;
-  publishStrategy: 1 | 2 | 3;
-  repeatable?: boolean;
-  rewardItems: CheckInRewardItemDto[];
-  rewardOverviewIconUrl?: string;
-  streakDays: number;
-};
-
 export type CheckInStreakFormState = {
   effectiveFrom?: string;
   publishStrategy: 1 | 2 | 3;
   repeatable: boolean;
-  rewardItems: CheckInRewardItemDto[];
+  rewardItems: CheckInRewardItemValue[];
   rewardOverviewIconUrl?: string;
   sourceId?: number;
   sourceRuleCode?: string;
@@ -66,7 +60,7 @@ export function mapStreakDetailToForm(
 
 export function buildStreakPublishPayload(
   state: CheckInStreakFormState,
-): CheckInStreakPublishPayload {
+): CheckInStreakPublishRequest {
   return {
     ...(state.publishStrategy === 3 && state.effectiveFrom?.trim()
       ? { effectiveFrom: state.effectiveFrom.trim() }
@@ -74,7 +68,8 @@ export function buildStreakPublishPayload(
     publishStrategy: state.publishStrategy,
     repeatable: state.repeatable,
     rewardItems: cloneRewardItems(state.rewardItems),
-    rewardOverviewIconUrl: normalizeOptionalText(state.rewardOverviewIconUrl),
+    rewardOverviewIconUrl:
+      normalizeOptionalText(state.rewardOverviewIconUrl) ?? null,
     streakDays: Number(state.streakDays),
   };
 }

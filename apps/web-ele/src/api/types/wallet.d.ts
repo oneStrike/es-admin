@@ -8,10 +8,10 @@ export type WalletCurrencyPackagePageRequest = {
   endDate?: null | string;
 
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
 
   /* 充值包名称 */
-  name?: null | string;
+  name?: string;
 
   /* 排序字段，json格式 */
   orderBy?: null | string;
@@ -28,16 +28,16 @@ export type WalletCurrencyPackagePageRequest = {
 
 export type WalletCurrencyPackagePageResponse = {
   /* 列表数据 */
-  list?: AdminCurrencyPackagePageItemDto[] | null;
+  list: AdminCurrencyPackagePageItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -67,16 +67,16 @@ export type WalletLedgerPageRequest = {
 
 export type WalletLedgerPageResponse = {
   /* 列表数据 */
-  list?: null | WalletLedgerRecordDto[];
+  list: WalletLedgerRecordDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -153,7 +153,7 @@ export type WalletLedgerRecordDto = {
   /* 流水 ID */
   id: number;
   /* 展示备注 */
-  remark?: null | string;
+  remark: null | string;
   /* 流水来源 */
   source: string;
 };
@@ -165,11 +165,11 @@ export type WalletLedgerRecordDto = {
  */
 export type CreateCurrencyPackageDto = {
   /* 赠送虚拟币数量 */
-  bonusAmount?: null | number;
+  bonusAmount?: number;
   /* 发放虚拟币数量 */
   currencyAmount: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 充值包名称 */
   name: string;
   /* 充值包业务键 */
@@ -177,7 +177,7 @@ export type CreateCurrencyPackageDto = {
   /* 支付价格，单位为分 */
   price: number;
   /* 排序值 */
-  sortOrder?: null | number;
+  sortOrder?: number;
 };
 
 /**
@@ -187,21 +187,21 @@ export type CreateCurrencyPackageDto = {
  */
 export type UpdateCurrencyPackageDto = {
   /* 赠送虚拟币数量 */
-  bonusAmount?: null | number;
+  bonusAmount?: number;
   /* 发放虚拟币数量 */
-  currencyAmount?: null | number;
+  currencyAmount?: number;
   /* 主键id */
   id: number;
   /* 是否启用 */
-  isEnabled?: boolean | null;
+  isEnabled?: boolean;
   /* 充值包名称 */
-  name?: null | string;
+  name?: string;
   /* 充值包业务键 */
-  packageKey?: null | string;
+  packageKey?: string;
   /* 支付价格，单位为分 */
-  price?: null | number;
+  price?: number;
   /* 排序值 */
-  sortOrder?: null | number;
+  sortOrder?: number;
 };
 
 /**

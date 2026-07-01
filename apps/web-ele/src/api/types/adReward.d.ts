@@ -14,7 +14,7 @@ export type AdRewardProviderPageRequest = {
   endDate?: null | string;
 
   /* 运行环境（1=沙箱；2=正式） */
-  environment?: null | number;
+  environment?: number;
 
   /* 是否启用 */
   isEnabled?: boolean | null;
@@ -29,33 +29,33 @@ export type AdRewardProviderPageRequest = {
   pageSize?: null | number;
 
   /* 广告位 key */
-  placementKey?: null | string;
+  placementKey?: string;
 
   /* 客户端平台（1=安卓端；2=苹果端；3=鸿蒙端；4=网页端；5=小程序） */
-  platform?: null | number;
+  platform?: number;
 
   /* 广告 provider（1=穿山甲；2=腾讯优量汇） */
-  provider?: null | number;
+  provider?: number;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 目标范围（1=低价章节；2=新用户冷启动；3=运营白名单） */
-  targetScope?: null | number;
+  targetScope?: number;
 };
 
 export type AdRewardProviderPageResponse = {
   /* 列表数据 */
-  list?: AdProviderConfigOutputDto[] | null;
+  list: AdProviderConfigOutputDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 export type AdRewardCredentialOptionListResponse =
@@ -68,7 +68,7 @@ export type AdRewardCredentialOptionListResponse =
  */
 export type AdRewardRecordPageRequest = {
   /* 广告 provider 配置 ID */
-  adProviderConfigId?: null | number;
+  adProviderConfigId?: number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -86,7 +86,7 @@ export type AdRewardRecordPageRequest = {
   pageSize?: null | number;
 
   /* 广告位 key */
-  placementKey?: null | string;
+  placementKey?: string;
 
   /* 客户端平台（1=安卓端；2=苹果端；3=鸿蒙端；4=网页端；5=小程序） */
   platform?: null | number;
@@ -95,39 +95,39 @@ export type AdRewardRecordPageRequest = {
   provider?: null | number;
 
   /* provider 奖励唯一 ID */
-  providerRewardId?: null | string;
+  providerRewardId?: string;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 广告状态（1=奖励成功；2=奖励失败；3=已撤销） */
-  status?: null | number;
+  status?: number;
 
   /* 目标 ID */
-  targetId?: null | number;
+  targetId?: number;
 
   /* 目标范围（1=低价章节；2=新用户冷启动；3=运营白名单） */
-  targetScope?: null | number;
+  targetScope?: number;
 
   /* 目标类型（1=漫画章节；2=小说章节） */
-  targetType?: null | number;
+  targetType?: number;
 
   /* 用户 ID */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type AdRewardRecordPageResponse = {
   /* 列表数据 */
-  list?: BaseAdRewardRecordDto[] | null;
+  list: BaseAdRewardRecordDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -149,7 +149,7 @@ export type AdRewardRecordDetailResponse = AdminAdRewardRecordDetailDto;
  */
 export type AdRewardRecordReconcilePageRequest = {
   /* 广告 provider 配置 ID */
-  adProviderConfigId?: null | number;
+  adProviderConfigId?: number;
 
   /* 结束时间 */
   endDate?: null | string;
@@ -167,7 +167,7 @@ export type AdRewardRecordReconcilePageRequest = {
   pageSize?: null | number;
 
   /* 广告位 key */
-  placementKey?: null | string;
+  placementKey?: string;
 
   /* 客户端平台（1=安卓端；2=苹果端；3=鸿蒙端；4=网页端；5=小程序） */
   platform?: null | number;
@@ -176,39 +176,39 @@ export type AdRewardRecordReconcilePageRequest = {
   provider?: null | number;
 
   /* provider 奖励唯一 ID */
-  providerRewardId?: null | string;
+  providerRewardId?: string;
 
   /* 开始时间 */
   startDate?: null | string;
 
   /* 广告状态（1=奖励成功；2=奖励失败；3=已撤销） */
-  status?: null | number;
+  status?: number;
 
   /* 目标 ID */
-  targetId?: null | number;
+  targetId?: number;
 
   /* 目标范围（1=低价章节；2=新用户冷启动；3=运营白名单） */
-  targetScope?: null | number;
+  targetScope?: number;
 
   /* 目标类型（1=漫画章节；2=小说章节） */
-  targetType?: null | number;
+  targetType?: number;
 
   /* 用户 ID */
-  userId?: null | number;
+  userId?: number;
 };
 
 export type AdRewardRecordReconcilePageResponse = {
   /* 列表数据 */
-  list?: AdminAdRewardReconcileItemDto[] | null;
+  list: AdminAdRewardReconcileItemDto[];
 
   /* 当前页码（从1开始） */
-  pageIndex?: null | number;
+  pageIndex: number;
 
   /* 每页条数 */
-  pageSize?: null | number;
+  pageSize: number;
 
   /* 总条数 */
-  total?: null | number;
+  total: number;
 };
 
 /**
@@ -256,11 +256,11 @@ export type AdProviderConfigOutputDto = {
   /* provider 应用 ID */
   appId: string;
   /* 广告回调地址 */
-  callbackUrl?: null | string;
+  callbackUrl: null | string;
   /* 客户端应用键 */
   clientAppKey: string;
   /* 配置摘要，不包含明文密钥 */
-  configMetadata?: null | Record<string, any>;
+  configMetadata: null | Record<string, any>;
   /* 配置版本 */
   configVersion: number;
   /* 创建时间 */
@@ -298,7 +298,7 @@ export type AdRewardCredentialOptionDto = {
   /* SSV 密钥版本引用 */
   credentialVersionRef: string;
   /* 不可选原因 */
-  disabledReason?: null | string;
+  disabledReason: null | string;
   /* 运行环境（1=沙箱；2=正式） */
   environment: number;
   /* 密钥指纹 */
@@ -356,7 +356,7 @@ export type AdminAdRewardRecordDetailDto = {
   /* 广告 provider 配置版本快照 */
   adProviderConfigVersion: number;
   /* 客户端上下文摘要（敏感字段已过滤） */
-  clientContext?: null | Record<string, any>;
+  clientContext: null | Record<string, any>;
   /* 创建时间 */
   createdAt: string;
   /* 主键id */
@@ -376,7 +376,7 @@ export type AdminAdRewardRecordDetailDto = {
   /* 用户 ID */
   userId: number;
   /* 服务端验证摘要 payload（不含 provider 原始回调） */
-  verifyPayload?: null | Record<string, any>;
+  verifyPayload: null | Record<string, any>;
 };
 
 /**
@@ -394,7 +394,7 @@ export type AdminAdRewardReconcileItemDto = {
   /* SSV 密钥版本引用快照 */
   credentialVersionRef: string;
   /* 权益过期时间 */
-  entitlementExpiresAt?: null | string;
+  entitlementExpiresAt: null | string;
   /* 主键id */
   id: number;
   /* 广告位 key */
@@ -464,25 +464,25 @@ export type UpdateAdProviderConfigDto = {
   /* 客户端应用键 */
   clientAppKey?: null | string;
   /* SSV 密钥选项引用，由服务端映射为密钥版本和安全摘要 */
-  credentialOptionRef?: null | string;
+  credentialOptionRef?: string;
   /* 每日次数上限，0=不限制 */
   dailyLimit?: null | number;
   /* 运行环境（1=沙箱；2=正式） */
-  environment?: null | number;
+  environment?: number;
   /* 主键id */
   id: number;
   /* 是否启用 */
   isEnabled?: boolean | null;
   /* 广告位 key */
-  placementKey?: null | string;
+  placementKey?: string;
   /* 客户端平台（1=安卓端；2=苹果端；3=鸿蒙端；4=网页端；5=小程序） */
-  platform?: null | number;
+  platform?: number;
   /* 广告 provider（1=穿山甲；2=腾讯优量汇） */
-  provider?: null | number;
+  provider?: number;
   /* 排序值 */
   sortOrder?: null | number;
   /* 目标范围（1=低价章节；2=新用户冷启动；3=运营白名单） */
-  targetScope?: null | number;
+  targetScope?: number;
 };
 
 /**

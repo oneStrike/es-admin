@@ -16,9 +16,9 @@ export type AppConfigUpdateResponse = boolean;
  */
 export type AppConfigOutputDto = {
   /* 应用描述 */
-  appDesc?: null | string;
+  appDesc: null | string;
   /* 应用 Logo URL */
-  appLogo?: null | string;
+  appLogo: null | string;
   /* 应用名称 */
   appName: string;
   /* 创建时间 */
@@ -28,19 +28,19 @@ export type AppConfigOutputDto = {
   /* 主键id */
   id: number;
   /* 维护模式提示信息 */
-  maintenanceMessage?: null | string;
+  maintenanceMessage: null | string;
   /* 引导页图片 URL */
-  onboardingImage?: null | string;
+  onboardingImage: null | string;
   /* 可选的主题色 */
-  optionalThemeColors?: null | string;
+  optionalThemeColors: null | string;
   /* 第二主题色 */
-  secondaryColor?: null | string;
+  secondaryColor: null | string;
   /* 主题色 */
   themeColor: string;
   /* 更新时间 */
   updatedAt: string;
   /* 最后修改人ID */
-  updatedById?: null | number;
+  updatedById: null | number;
   /* 配置版本号 */
   version: string;
 };
